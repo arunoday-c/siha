@@ -898,8 +898,24 @@ export default {
     try {
       let input = { ...req.body };
       let collected = ",";
+      let strHisQry = ""
       if (input.status == "R") {
         collected = ", collected='N' ,";
+
+        strHisQry = mysql.format(
+          "insert into hims_f_sample_can_history (`order_id`,`sample_id`, \
+          `lab_sample_id`,`patient_id`,`visit_id`, `remarks`, `rejected_by`, `rejected_date`) values (?,?,?,?,?,?,?,?);",
+          [
+            input.order_id,
+            input.sample_id,
+            input.hims_d_lab_sample_id,
+            input.patient_id,
+            input.visit_id,
+            input.remarks,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ]
+        );
       }
       let queryBuilder =
         "update hims_f_lab_sample set `status`=?" +
@@ -929,30 +945,11 @@ export default {
       ];
       _mysql
         .executeQueryWithTransaction({
-          query: queryBuilder,
+          query: queryBuilder + strHisQry,
           values: inputs,
           printQuery: true,
         })
         .then((results) => {
-          const age_data = results[1][0];
-          const age_type = age_data["age_type"];
-          let age = "";
-          switch (age_type) {
-            case "D":
-              age = age_data["days"];
-
-              break;
-            case "M":
-              age = age_data["months"];
-              break;
-            case "Y":
-              age = age_data["years"];
-              break;
-          }
-
-          console.log("age_data", age_data);
-          console.log("age_type", age_type);
-          console.log("age", age);
           if (input.status == "R") {
             _mysql
               .executeQuery({
@@ -978,6 +975,26 @@ export default {
                 });
               });
           } else {
+            const age_data = results[1][0];
+            const age_type = age_data["age_type"];
+            let age = "";
+            switch (age_type) {
+              case "D":
+                age = age_data["days"];
+
+                break;
+              case "M":
+                age = age_data["months"];
+                break;
+              case "Y":
+                age = age_data["years"];
+                break;
+            }
+
+
+            // console.log("age_data", age_data);
+            // console.log("age_type", age_type);
+            // console.log("age", age);
             _mysql
               .executeQuery({
                 query:
