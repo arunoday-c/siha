@@ -454,7 +454,7 @@ class NewSalaryProcessing extends Component {
                   >
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Loan Reconciliation Report",
+                        forceLabel: "Monthly Loan Report",
                         returnText: true,
                       }}
                     />

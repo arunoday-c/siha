@@ -3,6 +3,7 @@ import Options from "../../../Options.json";
 import moment from "moment";
 
 const CollectSample = ($this, context, row) => {
+  debugger
   let inputobj = {
     hims_f_lab_order_id: row.hims_f_lab_order_id,
     hims_d_lab_sample_id: row.hims_d_lab_sample_id,
@@ -13,7 +14,10 @@ const CollectSample = ($this, context, row) => {
     hims_d_hospital_id: $this.state.hospital_id,
     service_id: row.service_id,
     service_code: row.service_code,
-    send_out_test: row.send_out_test
+    send_out_test: row.send_out_test,
+    container_id: row.container_id,
+    test_id: row.hims_d_investigation_test_id,
+    container_code: row.container_code
   };
 
   algaehApiCall({
@@ -118,14 +122,28 @@ const dateFormater = (value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
+
+
   let test_details = $this.state.test_details;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let _index = test_details.indexOf(row);
   row[name] = value;
 
-  test_details[_index] = row;
-  $this.setState({ test_details: test_details });
+  debugger
+  switch (name) {
+    case "container_id":
+      row["container_code"] = e.selected.container_id;
+      test_details[_index] = row;
+      $this.setState({ test_details: test_details });
+      break;
+
+    default:
+      test_details[_index] = row;
+      $this.setState({ test_details: test_details });
+      break;
+  }
+
 };
 
 export { CollectSample, printBarcode, dateFormater, onchangegridcol };

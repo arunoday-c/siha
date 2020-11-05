@@ -54,7 +54,7 @@ export default {
             E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
             LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
             concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
-            lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  \
+            lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id, LS.container_id, \
             LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
             LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
@@ -221,7 +221,7 @@ export default {
                 _mysql
                   .executeQuery({
                     query:
-                      "select services_id,specimen_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
+                      "select services_id, specimen_id, container_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
                       where hims_d_investigation_test_id=hims_m_lab_specimen.test_id and \
                       hims_m_lab_specimen.record_status='A' and test_id in (?); \
                       select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
@@ -242,21 +242,21 @@ export default {
                     printQuery: true,
                   })
                   .then((specimentRecords) => {
-                    if (
-                      specimentRecords[0] == null ||
-                      specimentRecords[0].length == 0
-                    ) {
-                      _mysql.rollBackTransaction(() => {
-                        next(
-                          utilities
-                            .httpStatus()
-                            .generateError(
-                              httpStatus.forbidden,
-                              "No Specimen Avilable"
-                            )
-                        );
-                      });
-                    }
+                    // if (
+                    //   specimentRecords[0] == null ||
+                    //   specimentRecords[0].length == 0
+                    // ) {
+                    //   _mysql.rollBackTransaction(() => {
+                    //     next(
+                    //       utilities
+                    //         .httpStatus()
+                    //         .generateError(
+                    //           httpStatus.forbidden,
+                    //           "No Specimen Avilable"
+                    //         )
+                    //     );
+                    //   });
+                    // }
 
                     const insertedLabSample = new LINQ(specimentRecords[0])
                       .Select((s) => {
@@ -265,11 +265,12 @@ export default {
                             .Where((w) => w.service_id == s.services_id)
                             .FirstOrDefault().hims_f_lab_order_id,
                           sample_id: s.specimen_id,
+                          container_id: s.container_id
                         };
                       })
                       .ToArray();
 
-                    const sample = ["order_id", "sample_id"];
+                    const sample = ["order_id", "sample_id", "container_id"];
 
                     _mysql
                       .executeQuery({
@@ -500,7 +501,7 @@ export default {
                 _mysql
                   .executeQuery({
                     query:
-                      "select services_id,specimen_id,test_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
+                      "select services_id,specimen_id,test_id, container_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
                     where hims_d_investigation_test_id=hims_m_lab_specimen.test_id and \
                     hims_m_lab_specimen.record_status='A' and test_id in (?); \
                     select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
@@ -523,6 +524,7 @@ export default {
                           .map((m) => {
                             return {
                               sample_id: m.specimen_id,
+                              container_id: m.container_id,
                               test_id: m.test_id,
                               order_id: ord.hims_f_lab_order_id,
                             };
@@ -530,7 +532,7 @@ export default {
                         inserteLabSample.push(...temp);
                       });
 
-                      const sample = ["order_id", "sample_id"];
+                      const sample = ["order_id", "sample_id", "container_id"];
 
                       _mysql
                         .executeQuery({
@@ -559,9 +561,16 @@ export default {
                           });
                         });
                     } else {
-                      _mysql.rollBackTransaction(() => {
-                        next(new Error("No Specimen Avilable"));
-                      });
+
+                      if (req.connection == null) {
+                        req.records = insert_lab_sample;
+                        next();
+                      } else {
+                        next();
+                      }
+                      // _mysql.rollBackTransaction(() => {
+                      //   next(new Error("No Specimen Avilable"));
+                      // });
                     }
                   })
                   .catch((e) => {
@@ -598,24 +607,60 @@ export default {
       let inputParam = { ...req.body };
 
       return new Promise((resolve, reject) => {
-        _mysql
-          .executeQueryWithTransaction({
-            query:
-              "UPDATE hims_f_lab_sample SET `collected`=?,`status`=?, `collected_by`=?,\
+
+        console.log("inputParam.hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id)
+        let strQuery = ""
+        if (inputParam.hims_d_lab_sample_id === null) {
+          strQuery = mysql.format(
+            "insert into hims_f_lab_sample (`order_id`,`sample_id`, \
+            `container_id`,`collected`,`status`, `collected_by`, `collected_date`) values (?,?,?,?,?,?,?);\
+            SELECT hims_d_lab_container_id AS container_id, container_id AS container_code \
+            FROM hims_d_lab_container WHERE hims_d_lab_container_id=?; \
+            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
+            INSERT IGNORE INTO `hims_m_lab_specimen` (test_id, specimen_id, container_id, container_code, created_by, created_date, \
+              updated_by, updated_date) VALUE(?,?,?,?,?,?,?,?);",
+            [
+              inputParam.order_id,
+              inputParam.sample_id,
+              inputParam.container_id,
+              inputParam.collected,
+              inputParam.status,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              inputParam.container_id,
+              inputParam.hims_d_hospital_id,
+              inputParam.test_id,
+              inputParam.sample_id,
+              inputParam.container_id,
+              inputParam.container_code,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+            ]
+          );
+        } else {
+          strQuery = mysql.format(
+            "UPDATE hims_f_lab_sample SET `collected`=?,`status`=?, `collected_by`=?,\
           `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
           SELECT distinct LS.container_id, LC.container_id as container_code FROM hims_m_lab_specimen LS \
           inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
           inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
           where IT.services_id=?;\
           SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
-            values: [
+            [
               inputParam.collected,
               inputParam.status,
               req.userIdentity.algaeh_d_app_user_id,
               inputParam.hims_d_lab_sample_id,
               inputParam.service_id,
               inputParam.hims_d_hospital_id
-            ],
+            ]
+          );
+        }
+        _mysql
+          .executeQueryWithTransaction({
+            query: strQuery,
             printQuery: true,
           })
           .then((update_lab_sample) => {

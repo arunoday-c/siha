@@ -1191,7 +1191,7 @@ export default {
           left join hims_d_sub_department SD on SH.sub_dept_id= SD.hims_d_sub_department_id  where
           SH.hospital_id=?  ${selectDoctor} ${qry} `,
           values: [req.userIdentity.hospital_id],
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           if (result.length > 0) {
@@ -1209,7 +1209,7 @@ export default {
                         values: [
                           result[j]["hims_d_appointment_schedule_detail_id"],
                         ],
-                        printQuery: true,
+                        printQuery: false,
                       })
                       .then((modifyResult) => {
                         result[j] = modifyResult[0];

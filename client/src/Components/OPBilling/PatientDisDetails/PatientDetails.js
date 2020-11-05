@@ -191,8 +191,7 @@ class DisPatientForm extends Component {
 function mapStateToProps(state) {
   return {
     patienttype: state.patienttype,
-    existinsurance: state.existinsurance,
-    PatientPackageList: state.PatientPackageList
+    existinsurance: state.existinsurance
   };
 }
 

@@ -3619,7 +3619,10 @@ function getEarningComponents(options) {
         resolve({ current_earning_amt_array, final_earning_amount });
       }
 
+
+
       _earnings.map((obj) => {
+        const early_join_days = _earlyJoin.length > 0 && obj["early_join_comp"] === "Y" ? parseFloat(_earlyJoin[0].early_join_days) : 0
         if (obj.calculation_type == "F") {
           if (
             leave_salary == null ||
@@ -3627,7 +3630,7 @@ function getEarningComponents(options) {
             leave_salary == "N"
           ) {
             // ED.limit_applicable, ED.limit_amount
-            current_earning_amt = obj["amount"];
+
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_earning_amt) > parseFloat(obj["limit_amount"])
@@ -3638,6 +3641,7 @@ function getEarningComponents(options) {
             current_earning_per_day_salary = parseFloat(
               obj["amount"] / parseFloat(empResult["total_days"])
             );
+            current_earning_amt = current_earning_per_day_salary * (parseFloat(empResult["total_paid_days"]) - early_join_days);
           }
           // else if (leave_salary == "N") {
           //   leave_salary_days =
@@ -3689,7 +3693,7 @@ function getEarningComponents(options) {
           // console.log("obj", obj["amount"]);
           // console.log("total_paid_days", empResult["total_paid_days"]);
           // console.log("total_days", empResult["total_days"]);
-          const early_join_days = _earlyJoin.length > 0 && obj["early_join_comp"] === "Y" ? _earlyJoin[0].early_join_days : 0
+
           if (leave_salary == null || leave_salary == undefined) {
 
             // console.log("leave_period", leave_period)

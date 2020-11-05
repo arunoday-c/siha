@@ -4,6 +4,7 @@
     <div class="print-body">
 
         <section>
+                <h3>Reconciliation Report For: {{header.deducting_month}}-{{header.year}}</h3>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
@@ -11,7 +12,6 @@
                         <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Salary Number</th>
-                        <th>Deducting Month & Year</th>
                         <th>Loan Number</th>
                         <th>Loan Type</th>
                         <th>Approved Amount</th>
@@ -27,7 +27,6 @@
                         <td>{{employee_code}}</td>
                         <td>{{full_name}}</td>
                         <td>{{salary_number}}</td>
-                        <td>{{deducting_month}}-{{year}}</td>
                         <td>{{loan_application_number}}</td>
                         <td>{{loan_description}}</td>
                         <td  class="numberFld">{{approved_amount}}</td>
@@ -37,7 +36,7 @@
                     </tr>
                     {{/each }}
                     <tr class="numberFld numberFldTotalBottom">
-                        <td colspan="7" class="txtFld"></td>
+                        <td colspan="6" class="txtFld"></td>
                         <td class="numberFld">{{total_approved_amount}}</td>
                         <td class="numberFld">{{total_balance_amount}}</td>
                         <td class="numberFld">{{total_loan_due_amount}}</td>

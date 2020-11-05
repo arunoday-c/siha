@@ -80,6 +80,7 @@ class OrderedList extends PureComponent {
       method: "GET",
       data: {
         patient_id: current_patient, //Window.global["current_patient"]
+        visit_id: visit_id, //Window.global["current_patient"]
         package_visit_type: "ALL",
         // visit_id: visit_id,
       },
@@ -91,6 +92,15 @@ class OrderedList extends PureComponent {
     });
   }
 
+  componentWillUnmount() {
+    this.props.getPakageList({
+      redux: {
+        type: "PAIENT_PACKAGE_GET_DATA",
+        mappingName: "pakageList",
+        data: [],
+      },
+    });
+  }
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.inventory_location_id !== undefined) {
       this.setState({
