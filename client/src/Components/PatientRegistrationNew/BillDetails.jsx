@@ -32,8 +32,7 @@ const getBillDetails = async (
     prevVisits,
     consultation,
     promo_code,
-    discount_percentage,
-    discount_amout,
+    discount_percentage
   }
 ) => {
   let zeroBill = false,
@@ -65,7 +64,7 @@ const getBillDetails = async (
         vat_applicable:
           default_nationality == nationality_id ? local_vat_applicable : "Y",
         promo_code: promo_code || null,
-        discount_amout: discount_amout,
+        // discount_amout: discount_amout,
         discount_percentage: discount_percentage,
       },
     ],
@@ -109,8 +108,9 @@ export function BillDetails({
   const [enableCash, setEnableCash] = useState(true);
   const [enableCard, setEnableCard] = useState(false);
   const [promoCode, setPromoCode] = useState(null);
-  const [discount_amout, setDiscountAmount] = useState(0);
   const [discount_percentage, setDiscountPerc] = useState(0);
+  const [dis_amout, setDisAmount] = useState(0);
+  const [dis_percentage, setDisPerc] = useState(0);
   const [visible, setVisible] = useState(false);
   const [applyDiscount, setApplyDiscount] = useState(false);
   const { userToken } = useContext(MainContext);
@@ -178,9 +178,8 @@ export function BillDetails({
         prevVisits,
         consultation: consultationInfo?.consultation,
         promo_code: promoCode,
-        // discount_percentage: discount_percentage,
-        // discount_amout: discount_amout
-      },
+        discount_percentage: discount_percentage,
+      }
     ],
     getBillDetails,
     {
@@ -196,7 +195,7 @@ export function BillDetails({
           // setBillData(null);
           setGlobalBillData(data);
           const billItem = data?.billdetails[0];
-          // setDiscountPerc(billItem["discount_percentage"]);
+          setDiscountPerc(billItem["discount_percentage"]);
           // setDiscountAmount(billItem["discount_amout"]);
           calculateBillDetails(billItem);
         }
@@ -215,9 +214,8 @@ export function BillDetails({
       setCardData(null);
       setPromoCode(null);
       setValue("promo_code", "");
-      setValue("discount_amout", "0");
       setValue("discount_percentage", "0");
-      setDiscountAmount(0);
+      // setDiscountAmount(0);
       setDiscountPerc(0);
     }
     //eslint-disable-next-line
@@ -440,7 +438,7 @@ export function BillDetails({
 
                 <Controller
                   control={control}
-                  name="discount_percentage"
+                  name="dis_percentage"
                   render={({ onChange, ...props }) => (
                     <AlgaehFormGroup
                       div={{ className: "col-6 form-group" }}
@@ -451,15 +449,15 @@ export function BillDetails({
                         className: "txt-fld",
                         disabled:
                           !parseInt(service_dis_percentage, 10) || disabled,
-                        name: "discount_percentage",
+                        name: "dis_percentage",
                         type: "number",
                         ...props,
                         max: 100,
-                        value: discount_percentage, //billData?.discount_percentage,
+                        value: dis_percentage,
                         onChange: (e) => {
                           if (e.target.value === "") {
-                            setDiscountPerc("");
-                            setDiscountAmount("0");
+                            setDisPerc("");
+                            setDisAmount("0");
                           }
                           let perc = parseFloat(e.target.value);
                           if (perc > 100) {
@@ -467,10 +465,11 @@ export function BillDetails({
                           }
 
                           if (perc > 0) {
-                            setDiscountPerc(perc);
+                            setApplyDiscount(false)
+                            setDisPerc(perc);
                             const _amount =
                               (billData?.gross_amount * perc) / 100;
-                            setDiscountAmount(_amount);
+                            setDisAmount(_amount);
                           }
                           //  else {
                           //   setDiscountPerc(0);
@@ -483,9 +482,11 @@ export function BillDetails({
                   )}
                 />
 
+                {/* const [dis_amout, setDisAmount] = useState(0);
+  const [dis_percentage, setDisPerc] = useState(0); */}
                 <Controller
                   control={control}
-                  name="discount_amount"
+                  name="dis_amout"
                   render={(props) => (
                     <AlgaehFormGroup
                       div={{ className: "col-6 form-group" }}
@@ -496,20 +497,20 @@ export function BillDetails({
                         className: "txt-fld",
                         disabled:
                           !parseInt(service_dis_percentage, 10) || disabled,
-                        name: "discount_amount",
+                        name: "dis_amout",
                         type: "number",
                         ...props,
-                        value: discount_amout, //billData?.discount_amout,
+                        value: dis_amout, //billData?.discount_amout,
                         onChange: (e) => {
                           if (e.target.value === "") {
-                            setDiscountAmount("");
-                            setDiscountPerc("0");
+                            setDisAmount("");
+                            setDisPerc("0");
                             return;
                           }
                           const amount = parseFloat(e.target.value);
                           if (amount > 0) {
                             if (amount > billData?.gross_amount) {
-                              setDiscountAmount(0);
+                              setDisAmount(0);
 
                               AlgaehMessagePop({
                                 type: "warning",
@@ -517,15 +518,16 @@ export function BillDetails({
                                   "Entered Amount Cannot be Greater than Gross Total.",
                               });
                             } else {
-                              setDiscountAmount(amount);
+                              setApplyDiscount(false)
+                              setDisAmount(amount);
                               const _percentage = parseFloat(
                                 (amount * 100) / billData?.gross_amount
                               ).toFixed(2);
-                              setDiscountPerc(_percentage);
+                              setDisPerc(_percentage);
                             }
                           } else {
-                            setDiscountAmount(0);
-                            setDiscountPerc(0);
+                            setDisAmount(0);
+                            setDisPerc(0);
                           }
                         },
                         placeholder: "0.00",
@@ -541,30 +543,17 @@ export function BillDetails({
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
-                      if (parseFloat(discount_percentage) > 0) {
+                      if (parseFloat(dis_percentage) > 0) {
                         setApplyDiscount(true);
-
-                        console.log("billInfo", billInfo);
-                        billInfo["billdetails"][0][
-                          "discount_percentage"
-                        ] = discount_percentage;
-                        billInfo["billdetails"][0][
-                          "discount_amout"
-                        ] = discount_amout;
-
-                        // setDiscountAmount(billData["discount_amout"]);
-                        calculateBillDetails(billInfo);
-                      }
-                      // billData
-                      //}
-                      else setApplyDiscount(false);
+                        setDiscountPerc(dis_percentage);
+                      } else setApplyDiscount(false);
                     }}
                   >
                     APPLY DISCOUNT
                   </button>
                 </div>
                 <div className="col-6">
-                  {parseFloat(discount_percentage) > 0 ? (
+                  {parseFloat(dis_percentage) > 0 ? (
                     <label style={{ color: applyDiscount ? "green" : "red" }}>
                       {applyDiscount
                         ? `Successfully applied discount`
