@@ -20,12 +20,12 @@ import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
 import PackageUtilize from "../../PackageUtilize/PackageUtilize";
 import swal from "sweetalert2";
 // import _ from "lodash";
-import { newAlgaehApi } from "../../../../hooks";
-import {
-  // AlgaehDataGrid,
-  AlgaehModal,
-  // AlgaehButton,
-} from "algaeh-react-components";
+// import { newAlgaehApi } from "../../../../hooks";
+// import {
+//   // AlgaehDataGrid,
+//   AlgaehModal,
+//   // AlgaehButton,
+// } from "algaeh-react-components";
 // import { parse } from "handlebars";
 
 class OrderedList extends PureComponent {
@@ -41,9 +41,6 @@ class OrderedList extends PureComponent {
       isPackOpen: false,
       isPackUtOpen: false,
       package_detail: null,
-      attached_docs: [],
-      attached_files: [],
-      openModal: false,
     };
   }
 
@@ -84,12 +81,13 @@ class OrderedList extends PureComponent {
       data: {
         patient_id: current_patient, //Window.global["current_patient"]
         package_visit_type: "ALL",
+        // visit_id: visit_id,
       },
       redux: {
         type: "PAIENT_PACKAGE_GET_DATA",
         mappingName: "pakageList",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
   }
 
@@ -105,14 +103,19 @@ class OrderedList extends PureComponent {
           uri: "/department/get/subdepartment",
           method: "GET",
           module: "masterSettings",
-          data: { location_wise: "Y", hims_d_sub_department_id: this.props.patient_profile[0].sub_department_id },
+          data: {
+            location_wise: "Y",
+            hims_d_sub_department_id: this.props.patient_profile[0]
+              .sub_department_id,
+          },
           onSuccess: (response) => {
             if (response.data.success === true) {
               const Departmant_Location = response.data.records;
 
               this.setState({
-                inventory_location_id: Departmant_Location[0].inventory_location_id,
-                location_type: Departmant_Location[0].location_type
+                inventory_location_id:
+                  Departmant_Location[0].inventory_location_id,
+                location_type: Departmant_Location[0].location_type,
               });
             }
           },
@@ -198,13 +201,14 @@ class OrderedList extends PureComponent {
         isPackOpen: !this.state.isPackOpen,
       },
       () => {
-        const { current_patient } = Window.global;
+        const { current_patient, visit_id } = Window.global;
         this.props.getPakageList({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
             patient_id: current_patient, //Window.global["current_patient"]
             package_visit_type: "ALL",
+            visit_id: visit_id,
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -243,7 +247,11 @@ class OrderedList extends PureComponent {
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
-      data: { location_wise: "Y", hims_d_sub_department_id: this.props.patient_profile[0].sub_department_id },
+      data: {
+        location_wise: "Y",
+        hims_d_sub_department_id: this.props.patient_profile[0]
+          .sub_department_id,
+      },
       onSuccess: (response) => {
         if (response.data.success === true) {
           let Departmant_Location = response.data.records;
@@ -320,7 +328,11 @@ class OrderedList extends PureComponent {
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
-      data: { location_wise: "Y", hims_d_sub_department_id: this.props.patient_profile[0].sub_department_id },
+      data: {
+        location_wise: "Y",
+        hims_d_sub_department_id: this.props.patient_profile[0]
+          .sub_department_id,
+      },
       onSuccess: (response) => {
         if (response.data.success === true) {
           const Departmant_Location = response.data.records;
@@ -329,7 +341,7 @@ class OrderedList extends PureComponent {
             isPackUtOpen: !this.state.isPackUtOpen,
             package_detail: row,
             inventory_location_id: Departmant_Location[0].inventory_location_id,
-            location_type: Departmant_Location[0].location_type
+            location_type: Departmant_Location[0].location_type,
           });
         }
       },
@@ -354,6 +366,7 @@ class OrderedList extends PureComponent {
           data: {
             patient_id: current_patient, //Window.global["current_patient"]
             package_visit_type: "ALL",
+            visit_id: visit_id,
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -401,7 +414,11 @@ class OrderedList extends PureComponent {
 
               method: "GET",
               module: "masterSettings",
-              data: { location_wise: "Y", hims_d_sub_department_id: this.props.patient_profile[0].sub_department_id },
+              data: {
+                location_wise: "Y",
+                hims_d_sub_department_id: this.props.patient_profile[0]
+                  .sub_department_id,
+              },
               onSuccess: (response) => {
                 if (response.data.success === true) {
                   const Departmant_Location = response.data.records;
@@ -421,7 +438,7 @@ class OrderedList extends PureComponent {
                     hims_d_procedure_id: data[0].hims_d_procedure_id,
                     inventory_location_id:
                       Departmant_Location[0].inventory_location_id,
-                    location_type: Departmant_Location[0].location_type
+                    location_type: Departmant_Location[0].location_type,
                   });
                 }
               },
@@ -458,9 +475,10 @@ class OrderedList extends PureComponent {
   }
 
   dateFormater(value) {
-    if (value !== null) {
+    if (value !== undefined) {
       return moment(value).format(Options.dateFormat);
     }
+    return;
   }
 
   DeleteOrderService(row) {
@@ -478,10 +496,10 @@ class OrderedList extends PureComponent {
           row.service_type_id === 5
             ? "LAB"
             : row.service_type_id === 11
-              ? "RAD"
-              : row.service_type_id === 2
-                ? "PRO"
-                : null;
+            ? "RAD"
+            : row.service_type_id === 2
+            ? "PRO"
+            : null;
         algaehApiCall({
           uri: "/orderAndPreApproval/deleteOrderService",
           method: "delete",
@@ -513,6 +531,7 @@ class OrderedList extends PureComponent {
                 data: {
                   patient_id: current_patient, //Window.global["current_patient"]
                   package_visit_type: "ALL",
+                  visit_id: visit_id,
                 },
                 redux: {
                   type: "PAIENT_PACKAGE_GET_DATA",
@@ -552,7 +571,7 @@ class OrderedList extends PureComponent {
         row.location_type = this.state.location_type;
         let inputOb = this.state;
 
-        inputOb.inventory_stock_detail = []
+        inputOb.inventory_stock_detail = [];
 
         inputOb.transaction_type = "CSN";
         inputOb.location_id = this.state.inventory_location_id;
@@ -646,54 +665,6 @@ class OrderedList extends PureComponent {
       }
     });
   }
-  getSavedDocument(row) {
-    this.getSaved(row.lab_id_number);
-  }
-  getSaved(contract_no) {
-    newAlgaehApi({
-      uri: "/getContractDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        contract_no,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          this.setState({
-            attached_docs: data,
-            attached_files: [],
-            // saveEnable: $this.state.dataExists,
-          });
-        }
-      })
-      .catch((e) => {
-        // AlgaehLoader({ show: false });
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-      });
-  }
-  downloadDoc(doc, isPreview) {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
-        });
-    }
-  }
 
   DeleteOrderedPackage(row) {
     swal({
@@ -714,13 +685,14 @@ class OrderedList extends PureComponent {
           },
           onSuccess: (response) => {
             if (response.data.success === true) {
-              const { current_patient } = Window.global;
+              const { current_patient, visit_id } = Window.global;
               this.props.getPakageList({
                 uri: "/orderAndPreApproval/getPatientPackage",
                 method: "GET",
                 data: {
                   patient_id: current_patient, //Window.global["current_patient"]
                   package_visit_type: "ALL",
+                  visit_id: visit_id,
                 },
                 redux: {
                   type: "ORDER_SERVICES_GET_DATA",
@@ -757,51 +729,6 @@ class OrderedList extends PureComponent {
     const { current_patient, visit_id, provider_id } = Window.global;
     return (
       <>
-        <AlgaehModal
-          title="View the Report"
-          visible={this.state.openModal}
-          mask={true}
-          maskClosable={false}
-          onCancel={() => {
-            this.setState({
-              openModal: false,
-              attached_files: [],
-              attached_docs: [],
-            });
-          }}
-          footer={null}
-          className={`algaehNewModal investigationAttachmentModal`}
-        >
-          <div className="col-12">
-            <ul className="investigationAttachmentList">
-              {this.state.attached_docs.length ? (
-                this.state.attached_docs.map((doc) => (
-                  <li>
-                    <b> {doc.filename} </b>
-                    <span>
-                      <i
-                        className="fas fa-download"
-                        onClick={() => this.downloadDoc(doc)}
-                      ></i>
-                      <i
-                        className="fas fa-eye"
-                        onClick={() => this.downloadDoc(doc, true)}
-                      ></i>
-                      {/* <i
-                            className="fas fa-trash"
-                            onClick={() => this.deleteDoc(doc)}
-                          ></i> */}
-                    </span>
-                  </li>
-                ))
-              ) : (
-                  <div className="col-12 noAttachment" key={1}>
-                    <p>No Attachments Available</p>
-                  </div>
-                )}
-            </ul>
-          </div>
-        </AlgaehModal>
         <div className="hptl-phase1-ordering-services-form">
           {this.props.openData === "Investigation" ? (
             <div>
@@ -836,16 +763,16 @@ class OrderedList extends PureComponent {
                                   style={{
                                     pointerEvents:
                                       row.service_type_id === 2 ||
-                                        row.service_type_id === 14 ||
-                                        row.service_type_id === "2" ||
-                                        row.service_type_id === "14"
+                                      row.service_type_id === 14 ||
+                                      row.service_type_id === "2" ||
+                                      row.service_type_id === "14"
                                         ? ""
                                         : "none",
                                     opacity:
                                       row.service_type_id === 2 ||
-                                        row.service_type_id === 14 ||
-                                        row.service_type_id === "2" ||
-                                        row.service_type_id === "14"
+                                      row.service_type_id === 14 ||
+                                      row.service_type_id === "2" ||
+                                      row.service_type_id === "14"
                                         ? ""
                                         : "0.1",
                                   }}
@@ -859,12 +786,12 @@ class OrderedList extends PureComponent {
                                   style={{
                                     pointerEvents:
                                       row.billed === "N" &&
-                                        row.trans_package_detail_id > 0
+                                      row.trans_package_detail_id > 0
                                         ? ""
                                         : "none",
                                     opacity:
                                       row.billed === "N" &&
-                                        row.trans_package_detail_id > 0
+                                      row.trans_package_detail_id > 0
                                         ? ""
                                         : "0.1",
                                   }}
@@ -874,31 +801,6 @@ class OrderedList extends PureComponent {
                                     row
                                   )}
                                 />
-                                {row.lab_id_number ? (
-                                  <i
-                                    // style={{
-                                    //   pointerEvents:
-                                    //     row.status === "O"
-                                    //       ? ""
-                                    //       : row.sample_status === "N"
-                                    //       ? "none"
-                                    //       : "",
-                                    // }}
-                                    className="fas fa-paperclip"
-                                    aria-hidden="true"
-                                    onClick={() => {
-                                      this.setState(
-                                        {
-                                          openModal: true,
-                                          // currentRow: row,
-                                          // lab_id_number: row.lab_id_number,
-                                        },
-
-                                        this.getSavedDocument.bind(this, row)
-                                      );
-                                    }}
-                                  />
-                                ) : null}
                               </span>
                             );
                           },
@@ -918,9 +820,7 @@ class OrderedList extends PureComponent {
                         {
                           fieldName: "created_date",
                           label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "created_date" }}
-                            />
+                            <AlgaehLabel label={{ fieldName: "Odered Date" }} />
                           ),
                           displayTemplate: (row) => {
                             return (
@@ -1141,7 +1041,9 @@ class OrderedList extends PureComponent {
                         {
                           fieldName: "instructions",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Instructions" }} />
+                            <AlgaehLabel
+                              label={{ forceLabel: "Instructions" }}
+                            />
                           ),
                         },
                         {
@@ -1207,175 +1109,175 @@ class OrderedList extends PureComponent {
               </div>
             </div>
           ) : (
-                <div>
-                  <div
-                    className="col-lg-12"
-                    style={{
-                      textAlign: "right",
-                      paddingTop: 10,
-                    }}
-                  >
-                    <button
-                      className="btn btn-primary"
-                      onClick={this.ShowPackageModel.bind(this)}
-                    >
-                      Order Package
+            <div>
+              <div
+                className="col-lg-12"
+                style={{
+                  textAlign: "right",
+                  paddingTop: 10,
+                }}
+              >
+                <button
+                  className="btn btn-primary"
+                  onClick={this.ShowPackageModel.bind(this)}
+                >
+                  Order Package
                 </button>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="row">
-                      <div className="col-md-10 col-lg-12" id="doctorOrder">
-                        <AlgaehDataGrid
-                          id="Package_list"
-                          columns={[
-                            {
-                              fieldName: "actions",
-                              label: (
-                                <AlgaehLabel label={{ forceLabel: "Details" }} />
-                              ),
-                              displayTemplate: (row) => {
-                                return (
-                                  <span>
-                                    {row.package_visit_type === "M" ? (
-                                      <i
-                                        className="fas fa-eye"
-                                        onClick={this.ShowPackageUtilize.bind(
-                                          this,
-                                          row
-                                        )}
-                                      />
-                                    ) : null}
+              </div>
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-md-10 col-lg-12" id="doctorOrder">
+                    <AlgaehDataGrid
+                      id="Package_list"
+                      columns={[
+                        {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Details" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.package_visit_type === "M" ? (
+                                  <i
+                                    className="fas fa-eye"
+                                    onClick={this.ShowPackageUtilize.bind(
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                ) : null}
 
-                                    <i
-                                      style={{
-                                        pointerEvents:
-                                          row.billed === "N" ? "" : "none",
-                                        opacity: row.billed === "N" ? "" : "0.1",
-                                      }}
-                                      onClick={this.DeleteOrderedPackage.bind(
-                                        this,
-                                        row
-                                      )}
-                                      className="fas fa-trash-alt"
-                                    />
-                                  </span>
-                                );
-                              },
-                              others: {
-                                fixed: "left",
-                              },
-                            },
-                            {
-                              fieldName: "billed",
-                              label: (
-                                <AlgaehLabel label={{ fieldName: "Billed" }} />
-                              ),
-                              displayTemplate: (row) => {
-                                return row.billed === "N" ? "No" : "Yes";
-                              },
-                            },
-                            {
-                              fieldName: "created_date",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ fieldName: "created_date" }}
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.billed === "N" ? "" : "none",
+                                    opacity: row.billed === "N" ? "" : "0.1",
+                                  }}
+                                  onClick={this.DeleteOrderedPackage.bind(
+                                    this,
+                                    row
+                                  )}
+                                  className="fas fa-trash-alt"
                                 />
-                              ),
-                              displayTemplate: (row) => {
-                                return (
-                                  <span>{this.dateFormater(row.created_date)}</span>
-                                );
-                              },
-                            },
+                              </span>
+                            );
+                          },
+                          others: {
+                            fixed: "left",
+                          },
+                        },
+                        {
+                          fieldName: "billed",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Billed" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.billed === "N" ? "No" : "Yes";
+                          },
+                        },
+                        {
+                          fieldName: "created_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "created_date" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>{this.dateFormater(row.created_date)}</span>
+                            );
+                          },
+                        },
 
-                            {
-                              fieldName: "service_type",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ fieldName: "service_type_id" }}
-                                />
-                              ),
-                              others: {
-                                minWidth: 100,
-                                maxWidth: 500,
-                              },
+                        {
+                          fieldName: "service_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "service_type_id" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 100,
+                            maxWidth: 500,
+                          },
 
-                              disabled: true,
-                            },
-                            {
-                              fieldName: "service_name",
-                              label: (
-                                <AlgaehLabel label={{ fieldName: "services_id" }} />
-                              ),
-                              others: {
-                                minWidth: 200,
-                                maxWidth: 400,
-                              },
-                              disabled: true,
-                            },
-                            {
-                              fieldName: "insurance_yesno",
-                              label: (
-                                <AlgaehLabel label={{ fieldName: "insurance" }} />
-                              ),
-                              displayTemplate: (row) => {
-                                return row.insurance_yesno === "Y"
-                                  ? "Covered"
-                                  : "Not Covered";
-                              },
-                              disabled: true,
-                            },
-                            {
-                              fieldName: "pre_approval",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ fieldName: "pre_approval" }}
-                                />
-                              ),
-                              displayTemplate: (row) => {
-                                return (
-                                  <span>
-                                    {row.pre_approval === "Y"
-                                      ? "Required"
-                                      : "Not Required"}
-                                  </span>
-                                );
-                              },
-                              disabled: true,
-                            },
-                            {
-                              fieldName: "patient_payable",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ fieldName: "patient_payable" }}
-                                />
-                              ),
-                              disabled: true,
-                            },
-                            {
-                              fieldName: "company_payble",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ fieldName: "company_payble" }}
-                                />
-                              ),
-                              disabled: true,
-                            },
-                          ]}
-                          keyId="list_type_id"
-                          dataSource={{
-                            data:
-                              this.props.pakageList === undefined
-                                ? []
-                                : this.props.pakageList,
-                          }}
-                          paging={{ page: 0, rowsPerPage: 10 }}
-                        />
-                      </div>
-                    </div>
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "service_name",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "services_id" }} />
+                          ),
+                          others: {
+                            minWidth: 200,
+                            maxWidth: 400,
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "insurance_yesno",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "insurance" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.insurance_yesno === "Y"
+                              ? "Covered"
+                              : "Not Covered";
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "pre_approval",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "pre_approval" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.pre_approval === "Y"
+                                  ? "Required"
+                                  : "Not Required"}
+                              </span>
+                            );
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "patient_payable",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_payable" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "company_payble",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "company_payble" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                      ]}
+                      keyId="list_type_id"
+                      dataSource={{
+                        data:
+                          this.props.pakageList === undefined
+                            ? []
+                            : this.props.pakageList,
+                      }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                    />
                   </div>
                 </div>
-              )}
+              </div>
+            </div>
+          )}
 
           <OrderingServices
             open={this.state.isOpen}
