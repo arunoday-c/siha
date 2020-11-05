@@ -474,7 +474,7 @@ export default class RejoinAnnualLeave extends Component {
                         <AlgaehLabel label={{ forceLabel: "Leave To Date" }} />
                       ),
                       displayTemplate: (row) => {
-                        return <span>{this.dateFormater(row.to_date)}</span>;
+                        return <span>{this.dateFormater(row.actual_to_date)}</span>;
                       },
                       others: {
                         maxWidth: 150,
