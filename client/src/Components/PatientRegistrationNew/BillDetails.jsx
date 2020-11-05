@@ -33,7 +33,7 @@ const getBillDetails = async (
     consultation,
     promo_code,
     discount_percentage,
-    discount_amout
+    discount_amout,
   }
 ) => {
   let zeroBill = false,
@@ -66,7 +66,7 @@ const getBillDetails = async (
           default_nationality == nationality_id ? local_vat_applicable : "Y",
         promo_code: promo_code || null,
         discount_amout: discount_amout,
-        discount_percentage: discount_percentage
+        discount_percentage: discount_percentage,
       },
     ],
   });
@@ -112,6 +112,7 @@ export function BillDetails({
   const [discount_amout, setDiscountAmount] = useState(0);
   const [discount_percentage, setDiscountPerc] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [applyDiscount, setApplyDiscount] = useState(false);
   const { userToken } = useContext(MainContext);
   const {
     default_nationality,
@@ -177,8 +178,8 @@ export function BillDetails({
         prevVisits,
         consultation: consultationInfo?.consultation,
         promo_code: promoCode,
-        discount_percentage: discount_percentage,
-        discount_amout: discount_amout
+        // discount_percentage: discount_percentage,
+        // discount_amout: discount_amout
       },
     ],
     getBillDetails,
@@ -194,7 +195,10 @@ export function BillDetails({
         } else {
           // setBillData(null);
           setGlobalBillData(data);
-          calculateBillDetails(data?.billdetails[0]);
+          const billItem = data?.billdetails[0];
+          // setDiscountPerc(billItem["discount_percentage"]);
+          // setDiscountAmount(billItem["discount_amout"]);
+          calculateBillDetails(billItem);
         }
       },
     }
@@ -222,7 +226,7 @@ export function BillDetails({
   function calculateBillDetails(billData = {}) {
     const sendingObject = { ...billData };
 
-    debugger
+    debugger;
     // Sheet Level Discount Nullify
     sendingObject.sheet_discount_amount = 0;
     sendingObject.sheet_discount_percentage = 0;
@@ -425,7 +429,6 @@ export function BillDetails({
                   <h6>{amountWithCur(billData?.gross_total)}</h6>
                 </div>
 
-
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
@@ -434,7 +437,7 @@ export function BillDetails({
                   />
                   <h6>{amountWithCur(billData?.patient_payable)}</h6>
                 </div>
-                
+
                 <Controller
                   control={control}
                   name="discount_percentage"
@@ -452,20 +455,26 @@ export function BillDetails({
                         type: "number",
                         ...props,
                         max: 100,
-                        value: billData?.discount_percentage,
+                        value: discount_percentage, //billData?.discount_percentage,
                         onChange: (e) => {
-
+                          if (e.target.value === "") {
+                            setDiscountPerc("");
+                            setDiscountAmount("0");
+                          }
                           let perc = parseFloat(e.target.value);
                           if (perc > 100) {
                             perc = 99;
                           }
 
-
                           if (perc > 0) {
-                            setDiscountPerc(perc)
-                          } else {
-                            setDiscountPerc(0)
+                            setDiscountPerc(perc);
+                            const _amount =
+                              (billData?.gross_amount * perc) / 100;
+                            setDiscountAmount(_amount);
                           }
+                          //  else {
+                          //   setDiscountPerc(0);
+                          // }
                         },
 
                         placeholder: "0.00",
@@ -490,12 +499,17 @@ export function BillDetails({
                         name: "discount_amount",
                         type: "number",
                         ...props,
-                        value: billData?.discount_amout,
+                        value: discount_amout, //billData?.discount_amout,
                         onChange: (e) => {
+                          if (e.target.value === "") {
+                            setDiscountAmount("");
+                            setDiscountPerc("0");
+                            return;
+                          }
                           const amount = parseFloat(e.target.value);
                           if (amount > 0) {
                             if (amount > billData?.gross_amount) {
-                              setDiscountAmount(0)
+                              setDiscountAmount(0);
 
                               AlgaehMessagePop({
                                 type: "warning",
@@ -503,10 +517,15 @@ export function BillDetails({
                                   "Entered Amount Cannot be Greater than Gross Total.",
                               });
                             } else {
-                              setDiscountAmount(amount)
+                              setDiscountAmount(amount);
+                              const _percentage = parseFloat(
+                                (amount * 100) / billData?.gross_amount
+                              ).toFixed(2);
+                              setDiscountPerc(_percentage);
                             }
                           } else {
-                            setDiscountAmount(0)
+                            setDiscountAmount(0);
+                            setDiscountPerc(0);
                           }
                         },
                         placeholder: "0.00",
@@ -515,6 +534,46 @@ export function BillDetails({
                   )}
                 />
               </div>
+
+              <div className="row">
+                <div className="col-6">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (parseFloat(discount_percentage) > 0) {
+                        setApplyDiscount(true);
+
+                        console.log("billInfo", billInfo);
+                        billInfo["billdetails"][0][
+                          "discount_percentage"
+                        ] = discount_percentage;
+                        billInfo["billdetails"][0][
+                          "discount_amout"
+                        ] = discount_amout;
+
+                        // setDiscountAmount(billData["discount_amout"]);
+                        calculateBillDetails(billInfo);
+                      }
+                      // billData
+                      //}
+                      else setApplyDiscount(false);
+                    }}
+                  >
+                    APPLY DISCOUNT
+                  </button>
+                </div>
+                <div className="col-6">
+                  {parseFloat(discount_percentage) > 0 ? (
+                    <label style={{ color: applyDiscount ? "green" : "red" }}>
+                      {applyDiscount
+                        ? `Successfully applied discount`
+                        : `Discount not yet applied`}
+                    </label>
+                  ) : null}
+                </div>
+              </div>
+
               <hr style={{ margin: "0.3rem 0rem" }} />
               <div className="row primary-box-container">
                 <div className="col-lg-6">
@@ -545,7 +604,6 @@ export function BillDetails({
                 </div>
               </div>
             </div>
-            {/* </div> */}
           </div>
           <div className="algaeh-md-8 algaeh-lg-8 algaeh-xl-12  secondary-details">
             <div className="Paper">
@@ -1062,7 +1120,7 @@ export function BillDetails({
                       }));
                     }}
                   />
-                  
+
                   <Controller
                     control={control}
                     name="card_amount"
