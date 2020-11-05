@@ -3,7 +3,7 @@ import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../../../utils/algaehApiCall";
 
 const texthandle = ($this, context, ctrl, e) => {
@@ -19,7 +19,7 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 
   if (context !== null) {
@@ -36,7 +36,7 @@ const calculateRecipt = ($this, context, e) => {
       cash_amount: parseFloat($this.state.cash_amount),
       card_amount: parseFloat($this.state.card_amount),
       cheque_amount: parseFloat($this.state.cheque_amount),
-      receiveable_amount: parseFloat($this.state.receiveable_amount)
+      receiveable_amount: parseFloat($this.state.receiveable_amount),
     };
 
     algaehApiCall({
@@ -44,24 +44,24 @@ const calculateRecipt = ($this, context, e) => {
       module: "billing",
       method: "POST",
       data: serviceInput,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           if (context !== null) {
             response.data.records.patient_payable_h =
               response.data.records.patient_payable ||
               $this.state.patient_payable;
             context.updateState({
-              ...response.data.records
+              ...response.data.records,
             });
           }
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
 
     // $this.props.billingCalculations({
@@ -89,12 +89,12 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       successfulMessage({
         message: "Sum of all amount to be equal to Receivable.",
         title: "Warning",
-        icon: "warning"
+        icon: "warning",
       });
       $this.setState(
         {
           [e.target.name]: 0,
-          errorInCash: true
+          errorInCash: true,
         },
         () => {
           $this.setState({ errorInCash: false });
@@ -102,7 +102,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       );
     } else {
       $this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
 
       if (context !== null) {
@@ -121,18 +121,20 @@ const cardtexthandle = ($this, context, ctrl, e) => {
     let cash_amount = parseFloat($this.state.cash_amount);
     let card_amount = parseFloat(e.target.value);
     let cheque_amount = parseFloat($this.state.cheque_amount);
-    let receiveable_amount = parseFloat($this.state.receiveable_amount);
+    let receiveable_amount = Number(
+      parseFloat($this.state.receiveable_amount).toFixed(3)
+    );
 
     if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
       successfulMessage({
         message: "Sum of all amount to be equal to Receivable.",
         title: "Warning",
-        icon: "warning"
+        icon: "warning",
       });
       $this.setState(
         {
           [e.target.name]: 0,
-          errorInCard: true
+          errorInCard: true,
         },
         () => {
           $this.setState({ errorInCard: false });
@@ -140,7 +142,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       );
     } else {
       $this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
 
       if (context !== null) {
@@ -166,12 +168,12 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       successfulMessage({
         message: "Sum of all amount to be equal to Receivable.",
         title: "Warning",
-        icon: "warning"
+        icon: "warning",
       });
       $this.setState(
         {
           [e.target.name]: 0,
-          errorInCheck: true
+          errorInCheck: true,
         },
         () => {
           $this.setState({ errorInCheck: false });
@@ -179,7 +181,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       );
     } else {
       $this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
 
       if (context !== null) {
@@ -194,7 +196,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 
 const datehandle = ($this, context, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 
   if (context !== null) {
@@ -207,7 +209,7 @@ const checkcashhandaler = ($this, context, e) => {
   $this.setState(
     {
       Cashchecked: Cashchecked,
-      cash_amount: 0
+      cash_amount: 0,
     },
     () => {
       calculateRecipt($this, context, e);
@@ -217,7 +219,7 @@ const checkcashhandaler = ($this, context, e) => {
   if (context !== undefined) {
     context.updateState({
       cash_amount: 0,
-      Cashchecked: Cashchecked
+      Cashchecked: Cashchecked,
     });
   }
 };
@@ -229,7 +231,7 @@ const checkcardhandaler = ($this, context, e) => {
       Cardchecked: Cardchecked,
       card_amount: 0,
       card_check_number: null,
-      card_date: null
+      card_date: null,
     },
     () => {
       calculateRecipt($this, context, e);
@@ -241,7 +243,7 @@ const checkcardhandaler = ($this, context, e) => {
       card_amount: 0,
       card_check_number: null,
       card_date: null,
-      Cardchecked: Cardchecked
+      Cardchecked: Cardchecked,
     });
   }
 };
@@ -253,7 +255,7 @@ const checkcheckhandaler = ($this, context, e) => {
       Checkchecked: Checkchecked,
       cheque_amount: 0,
       cheque_number: null,
-      cheque_date: null
+      cheque_date: null,
     },
     () => {
       calculateRecipt($this, context, e);
@@ -265,7 +267,7 @@ const checkcheckhandaler = ($this, context, e) => {
       cheque_amount: 0,
       cheque_number: null,
       cheque_date: null,
-      Checkchecked: Checkchecked
+      Checkchecked: Checkchecked,
     });
   }
 };
@@ -277,7 +279,7 @@ const countertexthandle = ($this, context, ctrl, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       let _screenName = getCookie("ScreenName").replace("/", "");
@@ -286,9 +288,9 @@ const countertexthandle = ($this, context, ctrl, e) => {
         data: {
           screenName: _screenName,
           identifier: "Counter",
-          value: value
+          value: value,
         },
-        method: "POST"
+        method: "POST",
       });
     }
   );
@@ -307,5 +309,5 @@ export {
   checkcardhandaler,
   checkcheckhandaler,
   calculateRecipt,
-  countertexthandle
+  countertexthandle,
 };
