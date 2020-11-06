@@ -12,16 +12,22 @@ import {
   ShowTestAnalyte,
   CloseTestAnalyte,
   ShowCompareTest,
-  CloseCompareTest
+  CloseCompareTest,
 } from "./LabResultEvents";
+import { swalMessage } from "../../../../utils/algaehApiCall";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
-
+import { newAlgaehApi } from "../../../../hooks";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../../Options.json";
 import TestAnalytes from "./TestAnalytes";
 import CompareTest from "./CompareTest";
+import {
+  // AlgaehDataGrid,
+  AlgaehModal,
+  // AlgaehButton,
+} from "algaeh-react-components";
 
 class LabResult extends Component {
   constructor(props) {
@@ -31,7 +37,10 @@ class LabResult extends Component {
       lab_result: [],
       openAna: false,
       test_analytes: [],
-      openCompare: false
+      openCompare: false,
+      attached_docs: [],
+      attached_files: [],
+      openModal: false,
     };
   }
 
@@ -46,21 +55,69 @@ class LabResult extends Component {
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "labanalytes"
-        }
+          mappingName: "labanalytes",
+        },
       });
     }
 
     getLabResult(this, this);
   }
+  getSavedDocument(row) {
+    this.getSaved(row.lab_id_number);
+  }
+  getSaved(contract_no) {
+    newAlgaehApi({
+      uri: "/getContractDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        contract_no,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          this.setState({
+            attached_docs: data,
+            attached_files: [],
+            // saveEnable: $this.state.dataExists,
+          });
+        }
+      })
+      .catch((e) => {
+        // AlgaehLoader({ show: false });
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  }
+  downloadDoc(doc, isPreview) {
+    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    const link = document.createElement("a");
+    if (!isPreview) {
+      link.download = doc.filename;
+      link.href = fileUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      fetch(fileUrl)
+        .then((res) => res.blob())
+        .then((fblob) => {
+          const newUrl = URL.createObjectURL(fblob);
+          window.open(newUrl);
+        });
+    }
+  }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
   };
 
-  changeTimeFormat = date => {
+  changeTimeFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.timeFormat);
     }
@@ -69,6 +126,51 @@ class LabResult extends Component {
   render() {
     return (
       <React.Fragment>
+        <AlgaehModal
+          title="View the Report"
+          visible={this.state.openModal}
+          mask={true}
+          maskClosable={false}
+          onCancel={() => {
+            this.setState({
+              openModal: false,
+              attached_files: [],
+              attached_docs: [],
+            });
+          }}
+          footer={null}
+          className={`algaehNewModal investigationAttachmentModal`}
+        >
+          <div className="col-12">
+            <ul className="investigationAttachmentList">
+              {this.state.attached_docs.length ? (
+                this.state.attached_docs.map((doc) => (
+                  <li>
+                    <b> {doc.filename} </b>
+                    <span>
+                      <i
+                        className="fas fa-download"
+                        onClick={() => this.downloadDoc(doc)}
+                      ></i>
+                      <i
+                        className="fas fa-eye"
+                        onClick={() => this.downloadDoc(doc, true)}
+                      ></i>
+                      {/* <i
+                            className="fas fa-trash"
+                            onClick={() => this.deleteDoc(doc)}
+                          ></i> */}
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <div className="col-12 noAttachment" key={1}>
+                  <p>No Attachments Available</p>
+                </div>
+              )}
+            </ul>
+          </div>
+        </AlgaehModal>
         <div className="hptl-phase1-lab-result-form">
           <div className="container-fluid">
             <div className="row">
@@ -79,26 +181,51 @@ class LabResult extends Component {
                     {
                       fieldName: "actions",
                       label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
                               onClick={ShowCompareTest.bind(this, this, row)}
                               className="fas fa-random"
                             />
+                            {row.lab_id_number ? (
+                              <i
+                                // style={{
+                                //   pointerEvents:
+                                //     row.status === "O"
+                                //       ? ""
+                                //       : row.sample_status === "N"
+                                //       ? "none"
+                                //       : "",
+                                // }}
+                                className="fas fa-paperclip"
+                                aria-hidden="true"
+                                onClick={() => {
+                                  this.setState(
+                                    {
+                                      openModal: true,
+                                      // currentRow: row,
+                                      // lab_id_number: row.lab_id_number,
+                                    },
+
+                                    this.getSavedDocument.bind(this, row)
+                                  );
+                                }}
+                              />
+                            ) : null}
                           </span>
                         );
                       },
                       others: {
                         maxWidth: 90,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.status === "O" ? (
                           <span className="badge badge-light">Ordered</span>
                         ) : row.status === "CL" ? (
@@ -110,45 +237,40 @@ class LabResult extends Component {
                         ) : row.status === "CF" ? (
                           <span className="badge badge-primary">Confirmed</span>
                         ) : (
-                                  <span className="badge badge-success">
-                                    Result Available
+                          <span className="badge badge-success">
+                            Result Available
                           </span>
-                                );
+                        );
                       },
                       others: {
                         maxWidth: 90,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "critical_status",
                       label: <AlgaehLabel label={{ forceLabel: "Critical" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.critical_status === "N" ? (
-                          <span className="badge badge-primary">
-                            No
-                          </span>
+                          <span className="badge badge-primary">No</span>
                         ) : (
-                            <span className="badge badge-danger">
-                              Yes
-                          </span>
-
-                          );
+                          <span className="badge badge-danger">Yes</span>
+                        );
                       },
                       disabled: true,
                       others: {
                         maxWidth: 130,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "service_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Test Name" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span
                             className="pat-code"
@@ -159,34 +281,34 @@ class LabResult extends Component {
                           </span>
                         );
                       },
-                      className: drow => {
+                      className: (drow) => {
                         return "greenCell";
-                      }
+                      },
                     },
                     {
                       fieldName: "doctor_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "ordered_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Ordered Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.changeDateFormat(row.ordered_date)}</span>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="patient_code"
                   dataSource={{
                     data:
                       this.props.labresult === undefined
                         ? []
-                        : this.props.labresult
+                        : this.props.labresult,
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
@@ -199,7 +321,7 @@ class LabResult extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Test Analytes",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
                 }
@@ -208,7 +330,7 @@ class LabResult extends Component {
                   service_code: this.state.service_code,
                   service_name: this.state.service_name,
                   patient_code: this.state.patient_code,
-                  full_name: this.state.full_name
+                  full_name: this.state.full_name,
                 }}
               />
 
@@ -219,7 +341,7 @@ class LabResult extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Test Analytes",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
                 }
@@ -230,7 +352,7 @@ class LabResult extends Component {
                   patient_code: this.state.patient_code,
                   full_name: this.state.full_name,
                   list_of_tests: this.state.list_of_tests,
-                  order_id: this.state.order_id
+                  order_id: this.state.order_id,
                 }}
               />
             </div>
@@ -247,7 +369,7 @@ function mapStateToProps(state) {
     assservices: state.assservices,
     testanalytes: state.testanalytes,
     labanalytes: state.labanalytes,
-    assdeptanddoctors: state.assdeptanddoctors
+    assdeptanddoctors: state.assdeptanddoctors,
   };
 }
 
@@ -256,15 +378,12 @@ function mapDispatchToProps(dispatch) {
     {
       getLabResult: AlgaehActions,
       getLabAnalytes: AlgaehActions,
-      getTestAnalytes: AlgaehActions
+      getTestAnalytes: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LabResult)
+  connect(mapStateToProps, mapDispatchToProps)(LabResult)
 );

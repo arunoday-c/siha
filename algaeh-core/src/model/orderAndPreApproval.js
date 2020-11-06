@@ -411,7 +411,8 @@ let insertOrderedServices = (req, res, next) => {
                   if (insert_order_services.length > 0) {
                     _mysql
                       .executeQuery({
-                        query: "INSERT INTO hims_f_ordered_services(??) VALUES ?",
+                        query:
+                          "INSERT INTO hims_f_ordered_services(??) VALUES ?",
                         values: insert_order_services,
                         includeValues: IncludeValues,
                         extraValues: {
@@ -503,7 +504,8 @@ let insertOrderedServices = (req, res, next) => {
                               update_Order_Service[i].d_treatment_id,
                               moment().format("YYYY-MM-DD HH:mm"),
                               req.userIdentity.algaeh_d_app_user_id,
-                              update_Order_Service[i].hims_f_ordered_services_id,
+                              update_Order_Service[i]
+                                .hims_f_ordered_services_id,
                             ]
                           );
                         }
@@ -652,7 +654,12 @@ let insertOrderedServices = (req, res, next) => {
                               query:
                                 "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
                               where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
-                              values: [patient_id, doctor_id, visit_id, services],
+                              values: [
+                                patient_id,
+                                doctor_id,
+                                visit_id,
+                                services,
+                              ],
                               printQuery: true,
                             })
                             .then((ResultOfFetchOrderIds) => {
@@ -1231,7 +1238,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-        where.condition,
+          where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1474,7 +1481,7 @@ let insertInvOrderedServices = (req, res, next) => {
       "sec_company_paybale",
       "sec_copay_percntage",
       "sec_copay_amount",
-      "instructions"
+      "instructions",
     ];
 
     _mysql
@@ -2044,7 +2051,7 @@ let getPatientPackage = (req, res, next) => {
     }
     _mysql
       .executeQuery({
-        query: `select hims_f_package_header_id, package_id, patient_id, visit_id, doctor_id, H.service_type_id,\
+        query: `select hims_f_package_header_id, package_id, patient_id,H.created_date, visit_id, doctor_id, H.service_type_id,\
               services_id, insurance_yesno, insurance_provider_id, insurance_sub_id, network_id,\
               insurance_network_office_id, policy_number, pre_approval, apprv_status, billed, quantity, \
               unit_cost, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage, \
@@ -2302,7 +2309,11 @@ let deleteInvOrderedItems = (req, res, next) => {
           "SELECT inventory_consumption_header_id FROM hims_f_inventory_consumption_detail where ordered_inventory_id=?; \
           DELETE FROM hims_f_ordered_inventory where hims_f_ordered_inventory_id=?;\
           UPDATE hims_f_inventory_consumption_detail SET cancelled='Y' where ordered_inventory_id=?;",
-        values: [req.body.hims_f_ordered_inventory_id, req.body.hims_f_ordered_inventory_id, req.body.hims_f_ordered_inventory_id],
+        values: [
+          req.body.hims_f_ordered_inventory_id,
+          req.body.hims_f_ordered_inventory_id,
+          req.body.hims_f_ordered_inventory_id,
+        ],
         printQuery: true,
       })
       .then((res_result) => {
@@ -2312,7 +2323,8 @@ let deleteInvOrderedItems = (req, res, next) => {
           pool: _mysql.pool,
           path: keyPath,
         };
-        req.body.consumption_header_id = res_result[0][0].inventory_consumption_header_id
+        req.body.consumption_header_id =
+          res_result[0][0].inventory_consumption_header_id;
         // _mysql.releaseConnection();
         // req.records = res_result[0];
         next();
@@ -2456,5 +2468,5 @@ export default {
   deleteOrderService,
   insertPhysiotherapyServices,
   deleteInvOrderedItems,
-  deleteOrderedPackage
+  deleteOrderedPackage,
 };

@@ -299,6 +299,7 @@ class Encounters extends Component {
       data: {
         package_visit_type: "ALL",
         patient_id: patient_id,
+        visit_id: visit_id,
       },
       // cancelRequestId: "getPatientInvestigation",
       onSuccess: (response) => {
@@ -350,8 +351,6 @@ class Encounters extends Component {
     });
   }
 
-
-
   printSickleave() {
     // const { episode_id, current_patient, visit_id } = Window.global;
     algaehApiCall({
@@ -398,15 +397,13 @@ class Encounters extends Component {
     });
   }
 
-
-
-    printPrescription() {
+  printPrescription() {
     algaehApiCall({
       uri: "/report",
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -423,22 +420,21 @@ class Encounters extends Component {
             },
             {
               name: "visit_code",
-              value: null
-            }
+              value: null,
+            },
           ],
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
-        
+
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
         window.open(origin);
         // window.document.title = "";
-      }
+      },
     });
-  };
-
+  }
 
   generateReport(row, report_type) {
     let inputObj = {};
@@ -587,24 +583,30 @@ class Encounters extends Component {
                   <h3 className="caption-subject">OP Encounter Details </h3>
                 </div>
 
-                
-
-                  {/* {this.state.generalInfo !== undefined
+                {/* {this.state.generalInfo !== undefined
                             ? moment(
                                 this.state.generalInfo.encountered_date
                               ).format("DD-MM-YYYY HH:mm A")
                             : "----------"} */}
-                
-                {this.state.generalInfo !== undefined ?
-                <div className="actions">
-                  <button className="btn btn-default" style={{marginRight:10}} onClick={this.printSickleave.bind(this)}>
-                   Print Sick Leave
-                  </button>
-                  <button className="btn btn-default" style={{marginRight:10}} onClick={this.printPrescription.bind(this)}>
-                  Print Prescription
-                  </button>
-                
-                </div> : null}
+
+                {this.state.generalInfo !== undefined ? (
+                  <div className="actions">
+                    <button
+                      className="btn btn-default"
+                      style={{ marginRight: 10 }}
+                      onClick={this.printSickleave.bind(this)}
+                    >
+                      Print Sick Leave
+                    </button>
+                    <button
+                      className="btn btn-default"
+                      style={{ marginRight: 10 }}
+                      onClick={this.printPrescription.bind(this)}
+                    >
+                      Print Prescription
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
               <div className="portlet-body encounterDetailCntr">

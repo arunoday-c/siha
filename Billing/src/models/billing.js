@@ -597,7 +597,9 @@ export default {
           sendingObject.card_amount = inputParam.card_amount;
           sendingObject.cheque_amount = inputParam.cheque_amount;
           sendingObject.cash_amount = inputParam.cash_amount;
-          sendingObject.receiveable_amount = inputParam.receiveable_amount;
+          sendingObject.receiveable_amount = Number(
+            inputParam.receiveable_amount.toFixed(3)
+          );
         }
 
         sendingObject.total_amount =
@@ -840,7 +842,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -2174,7 +2176,7 @@ export default {
         const decimal_places = req.userIdentity.decimal_places;
         const outputArray = [];
 
-        const promo_code = input[0].promo_code
+        const promo_code = input[0].promo_code;
         const zeroBill = input.find((item) => {
           return item.zeroBill == true;
         });
@@ -2190,7 +2192,7 @@ export default {
 
           let strQuery = "";
 
-          console.log("input.promo_code", promo_code)
+          console.log("input.promo_code", promo_code);
           if (is_insurance.length > 0) {
             const network_office_ids = is_insurance.map((item) => {
               return item.primary_network_office_id;
@@ -2234,7 +2236,7 @@ export default {
               query: `select hims_d_services_id, service_code, cpt_code, service_name, arabic_service_name, service_desc, \
             sub_department_id, service_type_id, procedure_type, standard_fee, followup_free_fee, followup_paid_fee, \
             discount, vat_applicable, vat_percent, service_status, physiotherapy_service, ST.service_type from hims_d_services S\
-            inner join hims_d_service_type ST on S.service_type_id = ST.hims_d_service_type_id where hims_d_services_id in (?); ${ strQuery} `,
+            inner join hims_d_service_type ST on S.service_type_id = ST.hims_d_service_type_id where hims_d_services_id in (?); ${strQuery} `,
               values: [service_ids],
               printQuery: true,
             })
@@ -2260,24 +2262,36 @@ export default {
                 if (promo_data.length > 0) {
                   const promotion_dis = promo_data.find(
                     (f) =>
-                      f.hims_d_services_id === servicesDetails.hims_d_services_id
+                      f.hims_d_services_id ===
+                      servicesDetails.hims_d_services_id
                   );
 
                   if (promotion_dis !== undefined) {
-                    if (servicesDetails.promo_code === promotion_dis.offer_code) {
+                    if (
+                      servicesDetails.promo_code === promotion_dis.offer_code
+                    ) {
                       var from = Date.parse(promotion_dis.valid_to_from);
                       var to = Date.parse(promotion_dis.valid_to_date);
-                      var today_date = Date.parse(moment(new Date()).format("YYYY-MM-DD"));
+                      var today_date = Date.parse(
+                        moment(new Date()).format("YYYY-MM-DD")
+                      );
 
                       if (today_date <= to && today_date >= from) {
-                        console.log("2")
-                        servicesDetails.discount_amout = promotion_dis.avail_type === "A" ? promotion_dis.offer_value : 0;
-                        servicesDetails.discount_percentage = promotion_dis.avail_type === "P" ? promotion_dis.offer_value : 0;
+                        console.log("2");
+                        servicesDetails.discount_amout =
+                          promotion_dis.avail_type === "A"
+                            ? promotion_dis.offer_value
+                            : 0;
+                        servicesDetails.discount_percentage =
+                          promotion_dis.avail_type === "P"
+                            ? promotion_dis.offer_value
+                            : 0;
                       } else {
                         _mysql.releaseConnection();
                         req.records = {
                           invalid_input: true,
-                          message: "Enterted Promo Code either not valid nor Expired",
+                          message:
+                            "Enterted Promo Code either not valid nor Expired",
                         };
 
                         next();
@@ -2287,7 +2301,8 @@ export default {
                       _mysql.releaseConnection();
                       req.records = {
                         invalid_input: true,
-                        message: "Enterted Promo Code either not valid nor Expired",
+                        message:
+                          "Enterted Promo Code either not valid nor Expired",
                       };
 
                       next();
@@ -2295,8 +2310,6 @@ export default {
                     }
                   }
                 }
-
-
 
                 let unit_cost =
                   servicesDetails.unit_cost == undefined
@@ -2434,7 +2447,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2485,7 +2498,6 @@ export default {
                     : records.cpt_code;
 
                 if (insured == "Y" && policydtls.covered == "Y") {
-
                   if (FollowUp === true) {
                     ser_net_amount = 0;
                     ser_gross_amt = 0;
@@ -2630,16 +2642,16 @@ export default {
                         deductable_amount =
                           deductable_percentage !== null
                             ? (parseFloat(net_amout) *
-                              parseFloat(deductable_percentage)) /
-                            100
+                                parseFloat(deductable_percentage)) /
+                              100
                             : 0;
                       }
                     } else {
                       deductable_amount =
                         deductable_percentage !== null
                           ? (parseFloat(net_amout) *
-                            parseFloat(deductable_percentage)) /
-                          100
+                              parseFloat(deductable_percentage)) /
+                            100
                           : 0;
                     }
 
@@ -2803,8 +2815,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                            ? parseFloat(unit_cost)
-                            : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -2912,7 +2924,7 @@ export default {
                     sec_copay_percntage: 0,
                     sec_copay_amount: 0,
                     test_id: null,
-                    created_date: new Date()
+                    created_date: new Date(),
                   },
                   {
                     deductable_type: policydtls.deductable_type,
@@ -2978,7 +2990,7 @@ export default {
                     billed: billed,
                     test_id: servicesDetails.test_id,
                     test_type: "R",
-                    created_date: new Date()
+                    created_date: new Date(),
                   }
                 );
 
@@ -4347,8 +4359,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                          ? unit_cost
-                          : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                   }
                 }
 
