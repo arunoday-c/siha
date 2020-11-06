@@ -321,7 +321,13 @@ class OrderMedication extends Component {
                   }) => {
                     return (
                       <div className="medicationSearchList">
-                        <h6>{_.startCase(_.toLower(item_description))} <small>{_.startCase(_.toLower(generic_name))}</small></h6>
+                        <h6>
+                          {item_description
+                            .split(" ")
+                            .map(_.capitalize)
+                            .join(" ")}{" "}
+                          <small>{_.startCase(_.toLower(generic_name))}</small>
+                        </h6>
                         {storage_description !== null &&
                         storage_description !== "" ? (
                           <small>

@@ -254,7 +254,7 @@ class PastMedication extends Component {
       <div>
         <div className="row popupInner">
           <div className="col-4">
-            <div className="popLeftDiv" style={{minHeight:"50vh"}}>
+            <div className="popLeftDiv" style={{ minHeight: "50vh" }}>
               <div className="row">
                 <AlgaehAutoSearch
                   div={{ className: "col-12 form-group" }}
@@ -281,12 +281,13 @@ class PastMedication extends Component {
                     generic_name,
                   }) => {
                     return (
-                      <div className="col-12 padd-10">
+                      <div className="medicationSearchList">
                         <h6>
-                          {_.startCase(_.toLower(generic_name))} &rArr;{" "}
-                          <small>
-                            {_.startCase(_.toLower(item_description))}
-                          </small>
+                          {item_description
+                            .split(" ")
+                            .map(_.capitalize)
+                            .join(" ")}{" "}
+                          <small>{_.startCase(_.toLower(generic_name))}</small>
                         </h6>
                         {storage_description !== null &&
                         storage_description !== "" ? (
