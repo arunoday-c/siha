@@ -56,8 +56,8 @@ let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
 
         connection.query(
           "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
-          insurtColumns.join("`,`") +
-          "`,created_date,updated_date) VALUES ?",
+            insurtColumns.join("`,`") +
+            "`,created_date,updated_date) VALUES ?",
           [
             jsonArrayToObject({
               sampleInputObject: insurtColumns,
@@ -92,8 +92,8 @@ let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_patient_vitals(" +
-                insurtColumns.join(",") +
-                ",created_date,updated_date) VALUES ?",
+                  insurtColumns.join(",") +
+                  ",created_date,updated_date) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -215,8 +215,8 @@ let addPatientNurseChiefComplaintsBCKP_27_05_2020 = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
-                insurtColumns.join("`,`") +
-                "`,created_date,updated_date,hospital_id) VALUES ?",
+                  insurtColumns.join("`,`") +
+                  "`,created_date,updated_date,hospital_id) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -279,8 +279,8 @@ let addPatientNurseChiefComplaintsBCKP_27_05_2020 = (req, res, next) => {
 
                 connection.query(
                   "INSERT INTO hims_f_patient_vitals(" +
-                  insurtColumns.join(",") +
-                  ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
+                    insurtColumns.join(",") +
+                    ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
@@ -483,7 +483,7 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
                   query: "INSERT INTO hims_f_patient_vitals (??) VALUES ?",
                   values: input.patient_vitals,
                   includeValues: insurtColums,
-                  printQuery: false,
+                  printQuery: true,
                   bulkInsertOrUpdate: true,
                   extraValues: {
                     created_date: new Date(),
