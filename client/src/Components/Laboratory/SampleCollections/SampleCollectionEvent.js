@@ -4,6 +4,19 @@ import moment from "moment";
 
 const CollectSample = ($this, context, row) => {
   debugger
+  if (row.container_id === null || row.container_id === undefined) {
+    swalMessage({
+      title: "Please select Container",
+      type: "warining",
+    });
+    return
+  } else if (row.sample_id === null || row.sample_id === undefined) {
+    swalMessage({
+      title: "Please select Sample",
+      type: "warining",
+    });
+    return
+  }
   let inputobj = {
     hims_f_lab_order_id: row.hims_f_lab_order_id,
     hims_d_lab_sample_id: row.hims_d_lab_sample_id,

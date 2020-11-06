@@ -608,7 +608,7 @@ export default {
 
       return new Promise((resolve, reject) => {
 
-        console.log("inputParam.hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id)
+        // console.log("inputParam.hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id)
         let strQuery = ""
         if (inputParam.hims_d_lab_sample_id === null) {
           strQuery = mysql.format(
@@ -641,7 +641,7 @@ export default {
           );
         } else {
           strQuery = mysql.format(
-            "UPDATE hims_f_lab_sample SET `collected`=?,`status`=?, `collected_by`=?,\
+            "UPDATE hims_f_lab_sample SET `container_id`=?, `sample_id`=?,`collected`=?,`status`=?, `collected_by`=?,\
           `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
           SELECT distinct LS.container_id, LC.container_id as container_code FROM hims_m_lab_specimen LS \
           inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
@@ -649,6 +649,8 @@ export default {
           where IT.services_id=?;\
           SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
             [
+              inputParam.container_id,
+              inputParam.sample_id,
               inputParam.collected,
               inputParam.status,
               req.userIdentity.algaeh_d_app_user_id,
