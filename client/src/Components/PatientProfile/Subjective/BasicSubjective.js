@@ -69,9 +69,9 @@ class BasicSubjective extends Component {
       deltaOpen: false,
     };
     this.isMale = Window?.global?.gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
-    this.chiefComplaintMaxLength = 200;
-    this.significantSignsLength = 250;
-    this.otherConditionMaxLength = 250;
+    this.chiefComplaintMaxLength = 500;
+    this.significantSignsLength = 200;
+    this.otherConditionMaxLength = 200;
     this.getPatientEncounterDetails();
     this.complaintType = [];
     SubjectiveHandler().getPatientChiefComplaints(this);
@@ -538,6 +538,7 @@ class BasicSubjective extends Component {
                         <div className="row">
                           <div className="col-12">
                             <textarea
+                            className="chiefComplaintFld"
                               value={
                                 this.state.chief_complaint === null ||
                                   this.state.chief_complaint === undefined
@@ -563,7 +564,7 @@ class BasicSubjective extends Component {
                       <div className="col-12">
                         <div className="row">
                           <AlgaehDateHandler
-                            div={{ className: "col-8" }}
+                            div={{ className: "col" }}
                             label={{
                               forceLabel: "Onset Date",
                             }}
@@ -580,7 +581,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-4 paddingLeft-0 " }}
+                            div={{ className: "col paddingLeft-0" }}
                             label={{ forceLabel: "Interval", isImp: false }}
                             selector={{
                               name: "interval",
@@ -596,7 +597,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehFormGroup
-                            div={{ className: "col-4" }}
+                            div={{ className: "col paddingLeft-0" }}
                             label={{
                               forceLabel: "Duration",
                               isImp: false,
@@ -615,9 +616,7 @@ class BasicSubjective extends Component {
                             }}
                           />
                           <AlagehAutoComplete
-                            div={{
-                              className: "col-4  paddingRight-0 paddingLeft-0",
-                            }}
+                            div={{ className: "col paddingLeft-0" }}
                             label={{
                               forceLabel: "Comp. Type",
                               isImp: false,
@@ -637,7 +636,7 @@ class BasicSubjective extends Component {
 
                           {this.isMale ? null : (
                             <AlagehFormGroup
-                              div={{ className: "col-4" }}
+                            div={{ className: "col paddingLeft-0" }}
                               label={{
                                 forceLabel: "LMP (Days)",
                                 isImp: false,

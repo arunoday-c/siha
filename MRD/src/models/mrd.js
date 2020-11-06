@@ -208,33 +208,49 @@ export default {
       const input = req.query;
 
       if (input.patient_id != null) {
-        _stringData += " and OS.patient_id = ?" + input.patient_id;
+        _stringData += " and V.patient_id = ?" + input.patient_id;
       }
       if (input.visit_id != null) {
-        _stringData += " and OS.visit_id = ?" + input.visit_id;
+        _stringData += " and visit_id = ?" + input.visit_id;
       }
 
+      // "select hims_f_ordered_services_id, OS.patient_id, OS.visit_id,visit_date, OS.doctor_id,\
+      //     E.full_name as provider_name, OS.service_type_id,\
+      //     OS.services_id,S.service_name,hims_f_lab_order_id, L.billed as lab_billed, \
+      //     L.status as lab_ord_status,R.hims_f_rad_order_id,R.billed as rad_billed, R.status as rad_ord_status\
+      //     from  hims_f_ordered_services OS \
+      //     inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
+      //     inner join hims_d_employee  E on OS.doctor_id=E.hims_d_employee_id\
+      //     inner join hims_f_patient_visit V on OS.visit_id=V.hims_f_patient_visit_id\
+      //     left join  hims_f_lab_order L on OS.visit_id=L.visit_id and OS.services_id= L.service_id\
+      //     left join hims_f_rad_order R on OS.visit_id=R.visit_id  and OS.services_id=R.service_id\
+      //     where (OS.service_type_id=5 or OS.service_type_id=11)" +
+      //       _stringData +
+      //       " group by hims_f_ordered_services_id order by OS.visit_id desc",
       _mysql
         .executeQuery({
-          query:
-            "select hims_f_ordered_services_id, OS.patient_id, OS.visit_id,visit_date, OS.doctor_id,\
-          E.full_name as provider_name, OS.service_type_id,\
-          OS.services_id,S.service_name,hims_f_lab_order_id, L.billed as lab_billed, \
-          L.status as lab_ord_status,R.hims_f_rad_order_id,R.billed as rad_billed, R.status as rad_ord_status\
-          from  hims_f_ordered_services OS \
-          inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
-          inner join hims_d_employee  E on OS.doctor_id=E.hims_d_employee_id\
-          inner join hims_f_patient_visit V on OS.visit_id=V.hims_f_patient_visit_id\
-          left join  hims_f_lab_order L on OS.visit_id=L.visit_id and OS.services_id= L.service_id\
-          left join hims_f_rad_order R on OS.visit_id=R.visit_id  and OS.services_id=R.service_id\
-          where (OS.service_type_id=5 or OS.service_type_id=11)" +
-            _stringData +
-            " group by hims_f_ordered_services_id order by OS.visit_id desc",
+          query: `select hims_f_lab_order_id, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
+          LO.status as lab_ord_status from hims_f_lab_order LO 
+          inner join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
+          inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
+          inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData} order by hims_f_lab_order_id;
+          select hims_f_rad_order_id, visit_date, E.full_name as provider_name, S.service_name, RO.billed as rad_billed, 
+          RO.status as rad_ord_status from hims_f_rad_order RO 
+          inner join hims_f_patient_visit V on RO.visit_id = V.hims_f_patient_visit_id
+          inner join hims_d_services S on RO.service_id=S.hims_d_services_id 
+          inner join hims_d_employee  E on RO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData}
+          order by hims_f_rad_order_id;`,
+
           printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
-          req.records = result;
+
+          let final_result = result[0]
+          final_result = final_result.concat(result[1]);
+
+          console.log("final_result", final_result)
+          req.records = final_result;
           next();
         })
         .catch((error) => {

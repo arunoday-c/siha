@@ -420,7 +420,7 @@ let algaehSearchConfig = (searchName, req) => {
                      from hims_d_employee as E
                      inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
                      inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
-                     where E.record_status='A' and employee_status in('R','T','E')`,
+                     where E.record_status='A' and employee_status in('R','T','E','I')`,
         orderBy: "hims_d_employee_id desc",
       },
       {
@@ -433,7 +433,7 @@ let algaehSearchConfig = (searchName, req) => {
         left join hims_f_final_settlement_header as FSH on FSH.employee_id=E.hims_d_employee_id
         inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
         inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
-        where E.record_status='A' and E.employee_status in('R','T','E')`,
+        where E.record_status='A' and E.employee_status in('R','T','E','I')`,
         orderBy: "E.hims_d_employee_id desc",
       },
       {
@@ -448,7 +448,7 @@ let algaehSearchConfig = (searchName, req) => {
                      left join hims_f_end_of_service as EOS on EOS.employee_id=E.hims_d_employee_id
                      inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
                      inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
-                     where E.record_status='A' and employee_status in('R','T','E')`,
+                     where E.record_status='A' and employee_status in('R','T','E','I')`,
         orderBy: "E.hims_d_employee_id desc",
       },
       {

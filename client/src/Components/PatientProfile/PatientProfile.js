@@ -887,6 +887,67 @@ class PatientProfile extends Component {
               </li>
               <ul className="float-right patient-quick-info">
                 <li>
+                  <i className={"fas fa-book-medical" + this.state.alergyExist} />
+                  <section>
+                    <span className="top-nav-sec-hdg">Chronic Conditions</span>
+                    <div className="listofADDWrapper">
+                      <table className="listofADDTable">
+                        <thead>
+                          <tr>
+                            <th>
+                              <b>Chronic Conditions</b>
+                            </th>
+                            <th>
+                              <b>Recorded By & Date</b>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {_patient_allergies.map((data, index) => (
+                            <React.Fragment key={index}>
+                              {data.allergyList.map((allergy, aIndex) => (
+                                <tr
+                                  key={aIndex}
+                                  className={
+                                    allergy.allergy_inactive === "Y"
+                                      ? "red"
+                                      : ""
+                                  }
+                                >
+                                  <td>{allergy.allergy_name}</td>
+                                  <td>
+                                    {allergy.onset === "O"
+                                      ? allergy.onset_date
+                                      : allergy.onset === "A"
+                                      ? "Adulthood"
+                                      : allergy.onset === "C"
+                                      ? "Childhood"
+                                      : allergy.onset === "P"
+                                      ? "Pre Terms"
+                                      : allergy.onset === "T"
+                                      ? "Teenage"
+                                      : ""}
+                                  </td>
+                                  <td>
+                                    {allergy.severity === "MO"
+                                      ? "Moderate"
+                                      : allergy.severity === "MI"
+                                      ? "Mild"
+                                      : allergy.severity === "SE"
+                                      ? "Severe"
+                                      : ""}
+                                  </td>
+                                  <td>{allergy.comment}</td>
+                                </tr>
+                              ))}
+                            </React.Fragment>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+                </li>
+                <li>
                   <i className={"fas fa-allergies" + this.state.alergyExist} />
                   <section>
                     <span className="top-nav-sec-hdg">Allergies</span>

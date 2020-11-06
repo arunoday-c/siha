@@ -127,14 +127,18 @@ export default {
         "ordered_by",
         "test_type",
       ];
+      let Services =
+        req.records.ResultOfFetchOrderIds == null
+          ? req.body.billdetails
+          : req.records.ResultOfFetchOrderIds;
       // let Services = req.records.ResultOfFetchOrderIds || req.body.billdetails;
-      const radServices = new LINQ(req.body.billdetails)
-        .Where(
-          (w) =>
-            w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Radiology
-        )
-        .Select((s) => {
+      console.log("Services", Services)
+      const radServices = Services.filter(
+        (f) =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Radiology
+      )
+        .map((s) => {
           return {
             ordered_services_id: s.hims_f_ordered_services_id || null,
             patient_id: req.body.patient_id,
@@ -146,8 +150,9 @@ export default {
             ordered_by: s.ordered_by,
             test_type: s.test_type,
           };
-        })
-        .ToArray();
+        });
+
+      console.log("radServices", radServices)
 
       // utilities.logger().log("radServices: ", radServices.length);
       if (radServices.length > 0) {
