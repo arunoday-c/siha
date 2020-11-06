@@ -429,7 +429,7 @@ class ResultEntryList extends Component {
                         },
                         others: {
                           filterable: false,
-                          maxWidth: 70,
+                          maxWidth: 100,
                           resizable: false,
                           style: { textAlign: "center" },
                         },
@@ -578,27 +578,27 @@ class ResultEntryList extends Component {
                           style: { textAlign: "center" },
                         },
                       },
-                      {
-                        fieldName: "critical_status",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Critical Result" }}
-                          />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.critical_status === "N" ? (
-                            <span className="badge badge-primary">No</span>
-                          ) : (
-                            <span className="badge badge-danger">Yes</span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 130,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
+                      // {
+                      //   fieldName: "critical_status",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Critical Result" }}
+                      //     />
+                      //   ),
+                      //   displayTemplate: (row) => {
+                      //     return row.critical_status === "N" ? (
+                      //       <span className="badge badge-primary">No</span>
+                      //     ) : (
+                      //       <span className="badge badge-danger">Yes</span>
+                      //     );
+                      //   },
+                      //   disabled: true,
+                      //   others: {
+                      //     maxWidth: 130,
+                      //     resizable: false,
+                      //     style: { textAlign: "center" },
+                      //   },
+                      // },
                     ]}
                     keyId="patient_code"
                     dataSource={{

@@ -180,7 +180,7 @@ class ResultEntry extends Component {
         : this.props.providers.filter(
             (f) => f.hims_d_employee_id === this.state.provider_id
           );
-    let isCritical = this.isCritical();
+    // let isCritical = this.isCritical();
     // let color_display =
     //   this.state.critical_status === "N"
     //     ? "badge badge-primary"
@@ -223,14 +223,14 @@ class ResultEntry extends Component {
                         {this.state.service_name
                           ? this.state.service_name
                           : "------"}
-                           <small style={{display:"table",fontStyle:"italic"}}
+                           {/* <small style={{display:"table",fontStyle:"italic"}}
                           className={`badge ${
                             isCritical ? "badge-danger" : "badge-primary"
                           }`}
                         >
                           {" "}
                           {isCritical ? "Critical" : "Normal"}
-                        </small>
+                        </small> */}
                       </h6>
                     </div>
 

@@ -176,7 +176,6 @@ const getAnalytes = ($this) => {
         //     data[i].confirm = "Y";
         //   }
         // }
-        debugger;
       $this.setState({ 
         test_analytes: response.data.records,
         entered_by_name:response.data.records[0].entered_by_name,
