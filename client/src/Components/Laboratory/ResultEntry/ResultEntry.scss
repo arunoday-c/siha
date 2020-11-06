@@ -169,6 +169,19 @@
       background: #f7f7f7;
       border-bottom: 1px solid #ccc;
       padding-top: 10px;
+      h6{
+        
+    text-overflow: ellipsis;
+    width: 99%; 
+    overflow: hidden;
+    white-space: nowrap;
+    small{margin-top: 2px; font-size: 0.85rem;
+    &.badge{
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+    }
+      }
     }
   }
   #labResultGrid_Cntr {

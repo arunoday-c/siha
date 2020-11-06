@@ -176,7 +176,13 @@ const getAnalytes = ($this) => {
         //     data[i].confirm = "Y";
         //   }
         // }
-        $this.setState({ test_analytes: response.data.records }, () => {
+        debugger;
+      $this.setState({ 
+        test_analytes: response.data.records,
+        entered_by_name:response.data.records[0].entered_by_name,
+        confirm_by_name:response.data.records[0].confirm_by_name,
+        validate_by_name:response.data.records[0].validate_by_name
+      }, () => {
           AlgaehLoader({ show: false });
           console.timeEnd("lab");
         });

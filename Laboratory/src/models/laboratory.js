@@ -794,9 +794,15 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query:
-            "SELECT *,la.description from hims_f_ord_analytes, hims_d_lab_analytes la where hims_f_ord_analytes.record_status='A' \
-          and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND order_id=? order by hims_f_ord_analytes_id",
+          query:"SELECT \
+          max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name,\
+          max(if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'')) as confirm_by_name,\
+          max(if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'')) as validate_by_name,\
+          LO.*, LA.description from hims_f_ord_analytes LO\
+          inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id\
+          inner join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)\
+          inner join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id\
+          where LO.record_status='A' AND LO.order_id=? group by LO.analyte_id order by LO.hims_f_ord_analytes_id;",
           values: [req.query.order_id],
           printQuery: true,
         })
