@@ -44,6 +44,10 @@ class ResultEntry extends Component {
       test_comments_id: null,
       comment_list: [],
       selcted_comments: "",
+      entered_by_name:"",
+      confirm_by_name:"",
+      validate_by_name:"",
+      
     };
   }
 
@@ -199,12 +203,13 @@ class ResultEntry extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Patient Name Name",
+                          forceLabel: "Patient Name",
                         }}
                       />
 
                       <h6>
                         {this.state.full_name ? this.state.full_name : "------"}
+                      <small  style={{display:"block",fontStyle:"italic"}}>{this.state.patient_code}</small>
                       </h6>
                     </div>
                     <div className="col">
@@ -218,6 +223,14 @@ class ResultEntry extends Component {
                         {this.state.service_name
                           ? this.state.service_name
                           : "------"}
+                           <small style={{display:"table",fontStyle:"italic"}}
+                          className={`badge ${
+                            isCritical ? "badge-danger" : "badge-primary"
+                          }`}
+                        >
+                          {" "}
+                          {isCritical ? "Critical" : "Normal"}
+                        </small>
                       </h6>
                     </div>
 
@@ -232,41 +245,25 @@ class ResultEntry extends Component {
                         {display !== null && display.length !== 0
                           ? display[0].full_name
                           : ""}
+                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.ordered_date).format(Options.dateFormat)}</small>
                       </h6>
                     </div>
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Ordered By",
+                          forceLabel: "Entered By",
                         }}
                       />
 
                       <h6>
-                        {moment(this.state.ordered_date).format(
-                          Options.dateFormat
-                        )}
-                      </h6>
-                    </div>
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Critical Result",
-                        }}
-                      />
-
-                      <h6>
-                        <small
-                          className={`badge ${
-                            isCritical ? "badge-danger" : "badge-primary"
-                          }`}
-                        >
-                          {" "}
-                          {isCritical ? "Yes" : "No"}
-                        </small>
+                        {this.state.entered_by_name
+                          ? this.state.entered_by_name
+                          : "------"}
+                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.entered_date).format(Options.dateFormat)}</small>
                       </h6>
                     </div>
 
-                    <AlagehAutoComplete
+                    {/* <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Entered By",
@@ -285,9 +282,25 @@ class ResultEntry extends Component {
                           disabled: true,
                         },
                       }}
-                    />
+                    /> */}
 
-                    <AlagehAutoComplete
+
+<div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Confirmed By",
+                        }}
+                      />
+
+                      <h6>
+                        {this.state.confirm_by_name
+                          ? this.state.confirm_by_name
+                          : "------"}
+                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.confirmed_date).format(Options.dateFormat)}</small>
+                      </h6>
+                    </div>
+
+                    {/* <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Confirmed By",
@@ -306,8 +319,24 @@ class ResultEntry extends Component {
                           disabled: true,
                         },
                       }}
-                    />
-                    <AlagehAutoComplete
+                    /> */}
+
+<div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Validtaed By",
+                        }}
+                      />
+
+                      <h6>
+                        { this.state.validate_by_name
+                          ? this.state.validate_by_name
+                          : "------"}
+                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.validated_date).format(Options.dateFormat)}</small>
+                      </h6>
+                    </div>
+
+                    {/* <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Validtaed By",
@@ -326,7 +355,26 @@ class ResultEntry extends Component {
                           disabled: true,
                         },
                       }}
-                    />
+                    /> */}
+                    {/* <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Critical Result",
+                        }}
+                      />
+
+                      <h6>
+                        <small
+                          className={`badge ${
+                            isCritical ? "badge-danger" : "badge-primary"
+                          }`}
+                        >
+                          {" "}
+                          {isCritical ? "Yes" : "No"}
+                        </small>
+                      </h6>
+                    </div> */}
+
                   </div>
                 </div>
                 <hr />
