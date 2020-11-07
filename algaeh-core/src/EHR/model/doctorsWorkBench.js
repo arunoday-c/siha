@@ -954,13 +954,15 @@ let getMyDay = (req, res, next) => {
           E.payment_type, E.episode_id, E.encounter_id, E.source, E.updated_date as encountered_date,E.visit_id, 
           V.sub_department_id, SD.department_type, SD.vitals_mandatory,	P.primary_id_no,ID.identity_document_name, 
           V.visit_expiery_date, V.visit_status,PA.appointment_date,PA.appointment_from_time,PA.appointment_to_time,
-          visit_type_desc from hims_f_patient_encounter as E  INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id   
+          visit_type_desc,ICD.icd_description from hims_f_patient_encounter as E  INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id   
           inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id inner join hims_d_sub_department SD 
           on sub_department_id=SD.hims_d_sub_department_id left join hims_d_identity_document ID on 
           ID.hims_d_identity_document_id = P.primary_identity_id left join hims_f_patient_appointment as PA 
           on V.appointment_id = PA.hims_f_patient_appointment_id inner join hims_d_title as T 
           on P.title_id = T.his_d_title_id
           inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id
+          left join hims_f_patient_diagnosis PD on PD.episode_id=V.episode_id and PD.diagnosis_type='P'
+          left join hims_d_icd ICD on ICD.hims_d_icd_id=PD.daignosis_id
           where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND ${_query}`,
         values: [req.userIdentity.hospital_id],
         printQuery: true,

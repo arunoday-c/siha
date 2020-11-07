@@ -127,33 +127,37 @@ export default {
         "ordered_by",
         "test_type",
       ];
+      let Services =
+        req.records.ResultOfFetchOrderIds == null
+          ? req.body.billdetails
+          : req.records.ResultOfFetchOrderIds;
       // let Services = req.records.ResultOfFetchOrderIds || req.body.billdetails;
-      const radServices = new LINQ(req.body.billdetails)
-        .Where(
-          (w) =>
-            w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Radiology
-        )
-        .Select((s) => {
-          return {
-            ordered_services_id: s.hims_f_ordered_services_id || null,
-            patient_id: req.body.patient_id,
-            provider_id: req.body.incharge_or_provider,
-            visit_id: req.body.visit_id,
-            service_id: s.services_id,
-            billed: req.body.billed,
-            ordered_date: new Date(),
-            ordered_by: s.ordered_by,
-            test_type: s.test_type,
-          };
-        })
-        .ToArray();
+      console.log("Services", Services);
+      const radServices = Services.filter(
+        (f) =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Radiology
+      ).map((s) => {
+        return {
+          ordered_services_id: s.hims_f_ordered_services_id || null,
+          patient_id: req.body.patient_id,
+          provider_id: req.body.incharge_or_provider,
+          visit_id: req.body.visit_id,
+          service_id: s.services_id,
+          billed: req.body.billed,
+          ordered_date: new Date(),
+          ordered_by: s.ordered_by,
+          test_type: s.test_type,
+        };
+      });
+
+      console.log("radServices", radServices);
 
       // utilities.logger().log("radServices: ", radServices.length);
       if (radServices.length > 0) {
         _mysql
           .executeQuery({
-            query: "INSERT INTO hims_f_rad_order(??) VALUES ?",
+            query: "INSERT ignore  INTO hims_f_rad_order(??)  VALUES ?",
             values: radServices,
             includeValues: IncludeValues,
             extraValues: {
@@ -339,7 +343,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id != null &&
             w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Radiology
+              appsettings.hims_d_service_type.service_type_id.Radiology
         )
         .Select((s) => {
           return {
