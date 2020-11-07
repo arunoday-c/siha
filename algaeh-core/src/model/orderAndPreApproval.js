@@ -410,7 +410,7 @@ let insertOrderedServices = (req, res, next) => {
                   // console.log("insert_order_services", insert_order_services);
                   if (insert_order_services.length > 0) {
                     _mysql
-                      .executeQuery({
+                      .executeQueryWithTransaction({
                         query:
                           "INSERT INTO hims_f_ordered_services(??) VALUES ?",
                         values: insert_order_services,
@@ -510,7 +510,7 @@ let insertOrderedServices = (req, res, next) => {
                           );
                         }
                         _mysql
-                          .executeQuery({
+                          .executeQueryWithTransaction({
                             query: strQry,
                             printQuery: true,
                           })
@@ -546,7 +546,7 @@ let insertOrderedServices = (req, res, next) => {
 
                       if (services.length > 0) {
                         _mysql
-                          .executeQuery({
+                          .executeQueryWithTransaction({
                             query:
                               // delete_str +
                               "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, \
@@ -592,7 +592,7 @@ let insertOrderedServices = (req, res, next) => {
                                 "services_id",
                               ];
                               _mysql
-                                .executeQuery({
+                                .executeQueryWithTransaction({
                                   query:
                                     " INSERT INTO hims_f_service_approval(??) VALUES ?",
                                   values: detailsPush,
@@ -650,7 +650,7 @@ let insertOrderedServices = (req, res, next) => {
                           });
 
                           _mysql
-                            .executeQuery({
+                            .executeQueryWithTransaction({
                               query:
                                 "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
                               where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
@@ -1238,7 +1238,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-          where.condition,
+        where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2380,7 +2380,7 @@ function deleteOrderServices(options) {
         // console.log("strQuery", strQuery)
 
         _mysql
-          .executeQuery({
+          .executeQueryWithTransaction({
             query: strQuery,
             printQuery: true,
           })
@@ -2423,7 +2423,7 @@ function deleteOrderServices(options) {
             );
             // console.log("strQry", strQry)
             _mysql
-              .executeQuery({
+              .executeQueryWithTransaction({
                 query: strQry,
                 printQuery: true,
               })

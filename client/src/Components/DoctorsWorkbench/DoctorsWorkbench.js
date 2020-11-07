@@ -720,22 +720,31 @@ class DoctorsWorkbench extends Component {
                           filterable: true,
                         },
                         {
-                          fieldName: "encountered_date",
-                          label: <AlgaehLabel label={{ fieldName: "date" }} />,
-                          displayTemplate: (data) => {
-                            return (
-                              <span>
-                                {moment(data.encountered_date).format(
-                                  "DD-MM-YYYY"
-                                )}
-                              </span>
-                            );
-                          },
-                          others: {
-                            width: 90,
-                            style: { textAlign: "center" },
-                          },
+                          fieldName: "icd_description",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "ICD Description" }}
+                            />
+                          ),
+                          filterable: true,
                         },
+                        // {
+                        //   fieldName: "encountered_date",
+                        //   label: <AlgaehLabel label={{ fieldName: "date" }} />,
+                        //   displayTemplate: (data) => {
+                        //     return (
+                        //       <span>
+                        //         {moment(data.encountered_date).format(
+                        //           "DD-MM-YYYY"
+                        //         )}
+                        //       </span>
+                        //     );
+                        //   },
+                        //   others: {
+                        //     width: 90,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
                         {
                           fieldName: "encountered_date",
                           label: <AlgaehLabel label={{ fieldName: "time" }} />,

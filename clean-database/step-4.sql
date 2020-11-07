@@ -649,3 +649,18 @@ ADD COLUMN `leave_category` ENUM('O', 'A', 'M') NULL DEFAULT 'O' COMMENT 'O =OTH
 INSERT INTO `algaeh_d_reports` (`report_id`, `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('153', 'rejoinReport', 'Employee Rejoin Report', '[\"hospital_id\"]', 'reportHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
 
 -- =================================  Start Nov 03 2020 =======================================
+
+-- For Chronic conditions
+ CREATE TABLE `hims_f_chronic` (
+  `hims_f_chronic_id` int NOT NULL AUTO_INCREMENT,
+  `icd_code_id` int DEFAULT NULL,
+  `chronic_inactive` enum('Y','N') DEFAULT NULL,
+  `patient_id` int DEFAULT NULL,
+  `visit_id` int DEFAULT NULL,
+  `added_provider_id` int DEFAULT NULL,
+  `updated_provider_id` int DEFAULT NULL,
+  `inactive_on_visit_id` int DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`hims_f_chronic_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -39,7 +39,8 @@ export default {
         when V.new_visit_patient ='N' then 'Follow Up' else 'New Visit' end visit_type \
         from hims_f_patient_encounter E \
         INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
-           inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' \
+           inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id\
+          where E.record_status='A' AND  V.record_status='A' \
            and date(V.visit_date) BETWEEN date(?) and date(?) and \
            provider_id=? and  sub_department_id=? and V.hospital_id=? " +
             _queryData +
@@ -51,6 +52,7 @@ export default {
             input.sub_department_id,
             req.userIdentity.hospital_id
           ]
+          // printQuery=
         })
         .then(result => {
           _mysql.releaseConnection();

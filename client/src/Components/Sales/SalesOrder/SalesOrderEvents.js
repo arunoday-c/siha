@@ -445,6 +445,8 @@ const SaveSalesOrderEnrty = ($this, from) => {
       }
       delete InputObj.organizations
       delete InputObj.cost_projects
+      delete InputObj.order_detail
+      delete InputObj.invoice_docs
       const settings = { header: undefined, footer: undefined };
 
       AlgaehLoader({ show: true });

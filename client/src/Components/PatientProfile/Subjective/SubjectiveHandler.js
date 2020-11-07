@@ -275,7 +275,10 @@ export default function SubjectiveHandler() {
     },
     deletePrecription: ($this, medicine) => {
       swal({
-        title: "Are you sure you want to delete this Item " + medicine.item_description + " ?",
+        title:
+          "Are you sure you want to delete this Item " +
+          medicine.item_description +
+          " ?",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -297,8 +300,10 @@ export default function SubjectiveHandler() {
                   onSuccess: (response) => {
                     const data = { loadingUnderMedication: false };
                     if (response.data.success) {
-                      data["recent_mediction"] = response.data.records.latest_mediction;
-                      data["all_mediction"] = response.data.records.all_mediction;
+                      data["recent_mediction"] =
+                        response.data.records.latest_mediction;
+                      data["all_mediction"] =
+                        response.data.records.all_mediction;
                       data["active_medication"] =
                         response.data.records.active_medication;
                     }
@@ -311,7 +316,7 @@ export default function SubjectiveHandler() {
                       title: error.message,
                       type: "error",
                     });
-                  }
+                  },
                 });
               }
             },
@@ -320,11 +325,11 @@ export default function SubjectiveHandler() {
                 title: error.message,
                 type: "error",
               });
-            }
+            },
           });
         }
       });
-    }
+    },
   };
 }
 
@@ -492,4 +497,20 @@ function dateDurationAndInterval(selectedDate) {
   }
 
   return { duration, interval };
+}
+
+export function IcdCodeForChronic(cb) {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Diagnosis.IcdCodes,
+    },
+    searchName: "IcdCodes",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: (row) => {
+      cb(row);
+    },
+  });
 }
