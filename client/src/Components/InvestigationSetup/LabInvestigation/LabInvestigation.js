@@ -19,6 +19,7 @@ import {
   deleteLabAnalyte,
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import MyContext from "../../../utils/MyContext.js";
 // import { swalMessage } from "../../../utils/algaehApiCall";
@@ -218,6 +219,24 @@ class LabInvestigation extends Component {
                       onChange: this.analyteidhandle,
                     }}
                   />
+                  <AlagehAutoComplete
+                    div={{ className: "col-8 mandatory" }}
+                    label={{
+                      fieldName: "analyte_group",
+                      isImp: true,
+                    }}
+                    selector={{
+                      name: "analyte_report_group",
+                      className: "select-fld",
+                      value: state.analyte_report_group,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                      },
+                      onChange: this.analyteidhandle,
+                    }}
+                  />
 
                   <div className="col" style={{ padding: 0 }}>
                     <button
@@ -276,6 +295,25 @@ class LabInvestigation extends Component {
                           },
                           others: {
                             minWidth: 400,
+                          },
+                        },
+                        {
+                          fieldName: "analyte_report_group",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "analytes group" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.analyte_report_group === "M"
+                                  ? "Microscopic"
+                                  : row.analyte_report_group === "P"
+                                  ? "Physical Appearance"
+                                  : "None"}
+                              </span>
+                            );
                           },
                         },
                       ]}

@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -22,6 +22,7 @@ export default {
       container_code: null,
       category_id: null,
       analyte_id: null,
+      analyte_report_group: "N",
       analyte_type: null,
       result_unit: null,
       selectedLang: "en",
@@ -48,8 +49,8 @@ export default {
 
       gender: null,
       from_age: 0,
-      to_age: 0
+      to_age: 0,
     };
     return output;
-  }
+  },
 };

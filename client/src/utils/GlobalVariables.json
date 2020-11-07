@@ -391,6 +391,20 @@
       "value": "4"
     }
   ],
+  "FORMAT_ANLYTE_REPORT_GROUP": [
+    {
+      "name": "Physical Appearance",
+      "value": "P"
+    },
+    {
+      "name": "Microscopic",
+      "value": "M"
+    },
+    {
+      "name": "None",
+      "value": "N"
+    }
+  ],
   "FORMAT_DISCOUNT": [
     {
       "name": "Percentage",
