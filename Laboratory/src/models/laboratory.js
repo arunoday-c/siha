@@ -265,7 +265,7 @@ export default {
                             .Where((w) => w.service_id == s.services_id)
                             .FirstOrDefault().hims_f_lab_order_id,
                           sample_id: s.specimen_id,
-                          container_id: s.container_id
+                          container_id: s.container_id,
                         };
                       })
                       .ToArray();
@@ -561,7 +561,6 @@ export default {
                           });
                         });
                     } else {
-
                       if (req.connection == null) {
                         req.records = insert_lab_sample;
                         next();
@@ -607,9 +606,8 @@ export default {
       let inputParam = { ...req.body };
 
       return new Promise((resolve, reject) => {
-
         // console.log("inputParam.hims_d_lab_sample_id", inputParam.hims_d_lab_sample_id)
-        let strQuery = ""
+        let strQuery = "";
         if (inputParam.hims_d_lab_sample_id === null) {
           strQuery = mysql.format(
             "insert into hims_f_lab_sample (`order_id`,`sample_id`, \
@@ -656,7 +654,7 @@ export default {
               req.userIdentity.algaeh_d_app_user_id,
               inputParam.hims_d_lab_sample_id,
               inputParam.service_id,
-              inputParam.hims_d_hospital_id
+              inputParam.hims_d_hospital_id,
             ]
           );
         }
@@ -754,7 +752,9 @@ export default {
                     query +
                     ";update hims_f_lab_order set lab_id_number ='" +
                     labIdNumber +
-                    "',status='CL', send_out_test='" + inputParam.send_out_test + "' where hims_f_lab_order_id=" +
+                    "',status='CL', send_out_test='" +
+                    inputParam.send_out_test +
+                    "' where hims_f_lab_order_id=" +
                     inputParam.hims_f_lab_order_id,
                   values: condition,
                   printQuery: true,
@@ -796,15 +796,18 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query:"SELECT \
-          max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name,\
-          max(if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'')) as confirm_by_name,\
-          max(if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'')) as validate_by_name,\
-          LO.*, LA.description from hims_f_ord_analytes LO\
-          inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id\
-          inner join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)\
-          inner join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id\
-          where LO.record_status='A' AND LO.order_id=? group by LO.analyte_id order by LO.hims_f_ord_analytes_id;",
+          query: `SELECT max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name,max(if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'')) as confirm_by_name,
+            max(if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'')) as validate_by_name,LO.*, LA.description from hims_f_ord_analytes LO
+            inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id
+            LEFT join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)
+            LEFT join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
+            where LO.record_status='A'  AND LO.order_id=? group by LO.analyte_id order by LO.hims_f_ord_analytes_id;`,
+          //             SELECT if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' ) as entered_by_name,if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'') as confirm_by_name,
+          // if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'') as validate_by_name,LO.*, LA.description from hims_f_ord_analytes LO
+          // inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id
+          // LEFT join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)
+          // LEFT join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
+          // where LO.record_status='A' AND LO.order_id=354 order by LO.hims_f_ord_analytes_id; changed by suhail
           values: [req.query.order_id],
           printQuery: true,
         })
@@ -906,7 +909,7 @@ export default {
     try {
       let input = { ...req.body };
       let collected = ",";
-      let strHisQry = ""
+      let strHisQry = "";
       if (input.status == "R") {
         collected = ", collected='N' ,";
 
@@ -921,7 +924,7 @@ export default {
             input.visit_id,
             input.remarks,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ]
         );
       }
@@ -998,7 +1001,6 @@ export default {
                 age = age_data["years"];
                 break;
             }
-
 
             // console.log("age_data", age_data);
             // console.log("age_type", age_type);
@@ -1470,7 +1472,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Lab
+              appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {
