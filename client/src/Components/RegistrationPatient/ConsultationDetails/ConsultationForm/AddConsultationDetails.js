@@ -39,7 +39,7 @@ const DeptselectedHandeler = ($this, context, e) => {
               [e.name]: null,
             });
             swalMessage({
-              title: "Please select the primary insurance details properly.",
+              title: "Please select the insurance details properly.",
               type: "error",
             });
           } else {
@@ -182,7 +182,7 @@ const selectedHandeler = ($this, context, e) => {
               [e.name]: null,
             });
             swalMessage({
-              title: "Please select the primary insurance details properly.",
+              title: "Please select the insurance details properly.",
               type: "error",
             });
           } else {
@@ -298,7 +298,7 @@ const doctorselectedHandeler = ($this, context, e) => {
                 });
                 swalMessage({
                   title:
-                    "Please select the primary insurance details properly.",
+                    "Please select the insurance details properly.",
                   type: "error",
                 });
               }

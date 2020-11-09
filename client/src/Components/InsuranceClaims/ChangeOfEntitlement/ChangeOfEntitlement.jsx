@@ -76,7 +76,7 @@ export default function ChangeEntitlement(props) {
             <div className="row">
               <div className="col-12 ">
                 <div className="col insurance-sec">
-                  <h6 style={{ marginTop: 10 }}>Primary Insurance</h6>
+                  <h6 style={{ marginTop: 10 }}>Selected Insurance Details</h6>
                   <div className="row">
                     <div className="col-4">
                       <AlgaehLabel
@@ -134,8 +134,8 @@ export default function ChangeEntitlement(props) {
                       <h6>
                         {insurance?.[0]?.effective_end_date
                           ? moment(insurance?.[0]?.effective_end_date).format(
-                              "DD/MM/YYYY"
-                            )
+                            "DD/MM/YYYY"
+                          )
                           : "---"}
                       </h6>
                     </div>
@@ -143,7 +143,7 @@ export default function ChangeEntitlement(props) {
                 </div>
               </div>{" "}
               <div className="col-12">
-                <InsuranceForm patientInsurance={insurance} />
+                <InsuranceForm patientInsurance={insurance} selected_visit={visit} />
               </div>
             </div>
           </div>
