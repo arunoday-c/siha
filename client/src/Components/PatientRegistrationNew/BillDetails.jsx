@@ -32,7 +32,7 @@ const getBillDetails = async (
     prevVisits,
     consultation,
     promo_code,
-    discount_percentage
+    discount_amout
   }
 ) => {
   let zeroBill = false,
@@ -64,8 +64,8 @@ const getBillDetails = async (
         vat_applicable:
           default_nationality == nationality_id ? local_vat_applicable : "Y",
         promo_code: promo_code || null,
-        // discount_amout: discount_amout,
-        discount_percentage: discount_percentage,
+        discount_amout: discount_amout,
+        // discount_percentage: discount_percentage,
       },
     ],
   });
@@ -108,16 +108,19 @@ export function BillDetails({
   const [enableCash, setEnableCash] = useState(true);
   const [enableCard, setEnableCard] = useState(false);
   const [promoCode, setPromoCode] = useState(null);
-  const [discount_percentage, setDiscountPerc] = useState(0);
+  // const [discount_percentage, setDiscountPerc] = useState(0);
+  const [discount_amout, setDiscountAmount] = useState(0);
   const [dis_amout, setDisAmount] = useState(0);
   const [dis_percentage, setDisPerc] = useState(0);
   const [visible, setVisible] = useState(false);
   const [applyDiscount, setApplyDiscount] = useState(false);
   const { userToken } = useContext(MainContext);
+  debugger
   const {
     default_nationality,
     local_vat_applicable,
     service_dis_percentage,
+    decimal_places
   } = userToken;
   const {
     services_id,
@@ -178,7 +181,8 @@ export function BillDetails({
         prevVisits,
         consultation: consultationInfo?.consultation,
         promo_code: promoCode,
-        discount_percentage: discount_percentage,
+        discount_amout: discount_amout
+        // discount_percentage: discount_percentage,
       }
     ],
     getBillDetails,
@@ -195,8 +199,8 @@ export function BillDetails({
           // setBillData(null);
           setGlobalBillData(data);
           const billItem = data?.billdetails[0];
-          setDiscountPerc(billItem["discount_percentage"]);
-          // setDiscountAmount(billItem["discount_amout"]);
+          // setDiscountPerc(billItem["discount_percentage"]);
+          setDiscountAmount(billItem["discount_amout"]);
           calculateBillDetails(billItem);
         }
       },
@@ -214,9 +218,10 @@ export function BillDetails({
       setCardData(null);
       setPromoCode(null);
       setValue("promo_code", "");
-      setValue("discount_percentage", "0");
-      // setDiscountAmount(0);
-      setDiscountPerc(0);
+      // setValue("discount_percentage", "0");
+      setValue("discount_amout", "0");
+      setDiscountAmount(0);
+      // setDiscountPerc(0);
     }
     //eslint-disable-next-line
   }, [services_id]);
@@ -468,7 +473,7 @@ export function BillDetails({
                             setApplyDiscount(false)
                             setDisPerc(perc);
                             const _amount =
-                              (billData?.gross_amount * perc) / 100;
+                              ((parseFloat(billData?.gross_amount) * parseFloat(perc)) / 100).toFixed(decimal_places);
                             setDisAmount(_amount);
                           }
                           //  else {
@@ -520,9 +525,7 @@ export function BillDetails({
                             } else {
                               setApplyDiscount(false)
                               setDisAmount(amount);
-                              const _percentage = parseFloat(
-                                (amount * 100) / billData?.gross_amount
-                              ).toFixed(2);
+                              const _percentage = ((amount * 100) / parseFloat(billData?.gross_amount)).toFixed(6);
                               setDisPerc(_percentage);
                             }
                           } else {
@@ -545,7 +548,8 @@ export function BillDetails({
                       e.preventDefault();
                       if (parseFloat(dis_percentage) > 0) {
                         setApplyDiscount(true);
-                        setDiscountPerc(dis_percentage);
+                        // setDiscountPerc(dis_percentage);
+                        setDiscountAmount(dis_amout);
                       } else setApplyDiscount(false);
                     }}
                   >
