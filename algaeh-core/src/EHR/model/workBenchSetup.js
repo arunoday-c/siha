@@ -381,10 +381,11 @@ let getVitalMasterHeader = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_vitals_header_id,uom, vitals_name,general,display,record_status FROM hims_d_vitals_header where " +
+          "select hims_d_vitals_header_id,uom, vitals_name,general,display,record_status,box_type FROM hims_d_vitals_header where " +
           where.condition +
           " order by hims_d_vitals_header_id desc",
         values: [...where.values],
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();

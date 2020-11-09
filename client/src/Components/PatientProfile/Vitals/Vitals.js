@@ -389,6 +389,15 @@ class Vitals extends Component {
                             : item.hims_d_vitals_header_id === 4
                             ? { dependent: "temperature_from" }
                             : {};
+
+                        const boxType =
+                          item.box_type === "TEXT"
+                            ? {}
+                            : {
+                                number: {
+                                  allowNegative: false,
+                                },
+                              };
                         return (
                           <React.Fragment key={index}>
                             {item.hims_d_vitals_header_id === 4 ? (
@@ -397,6 +406,8 @@ class Vitals extends Component {
                                   div={{ className: "col-2" }}
                                   label={{
                                     forceLabel: "Temp. From",
+                                    isImp:
+                                      item.mandatory === "Y" ? true : false,
                                   }}
                                   selector={{
                                     name: "temperature_from",
@@ -419,6 +430,7 @@ class Vitals extends Component {
                                 label={{
                                   forceLabel: "BP (mmHg)",
                                   fieldName: "BP_type",
+                                  isImp: item.mandatory === "Y" ? true : false,
                                 }}
                                 selector={{
                                   name: "bp_position",
@@ -450,14 +462,13 @@ class Vitals extends Component {
                                       " (" +
                                       String(item.uom).trim() +
                                       ")",
-                                isImp: item.mandatory === 0 ? false : true,
+                                isImp: item.mandatory === "N" ? false : true,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: _name,
-                                number: {
-                                  allowNegative: false,
-                                },
+                                ...boxType,
+
                                 dontAllowKeys: ["-", "e"],
                                 others: {
                                   min: 0,
@@ -479,13 +490,15 @@ class Vitals extends Component {
                                 div={{ className: "col-2" }}
                                 label={{
                                   forceLabel: item.uom === "C" ? "°F" : "°C",
+                                  isImp: item.mandatory === "Y" ? true : false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
                                   disabled: true,
-                                  number: {
-                                    allowNegative: false,
-                                  },
+                                  ...boxType,
+                                  // number: {
+                                  //   allowNegative: false,
+                                  // },
                                   dontAllowKeys: ["-", "e"],
                                   value: temperatureConvertion(
                                     this.state[_name] === ""

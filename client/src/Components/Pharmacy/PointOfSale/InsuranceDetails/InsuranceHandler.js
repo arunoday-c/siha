@@ -302,7 +302,7 @@ const ProcessInsurance = ($this, context) => {
       $this.state.primary_network_id == null)
   ) {
     swalMessage({
-      title: "Please select the primary insurance details properly.",
+      title: "Please select the insurance details properly.",
       type: "error"
     });
   } else if (

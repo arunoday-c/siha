@@ -16,6 +16,7 @@ import {
   analyteidhandle,
   AddAnalytes,
   updateLabInvestigation,
+  updateAnalyteGroup,
   deleteLabAnalyte,
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
@@ -97,11 +98,17 @@ class LabInvestigation extends Component {
   texthandle = texthandle.bind(this);
   analyteidhandle = analyteidhandle.bind(this);
   containeridhandle = containeridhandle.bind(this);
-
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
   // Crud a
   AddAnalytes = AddAnalytes.bind(this);
   deleteLabAnalyte = deleteLabAnalyte.bind(this);
   updateLabInvestigation = updateLabInvestigation.bind(this);
+  updateAnalyteGroup = updateAnalyteGroup.bind(this);
 
   render() {
     const { state } = this.context;
@@ -318,22 +325,26 @@ class LabInvestigation extends Component {
                           editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
-                              div={{ className: "col noLabel" }}
-                              label={{
-                                isImp: true,
-                              }}
-                              selector={{
-                                name: "analyte_report_group",
-                                className: "select-fld",
-                                value: state.analyte_report_group,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
-                                },
-                                onChange: this.analyteidhandle,
-                              }}
-                            />
+                                div={{ className: "col noLabel" }}
+                                label={{
+                                  isImp: true,
+                                }}
+                                selector={{
+                                  name: "analyte_report_group",
+                                  className: "select-fld",
+                                  value: row.analyte_report_group,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data:
+                                      GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
+                                }}
+                              />
                             );
                           },
                         },
@@ -350,7 +361,8 @@ class LabInvestigation extends Component {
                       events={{
                         onDelete: this.deleteLabAnalyte,
                         onEdit: (row) => {},
-                        onDone: this.updateLabInvestigation,
+                        // onDone: this.updateLabInvestigation,
+                        onDone: this.updateAnalyteGroup,
                       }}
                     />
                   </div>

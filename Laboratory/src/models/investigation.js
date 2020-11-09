@@ -64,6 +64,30 @@ export default {
       next(e);
     }
   },
+  updateAnalyteGroup: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const { analyte_report_group, hims_m_lab_analyte_id } = req.body;
+      _mysql
+        .executeQuery({
+          query: `UPDATE hims_m_lab_analyte SET analyte_report_group =? WHERE (hims_m_lab_analyte_id = ?);`,
+          values: [analyte_report_group, hims_m_lab_analyte_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 
   addInvestigationTest: (req, res, next) => {
     const _mysql = new algaehMysql();

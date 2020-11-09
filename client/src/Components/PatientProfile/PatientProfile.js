@@ -65,6 +65,7 @@ class PatientProfile extends Component {
       OCAFData: [],
       department_type: "",
       alergyExist: "",
+      chronicExists: false,
       showAllergyPopup: true,
       patientAllergies: [],
     };
@@ -645,6 +646,9 @@ class PatientProfile extends Component {
     }
   };
 
+  checkChronicExists(isExists) {
+    this.setState({ chronicExists: isExists });
+  }
   render() {
     const _pat_profile =
       this.props.patient_profile !== undefined &&
@@ -893,12 +897,19 @@ class PatientProfile extends Component {
               </li>
               <ul className="float-right patient-quick-info">
                 <li>
+                  {/* AllergyActive */}
                   <i
-                    className={"fas fa-book-medical"}
+                    className={`fas fa-book-medical ${
+                      this.state.chronicExists ? "AllergyActive" : ""
+                    }`}
                   />
                   <section>
                     <span className="top-nav-sec-hdg">Chronic Conditions</span>
-                    <Chronic />
+                    <Chronic
+                      checkChronicExists={(boolType) => {
+                        this.checkChronicExists(boolType);
+                      }}
+                    />
                   </section>
                 </li>
                 <li>

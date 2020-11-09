@@ -5,12 +5,13 @@ import invModels from "../models/investigation";
 const {
   addInvestigationTest,
   getInvestigTestList,
+  updateAnalyteGroup,
   updateInvestigationTest,
   deleteLabAnalyte,
   deleteRadTemplate,
   addTestComments,
   updateTestComments,
-  getTestComments
+  getTestComments,
 } = invModels;
 
 export default () => {
@@ -18,24 +19,29 @@ export default () => {
   api.get("/getInvestigTestList", getInvestigTestList, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
   api.post("/addInvestigationTest", addInvestigationTest, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
-
+  api.put("/updateAnalyteGroup", updateAnalyteGroup, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.put(
     "/updateInvestigationTest",
     updateInvestigationTest,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -44,12 +50,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -57,12 +63,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -70,25 +76,23 @@ export default () => {
   api.get("/getTestComments", getTestComments, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
   api.post("/addTestComments", addTestComments, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
-  api.put(
-    "/updateTestComments", updateTestComments, (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  );
+  api.put("/updateTestComments", updateTestComments, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   return api;
 };

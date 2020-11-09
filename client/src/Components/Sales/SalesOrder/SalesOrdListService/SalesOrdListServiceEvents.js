@@ -186,7 +186,7 @@ const deleteSalesDetail = ($this, context, row) => {
     let sales_order_services = $this.state.sales_order_services;
     const _index = sales_order_services.indexOf(row);
     sales_order_services.splice(_index, 1);
-    let delete_sales_order_services = [];
+    let delete_sales_order_services = $this.state.delete_sales_order_services;
 
     if (row.hims_f_sales_order_services_id !== null) {
         delete_sales_order_services.push(row.hims_f_sales_order_services_id);

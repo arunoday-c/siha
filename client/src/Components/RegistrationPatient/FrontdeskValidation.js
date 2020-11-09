@@ -146,7 +146,7 @@ export function Validations(state) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Please select the primary insurance details properly.",
+      title: "Please select the insurance details properly.",
     });
 
     return isError;

@@ -1013,7 +1013,7 @@ class HistoricalData extends Component {
                       ],
                     },
                     {
-                      Header: "Primary Insurar",
+                      Header: "Insurar Details",
                       columns: [
                         {
                           Header: "Name",

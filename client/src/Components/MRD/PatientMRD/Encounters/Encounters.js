@@ -115,15 +115,15 @@ class Encounters extends Component {
             if (response.data.success && response.data.records.length !== 0) {
               const _Vitals =
                 response.data.records !== undefined &&
-                response.data.records.length > 0
+                  response.data.records.length > 0
                   ? Enumerable.from(response.data.records)
-                      .groupBy("$.visit_date", null, (k, g) => {
-                        return {
-                          key: k,
-                          details: g.getSource(),
-                        };
-                      })
-                      .toArray()
+                    .groupBy("$.visit_date", null, (k, g) => {
+                      return {
+                        key: k,
+                        details: g.getSource(),
+                      };
+                    })
+                    .toArray()
                   : [];
 
               this.setState({ patientVital: _Vitals, loaderVitals: false });
@@ -567,9 +567,9 @@ class Encounters extends Component {
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onDelete: (row) => {},
-                    onEdit: (row) => {},
-                    onDone: (row) => {},
+                    onDelete: (row) => { },
+                    onEdit: (row) => { },
+                    onDone: (row) => { },
                   }}
                 />
               </div>
@@ -623,8 +623,8 @@ class Encounters extends Component {
                         <h6>
                           {this.state.generalInfo !== undefined
                             ? moment(
-                                this.state.generalInfo.encountered_date
-                              ).format("DD-MM-YYYY HH:mm A")
+                              this.state.generalInfo.encountered_date
+                            ).format("DD-MM-YYYY HH:mm A")
                             : "----------"}
                         </h6>
                       </div>
@@ -656,7 +656,7 @@ class Encounters extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Primary Insurance",
+                            forceLabel: "Insurance Details",
                           }}
                         />
                         <h6>
@@ -680,18 +680,18 @@ class Encounters extends Component {
                           </Dimmer>
                         </div>
                       ) : (
-                        <div className="col">
-                          <h6 className="">
-                            {this.state.patientComplaints.map((data, index) => {
-                              return data.chief_complaint
-                                ? data.chief_complaint
-                                : data.comment
-                                ? data.comment
-                                : "-------";
-                            })}
-                          </h6>
-                        </div>
-                      )}
+                          <div className="col">
+                            <h6 className="">
+                              {this.state.patientComplaints.map((data, index) => {
+                                return data.chief_complaint
+                                  ? data.chief_complaint
+                                  : data.comment
+                                    ? data.comment
+                                    : "-------";
+                              })}
+                            </h6>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -707,10 +707,10 @@ class Encounters extends Component {
                           </Dimmer>
                         </div>
                       ) : (
-                        <div className="col">
-                          <h6 className="">{this.state.significant_signs}</h6>
-                        </div>
-                      )}
+                          <div className="col">
+                            <h6 className="">{this.state.significant_signs}</h6>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -726,34 +726,34 @@ class Encounters extends Component {
                         </Dimmer>
                       </div>
                     ) : (
-                      <div className="row">
-                        {this.state.patientVital.length > 0 ? (
-                          this.state.patientVital.map((item, index) => (
-                            <React.Fragment key={index}>
-                              <div className="col-lg-12">
-                                Recorded on {item.key}
-                              </div>
-
-                              {item.details.map((row, indexD) => (
-                                <div key={indexD} className="col borderVitals">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: row.vitals_name,
-                                    }}
-                                  />
-                                  <h6>
-                                    {row.vital_value}
-                                    <span>{row.uom}</span>
-                                  </h6>
+                        <div className="row">
+                          {this.state.patientVital.length > 0 ? (
+                            this.state.patientVital.map((item, index) => (
+                              <React.Fragment key={index}>
+                                <div className="col-lg-12">
+                                  Recorded on {item.key}
                                 </div>
-                              ))}
-                            </React.Fragment>
-                          ))
-                        ) : (
-                          <span className="col">----------</span>
-                        )}
-                      </div>
-                    )}
+
+                                {item.details.map((row, indexD) => (
+                                  <div key={indexD} className="col borderVitals">
+                                    <AlgaehLabel
+                                      label={{
+                                        forceLabel: row.vitals_name,
+                                      }}
+                                    />
+                                    <h6>
+                                      {row.vital_value}
+                                      <span>{row.uom}</span>
+                                    </h6>
+                                  </div>
+                                ))}
+                              </React.Fragment>
+                            ))
+                          ) : (
+                              <span className="col">----------</span>
+                            )}
+                        </div>
+                      )}
                   </div>
                 </div>
                 {/* VITALS END */}
@@ -806,14 +806,14 @@ class Encounters extends Component {
                                       {row.lab_ord_status === "O"
                                         ? "Ordered"
                                         : row.lab_ord_status === "CL"
-                                        ? "Specimen Collected"
-                                        : row.lab_ord_status === "CN"
-                                        ? "Test Cancelled"
-                                        : row.lab_ord_status === "CF"
-                                        ? "Result Confirmed "
-                                        : row.lab_ord_status === "V"
-                                        ? "Result Validated"
-                                        : "----"}
+                                          ? "Specimen Collected"
+                                          : row.lab_ord_status === "CN"
+                                            ? "Test Cancelled"
+                                            : row.lab_ord_status === "CF"
+                                              ? "Result Confirmed "
+                                              : row.lab_ord_status === "V"
+                                                ? "Result Validated"
+                                                : "----"}
                                     </span>
                                   );
                                 },
@@ -838,16 +838,16 @@ class Encounters extends Component {
                                       {row.rad_ord_status === "O"
                                         ? "Ordered"
                                         : row.rad_ord_status === "S"
-                                        ? "Scheduled"
-                                        : row.rad_ord_status === "UP"
-                                        ? "Under Process"
-                                        : row.rad_ord_status === "CN"
-                                        ? "Cancelled"
-                                        : row.rad_ord_status === "RC"
-                                        ? "Result Confirmed"
-                                        : row.rad_ord_status === "RA"
-                                        ? "Result Available"
-                                        : "----"}
+                                          ? "Scheduled"
+                                          : row.rad_ord_status === "UP"
+                                            ? "Under Process"
+                                            : row.rad_ord_status === "CN"
+                                              ? "Cancelled"
+                                              : row.rad_ord_status === "RC"
+                                                ? "Result Confirmed"
+                                                : row.rad_ord_status === "RA"
+                                                  ? "Result Available"
+                                                  : "----"}
                                     </span>
                                   );
                                 },
@@ -869,31 +869,31 @@ class Encounters extends Component {
                                 displayTemplate: (row) => {
                                   return row.service_type_id === 5 &&
                                     row.lab_ord_status === "V" ? (
-                                    <span
-                                      className="pat-code"
-                                      style={{ color: "#006699" }}
-                                      onClick={this.generateReport.bind(
-                                        this,
-                                        row,
-                                        "LAB"
-                                      )}
-                                    >
-                                      View Report
-                                    </span>
-                                  ) : row.service_type_id === 11 &&
-                                    row.rad_ord_status === "RA" ? (
-                                    <span
-                                      className="pat-code"
-                                      style={{ color: "#006699" }}
-                                      onClick={this.generateReport.bind(
-                                        this,
-                                        row,
-                                        "RAD"
-                                      )}
-                                    >
-                                      View Report
-                                    </span>
-                                  ) : null;
+                                      <span
+                                        className="pat-code"
+                                        style={{ color: "#006699" }}
+                                        onClick={this.generateReport.bind(
+                                          this,
+                                          row,
+                                          "LAB"
+                                        )}
+                                      >
+                                        View Report
+                                      </span>
+                                    ) : row.service_type_id === 11 &&
+                                      row.rad_ord_status === "RA" ? (
+                                        <span
+                                          className="pat-code"
+                                          style={{ color: "#006699" }}
+                                          onClick={this.generateReport.bind(
+                                            this,
+                                            row,
+                                            "RAD"
+                                          )}
+                                        >
+                                          View Report
+                                        </span>
+                                      ) : null;
                                 },
                               },
                             ]}
@@ -904,9 +904,9 @@ class Encounters extends Component {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 5 }}
                             events={{
-                              onDelete: (row) => {},
-                              onEdit: (row) => {},
-                              onDone: (row) => {},
+                              onDelete: (row) => { },
+                              onEdit: (row) => { },
+                              onDone: (row) => { },
                             }}
                           />
                         </div>
@@ -1242,9 +1242,9 @@ class Encounters extends Component {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 5 }}
                             events={{
-                              onDelete: (row) => {},
-                              onEdit: (row) => {},
-                              onDone: (row) => {},
+                              onDelete: (row) => { },
+                              onEdit: (row) => { },
+                              onDone: (row) => { },
                             }}
                           />
                         </div>
@@ -1292,9 +1292,9 @@ class Encounters extends Component {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 5 }}
                             events={{
-                              onDelete: (row) => {},
-                              onEdit: (row) => {},
-                              onDone: (row) => {},
+                              onDelete: (row) => { },
+                              onEdit: (row) => { },
+                              onDone: (row) => { },
                             }}
                           />
                         </div>
