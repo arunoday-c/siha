@@ -27,6 +27,7 @@ const VisitSearch = ($this, e) => {
           full_name: row.full_name,
           patient_id: row.patient_id,
           visit_id: row.hims_f_patient_visit_id,
+          invoice_date: row.visit_date,
         },
         () => {
           if ($this.state.select_invoice === "CD") {

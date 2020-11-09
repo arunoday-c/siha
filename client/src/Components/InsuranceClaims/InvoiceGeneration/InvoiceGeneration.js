@@ -234,6 +234,7 @@ class InvoiceGeneration extends Component {
 
   //created by Adnan
   render() {
+    console.log("Here im ");
     return (
       <div>
         <BreadCrumb
@@ -284,7 +285,7 @@ class InvoiceGeneration extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Invoice Date",
+                    forceLabel: "Visited Date", //"Invoice Date",
                   }}
                 />
                 <h6>
