@@ -346,7 +346,7 @@ const radioChange = ($this, context, e) => {
     }
   } else {
     swalMessage({
-      title: "With out primary insurance cannot select secondary insurance",
+      title: "With out insurance cannot select secondary insurance",
       type: "warning"
     });
   }

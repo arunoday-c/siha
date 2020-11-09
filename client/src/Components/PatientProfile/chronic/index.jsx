@@ -3,11 +3,10 @@ import moment from "moment";
 import "./chronic.scss";
 import { IcdCodeForChronic } from "../Subjective/SubjectiveHandler";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-export default function () {
+export default function ({ checkChronicExists }) {
   const { current_patient, visit_id } = Window.global;
   const [data, setData] = useState([]);
   useEffect(() => {
-    console.log("visit_id", visit_id);
     chronicList();
   }, []);
 
@@ -22,6 +21,11 @@ export default function () {
         onSuccess: (response) => {
           if (response.data.success) {
             setData(response.data.records);
+            const checkExists = response.data.records.filter(
+              (f) => f.chronic_inactive === "N"
+            );
+
+            checkChronicExists(checkExists.length > 0 ? true : false);
           }
         },
         onCatch: (error) => {
@@ -70,10 +74,7 @@ export default function () {
   return (
     <div className="cronicCntr">
       <div className="cronicActions">
-        <button
-          className="cronicBtn"
-          onClick={clickChronicAdd}
-        >
+        <button className="cronicBtn" onClick={clickChronicAdd}>
           <i className="fas fa-plus" />
         </button>
       </div>
@@ -103,7 +104,11 @@ export default function () {
                     onClick={() => {
                       clickToActiveOrInactiveChronic(item);
                     }}
-                    className={item.chronic_inactive === "N" ? "btn btn-small btn-red" : "btn btn-small btn-green"}
+                    className={
+                      item.chronic_inactive === "N"
+                        ? "btn btn-small btn-red"
+                        : "btn btn-small btn-green"
+                    }
                   >
                     {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
                   </button>
@@ -122,6 +127,6 @@ export default function () {
           </tbody>
         </table>
       </div>
-      </div>
+    </div>
   );
 }

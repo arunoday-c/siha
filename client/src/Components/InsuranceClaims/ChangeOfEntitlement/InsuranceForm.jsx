@@ -18,6 +18,7 @@ export function InsuranceForm({
   details = [],
   patientInsurance = [],
   data = {},
+  selected_visit = null
 }) {
   const { fieldNameFn } = useLangFieldName();
   const [isInsurance, setIsInsurance] = useState(false);
@@ -58,6 +59,22 @@ export function InsuranceForm({
     // eslint-disable-next-line
   }, [patientInsurance]);
 
+  useEffect(() => {
+    if (selected_visit === null) {
+      setInsuranceList([])
+      reset({
+        primary_insurance_provider_id: "",
+        primary_sub_id: "",
+        primary_network_id: "",
+        primary_network_office_id: "",
+        primary_policy_num: "",
+        primary_effective_start_date: "",
+        primary_effective_end_date: "",
+        primary_card_number: ""
+      });
+    }
+  }, [selected_visit])
+
   const disabled = !isInsurance;
   const dropDownData = insuranceList?.length ? insuranceList : patientInsurance;
 
@@ -73,6 +90,7 @@ export function InsuranceForm({
         callback(text);
       },
       onRowSelect: (row) => {
+        row.sub_insurance_provider_name = row.insurance_sub_name
         setInsuranceList([row]);
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
         setValue("primary_sub_id", row?.sub_insurance_provider_id);
@@ -126,7 +144,7 @@ export function InsuranceForm({
                   type="button"
                   className="btn btn-primary btn-rounded"
                   onClick={AddInsurance}
-                  // disabled={!isInsurance}
+                // disabled={!isInsurance}
                 >
                   <i className="fas fa-plus" />
                 </button>
@@ -219,7 +237,7 @@ export function InsuranceForm({
                       value,
                       onClear: () => onChange(""),
                       dataSource: {
-                        textField: "insurance_sub_name",
+                        textField: "sub_insurance_provider_name",
                         // this.state.selectedLang == "en" ? "sub_insurance_provider_name" : "name",
                         valueField: "sub_insurance_provider_id",
                         data: dropDownData,
@@ -311,7 +329,7 @@ export function InsuranceForm({
                   type="button"
                   className="btn btn-primary btn-rounded"
                   onClick={() => setShowPolicy(true)}
-                  // disabled={!isInsurance}
+                // disabled={!isInsurance}
                 >
                   <i className="fas fa-plus" />
                 </button>
@@ -440,8 +458,8 @@ export function InsuranceForm({
                   serviceParameters={{
                     uniqueID:
                       primary_card_number === undefined ||
-                      primary_card_number === null ||
-                      primary_card_number === ""
+                        primary_card_number === null ||
+                        primary_card_number === ""
                         ? null
                         : primary_card_number + "_front",
                     // (primary_card_number ||  null) + "_front",
@@ -451,8 +469,8 @@ export function InsuranceForm({
                     // },
                   }}
                   renderPrevState={primary_card_number ? undefined : true}
-                  // renderPrevState={this.state.patInsuranceFrontImg}
-                  // forceRefresh={this.state.forceRefresh}
+                // renderPrevState={this.state.patInsuranceFrontImg}
+                // forceRefresh={this.state.forceRefresh}
                 />
               </div>
 
@@ -467,8 +485,8 @@ export function InsuranceForm({
                   serviceParameters={{
                     uniqueID:
                       primary_card_number === undefined ||
-                      primary_card_number === null ||
-                      primary_card_number === ""
+                        primary_card_number === null ||
+                        primary_card_number === ""
                         ? null
                         : primary_card_number + "_back",
                     //(primary_card_number || null) + "_back",
@@ -478,8 +496,8 @@ export function InsuranceForm({
                     // },
                   }}
                   renderPrevState={primary_card_number ? undefined : true}
-                  // renderPrevState={this.state.patInsuranceBackImg}
-                  // forceRefresh={this.state.forceRefresh}
+                // renderPrevState={this.state.patInsuranceBackImg}
+                // forceRefresh={this.state.forceRefresh}
                 />
                 <div />
               </div>

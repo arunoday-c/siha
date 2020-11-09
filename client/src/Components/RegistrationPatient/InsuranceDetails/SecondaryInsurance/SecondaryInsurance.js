@@ -63,7 +63,7 @@ class AddSecInsuranceForm extends Component {
       }
     } else {
       successfulMessage({
-        message: "With out primary insurance cannot select secondary insurance",
+        message: "With out insurance cannot select secondary insurance",
         title: "Warning",
         icon: "error"
       });

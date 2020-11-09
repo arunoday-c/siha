@@ -330,6 +330,8 @@ class AddOPBillingForm extends Component {
       this.props.PatientPackageList === undefined
         ? []
         : this.props.PatientPackageList;
+
+    let insurance_type = this.props.existinsurance === undefined ? [] : this.props.existinsurance.length > 0 ? this.props.existinsurance[0].insurance_type : []
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -595,7 +597,7 @@ class AddOPBillingForm extends Component {
                             ),
                             displayTemplate: (row) => {
                               return (
-                                <AlagehFormGroup
+                                row.insurance_yesno === "Y" && insurance_type === "I" ? row.discount_percentage : <AlagehFormGroup
                                   div={{}}
                                   textBox={{
                                     decimal: { allowNegative: false },
@@ -612,12 +614,9 @@ class AddOPBillingForm extends Component {
                                     },
                                     others: {
                                       placeholder: "0.00",
-                                      disabled: this.state.Billexists,
-                                      // this.state.insurance_yesno === "Y"
-                                      //   ? true
-                                      //   : row.trans_package_detail_id > 0
-                                      //     ? true
-                                      //     : this.state.Billexists,
+                                      disabled: row.trans_package_detail_id > 0
+                                        ? true
+                                        : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -631,6 +630,43 @@ class AddOPBillingForm extends Component {
                                   }}
                                 />
                               );
+                              // return (
+                              //   <AlagehFormGroup
+                              //     div={{}}
+                              //     textBox={{
+                              //       decimal: { allowNegative: false },
+                              //       value: row.discount_percentage,
+                              //       className: "txt-fld",
+                              //       name: "discount_percentage",
+                              //       events: {
+                              //         onChange: ondiscountgridcol.bind(
+                              //           this,
+                              //           this,
+                              //           context,
+                              //           row
+                              //         ),
+                              //       },
+                              //       others: {
+                              //         placeholder: "0.00",
+                              //         disabled: this.state.Billexists,
+                              //         // this.state.insurance_yesno === "Y"
+                              //         //   ? true
+                              //         //   : row.trans_package_detail_id > 0
+                              //         //     ? true
+                              //         //     : this.state.Billexists,
+                              //         onBlur: makeZeroIngrid.bind(
+                              //           this,
+                              //           this,
+                              //           context,
+                              //           row
+                              //         ),
+                              //         onFocus: (e) => {
+                              //           e.target.oldvalue = e.target.value;
+                              //         },
+                              //       },
+                              //     }}
+                              //   />
+                              // );
                             },
                           },
                           {
@@ -643,7 +679,7 @@ class AddOPBillingForm extends Component {
 
                             displayTemplate: (row) => {
                               return (
-                                <AlagehFormGroup
+                                row.insurance_yesno === "Y" && insurance_type === "I" ? row.discount_amout : <AlagehFormGroup
                                   div={{}}
                                   textBox={{
                                     decimal: { allowNegative: false },
@@ -660,12 +696,9 @@ class AddOPBillingForm extends Component {
                                     },
                                     others: {
                                       placeholder: "0.00",
-                                      disabled:
-                                        this.state.insurance_yesno === "Y"
-                                          ? true
-                                          : row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
+                                      disabled: row.trans_package_detail_id > 0
+                                        ? true
+                                        : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -1114,6 +1147,7 @@ class AddOPBillingForm extends Component {
 function mapStateToProps(state) {
   return {
     PatientPackageList: state.PatientPackageList,
+    existinsurance: state.existinsurance
   };
 }
 
