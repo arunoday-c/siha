@@ -69,7 +69,34 @@ export function updateLabInvestigation(row) {
     });
   }
 }
-
+export function updateAnalyteGroup(row, rowId) {
+  if (row.hims_m_lab_analyte_id !== undefined) {
+    algaehApiCall({
+      uri: "/investigation/updateAnalyteGroup",
+      module: "laboratory",
+      data: {
+        hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
+        analyte_report_group: row.analyte_report_group,
+      },
+      method: "PUT",
+      onSuccess: (response) => {
+        if (response.data.success === true) {
+          swalMessage({
+            type: "success",
+            title: "Updated successfully ...",
+          });
+        }
+      },
+    });
+  } else {
+    swalMessage({
+      type: "warning",
+      title:
+        "if you want to update this analyte please delete and re add this analyte as you have not updated the setup",
+    });
+    return;
+  }
+}
 export function deleteLabAnalyte(row, rowId) {
   const { state } = this.context;
   let analytes = [...state.analytes];
