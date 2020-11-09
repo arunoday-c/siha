@@ -19,6 +19,7 @@ import {
   deleteLabAnalyte,
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import MyContext from "../../../utils/MyContext.js";
 // import { swalMessage } from "../../../utils/algaehApiCall";
@@ -201,7 +202,7 @@ class LabInvestigation extends Component {
               <div>
                 <div className="row" data-validate="analyte_details">
                   <AlagehAutoComplete
-                    div={{ className: "col-8 mandatory" }}
+                    div={{ className: "col mandatory" }}
                     label={{
                       fieldName: "analyte_id",
                       isImp: true,
@@ -214,6 +215,24 @@ class LabInvestigation extends Component {
                         textField: "AnaDescription",
                         valueField: "hims_d_lab_analytes_id",
                         data: this.props.labanalytes,
+                      },
+                      onChange: this.analyteidhandle,
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 mandatory" }}
+                    label={{
+                      forceLabel: "Report Group",
+                      isImp: true,
+                    }}
+                    selector={{
+                      name: "analyte_report_group",
+                      className: "select-fld",
+                      value: state.analyte_report_group,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                       },
                       onChange: this.analyteidhandle,
                     }}
@@ -278,16 +297,56 @@ class LabInvestigation extends Component {
                             minWidth: 400,
                           },
                         },
+                        {
+                          fieldName: "analyte_report_group",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Report Group" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.analyte_report_group === "M"
+                                  ? "Microscopic"
+                                  : row.analyte_report_group === "P"
+                                  ? "Physical Appearance"
+                                  : "None"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehAutoComplete
+                              div={{ className: "col noLabel" }}
+                              label={{
+                                isImp: true,
+                              }}
+                              selector={{
+                                name: "analyte_report_group",
+                                className: "select-fld",
+                                value: state.analyte_report_group,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                },
+                                onChange: this.analyteidhandle,
+                              }}
+                            />
+                            );
+                          },
+                        },
                       ]}
                       keyId="analyte_id"
                       dataSource={{
                         data: state.analytes,
                       }}
                       isEditable={true}
-                      actions={{
-                        allowEdit: false,
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // actions={{
+                      //   allowEdit: false,
+                      // }}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onDelete: this.deleteLabAnalyte,
                         onEdit: (row) => {},

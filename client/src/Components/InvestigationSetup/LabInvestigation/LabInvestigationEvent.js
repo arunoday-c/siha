@@ -11,13 +11,13 @@ export function AddAnalytes() {
       let insert_analytes = state.insert_analytes;
       let analytes = state.analytes;
       let obj = {
-        analyte_id: state.analyte_id
+        analyte_id: state.analyte_id,
+        analyte_report_group: state.analyte_report_group,
       };
-
       if (state.hims_d_investigation_test_id !== null) {
         let Insertobj = {
           ...obj,
-          test_id: state.hims_d_investigation_test_id
+          test_id: state.hims_d_investigation_test_id,
         };
         insert_analytes.push(Insertobj);
       }
@@ -26,11 +26,12 @@ export function AddAnalytes() {
       if (this.context !== undefined) {
         this.context.updateState({
           analytes: analytes,
+          analyte_report_group: "N",
           insert_analytes: insert_analytes,
-          analyte_id: null
+          analyte_id: null,
         });
       }
-    }
+    },
   });
 }
 
@@ -44,7 +45,7 @@ export function updateLabInvestigation(row) {
   if (state.hims_d_investigation_test_id !== null) {
     let Updateobj = {
       hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
-      record_status: "A"
+      record_status: "A",
     };
     if (row.hims_m_lab_analyte_id !== undefined) {
       update_analytes.push(Updateobj);
@@ -63,7 +64,8 @@ export function updateLabInvestigation(row) {
   if (this.context !== undefined) {
     this.context.updateState({
       analytes: analytes,
-      update_analytes: update_analytes
+      analyte_report_group: "N",
+      update_analytes: update_analytes,
     });
   }
 }
@@ -73,7 +75,7 @@ export function deleteLabAnalyte(row, rowId) {
   let analytes = [...state.analytes];
   let update_analytes = [...state.update_analytes];
   let insert_analytes = [...state.insert_analytes];
-  console.log(analytes, "analytes");
+
   if (state.hims_d_investigation_test_id !== null) {
     swal({
       title: "Are you Sure you want to Delete this Analyte?",
@@ -82,34 +84,33 @@ export function deleteLabAnalyte(row, rowId) {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willUpdate => {
+      cancelButtonText: "No",
+    }).then((willUpdate) => {
       if (willUpdate.value) {
         if (row.hims_m_lab_analyte_id !== undefined) {
-          console.log("hello", row);
           algaehApiCall({
             uri: "/investigation/deleteLabAnalyte",
             module: "laboratory",
             data: {
-              hims_m_lab_analyte_id: row.hims_m_lab_analyte_id
+              hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
             },
             method: "DELETE",
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success === true) {
                 findAndRemoveAnalyte(analytes, row);
                 findAndRemoveAnalyte(update_analytes, row);
                 if (this.context !== undefined) {
                   this.context.updateState({
                     analytes,
-                    update_analytes
+                    update_analytes,
                   });
                 }
                 swalMessage({
                   type: "success",
-                  title: "Deleted successfully ..."
+                  title: "Deleted successfully ...",
                 });
               }
-            }
+            },
           });
         } else {
           findAndRemoveAnalyte(insert_analytes, row);
@@ -119,12 +120,12 @@ export function deleteLabAnalyte(row, rowId) {
             this.context.updateState({
               analytes,
               update_analytes,
-              insert_analytes
+              insert_analytes,
             });
           }
           swalMessage({
             type: "success",
-            title: "Deleted successfully ..."
+            title: "Deleted successfully ...",
           });
         }
       }
@@ -152,7 +153,7 @@ export function texthandle(ctrl, e) {
     obj = { [name]: value };
   }
   this.context.updateState({
-    ...obj
+    ...obj,
   });
 }
 
@@ -165,7 +166,7 @@ export function analyteidhandle(ctrl, e) {
     this.context.updateState({
       [name]: value,
       analyte_type: e.selected.analyte_type,
-      result_unit: e.selected.result_unit
+      result_unit: e.selected.result_unit,
     });
   }
 }
@@ -178,7 +179,7 @@ export function containeridhandle(ctrl, e) {
   if (this.context !== undefined) {
     this.context.updateState({
       [name]: value,
-      container_code: e.selected.container_id
+      container_code: e.selected.container_id,
     });
   }
 }

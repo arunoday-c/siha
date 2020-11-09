@@ -7,7 +7,7 @@ import workBenchModels, {
   deleteNurseNote,
   updateNurseNote,
 } from "../model/doctorsWorkBench";
-
+import { getChronic, addOrUpdateChronic } from "../model/chronics";
 const {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -613,7 +613,7 @@ export default () => {
     releaseConnection
   );
 
-  getPatientVitals;
+  // getPatientVitals;
   // created by irfan : to  getPatientVitals
   api.get(
     "/getPatientVitals",
@@ -1058,6 +1058,25 @@ export default () => {
       .json({
         success: true,
         records: result,
+      })
+      .end();
+  });
+  api.get("/getChronic", getChronic, (req, res) => {
+    let result = req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result,
+      })
+      .end();
+  });
+  api.post("/addChronic", addOrUpdateChronic, (req, res) => {
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        message: "Done",
       })
       .end();
   });

@@ -33,7 +33,7 @@ import _ from "lodash";
 import SickLeave from "./SickLeave/SickLeave";
 import PatientAttendance from "./PatientAttendance/PatientAttendance";
 import PatientMRD from "../MRD/PatientMRD/PatientMRD";
-
+import Chronic from "./chronic";
 const ExamDiagramStandolone = React.lazy(() =>
   import("./ExamDiagramStandolone/ExamDiagramStandolone")
 );
@@ -712,15 +712,18 @@ class PatientProfile extends Component {
           </div>
           <div className="patientDemographic">
             <span>
-              DOB:{""}<b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
+              DOB:{""}
+              <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
 
             <span>
-              Nationality:{""}<b patient_nationality="true">{_pat_profile.nationality}</b>
+              Nationality:{""}
+              <b patient_nationality="true">{_pat_profile.nationality}</b>
             </span>
-          <span>
-            {_pat_profile.identity_document_name}:{""}<b>{_pat_profile.primary_id_no}           </b>
-          </span>
+            <span>
+              {_pat_profile.identity_document_name}:{""}
+              <b>{_pat_profile.primary_id_no} </b>
+            </span>
             {/* <span>
               Payment:{""}<b>
                 {_pat_profile.payment_type === "I"
@@ -733,17 +736,20 @@ class PatientProfile extends Component {
           </div>
           <div className="patientHospitalDetail">
             <span>
-              MRN:{""}<b>{_pat_profile.patient_code}</b>
+              MRN:{""}
+              <b>{_pat_profile.patient_code}</b>
             </span>
             <span>
-              Previous Encounter:{""}<b> 
+              Previous Encounter:{""}
+              <b>
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY | hh:mm a"
                 )}
               </b>
             </span>
             <span>
-              Current Encounter:{""}<b> 
+              Current Encounter:{""}
+              <b>
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY | hh:mm a"
                 )}
@@ -887,64 +893,12 @@ class PatientProfile extends Component {
               </li>
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className={"fas fa-book-medical" + this.state.alergyExist} />
+                  <i
+                    className={"fas fa-book-medical"}
+                  />
                   <section>
                     <span className="top-nav-sec-hdg">Chronic Conditions</span>
-                    <div className="listofADDWrapper">
-                      <table className="listofADDTable">
-                        <thead>
-                          <tr>
-                            <th>
-                              <b>Chronic Conditions</b>
-                            </th>
-                            <th>
-                              <b>Recorded By & Date</b>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {_patient_allergies.map((data, index) => (
-                            <React.Fragment key={index}>
-                              {data.allergyList.map((allergy, aIndex) => (
-                                <tr
-                                  key={aIndex}
-                                  className={
-                                    allergy.allergy_inactive === "Y"
-                                      ? "red"
-                                      : ""
-                                  }
-                                >
-                                  <td>{allergy.allergy_name}</td>
-                                  <td>
-                                    {allergy.onset === "O"
-                                      ? allergy.onset_date
-                                      : allergy.onset === "A"
-                                      ? "Adulthood"
-                                      : allergy.onset === "C"
-                                      ? "Childhood"
-                                      : allergy.onset === "P"
-                                      ? "Pre Terms"
-                                      : allergy.onset === "T"
-                                      ? "Teenage"
-                                      : ""}
-                                  </td>
-                                  <td>
-                                    {allergy.severity === "MO"
-                                      ? "Moderate"
-                                      : allergy.severity === "MI"
-                                      ? "Mild"
-                                      : allergy.severity === "SE"
-                                      ? "Severe"
-                                      : ""}
-                                  </td>
-                                  <td>{allergy.comment}</td>
-                                </tr>
-                              ))}
-                            </React.Fragment>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                    <Chronic />
                   </section>
                 </li>
                 <li>

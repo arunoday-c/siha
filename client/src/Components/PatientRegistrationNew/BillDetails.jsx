@@ -543,6 +543,7 @@ export function BillDetails({
               <div className="row">
                 <div className="col-6">
                   <button
+                  className="btn btn-default btn-small"
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
@@ -553,7 +554,7 @@ export function BillDetails({
                       } else setApplyDiscount(false);
                     }}
                   >
-                    APPLY DISCOUNT
+                   Apply
                   </button>
                 </div>
                 <div className="col-6">
