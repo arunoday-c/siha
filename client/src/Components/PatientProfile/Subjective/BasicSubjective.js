@@ -16,6 +16,7 @@ import Vitals from "../Vitals/Vitals";
 import LabResults from "../Assessment/LabResult/LabResult";
 import RadResults from "../Assessment/RadResult/RadResult";
 import Delta from "../Delta";
+import AllReports from "../AllReports";
 import Enumerable from "linq";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import OrderedList from "../Assessment/OrderedList/OrderedList";
@@ -67,6 +68,7 @@ class BasicSubjective extends Component {
       active_medication: [],
       loadingUnderMedication: true,
       deltaOpen: false,
+      allReportOpen: false,
     };
     this.isMale = Window?.global?.gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 500;
@@ -262,6 +264,11 @@ class BasicSubjective extends Component {
   showDelta() {
     this.setState({
       deltaOpen: !this.state.deltaOpen,
+    });
+  }
+  showAllReport() {
+    this.setState({
+      allReportOpen: !this.state.allReportOpen,
     });
   }
 
@@ -518,6 +525,20 @@ class BasicSubjective extends Component {
                   patient_code: this.props.pat_profile?.patient_code,
                 }}
                 onlyShow={true}
+              />
+              
+              <li>
+                <span className="animated slideInLeft faster">All Reports</span>
+                <i
+                  className="fas fa-file-medical-alt"
+                  onClick={this.showAllReport.bind(this)}
+                />
+              </li>
+              
+              <AllReports
+                state={this.state}
+                visible={this.state.allReportOpen}
+                onCancel={this.showAllReport.bind(this)}
               />
             </ul>
           </div>

@@ -359,7 +359,7 @@ const generateLoanReconilationReport = ($this) => {
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Reconciliation Report - ${$this.state.month}/${$this.state.year}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Reconciliation Report - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
       window.open(origin);
     },
   });
@@ -431,7 +431,7 @@ const generateLeaveGratuityReconilationReport = ($this) => {
 
 
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave-Gratuity-Airfare Reconciliation - ${$this.state.month}/${$this.state.year}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave-Gratuity-Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
       window.open(origin);
     },
   });
