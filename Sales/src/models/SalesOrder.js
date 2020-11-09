@@ -470,6 +470,7 @@ export function postSalesOrder(req, res, next) {
                             "tax_amount",
                             "total_amount",
                             "comments",
+                            "arabic_comments"
                         ];
 
                         _mysql
