@@ -1063,7 +1063,11 @@ let getPatientProfile = (req, res, next) => {
         from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
         inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
         PV.hims_f_patient_visit_id=PE.visit_id inner join hims_d_identity_document ID on ID.hims_d_identity_document_id=P.primary_identity_id  where P.hims_d_patient_id=? and PE.episode_id=? and visit_id=? order by PE.created_date desc limit 1;",
-        values: [inputData.patient_id, inputData.episode_id, inputData.visit_id],
+        values: [
+          inputData.patient_id,
+          inputData.episode_id,
+          inputData.visit_id,
+        ],
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1107,7 +1111,7 @@ let getPatientVitals = (req, res, next) => {
           .executeQuery({
             query: `select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
           case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
-          formula_value, PH.sequence_order, PH.display, AU.user_display_name from hims_f_patient_vitals PV \
+          formula_value, PH.sequence_order, PH.display, AU.user_display_name,PH.box_type from hims_f_patient_vitals PV \
           inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
           left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
           where PV.record_status='A' and PH.record_status='A' ${strQuery}
@@ -2071,7 +2075,7 @@ let addPatientVitals = (req, res, next) => {
         query: "INSERT INTO hims_f_patient_vitals(??) VALUES ?",
         values: input,
         includeValues: insurtColumns,
-        printQuery: false,
+        printQuery: true,
         bulkInsertOrUpdate: true,
         extraValues: {
           hospital_id: req.userIdentity.hospital_id,
@@ -2558,16 +2562,17 @@ let getVitalsHeaderMaster = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name) as \
+          "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name,box_type) as \
     ( \
-    SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name FROM hims_d_vitals_header H \
+    SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name,box_type FROM hims_d_vitals_header H \
      where general='Y' and H.record_status='A' \
       UNION ALL \
-      select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name from hims_d_vitals_header H,hims_m_department_vital_mapping M \
+      select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name,box_type from hims_d_vitals_header H,hims_m_department_vital_mapping M \
      where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
     ) \
-    SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name from vitals",
+    SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name,box_type from vitals",
         values: [req.userIdentity.sub_department_id],
+        printQuery: true,
       })
       .then((result) => {
         const vitalDetails = new LINQ(result)
@@ -2669,14 +2674,14 @@ let getPatientHistory = (req, res, next) => {
                 key == "SOH"
                   ? "Social History"
                   : key === "MEH"
-                    ? "Medical History"
-                    : key === "SGH"
-                      ? "Surgical History"
-                      : key === "FMH"
-                        ? "Family History"
-                        : key === "BRH"
-                          ? "Birth History"
-                          : "",
+                  ? "Medical History"
+                  : key === "SGH"
+                  ? "Surgical History"
+                  : key === "FMH"
+                  ? "Family History"
+                  : key === "BRH"
+                  ? "Birth History"
+                  : "",
               groupDetail: detail,
             };
           })
@@ -2844,8 +2849,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : "";
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs,
       ]);
@@ -2856,10 +2861,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : inputData.significant_signs != null
-              ? ","
-              : "";
+          ? ","
+          : inputData.significant_signs != null
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs,
       ]);

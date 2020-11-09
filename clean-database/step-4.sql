@@ -664,3 +664,10 @@ INSERT INTO `algaeh_d_reports` (`report_id`, `report_name`, `report_name_for_hea
   `updated_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`hims_f_chronic_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- For vitals 
+alter table hims_d_vitals_header add column box_type enum ('TEXT','NUMBER') default 'NUMBER'
+after mandatory;
+
+ALTER TABLE hims_f_patient_vitals
+CHANGE COLUMN `vital_value` `vital_value` VARCHAR(15) NULL DEFAULT NULL ;

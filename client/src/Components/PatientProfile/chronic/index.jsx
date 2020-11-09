@@ -8,6 +8,7 @@ export default function ({ checkChronicExists }) {
   const [data, setData] = useState([]);
   useEffect(() => {
     chronicList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function chronicList() {
