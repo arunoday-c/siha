@@ -349,7 +349,7 @@ class LabInvestigation extends Component {
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onDelete: this.deleteLabAnalyte,
-                        // onEdit: (row) => {},
+                        onEdit: (row) => {},
                         onDone: this.updateLabInvestigation,
                       }}
                     />
