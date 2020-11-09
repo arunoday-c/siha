@@ -407,7 +407,7 @@ let insertOrderedServices = (req, res, next) => {
                     }
                   );
 
-                  // console.log("insert_order_services", insert_order_services);
+                  console.log("insert_order_services", insert_order_services);
                   if (insert_order_services.length > 0) {
                     _mysql
                       .executeQueryWithTransaction({
@@ -539,9 +539,9 @@ let insertOrderedServices = (req, res, next) => {
 
                       let services = [];
                       input["billdetails"].forEach((e) => {
-                        if (e.pre_approval == "Y") {
-                          services.push(e.services_id);
-                        }
+                        // if (e.pre_approval == "Y") {
+                        services.push(e.services_id);
+                        // }
                       });
 
                       if (services.length > 0) {
@@ -594,7 +594,7 @@ let insertOrderedServices = (req, res, next) => {
                               _mysql
                                 .executeQueryWithTransaction({
                                   query:
-                                    " INSERT INTO hims_f_service_approval(??) VALUES ?",
+                                    "INSERT INTO hims_f_service_approval(??) VALUES ?",
                                   values: detailsPush,
                                   includeValues: insurtCols,
                                   replcaeKeys: {
@@ -2428,10 +2428,12 @@ function deleteOrderServices(options) {
                 printQuery: true,
               })
               .then((delete_result) => {
+                console.log("delete_result")
                 resolve();
               })
               .catch((error) => {
-                options.next(e);
+                console.log("error", error)
+                options.next(error);
               });
           })
           .catch((error) => {
