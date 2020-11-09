@@ -202,7 +202,7 @@ class LabInvestigation extends Component {
               <div>
                 <div className="row" data-validate="analyte_details">
                   <AlagehAutoComplete
-                    div={{ className: "col-8 mandatory" }}
+                    div={{ className: "col mandatory" }}
                     label={{
                       fieldName: "analyte_id",
                       isImp: true,
@@ -220,9 +220,9 @@ class LabInvestigation extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-8 mandatory" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
-                      fieldName: "analyte_group",
+                      forceLabel: "Report Group",
                       isImp: true,
                     }}
                     selector={{
@@ -301,7 +301,7 @@ class LabInvestigation extends Component {
                           fieldName: "analyte_report_group",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "analytes group" }}
+                              label={{ forceLabel: "Report Group" }}
                             />
                           ),
                           displayTemplate: (row) => {
@@ -315,6 +315,27 @@ class LabInvestigation extends Component {
                               </span>
                             );
                           },
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehAutoComplete
+                              div={{ className: "col noLabel" }}
+                              label={{
+                                isImp: true,
+                              }}
+                              selector={{
+                                name: "analyte_report_group",
+                                className: "select-fld",
+                                value: state.analyte_report_group,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                },
+                                onChange: this.analyteidhandle,
+                              }}
+                            />
+                            );
+                          },
                         },
                       ]}
                       keyId="analyte_id"
@@ -322,13 +343,13 @@ class LabInvestigation extends Component {
                         data: state.analytes,
                       }}
                       isEditable={true}
-                      actions={{
-                        allowEdit: false,
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // actions={{
+                      //   allowEdit: false,
+                      // }}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onDelete: this.deleteLabAnalyte,
-                        onEdit: (row) => {},
+                        // onEdit: (row) => {},
                         onDone: this.updateLabInvestigation,
                       }}
                     />

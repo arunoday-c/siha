@@ -894,7 +894,7 @@ class PatientProfile extends Component {
               <ul className="float-right patient-quick-info">
                 <li>
                   <i
-                    className={"fas fa-book-medical" + this.state.alergyExist}
+                    className={"fas fa-book-medical"}
                   />
                   <section>
                     <span className="top-nav-sec-hdg">Chronic Conditions</span>

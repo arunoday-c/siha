@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import "./chronic.scss";
 import { IcdCodeForChronic } from "../Subjective/SubjectiveHandler";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 export default function () {
@@ -67,10 +68,10 @@ export default function () {
     });
   }
   return (
-    <>
-      <div className="actions">
+    <div className="cronicCntr">
+      <div className="cronicActions">
         <button
-          className="btn btn-primary btn-circle active"
+          className="cronicBtn"
           onClick={clickChronicAdd}
         >
           <i className="fas fa-plus" />
@@ -102,7 +103,7 @@ export default function () {
                     onClick={() => {
                       clickToActiveOrInactiveChronic(item);
                     }}
-                    className={item.chronic_inactive === "N" ? "red" : "green"}
+                    className={item.chronic_inactive === "N" ? "btn btn-small btn-red" : "btn btn-small btn-green"}
                   >
                     {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
                   </button>
@@ -121,6 +122,6 @@ export default function () {
           </tbody>
         </table>
       </div>
-    </>
+      </div>
   );
 }
