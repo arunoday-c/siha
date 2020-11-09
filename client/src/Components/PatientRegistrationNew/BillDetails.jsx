@@ -217,10 +217,16 @@ export function BillDetails({
       setBillData(null);
       setCardData(null);
       setPromoCode(null);
-      setValue("promo_code", "");
-      // setValue("discount_percentage", "0");
-      setValue("discount_amout", "0");
+      // setValue("promo_code", "");
+      // setValue("dis_amout", "0");
+      // setValue("dis_percentage", "0");
+      // //     const [dis_amout, setDisAmount] = useState(0);
+      // // const [dis_percentage, setDisPerc] = useState(0);
+      // // setValue("discount_percentage", "0");
+      // setValue("discount_amout", "0");
       setDiscountAmount(0);
+      setDisAmount(0);
+      setDisPerc(0);
       // setDiscountPerc(0);
     }
     //eslint-disable-next-line
@@ -543,7 +549,7 @@ export function BillDetails({
               <div className="row">
                 <div className="col-6">
                   <button
-                  className="btn btn-default btn-small"
+                    className="btn btn-default btn-small"
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
@@ -554,7 +560,7 @@ export function BillDetails({
                       } else setApplyDiscount(false);
                     }}
                   >
-                   Apply
+                    Apply
                   </button>
                 </div>
                 <div className="col-6">
