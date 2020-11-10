@@ -115,8 +115,8 @@ export default {
                     const _total_loan_amount =
                       _loanList.length > 0
                         ? _.chain(_loanList).sumBy((s) =>
-                            parseFloat(s.pending_loan)
-                          )
+                          parseFloat(s.pending_loan)
+                        )
                         : 0;
                     let _gratuity = 0;
                     let _hims_f_end_of_service_id = null;
@@ -185,10 +185,10 @@ export default {
                     _header[0]["final_settlement_status"] === "PEN"
                       ? "Pending"
                       : _header[0]["final_settlement_status"] === "AUT"
-                      ? "Authorize"
-                      : _header[0]["final_settlement_status"] === "SET"
-                      ? "Settled"
-                      : "",
+                        ? "Authorize"
+                        : _header[0]["final_settlement_status"] === "SET"
+                          ? "Settled"
+                          : "",
                   // flag: "Settled",
                   remarks: _header[0]["remarks"],
                   data: {
@@ -206,7 +206,7 @@ export default {
                   //   : true,
                   disableSave:
                     _header[0]["final_settlement_status"] === "SET" ||
-                    _header[0]["final_settlement_status"] === "AUT"
+                      _header[0]["final_settlement_status"] === "AUT"
                       ? true
                       : false,
                   loans: details[0],
@@ -864,7 +864,7 @@ export default {
           })
           .catch((error) => {
             _mysql.rollBackTransaction(() => {
-              next(e);
+              next(error);
             });
           });
       }
@@ -962,9 +962,9 @@ export default {
                           final_settlement_data[0].final_settlement_number,
                           inputParam.ScreenCode,
                           "Final Settlement Process for " +
-                            final_settlement_data[0].employee_code +
-                            "/" +
-                            final_settlement_data[0].full_name,
+                          final_settlement_data[0].employee_code +
+                          "/" +
+                          final_settlement_data[0].full_name,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                         ],
