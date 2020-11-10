@@ -7,31 +7,27 @@ export async function bulkInvoiceNumber(req, res, next) {
   const _mysql = new algaehMysql();
   const { vist_ids } = req.body;
   try {
-
-    let all_numgen_codes = []
+    let all_numgen_codes = [];
 
     for (let i = 0; i < vist_ids.length; i++) {
-      const results = await _mysql
-        .generateRunningNumber({
-          user_id: req.userIdentity.algaeh_d_app_user_id,
-          numgen_codes: ["INV_NUM"],
-          table_name: "hims_f_app_numgen",
-        });
+      const results = await _mysql.generateRunningNumber({
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["INV_NUM"],
+        table_name: "hims_f_app_numgen",
+      });
       _mysql.commitTransaction();
       // all_numgen_codes.push({ ...results, [vist_ids[i]]: results["INV_NUM"] });
       all_numgen_codes.push({ ...results, visit_id: vist_ids[i] });
     }
-    req.allnumGen = all_numgen_codes
-    next()
+    req.allnumGen = all_numgen_codes;
+    next();
     // console.log("all_numgen_codes", all_numgen_codes);
-
-
   } catch (e) {
     _mysql.rollBackTransaction(() => {
       next(e);
     });
   }
-};
+}
 
 export function bulkInvoiceGeneration(req, res, next) {
   const _mysql = new algaehMysql();
@@ -73,7 +69,6 @@ export function bulkInvoiceGeneration(req, res, next) {
         printQuery: true,
       })
       .then((groupped) => {
-
         _.chain(groupped)
           .groupBy((g) => g.visit_id)
           .forEach(async (patientVist, vKey) => {
@@ -92,17 +87,17 @@ export function bulkInvoiceGeneration(req, res, next) {
               card_number,
               card_holder_age,
               card_holder_gender,
-              insurance_type
+              insurance_type,
             } = _.first(patientVist);
             counter++;
-
 
             // .then((generatedNumbers) => {
             // console.log("visit_id", visit_id)
             // console.log("allnumGen", req.allnumGen, typeof req.allnumGen)
-            const generatedNumbers = req.allnumGen.find(f => f.visit_id === visit_id)
+            const generatedNumbers = req.allnumGen.find(
+              (f) => f.visit_id === visit_id
+            );
             // console.log("generatedNumbers", generatedNumbers)
-
 
             _mysql
               .executeQueryWithTransaction({
@@ -167,7 +162,7 @@ export function bulkInvoiceGeneration(req, res, next) {
                   insurance_provider_id,
                   sub_insurance_id,
                   network_id,
-                  network_id,
+                  network_office_id, //network_id,
                   card_number,
                   policy_number,
                   card_holder_name,
