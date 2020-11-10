@@ -210,8 +210,14 @@ export default {
               inner join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id \
               inner join hims_d_earning_deduction ED on SC.contributions_id = ED.hims_d_earning_deduction_id \
               where employee_id in (?) and year=? and month=? and salary_type='LS' and ED.component_type='EEP' and amount>0;\
-              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N' and employee_id in (?);\
-              select employee_id,actual_to_date,to_date, DATEDIFF(actual_to_date, to_date) AS early_join_days from hims_f_leave_application where  early_rejoin='Y' and employee_id in (?) and  date(to_date) BETWEEN date(?) and date(?);"
+              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N' and employee_id in (?);"
+            // select employee_id,actual_to_date,to_date, DATEDIFF(actual_to_date, to_date) AS early_join_days from hims_f_leave_application where  early_rejoin='Y' and employee_id in (?) and  date(to_date) BETWEEN date(?) and date(?);"
+
+            // console.log("input.leave_salary ===========", input.leave_salary)
+            if (input.leave_salary == null || input.leave_salary == undefined || input.leave_salary === "N") {
+              str_Query += "select employee_id,actual_to_date,to_date, DATEDIFF(actual_to_date, to_date) AS early_join_days from hims_f_leave_application where  early_rejoin='Y' and employee_id in (?) and  date(to_date) BETWEEN date(?) and date(?);"
+            }
+
             _mysql
               .executeQueryWithTransaction({
                 query:
@@ -300,17 +306,37 @@ export default {
                 printQuery: true,
               })
               .then((Salaryresults) => {
-                const previous_month_Salary = Salaryresults[20]
+
+                const previous_month_Salary = input.leave_salary == null || input.leave_salary == undefined || input.leave_salary === "N" ? Salaryresults[20] : []
+                // const previous_month_Salary = Salaryresults[20]
+                // console.log("previous_month_Salary ===========", previous_month_Salary)
                 // const early_join_employee = Salaryresults[21]
                 if (previous_month_Salary.length > 0) {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
+
+                  if (req.connection == null) {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {
+                        invalid_input: true,
+                        message: "Previous month salary payment is pending for the assigned filter.",
+                      };
+                      next();
+                    });
+                  } else {
+                    req.flag = 1
                     req.records = {
-                      invalid_input: true,
                       message: "Previous month salary payment is pending for the assigned filter.",
                     };
                     next();
-                  });
+                  }
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  //   req.records = {
+                  //     invalid_input: true,
+                  //     message: "Previous month salary payment is pending for the assigned filter.",
+                  //   };
+                  //   next();
+                  // });
                   return;
                 }
                 let _headerQuery = "";

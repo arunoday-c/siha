@@ -3019,9 +3019,9 @@ let addSickLeave = (req, res, next) => {
           _mysql
             .executeQuery({
               query: `insert into hims_f_patient_sick_leave(patient_id, visit_id, episode_id, from_date, \
-              to_date, no_of_days, remarks,reported_sick,accompanying_patient,patient_unfit,patient_fit,advice_light_duty,pat_need_emp_care,
+              to_date, no_of_days, remarks,diagnosis_data,reported_sick,accompanying_patient,patient_unfit,patient_fit,advice_light_duty,pat_need_emp_care,
               created_date,created_by,updated_date,updated_by)
-              values(?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?)`,
+              values(?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?)`,
               values: [
                 input.patient_id,
                 input.visit_id,
@@ -3030,6 +3030,7 @@ let addSickLeave = (req, res, next) => {
                 input.to_date,
                 input.no_of_days,
                 input.remarks,
+                input.diagnosis_data,
                 input.reported_sick ? "Y" : "N",
                 input.accompanying_patient ? "Y" : "N",
                 input.patient_unfit ? "Y" : "N",
@@ -3070,7 +3071,7 @@ let updateSickLeave = (req, res, next) => {
 
     _mysql
       .executeQuery({
-        query: `update hims_f_patient_sick_leave  set from_date=?, to_date=?, no_of_days=?,remarks=?,reported_sick=?,accompanying_patient=?,
+        query: `update hims_f_patient_sick_leave  set from_date=?, to_date=?, no_of_days=?,remarks=?,diagnosis_data=?,reported_sick=?,accompanying_patient=?,
           patient_unfit=?,patient_fit=?,advice_light_duty=?,pat_need_emp_care=?,updated_date=?,updated_by=?
           where hims_f_patient_sick_leave_id=?`,
         values: [
@@ -3078,6 +3079,7 @@ let updateSickLeave = (req, res, next) => {
           input.to_date,
           input.no_of_days,
           input.remarks,
+          input.diagnosis_data,
           input.reported_sick ? "Y" : "N",
           input.accompanying_patient ? "Y" : "N",
           input.patient_unfit ? "Y" : "N",

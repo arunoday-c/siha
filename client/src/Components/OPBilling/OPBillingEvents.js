@@ -338,12 +338,14 @@ const selectVisit = ($this) => {
               }
             );
           } else {
+            AlgaehLoader({ show: false });
             swalMessage({
               title:
                 "All service is Pre-Approval required, Please wait for Approval.",
               type: "warning",
             });
           }
+
         } else {
           AlgaehLoader({ show: false });
 
@@ -437,7 +439,7 @@ const getPatientDetails = ($this, patient_code) => {
         if (
           $this.context.userToken.local_vat_applicable === "N" &&
           $this.context.userToken.default_nationality ===
-            data.patientRegistration.nationality_id
+          data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         } else {

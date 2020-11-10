@@ -3,7 +3,7 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
-      const moment = options.moment;
+      // const moment = options.moment;
 
       let input = {};
       let params = options.args.reportParams;
@@ -32,7 +32,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .then((ress) => {
           let final_result = ress;
-          //   final_result = final_result.concat(ress[1]);
           //   console.log("final_result", final_result);
 
           const result = {

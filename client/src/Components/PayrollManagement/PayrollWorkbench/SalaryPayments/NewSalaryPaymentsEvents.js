@@ -206,7 +206,7 @@ const selectAllPaySlip = ($this, e) => {
   const newData = data.map((item, index) => {
     return {
       ...item,
-      generate_pay_slip: isChecked ? "Y" : "N",
+      generate_pay_slip: item.salary_paid === "Y" ? isChecked ? "Y" : "N" : "N",
     };
   });
 
@@ -322,7 +322,7 @@ const generateLoanReconilationReport = ($this) => {
         reportParams: [
           {
             name: "hospital_id",
-            value:  $this.state.inputs.hospital_id,
+            value: $this.state.inputs.hospital_id,
           },
           {
             name: "year",
@@ -330,11 +330,11 @@ const generateLoanReconilationReport = ($this) => {
           },
           {
             name: "month",
-            value:  $this.state.inputs.month,
+            value: $this.state.inputs.month,
           },
           {
             name: "department_id",
-            value:  $this.state.inputs.department_id,
+            value: $this.state.inputs.department_id,
           },
           {
             name: "sub_department_id",
@@ -342,15 +342,15 @@ const generateLoanReconilationReport = ($this) => {
           },
           {
             name: "designation_id",
-            value:  $this.state.inputs.designation_id,
+            value: $this.state.inputs.designation_id,
           },
           {
             name: "group_id",
-            value:  $this.state.inputs.group_id,
+            value: $this.state.inputs.group_id,
           },
           {
             name: "hims_d_employee_id",
-            value:  $this.state.inputs.hims_d_employee_id,
+            value: $this.state.inputs.hims_d_employee_id,
           },
         ],
         outputFileType: "EXCEL" //"EXCEL", //"PDF",
@@ -359,7 +359,7 @@ const generateLoanReconilationReport = ($this) => {
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Reconciliation Report - ${$this.state.month}/${$this.state.year}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Reconciliation Report - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
       window.open(origin);
     },
   });
@@ -407,7 +407,7 @@ const generateLeaveGratuityReconilationReport = ($this) => {
           },
           {
             name: "group_id",
-            value:$this.state.inputs.group_id,
+            value: $this.state.inputs.group_id,
           },
           {
             name: "hims_d_employee_id",
@@ -431,7 +431,7 @@ const generateLeaveGratuityReconilationReport = ($this) => {
 
 
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave-Gratuity-Airfare Reconciliation - ${$this.state.month}/${$this.state.year}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave-Gratuity-Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
       window.open(origin);
     },
   });
@@ -445,5 +445,5 @@ export {
   selectAll,
   generatePaySlip,
   selectToGeneratePaySlip,
-  selectAllPaySlip,generateLoanReconilationReport,generateLeaveGratuityReconilationReport,
+  selectAllPaySlip, generateLoanReconilationReport, generateLeaveGratuityReconilationReport,
 };

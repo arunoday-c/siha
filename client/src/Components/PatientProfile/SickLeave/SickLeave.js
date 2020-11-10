@@ -25,6 +25,7 @@ class SickLeave extends Component {
       to_date: null,
       no_of_days: 0,
       remarks: "",
+      diagnosis_data:"",
       reported_sick: false,
       accompanying_patient: false,
       patient_unfit: false,
@@ -192,6 +193,12 @@ class SickLeave extends Component {
         type: "warning",
       });
       return;
+    }else if (this.state.diagnosis_data.length === 0) {
+      swalMessage({
+        title: "Diagnosis cannot be blank",
+        type: "warning",
+      });
+      return;
     }
 
     algaehApiCall({
@@ -221,6 +228,12 @@ class SickLeave extends Component {
     } else if (this.state.remarks.length === 0) {
       swalMessage({
         title: "Remarks cannot be blank",
+        type: "warning",
+      });
+      return;
+    }else if (this.state.diagnosis_data.length === 0) {
+      swalMessage({
+        title: "Diagnosis cannot be blank",
         type: "warning",
       });
       return;
@@ -448,6 +461,21 @@ class SickLeave extends Component {
                 </div>
                 <div className="row">
                   {" "}
+                  
+                  <div className="col-12 form-group  mandatory">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Diagnosis",
+                        isImp: true,
+                      }}
+                    />
+                    <textarea
+                      value={this.state.diagnosis_data}
+                      name="diagnosis_data"
+                      onChange={this.textAreaEvent.bind(this)}
+                      // disabled={this.state.disableEdit}
+                    />
+                  </div>
                   <div className="col-12 form-group  mandatory">
                     <AlgaehLabel
                       label={{

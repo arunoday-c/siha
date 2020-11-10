@@ -33,7 +33,7 @@ export default {
             sec_copay_amount, pre_approval, commission_given from hims_f_billing_details BD,hims_d_service_type ST,hims_d_services S\
             where BD.record_status='A' and ST.record_status='A' and S.record_status='A' and \
             BD.service_type_id=ST.hims_d_service_type_id and BD.services_id=S.hims_d_services_id\
-            and hims_f_billing_header_id in (?);\
+            and hims_f_billing_header_id in (?) and BD.cancel_yes_no ='N';\
             select 'POS' as trans_from, hims_f_pharmacy_pos_header_id,patient_id, visit_id,\
             hims_f_pharmacy_pos_detail_id,PD.pharmacy_pos_header_id,12 as service_type_id,'Pharmacy' as service_type,\
             PD.service_id as services_id, S.service_name, S.cpt_code, PD.quantity,\
@@ -51,7 +51,7 @@ export default {
             PH.visit_id=? and PH.record_status='A' and PH.record_status='A';",
                 values: [bill_header_ids, req.query.visit_id],
 
-                printQuery: false,
+                printQuery: true,
               })
               .then((detailResult) => {
                 _mysql.releaseConnection();
@@ -386,7 +386,8 @@ export default {
           return;
         }
       } else {
-        differenceStatement = "if(claim_status='R1', IH.insurance_statement_id,if(claim_status='R2', IH.insurance_statement_id_2, IH.insurance_statement_id_3))=?";
+        differenceStatement =
+          "if(claim_status='R1', IH.insurance_statement_id,if(claim_status='R2', IH.insurance_statement_id_2, IH.insurance_statement_id_3))=?";
         // "if(claim_status='R1',insurance_statement_id,if(claim_status='R2',insurance_statement_id_2,insurance_statement_id_3))"
         queryValue = [
           insurance_statement_id,
