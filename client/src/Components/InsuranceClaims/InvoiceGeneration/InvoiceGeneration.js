@@ -96,7 +96,14 @@ class InvoiceGeneration extends Component {
       });
     }
   }
-  ClearData = () => {
+  ClearData = (callBack) => {
+    let nonChangeable = {};
+    if (!callBack) {
+      nonChangeable = {
+        creidt_invoice: false,
+        cash_invoice: true,
+      };
+    }
     this.setState(
       {
         hims_f_invoice_header_id: null,
@@ -134,12 +141,14 @@ class InvoiceGeneration extends Component {
         secondary_card_number: "---",
         secondary_effective_end_date: "---",
         select_invoice: "CH",
-        creidt_invoice: false,
-        cash_invoice: true,
+        ...nonChangeable,
         dataExists: false,
         Invoice_Detail: [],
       },
       () => {
+        if (typeof callBack === "function") {
+          callBack();
+        }
         this.props.initialStateOrders({
           redux: {
             type: "ORDERED_SERVICES_GET_DATA",
@@ -234,7 +243,6 @@ class InvoiceGeneration extends Component {
 
   //created by Adnan
   render() {
-    console.log("Here im ");
     return (
       <div>
         <BreadCrumb
