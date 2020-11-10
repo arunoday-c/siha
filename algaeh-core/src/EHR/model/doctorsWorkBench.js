@@ -1091,47 +1091,85 @@ let getPatientVitals = (req, res, next) => {
 
   try {
     let inputs = req.query;
+    let strQuery = "";
+    if (inputs.visit_id > 0) {
+      strQuery += " and visit_id= " + inputs.visit_id;
+    }
+    if (inputs.patient_id > 0) {
+      strQuery += " and patient_id= " + inputs.patient_id;
+    }
     _mysql
       .executeQuery({
-        query:
-          "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'",
+        query: `select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
+      case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
+      formula_value, PH.sequence_order, PH.display, AU.user_display_name,PH.box_type,PV.created_date from hims_f_patient_vitals PV \
+      inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
+      left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
+      where PV.record_status='A' and PH.record_status='A' ${strQuery}
+       group by PV.created_date  , vital_id order by hims_f_patient_vitals_id  desc;`,
         printQuery: true,
       })
-      .then((rec) => {
-        const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
-
-        let strQuery = "";
-        if (inputs.visit_id > 0) {
-          strQuery += " and visit_id= " + inputs.visit_id;
-        }
-        if (inputs.patient_id > 0) {
-          strQuery += " and patient_id= " + inputs.patient_id;
-        }
-        _mysql
-          .executeQuery({
-            query: `select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
-          case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
-          formula_value, PH.sequence_order, PH.display, AU.user_display_name,PH.box_type from hims_f_patient_vitals PV \
-          inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
-          left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
-          where PV.record_status='A' and PH.record_status='A' ${strQuery}
-           group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0,${_limit} ;`,
-            printQuery: true,
+      .then((result) => {
+        _mysql.releaseConnection();
+        const vitals = _.chain(result)
+          .groupBy((g) => g.created_date)
+          .map((details, key) => {
+            const { created_date, user_display_name } = _.head(details);
+            return {
+              recorded_by: user_display_name,
+              dateTime: created_date,
+              list: details,
+            };
           })
-          .then((result) => {
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
-          })
-          .catch((error) => {
-            _mysql.releaseConnection();
-            next(error);
-          });
+          .value();
+        req.records = vitals;
+        next();
       })
       .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
+    // _mysql
+    //   .executeQuery({
+    //     query:
+    //       "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'",
+    //     printQuery: true,
+    //   })
+    //   .then((rec) => {
+    //     const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
+
+    //     let strQuery = "";
+    //     if (inputs.visit_id > 0) {
+    //       strQuery += " and visit_id= " + inputs.visit_id;
+    //     }
+    //     if (inputs.patient_id > 0) {
+    //       strQuery += " and patient_id= " + inputs.patient_id;
+    //     }
+    //     _mysql
+    //       .executeQuery({
+    //         query: `select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
+    //       case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
+    //       formula_value, PH.sequence_order, PH.display, AU.user_display_name,PH.box_type from hims_f_patient_vitals PV \
+    //       inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
+    //       left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
+    //       where PV.record_status='A' and PH.record_status='A' ${strQuery}
+    //        group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0,${_limit} ;`,
+    //         printQuery: true,
+    //       })
+    //       .then((result) => {
+    //         _mysql.releaseConnection();
+    //         req.records = result;
+    //         next();
+    //       })
+    //       .catch((error) => {
+    //         _mysql.releaseConnection();
+    //         next(error);
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     _mysql.releaseConnection();
+    //     next(error);
+    //   });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

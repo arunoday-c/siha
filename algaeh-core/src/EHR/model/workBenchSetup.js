@@ -21,10 +21,12 @@ let addVitalMasterHeader = (req, res, next) => {
         _mysql
           .executeQuery({
             query:
-              "INSERT INTO `hims_d_vitals_header` (vitals_name, uom,general,display,record_status,created_date, created_by, updated_date, updated_by,hims_d_vitals_header_id)\
-      VALUE(?,?,?,?,?,?,?,?,?,?)",
+              "INSERT INTO `hims_d_vitals_header` (vitals_name,vital_short_name,sequence_order, uom,general,display,record_status,created_date, created_by, updated_date, updated_by,hims_d_vitals_header_id)\
+      VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.vitals_name,
+              input.vital_short_name,
+              input.sequence_order,
               input.uom,
               input.general,
               input.display,
@@ -381,7 +383,7 @@ let getVitalMasterHeader = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_vitals_header_id,uom, vitals_name,general,display,record_status,box_type FROM hims_d_vitals_header where " +
+          "select hims_d_vitals_header_id,uom, vitals_name,vital_short_name,LAST_INSERT_ID(sequence_order) as last_inserted,sequence_order,general,display,record_status,box_type FROM hims_d_vitals_header where " +
           where.condition +
           " order by hims_d_vitals_header_id desc",
         values: [...where.values],
@@ -435,10 +437,12 @@ let updateVitalMasterHeader = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "UPDATE `hims_d_vitals_header` SET vitals_name=?,uom=?,general=?,display=?,record_status=?,\
+          "UPDATE `hims_d_vitals_header` SET vitals_name=?,vital_short_name=?,sequence_order=?,uom=?,general=?,display=?,record_status=?,\
       updated_date=?, updated_by=?  WHERE  `hims_d_vitals_header_id`=?;",
         values: [
           input.vitals_name,
+          input.vital_short_name,
+          input.sequence_order,
           input.uom,
           input.general,
           input.display,
