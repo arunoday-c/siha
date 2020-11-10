@@ -110,6 +110,7 @@ class AddOPBillingForm extends Component {
                 let data = response.data.records;
 
                 if (data.billdetails[0].pre_approval === "Y") {
+                  AlgaehLoader({ show: false });
                   successfulMessage({
                     message:
                       "Selected Service is Pre-Approval required, you don't have rights to bill.",
