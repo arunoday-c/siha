@@ -1115,10 +1115,13 @@ let getPatientVitals = (req, res, next) => {
           inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
           left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
           where PV.record_status='A' and PH.record_status='A' ${strQuery}
-           group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0,${_limit} ;`,
+          group by PV.created_date ,vital_id
+           order by hims_f_patient_vitals_id  desc LIMIT 0,${_limit} ;`,
             printQuery: true,
+            //  group by visit_date , vital_id
           })
           .then((result) => {
+            debugger;
             _mysql.releaseConnection();
             req.records = result;
             next();

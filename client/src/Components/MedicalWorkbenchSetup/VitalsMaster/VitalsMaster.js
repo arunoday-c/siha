@@ -19,6 +19,9 @@ class VitalsMaster extends Component {
     super(props);
     this.state = {
       vitals_name: "",
+      vital_short_name: "",
+      sequence_order: null,
+      min_seq_number: null,
       uom: "",
       vitalsHeader: [],
       vitalsDetail: [],
@@ -74,6 +77,8 @@ class VitalsMaster extends Component {
   resetSaveState() {
     this.setState({
       vitals_name: "",
+      vital_short_name: "",
+      sequence_order: null,
       uom: "",
       gender: "",
       min_age: "",
@@ -283,6 +288,8 @@ class VitalsMaster extends Component {
       method: "PUT",
       data: {
         vitals_name: data.vitals_name,
+        vital_short_name: data.vital_short_name,
+        sequence_order: data.sequence_order,
         uom: data.uom,
         general: data.general,
         display: data.display,
@@ -348,9 +355,12 @@ class VitalsMaster extends Component {
             .where((w) => w.general === "N")
             .toArray();
 
+          let min_seq = parseInt(response.data.records[0].last_inserted);
           this.setState({
             vitalsHeader: response.data.records,
             nonGeneralVitals: x,
+            min_seq_number: min_seq,
+            sequence_order: min_seq + 1,
           });
         }
       },
@@ -403,6 +413,8 @@ class VitalsMaster extends Component {
               method: "POST",
               data: {
                 vitals_name: this.state.vitals_name,
+                vital_short_name: this.state.vital_short_name,
+                sequence_order: this.state.sequence_order,
                 uom: this.state.uom,
                 general: this.state.general === true ? "Y" : "N",
                 display: this.state.display === true ? "Y" : "N",
@@ -500,6 +512,52 @@ class VitalsMaster extends Component {
                     },
                   }}
                 />
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "vital short name",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "vital_short_name",
+                    value: this.state.vital_short_name,
+                    events: {
+                      onChange: this.changeTexts.bind(this),
+                    },
+                    others: {
+                      required: true,
+                    },
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "sequence order",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "sequence_order",
+                    value: this.state.sequence_order,
+                    number: {
+                      allowNegative: false,
+                    },
+                    others: {
+                      type: "number",
+                      required: true,
+                      min: this.state.min_seq_number + 1,
+                      errormessage: `Available sequence number is ${
+                        this.state.min_seq_number + 1
+                      }`,
+                      // disabled: props.state.fromSearch || false,
+                    },
+
+                    events: {
+                      onChange: this.changeTexts.bind(this),
+                    },
+                  }}
+                />
 
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -589,6 +647,76 @@ class VitalsMaster extends Component {
                                 },
                               }}
                             />
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "vital_short_name",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "vital short name" }}
+                          />
+                        ),
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "vital_short_name",
+                                value: row.vital_short_name,
+                                disabled: row.record_status === "I",
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
+                                },
+                                others: {
+                                  errormessage: "Short Name - cannot be blank",
+                                  required: true,
+                                },
+                              }}
+                            />
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "sequence_order",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "sequence order" }}
+                          />
+                        ),
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehFormGroup
+                              textBox={{
+                                className: "txt-fld",
+                                name: "sequence_order",
+                                value: row.sequence_order,
+                                number: {
+                                  allowNegative: false,
+                                },
+                                others: {
+                                  type: "number",
+                                  required: true,
+                                  min: row.sequence_order,
+                                  disabled: row.record_status === "I",
+                                  // disabled: props.state.fromSearch || false,
+                                },
+
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
+                                },
+                              }}
+                            />
+                            // <span>{row.sequence_order}</span>
                           );
                         },
                       },
@@ -1015,6 +1143,7 @@ class VitalsMaster extends Component {
                               );
                             },
                           },
+
                           {
                             fieldName: "gender",
                             label: (
