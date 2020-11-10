@@ -81,8 +81,8 @@ class ConsumptionItems extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.ConsumptionIOputs);
   }
-  itemchangeText(context, e) {
-    ConsumptionItemsEvents().itemchangeText(this, context, e);
+  itemchangeText(context, e, ctrl) {
+    ConsumptionItemsEvents().itemchangeText(this, context, e, ctrl);
   }
 
   UomchangeTexts(context, e) {
@@ -151,7 +151,7 @@ class ConsumptionItems extends Component {
                             </section>
                           );
                         }}
-                        name={"hims_d_inventory_item_master_id"}
+                        name={"item_id"}
                         columns={spotlightSearch.Items.Invitemmaster}
                         displayField="item_description"
                         value={this.state.item_description}
@@ -349,15 +349,15 @@ class ConsumptionItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.item_id
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_item_master_id ===
+                                        row.item_id
+                                    );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -377,10 +377,10 @@ class ConsumptionItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_tem_category_id ===
-                                          row.item_category_id
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_tem_category_id ===
+                                        row.item_category_id
+                                    );
 
                                 return (
                                   <span>
@@ -404,10 +404,10 @@ class ConsumptionItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_group_id ===
-                                          row.item_group_id
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_item_group_id ===
+                                        row.item_group_id
+                                    );
 
                                 return (
                                   <span>
@@ -429,10 +429,10 @@ class ConsumptionItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_uom_id ===
-                                          row.uom_id
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_uom_id ===
+                                        row.uom_id
+                                    );
 
                                 return (
                                   <span>
