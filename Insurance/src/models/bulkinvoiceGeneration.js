@@ -47,7 +47,9 @@ export function bulkInvoiceGeneration(req, res, next) {
       .executeQuery({
         query: `select V.patient_id, V.hims_f_patient_visit_id as visit_id, PIM.primary_policy_num as policy_number,
         PIM.primary_insurance_provider_id as insurance_provider_id, PIM.primary_sub_id as sub_insurance_id,V.visit_code,P.patient_code,P.full_name as pat_name,
-        PIM.primary_network_id as network_id,PIM.card_holder_name as card_holder_name,PIM.primary_network_id as network_office_id,
+        PIM.primary_network_id as network_id,PIM.card_holder_name as card_holder_name,
+       -- PIM.primary_network_id as network_office_id,
+       NET_OFF.hims_d_insurance_network_office_id as network_office_id,
         COALESCE(BH.gross_total,0)  as gross_amount,COALESCE(BH.discount_amount,0) as discount_amount,COALESCE(BH.net_amount,0) as net_amount,
         COALESCE(BH.patient_res,0) as patient_resp,
         COALESCE(BH.patient_tax,0)as patient_tax ,COALESCE(BH.patient_payable,0)as patient_payable ,COALESCE(BH.company_res,0) as company_resp,
@@ -64,6 +66,7 @@ export function bulkInvoiceGeneration(req, res, next) {
         inner join hims_f_patient as P on P.hims_d_patient_id = V.patient_id
         inner join hims_f_billing_details as BD on BH.hims_f_billing_header_id = BD.hims_f_billing_header_id
         inner join hims_d_insurance_provider as I on I.hims_d_insurance_provider_id = PIM.primary_insurance_provider_id
+        inner join hims_d_insurance_network_office as NET_OFF on PIM.primary_network_id = NET_OFF.network_id
         where V.hims_f_patient_visit_id  in (?);`,
         values: [vist_ids],
         printQuery: true,
