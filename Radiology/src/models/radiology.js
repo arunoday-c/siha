@@ -45,6 +45,11 @@ export default {
         inputValues.push(req.query.hims_f_rad_order_id);
       }
 
+      if (req.query.visit_id != null) {
+        _stringData += " and visit_id=?";
+        inputValues.push(req.query.visit_id);
+      }
+
       // utilities.logger().log("_stringData: ", _stringData);
       _mysql
         .executeQuery({
