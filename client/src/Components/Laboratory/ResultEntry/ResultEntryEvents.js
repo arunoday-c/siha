@@ -178,6 +178,7 @@ const getAnalytes = ($this) => {
         // }
       $this.setState({ 
         test_analytes: response.data.records,
+        ordered_by_name:response.data.records[0].ordered_by_name,
         entered_by_name:response.data.records[0].entered_by_name,
         confirm_by_name:response.data.records[0].confirm_by_name,
         validate_by_name:response.data.records[0].validate_by_name
