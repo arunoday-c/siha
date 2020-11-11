@@ -113,11 +113,13 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       // utilities.logger().log("Rad Bill: ", req.body.incharge_or_provider);
       let inputParam = { ...req.body };
       const IncludeValues = [
         "ordered_services_id",
+        "ordered_package_id",
+        "billing_header_id",
         "patient_id",
         "visit_id",
         "provider_id",
@@ -131,8 +133,7 @@ export default {
         req.records.ResultOfFetchOrderIds == null
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
-      // let Services = req.records.ResultOfFetchOrderIds || req.body.billdetails;
-      console.log("Services", Services);
+
       const radServices = Services.filter(
         (f) =>
           f.service_type_id ==
@@ -140,6 +141,8 @@ export default {
       ).map((s) => {
         return {
           ordered_services_id: s.hims_f_ordered_services_id || null,
+          ordered_package_id: s.ordered_package_id || null,
+          billing_header_id: req.body.hims_f_billing_header_id || null,
           patient_id: req.body.patient_id,
           provider_id: req.body.incharge_or_provider,
           visit_id: req.body.visit_id,
@@ -151,9 +154,6 @@ export default {
         };
       });
 
-      console.log("radServices", radServices);
-
-      // utilities.logger().log("radServices: ", radServices.length);
       if (radServices.length > 0) {
         _mysql
           .executeQuery({
@@ -168,13 +168,6 @@ export default {
             printQuery: true,
           })
           .then((insert_rad_order) => {
-            // utilities.logger().log("insert_rad_order: ");
-            // utilities
-            //   .logger()
-            //   .log(
-            //     "insert hims_f_billing_header_id: ",
-            //     inputParam.hims_f_billing_header_id
-            //   );
             if (inputParam.consultation == "Y") {
               req.records = insert_rad_order;
               next();
@@ -197,17 +190,6 @@ export default {
             });
           });
       } else {
-        // utilities.logger().log("result: ", result);
-        // utilities
-        //   .logger()
-        //   .log(
-        //     "insert hims_f_billing_header_id: ",
-        //     inputParam.hims_f_billing_header_id
-        //   );
-
-        // utilities
-        //   .logger()
-        //   .log("inputParam.consultation: ", inputParam.consultation);
         if (inputParam.consultation == "Y") {
           req.records = radServices;
           next();
@@ -335,7 +317,7 @@ export default {
   updateRadOrderedBilled: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     // utilities.logger().log("updateRadOrderedBilled: ");
     try {
       let OrderServices = new LINQ(req.body.billdetails)
@@ -343,7 +325,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id != null &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Radiology
+            appsettings.hims_d_service_type.service_type_id.Radiology
         )
         .Select((s) => {
           return {
@@ -360,9 +342,10 @@ export default {
       if (OrderServices.length > 0) {
         for (let i = 0; i < OrderServices.length; i++) {
           qry += mysql.format(
-            "UPDATE `hims_f_rad_order` SET billed=?,\
+            "UPDATE `hims_f_rad_order` SET billing_header_id=?, billed=?,\
           updated_date=?,updated_by=? where ordered_services_id=?;",
             [
+              req.body.hims_f_billing_header_id,
               OrderServices[i].billed,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,

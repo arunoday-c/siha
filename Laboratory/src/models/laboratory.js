@@ -133,6 +133,7 @@ export default {
             .Select((s) => {
               return {
                 ordered_services_id: s.hims_f_ordered_services_id || null,
+                ordered_package_id: s.ordered_package_id || null,
                 patient_id: req.body.patient_id,
                 provider_id: req.body.incharge_or_provider,
                 visit_id: req.body.visit_id,
@@ -146,8 +147,11 @@ export default {
         ),
       ];
 
+      console.log("labServices", labServices)
+
       const IncludeValues = [
         "ordered_services_id",
+        "ordered_package_id",
         "patient_id",
         "visit_id",
         "provider_id",
@@ -424,6 +428,8 @@ export default {
       ).map((s) => {
         return {
           ordered_services_id: s.hims_f_ordered_services_id || null,
+          ordered_package_id: s.ordered_package_id || null,
+          billing_header_id: req.body.hims_f_billing_header_id || null,
           patient_id: req.body.patient_id,
           provider_id: req.body.incharge_or_provider,
           visit_id: req.body.visit_id,
@@ -438,6 +444,8 @@ export default {
       if (labServices.length > 0) {
         const IncludeValues = [
           "ordered_services_id",
+          "ordered_package_id",
+          "billing_header_id",
           "patient_id",
           "visit_id",
           "provider_id",
@@ -1463,16 +1471,13 @@ export default {
   updateLabOrderedBilled: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
-    const utilities = new algaehUtilities();
-    utilities.logger().log("updateLabOrderedBilled: ");
     try {
-      utilities.logger().log("billdetails: ", req.body.billdetails);
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {
@@ -1484,16 +1489,16 @@ export default {
         })
         .ToArray();
 
-      utilities.logger().log("OrderServices: ", OrderServices);
 
       if (OrderServices.length > 0) {
         let qry = "";
 
         for (let i = 0; i < OrderServices.length; i++) {
           qry += mysql.format(
-            "UPDATE `hims_f_lab_order` SET billed=?,\
+            "UPDATE `hims_f_lab_order` SET billing_header_id=?, billed=?,\
           updated_date=?,updated_by=? where ordered_services_id=?;",
             [
+              req.body.hims_f_billing_header_id,
               OrderServices[i].billed,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
@@ -1501,7 +1506,6 @@ export default {
             ]
           );
         }
-        utilities.logger().log("qry: ", qry);
         _mysql
           .executeQuery({
             query: qry,

@@ -327,33 +327,6 @@ export default {
             next(error);
           });
         });
-
-      // _mysql
-      //   .executeQuery({
-      //     query:
-      //       "UPDATE `hims_f_billing_header` SET `cancelled`=?, `cancel_remarks`=?,`cancel_by` = ?,`updated_date` = ? \
-      //     WHERE `hims_f_billing_header_id`=?",
-      //     values: [
-      //       "Y",
-      //       inputParam.cancel_remarks,
-      //       req.userIdentity.algaeh_d_app_user_id,
-      //       new Date(),
-      //       inputParam.from_bill_id,
-      //     ],
-      //     printQuery: true,
-      //   })
-      //   .then((result) => {
-      //     _mysql.commitTransaction(() => {
-      //       _mysql.releaseConnection();
-      //       req.data = result;
-      //       next();
-      //     });
-      //   })
-      //   .catch((e) => {
-      //     _mysql.rollBackTransaction(() => {
-      //       next(error);
-      //     });
-      //   });
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(error);
@@ -381,18 +354,47 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "UPDATE hims_f_package_header set closed = 'Y', closed_type='C' WHERE `hims_f_package_header_id` in (?)",
+              "SELECT hims_f_lab_order_id FROM hims_f_lab_order WHERE `ordered_package_id` in (?)",
             values: [_ordered_package_id],
             printQuery: true,
           })
-          .then((pat_package) => {
+          .then((lab_data_result) => {
+            let strQry = ""
+            for (let i = 0; i < lab_data_result.length; i++) {
+              strQry += _mysql.mysqlQueryFormat(
+                "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
+                      DELETE FROM hims_f_lab_order where hims_f_lab_order_id=?;",
+                [
+                  lab_data_result[i].hims_f_lab_order_id,
+                  lab_data_result[i].hims_f_lab_order_id,
+                  lab_data_result[i].hims_f_lab_order_id,
+                ]
+              );
+            }
+            _mysql
+              .executeQuery({
+                query:
+                  "UPDATE hims_f_package_header set closed = 'Y', closed_type='C' WHERE `hims_f_package_header_id` in (?); " + strQry,
+                values: [_ordered_package_id],
+                printQuery: true,
+              })
+              .then((pat_package) => {
+                next();
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
             next();
           })
           .catch((e) => {
             _mysql.rollBackTransaction(() => {
-              next(error);
+              next(eval);
             });
           });
+
+
       } else {
         next();
       }
@@ -491,7 +493,7 @@ export default {
     try {
       let inputParam = { ...req.body };
       // const utilities = new algaehUtilities();
-
+      // console.log("inputParam", inputParam)
       const Lab_Services = _.filter(
         inputParam.billdetails,
         (f) =>
@@ -503,15 +505,11 @@ export default {
         const _service_id = _.map(Lab_Services, (o) => {
           return o.services_id;
         });
-        const _ordered_services_id = _.map(Lab_Services, (o) => {
-          return o.ordered_services_id;
-        });
-        // console.log("_ordered_services_id: ", _ordered_services_id);
         _mysql
           .executeQuery({
             query:
-              "SELECT ordered_services_id, hims_f_lab_order_id, status FROM `hims_f_lab_order` WHERE `visit_id`=? and ordered_services_id in (?) and service_id in (?)",
-            values: [inputParam.visit_id, _ordered_services_id, _service_id],
+              "SELECT ordered_services_id, hims_f_lab_order_id, status FROM `hims_f_lab_order` WHERE billing_header_id in (?) and service_id in (?)",
+            values: [inputParam.hims_f_billing_header_id, _service_id],
             printQuery: true,
           })
           .then((lab_data_result) => {

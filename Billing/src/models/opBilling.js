@@ -257,11 +257,13 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select *,service_id as services_id, now() as created_date  from hims_f_package_detail where package_header_id in (?)",
+                  "select *,service_id as services_id, now() as created_date, package_header_id as ordered_package_id \
+                  from hims_f_package_detail where package_header_id in (?)",
                 values: [package_header_id],
                 printQuery: true,
               })
               .then((package_details) => {
+                console.log("package_details", package_details)
                 req.body.billdetails = req.body.billdetails.concat(
                   package_details
                 );
