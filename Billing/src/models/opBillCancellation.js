@@ -366,11 +366,7 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       let inputParam = { ...req.body };
-      const utilities = new algaehUtilities();
       let _ordered_package_id = []
-      // utilities
-      //   .logger()
-      //   .log("updateEncounterDetails: ", inputParam.billdetails);
 
       const bill_package = _.filter(
         inputParam.billdetails,
@@ -381,14 +377,11 @@ export default {
       bill_package.map((o) => {
         _ordered_package_id.push(o.ordered_package_id);
       });
-      // console.log("_ordered_package_id", _ordered_package_id)
-      // ordered_package_id
-      // utilities.logger().log("bill_consultation: ", bill_consultation.length);
       if (_ordered_package_id.length > 0) {
         _mysql
           .executeQuery({
             query:
-              "UPDATE hims_f_package_header set closed = 'Y', closed_type='C' WHERE `hims_f_package_header_id`=?",
+              "UPDATE hims_f_package_header set billed = 'N' WHERE `hims_f_package_header_id` in (?)",
             values: [_ordered_package_id],
             printQuery: true,
           })
@@ -497,10 +490,7 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       let inputParam = { ...req.body };
-      const utilities = new algaehUtilities();
-      // utilities
-      //   .logger()
-      //   .log("checkLabSampleCollected: ", inputParam.billdetails);
+      // const utilities = new algaehUtilities();
 
       const Lab_Services = _.filter(
         inputParam.billdetails,
@@ -508,22 +498,24 @@ export default {
           f.service_type_id ==
           appsettings.hims_d_service_type.service_type_id.Lab
       );
-      // utilities.logger().log("Lab_Services: ", Lab_Services.length);
+      // console.log("Lab_Services: ", Lab_Services);
       if (Lab_Services.length > 0) {
-        let _service_id = _.map(Lab_Services, (o) => {
+        const _service_id = _.map(Lab_Services, (o) => {
           return o.services_id;
         });
-        // utilities.logger().log("_service_id: ", _service_id.length);
+        const _ordered_services_id = _.map(Lab_Services, (o) => {
+          return o.ordered_services_id;
+        });
+        // console.log("_ordered_services_id: ", _ordered_services_id);
         _mysql
           .executeQuery({
             query:
-              "SELECT ordered_services_id, hims_f_lab_order_id, status FROM `hims_f_lab_order` WHERE `visit_id`=? and service_id in (?)",
-            values: [inputParam.visit_id, _service_id],
+              "SELECT ordered_services_id, hims_f_lab_order_id, status FROM `hims_f_lab_order` WHERE `visit_id`=? and ordered_services_id in (?) and service_id in (?)",
+            values: [inputParam.visit_id, _ordered_services_id, _service_id],
             printQuery: true,
           })
           .then((lab_data_result) => {
             if (lab_data_result.length > 0) {
-              // utilities.logger().log("checked_in: ", lab_data_result);
               const Lab_Services_Collected = _.filter(
                 lab_data_result,
                 (f) => f.status != "O"
@@ -542,19 +534,21 @@ export default {
                 let strQry = "";
 
                 for (let i = 0; i < lab_data_result.length; i++) {
-                  strQry += _mysql.mysqlQueryFormat(
-                    "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
-                  DELETE FROM hims_f_lab_order where hims_f_lab_order_id=?;",
-                    [
-                      lab_data_result[i].hims_f_lab_order_id,
-                      lab_data_result[i].hims_f_lab_order_id,
-                      lab_data_result[i].hims_f_lab_order_id,
-                    ]
-                  );
-                  if (lab_data_result[i].ordered_services_id != null) {
+                  if (lab_data_result[i].ordered_services_id == null) {
                     strQry += _mysql.mysqlQueryFormat(
-                      "UPDATE hims_f_ordered_services SET billed='N' where hims_f_ordered_services_id=?;",
-                      [lab_data_result[i].ordered_services_id]
+                      "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
+                      DELETE FROM hims_f_lab_order where hims_f_lab_order_id=?;",
+                      [
+                        lab_data_result[i].hims_f_lab_order_id,
+                        lab_data_result[i].hims_f_lab_order_id,
+                        lab_data_result[i].hims_f_lab_order_id,
+                      ]
+                    );
+                  } else {
+                    strQry += _mysql.mysqlQueryFormat(
+                      "UPDATE hims_f_ordered_services SET billed='N' where hims_f_ordered_services_id=?;\
+                      UPDATE hims_f_lab_order SET billed='N' where hims_f_lab_order_id=?;",
+                      [lab_data_result[i].ordered_services_id, lab_data_result[i].hims_f_lab_order_id]
                     );
                   }
                 }
