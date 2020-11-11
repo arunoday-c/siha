@@ -381,7 +381,7 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "UPDATE hims_f_package_header set billed = 'N' WHERE `hims_f_package_header_id` in (?)",
+              "UPDATE hims_f_package_header set closed = 'Y', closed_type='C' WHERE `hims_f_package_header_id` in (?)",
             values: [_ordered_package_id],
             printQuery: true,
           })
