@@ -527,7 +527,7 @@ class BasicSubjective extends Component {
                 onlyShow={true}
               />
 
-              <li>
+              <li style={{ display: "none" }}>
                 <span className="animated slideInLeft faster">All Reports</span>
                 <i
                   className="fas fa-file-medical-alt"

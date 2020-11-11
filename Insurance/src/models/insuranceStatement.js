@@ -18,9 +18,10 @@ export async function generateInsuranceStatement(req, res, next) {
     const filesList = fs
       .readdirSync(path.join(process.cwd(), "insurance_templates"))
       .filter((f) => f.includes(".xl"));
+    //p.patient_code,p.full_name,
     _mysql
       .executeQuery({
-        query: `  select  p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,MAX(isb.insurance_sub_name)as file_name,
+        query: `  select  MAX(p.patient_code) as patient_code,MAX(p.full_name)as full_name,ih.invoice_number,micd.icd_description,st.service_type,MAX(isb.insurance_sub_name)as file_name,
         SUM(id.net_amount) as net_amount,SUM(id.gross_amount) as gross_amount,
         ih.visit_id,CONCAT(MAX(t.title),". ",MAX(e.full_name)) as doctor_name,MAX(e.license_number) as license_number,
         MAX(ih.card_number) as card_number,MAX(ih.policy_number) as policy_number,
@@ -46,7 +47,7 @@ export async function generateInsuranceStatement(req, res, next) {
         ins.hims_f_insurance_statement_id = ih.insurance_statement_id_2 or ins.hims_f_insurance_statement_id  = ih.insurance_statement_id_3
         where (ih.insurance_statement_id =? or ih.insurance_statement_id_2=? or ih.insurance_statement_id_3=?)
          and (icd.hims_f_invoice_icd_id is null or icd.diagnosis_type ='p' )
-        group by p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,ih.visit_id ;`,
+        group by ih.invoice_number,micd.icd_description,st.service_type,ih.visit_id ;`,
         values: [
           insurance_statement_id,
           insurance_statement_id,
@@ -72,14 +73,14 @@ export async function generateInsuranceStatement(req, res, next) {
           .groupBy((g) => g.visit_id)
           .forEach((patients, idx) => {
             _.chain(patients)
-              .groupBy((g) => g.icd_description)
+              .groupBy((g) => g.invoice_number) //icd_description
               .forEach((items, key) => {
                 //{ full_name, invoice_number, patient_code }
                 const firstRecords = _.head(items);
                 let patObj = {
                   ...firstRecords,
                   sl_no: slno,
-                  icd_description: key === "null" ? undefined : key,
+                  icd_description: firstRecords["icd_description"], // key === "null" ? undefined : key,
                   company_resp: _.sumBy(items, (s) =>
                     parseFloat(s.company_resp)
                   ),
@@ -137,9 +138,15 @@ export async function generateInsuranceStatement(req, res, next) {
               filePath
             );
             const workbook = new Excel.Workbook();
+
             (async () => {
               await workbook.xlsx.readFile(completeXlsPath);
-              const worksheet = workbook.getWorksheet(1);
+              let workSheet = 1;
+              workbook.eachSheet(function (worksheet, sheetId) {
+                workSheet = sheetId;
+                return;
+              });
+              const worksheet = workbook.getWorksheet(workSheet);
               let _lastRow = 0;
               const clinincNameMapping =
                 identity[common["#CLINICNAME"]["mapping"]];
@@ -152,6 +159,7 @@ export async function generateInsuranceStatement(req, res, next) {
               const currentTDate = common["#TDATE"]
                 ? moment(to_date).format(date_format)
                 : "";
+
               worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
                 row.eachCell((cell) => {
                   if (typeof cell.value === "string") {
