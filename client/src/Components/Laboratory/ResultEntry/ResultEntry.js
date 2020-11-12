@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "react-quill/dist/quill.snow.css";
 import "./ResultEntry.scss";
 import "./../../../styles/site.scss";
 import {
@@ -44,6 +43,7 @@ class ResultEntry extends Component {
       test_comments_id: null,
       comment_list: [],
       selcted_comments: "",
+      ordered_by_name:"",
       entered_by_name:"",
       confirm_by_name:"",
       validate_by_name:"",
@@ -174,12 +174,12 @@ class ResultEntry extends Component {
   }
 
   render() {
-    let display =
-      this.props.providers === undefined
-        ? []
-        : this.props.providers.filter(
-            (f) => f.hims_d_employee_id === this.state.provider_id
-          );
+    // let display =
+    //   this.props.providers === undefined
+    //     ? []
+    //     : this.props.providers.filter(
+    //         (f) => f.hims_d_employee_id === this.state.provider_id
+    //       );
     // let isCritical = this.isCritical();
     // let color_display =
     //   this.state.critical_status === "N"
@@ -240,13 +240,20 @@ class ResultEntry extends Component {
                           forceLabel: "Ordered By",
                         }}
                       />
+<h6>
+                        {this.state.ordered_by_name
+                          ? this.state.ordered_by_name
+                          : "------"}
 
-                      <h6>
-                        {display !== null && display.length !== 0
-                          ? display[0].full_name
-                          : ""}
-                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.ordered_date).format(Options.dateFormat)}</small>
+{this.state.ordered_by_name ? 
+                        <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.ordered_date).format(Options.dateFormat)}
+                        </small>
+                        : <small  style={{display:"block",fontStyle:"italic"}}>-------</small>}
+
+
+                          
                       </h6>
+
                     </div>
                     <div className="col">
                       <AlgaehLabel
@@ -259,30 +266,14 @@ class ResultEntry extends Component {
                         {this.state.entered_by_name
                           ? this.state.entered_by_name
                           : "------"}
-                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.entered_date).format(Options.dateFormat)}</small>
+
+                        {this.state.entered_by_name ? 
+                        <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.entered_date).format(Options.dateFormat)}
+                        </small>
+                        : <small  style={{display:"block",fontStyle:"italic"}}>-------</small>}
+
                       </h6>
                     </div>
-
-                    {/* <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Entered By",
-                      }}
-                      selector={{
-                        name: "entered_by",
-                        className: "select-fld",
-                        value: this.state.entered_by,
-                        dataSource: {
-                          textField: "username",
-                          valueField: "algaeh_d_app_user_id",
-                          data: this.props.labiologyusers,
-                        },
-                        onChange: null,
-                        others: {
-                          disabled: true,
-                        },
-                      }}
-                    /> */}
 
 
 <div className="col">
@@ -296,30 +287,14 @@ class ResultEntry extends Component {
                         {this.state.confirm_by_name
                           ? this.state.confirm_by_name
                           : "------"}
-                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.confirmed_date).format(Options.dateFormat)}</small>
+                          
+                          {this.state.confirm_by_name ? 
+                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.confirmed_date).format(Options.dateFormat)}
+                          </small>
+                          : <small  style={{display:"block",fontStyle:"italic"}}>-------</small>}
                       </h6>
                     </div>
 
-                    {/* <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Confirmed By",
-                      }}
-                      selector={{
-                        name: "confirmed_by",
-                        className: "select-fld",
-                        value: this.state.confirmed_by,
-                        dataSource: {
-                          textField: "username",
-                          valueField: "algaeh_d_app_user_id",
-                          data: this.props.labiologyusers,
-                        },
-                        onChange: null,
-                        others: {
-                          disabled: true,
-                        },
-                      }}
-                    /> */}
 
 <div className="col">
                       <AlgaehLabel
@@ -332,30 +307,15 @@ class ResultEntry extends Component {
                         { this.state.validate_by_name
                           ? this.state.validate_by_name
                           : "------"}
-                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.validated_date).format(Options.dateFormat)}</small>
+
+                          
+                        {this.state.validate_by_name ? 
+                        <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.entered_date).format(Options.dateFormat)}
+                        </small>
+                        :  <small  style={{display:"block",fontStyle:"italic"}}>-------</small>}
+                      
                       </h6>
                     </div>
-
-                    {/* <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Validtaed By",
-                      }}
-                      selector={{
-                        name: "validated_by",
-                        className: "select-fld",
-                        value: this.state.validated_by,
-                        dataSource: {
-                          textField: "username",
-                          valueField: "algaeh_d_app_user_id",
-                          data: this.props.labiologyusers,
-                        },
-                        onChange: null,
-                        others: {
-                          disabled: true,
-                        },
-                      }}
-                    /> */}
                     {/* <div className="col">
                       <AlgaehLabel
                         label={{

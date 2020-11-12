@@ -655,15 +655,19 @@ class PatientProfile extends Component {
       this.props.patient_profile.length > 0
         ? this.props.patient_profile[0]
         : {};
-
     const _Vitals =
       this.props.patient_vitals !== undefined &&
       this.props.patient_vitals.length > 0
-        ? _.chain(this.props.patient_vitals)
-            .uniqBy((u) => u.vital_id)
-            .orderBy((o) => o.sequence_order)
-            .value()
+        ? _.head(this.props.patient_vitals)?.list
         : [];
+    // const _Vitals =
+    //   this.props.patient_vitals !== undefined &&
+    //   this.props.patient_vitals.length > 0
+    //     ? _.chain(this.props.patient_vitals)
+    //         .uniqBy((u) => u.vital_id)
+    //         .orderBy((o) => o.sequence_order)
+    //         .value()
+    //     : [];
 
     const _patient_allergies = this.state.patientAllergies;
 
@@ -674,6 +678,8 @@ class PatientProfile extends Component {
 
     const _diet =
       this.props.patient_diet === undefined ? [] : this.props.patient_diet;
+
+    console.log("_Vitals", _Vitals);
 
     return (
       <div className="row patientProfile">

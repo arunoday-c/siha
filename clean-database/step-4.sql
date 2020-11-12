@@ -648,9 +648,9 @@ ADD COLUMN `leave_category` ENUM('O', 'A', 'M') NULL DEFAULT 'O' COMMENT 'O =OTH
 -- ******** Employee Rejoin Report
 INSERT INTO `algaeh_d_reports` (`report_id`, `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('153', 'rejoinReport', 'Employee Rejoin Report', '[\"hospital_id\"]', 'reportHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
 
--- =================================  Start Nov 03 2020 =======================================
+-- =================================  Start Nov 04 2020 =======================================
 
--- For Chronic conditions
+-- ******** For Chronic conditions
  CREATE TABLE `hims_f_chronic` (
   `hims_f_chronic_id` int NOT NULL AUTO_INCREMENT,
   `icd_code_id` int DEFAULT NULL,
@@ -665,9 +665,105 @@ INSERT INTO `algaeh_d_reports` (`report_id`, `report_name`, `report_name_for_hea
   PRIMARY KEY (`hims_f_chronic_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- For vitals 
+-- ******** For vitals 
 alter table hims_d_vitals_header add column box_type enum ('TEXT','NUMBER') default 'NUMBER'
 after mandatory;
 
 ALTER TABLE hims_f_patient_vitals
 CHANGE COLUMN `vital_value` `vital_value` VARCHAR(15) NULL DEFAULT NULL ;
+
+-- ******** Lab Specimen Collection Container id
+ALTER TABLE `hims_f_lab_sample` 
+ADD COLUMN `container_id` INT NULL AFTER `sample_id`,
+ADD INDEX `hims_f_lab_sample_fk6_idx` (`container_id` ASC) VISIBLE;
+ALTER TABLE `hims_f_lab_sample` 
+ADD CONSTRAINT `hims_f_lab_sample_fk6`
+  FOREIGN KEY (`container_id`)
+  REFERENCES `hims_d_lab_container` (`hims_d_lab_container_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
+ALTER TABLE `hims_m_lab_specimen` 
+ADD UNIQUE INDEX `hims_m_lab_specimen_uq1` (`test_id` ASC, `specimen_id` ASC) VISIBLE;
+;
+
+-- ******** Loan Reconciliation Report
+INSERT INTO `algaeh_d_reports` (`report_id`, `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('154', 'loanReconcileReport', 'Loan Reconciliation Report', '[\"hospital_id\",\"year\",\"month\",\"sub_department_id\",\"employee_id\",\"employee_group_id\"]', 'reportHeader', 'A', '2019-06-18 14:53:28', '2019-06-18 14:53:28');
+
+
+-- =================================  Start Nov 05 2020 =======================================
+
+-- ******** Sample rejection History
+CREATE TABLE `hims_f_sample_can_history` (
+  `hims_f_sample_can_history_id` int NOT NULL AUTO_INCREMENT,
+  `order_id` int DEFAULT NULL,
+  `lab_sample_id` int DEFAULT NULL,
+  `sample_id` int DEFAULT NULL,
+  `patient_id` int DEFAULT NULL,
+  `visit_id` int DEFAULT NULL,
+  `remarks` varchar(100) DEFAULT NULL,
+  `rejected_by` int DEFAULT NULL,
+  `rejected_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`hims_f_sample_can_history_id`),
+  KEY `hims_f_sample_can_history_fk1_idx` (`order_id`),
+  KEY `hims_f_sample_can_history_fk2_idx` (`lab_sample_id`),
+  KEY `hims_f_sample_can_history_fk3_idx` (`sample_id`),
+  KEY `hims_f_sample_can_history_fk4_idx` (`patient_id`),
+  KEY `hims_f_sample_can_history_fk5_idx` (`visit_id`),
+  CONSTRAINT `hims_f_sample_can_history_fk1` FOREIGN KEY (`order_id`) REFERENCES `hims_f_lab_order` (`hims_f_lab_order_id`),
+  CONSTRAINT `hims_f_sample_can_history_fk2` FOREIGN KEY (`lab_sample_id`) REFERENCES `hims_f_lab_sample` (`hims_d_lab_sample_id`),
+  CONSTRAINT `hims_f_sample_can_history_fk3` FOREIGN KEY (`sample_id`) REFERENCES `hims_d_lab_specimen` (`hims_d_lab_specimen_id`),
+  CONSTRAINT `hims_f_sample_can_history_fk4` FOREIGN KEY (`patient_id`) REFERENCES `hims_f_patient` (`hims_d_patient_id`),
+  CONSTRAINT `hims_f_sample_can_history_fk5` FOREIGN KEY (`visit_id`) REFERENCES `hims_f_patient_visit` (`hims_f_patient_visit_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- =================================  Start Nov 06 2020 =======================================
+-- ******** Radiology Uniq
+ALTER TABLE `hims_f_rad_order` 
+ADD UNIQUE INDEX `ordered_services_id_UNIQUE` (`ordered_services_id` ASC) VISIBLE;
+;
+-- ******** Preapproval service name
+ALTER TABLE `hims_f_service_approval` 
+CHANGE COLUMN `insurance_service_name` `insurance_service_name` VARCHAR(200) NULL DEFAULT NULL ;
+
+
+-- =================================  Start Nov 07 2020 =======================================
+-- ******** Enum for Analyte Report Group
+ALTER TABLE `hims_m_lab_analyte` 
+ADD COLUMN `analyte_report_group` ENUM('P', 'M', 'N') NULL DEFAULT 'N' COMMENT 'P=Physical Appearance,M=Microscopic,N=None' AFTER `result_unit`;
+
+
+-- ******** Lab Report Collected Date Corrected
+UPDATE `algaeh_d_reports` SET `report_query` = 'select P.patient_code,trim(E.full_name) as doctor_name,P.full_name as patient_name,SD.sub_department_name, gender, age_in_years,   age_in_months,age_in_days, IP.insurance_provider_name, P.primary_id_no from hims_f_patient P    inner join hims_f_patient_visit V on P.hims_d_patient_id = V.patient_id    inner join hims_d_employee E on E.hims_d_employee_id = V.doctor_id    inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id   left join hims_m_patient_insurance_mapping IM on IM.patient_visit_id=V.hims_f_patient_visit_id  left join hims_d_insurance_provider IP on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id    where P.hims_d_patient_id=? and V.hims_f_patient_visit_id=?;   select MS.hims_d_lab_specimen_id, MS.`description` as investigation_name,LA.description as analyte_name, LS.collected_date, LO.ordered_date,LO.entered_date,LO.validated_date, LO.critical_status,LO.comments,OA.result,OA.result_unit,TRIM(TRAILING \'.\' FROM TRIM(TRAILING \'0\' from OA.normal_low)) as normal_low, TRIM(TRAILING \'.\' FROM TRIM(TRAILING \'0\' from OA.normal_high)) as normal_high, OA.critical_low,OA.critical_high,S.service_name,    E.full_name as validated_by,OA.critical_type, TC.category_name, OA.text_value, OA.analyte_type from hims_f_lab_order LO   inner join hims_f_lab_sample LS on LO.hims_f_lab_order_id = LS.order_id    inner join hims_f_ord_analytes OA on LO.hims_f_lab_order_id = OA.order_id    inner join hims_d_lab_specimen MS on LS.sample_id = MS.hims_d_lab_specimen_id    inner join hims_d_lab_analytes LA on OA.analyte_id = LA.hims_d_lab_analytes_id     inner join hims_d_services S on S.hims_d_services_id= LO.service_id     inner join algaeh_d_app_user U on LO.validated_by=U.algaeh_d_app_user_id   inner join hims_d_employee E on  U.employee_id=E.hims_d_employee_id     inner join hims_d_investigation_test IT on IT.services_id= LO.service_id   inner join hims_d_test_category TC on TC.hims_d_test_category_id= IT.category_id  where LO.visit_id = ? and LO.hims_f_lab_order_id=?;' WHERE (`report_id` = '4');
+UPDATE `algaeh_d_reports` SET `report_query` = 'select P.patient_code,trim(E.full_name) as doctor_name,P.full_name as patient_name,SD.sub_department_name, gender, age_in_years,   age_in_months,age_in_days, IP.insurance_provider_name, P.primary_id_no from hims_f_patient P    inner join hims_f_patient_visit V on P.hims_d_patient_id = V.patient_id    inner join hims_d_employee E on E.hims_d_employee_id = V.doctor_id    inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id   left join hims_m_patient_insurance_mapping IM on IM.patient_visit_id=V.hims_f_patient_visit_id  left join hims_d_insurance_provider IP on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id    where P.hims_d_patient_id=? and V.hims_f_patient_visit_id=?; select MS.hims_d_lab_specimen_id, MS.`description` as investigation_name,LA.description as analyte_name,LS.collected_date, LO.ordered_date,LO.entered_date,LO.validated_date, LO.critical_status,LO.comments,OA.result,OA.result_unit,TRIM(TRAILING \'.\' FROM TRIM(TRAILING \'0\' from OA.normal_low)) as normal_low, TRIM(TRAILING \'.\' FROM TRIM(TRAILING \'0\' from OA.normal_high)) as normal_high, OA.critical_low,OA.critical_high,S.service_name,    E.full_name as validated_by,OA.critical_type, TC.category_name, OA.text_value, OA.analyte_type from hims_f_lab_order LO   inner join hims_f_lab_sample LS on LO.hims_f_lab_order_id = LS.order_id    inner join hims_f_ord_analytes OA on LO.hims_f_lab_order_id = OA.order_id    inner join hims_d_lab_specimen MS on LS.sample_id = MS.hims_d_lab_specimen_id    inner join hims_d_lab_analytes LA on OA.analyte_id = LA.hims_d_lab_analytes_id     inner join hims_d_services S on S.hims_d_services_id= LO.service_id     inner join algaeh_d_app_user U on LO.validated_by=U.algaeh_d_app_user_id   inner join hims_d_employee E on  U.employee_id=E.hims_d_employee_id     inner join hims_d_investigation_test IT on IT.services_id= LO.service_id   inner join hims_d_test_category TC on TC.hims_d_test_category_id= IT.category_id  where LO.visit_id = ? and LO.hims_f_lab_order_id=?;' WHERE (`report_id` = '69');
+
+
+-- =================================  Start Nov 09 2020 =======================================
+-- ******** Added Sick Leave Diagnosis Data
+ALTER TABLE `hims_f_patient_sick_leave` ADD COLUMN `diagnosis_data` VARCHAR(250) NULL DEFAULT NULL AFTER `no_of_days`;
+
+
+-- ******** Vitals Changes
+alter table `hims_d_vitals_header` add column box_type enum ('TEXT','NUMBER') default 'NUMBER' after mandatory;
+ALTER TABLE `hims_f_patient_vitals` CHANGE COLUMN `vital_value` `vital_value` VARCHAR(15) NULL DEFAULT NULL ;
+ALTER TABLE `hims_d_vitals_header` CHANGE COLUMN `vital_short_name` `vital_short_name` VARCHAR(15) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL COMMENT 'Short Name' ;
+
+-- ******** Added one more column in report table for define report from which screen/module
+ALTER TABLE `algaeh_d_reports` 
+ADD COLUMN `report_module` VARCHAR(45) NULL DEFAULT NULL AFTER `report_id`;
+
+-- =================================  Start Nov 10 2020 =======================================
+
+-- ******** Added one more column in report table for define report from which screen/module
+ALTER TABLE `hims_f_final_settlement_header` 
+CHANGE COLUMN `employee_status` `employee_status` ENUM('R', 'T', 'E', 'I') NULL DEFAULT NULL COMMENT 'R=RESIGNED\\\\nT= TERMINATED\\\\nE= RETIRED\\nI=Inactive' ;
+
+
+
+-- =================================  Start Nov 11 2020 =======================================
+-- ******** Cronic Mecication Query
+ALTER TABLE `hims_f_chronic` ADD COLUMN `chronic_category` ENUM('D', 'M') NULL DEFAULT 'D' COMMENT 'D=Diagnosisn/M=Medication' AFTER `hims_f_chronic_id`,
+ADD COLUMN `item_id` INT NULL DEFAULT NULL AFTER `icd_code_id`;
+ALTER TABLE `hims_f_chronic` ADD COLUMN `medication_category` ENUM('I', 'E') NULL DEFAULT NULL COMMENT 'I=Internal/E=External' AFTER `item_id`;
