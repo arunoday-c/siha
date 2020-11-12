@@ -50,7 +50,7 @@ const executePDF = function executePDFMethod(options) {
             options.mysql
               .executeQuery({
                 query: `  select finance_voucher_header_id,voucher_type,voucher_no,
-                      VD.head_id,VD.payment_date ,VD.child_id, AH.root_id,              
+                      VD.head_id,VD.payment_date, VD.child_id, AH.root_id,              
                       ROUND(sum(debit_amount),${decimal_places}) as debit_amount,
                       ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name,C.ledger_code
                       from finance_voucher_header H right join finance_voucher_details VD
@@ -75,6 +75,7 @@ const executePDF = function executePDFMethod(options) {
               })
               .then((output) => {
                 let result = output[0];
+                console.log("result", result)
                 let opening_balance = parseFloat(0).toFixed(decimal_places);
                 let closing_balance = parseFloat(0).toFixed(decimal_places);
                 options.mysql.releaseConnection();
@@ -100,7 +101,7 @@ const executePDF = function executePDFMethod(options) {
                   let final_balance = "";
 
                   for (let i in dateWiseGroup) {
-                    dateWiseGroup[i][0]["transaction_date"] = i;
+                    // dateWiseGroup[i][0]["transaction_date"] = i;
                     outputArray.push(...dateWiseGroup[i]);
                   }
 
@@ -136,6 +137,7 @@ const executePDF = function executePDFMethod(options) {
                   resolve({
                     details: outputArray,
                     account_name: result[0]["child_name"],
+                    ledger_code: result[0]["ledger_code"],
                     total_debit: total_debit,
                     total_credit: total_credit,
                     CB_debit_side: CB_debit_side,
