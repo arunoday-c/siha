@@ -32,7 +32,7 @@ const getBillDetails = async (
     prevVisits,
     consultation,
     promo_code,
-    discount_amout
+    discount_amout,
   }
 ) => {
   let zeroBill = false,
@@ -115,12 +115,12 @@ export function BillDetails({
   const [visible, setVisible] = useState(false);
   const [applyDiscount, setApplyDiscount] = useState(false);
   const { userToken } = useContext(MainContext);
-  debugger
+  debugger;
   const {
     default_nationality,
     local_vat_applicable,
     service_dis_percentage,
-    decimal_places
+    decimal_places,
   } = userToken;
   const {
     services_id,
@@ -181,9 +181,9 @@ export function BillDetails({
         prevVisits,
         consultation: consultationInfo?.consultation,
         promo_code: promoCode,
-        discount_amout: discount_amout
+        discount_amout: discount_amout,
         // discount_percentage: discount_percentage,
-      }
+      },
     ],
     getBillDetails,
     {
@@ -437,7 +437,6 @@ export function BillDetails({
                   />
                   <h6>{amountWithCur(billData?.gross_total)}</h6>
                 </div>
-
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
@@ -446,13 +445,12 @@ export function BillDetails({
                   />
                   <h6>{amountWithCur(billData?.patient_payable)}</h6>
                 </div>
-
                 <Controller
                   control={control}
                   name="dis_percentage"
                   render={({ onChange, ...props }) => (
                     <AlgaehFormGroup
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "discount_percentage",
                       }}
@@ -476,10 +474,13 @@ export function BillDetails({
                           }
 
                           if (perc > 0) {
-                            setApplyDiscount(false)
+                            setApplyDiscount(false);
                             setDisPerc(perc);
-                            const _amount =
-                              ((parseFloat(billData?.gross_amount) * parseFloat(perc)) / 100).toFixed(decimal_places);
+                            const _amount = (
+                              (parseFloat(billData?.gross_amount) *
+                                parseFloat(perc)) /
+                              100
+                            ).toFixed(decimal_places);
                             setDisAmount(_amount);
                           }
                           //  else {
@@ -492,7 +493,6 @@ export function BillDetails({
                     />
                   )}
                 />
-
                 {/* const [dis_amout, setDisAmount] = useState(0);
   const [dis_percentage, setDisPerc] = useState(0); */}
                 <Controller
@@ -500,7 +500,7 @@ export function BillDetails({
                   name="dis_amout"
                   render={(props) => (
                     <AlgaehFormGroup
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "discount_amount",
                       }}
@@ -529,9 +529,12 @@ export function BillDetails({
                                   "Entered Amount Cannot be Greater than Gross Total.",
                               });
                             } else {
-                              setApplyDiscount(false)
+                              setApplyDiscount(false);
                               setDisAmount(amount);
-                              const _percentage = ((amount * 100) / parseFloat(billData?.gross_amount)).toFixed(6);
+                              const _percentage = (
+                                (amount * 100) /
+                                parseFloat(billData?.gross_amount)
+                              ).toFixed(6);
                               setDisPerc(_percentage);
                             }
                           } else {
@@ -543,12 +546,10 @@ export function BillDetails({
                       }}
                     />
                   )}
-                />
-              </div>
-
-              <div className="row">
-                <div className="col-6">
+                />{" "}
+                <div className="col">
                   <button
+                    style={{ marginTop: 21 }}
                     className="btn btn-default btn-small"
                     type="button"
                     onClick={(e) => {
@@ -563,13 +564,22 @@ export function BillDetails({
                     Apply
                   </button>
                 </div>
-                <div className="col-6">
+              </div>
+
+              <div className="row">
+                <div className="col">
                   {parseFloat(dis_percentage) > 0 ? (
-                    <label style={{ color: applyDiscount ? "green" : "red" }}>
-                      {applyDiscount
-                        ? `Successfully applied discount`
-                        : `Discount not yet applied`}
-                    </label>
+                    <p>
+                      {applyDiscount ? (
+                        <span class="badge badge-success">
+                          Discount Applied Successfully.
+                        </span>
+                      ) : (
+                        <span class="badge badge-danger animated flash slow infinite">
+                          Discount not yet applied
+                        </span>
+                      )}
+                    </p>
                   ) : null}
                 </div>
               </div>
