@@ -58,7 +58,7 @@ class TestAnalytes extends PureComponent {
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.show}
-          class={this.state.lang_sets}
+          class={this.state.lang_sets + " TestResultPopup"}
         >
           {/* <div className="algaeh-modal"> */}
           {/* <div className="popupHeader">{this.props.HeaderCaption} </div> */}

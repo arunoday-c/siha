@@ -50,7 +50,7 @@ export default function AllReports(props) {
           <ul className="nav">
             <li
               algaehtabs={"LabResults"}
-              className={"nav-item tab-button"}
+              className={"nav-item tab-button active"}
               onClick={openTab}
             >
               {
