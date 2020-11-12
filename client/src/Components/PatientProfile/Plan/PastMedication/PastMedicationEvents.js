@@ -100,6 +100,7 @@ const clearInputState = ($this) => {
     frequency_route: null,
     generic_name: "",
     item_description: "",
+    chronic_inactive: "N",
   });
 };
 const itemhandle = ($this, item) => {
@@ -134,6 +135,7 @@ const itemhandle = ($this, item) => {
       item_group_id: item.group_id,
       addItemEnable: false,
       total_quantity: 0,
+      chronic_inactive: item.chronic_inactive,
     });
   }
 };
@@ -232,6 +234,7 @@ const deleteItems = ($this, row) => {
     if (willDelete.value) {
       let data = {
         hims_f_past_medication_id: row.hims_f_past_medication_id,
+        hims_f_chronic_id: row.hims_f_chronic_id,
       };
       algaehApiCall({
         uri: "/orderMedication/deletePastMedication",

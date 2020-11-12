@@ -86,6 +86,7 @@ class OrderMedication extends Component {
 
       updateButton: false,
       rowDetails: [],
+      chronic_inactive: "N",
 
       frequency_type: "PD",
       frequency_time: "AM",
@@ -222,6 +223,7 @@ class OrderMedication extends Component {
       no_of_days: 0,
       dispense: null,
       frequency_type: "PD",
+      chronic_inactive: "N",
       frequency_time: "AM",
       frequency_route: "OR",
       uom_id: null,
@@ -481,6 +483,30 @@ class OrderMedication extends Component {
                   }}
                   value={this.state.start_date}
                 />
+                <div className="col-3">
+                  <label>isChronic</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox block">
+                      <input
+                        type="checkbox"
+                        name="chronic_inactive"
+                        value={this.state.chronic_inactive}
+                        checked={this.state.chronic_inactive === "Y"}
+                        // disabled={this.state.disableEdit}
+                        onChange={(e) => {
+                          e.target.checked
+                            ? this.setState({
+                                chronic_inactive: "Y",
+                              })
+                            : this.setState({
+                                chronic_inactive: "N",
+                              });
+                        }}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
                 <div className="col-12">
                   <label className="style_Label ">Instruction</label>
                   <textarea
@@ -929,6 +955,25 @@ class OrderMedication extends Component {
                         ),
                         displayTemplate: (row) => {
                           return <span>{dateFormater(row.start_date)}</span>;
+                        },
+                        // editorTemplate: (row) => {
+                        //   return <span>{dateFormater(row.start_date)}</span>;
+                        // },
+                        others: {
+                          minWidth: 100,
+                        },
+                      },
+                      {
+                        fieldName: "chronic_inactive",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "is Chronic" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {row.chronic_inactive === "Y" ? "yes" : "No"}
+                            </span>
+                          );
                         },
                         // editorTemplate: (row) => {
                         //   return <span>{dateFormater(row.start_date)}</span>;

@@ -70,7 +70,7 @@ class PastMedication extends Component {
       item_category_id: null,
       item_group_id: null,
       addItemEnable: true,
-
+      chronic_inactive: "N",
       item_id: null,
       generic_id: null,
       dosage: 1,
@@ -115,6 +115,7 @@ class PastMedication extends Component {
       addItemEnable: true,
       instructions: "",
       total_quantity: 0,
+      chronic_inactive: "N",
     });
   }
   itemChangeHandle(item) {
@@ -428,6 +429,30 @@ class PastMedication extends Component {
                     },
                   }}
                 />
+                <div className="col-3">
+                  <label>isChronic</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox block">
+                      <input
+                        type="checkbox"
+                        name="chronic_inactive"
+                        value={this.state.chronic_inactive}
+                        checked={this.state.chronic_inactive === "Y"}
+                        // disabled={this.state.disableEdit}
+                        onChange={(e) => {
+                          e.target.checked
+                            ? this.setState({
+                                chronic_inactive: "Y",
+                              })
+                            : this.setState({
+                                chronic_inactive: "N",
+                              });
+                        }}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
                 <div
                   className="col-12"
                   style={{ paddingTop: 9, textAlign: "right" }}

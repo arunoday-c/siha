@@ -289,7 +289,11 @@ export default function SubjectiveHandler() {
         if (willDelete.value) {
           algaehApiCall({
             uri: "/orderMedication/deletePatientPrescription",
-            data: { hims_f_prescription_id: medicine.hims_f_prescription_id },
+            data: {
+              hims_f_prescription_detail_id:
+                medicine.hims_f_prescription_detail_id,
+              hims_f_chronic_id: medicine.hims_f_chronic_id,
+            },
             method: "DELETE",
             onSuccess: (response) => {
               if (response.data.success) {
