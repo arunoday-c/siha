@@ -23,6 +23,7 @@ import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
 import { algaehApiCall } from "../../utils/algaehApiCall";
+import axios from "axios";
 import sockets from "../../sockets";
 
 export const getPatient = async (key, { patient_code }) => {
@@ -214,7 +215,6 @@ export function PatientRegistration() {
   const [currentCountry] = countries?.filter(
     (item) => item.hims_d_country_id === userToken?.default_country
   );
-  console.log(currentCountry, "cs");
 
   const {
     control,
@@ -656,7 +656,7 @@ export function PatientRegistration() {
       tel_code: currentCountry?.tel_code,
       promo_code: "",
       discount_percentage: 0,
-      discount_amount: 0
+      discount_amount: 0,
     });
     clearState();
     setConsultationInfo(default_visit_type);
@@ -670,7 +670,41 @@ export function PatientRegistration() {
       history.replace(location.pathname);
     }
   };
+  const getFromSmartCard = async () => {
+    const res = await axios.get("http://localhost:1212/smartCardReading");
 
+    const {
+      AddressEnglish,
+      ArabicFullName,
+      BirthDate,
+      Gender,
+      CardexpiryDate,
+      EnglishFullName,
+      Photo,
+      IdNumber,
+    } = res.data;
+    const expDate = parseInt(
+      moment(CardexpiryDate, "DD/MM/YYYY").format("YYYYMMDD")
+    );
+    const todayDate = parseInt(moment().format("YYYYMMDD"));
+    if (expDate < todayDate) {
+      AlgaehMessagePop({
+        display: "Card is expire",
+        type: "error",
+      });
+      return;
+    }
+    patientImage.current.imager.src = `data:image/jpeg;base64,${Photo}`; //("src", Photo);
+
+    reset({
+      full_name: EnglishFullName,
+      arabic_name: ArabicFullName,
+      date_of_birth: moment(BirthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+      address1: AddressEnglish,
+      gender: Gender === "M" ? "Male" : Gender === "F" ? "Female" : "Others",
+      primary_id_no: IdNumber,
+    });
+  };
   return (
     <Spin
       spinning={
@@ -713,6 +747,9 @@ export function PatientRegistration() {
           }}
           userArea={
             <div className="row">
+              <div className="col">
+                <button onClick={getFromSmartCard}>Smart card</button>
+              </div>
               <div className="col">
                 <AlgaehLabel
                   label={{
