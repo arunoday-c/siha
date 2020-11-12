@@ -874,7 +874,7 @@ class PatientProfile extends Component {
             <span>
               Previous Encounter:
               <b>
-                {moment(_pat_profile.previous_en_date).format(
+                {_pat_profile.previous_en_date === null ? "-------" : moment(_pat_profile.previous_en_date).format(
                   "DD-MM-YYYY | hh:mm a"
                 )}
               </b>

@@ -1082,7 +1082,8 @@ let getPatientProfile = (req, res, next) => {
         printQuery: true,
       })
       .then((visit_result) => {
-        visit_result[0][0].previous_en_date = visit_result[1].length > 0 ? visit_result[1][0].created_date : "----"
+        // console.log("visit_result", visit_result)
+        visit_result[0][0].previous_en_date = visit_result[1].length > 0 ? visit_result[1][0].created_date : null
         _mysql.releaseConnection();
         req.records = visit_result[0];
         next();
