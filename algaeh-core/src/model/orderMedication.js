@@ -372,7 +372,7 @@ let addPastMedication = (req, res, next) => {
         ) values(?,?,?,?,?,?,?,?,?,?);`,
               values: [
                 input.item_id,
-                input.chronic_inactive,
+                "N",
                 "E",
                 "M",
                 input.patient_id,
@@ -474,7 +474,7 @@ let deletePatientPrescription = (req, res, next) => {
 //created by irfan: to add Patient Prescription
 function addChronic(data) {
   return new Promise((resolve, reject) => {
-    const insurtColumn = ["item_id", "chronic_inactive"];
+    const insurtColumn = ["item_id"];
     const { req, input, next, _mysql } = data;
     try {
       if (input.chronicMedicationsItems.length > 0) {
@@ -488,7 +488,7 @@ function addChronic(data) {
             extraValues: {
               medication_category: "I",
               chronic_category: "M",
-              // chronic_inactive: input.chronic_inactive,
+              chronic_inactive: "N",
               patient_id: input.patient_id,
               visit_id: input.visit_id,
               created_date: new Date(),
