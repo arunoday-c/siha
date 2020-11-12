@@ -102,6 +102,10 @@ const SaveMedication = ($this, e) => {
       return;
     }
 
+    let chronicMedications = $this.state.medicationitems.filter((item) => {
+      return item.chronic_inactive === "Y";
+    });
+
     let inputObj = {
       patient_id: $this.state.patient_id,
       encounter_id: $this.state.encounter_id,
@@ -117,7 +121,9 @@ const SaveMedication = ($this, e) => {
       sub_insurance_id: $this.state.sub_insurance_provider_id,
 
       medicationitems: $this.state.medicationitems,
+      chronicMedicationsItems: chronicMedications,
     };
+
     algaehApiCall({
       uri: "/orderMedication/addPatientPrescription",
       data: inputObj,
@@ -354,6 +360,7 @@ const AddItemsOrUpdate = ($this) => {
     approved_qty: $this.state.dispense,
     insured: $this.state.insured,
     item_status: "A",
+    chronic_inactive: $this.state.chronic_inactive,
   };
 
   let serviceInput = [

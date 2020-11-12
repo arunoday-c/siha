@@ -98,33 +98,90 @@ export default function ({ checkChronicExists }) {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td>
-                  <button
-                    onClick={() => {
-                      clickToActiveOrInactiveChronic(item);
-                    }}
-                    className={
-                      item.chronic_inactive === "N"
-                        ? "btn btn-small btn-red"
-                        : "btn btn-small btn-green"
-                    }
-                  >
-                    {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
-                  </button>
-                </td>
-                <td>{item.icd_description}</td>
-                <td>
-                  {item.added_by} /{" "}
-                  {moment(item.created_date).format("DD-MM-YYYY HH:mm:ss")}
-                </td>
-                <td>
-                  {item.updated_by} /{" "}
-                  {moment(item.updated_date).format("DD-MM-YYYY HH:mm:ss")}
-                </td>
-              </tr>
-            ))}
+            {data.map((item, index) => {
+              return item["chronic_category"] === "D" ? (
+                <tr key={index}>
+                  <td>
+                    <button
+                      onClick={() => {
+                        clickToActiveOrInactiveChronic(item);
+                      }}
+                      className={
+                        item.chronic_inactive === "N"
+                          ? "btn btn-small btn-red"
+                          : "btn btn-small btn-green"
+                      }
+                    >
+                      {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
+                    </button>
+                  </td>
+                  <td>{item.icd_description}</td>
+                  <td>
+                    {item.added_by} /{" "}
+                    {moment(item.created_date).format("DD-MM-YYYY HH:mm:ss")}
+                  </td>
+                  <td>
+                    {item.updated_by} /{" "}
+                    {moment(item.updated_date).format("DD-MM-YYYY HH:mm:ss")}
+                  </td>
+                </tr>
+              ) : null;
+            })}
+          </tbody>
+        </table>
+        <table className="listofADDTable">
+          <thead>
+            <tr>
+              <th>
+                <b>Status</b>
+              </th>
+              <th>
+                <b>Medication Name</b>
+              </th>
+              <th>
+                <b>Medication Category</b>
+              </th>
+              <th>
+                <b>Recorded By & Date</b>
+              </th>
+              <th>
+                <b>Updated By & Date</b>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, index) => {
+              return item["chronic_category"] === "M" ? (
+                <tr key={index}>
+                  <td>
+                    <button
+                      onClick={() => {
+                        clickToActiveOrInactiveChronic(item);
+                      }}
+                      className={
+                        item.chronic_inactive === "N"
+                          ? "btn btn-small btn-red"
+                          : "btn btn-small btn-green"
+                      }
+                    >
+                      {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
+                    </button>
+                  </td>
+                  <td>{item.item_description}</td>
+                  <td>
+                    {item.chronic_category === "E" ? "External" : "Internal"}
+                  </td>
+                  <td>
+                    {item.added_by} /{" "}
+                    {moment(item.created_date).format("DD-MM-YYYY HH:mm:ss")}
+                  </td>
+                  <td>
+                    {item.updated_by} /{" "}
+                    {moment(item.updated_date).format("DD-MM-YYYY HH:mm:ss")}
+                  </td>
+                </tr>
+              ) : null;
+            })}
           </tbody>
         </table>
       </div>

@@ -69,17 +69,25 @@ export function getChronic(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `select C.hims_f_chronic_id,C.icd_code_id,C.chronic_inactive,MAX(if(C.visit_id=V.hims_f_patient_visit_id,V.visit_date,'')) as addend_on,
-         MAX(if(C.inactive_on_visit_id=V.hims_f_patient_visit_id,V.visit_date,'')) as inactive_on,
-         MAX(if(C.added_provider_id=E.hims_d_employee_id,E.full_name,'')) as added_by,
-         MAX(if(C.updated_provider_id=E.hims_d_employee_id,E.full_name,'')) as updated_by,
-         MAX(ICD.icd_description) as icd_description ,MAX(C.chronic_inactive) as chronic_inactive,
-         MAX(C.created_date) as created_date,MAX(C.updated_date) as updated_date
-         from hims_f_chronic as C inner join hims_d_icd as ICD on
-         C.icd_code_id = ICD.hims_d_icd_id inner join hims_f_patient_visit as V on 
-         (V.hims_f_patient_visit_id = C.visit_id or V.hims_f_patient_visit_id=C.inactive_on_visit_id)
-         inner join hims_d_employee as E on (E.hims_d_employee_id = C.added_provider_id or E.hims_d_employee_id = C.updated_provider_id)
-         where C.patient_id=? group by  C.hims_f_chronic_id,C.icd_code_id,C.chronic_inactive ;`,
+        query: `select C.hims_f_chronic_id,C.icd_code_id,C.chronic_inactive,
+        MAX(if(C.visit_id=V.hims_f_patient_visit_id,V.visit_date,'')) as addend_on,
+        MAX(if(C.inactive_on_visit_id=V.hims_f_patient_visit_id,V.visit_date,'')) as inactive_on,
+        MAX(if(C.added_provider_id=E.hims_d_employee_id,E.full_name,'')) as added_by,
+        MAX(if(C.updated_provider_id=E.hims_d_employee_id,E.full_name,'')) as updated_by,
+        MAX(ICD.icd_description) as icd_description,
+        MAX(C.chronic_inactive) as chronic_inactive,
+        MAX(C.created_date) as created_date,
+        MAX(C.updated_date) as updated_date,
+        MAX(C.item_id) as item_id ,
+        MAX(C.chronic_category) as chronic_category ,
+        MAX(C.medication_category) as medication_category,
+        MAX(IM.item_description) as item_description 
+        from hims_f_chronic as C 
+        left join hims_d_icd as ICD on C.icd_code_id = ICD.hims_d_icd_id 
+        inner join hims_f_patient_visit as V on (V.hims_f_patient_visit_id = C.visit_id or V.hims_f_patient_visit_id=C.inactive_on_visit_id)
+        inner join hims_d_employee as E on (E.hims_d_employee_id = C.added_provider_id or E.hims_d_employee_id = C.updated_provider_id)
+        left join hims_d_item_master IM on IM.hims_d_item_master_id = C.item_id
+        where C.patient_id=? group by C.hims_f_chronic_id,C.icd_code_id,C.chronic_inactive ;`,
         values: [patient_id],
       })
       .then((result) => {

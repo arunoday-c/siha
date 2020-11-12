@@ -83,8 +83,8 @@ let addPatientPrescriptionOLD = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_prescription_detail(" +
-                insurtColumns.join(",") +
-                ",`prescription_id`) VALUES ?",
+                  insurtColumns.join(",") +
+                  ",`prescription_id`) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -137,7 +137,7 @@ let addPatientPrescriptionOLD = (req, res, next) => {
                                 ...s,
                                 prescription_detail_id:
                                   detail_res[i][
-                                  "hims_f_prescription_detail_id"
+                                    "hims_f_prescription_detail_id"
                                   ],
                               };
                             })
@@ -161,8 +161,8 @@ let addPatientPrescriptionOLD = (req, res, next) => {
 
                           connection.query(
                             "INSERT INTO hims_f_medication_approval(" +
-                            insurtCols.join(",") +
-                            ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
+                              insurtCols.join(",") +
+                              ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
                               sub_insurance_id, network_id, insurance_network_office_id, patient_id, visit_id,\
                                hospital_id) VALUES ?",
                             [
@@ -263,11 +263,11 @@ let getPastMedication = (req, res, next) => {
   try {
     _mysql
       .executeQueryWithTransaction({
-        query:
-          "SELECT M.*, IM.item_description, IG.generic_name FROM hims_f_past_medication M \
-          inner join hims_d_item_master IM on IM.hims_d_item_master_id = M.item_id \
-          inner join hims_d_item_generic IG on IG.hims_d_item_generic_id = IM.generic_id \
-          where M.patient_id=?",
+        query: ` SELECT M.*, IM.item_description,C.hims_f_chronic_id,C.medication_category, IG.generic_name FROM hims_f_past_medication M 
+        inner join hims_d_item_master IM on IM.hims_d_item_master_id = M.item_id 
+        inner join hims_d_item_generic IG on IG.hims_d_item_generic_id = IM.generic_id 
+       left  join hims_f_chronic C on (C.patient_id = M.patient_id and C.item_id=M.item_id and  C.medication_category="E")
+        where   M.patient_id=? ;`,
         values: [req.query.patient_id],
         printQuery: true,
       })
@@ -293,15 +293,37 @@ let deletePastMedication = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query:
-          "DELETE from hims_f_past_medication where hims_f_past_medication_id=?",
+        query: `DELETE from hims_f_past_medication where hims_f_past_medication_id=?`,
         values: [req.body.hims_f_past_medication_id],
         printQuery: true,
       })
       .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+        if (req.body.hims_f_chronic_id) {
+          try {
+            _mysql
+              .executeQuery({
+                query: `Delete from hims_f_chronic Where hims_f_chronic_id =?`,
+                values: [req.body.hims_f_chronic_id],
+                printQuery: true,
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } catch (e) {
+            _mysql.releaseConnection();
+            next(e);
+          }
+        } else {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        }
       })
       .catch((error) => {
         _mysql.releaseConnection();
@@ -342,11 +364,44 @@ let addPastMedication = (req, res, next) => {
         printQuery: false,
       })
       .then((result) => {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        });
+        if (input.chronic_inactive === "Y") {
+          _mysql
+            .executeQueryWithTransaction({
+              query: `INSERT INTO hims_f_chronic (item_id,chronic_inactive, medication_category, chronic_category, patient_id,
+            visit_id, created_date, added_provider_id, updated_date, updated_provider_id
+        ) values(?,?,?,?,?,?,?,?,?,?);`,
+              values: [
+                input.item_id,
+                "N",
+                "E",
+                "M",
+                input.patient_id,
+                input.visit_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+              ],
+            })
+            .then((med) => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
       })
       .catch((error) => {
         _mysql.rollBackTransaction(() => {
@@ -370,17 +425,40 @@ let deletePatientPrescription = (req, res, next) => {
           "DELETE FROM hims_f_prescription_detail  WHERE hims_f_prescription_detail_id=?; \
           DELETE FROM hims_f_medication_approval where prescription_detail_id=?",
         values: [
-          input.hims_f_prescription_id,
-          input.hims_f_prescription_id
+          input.hims_f_prescription_detail_id,
+          input.hims_f_prescription_detail_id,
         ],
         printQuery: true,
       })
       .then((result) => {
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        });
+        if (input.hims_f_chronic_id !== null) {
+          try {
+            _mysql
+              .executeQuery({
+                query: `Delete from hims_f_chronic Where hims_f_chronic_id =?`,
+                values: [input.hims_f_chronic_id],
+                printQuery: true,
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } catch (e) {
+            _mysql.releaseConnection();
+            next(e);
+          }
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
       })
       .catch((error) => {
         _mysql.rollBackTransaction(() => {
@@ -394,6 +472,47 @@ let deletePatientPrescription = (req, res, next) => {
 };
 
 //created by irfan: to add Patient Prescription
+function addChronic(data) {
+  return new Promise((resolve, reject) => {
+    const insurtColumn = ["item_id"];
+    const { req, input, next, _mysql } = data;
+    try {
+      if (input.chronicMedicationsItems.length > 0) {
+        _mysql
+          .executeQueryWithTransaction({
+            query: "INSERT INTO hims_f_chronic(??) VALUES ?",
+            values: input.chronicMedicationsItems,
+            includeValues: insurtColumn,
+            printQuery: true,
+            bulkInsertOrUpdate: true,
+            extraValues: {
+              medication_category: "I",
+              chronic_category: "M",
+              chronic_inactive: "N",
+              patient_id: input.patient_id,
+              visit_id: input.visit_id,
+              created_date: new Date(),
+              added_provider_id: req.userIdentity.algaeh_d_app_user_id,
+              updated_date: new Date(),
+              updated_provider_id: req.userIdentity.algaeh_d_app_user_id,
+              // hospital_id: req.userIdentity.hospital_id,
+            },
+          })
+
+          .then(() => {
+            resolve({});
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      } else {
+        resolve();
+      }
+    } catch (e) {
+      next(e);
+    }
+  });
+}
 
 let addPatientPrescription = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -457,119 +576,126 @@ let addPatientPrescription = (req, res, next) => {
             },
           })
           .then((resultDet) => {
-            let services = [];
-            input.medicationitems.forEach((item) => {
-              services.push(item.service_id);
-            });
-
-            if (services.length > 0) {
-              _mysql
-                .executeQuery({
-                  query:
-                    "SELECT hims_f_prescription_detail_id, service_id from hims_f_prescription P, hims_f_prescription_detail PD\
-                where P.hims_f_prescription_id = PD.prescription_id and P.`patient_id`=? and \
-                P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and hospital_id=? and `service_id` in (?)",
-                  values: [
-                    input.patient_id,
-                    input.provider_id,
-                    input.encounter_id,
-                    input.episode_id,
-                    req.userIdentity.hospital_id,
-                    services,
-                  ],
-
-                  printQuery: true,
-                })
-                .then((detail_res) => {
-                  let insertArr = [];
-
-                  detail_res.forEach((recd) => {
-                    let pre_aprov = input.medicationitems
-                      .filter((f) => {
-                        return (
-                          f.pre_approval == "Y" &&
-                          f.service_id == recd.service_id
-                        );
-                      })
-                      .map((m) => {
-                        return {
-                          ...m,
-                          prescription_detail_id:
-                            recd["hims_f_prescription_detail_id"],
-                        };
-                      });
-
-                    insertArr.push(...pre_aprov);
-                  });
-
-                  if (insertArr.length > 0) {
-                    const insurtColumn = [
-                      "prescription_detail_id",
-                      "item_id",
-                      "service_id",
-                      "requested_quantity",
-                      "approved_qty",
-                      "insurance_service_name",
-                      "doctor_id",
-                      "gross_amt",
-                      "net_amount",
-                    ];
-
-                    _mysql
-                      .executeQueryWithTransaction({
-                        query:
-                          "INSERT INTO hims_f_medication_approval(??) VALUES ?",
-                        values: insertArr,
-                        includeValues: insurtColumn,
-                        printQuery: false,
-                        bulkInsertOrUpdate: true,
-                        extraValues: {
-                          insurance_provider_id: input.insurance_provider_id,
-                          sub_insurance_id: input.sub_insurance_id,
-                          network_id: input.network_id,
-                          insurance_network_office_id:
-                            input.insurance_network_office_id,
-                          patient_id: input.patient_id,
-                          visit_id: input.visit_id,
-                          created_date: new Date(),
-                          created_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_date: new Date(),
-                          updated_by: req.userIdentity.algaeh_d_app_user_id,
-                          hospital_id: req.userIdentity.hospital_id,
-                        },
-                      })
-                      .then((med) => {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
-                          req.records = med;
-                          next();
-                        });
-                      })
-                      .catch((error) => {
-                        _mysql.rollBackTransaction(() => {
-                          next(error);
-                        });
-                      });
-                  } else {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = resultDet;
-                      next();
-                    });
-                  }
-                })
-                .catch((error) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
-                });
-            } else {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = resultDet;
-                next();
+            addChronic({
+              req: req,
+              input: input,
+              next: next,
+              _mysql: _mysql,
+            }).then(() => {
+              let services = [];
+              input.medicationitems.forEach((item) => {
+                services.push(item.service_id);
               });
-            }
+
+              if (services.length > 0) {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "SELECT hims_f_prescription_detail_id, service_id from hims_f_prescription P, hims_f_prescription_detail PD\
+                    where P.hims_f_prescription_id = PD.prescription_id and P.`patient_id`=? and \
+                    P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and hospital_id=? and `service_id` in (?)",
+                    values: [
+                      input.patient_id,
+                      input.provider_id,
+                      input.encounter_id,
+                      input.episode_id,
+                      req.userIdentity.hospital_id,
+                      services,
+                    ],
+
+                    printQuery: true,
+                  })
+                  .then((detail_res) => {
+                    let insertArr = [];
+
+                    detail_res.forEach((recd) => {
+                      let pre_aprov = input.medicationitems
+                        .filter((f) => {
+                          return (
+                            f.pre_approval == "Y" &&
+                            f.service_id == recd.service_id
+                          );
+                        })
+                        .map((m) => {
+                          return {
+                            ...m,
+                            prescription_detail_id:
+                              recd["hims_f_prescription_detail_id"],
+                          };
+                        });
+
+                      insertArr.push(...pre_aprov);
+                    });
+
+                    if (insertArr.length > 0) {
+                      const insurtColumn = [
+                        "prescription_detail_id",
+                        "item_id",
+                        "service_id",
+                        "requested_quantity",
+                        "approved_qty",
+                        "insurance_service_name",
+                        "doctor_id",
+                        "gross_amt",
+                        "net_amount",
+                      ];
+
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "INSERT INTO hims_f_medication_approval(??) VALUES ?",
+                          values: insertArr,
+                          includeValues: insurtColumn,
+                          printQuery: false,
+                          bulkInsertOrUpdate: true,
+                          extraValues: {
+                            insurance_provider_id: input.insurance_provider_id,
+                            sub_insurance_id: input.sub_insurance_id,
+                            network_id: input.network_id,
+                            insurance_network_office_id:
+                              input.insurance_network_office_id,
+                            patient_id: input.patient_id,
+                            visit_id: input.visit_id,
+                            created_date: new Date(),
+                            created_by: req.userIdentity.algaeh_d_app_user_id,
+                            updated_date: new Date(),
+                            updated_by: req.userIdentity.algaeh_d_app_user_id,
+                            hospital_id: req.userIdentity.hospital_id,
+                          },
+                        })
+                        .then((med) => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = med;
+                            next();
+                          });
+                        })
+                        .catch((error) => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    } else {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = resultDet;
+                        next();
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              } else {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = resultDet;
+                  next();
+                });
+              }
+            });
           })
           .catch((error) => {
             _mysql.rollBackTransaction(() => {
@@ -615,7 +741,7 @@ let getPatientPrescriptionOLD = (req, res, next) => {
         H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,D.med_units,\
         D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time,D.frequency_route, D.start_date, D.item_status \
         from hims_f_prescription H,hims_f_prescription_detail D ,hims_f_patient P WHERE H.hims_f_prescription_id = D.prescription_id and P.hims_d_patient_id=H.patient_id and " +
-        where.condition,
+          where.condition,
         where.values,
 
         (error, result) => {
@@ -699,18 +825,20 @@ let getPatientMedications = (req, res, next) => {
           //   req.query.patient_id,
           //   req.query.patient_id
           // ],
-          " select P.hims_f_prescription_id,P.episode_id,P.prescription_date,P.prescription_status,P.cancelled,\
- PD.item_id,IM.item_description,IM.item_code,PD.item_category_id,PD.generic_id,\
- PD.item_id,PD.item_category_id,PD.item_group_id,PD.dosage,PD.med_units,PD.frequency,\
- PD.no_of_days,PD.dispense,PD.frequency_type,PD.frequency_time,PD.frequency_route,PD.start_date,\
- PD.service_id,PD.uom_id,PD.item_status,PD.instructions,PD.insured,PD.pre_approval,\
- PD.apprv_status,PD.approved_amount,IG.generic_name \
- from hims_f_prescription as P inner join hims_f_prescription_detail as PD \
- on P.hims_f_prescription_id=PD.prescription_id inner join hims_d_item_master as IM \
- on PD.item_id = IM.hims_d_item_master_id inner join hims_d_item_generic as IG \
- on PD.generic_id = IG.hims_d_item_generic_id \
- where  patient_id=? \
-  order by  prescription_date desc; ",
+          `select P.hims_f_prescription_id,PD.hims_f_prescription_detail_id,C.hims_f_chronic_id,C.medication_category,P.episode_id,P.prescription_date,P.prescription_status,P.cancelled,
+ PD.item_id,IM.item_description,IM.item_code,PD.item_category_id,PD.generic_id,
+ PD.item_id,PD.item_category_id,PD.item_group_id,PD.dosage,PD.med_units,PD.frequency,
+ PD.no_of_days,PD.dispense,PD.frequency_type,PD.frequency_time,PD.frequency_route,PD.start_date,
+ PD.service_id,PD.uom_id,PD.item_status,PD.instructions,PD.insured,PD.pre_approval,
+ PD.apprv_status,PD.approved_amount,IG.generic_name 
+ from hims_f_prescription as P inner join hims_f_prescription_detail as PD 
+ on P.hims_f_prescription_id=PD.prescription_id inner join hims_d_item_master as IM 
+ on PD.item_id = IM.hims_d_item_master_id inner join hims_d_item_generic as IG 
+
+ on PD.generic_id = IG.hims_d_item_generic_id 
+ left  join hims_f_chronic C on (C.patient_id = P.patient_id and C.item_id=PD.item_id and  C.medication_category="I")
+ where  P.patient_id=? 
+  order by  prescription_date desc;`,
         values: [req.query.patient_id],
         printQuery: true,
       })
@@ -753,9 +881,9 @@ let getPatientMedications = (req, res, next) => {
               enddate: endDate,
               active:
                 parseInt(moment().format("YYYYMMDD")) <=
-                  parseInt(
-                    moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
-                  )
+                parseInt(
+                  moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
+                )
                   ? true
                   : false,
             };
@@ -789,5 +917,5 @@ export default {
   addPastMedication,
   getPastMedication,
   deletePastMedication,
-  deletePatientPrescription
+  deletePatientPrescription,
 };
