@@ -86,7 +86,7 @@ class PatientProfile extends Component {
           this.state.firstLaunch === undefined ? this.props.firstLaunch : false,
         patient_code:
           this.props.patient_profile !== undefined &&
-          this.props.patient_profile.length > 0
+            this.props.patient_profile.length > 0
             ? this.props.patient_profile[0].patient_code
             : "",
         department_type: patientDetails["department_type"],
@@ -273,12 +273,12 @@ class PatientProfile extends Component {
                   k === "F"
                     ? "Food"
                     : k === "A"
-                    ? "Airborne"
-                    : k === "AI"
-                    ? "Animal  &  Insect"
-                    : k === "C"
-                    ? "Chemical & Others"
-                    : "",
+                      ? "Airborne"
+                      : k === "AI"
+                        ? "Animal  &  Insect"
+                        : k === "C"
+                          ? "Chemical & Others"
+                          : "",
                 allergyList: g.getSource(),
               };
             })
@@ -308,13 +308,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy((g) => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (chief_complaint === null || chief_complaint.length < 4) {
@@ -373,13 +373,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy((g) => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -442,13 +442,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy((g) => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -652,12 +652,12 @@ class PatientProfile extends Component {
   render() {
     const _pat_profile =
       this.props.patient_profile !== undefined &&
-      this.props.patient_profile.length > 0
+        this.props.patient_profile.length > 0
         ? this.props.patient_profile[0]
         : {};
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? _.head(this.props.patient_vitals)?.list
         : [];
     // const _Vitals =
@@ -796,8 +796,8 @@ class PatientProfile extends Component {
                       {_pat_profile.payment_type === "I"
                         ? "Insurance"
                         : _pat_profile.payment_type === "S"
-                        ? "Self"
-                        : ""}
+                          ? "Self"
+                          : ""}
                     </td>
                   </tr>
                   <tr>
@@ -844,20 +844,20 @@ class PatientProfile extends Component {
           </div>
           <div className="patientDemographic">
             <span>
-              DOB:{""}
+              DOB:
               <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
 
             <span>
-              Nationality:{""}
+              Nationality:
               <b patient_nationality="true">{_pat_profile.nationality}</b>
             </span>
             <span>
-              {_pat_profile.identity_document_name}:{""}
+              {_pat_profile.identity_document_name}:
               <b>{_pat_profile.primary_id_no} </b>
             </span>
             {/* <span>
-              Payment:{""}<b>
+              Payment:<b>
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
                   : _pat_profile.payment_type === "S"
@@ -868,19 +868,19 @@ class PatientProfile extends Component {
           </div>
           <div className="patientHospitalDetail">
             <span>
-              MRN:{""}
+              MRN:
               <b>{_pat_profile.patient_code}</b>
             </span>
             <span>
-              Previous Encounter:{""}
+              Previous Encounter:
               <b>
-                {moment(_pat_profile.Encounter_Date).format(
+                {moment(_pat_profile.previous_en_date).format(
                   "DD-MM-YYYY | hh:mm a"
                 )}
               </b>
             </span>
             <span>
-              Current Encounter:{""}
+              Current Encounter:
               <b>
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY | hh:mm a"
@@ -953,10 +953,10 @@ class PatientProfile extends Component {
                   <span>OCAF Report</span>
                 </li>
               ) : (
-                <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
-                  <span>UCAF Report</span>
-                </li>
-              )}
+                    <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+                      <span>UCAF Report</span>
+                    </li>
+                  )}
             </ul>
           </div>
         </div>
@@ -1029,7 +1029,7 @@ class PatientProfile extends Component {
                   <i
                     className={`fas fa-book-medical ${
                       this.state.chronicExists ? "AllergyActive" : ""
-                    }`}
+                      }`}
                   />
                   <section>
                     <span className="top-nav-sec-hdg">Chronic Conditions</span>
@@ -1079,23 +1079,23 @@ class PatientProfile extends Component {
                                     {allergy.onset === "O"
                                       ? allergy.onset_date
                                       : allergy.onset === "A"
-                                      ? "Adulthood"
-                                      : allergy.onset === "C"
-                                      ? "Childhood"
-                                      : allergy.onset === "P"
-                                      ? "Pre Terms"
-                                      : allergy.onset === "T"
-                                      ? "Teenage"
-                                      : ""}
+                                        ? "Adulthood"
+                                        : allergy.onset === "C"
+                                          ? "Childhood"
+                                          : allergy.onset === "P"
+                                            ? "Pre Terms"
+                                            : allergy.onset === "T"
+                                              ? "Teenage"
+                                              : ""}
                                   </td>
                                   <td>
                                     {allergy.severity === "MO"
                                       ? "Moderate"
                                       : allergy.severity === "MI"
-                                      ? "Mild"
-                                      : allergy.severity === "SE"
-                                      ? "Severe"
-                                      : ""}
+                                        ? "Mild"
+                                        : allergy.severity === "SE"
+                                          ? "Severe"
+                                          : ""}
                                   </td>
                                   <td>{allergy.comment}</td>
                                 </tr>

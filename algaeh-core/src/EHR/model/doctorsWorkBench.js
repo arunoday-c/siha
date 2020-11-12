@@ -1058,21 +1058,33 @@ let getPatientProfile = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT P.hims_d_patient_id,P.full_name,P.arabic_name,P.patient_code,ID.identity_document_name,P.primary_id_no,P.vat_applicable,P.gender,P.date_of_birth,P.tel_code,P.contact_number,P.secondary_contact_number,P.email,P.emergency_contact_name,P.emergency_contact_number,P.relationship_with_patient,P.blood_group,P.marital_status,P.address1 AS patient_address,P.address2 AS emergency_address,P.postal_code,N.nationality,PV.age_in_years, PV.age_in_months, PV.age_in_days,PV.sub_department_id,PE.payment_type,PE.created_date AS Encounter_Date \
-          FROM ((hims_f_patient P INNER JOIN hims_f_patient_encounter PE ON P.hims_d_patient_id = PE.patient_id)INNER JOIN hims_d_nationality N ON N.hims_d_nationality_id = P.nationality_id) \
+          "SELECT P.hims_d_patient_id,P.full_name,P.arabic_name,P.patient_code,ID.identity_document_name,\
+          P.primary_id_no,P.vat_applicable,P.gender,P.date_of_birth,P.tel_code,P.contact_number,\
+          P.secondary_contact_number,P.email,P.emergency_contact_name,P.emergency_contact_number,\
+          P.relationship_with_patient,P.blood_group,P.marital_status,P.address1 AS patient_address,\
+          P.address2 AS emergency_address,P.postal_code,N.nationality,PV.age_in_years, PV.age_in_months, \
+          PV.age_in_days,PV.sub_department_id,PE.payment_type,PE.created_date AS Encounter_Date \
+          FROM ((hims_f_patient P INNER JOIN hims_f_patient_encounter PE ON P.hims_d_patient_id = PE.patient_id)\
+          INNER JOIN hims_d_nationality N ON N.hims_d_nationality_id = P.nationality_id) \
           INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \
           INNER JOIN hims_d_identity_document ID ON ID.hims_d_identity_document_id = P.primary_identity_id \
-          WHERE P.hims_d_patient_id = ? AND PE.episode_id = ? AND visit_id = ? ORDER BY PE.created_date DESC LIMIT 1;",
+          WHERE P.hims_d_patient_id = ? AND PE.episode_id = ? AND visit_id = ? ORDER BY PE.created_date DESC LIMIT 1;\
+          select PE.created_date from hims_f_patient_encounter PE INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \
+          INNER JOIN hims_d_visit_type VT ON VT.hims_d_visit_type_id = PV.visit_type and VT.consultation='Y'  \
+          where PE.patient_id = ? and PE.visit_id != ? order by PE.created_date DESC LIMIT 1; ",
         values: [
           inputData.patient_id,
           inputData.episode_id,
           inputData.visit_id,
+          inputData.patient_id,
+          inputData.visit_id
         ],
         printQuery: true,
       })
-      .then((result) => {
+      .then((visit_result) => {
+        visit_result[0][0].previous_en_date = visit_result[1].length > 0 ? visit_result[1][0].created_date : "----"
         _mysql.releaseConnection();
-        req.records = result;
+        req.records = visit_result[0];
         next();
       })
       .catch((error) => {
@@ -2713,14 +2725,14 @@ let getPatientHistory = (req, res, next) => {
                 key == "SOH"
                   ? "Social History"
                   : key === "MEH"
-                  ? "Medical History"
-                  : key === "SGH"
-                  ? "Surgical History"
-                  : key === "FMH"
-                  ? "Family History"
-                  : key === "BRH"
-                  ? "Birth History"
-                  : "",
+                    ? "Medical History"
+                    : key === "SGH"
+                      ? "Surgical History"
+                      : key === "FMH"
+                        ? "Family History"
+                        : key === "BRH"
+                          ? "Birth History"
+                          : "",
               groupDetail: detail,
             };
           })
@@ -2888,8 +2900,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-          ? ","
-          : "";
+            ? ","
+            : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs,
       ]);
@@ -2900,10 +2912,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-          ? ","
-          : inputData.significant_signs != null
-          ? ","
-          : "";
+            ? ","
+            : inputData.significant_signs != null
+              ? ","
+              : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs,
       ]);
