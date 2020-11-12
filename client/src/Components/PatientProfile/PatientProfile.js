@@ -712,6 +712,128 @@ class PatientProfile extends Component {
               }}
               forceRefresh={true}
             />
+
+            <div className="patientDemoHover animated slideInDown faster">
+              <table>
+                <tbody>
+                  <tr>
+                    <td rowspan="17" className="imgSection">
+                      {" "}
+                      <p className="patProImg">
+                        {" "}
+                        <AlgaehFile
+                          name="attach_photo"
+                          accept="image/*"
+                          textAltMessage={_pat_profile.full_name}
+                          showActions={false}
+                          serviceParameters={{
+                            uniqueID: _pat_profile.patient_code,
+                            destinationName: _pat_profile.patient_code,
+                            fileType: "Patients",
+                          }}
+                          forceRefresh={true}
+                        />
+                      </p>
+                      <p className="idCardImg">
+                        <AlgaehFile
+                          noImage="ID-card"
+                          name="patientIdCard"
+                          accept="image/*"
+                          textAltMessage={_pat_profile.full_name}
+                          showActions={false}
+                          serviceParameters={{
+                            uniqueID: _pat_profile.primary_id_no,
+                            destinationName: _pat_profile.patient_code,
+                            fileType: "Patients",
+                          }}
+                          forceRefresh={true}
+                        />
+                      </p>
+                    </td>
+                    <td colspan="2" className="hdr">
+                      <span>Personal Details:-</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Full Name:</td>
+                    <td>{_pat_profile.full_name}</td>
+                  </tr>
+                  <tr>
+                    <td>Arabic Name:</td>
+                    <td>{_pat_profile.arabic_name}</td>
+                  </tr>
+                  <tr>
+                    <td>Age & Gender:</td>
+                    <td>
+                      {" "}
+                      {_pat_profile.gender} - {_pat_profile.age_in_years}y,
+                      {_pat_profile.age_in_months}m, {_pat_profile.age_in_days}d
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>MRN:</td>
+                    <td>{_pat_profile.patient_code}</td>
+                  </tr>
+                  <tr>
+                    <td>{_pat_profile.identity_document_name}:</td>
+                    <td>{_pat_profile.primary_id_no}</td>
+                  </tr>
+                  <tr>
+                    <td>Blood Group:</td>
+                    <td>{_pat_profile.blood_group}</td>
+                  </tr>
+                  <tr>
+                    <td>Marital Status:</td>
+                    <td>{_pat_profile.marital_status}</td>
+                  </tr>
+                  <tr>
+                    <td>Nationality:</td>
+                    <td>{_pat_profile.nationality}</td>
+                  </tr>
+                  <tr>
+                    <td>Payment Type:</td>
+                    <td>
+                      {_pat_profile.payment_type === "I"
+                        ? "Insurance"
+                        : _pat_profile.payment_type === "S"
+                        ? "Self"
+                        : ""}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" className="hdr">
+                      <span>Contact Details:-</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Address:</td>
+                    <td>{_pat_profile.patient_address}</td>
+                  </tr>{" "}
+                  <tr>
+                    <td>Primary No.:</td>
+                    <td>
+                      {_pat_profile.tel_code} {_pat_profile.contact_number}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Secondary No.:</td>
+                    <td>{_pat_profile.secondary_contact_number}</td>
+                  </tr>{" "}
+                  <tr>
+                    <td>Emergency No:</td>
+                    <td>{_pat_profile.emergency_contact_number}</td>
+                  </tr>{" "}
+                  <tr>
+                    <td>Emergency Contact Person:</td>
+                    <td>{_pat_profile.emergency_contact_name}</td>
+                  </tr>{" "}
+                  <tr>
+                    <td>Relationship:</td>
+                    <td>{_pat_profile.relationship_with_patient}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <div className="patientName">
             <h6>{_pat_profile.full_name}</h6>

@@ -32,7 +32,7 @@ export default {
             "SELECT param_value from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
               and record_status='A';SELECT  `hims_d_patient_id`, `patient_code`\
           , `registration_date`, `title_id`,`first_name`, `middle_name`, `last_name`,`full_name`, `arabic_name`\
-          , `gender`, `religion_id`,`date_of_birth`, `age`, `marital_status`, `address1`\
+          , `gender`, `religion_id`,`date_of_birth`, `age`,`blood_group`, `marital_status`, `address1`\
           , `address2`,`contact_number`, `secondary_contact_number`, `email`\
           , `emergency_contact_name`,`emergency_contact_number`, `relationship_with_patient`\
           , `visa_type_id`,`nationality_id`, `postal_code`, `primary_identity_id`\
