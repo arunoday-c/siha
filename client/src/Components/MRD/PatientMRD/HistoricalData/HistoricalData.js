@@ -11,6 +11,7 @@ import config from "../../../../utils/config.json";
 import { Line } from "react-chartjs-2";
 import { AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import NursesNotes from "../../../PatientProfile/Examination/NursesNotes";
+import _ from "lodash";
 
 const TreeTable = treeTableHOC(ReactTable);
 
@@ -262,29 +263,31 @@ class HistoricalData extends Component {
 
     let _vitalsGroup = [];
 
-    Enumerable.from(
-      this.state.patientVitals !== undefined ? this.state.patientVitals : []
-    )
-      .groupBy("$.visit_date", null, (key, g) => {
-        let obj = {};
-        obj["dateTime"] = key;
+    _vitalsGroup = this.state.patientVitals;
 
-        Enumerable.from(g.getSource())
-          .select((s) => {
-            obj = {
-              ...obj,
-              ...{
-                [s.vitals_name
-                  .toString()
-                  .toLowerCase()
-                  .replace(/\s/g, "_")]: s.vital_value,
-              },
-            };
-          })
-          .toArray();
-        _vitalsGroup.push(obj);
-      })
-      .toArray();
+    // Enumerable.from(
+    //   this.state.patientVitals !== undefined ? this.state.patientVitals : []
+    // )
+    //   .groupBy("$.visit_date", null, (key, g) => {
+    //     let obj = {};
+    //     obj["dateTime"] = key;
+
+    //     Enumerable.from(g.getSource())
+    //       .select((s) => {
+    //         obj = {
+    //           ...obj,
+    //           ...{
+    //             [s.vitals_name
+    //               .toString()
+    //               .toLowerCase()
+    //               .replace(/\s/g, "_")]: s.vital_value,
+    //           },
+    //         };
+    //       })
+    //       .toArray();
+    //     _vitalsGroup.push(obj);
+    //   })
+    //   .toArray();
     Enumerable.from(
       this.state.patientVitals !== undefined ? this.state.patientVitals : []
     )
@@ -371,6 +374,52 @@ class HistoricalData extends Component {
                 </div>
               </div>
               <div className="portlet-body">
+                <div className="row">
+                  <div className="col-8 vitalsTimeLineSec">
+                    <div className="timeline">
+                      {_vitalsGroup.map((data, index) => (
+                        <div key={index} className="timelineContainer right">
+                          <div className="content">
+                            <p className="dateStamp">
+                              Recorded by:<span>{data.recorded_by}</span>
+                              Recorded on: <span>{data.dateTime}</span>
+                            </p>
+                            <div className="vitalsCntr">
+                              <ul className="vitals-box">
+                                {_.orderBy(
+                                  data.list,
+                                  (o) => o.sequence_order
+                                ).map((vitals, ind) => (
+                                  <li className="each-vitals-box" key={ind}>
+                                    <p>{vitals.vital_short_name}</p>
+                                    <span className="vitalsText">
+                                      {vitals.vital_value}
+                                    </span>
+                                    <span>{vitals.formula_value}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="col-4 vitalsChartSec">
+                    <Line
+                      options={{
+                        scales: {
+                          yAxes: _yAxes,
+                        },
+                      }}
+                      data={{
+                        datasets: _plotGraph,
+                        labels: _chartLabels,
+                      }}
+                    />
+                  </div>
+                </div>
+
                 <div className="row">
                   <div className="col-lg-12" id="historicGridDataCntr">
                     <AlgaehDataGrid

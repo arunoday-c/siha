@@ -4,7 +4,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import algaehLoader from "../../Wrapper/fullPageLoader";
 import moment from "moment";
@@ -18,7 +18,7 @@ class MRDList extends Component {
     this.state = {
       patientData: [],
       to_date: new Date(),
-      from_date: moment("01" + month + year, "DDMMYYYY")._d
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
     };
     this.baseState = this.state;
   }
@@ -37,7 +37,7 @@ class MRDList extends Component {
       intFailure = true;
       swalMessage({
         title: "From Date cannot be grater than To Date.",
-        type: "warning"
+        type: "warning",
       });
     }
 
@@ -48,7 +48,7 @@ class MRDList extends Component {
 
   datehandle(ctrl, e) {
     this.setState({
-      [e]: moment(ctrl)._d
+      [e]: moment(ctrl)._d,
     });
   }
 
@@ -72,7 +72,7 @@ class MRDList extends Component {
 
     let inPutObj = {
       from_date: this.state.from_date,
-      to_date: this.state.to_date
+      to_date: this.state.to_date,
     };
 
     algaehApiCall({
@@ -80,71 +80,69 @@ class MRDList extends Component {
       method: "GET",
       module: "MRD",
       data: inPutObj,
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           if (response.data.records.length === 0) {
             swalMessage({
               title: "No records Found",
-              type: "warning"
+              type: "warning",
             });
           }
 
           this.setState({ patientData: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   render() {
     return (
       <div className="mrd-list">
-        <div className="row inner-top-search">
-          <div className="row padding-10">
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "Record From", isImp: false }}
-              textBox={{
-                className: "txt-fld",
-                name: "from_date"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: this.datehandle.bind(this)
-              }}
-              value={this.state.from_date}
-            />
+        <div className="row  inner-top-search">
+          <AlgaehDateHandler
+            div={{ className: "col-3 mandatory form-group" }}
+            label={{ forceLabel: "Patient Registration From", isImp: true }}
+            textBox={{
+              className: "txt-fld",
+              name: "from_date",
+            }}
+            maxDate={new Date()}
+            events={{
+              onChange: this.datehandle.bind(this),
+            }}
+            value={this.state.from_date}
+          />
 
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "Record To", isImp: false }}
-              textBox={{
-                className: "txt-fld",
-                name: "to_date"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: this.datehandle.bind(this)
-              }}
-              value={this.state.to_date}
-            />
-            <div className="col">
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={this.loadData.bind(this)}
-                type="button"
-                style={{ marginTop: "1.5em" }}
-              >
-                Load Record
-              </button>
-            </div>
+          <AlgaehDateHandler
+            div={{ className: "col-3 mandatory form-group" }}
+            label={{ forceLabel: "Patient Registration To", isImp: true }}
+            textBox={{
+              className: "txt-fld",
+              name: "to_date",
+            }}
+            maxDate={new Date()}
+            events={{
+              onChange: this.datehandle.bind(this),
+            }}
+            value={this.state.to_date}
+          />
+          <div className="col">
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={this.loadData.bind(this)}
+              type="button"
+              style={{ marginTop: "21px" }}
+            >
+              Load
+            </button>
           </div>
         </div>
         <div className="portlet portlet-bordered margin-top-15">
@@ -169,8 +167,8 @@ class MRDList extends Component {
 
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "primary_id_no",
@@ -178,7 +176,7 @@ class MRDList extends Component {
                         <AlgaehLabel label={{ forceLabel: "Primary ID No." }} />
                       ),
 
-                      others: { resizable: false }
+                      others: { resizable: false },
                     },
                     {
                       fieldName: "patient_code",
@@ -186,7 +184,7 @@ class MRDList extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Patient code" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span
                             onClick={() => {
@@ -201,7 +199,7 @@ class MRDList extends Component {
                                 date_of_birth: row.date_of_birth,
                                 patient_code: row.patient_code,
                                 contact_number: row.contact_number,
-                                pat_name: row.full_name
+                                pat_name: row.full_name,
                               });
                               document.getElementById("mrd-router").click();
                             }}
@@ -213,11 +211,11 @@ class MRDList extends Component {
                       },
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "center" },
                       },
-                      className: drow => {
+                      className: (drow) => {
                         return "greenCell";
-                      }
+                      },
                     },
                     {
                       fieldName: "full_name",
@@ -225,7 +223,10 @@ class MRDList extends Component {
                         <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
                       ),
 
-                      others: { resizable: false, style: { textAlign: "left" } }
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "left" },
+                      },
                     },
                     {
                       fieldName: "gender",
@@ -233,8 +234,8 @@ class MRDList extends Component {
 
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "date_of_birth",
@@ -244,8 +245,8 @@ class MRDList extends Component {
 
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "age",
@@ -253,8 +254,8 @@ class MRDList extends Component {
 
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "contact_number",
@@ -264,13 +265,13 @@ class MRDList extends Component {
 
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    }
+                        style: { textAlign: "center" },
+                      },
+                    },
                   ]}
                   keyId="mrdListGrid"
                   dataSource={{
-                    data: this.state.patientData
+                    data: this.state.patientData,
                   }}
                   filter={true}
                   isEditable={false}

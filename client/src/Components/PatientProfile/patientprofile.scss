@@ -46,13 +46,93 @@
           -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
           transition: width 0.3s;
           border-radius: 0;
-          &:hover {
-            width: 175px;
-            height: auto;
-            box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
-            position: absolute;
-            z-index: 9;
+
+          // &:hover {
+          // width: 175px;
+          // height: auto;
+          // box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+          // position: absolute;
+          // z-index: 9;
+          // .patientDemoHover{
+          //   dis
+          // }
+          // }
+        }
+      }
+      .patientDemoHover {
+        position: absolute;
+        top: 64px;
+        left: 11px;
+        z-index: 999;
+        width: auto;
+        height: auto;
+        background: $color-white;
+        box-shadow: 0 20px 20px lighten($color-black, 60%);
+        border-radius: 0 4px 4px 4px;
+        padding: 15px;
+        display: none;
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          tbody {
+            margin: 0;
+            padding: 0;
+            tr {
+              &:nth-child(even) {
+                background: lighten($color-black, 95%);
+              }
+
+              td {
+                border: 1px solid #ccc;
+                padding: 3px 10px;
+                margin: 0;
+                text-align: left;
+                span {
+                  font-weight: bold;
+                }
+                .patProImg {
+                  margin: 15px;
+                  .image-drop-area {
+                    width: 100%;
+                    text-align: center;
+                    margin-bottom: 10px;
+                    img {
+                      width: auto !important;
+                      height: 120px !important;
+                    }
+                  }
+                }
+                .idCardImg {
+                  margin: 15px;
+                  .image-drop-area {
+                    width: 100%;
+                    text-align: center;
+                    img {
+                      width: auto !important;
+                      height: 200px !important;
+                    }
+                  }
+                }
+                &:last-child {
+                  font-weight: bolder;
+                  color: $color-black;
+                }
+
+                &.hdr {
+                  background: lighten($color-black, 90%);
+                }
+                &.imgSection {
+                  padding: 0;
+                }
+              }
+            }
           }
+        }
+      }
+      &:hover {
+        cursor: pointer;
+        .patientDemoHover {
+          display: block;
         }
       }
     }

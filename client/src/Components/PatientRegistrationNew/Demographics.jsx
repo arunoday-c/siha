@@ -22,7 +22,7 @@ import { FrontdeskContext } from "./FrontdeskContext";
 import { useLangFieldName } from "./patientHooks";
 const { TabPane } = Tabs;
 // const { Option } = Select;
-const { FORMAT_GENDER, FORMAT_MARTIALSTS } = GenericData;
+const { FORMAT_GENDER, FORMAT_MARTIALSTS, FORMAT_BLOOD_GROUP } = GenericData;
 
 async function getDemoData() {
   const result = await Promise.all([
@@ -638,6 +638,43 @@ export function Demographics({
                       <div className="row paddin-bottom-5">
                         <Controller
                           control={control}
+                          name="blood_group"
+                          render={({ onBlur, onChange, value }) => (
+                            <AlgaehAutoComplete
+                              div={{
+                                className: "col-lg-3",
+                              }}
+                              label={{
+                                fieldName: "blood_group",
+                                isImp: false,
+                              }}
+                              error={errors}
+                              selector={{
+                                name: "blood_group",
+                                className: "select-fld",
+                                dataSource: {
+                                  textField: fieldNameFn("name"),
+                                  valueField: "value",
+                                  data: FORMAT_BLOOD_GROUP,
+                                },
+                                value,
+                                onChange: (_, selected) => {
+                                  onChange(selected);
+                                },
+                                onClear: () => {
+                                  onChange("");
+                                },
+                                others: {
+                                  disabled,
+                                  tabIndex: "",
+                                },
+                              }}
+                            />
+                          )}
+                        />
+
+                        <Controller
+                          control={control}
                           name="marital_status"
                           render={({ onBlur, onChange, value }) => (
                             <AlgaehAutoComplete
@@ -744,7 +781,8 @@ export function Demographics({
                             />
                           )}
                         />
-
+                      </div>
+                      <div className="row paddin-bottom-5">
                         <Controller
                           control={control}
                           name="state_id"
@@ -779,8 +817,6 @@ export function Demographics({
                             />
                           )}
                         />
-                      </div>
-                      <div className="row paddin-bottom-5">
                         <Controller
                           control={control}
                           name="city_id"
@@ -1050,6 +1086,66 @@ export function Demographics({
 
                     <Controller
                       control={control}
+                      name="email"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            forceLabel: "Patient Email Address",
+                          }}
+                          textBox={{
+                            ...props,
+                            className: "txt-fld",
+                            name: "email",
+                            placeholder: "Enter Email Address",
+                            type: "email",
+                            disabled,
+                          }}
+                        />
+                      )}
+                    />
+                    <Controller
+                      control={control}
+                      name="postal_code"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "postal_code",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "postal_code",
+                            ...props,
+                            disabled,
+                          }}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="address2"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "address2",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "address2",
+                            ...props,
+                            disabled,
+                            placeholder: "Enter Full Address 2",
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="row" style={{ paddingBottom: "10px" }}>
+                    <Controller
+                      control={control}
                       name="emergency_contact_number"
                       render={(props) => (
                         <AlgaehFormGroup
@@ -1102,66 +1198,6 @@ export function Demographics({
                             name: "relationship_with_patient",
                             ...props,
                             disabled,
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      control={control}
-                      name="email"
-                      render={(props) => (
-                        <AlgaehFormGroup
-                          div={{ className: "col" }}
-                          label={{
-                            fieldName: "email",
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "email",
-                            placeholder: "Enter Email Address",
-                            type: "email",
-                            disabled,
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div className="row" style={{ paddingBottom: "10px" }}>
-                    <Controller
-                      control={control}
-                      name="postal_code"
-                      render={(props) => (
-                        <AlgaehFormGroup
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "postal_code",
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "postal_code",
-                            ...props,
-                            disabled,
-                          }}
-                        />
-                      )}
-                    />
-
-                    <Controller
-                      control={control}
-                      name="address2"
-                      render={(props) => (
-                        <AlgaehFormGroup
-                          div={{ className: "col" }}
-                          label={{
-                            fieldName: "address2",
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "address2",
-                            ...props,
-                            disabled,
-                            placeholder: "Enter Full Address 2",
                           }}
                         />
                       )}

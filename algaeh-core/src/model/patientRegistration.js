@@ -72,6 +72,7 @@ let insertPatientData = (req, res, next) => {
         religion_id: null,
         date_of_birth: null,
         age: null,
+        blood_group: null,
         marital_status: null,
         address1: null,
         address2: null,
@@ -99,7 +100,7 @@ let insertPatientData = (req, res, next) => {
         city_id: null,
         state_id: null,
         country_id: null,
-        documents: null
+        documents: null,
       },
       req.body
     );
@@ -112,13 +113,13 @@ let insertPatientData = (req, res, next) => {
     db.query(
       "INSERT INTO `hims_f_patient` (`patient_code`, `registration_date`\
     , `title_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `arabic_name`, `gender`, `religion_id`\
-    , `date_of_birth`, `age`, `marital_status`, `address1`, `address2`, `contact_number`\
+    , `date_of_birth`, `age`,`blood_group`, `marital_status`, `address1`, `address2`, `contact_number`\
     , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
     , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
     , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
     , `photo_file`, `primary_id_file`, `secondary_id_file`, `patient_type`,`vat_applicable`, `created_by`, `created_date`\
     ,`city_id`,`state_id`,`country_id`)\
-     VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
+     VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
       [
         inputparam.patient_code,
         inputparam.registration_date != null
@@ -136,6 +137,7 @@ let insertPatientData = (req, res, next) => {
           ? new Date(inputparam.date_of_birth)
           : inputparam.date_of_birth,
         inputparam.age,
+        inputparam.blood_group,
         inputparam.marital_status,
         inputparam.address1,
         inputparam.address2,
@@ -161,7 +163,7 @@ let insertPatientData = (req, res, next) => {
         new Date(),
         inputparam.city_id,
         inputparam.state_id,
-        inputparam.country_id
+        inputparam.country_id,
       ],
       (error, result) => {
         if (error) {
@@ -189,7 +191,7 @@ let insertPatientData = (req, res, next) => {
           //     db.query(
           //       "SELECT `hims_d_patient_id`, `patient_code`, `registration_date`\
           // , `title_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `arabic_name`, `gender`, `religion_id`\
-          // , `date_of_birth`, `age`, `marital_status`, `address1`, `address2`, `contact_number`\
+          // , `date_of_birth`, `age`,`blood_group`, `marital_status`, `address1`, `address2`, `contact_number`\
           // , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
           // , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
           // , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
@@ -242,12 +244,13 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
     religion_id: null,
     date_of_birth: null,
     age: null,
+    blood_group: null,
     marital_status: null,
     address1: null,
     address2: null,
     contact_number: null,
     secondary_contact_number: null,
-    email: null,
+    email: "",
     emergency_contact_name: "",
     emergency_contact_number: "",
     relationship_with_patient: "",
@@ -273,7 +276,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
                         patientPrimaryID:{base64String:"",fileExtention:""},
                         patientSecondaryID:{base64String:"",fileExtention:""}
                       }
-    */
+    */,
   };
   isCommited = isCommited || false;
   try {
@@ -283,7 +286,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
     dataBase.query(
       "INSERT INTO `hims_f_patient` (`patient_code`, `registration_date`\
     , `title_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `arabic_name`, `gender`, `religion_id`\
-    , `date_of_birth`, `age`, `marital_status`, `address1`, `address2`, `contact_number`\
+    , `date_of_birth`, `age`,`blood_group`, `marital_status`, `address1`, `address2`, `contact_number`\
     , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
     , `relationship_with_patient`, `vat_applicable`,`visa_type_id`, `nationality_id`, `postal_code`\
     , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
@@ -303,6 +306,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
         inputparam.religion_id,
         inputparam.date_of_birth,
         inputparam.age,
+        inputparam.blood_group,
         inputparam.marital_status,
         inputparam.address1,
         inputparam.address2,
@@ -338,7 +342,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
         new Date(),
         inputparam.city_id,
         inputparam.state_id,
-        inputparam.country_id
+        inputparam.country_id,
       ],
       (error, result) => {
         debugLog("Insert Query executed");
@@ -363,7 +367,7 @@ let insertData = (dataBase, req, res, callBack, isCommited, next) => {
           dataBase.query(
             "SELECT `hims_d_patient_id`, `patient_code`, `registration_date`\
       , `title_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `arabic_name`, `gender`, `religion_id`\
-      , `date_of_birth`, `age`, `marital_status`, `address1`, `address2`, `contact_number`\
+      , `date_of_birth`, `age`,`blood_group`, `marital_status`, `address1`, `address2`, `contact_number`\
       , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
       , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
       , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
@@ -404,6 +408,7 @@ let updateData = (dataBase, req, callBack) => {
     religion_id: null,
     date_of_birth: null,
     age: null,
+    blood_group: null,
     marital_status: null,
     address1: null,
     address2: null,
@@ -435,7 +440,7 @@ let updateData = (dataBase, req, callBack) => {
                         patientPrimaryID:{base64String:"",fileExtention:""},
                         patientSecondaryID:{base64String:"",fileExtention:""}
                       }
-    */
+    */,
   };
 
   try {
@@ -443,7 +448,7 @@ let updateData = (dataBase, req, callBack) => {
     dataBase.query(
       "UPDATE `hims_f_patient`\
   SET  `title_id`=?, `first_name`=?, `middle_name`=?, `last_name`=?, `full_name`=?, `arabic_name`=?, \
-  `gender`=?, `religion_id`=?, `date_of_birth`=?, `age`=?, `marital_status`=?, `address1`=?, \
+  `gender`=?, `religion_id`=?, `date_of_birth`=?, `age`=?,`blood_group`=?, `marital_status`=?, `address1`=?, \
   `address2`=?, `contact_number`=?, `secondary_contact_number`=?, `email`=?, \
   `emergency_contact_name`=?, `emergency_contact_number`=?, `relationship_with_patient`=?,\
   `visa_type_id`=?, `nationality_id`=?, `postal_code`=?, `primary_identity_id`=?, \
@@ -461,6 +466,7 @@ let updateData = (dataBase, req, callBack) => {
         inputparam.religion_id,
         inputparam.date_of_birth,
         inputparam.age,
+        inputparam.blood_group,
         inputparam.marital_status,
         inputparam.address1,
         inputparam.address2,
@@ -482,7 +488,7 @@ let updateData = (dataBase, req, callBack) => {
         inputparam.secondary_id_file,
         inputparam.updated_by,
         new Date(),
-        inputparam.hims_d_patient_id
+        inputparam.hims_d_patient_id,
       ],
       (error, result) => {
         if (typeof callBack == "function") callback(error, result);
@@ -521,7 +527,7 @@ let selectData = (dataBase, req, callBack) => {
   let patientWhereCondition = {
     patient_code: "ALL",
     contact_number: "ALL",
-    gender: "ALL"
+    gender: "ALL",
   };
 
   try {
@@ -529,7 +535,7 @@ let selectData = (dataBase, req, callBack) => {
     dataBase.query(
       "SELECT `hims_d_patient_id`, `patient_code`, `registration_date`\
   , `title_id`, `first_name`, `middle_name`, `last_name`, arabic_name,full_name,`gender`, `religion_id`\
-  , `date_of_birth`, `age`, `marital_status`, `address1`, `address2`, `contact_number`\
+  , `date_of_birth`, `age`,`blood_group`, `marital_status`, `address1`, `address2`, `contact_number`\
   , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
   , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
   , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
@@ -556,5 +562,5 @@ export default {
   insertData,
   updateData,
   selectData,
-  insertPatientData
+  insertPatientData,
 };
