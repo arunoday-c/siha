@@ -97,37 +97,43 @@ export default function ({ checkChronicExists }) {
               </th>
             </tr>
           </thead>
-          <tbody>
-            {data.map((item, index) => {
-              return item["chronic_category"] === "D" ? (
-                <tr key={index}>
-                  <td>
-                    <button
-                      onClick={() => {
-                        clickToActiveOrInactiveChronic(item);
-                      }}
-                      className={
-                        item.chronic_inactive === "N"
-                          ? "btn btn-small btn-red"
-                          : "btn btn-small btn-green"
-                      }
-                    >
-                      {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
-                    </button>
-                  </td>
-                  <td>{item.icd_description}</td>
-                  <td>
-                    {item.added_by} /{" "}
-                    {moment(item.created_date).format("DD-MM-YYYY HH:mm:ss")}
-                  </td>
-                  <td>
-                    {item.updated_by} /{" "}
-                    {moment(item.updated_date).format("DD-MM-YYYY HH:mm:ss")}
-                  </td>
-                </tr>
-              ) : null;
-            })}
-          </tbody>
+          {data.filter((item) => {
+            return item["chronic_category"] === "D";
+          }).length > 0 ? (
+            <tbody>
+              {data.map((item, index) => {
+                return item["chronic_category"] === "D" ? (
+                  <tr key={index}>
+                    <td>
+                      <button
+                        onClick={() => {
+                          clickToActiveOrInactiveChronic(item);
+                        }}
+                        className={
+                          item.chronic_inactive === "N"
+                            ? "btn btn-small btn-red"
+                            : "btn btn-small btn-green"
+                        }
+                      >
+                        {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
+                      </button>
+                    </td>
+                    <td>{item.icd_description}</td>
+                    <td>
+                      {item.added_by} /{" "}
+                      {moment(item.created_date).format("DD-MM-YYYY HH:mm:ss")}
+                    </td>
+                    <td>
+                      {item.updated_by} /{" "}
+                      {moment(item.updated_date).format("DD-MM-YYYY HH:mm:ss")}
+                    </td>
+                  </tr>
+                ) : null;
+              })}
+            </tbody>
+          ) : (
+            <tbody>Enter Text Here</tbody>
+          )}
         </table>
         <table className="listofADDTable">
           <thead>
@@ -149,40 +155,46 @@ export default function ({ checkChronicExists }) {
               </th>
             </tr>
           </thead>
-          <tbody>
-            {data.map((item, index) => {
-              return item["chronic_category"] === "M" ? (
-                <tr key={index}>
-                  <td>
-                    <button
-                      onClick={() => {
-                        clickToActiveOrInactiveChronic(item);
-                      }}
-                      className={
-                        item.chronic_inactive === "N"
-                          ? "btn btn-small btn-red"
-                          : "btn btn-small btn-green"
-                      }
-                    >
-                      {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
-                    </button>
-                  </td>
-                  <td>{item.item_description}</td>
-                  <td>
-                    {item.chronic_category === "E" ? "External" : "Internal"}
-                  </td>
-                  <td>
-                    {item.added_by} /{" "}
-                    {moment(item.created_date).format("DD-MM-YYYY HH:mm:ss")}
-                  </td>
-                  <td>
-                    {item.updated_by} /{" "}
-                    {moment(item.updated_date).format("DD-MM-YYYY HH:mm:ss")}
-                  </td>
-                </tr>
-              ) : null;
-            })}
-          </tbody>
+          {data.filter((item) => {
+            return item["chronic_category"] === "M";
+          }).length > 0 ? (
+            <tbody>
+              {data.map((item, index) => {
+                return item["chronic_category"] === "M" ? (
+                  <tr key={index}>
+                    <td>
+                      <button
+                        onClick={() => {
+                          clickToActiveOrInactiveChronic(item);
+                        }}
+                        className={
+                          item.chronic_inactive === "N"
+                            ? "btn btn-small btn-red"
+                            : "btn btn-small btn-green"
+                        }
+                      >
+                        {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
+                      </button>
+                    </td>
+                    <td>{item.item_description}</td>
+                    <td>
+                      {item.chronic_category === "E" ? "External" : "Internal"}
+                    </td>
+                    <td>
+                      {item.added_by} /{" "}
+                      {moment(item.created_date).format("DD-MM-YYYY HH:mm:ss")}
+                    </td>
+                    <td>
+                      {item.updated_by} /{" "}
+                      {moment(item.updated_date).format("DD-MM-YYYY HH:mm:ss")}
+                    </td>
+                  </tr>
+                ) : null;
+              })}
+            </tbody>
+          ) : (
+            <tbody>Enter Text Here</tbody>
+          )}
         </table>
       </div>
     </div>
