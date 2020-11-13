@@ -1077,13 +1077,14 @@ let getPatientProfile = (req, res, next) => {
           inputData.episode_id,
           inputData.visit_id,
           inputData.patient_id,
-          inputData.visit_id
+          inputData.visit_id,
         ],
         printQuery: true,
       })
       .then((visit_result) => {
         // console.log("visit_result", visit_result)
-        visit_result[0][0].previous_en_date = visit_result[1].length > 0 ? visit_result[1][0].created_date : null
+        visit_result[0][0].previous_en_date =
+          visit_result[1].length > 0 ? visit_result[1][0].created_date : null;
         _mysql.releaseConnection();
         req.records = visit_result[0];
         next();
@@ -2122,30 +2123,76 @@ let addPatientVitals = (req, res, next) => {
   ];
 
   try {
-    _mysql
-      .executeQuery({
-        query: "INSERT INTO hims_f_patient_vitals(??) VALUES ?",
-        values: input,
-        includeValues: insurtColumns,
-        printQuery: true,
-        bulkInsertOrUpdate: true,
-        extraValues: {
-          hospital_id: req.userIdentity.hospital_id,
-          created_date: new Date(),
-          created_by: req.userIdentity.algaeh_d_app_user_id,
-          updated_date: new Date(),
-          updated_by: req.userIdentity.algaeh_d_app_user_id,
-        },
-      })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch((error) => {
-        _mysql.releaseConnection();
-        next(error);
-      });
+    let query = "";
+    for (let i = 0; i < input.length; i++) {
+      const {
+        vital_value,
+        patient_id,
+        visit_id,
+        visit_date,
+        visit_time,
+        case_type,
+        vital_id,
+        vital_value_one,
+        vital_value_two,
+        formula_value,
+      } = input[i];
+      if (parseFloat(vital_value) !== 0) {
+        query += mysql.format(
+          `INSERT INTO hims_f_patient_vitals(patient_id,visit_id,visit_date,visit_time,case_type,
+            vital_id,vital_value,vital_value_one,vital_value_two,formula_value,hospital_id,created_date,created_by,
+            updated_date,updated_by) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+          [
+            patient_id,
+            visit_id,
+            visit_date,
+            visit_time,
+            case_type,
+            vital_id,
+            vital_value,
+            vital_value_one,
+            vital_value_two,
+            formula_value,
+            req.userIdentity.hospital_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+          ]
+        );
+      }
+    }
+    if (query !== "") {
+      _mysql
+        .executeQuery({
+          query,
+          // query: "INSERT INTO hims_f_patient_vitals(??) VALUES ?",
+          // values: input,
+          // includeValues: insurtColumns,
+          // printQuery: true,
+          // bulkInsertOrUpdate: true,
+          // extraValues: {
+          //   hospital_id: req.userIdentity.hospital_id,
+          //   created_date: new Date(),
+          //   created_by: req.userIdentity.algaeh_d_app_user_id,
+          //   updated_date: new Date(),
+          //   updated_by: req.userIdentity.algaeh_d_app_user_id,
+          // },
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      _mysql.releaseConnection();
+      next(new Error("No records for vitals."));
+    }
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -2726,14 +2773,14 @@ let getPatientHistory = (req, res, next) => {
                 key == "SOH"
                   ? "Social History"
                   : key === "MEH"
-                    ? "Medical History"
-                    : key === "SGH"
-                      ? "Surgical History"
-                      : key === "FMH"
-                        ? "Family History"
-                        : key === "BRH"
-                          ? "Birth History"
-                          : "",
+                  ? "Medical History"
+                  : key === "SGH"
+                  ? "Surgical History"
+                  : key === "FMH"
+                  ? "Family History"
+                  : key === "BRH"
+                  ? "Birth History"
+                  : "",
               groupDetail: detail,
             };
           })
@@ -2901,8 +2948,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : "";
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs,
       ]);
@@ -2913,10 +2960,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : inputData.significant_signs != null
-              ? ","
-              : "";
+          ? ","
+          : inputData.significant_signs != null
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs,
       ]);
