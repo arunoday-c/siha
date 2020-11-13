@@ -3,14 +3,17 @@ import moment from "moment";
 import "./chronic.scss";
 import { IcdCodeForChronic } from "../Subjective/SubjectiveHandler";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+// import MyContext from "../../../utils/MyContext";
 // import { message } from "algaeh-react-components";
-export default function ({ checkChronicExists }) {
+export default function ({ checkChronicExists, updateChronic }) {
   const { current_patient, visit_id } = Window.global;
+  // const { state } = useContext(MyContext);
   const [data, setData] = useState([]);
   useEffect(() => {
+    // console.log("state?.updateChronic", state?.updateChronic);
     chronicList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [updateChronic]);
 
   function chronicList() {
     if (current_patient) {

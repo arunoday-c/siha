@@ -56,7 +56,7 @@ const numberhandle = ($this, ctrl, e) => {
 };
 
 //Save Order
-const SaveMedication = ($this, e) => {
+const SaveMedication = ($this, context, e) => {
   if ($this.state.medicationitems.length > 0) {
     let dosage_enterted = Enumerable.from($this.state.medicationitems).any(
       (w) => parseFloat(w.dosage) === 0 || w.dosage === null || w.dosage === ""
@@ -136,7 +136,11 @@ const SaveMedication = ($this, e) => {
           });
           if (Window.global["orderMedicationState"] !== null)
             removeGlobal("orderMedicationState");
-
+          context.updateState({
+            updateChronic: true,
+            // AdvanceOpen: false,
+            // RefundOpen: false
+          });
           $this.setState(
             {
               saveMedicationEnable: true,

@@ -3,7 +3,10 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Enumerable from "linq";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
+// import FrontDesk from "../../../Search/FrontDesk.json";
 import "./ResultDispatch.scss";
 import "./../../../styles/site.scss";
 import {
@@ -138,9 +141,29 @@ class ResultEntryList extends Component {
       }
     });
   };
+  PatientSearch = () => {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.frontDesk.patients,
+      },
+      searchName: "patients",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        this.setState({
+          patient_code: row.patient_code,
+          patient_id: row.hims_d_patient_id,
+        });
 
+        // if (context !== null) {
+        //   context.updateState({ patient_code: row.patient_code });
+        // }
+      },
+    });
+  };
   render() {
-
     return (
       <React.Fragment>
         <AlgaehModal
@@ -261,22 +284,17 @@ class ResultEntryList extends Component {
             className="row inner-top-search"
             style={{ paddingBottom: "10px" }}
           >
-            <div
-                  className="col-2 globalSearchCntr"
-                  style={{
-                    cursor: "pointer",
-                  }}
-                >
-                  <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
-                  <h6 
-                  // onClick={PatientSearch.bind(this, this, context)}
-                  >
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : <AlgaehLabel label={{ fieldName: "patient_code" }} />}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
+              <h6 onClick={this.PatientSearch.bind(this)}>
+                {this.state.patient_code ? (
+                  this.state.patient_code
+                ) : (
+                  <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                )}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
             <AlgaehDateHandler
               div={{ className: "col-2" }}
               label={{ fieldName: "from_date" }}
@@ -296,7 +314,6 @@ class ResultEntryList extends Component {
               value={this.state.to_date}
             />{" "}
             <div className="col" style={{ paddingTop: "21px" }}>
-
               <button
                 className="btn btn-default btn-sm"
                 type="button"
@@ -325,7 +342,7 @@ class ResultEntryList extends Component {
 
                 <div className="portlet-body" id="resultDispatchGridCntr">
                   <AlgaehDataGrid
-                   id="resultDispatchGrid"
+                    id="resultDispatchGrid"
                     columns={[
                       {
                         fieldName: "action",

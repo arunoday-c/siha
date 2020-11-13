@@ -4,6 +4,7 @@ import labModels from "../models/laboratory";
 
 const {
   getLabOrderedServices,
+  getLabOrderedServicesPatient,
   updateLabOrderServices,
   getTestAnalytes,
   updateLabSampleStatus,
@@ -26,6 +27,16 @@ export default () => {
       records: req.records,
     });
   });
+  api.get(
+    "/getLabOrderedServicesPatient",
+    getLabOrderedServicesPatient,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.get("/getLabOrderedComment", getLabOrderedComment, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

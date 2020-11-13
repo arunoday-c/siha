@@ -90,7 +90,54 @@ export default {
       next(e);
     }
   },
+  getLabOrderedServicesPatient: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("getLabOrderedServices: ");
 
+      // utilities.logger().log("_stringData: ", _stringData);
+      _mysql
+        .executeQuery({
+          query:
+            " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
+            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, LO.send_out_test,\
+            E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
+            LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
+            concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
+            lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id, LS.container_id, \
+            LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
+            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id from hims_f_lab_order LO \
+            inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
+            inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
+            inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
+            inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
+            left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \
+            left join hims_d_title as T on T.his_d_title_id = E.title_id \
+            left join hims_d_investigation_test as IT on IT.services_id = LO.service_id \
+            left join hims_d_lab_specimen as DLS on DLS.hims_d_lab_specimen_id = LS.sample_id \
+            left join hims_d_test_category as TC on TC.hims_d_test_category_id = IT.category_id WHERE LO.hospital_id=?  and LO.patient_id=?  and LO.status=? order by hims_f_lab_order_id desc;",
+          values: [
+            req.userIdentity.hospital_id,
+            req.query.patient_id,
+            req.query.status,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getLabOrderedComment: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -152,7 +199,7 @@ export default {
         ),
       ];
 
-      console.log("labServices", labServices)
+      console.log("labServices", labServices);
 
       const IncludeValues = [
         "ordered_services_id",
@@ -1487,7 +1534,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Lab
+              appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {
@@ -1498,7 +1545,6 @@ export default {
           };
         })
         .ToArray();
-
 
       if (OrderServices.length > 0) {
         let qry = "";

@@ -1,20 +1,33 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
-const getLabResult = $this => {
+const getLabResult = ($this) => {
   let inputobj = {
     patient_id: Window.global["current_patient"],
-    visit_id: Window.global["visit_id"]
+    visit_id: Window.global["visit_id"],
   };
-  $this.props.getLabResult({
-    uri: "/laboratory/getLabOrderedServices",
-    module: "laboratory",
-    method: "GET",
-    data: inputobj,
-    redux: {
-      type: "LAB_RESULT_GET_DATA",
-      mappingName: "labresult"
-    }
-  });
+  if ($this.props.allReports) {
+    $this.props.getLabResult({
+      uri: "/laboratory/getLabOrderedServices",
+      module: "laboratory",
+      method: "GET",
+      data: { patient_id: Window.global["current_patient"] },
+      redux: {
+        type: "LAB_RESULT_GET_DATA",
+        mappingName: "labresult",
+      },
+    });
+  } else {
+    $this.props.getLabResult({
+      uri: "/laboratory/getLabOrderedServices",
+      module: "laboratory",
+      method: "GET",
+      data: inputobj,
+      redux: {
+        type: "LAB_RESULT_GET_DATA",
+        mappingName: "labresult",
+      },
+    });
+  }
 };
 
 const getAnalytes = ($this, row) => {
@@ -25,8 +38,8 @@ const getAnalytes = ($this, row) => {
     data: { order_id: row.hims_f_lab_order_id },
     redux: {
       type: "LAB_RESULT_GET_DATA",
-      mappingName: "testanalytes"
-    }
+      mappingName: "testanalytes",
+    },
   });
 };
 
@@ -38,9 +51,9 @@ const ShowTestAnalyte = ($this, row) => {
     data: { order_id: row.hims_f_lab_order_id },
     redux: {
       type: "LAB_RESULT_GET_DATA",
-      mappingName: "testanalytes"
+      mappingName: "testanalytes",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       $this.setState({
         ...$this.state,
         openAna: !$this.state.openAna,
@@ -48,23 +61,23 @@ const ShowTestAnalyte = ($this, row) => {
         service_code: row.service_code,
         service_name: row.service_name,
         patient_code: row.patient_code,
-        full_name: row.full_name
+        full_name: row.full_name,
       });
-    }
+    },
   });
 };
 
-const CloseTestAnalyte = $this => {
+const CloseTestAnalyte = ($this) => {
   $this.setState({
     ...$this.state,
-    openAna: !$this.state.openAna
+    openAna: !$this.state.openAna,
   });
 };
 
-const CloseCompareTest = $this => {
+const CloseCompareTest = ($this) => {
   $this.setState({
     ...$this.state,
-    openCompare: !$this.state.openCompare
+    openCompare: !$this.state.openCompare,
   });
 };
 
@@ -78,9 +91,9 @@ const ShowCompareTest = ($this, row) => {
       order_id: row.hims_f_lab_order_id,
       visit_id: Window.global["visit_id"],
       patient_id: Window.global["current_patient"],
-      provider_id: Window.global["provider_id"]
+      provider_id: Window.global["provider_id"],
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
           ...$this.state,
@@ -91,16 +104,16 @@ const ShowCompareTest = ($this, row) => {
           service_code: row.service_code,
           service_name: row.service_name,
           patient_code: row.patient_code,
-          full_name: row.full_name
+          full_name: row.full_name,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -110,5 +123,5 @@ export {
   ShowTestAnalyte,
   CloseTestAnalyte,
   ShowCompareTest,
-  CloseCompareTest
+  CloseCompareTest,
 };
