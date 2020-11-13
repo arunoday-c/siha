@@ -661,8 +661,11 @@ export function PatientRegistration() {
     clearState();
     setConsultationInfo(default_visit_type);
     setIsInsurance(false);
+    if (patientImage.current) {
+      patientImage.current.updateImageInside("", null);
+    }
     patientIdCard.current = null;
-    patientImage.current = null;
+    // patientImage.current = null;
     insuranceImgBack.current = null;
     insuranceImgFront.current = null;
 
@@ -694,8 +697,14 @@ export function PatientRegistration() {
       });
       return;
     }
-    patientImage.current.imager.src = `data:image/jpeg;base64,${Photo}`; //("src", Photo);
 
+    if (patientImage.current) {
+      patientImage.current.updateImageInside(
+        `data:image/jpeg;base64,${Photo}`,
+        "jpeg"
+      );
+    }
+    console.log("userToken", userToken);
     reset({
       full_name: EnglishFullName,
       arabic_name: ArabicFullName,
@@ -703,6 +712,12 @@ export function PatientRegistration() {
       address1: AddressEnglish,
       gender: Gender === "M" ? "Male" : Gender === "F" ? "Female" : "Others",
       primary_id_no: IdNumber,
+      nationality_id: userToken?.default_nationality,
+      country_id: userToken?.default_country,
+      patient_type: userToken?.default_patient_type,
+      visit_type: default_visit_type?.hims_d_visit_type_id,
+      tel_code: currentCountry?.tel_code,
+      title_id: Gender === "M" ? 1 : 2,
     });
   };
   return (

@@ -767,3 +767,7 @@ CHANGE COLUMN `employee_status` `employee_status` ENUM('R', 'T', 'E', 'I') NULL 
 ALTER TABLE `hims_f_chronic` ADD COLUMN `chronic_category` ENUM('D', 'M') NULL DEFAULT 'D' COMMENT 'D=Diagnosisn/M=Medication' AFTER `hims_f_chronic_id`,
 ADD COLUMN `item_id` INT NULL DEFAULT NULL AFTER `icd_code_id`;
 ALTER TABLE `hims_f_chronic` ADD COLUMN `medication_category` ENUM('I', 'E') NULL DEFAULT NULL COMMENT 'I=Internal/E=External' AFTER `item_id`;
+
+
+ALTER TABLE `hims_f_patient` 
+CHANGE COLUMN `address1` `address1` MEDIUMTEXT NULL DEFAULT NULL ;
