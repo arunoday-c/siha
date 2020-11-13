@@ -429,8 +429,8 @@ class PastMedication extends Component {
                     },
                   }}
                 />
-                <div className="col-3">
-                  <label>isChronic</label>
+                <div className="col">
+                  <label>Chronic Medication</label>
                   <div className="customCheckbox">
                     <label className="checkbox block">
                       <input

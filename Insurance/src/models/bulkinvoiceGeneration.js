@@ -45,7 +45,7 @@ export function bulkInvoiceGeneration(req, res, next) {
 
     _mysql
       .executeQuery({
-        query: `select V.patient_id, V.hims_f_patient_visit_id as visit_id, PIM.primary_policy_num as policy_number,
+        query: `select V.patient_id, V.hims_f_patient_visit_id as visit_id,V.visit_date, PIM.primary_policy_num as policy_number,
         PIM.primary_insurance_provider_id as insurance_provider_id, PIM.primary_sub_id as sub_insurance_id,V.visit_code,P.patient_code,P.full_name as pat_name,
         PIM.primary_network_id as network_id,PIM.card_holder_name as card_holder_name,
        -- PIM.primary_network_id as network_office_id,
@@ -80,6 +80,7 @@ export function bulkInvoiceGeneration(req, res, next) {
               visit_code,
               pat_name,
               patient_id,
+              visit_date,
               visit_id,
               policy_number,
               insurance_provider_id,
@@ -114,7 +115,7 @@ export function bulkInvoiceGeneration(req, res, next) {
                           ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
                 values: [
                   generatedNumbers.INV_NUM,
-                  new Date(),
+                  visit_date,
                   patient_id,
                   visit_id,
                   utilities.decimalPoints(

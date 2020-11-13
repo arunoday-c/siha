@@ -5,7 +5,7 @@
       height: 21px;
       position: absolute;
       top: 0;
-      left: 10px;
+      right: 10px;
       top: 8px;
       padding: 1px 4px 0;
       text-align: center;
@@ -31,5 +31,8 @@
     padding: 3px 6px;
     font-weight: bold;
     min-height: 24px;
+  }
+  .listofADDTable {
+    margin-bottom: 20px;
   }
 }

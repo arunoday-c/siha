@@ -183,7 +183,7 @@ class MRDList extends Component {
           </div>
           <AlgaehDateHandler
             div={{ className: "col-3 mandatory form-group" }}
-            label={{ forceLabel: "Patient Registration From", isImp: true }}
+            label={{ forceLabel: "Patient Registration From", isImp: false }}
             textBox={{
               className: "txt-fld",
               name: "from_date",
@@ -197,7 +197,7 @@ class MRDList extends Component {
 
           <AlgaehDateHandler
             div={{ className: "col-3 mandatory form-group" }}
-            label={{ forceLabel: "Patient Registration To", isImp: true }}
+            label={{ forceLabel: "Patient Registration To", isImp: false }}
             textBox={{
               className: "txt-fld",
               name: "to_date",
@@ -209,24 +209,23 @@ class MRDList extends Component {
             value={this.state.to_date}
           />
           <div className="col">
+            {" "}
+            <button
+              className="btn btn-default btn-sm"
+              onClick={this.clearData.bind(this)}
+              type="button"
+              style={{ marginTop: "21px" }}
+            >
+              clear
+            </button>
             <button
               className="btn btn-primary btn-sm"
               onClick={this.loadData.bind(this)}
               type="button"
-              style={{ marginTop: "21px" }}
+              style={{ marginTop: "21px", marginLeft: 10 }}
             >
               Load
             </button>
-            <div className="col">
-              <button
-                className="btn "
-                onClick={this.clearData.bind(this)}
-                type="button"
-                style={{ marginTop: "21px" }}
-              >
-                clear
-              </button>
-            </div>
           </div>
         </div>
         <div className="portlet portlet-bordered margin-top-15">

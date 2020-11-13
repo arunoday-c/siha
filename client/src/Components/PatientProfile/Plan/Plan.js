@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import "./plan.scss";
-import {
-  AlgaehLabel,
-  AlgaehModalPopUp
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehModalPopUp } from "../../Wrapper/algaehWrapper";
 import DietAdvice from "./DietAdvice/DietAdvice";
 import Referal from "./Referal/Referal";
 import FollowUp from "./FollowUp/FollowUp";
@@ -28,7 +25,7 @@ class Plan extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
@@ -36,7 +33,7 @@ class Plan extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onClose = e => {
+  onClose = (e) => {
     removeGlobal("orderMedicationState");
     this.setState({ pageDisplay: "OrderMedication" }, () => {
       this.props.onClose && this.props.onClose(e);
@@ -81,7 +78,7 @@ class Plan extends Component {
         <div className="row">
           <AlgaehModalPopUp
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title="Medication"
             openPopup={this.props.openMedication}
@@ -96,7 +93,7 @@ class Plan extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Order Medication"
+                        forceLabel: "Order Medication",
                       }}
                     />
                   }
@@ -109,7 +106,7 @@ class Plan extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Active Medication"
+                        forceLabel: "Active Medication",
                       }}
                     />
                   }
@@ -122,7 +119,7 @@ class Plan extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Past Medication History"
+                        forceLabel: "Past Medication History",
                       }}
                     />
                   }
@@ -135,7 +132,7 @@ class Plan extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Extrenal Medication"
+                        forceLabel: "EXTERNAL MEDICATION",
                       }}
                     />
                   }
@@ -147,7 +144,7 @@ class Plan extends Component {
               <OrderMedication
                 vat_applicable={this.props.vat_applicable}
                 refreshState={this.props.mainState}
-                onclosePopup={e => {
+                onclosePopup={(e) => {
                   removeGlobal("orderMedicationState");
                   this.setState({ pageDisplay: "OrderMedication" }, () => {
                     this.props.onClose && this.props.onClose(e);
@@ -156,7 +153,7 @@ class Plan extends Component {
               />
             ) : this.state.pageDisplay === "ActiveMedication" ? (
               <ActiveMedication
-                onclosePopup={e => {
+                onclosePopup={(e) => {
                   removeGlobal("orderMedicationState");
                   this.setState({ pageDisplay: "OrderMedication" }, () => {
                     this.props.onClose && this.props.onClose(e);
@@ -166,7 +163,7 @@ class Plan extends Component {
               />
             ) : this.state.pageDisplay === "MedicationHistory" ? (
               <MedicationHistory
-                onclosePopup={e => {
+                onclosePopup={(e) => {
                   removeGlobal("orderMedicationState");
                   this.setState({ pageDisplay: "OrderMedication" }, () => {
                     this.props.onClose && this.props.onClose(e);
@@ -176,7 +173,7 @@ class Plan extends Component {
               />
             ) : this.state.pageDisplay === "PastMedication" ? (
               <PastMedication
-                onclosePopup={e => {
+                onclosePopup={(e) => {
                   removeGlobal("orderMedicationState");
                   this.setState({ pageDisplay: "PastMedication" }, () => {
                     this.props.onClose && this.props.onClose(e);
@@ -189,7 +186,7 @@ class Plan extends Component {
 
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Other Details"
           openPopup={this.props.openMedicaldata}
@@ -229,7 +226,7 @@ class Plan extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={e => {
+                  onClick={(e) => {
                     removeGlobal("orderMedicationState");
                     this.onClose(e);
                   }}
@@ -246,7 +243,7 @@ class Plan extends Component {
           events={{
             onClose: () => {
               this.props.onClose();
-            }
+            },
           }}
           title="Diet Plan"
           openPopup={this.props.openDiet}
@@ -261,7 +258,7 @@ class Plan extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={e => {
+                onClick={(e) => {
                   this.onClose(e);
                 }}
               >

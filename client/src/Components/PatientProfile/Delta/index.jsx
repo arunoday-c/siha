@@ -116,20 +116,41 @@ export default function DeltaCheck({ visible, onCancel }) {
 
   function calculateVitalChart() {
     if (patientVitals?.length) {
-      const data = [];
-      selected.forEach((id) => {
-        let vit = patientVitals?.filter((item) => item.vital_id === id);
-        vit = vit?.map((item) => ({
-          date: item?.visit_date?.split(" ")[0],
-          value: parseFloat(item?.vital_value) || 0,
-          type: item?.vitals_name,
-        }));
-        vit = vit?.filter((item) =>
-          moment(item?.date).isBetween(dates?.[0], dates?.[1])
-        );
-        data.push(...vit);
-      });
-      setChartData(data);
+      // const data = [];
+      let dtl = [];
+      _.chain(patientVitals)
+        .filter((f) => moment(f.dateTime).isBetween(dates?.[0], dates?.[1]))
+        .forEach((item) => {
+          selected.forEach((id) => {
+            item.list
+              .filter((fi) => fi.vital_id === id)
+              .forEach((vital) => {
+                const { visit_date, vital_value, vitals_name } = vital;
+                dtl.push({
+                  date: visit_date,
+                  value: parseFloat(vital_value) || 0,
+                  type: vitals_name,
+                });
+              });
+          });
+        })
+        .value();
+
+      setChartData(dtl);
+      // selected.forEach((id) => {
+      //   let vit = patientVitals?.list?.filter((item) => item.vital_id === id);
+
+      //   vit = vit?.map((item) => ({
+      //     date: item?.visit_date?.split(" ")[0],
+      //     value: parseFloat(item?.vital_value) || 0,
+      //     type: item?.vitals_name,
+      //   }));
+      //   vit = vit?.filter((item) =>
+      //     moment(item?.date).isBetween(dates?.[0], dates?.[1])
+      //   );
+      //   data.push(...vit);
+      // });
+      // setChartData(data);
       setShowChart(true);
     } else {
       swalMessage({

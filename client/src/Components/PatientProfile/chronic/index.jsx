@@ -140,7 +140,11 @@ export default function ({ checkChronicExists, updateChronic }) {
               })}
             </tbody>
           ) : (
-            <tbody>Enter Text Here</tbody>
+            <tbody>
+              <tr>
+                <td colspan="4">No Chronic Conditions Found</td>
+              </tr>
+            </tbody>
           )}
         </table>
         <table className="listofADDTable">
@@ -201,7 +205,11 @@ export default function ({ checkChronicExists, updateChronic }) {
               })}
             </tbody>
           ) : (
-            <tbody>Enter Text Here</tbody>
+            <tbody>
+              <tr>
+                <td colspan="5">No Chronic Mecdication Found</td>
+              </tr>
+            </tbody>
           )}
         </table>
       </div>

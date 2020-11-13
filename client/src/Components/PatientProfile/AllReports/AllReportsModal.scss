@@ -1,14 +1,17 @@
-.TestResultPopup{
+.TestResultPopup {
   z-index: 999999 !important;
 }
-.AllReportsModal{
-.tab-container{
-  margin-top: 10px;
-}
-#Lab_list_grid{
-.ReactTable {max-height: 55vh !important;}
-}
-.fa-random{
-  display:none!important;
+.AllReportsModal {
+  .tab-container {
+    margin-top: 10px;
+  }
+  #Lab_list_grid,
+  #Rad_result_grid {
+    .ReactTable {
+      max-height: 55vh !important;
+    }
+  }
+  .fa-random {
+    display: none !important;
   }
 }

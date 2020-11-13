@@ -14,7 +14,9 @@ import {
   AlgaehLabel,
   Spin,
   AlgaehMessagePop,
+  AlgaehSecurityComponent,
 } from "algaeh-react-components";
+
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { useQueryParams, newAlgaehApi } from "../../hooks";
 import { Demographics } from "./Demographics";
@@ -763,9 +765,6 @@ export function PatientRegistration() {
           userArea={
             <div className="row">
               <div className="col">
-                <button onClick={getFromSmartCard}>Smart card</button>
-              </div>
-              <div className="col">
                 <AlgaehLabel
                   label={{
                     fieldName: "registered_date",
@@ -773,6 +772,18 @@ export function PatientRegistration() {
                 />
                 <h6>{moment().format("DD-MM-YYYY")}</h6>
               </div>
+              <AlgaehSecurityComponent componentCode="PAT_SMT_CRD">
+                <div className="col">
+                  {/* PAT_SMT_CRD */}
+                  <button
+                    style={{ marginTop: 5 }}
+                    className="btn btn-default btn-small"
+                    onClick={getFromSmartCard}
+                  >
+                    Load from Smart card
+                  </button>
+                </div>
+              </AlgaehSecurityComponent>
             </div>
           }
           editData={{

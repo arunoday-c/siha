@@ -695,7 +695,7 @@ ALTER TABLE `hims_f_sales_invoice_header`
 ADD COLUMN `narration` VARCHAR(200) NULL DEFAULT NULL AFTER `return_done`;
 
 
-INSERT INTO `algaeh_d_app_screens` (`screen_code`, `screen_name`, `page_to_redirect`, `module_id`, `other_language`, `created_date`, `updated_date`, `record_status`) VALUES ('INS0006', 'Bulk Claim Generation', 'BulkClaimGeneration', '9', 'بيان التأمين', '2020-09-07 14:08:51', '2020-09-07 14:08:51', 'A');
+INSERT INTO `algaeh_d_app_screens` (`screen_code`, `screen_name`, `page_to_redirect`, `module_id`, `other_language`, `created_date`, `updated_date`, `record_status`) VALUES ('INS0006', 'Bulk Invoice Generation', 'BulkClaimGeneration', '9', 'بيان التأمين', '2020-09-07 14:08:51', '2020-09-07 14:08:51', 'A');
 
 ALTER TABLE `hims_d_inventory_options` 
 CHANGE COLUMN `requisition_auth_level` `requisition_auth_level` ENUM('N', '1', '2') NULL DEFAULT 'N' COMMENT 'N-None, 1-Level 1, 2 - Level 2' ;

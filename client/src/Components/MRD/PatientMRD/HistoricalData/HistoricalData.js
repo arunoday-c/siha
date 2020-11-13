@@ -8,8 +8,6 @@ import algaehLoader from "../../../Wrapper/fullPageLoader";
 import moment from "moment";
 import Enumerable from "linq";
 import config from "../../../../utils/config.json";
-import { Line } from "react-chartjs-2";
-import { AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import NursesNotes from "../../../PatientProfile/Examination/NursesNotes";
 import _ from "lodash";
 
@@ -257,7 +255,6 @@ class HistoricalData extends Component {
       })
       .toArray();
 
-    let _chartLabels = [];
     let _yAxes = [];
     let _plotGraph = [];
 
@@ -375,7 +372,7 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-8 vitalsTimeLineSec">
+                  <div className="col-12 vitalsTimeLineSec">
                     <div className="timeline">
                       {_vitalsGroup.map((data, index) => (
                         <div key={index} className="timelineContainer right">
@@ -405,99 +402,6 @@ class HistoricalData extends Component {
                       ))}
                     </div>
                   </div>
-                  <div className="col-4 vitalsChartSec">
-                    <Line
-                      options={{
-                        scales: {
-                          yAxes: _yAxes,
-                        },
-                      }}
-                      data={{
-                        datasets: _plotGraph,
-                        labels: _chartLabels,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-lg-12" id="historicGridDataCntr">
-                    <AlgaehDataGrid
-                      id="historicGridData"
-                      columns={[
-                        {
-                          fieldName: "dateTime",
-                          label: "Date",
-                        },
-                        {
-                          fieldName: "weight",
-                          label: "Weight",
-                        },
-                        {
-                          fieldName: "height",
-                          label: "Height",
-                        },
-                        {
-                          fieldName: "bmi",
-                          label: "BMI",
-                        },
-                        {
-                          fieldName: "temperature",
-                          label: "Temp.",
-                        },
-                        {
-                          fieldName: "heart_rate",
-                          label: "Heart Rate",
-                        },
-                        {
-                          fieldName: "respiratory_rate",
-                          label: "Respiratory Rate",
-                        },
-                        {
-                          fieldName: "bp_systolic",
-                          label: "BP (sys)",
-                        },
-                        {
-                          fieldName: "bp_diastolic",
-                          label: "BP (dia)",
-                        },
-                        {
-                          fieldName: "glucose_fbs",
-                          label: "Glucose FBS",
-                        },
-                        {
-                          fieldName: "glucose_rbs",
-                          label: "Glucose RBS",
-                        },
-                        {
-                          fieldName: "glucose_pbs",
-                          label: "Glucose PBS",
-                        },
-                        {
-                          fieldName: "head_ircumference",
-                          label: "Head Circumference",
-                        },
-                      ]}
-                      dataSource={{ data: _vitalsGroup }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                    />
-                    {/* <dl>
-                        {_vitalsGroup.map((data, index) => (
-                          <React.Fragment key={index}>
-                            <dt key={index}>On {data.dateTime}</dt>
-                            {data.list.map((vitals, ind) => (
-                              <dd key={ind}>
-                                {vitals.vitals_name} : {vitals.vital_value}
-                                {"  "}
-                                {vitals.formula_value}
-                              </dd>
-                            ))}
-                          </React.Fragment>
-
-
-                        ))}
-                      </dl> */}
-                  </div>
                 </div>
               </div>
             </div>
@@ -506,21 +410,18 @@ class HistoricalData extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Vitals Charts</h3>
+                  <h3 className="caption-subject">Nursing Notes</h3>
                 </div>
               </div>
               <div className="portlet-body">
-                <div className="row chartCNtr" id="VitalsChart_Cntr">
-                  <Line
-                    options={{
-                      scales: {
-                        yAxes: _yAxes,
-                      },
-                    }}
-                    data={{
-                      datasets: _plotGraph,
-                      labels: _chartLabels,
-                    }}
+                <div
+                  className="col-lg-12"
+                  id="PaymentHistoryGrid_Cntr"
+                  style={{ padding: 0 }}
+                >
+                  <NursesNotes
+                    patient_id={Window?.global?.mrd_patient}
+                    viewOnly={true}
                   />
                 </div>
               </div>
@@ -1091,23 +992,6 @@ class HistoricalData extends Component {
                   data={_groupData}
                   // data={this.state.patientPayments}
                   defaultPageSize={10}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Nurse Notes</h3>
-            </div>
-          </div>
-          <div className="portlet-body">
-            <div className="row">
-              <div className="col-lg-12" id="PaymentHistoryGrid_Cntr">
-                <NursesNotes
-                  patient_id={Window?.global?.mrd_patient}
-                  viewOnly={true}
                 />
               </div>
             </div>
