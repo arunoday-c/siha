@@ -661,6 +661,9 @@ export function PatientRegistration() {
     clearState();
     setConsultationInfo(default_visit_type);
     setIsInsurance(false);
+    if (patientImage.current) {
+      patientImage.current.updateImageInside("", "");
+    }
     patientIdCard.current = null;
     patientImage.current = null;
     insuranceImgBack.current = null;
@@ -694,7 +697,13 @@ export function PatientRegistration() {
       });
       return;
     }
-    patientImage.current.imager.src = `data:image/jpeg;base64,${Photo}`; //("src", Photo);
+
+    if (patientImage.current) {
+      patientImage.current.updateImageInside(
+        `data:image/jpeg;base64,${Photo}`,
+        "jpeg"
+      );
+    }
 
     reset({
       full_name: EnglishFullName,
