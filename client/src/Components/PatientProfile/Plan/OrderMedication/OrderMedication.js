@@ -474,7 +474,7 @@ class OrderMedication extends Component {
                   }}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col-6 form-group" }}
+                  div={{ className: "col-4 form-group" }}
                   label={{ forceLabel: "Start Date" }}
                   textBox={{ className: "txt-fld", name: "start_date" }}
                   minDate={new Date()}
@@ -483,8 +483,8 @@ class OrderMedication extends Component {
                   }}
                   value={this.state.start_date}
                 />
-                <div className="col-3">
-                  <label>isChronic</label>
+                <div className="col">
+                  <label>Chronic Medication</label>
                   <div className="customCheckbox">
                     <label className="checkbox block">
                       <input

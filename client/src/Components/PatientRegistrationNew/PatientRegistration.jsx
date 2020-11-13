@@ -763,15 +763,21 @@ export function PatientRegistration() {
           userArea={
             <div className="row">
               <div className="col">
-                <button onClick={getFromSmartCard}>Smart card</button>
-              </div>
-              <div className="col">
                 <AlgaehLabel
                   label={{
                     fieldName: "registered_date",
                   }}
                 />
                 <h6>{moment().format("DD-MM-YYYY")}</h6>
+              </div>
+              <div className="col">
+                <button
+                  style={{ marginTop: 5 }}
+                  className="btn btn-default btn-small"
+                  onClick={getFromSmartCard}
+                >
+                  Load from Smart card
+                </button>
               </div>
             </div>
           }
