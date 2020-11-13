@@ -209,24 +209,23 @@ class MRDList extends Component {
             value={this.state.to_date}
           />
           <div className="col">
+            {" "}
+            <button
+              className="btn btn-defaukt btn-sm"
+              onClick={this.clearData.bind(this)}
+              type="button"
+              style={{ marginTop: "21px" }}
+            >
+              clear
+            </button>
             <button
               className="btn btn-primary btn-sm"
               onClick={this.loadData.bind(this)}
               type="button"
-              style={{ marginTop: "21px" }}
+              style={{ marginTop: "21px", marginLeft: 10 }}
             >
               Load
             </button>
-            <div className="col">
-              <button
-                className="btn "
-                onClick={this.clearData.bind(this)}
-                type="button"
-                style={{ marginTop: "21px" }}
-              >
-                clear
-              </button>
-            </div>
           </div>
         </div>
         <div className="portlet portlet-bordered margin-top-15">
