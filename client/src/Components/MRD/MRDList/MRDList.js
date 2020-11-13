@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import "./mrd_list.scss";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
   AlgaehDataGrid,
@@ -17,6 +19,8 @@ class MRDList extends Component {
     let year = moment().year();
     this.state = {
       patientData: [],
+      patient_code: "",
+      hims_d_patient_id: null,
       to_date: new Date(),
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
     };
@@ -45,13 +49,44 @@ class MRDList extends Component {
       this.getPatientMrdList();
     }
   }
-
+  clearData() {
+    this.setState(
+      {
+        patient_code: "",
+        hims_d_patient_id: null,
+      },
+      () => {
+        this.loadData();
+      }
+    );
+  }
   datehandle(ctrl, e) {
     this.setState({
       [e]: moment(ctrl)._d,
     });
   }
+  PatientSearch = () => {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.frontDesk.patients,
+      },
+      searchName: "patients",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        this.setState({
+          patient_code: row.patient_code,
+          hims_d_patient_id: row.hims_d_patient_id,
+        });
 
+        // if (context !== null) {
+        //   context.updateState({ patient_code: row.patient_code });
+        // }
+      },
+    });
+  };
   getPatientMrdList(e) {
     if (e !== undefined) e.preventDefault();
 
@@ -69,44 +104,83 @@ class MRDList extends Component {
     //   return;
     // }
     algaehLoader({ show: true });
+    if (this.state.patient_code) {
+      algaehApiCall({
+        uri: "/mrd/getPatientMrd",
+        method: "GET",
+        module: "MRD",
+        data: { hims_d_patient_id: this.state.hims_d_patient_id },
+        onSuccess: (response) => {
+          algaehLoader({ show: false });
+          if (response.data.success) {
+            if (response.data.records.length === 0) {
+              swalMessage({
+                title: "No records Found",
+                type: "warning",
+              });
+            }
 
-    let inPutObj = {
-      from_date: this.state.from_date,
-      to_date: this.state.to_date,
-    };
-
-    algaehApiCall({
-      uri: "/mrd/getPatientMrdList",
-      method: "GET",
-      module: "MRD",
-      data: inPutObj,
-      onSuccess: (response) => {
-        algaehLoader({ show: false });
-        if (response.data.success) {
-          if (response.data.records.length === 0) {
-            swalMessage({
-              title: "No records Found",
-              type: "warning",
-            });
+            this.setState({ patientData: response.data.records });
           }
+        },
+        onFailure: (error) => {
+          algaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    } else {
+      let inPutObj = {
+        from_date: this.state.from_date,
+        to_date: this.state.to_date,
+      };
 
-          this.setState({ patientData: response.data.records });
-        }
-      },
-      onFailure: (error) => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
+      algaehApiCall({
+        uri: "/mrd/getPatientMrdList",
+        method: "GET",
+        module: "MRD",
+        data: inPutObj,
+        onSuccess: (response) => {
+          algaehLoader({ show: false });
+          if (response.data.success) {
+            if (response.data.records.length === 0) {
+              swalMessage({
+                title: "No records Found",
+                type: "warning",
+              });
+            }
+
+            this.setState({ patientData: response.data.records });
+          }
+        },
+        onFailure: (error) => {
+          algaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    }
   }
 
   render() {
     return (
       <div className="mrd-list">
         <div className="row  inner-top-search">
+          <div className="col-2 globalSearchCntr">
+            <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
+            <h6 onClick={this.PatientSearch.bind(this)}>
+              {this.state.patient_code ? (
+                this.state.patient_code
+              ) : (
+                <AlgaehLabel label={{ fieldName: "patient_code" }} />
+              )}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
+          </div>
           <AlgaehDateHandler
             div={{ className: "col-3 mandatory form-group" }}
             label={{ forceLabel: "Patient Registration From", isImp: true }}
@@ -143,6 +217,16 @@ class MRDList extends Component {
             >
               Load
             </button>
+            <div className="col">
+              <button
+                className="btn "
+                onClick={this.clearData.bind(this)}
+                type="button"
+                style={{ marginTop: "21px" }}
+              >
+                clear
+              </button>
+            </div>
           </div>
         </div>
         <div className="portlet portlet-bordered margin-top-15">

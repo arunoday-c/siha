@@ -53,7 +53,41 @@ export default {
       next(e);
     }
   },
+  getPatientMrd: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select patient_code,registration_date,first_name,middle_name,\
+            last_name,full_name,arabic_name,gender,date_of_birth,age,marital_status,\
+            contact_number,P.nationality_id ,N.nationality,secondary_contact_number,email,emergency_contact_name,emergency_contact_number,\
+            relationship_with_patient,postal_code,\
+            primary_identity_id,DOC.identity_document_name as primary_document_name,\
+            primary_id_no,secondary_id_no,photo_file,primary_id_file,\
+            secondary_id_file,advance_amount,patient_type,vat_applicable\
+            from hims_f_patient P, hims_d_nationality N,hims_d_identity_document DOC\
+            where P.record_status='A' and N.record_status='A' and DOC.record_status='A' and\
+            P.nationality_id=N.hims_d_nationality_id and P.primary_identity_id=DOC.hims_d_identity_document_id \
+            and P.hospital_id=? and hims_d_patient_id=?",
 
+          values: [req.userIdentity.hospital_id, req.query.hims_d_patient_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getPatientEncounterDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
 
@@ -246,10 +280,10 @@ export default {
         .then((result) => {
           _mysql.releaseConnection();
 
-          let final_result = result[0]
+          let final_result = result[0];
           final_result = final_result.concat(result[1]);
 
-          console.log("final_result", final_result)
+          console.log("final_result", final_result);
           req.records = final_result;
           next();
         })
