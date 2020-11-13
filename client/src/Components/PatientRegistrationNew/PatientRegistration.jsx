@@ -675,7 +675,7 @@ export function PatientRegistration() {
   };
   const getFromSmartCard = async () => {
     const res = await axios.get("http://localhost:1212/smartCardReading");
-
+    console.log("formState", formState);
     const {
       AddressEnglish,
       ArabicFullName,
@@ -712,6 +712,12 @@ export function PatientRegistration() {
       address1: AddressEnglish,
       gender: Gender === "M" ? "Male" : Gender === "F" ? "Female" : "Others",
       primary_id_no: IdNumber,
+      nationality_id: userToken?.default_nationality,
+      country_id: userToken?.default_country,
+      patient_type: userToken?.default_patient_type,
+      visit_type: default_visit_type?.hims_d_visit_type_id,
+      tel_code: currentCountry?.tel_code,
+      title_id: Gender === "M" ? 1 : 2,
     });
   };
   return (
