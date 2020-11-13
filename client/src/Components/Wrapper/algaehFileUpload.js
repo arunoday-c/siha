@@ -37,6 +37,10 @@ export default class AlgaehFileUploader extends Component {
       outSaveFunction: undefined,
       forceRefreshed: undefined,
     };
+    this.updateImageInside = (img, name) => {
+      img = img === "" ? this.noImage : img;
+      this.setState({ fileExtention: name, filePreview: img });
+    };
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     // const _refresh =
@@ -217,7 +221,6 @@ export default class AlgaehFileUploader extends Component {
       }
     }
   }
-
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps !== this.props || nextState !== this.state) {
       return true;
