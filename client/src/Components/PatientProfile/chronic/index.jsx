@@ -190,7 +190,9 @@ export default function ({ checkChronicExists, updateChronic }) {
                     </td>
                     <td>{item.item_description}</td>
                     <td>
-                      {item.chronic_category === "E" ? "External" : "Internal"}
+                      {item.medication_category === "E"
+                        ? "External"
+                        : "Internal"}
                     </td>
                     <td>
                       {item.added_by} /{" "}
