@@ -575,7 +575,7 @@ class PatientProfile extends Component {
     );
   }
 
-  OpenMrdHandler(e) {
+  OpenMrdHandler(_pat_profile, e) {
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     // const _Vitals =
@@ -625,11 +625,11 @@ class PatientProfile extends Component {
     e.currentTarget.classList.add("active");
     var page = e.currentTarget.getAttribute("algaehsoap");
 
+
     setGlobal({
       "MRD-STD": "PatientMRD",
       mrd_patient: details["current_patient"],
-      nationality: document.querySelector("[patient_nationality='true']")
-        .innerText,
+      nationality: _pat_profile.nationality,
       gender: details["gender"],
     });
     this.setState({
@@ -1013,7 +1013,7 @@ class PatientProfile extends Component {
               </li>
               <li className="nav-item">
                 <span
-                  onClick={this.OpenMrdHandler.bind(this)} //this.OpenMrdHandler.bind(this)}
+                  onClick={this.OpenMrdHandler.bind(this, _pat_profile)} //this.OpenMrdHandler.bind(this)}
                   algaehsoap="mrd"
                   className="nav-link"
                 >

@@ -4,13 +4,14 @@ import mrdModels from "../models/mrd";
 
 const {
   getPatientMrdList,
+  getPatientMrd,
   getPatientEncounterDetails,
   getPatientChiefComplaint,
   getPatientDiagnosis,
   getPatientMedication,
   getPatientInvestigation,
   getPatientPaymentDetails,
-  getPatientTreatments
+  getPatientTreatments,
 } = mrdModels;
 
 export default () => {
@@ -21,7 +22,15 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
+    });
+    next();
+  });
+  api.get("/getPatientMrd", getPatientMrd, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
     });
     next();
   });
@@ -34,7 +43,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -48,7 +57,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -59,7 +68,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -69,7 +78,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -82,7 +91,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -96,7 +105,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -106,7 +115,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });

@@ -662,10 +662,10 @@ export function PatientRegistration() {
     setConsultationInfo(default_visit_type);
     setIsInsurance(false);
     if (patientImage.current) {
-      patientImage.current.updateImageInside("", "");
+      patientImage.current.updateImageInside("", null);
     }
     patientIdCard.current = null;
-    patientImage.current = null;
+    // patientImage.current = null;
     insuranceImgBack.current = null;
     insuranceImgFront.current = null;
 
@@ -675,7 +675,7 @@ export function PatientRegistration() {
   };
   const getFromSmartCard = async () => {
     const res = await axios.get("http://localhost:1212/smartCardReading");
-    console.log("formState", formState);
+
     const {
       AddressEnglish,
       ArabicFullName,
@@ -704,7 +704,7 @@ export function PatientRegistration() {
         "jpeg"
       );
     }
-
+    console.log("userToken", userToken);
     reset({
       full_name: EnglishFullName,
       arabic_name: ArabicFullName,

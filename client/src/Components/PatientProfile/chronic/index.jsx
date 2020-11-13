@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import "./chronic.scss";
 import { IcdCodeForChronic } from "../Subjective/SubjectiveHandler";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+// import { message } from "algaeh-react-components";
 export default function ({ checkChronicExists }) {
   const { current_patient, visit_id } = Window.global;
   const [data, setData] = useState([]);
@@ -47,6 +48,10 @@ export default function ({ checkChronicExists }) {
         },
         onSuccess: (response) => {
           if (response.data.success) {
+            swalMessage({
+              title: "Chronic added successfully",
+              type: "success",
+            });
             chronicList();
           }
         },
