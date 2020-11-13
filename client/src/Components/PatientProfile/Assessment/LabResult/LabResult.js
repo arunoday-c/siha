@@ -190,14 +190,6 @@ class LabResult extends Component {
                             />
                             {row.lab_id_number ? (
                               <i
-                                // style={{
-                                //   pointerEvents:
-                                //     row.status === "O"
-                                //       ? ""
-                                //       : row.sample_status === "N"
-                                //       ? "none"
-                                //       : "",
-                                // }}
                                 className="fas fa-paperclip"
                                 aria-hidden="true"
                                 onClick={() => {
@@ -270,6 +262,7 @@ class LabResult extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Test Name" }} />
                       ),
+                      filterable: true,
                       displayTemplate: (row) => {
                         return (
                           <span
@@ -290,6 +283,7 @@ class LabResult extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
                       ),
+                      filterable: true,
                     },
                     {
                       fieldName: "ordered_date",
@@ -304,6 +298,7 @@ class LabResult extends Component {
                     },
                   ]}
                   keyId="patient_code"
+                  isFilterable={true}
                   dataSource={{
                     data:
                       this.props.labresult === undefined
