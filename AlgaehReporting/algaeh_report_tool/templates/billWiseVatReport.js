@@ -28,7 +28,7 @@ const executePDF = function executePDFMethod(options) {
 					inner join hims_f_patient P on P.hims_d_patient_id = BH.patient_id \
 					inner join  hims_f_patient_visit V on BH.visit_id = hims_f_patient_visit_id \
 					inner join hims_d_nationality N on N.hims_d_nationality_id = P.nationality_id \
-					where cancelled='N' and date(bill_date) between date(?) and date(?) and BH.hospital_id=? ${strData} ;\
+					where cancelled='N' and adjusted='N' and date(bill_date) between date(?) and date(?) and BH.hospital_id=? ${strData} ;\
 					select PH.pos_number as doc_number,V.visit_date, P.full_name, P.patient_code, N.nationality,\
 					CASE WHEN PD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno, \
 					PD.net_extended_cost as total_before_vat, (coalesce(PD.patient_payable,0)+coalesce(PD.company_payable,0)) as total_after_vat, \
@@ -51,7 +51,7 @@ const executePDF = function executePDFMethod(options) {
         .then((ress) => {
           let final_result = ress[0];
           final_result = final_result.concat(ress[1]);
-          console.log("final_result", final_result);
+          // console.log("final_result", final_result);
 
           const result = {
             details: final_result,

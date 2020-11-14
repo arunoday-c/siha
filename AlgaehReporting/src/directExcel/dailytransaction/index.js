@@ -21,7 +21,7 @@ export function generateExcelDilyTrans(req, res, next) {
         RD.amount as receipt_amount,RD.pay_type
         from hims_f_patient as P inner join hims_f_patient_visit as V on P.hims_d_patient_id = V.patient_id
         inner join hims_f_billing_header as BH on V.hims_f_patient_visit_id  = BH.visit_id  and V.patient_id = BH.patient_id
-        and BH.cancelled ='N'
+        and BH.cancelled ='N' and BH.adjusted='N'
         inner join hims_f_billing_details as BD on BH.hims_f_billing_header_id = BD.hims_f_billing_header_id
         left join hims_d_employee as E on V.doctor_id  = E.hims_d_employee_id
         left join hims_d_title as T  on P.title_id =T.his_d_title_id  or E.title_id = T.title
@@ -233,8 +233,8 @@ export function generateExcelDilyTrans(req, res, next) {
                           [bKey === "CA"
                             ? "cash_amount"
                             : bKey === "CD"
-                            ? "card_amount"
-                            : "cheque_amount"]: billH.receipt_amount,
+                              ? "card_amount"
+                              : "cheque_amount"]: billH.receipt_amount,
                         };
                       })
                       .value();
@@ -256,8 +256,8 @@ export function generateExcelDilyTrans(req, res, next) {
                       [sKey + "_amount"]:
                         recordsDtl.length === 1
                           ? _.sumBy(services, (s) =>
-                              parseFloat(s.patient_payable)
-                            )
+                            parseFloat(s.patient_payable)
+                          )
                           : dualPayType,
                       [sKey + "_desc_amount"]: _.sumBy(services, (s) =>
                         parseFloat(s.discount_amout)

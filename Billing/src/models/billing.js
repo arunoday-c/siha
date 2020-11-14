@@ -144,9 +144,6 @@ export default {
         return;
       }
 
-      // const utilities = new algaehUtilities();
-      // utilities.logger().log("inputParam Bill: ", inputParam);
-
       _mysql
         .executeQuery({
           query:
@@ -155,18 +152,15 @@ export default {
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
               , patient_tax, s_patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
-              balance_credit , created_by, created_date, updated_by, updated_date, copay_amount,\
+              balance_credit, from_bill_id, shift_id, created_by, created_date, updated_by, updated_date, copay_amount,\
               deductable_amount,hospital_id)\
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
             inputParam.bill_number,
             inputParam.receipt_header_id,
             inputParam.incharge_or_provider,
-            // inputParam.bill_date != null
-            //   ? new Date(inputParam.bill_date)
-            //   : inputParam.bill_date,
             new Date(),
             inputParam.advance_amount,
             inputParam.advance_adjust === "" ? 0 : inputParam.advance_adjust,
@@ -196,7 +190,8 @@ export default {
             inputParam.credit_amount,
             inputParam.receiveable_amount,
             inputParam.balance_credit,
-
+            inputParam.from_bill_id,
+            inputParam.shift_id,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
@@ -208,7 +203,6 @@ export default {
           printQuery: true,
         })
         .then((headerResult) => {
-          // utilities.logger().log("headerResult Bill: ", headerResult);
           req.body.hims_f_billing_header_id = headerResult.insertId;
           if (
             headerResult.insertId != null &&
@@ -482,6 +476,11 @@ export default {
         sendingObject.company_payble = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.company_payble)
         );
+
+        sendingObject.company_payable = new LINQ(inputParam).Sum(
+          d => d.company_payble
+        );
+
         sendingObject.sec_company_paybale = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.sec_company_paybale)
         );
@@ -842,7 +841,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => {});
+        _mysql.rollBackTransaction(() => { });
         next();
         return;
       } else if (
@@ -1080,6 +1079,245 @@ export default {
         }
       }
     } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
+  },
+
+  reVertCashHandover: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+
+    const _mysql = new algaehMysql(_options);
+
+    const inputParam = req.body;
+
+    try {
+      if (req.userIdentity.user_type == "C" && inputParam.shift_id > 0) {
+        if (inputParam.receiptdetails.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_f_cash_handover_header_id, shift_id, daily_handover_date,\
+                hims_f_cash_handover_detail_id, D.casher_id,D.shift_status,D.open_date,\
+                D.expected_cash,D.expected_card,D.no_of_cheques,D.collected_cash,D.refunded_cash\
+                from hims_f_cash_handover_header H left join hims_f_cash_handover_detail D \
+                on H.hims_f_cash_handover_header_id=D.cash_handover_header_id\
+                and date(D.open_date)=CURDATE()  and casher_id=? and shift_status='O' and D.record_status='A'\
+                where H.shift_id=? and date(H.daily_handover_date)=CURDATE() and H.hospital_id=? ",
+              values: [
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.shift_id,
+                req.userIdentity.hospital_id,
+              ],
+              printQuery: true,
+            })
+            .then((result) => {
+              let collected_cash = 0;
+              let expected_card = 0;
+
+              collected_cash = new LINQ(inputParam.receiptdetails)
+                .Where((w) => w.pay_type == "CA")
+                .Sum((s) => parseFloat(s.amount));
+
+              expected_card = new LINQ(inputParam.receiptdetails)
+                .Where((w) => w.pay_type == "CD")
+                .Sum((s) => parseFloat(s.amount));
+
+              collected_cash = parseFloat(result[0].collected_cash) - collected_cash;
+              expected_cash = parseFloat(result[0].expected_cash) - expected_cash;
+
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "update hims_f_cash_handover_detail set expected_cash=?,expected_card=?,\
+                    updated_date=?,updated_by=? where record_status='A' \
+                  and hims_f_cash_handover_detail_id=?;\
+                  update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
+                              where hims_f_cash_handover_detail_id=?;",
+                  values: [
+                    collected_cash,
+                    expected_card,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    result[0]["hims_f_cash_handover_detail_id"],
+                    result[0]["hims_f_cash_handover_detail_id"]
+                  ],
+                  printQuery: true,
+                })
+                .then((updateResult) => {
+                  if (req.records) {
+                    req.records["internal_error"] = false;
+                  } else {
+                    req.records = {
+                      internal_error: false,
+                    };
+                  }
+
+                  next();
+
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+
+                  //  console.log("er3 :", error);
+                });
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        } else {
+          req.records = {
+            internal_error: true,
+            message: "No receipt details",
+          };
+          _mysql.rollBackTransaction(() => {
+            next();
+          });
+        }
+      } else {
+        req.records = {
+          internal_error: true,
+          message: "Current user is not a Cashier",
+        };
+        _mysql.rollBackTransaction(() => {
+          next();
+        });
+      }
+    } catch (e) {
+      // console.log("error:", e);
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
+  },
+
+  revertOldCashHandover: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+
+    const _mysql = new algaehMysql(_options);
+
+    const inputParam = req.body;
+
+    try {
+      if (req.userIdentity.user_type == "C" && inputParam.shift_id > 0) {
+        if (inputParam.receiptdetails.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "select RD.* from hims_f_billing_header BH \
+                inner join hims_f_receipt_details RD on RD.hims_f_receipt_header_id = BH.receipt_header_id \
+                where BH.hims_f_billing_header_id=?; ",
+              values: [inputParam.from_bill_id],
+              printQuery: true,
+            })
+            .then((receipt_result) => {
+              _mysql
+                .executeQuery({
+                  query:
+                    "select hims_f_cash_handover_header_id, shift_id, daily_handover_date,\
+                hims_f_cash_handover_detail_id, D.casher_id,D.shift_status,D.open_date,\
+                D.expected_cash,D.expected_card,D.no_of_cheques,D.collected_cash,D.refunded_cash\
+                from hims_f_cash_handover_header H left join hims_f_cash_handover_detail D \
+                on H.hims_f_cash_handover_header_id=D.cash_handover_header_id\
+                and date(D.open_date)=CURDATE()  and casher_id=? and shift_status='O' and D.record_status='A'\
+                where H.shift_id=? and date(H.daily_handover_date)=CURDATE() and H.hospital_id=? ",
+                  values: [
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.shift_id,
+                    req.userIdentity.hospital_id,
+                  ],
+                  printQuery: true,
+                })
+                .then((result) => {
+                  console.log("1", result)
+                  let collected_cash = 0;
+                  let expected_card = 0;
+                  console.log("2", receipt_result)
+                  collected_cash = new LINQ(receipt_result)
+                    .Where((w) => w.pay_type == "CA")
+                    .Sum((s) => parseFloat(s.amount));
+
+                  console.log("3")
+                  expected_card = new LINQ(receipt_result)
+                    .Where((w) => w.pay_type == "CD")
+                    .Sum((s) => parseFloat(s.amount));
+
+                  console.log("4")
+                  expected_card = parseFloat(result[0].expected_card) - expected_card;
+                  collected_cash = parseFloat(result[0].collected_cash) - collected_cash;
+
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "update hims_f_cash_handover_detail set collected_cash=?,expected_card=?,\
+                    updated_date=?,updated_by=? where record_status='A' \
+                  and hims_f_cash_handover_detail_id=?;\
+                  update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
+                              where hims_f_cash_handover_detail_id=?;",
+                      values: [
+                        collected_cash,
+                        expected_card,
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
+                        result[0]["hims_f_cash_handover_detail_id"],
+                        result[0]["hims_f_cash_handover_detail_id"]
+                      ],
+                      printQuery: true,
+                    })
+                    .then((updateResult) => {
+                      if (req.records) {
+                        req.records["internal_error"] = false;
+                      } else {
+                        req.records = {
+                          internal_error: false,
+                        };
+                      }
+
+                      next();
+
+                    })
+                    .catch((error) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        } else {
+          req.records = {
+            internal_error: true,
+            message: "No receipt details",
+          };
+          _mysql.rollBackTransaction(() => {
+            next();
+          });
+        }
+      } else {
+        req.records = {
+          internal_error: true,
+          message: "Current user is not a Cashier",
+        };
+        _mysql.rollBackTransaction(() => {
+          next();
+        });
+      }
+    } catch (e) {
+      // console.log("error:", e);
       _mysql.rollBackTransaction(() => {
         next(error);
       });
@@ -1663,7 +1901,7 @@ export default {
                         printQuery: true,
                       })
                       .then((updateResult) => {
-                        //console.log("last :");
+                        // console.log("last :");
                         if (req.connection == null || req.adv_refnd == "Y") {
                           // console.log("BOOSSS :");
                           _mysql.commitTransaction(() => {
@@ -2447,7 +2685,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                          input[i]["primary_insurance_provider_id"] &&
+                        input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2642,16 +2880,16 @@ export default {
                         deductable_amount =
                           deductable_percentage !== null
                             ? (parseFloat(net_amout) *
-                                parseFloat(deductable_percentage)) /
-                              100
+                              parseFloat(deductable_percentage)) /
+                            100
                             : 0;
                       }
                     } else {
                       deductable_amount =
                         deductable_percentage !== null
                           ? (parseFloat(net_amout) *
-                              parseFloat(deductable_percentage)) /
-                            100
+                            parseFloat(deductable_percentage)) /
+                          100
                           : 0;
                     }
 
@@ -2815,8 +3053,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                          ? parseFloat(unit_cost)
-                          : parseFloat(records.standard_fee);
+                            ? parseFloat(unit_cost)
+                            : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -3879,7 +4117,7 @@ export default {
         next(e);
       });
     }
-  },
+  }
 };
 
 //Not in Use
@@ -4359,8 +4597,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                        ? unit_cost
-                        : records.standard_fee;
+                          ? unit_cost
+                          : records.standard_fee;
                   }
                 }
 

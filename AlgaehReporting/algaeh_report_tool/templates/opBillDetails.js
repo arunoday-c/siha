@@ -23,7 +23,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id
           inner join hims_d_service_type ST on BD.service_type_id=ST.hims_d_service_type_id and ST.record_status='A'
           inner join hims_d_services S on  BD.services_id = S.hims_d_services_id and S.record_status='A'
-			where BH.hospital_id=? and date(bill_date)   between    date(?) and  date(?)
+			where BD.cancel_yes_no='N' and adjusted='N' and BH.hospital_id=? and date(bill_date)   between    date(?) and  date(?)
 			and BH.record_status='A'  and BD.record_status='A'   ${str} group by BD.services_id,service_type_code,service_type,service_name;`,
           values: [input.hospital_id, input.from_date, input.to_date],
           printQuery: true,

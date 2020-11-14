@@ -155,7 +155,11 @@ class DisPatientForm extends Component {
                       <div className="col-2">
                         <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
                         <h6>
-                          {this.state.cancelled === "Y" ? (
+                          {this.state.adjusted === "Y" ? (
+                            <span className="badge badge-secondary">
+                              Adjusted
+                            </span>
+                          ) : this.state.cancelled === "Y" ? (
                             <span className="badge badge-secondary">
                               Cancelled
                             </span>
@@ -164,8 +168,8 @@ class DisPatientForm extends Component {
                               Not Settled
                             </span>
                           ) : (
-                                <span className="badge badge-success">Settled</span>
-                              )}
+                                  <span className="badge badge-success">Settled</span>
+                                )}
                         </h6>
                       </div>
                     ) : null}

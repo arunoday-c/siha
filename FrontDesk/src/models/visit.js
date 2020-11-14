@@ -143,8 +143,9 @@ export default {
                 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
                 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, `existing_plan`,\
                 `treatment_plan_id`,`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,\
-                `appointment_id`, `appointment_patient`, `new_visit_patient`,hospital_id, eligible, eligible_reference_number,updated_by,updated_date)\
-                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?,?,?,?,?,?);",
+                `appointment_id`, `appointment_patient`, `new_visit_patient`,hospital_id, eligible, \
+                eligible_reference_number, shift_id, updated_by,updated_date)\
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?,?,?,?,?,?,?);",
             values: [
               inputParam.patient_id,
               inputParam.visit_type,
@@ -181,6 +182,7 @@ export default {
               // inputParam.eligible,
               inputParam.eligible_reference_number ? "Y" : "N",
               inputParam.eligible_reference_number,
+              inputParam.shift_id,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
             ],

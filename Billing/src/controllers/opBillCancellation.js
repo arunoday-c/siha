@@ -1,6 +1,7 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import opModels from "../models/opBillCancellation";
+import billModule from "../models/billing"
 const {
   addOpBillCancellation,
   getBillCancellation,
@@ -14,6 +15,7 @@ const {
 } = opModels;
 import recModels from "../models/receiptentry";
 const { getReceiptEntry, addReceiptEntry } = recModels;
+const { reVertCashHandover } = billModule;
 
 export default () => {
   const api = Router();
@@ -66,8 +68,27 @@ export default () => {
         next();
       }
     },
+
     cancelPackage,
     generateAccountingEntry,
+    reVertCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     updateOPBilling,
 
     (req, res, next) => {

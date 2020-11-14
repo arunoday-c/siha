@@ -17,7 +17,8 @@ const {
   newReceiptData,
   addBillData,
   generateAccountingEntry,
-  addCashHandover
+  addCashHandover,
+  revertOldCashHandover
 } = billModels;
 const {
   addOpBIlling,
@@ -27,7 +28,9 @@ const {
   updatePhysiotherapyServices,
   selectBill,
   getPednigBills,
-  insertPhysiotherapyServices
+  insertPhysiotherapyServices,
+  updateOldBill,
+  generateAccountingEntryAdjustBill
 } = opModels;
 const { getReceiptEntry } = recModels;
 const { insertLadOrderedServices, updateLabOrderedBilled } = labModels;
@@ -90,6 +93,57 @@ export default () => {
         next();
       }
     },
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/addOPBillAdjustment",
+    addOpBIlling,
+    newReceiptData,
+    addBillData,
+    generateAccountingEntryAdjustBill,
+    addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
+    revertOldCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
+    updateOldBill,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
