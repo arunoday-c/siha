@@ -273,7 +273,7 @@ export default function SubjectiveHandler() {
     getPatientChiefComplaints: ($this) => {
       getPatientChiefComplaints($this);
     },
-    deletePrecription: ($this, medicine) => {
+    deletePrecription: ($this, medicine, context) => {
       swal({
         title:
           "Are you sure you want to delete this Item " +
@@ -311,6 +311,11 @@ export default function SubjectiveHandler() {
                       data["active_medication"] =
                         response.data.records.active_medication;
                     }
+                    context.updateState({
+                      updateChronic: true,
+                      // AdvanceOpen: false,
+                      // RefundOpen: false
+                    });
                     $this.setState({
                       ...data,
                     });

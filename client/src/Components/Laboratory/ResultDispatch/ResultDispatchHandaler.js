@@ -1,5 +1,5 @@
-import AlgaehSearch from "../../Wrapper/globalSearch";
-import FrontDesk from "../../../Search/FrontDesk.json";
+// import AlgaehSearch from "../../Wrapper/globalSearch";
+// import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 // import Enumerable from "linq";
@@ -20,29 +20,29 @@ const texthandle = ($this, e) => {
   );
 };
 
-const PatientSearch = ($this, e) => {
-  AlgaehSearch({
-    searchGrid: {
-      columns: FrontDesk,
-    },
-    searchName: "patients",
-    uri: "/gloabelSearch/get",
-    onContainsChange: (text, serchBy, callBack) => {
-      callBack(text);
-    },
-    onRowSelect: (row) => {
-      $this.setState(
-        {
-          patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id,
-        },
-        () => {
-          getSampleCollectionDetails($this);
-        }
-      );
-    },
-  });
-};
+// const PatientSearch = ($this, e) => {
+//   AlgaehSearch({
+//     searchGrid: {
+//       columns: FrontDesk,
+//     },
+//     searchName: "patients",
+//     uri: "/gloabelSearch/get",
+//     onContainsChange: (text, serchBy, callBack) => {
+//       callBack(text);
+//     },
+//     onRowSelect: (row) => {
+//       $this.setState(
+//         {
+//           patient_code: row.patient_code,
+//           patient_id: row.hims_d_patient_id,
+//         },
+//         () => {
+//           getSampleCollectionDetails($this);
+//         }
+//       );
+//     },
+//   });
+// };
 export function getSavedDocument($this) {
   getDocuments($this.state.lab_id_number, $this);
 }
@@ -146,28 +146,35 @@ const getSampleCollectionDetails = ($this) => {
     );
   }
 
-  if ($this.state.patient_id !== null) {
-    inputobj.patient_id = $this.state.patient_id;
-  }
-
-  if ($this.state.status !== null) {
-    inputobj.status = $this.state.status;
-  }
   if ($this.state.proiorty !== null) {
     inputobj.test_type = $this.state.proiorty;
   }
 
-  algaehApiCall({
-    uri: "/laboratory/getLabOrderedServices",
-    module: "laboratory",
-    method: "GET",
-    data: inputobj,
-    onSuccess: (response) => {
-      if (response.data.success) {
-        $this.setState({ sample_collection: response.data.records });
-      }
-    },
-  });
+  if ($this.state.patient_id !== null) {
+    algaehApiCall({
+      uri: "/laboratory/getLabOrderedServicesPatient",
+      module: "laboratory",
+      method: "GET",
+      data: { patient_id: $this.state.patient_id, status: "V" },
+      onSuccess: (response) => {
+        if (response.data.success) {
+          $this.setState({ sample_collection: response.data.records });
+        }
+      },
+    });
+  } else {
+    algaehApiCall({
+      uri: "/laboratory/getLabOrderedServices",
+      module: "laboratory",
+      method: "GET",
+      data: { ...inputobj, status: "V" },
+      onSuccess: (response) => {
+        if (response.data.success) {
+          $this.setState({ sample_collection: response.data.records });
+        }
+      },
+    });
+  }
 
   // $this.props.getSampleCollection({
   //   uri: "/laboratory/getLabOrderedServices",
@@ -298,7 +305,7 @@ const Refresh = ($this) => {
 
 export {
   texthandle,
-  PatientSearch,
+  // PatientSearch,
   datehandle,
   getSampleCollectionDetails,
   ResultEntryModel,

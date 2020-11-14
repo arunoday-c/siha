@@ -79,7 +79,7 @@ export default function AllReports(props) {
 
         <div className="grid-section">
           {pageDisplay === "LabResults" ? (
-            <LabResults />
+            <LabResults allReports={true} />
           ) : pageDisplay === "RisResults" ? (
             <RadResults />
           ) : null}

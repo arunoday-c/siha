@@ -18,7 +18,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { Line } from "react-chartjs-2";
 import config from "../../../utils/config.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 // import Enumerable from "linq";
@@ -214,98 +213,9 @@ class Vitals extends Component {
       this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
-    let _chartLabels = [];
-    let _yAxes = [];
-    let _plotGraph = [];
     const _vitalsGroup =
-      this.props.patient_vitals !== undefined
-        ? this.props.patient_vitals
-        : // this.props.patient_vitals !== undefined
-          //   ? Enumerable.from(this.props.patient_vitals)
-          //       .groupBy("$.visit_date", null, (key, g) => {
-          //         let firstRecordSet = Enumerable.from(g).firstOrDefault();
-          //         _chartLabels.push(key);
-          //         return {
-          //           dateTime: key,
-          //           recorded_by: firstRecordSet.user_display_name,
-          //           list: g.getSource(),
-          //         };
-          //       })
-          //       .toArray()
-          [];
+      this.props.patient_vitals !== undefined ? this.props.patient_vitals : [];
 
-    // Enumerable.from(
-    //   this.props.patient_vitals !== undefined ? this.props.patient_vitals : []
-    // )
-    //   .groupBy("$.vital_id", null, (k, gg) => {
-    //     if (k === 1 || k === 3 || k === 4 || k === 7 || k === 8 || k === 9) {
-    //       let _gId = Enumerable.from(gg.getSource())
-    //         .where((w) => w.vital_id === k)
-    //         .firstOrDefault();
-    //       let _names = String(_gId.vital_short_name).replace(/" "/g, "_");
-
-    //       let row = Enumerable.from(_yAxes)
-    //         .where((w) => w.id === _names)
-    //         .firstOrDefault();
-    //       const _index = _yAxes.indexOf(row);
-    //       if (_index > -1) {
-    //         _yAxes.splice(_index, 1);
-    //       }
-    //       _yAxes.push({
-    //         id: _names,
-    //       });
-
-    //       let _bground = "";
-    //       let _borderColor = "";
-    //       switch (k) {
-    //         case 1:
-    //           _bground = config.colors.weight.backgroundColor;
-    //           _borderColor = config.colors.weight.borderColor;
-    //           break;
-    //         case 3:
-    //           _bground = config.colors.bmi.backgroundColor;
-    //           _borderColor = config.colors.bmi.borderColor;
-    //           break;
-    //         case 4:
-    //           _bground = config.colors.temperature.backgroundColor;
-    //           _borderColor = config.colors.temperature.borderColor;
-    //           break;
-    //         case 6:
-    //           _bground = config.colors.heart_rate.backgroundColor;
-    //           _borderColor = config.colors.heart_rate.borderColor;
-    //           break;
-    //         case 7:
-    //           _bground = config.colors.resp_rate.backgroundColor;
-    //           _borderColor = config.colors.resp_rate.borderColor;
-    //           break;
-    //         case 8:
-    //           _bground = config.colors.bp.sys.backgroundColor;
-    //           _borderColor = config.colors.bp.sys.borderColor;
-    //           break;
-    //         case 9:
-    //           _bground = config.colors.bp.dia.backgroundColor;
-    //           _borderColor = config.colors.bp.dia.borderColor;
-    //           break;
-    //         default:
-    //           _bground = "";
-    //           _borderColor = "";
-    //       }
-
-    //       _plotGraph.push({
-    //         label: _gId.vital_short_name,
-    //         fill: false,
-    //         lineTension: 0.9,
-    //         backgroundColor: _bground,
-    //         borderColor: _borderColor,
-    //         yAxisID: _names,
-    //         data: Enumerable.from(gg.getSource())
-    //           .where((w) => w.vital_id === k)
-    //           .select((s) => s.vital_value)
-    //           .toArray(),
-    //       });
-    //     }
-    //   })
-    //   .toArray();
     return (
       <React.Fragment>
         <div className="row">
@@ -578,7 +488,7 @@ class Vitals extends Component {
                       </button>
                     </div> */}
                     <div className="row">
-                      <div className="col-8 vitalsTimeLineSec">
+                      <div className="col-12 vitalsTimeLineSec">
                         <div className="timeline">
                           {_vitalsGroup.map((data, index) => (
                             <div
@@ -610,19 +520,6 @@ class Vitals extends Component {
                             </div>
                           ))}
                         </div>
-                      </div>
-                      <div className="col-4 vitalsChartSec">
-                        <Line
-                          options={{
-                            scales: {
-                              yAxes: _yAxes,
-                            },
-                          }}
-                          data={{
-                            datasets: _plotGraph,
-                            labels: _chartLabels,
-                          }}
-                        />
                       </div>
                     </div>
                   </div>
