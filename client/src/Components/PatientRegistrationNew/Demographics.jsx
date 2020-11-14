@@ -62,6 +62,7 @@ export function Demographics({
   incomeByPoint,
   inModal = false,
   isEmpIdRequired,
+  loadFromReader,
 }) {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
@@ -130,7 +131,7 @@ export function Demographics({
       }
     }
     // eslint-disable-next-line
-  }, [nationality_id, nationalities, patient_code]);
+  }, [nationality_id, nationalities, patient_code, loadFromReader]);
 
   const calculateAge = (date) => {
     if (date) {

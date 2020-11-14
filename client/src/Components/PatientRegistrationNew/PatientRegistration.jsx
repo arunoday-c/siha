@@ -181,6 +181,7 @@ export function PatientRegistration() {
   const [isInsurance, setIsInsurance] = useState(false);
   const [incomeByOp, setIncomeByOp] = useState("");
   const [incomeByPoint, setIncomeByPoint] = useState("");
+  const [loadFromReader, setLoadFromReader] = useState(false);
   const location = useLocation();
   const history = useHistory();
 
@@ -687,6 +688,7 @@ export function PatientRegistration() {
       EnglishFullName,
       Photo,
       IdNumber,
+      ContactNo,
     } = res.data;
     const expDate = parseInt(
       moment(CardexpiryDate, "DD/MM/YYYY").format("YYYYMMDD")
@@ -706,7 +708,7 @@ export function PatientRegistration() {
         "jpeg"
       );
     }
-    console.log("userToken", userToken);
+    setLoadFromReader(!loadFromReader);
     reset({
       full_name: EnglishFullName,
       arabic_name: ArabicFullName,
@@ -720,6 +722,7 @@ export function PatientRegistration() {
       visit_type: default_visit_type?.hims_d_visit_type_id,
       tel_code: currentCountry?.tel_code,
       title_id: Gender === "M" ? 1 : 2,
+      contact_number: ContactNo,
     });
   };
   return (
@@ -844,6 +847,7 @@ export function PatientRegistration() {
                   incomeByOp={incomeByOp}
                   incomeByPoint={incomeByPoint ? incomeByPoint : "0"}
                   isEmpIdRequired={isEmpIdRequired}
+                  loadFromReader={loadFromReader}
                 />
                 <InsuranceDetails
                   isInsurance={isInsurance}
