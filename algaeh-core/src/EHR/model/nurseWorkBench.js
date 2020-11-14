@@ -493,6 +493,9 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
                   formula_value,
                 } = input["patient_vitals"][i];
 
+                const vital_dateTime = moment(
+                  `${moment(visit_date).format("YYYY-MM-DD")} ${visit_time}`
+                )._d;
                 if (parseFloat(vital_value) !== 0) {
                   queryVitals += mysql.format(
                     `INSERT INTO hims_f_patient_vitals(patient_id,visit_id,visit_date,visit_time,case_type,
@@ -501,7 +504,7 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
                     [
                       patient_id,
                       visit_id,
-                      visit_date,
+                      vital_dateTime, //visit_date,
                       visit_time,
                       case_type,
                       vital_id,
