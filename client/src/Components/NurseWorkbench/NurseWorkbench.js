@@ -59,7 +59,7 @@ class NurseWorkbench extends Component {
       toDate: moment()._d,
       activeDateHeader: moment()._d,
       recorded_date: new Date(),
-      recorded_time: moment().format(config.formators.time),
+      recorded_time: moment().format(config.formators.timeWs),
 
       sub_department_id: null,
       provider_id: null,
@@ -1348,6 +1348,7 @@ class NurseWorkbench extends Component {
                       textBox={{
                         others: {
                           type: "time",
+                          step: "2",
                         },
                         className: "txt-fld",
                         name: "recorded_time",

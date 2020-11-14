@@ -116,7 +116,8 @@
   },
   "formators": {
     "date": "YYYY-MM-DD",
-    "time": "HH:mm"
+    "time": "HH:mm",
+    "timeWs": "HH:mm:ss"
   },
   "algaeh_d_formulas": {
     "BMI": {

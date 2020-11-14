@@ -129,7 +129,7 @@ class Vitals extends Component {
         systolic: "",
         diastolic: "",
         recorded_date: new Date(),
-        recorded_time: moment().format(config.formators.time),
+        recorded_time: moment().format(config.formators.timeWs),
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -453,6 +453,7 @@ class Vitals extends Component {
                           others: {
                             type: "time",
                             disabled: true,
+                            step: "2",
                           },
                           className: "txt-fld",
                           name: "recorded_time",
