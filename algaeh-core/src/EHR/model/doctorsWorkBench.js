@@ -2109,18 +2109,18 @@ let addPatientVitals = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   let input = req.body;
 
-  const insurtColumns = [
-    "patient_id",
-    "visit_id",
-    "visit_date",
-    "visit_time",
-    "case_type",
-    "vital_id",
-    "vital_value",
-    "vital_value_one",
-    "vital_value_two",
-    "formula_value",
-  ];
+  // const insurtColumns = [
+  //   "patient_id",
+  //   "visit_id",
+  //   "visit_date",
+  //   "visit_time",
+  //   "case_type",
+  //   "vital_id",
+  //   "vital_value",
+  //   "vital_value_one",
+  //   "vital_value_two",
+  //   "formula_value",
+  // ];
 
   try {
     let query = "";
