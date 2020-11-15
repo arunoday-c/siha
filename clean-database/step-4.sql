@@ -761,13 +761,44 @@ ALTER TABLE `hims_f_final_settlement_header`
 CHANGE COLUMN `employee_status` `employee_status` ENUM('R', 'T', 'E', 'I') NULL DEFAULT NULL COMMENT 'R=RESIGNED\\\\nT= TERMINATED\\\\nE= RETIRED\\nI=Inactive' ;
 
 
-
 -- =================================  Start Nov 11 2020 =======================================
 -- ******** Cronic Mecication Query
 ALTER TABLE `hims_f_chronic` ADD COLUMN `chronic_category` ENUM('D', 'M') NULL DEFAULT 'D' COMMENT 'D=Diagnosisn/M=Medication' AFTER `hims_f_chronic_id`,
 ADD COLUMN `item_id` INT NULL DEFAULT NULL AFTER `icd_code_id`;
 ALTER TABLE `hims_f_chronic` ADD COLUMN `medication_category` ENUM('I', 'E') NULL DEFAULT NULL COMMENT 'I=Internal/E=External' AFTER `item_id`;
 
+-- =================================  Start Nov 12 2020 =======================================
+-- ******** Added Blood Group Field
+ALTER TABLE `hims_f_patient` 
+ADD COLUMN `blood_group` VARCHAR(15) NULL DEFAULT NULL AFTER `age`;
 
+-- =================================  Start Nov 13 2020 =======================================
+-- ******** Pat reg, address 100 characters increase to 300
 ALTER TABLE `hims_f_patient` 
 CHANGE COLUMN `address1` `address1` MEDIUMTEXT NULL DEFAULT NULL ;
+
+-- ******** Added Load Smart Card Under Security
+INSERT INTO `algaeh_d_app_component` (`algaeh_d_app_component_id`, `screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('213', '18', 'PAT_SMT_CRD', 'Load from Smart Card', '2020-11-13 15:20:02', '2020-11-13 15:20:02', 'I');
+
+-- ******** Medication Route Enum Updated
+ALTER TABLE `hims_f_prescription_detail` 
+CHANGE COLUMN `frequency_route` `frequency_route` ENUM('BL', 'EL', 'IL', 'IF', 'IM', 'IT', 'IV', 'NL', 'OP', 'OR', 'OE', 'RL', 'ST', 'SL', 'TL', 'TD') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'OR' COMMENT 'BL = Buccal\\\\\\\\nEL = Enteral\\\\\\\\nIL = Inhalation\\\\\\\\nIF = Infusion\\\\\\\\nIM = Intramuscular Inj\\\\\\\\nIT = Intrathecal Inj\\\\\\\\nIV = Intravenous Inj\\\\\\\\nNL = Nasal\\\\\\\\nOP = Ophthalmic\\\\\\\\nOR = Oral\\\\\\\\nOE = Otic (ear)\\\\\\\\nRL = Rectal\\\\\\\\nST = Subcutaneous\\\\\\\\nSL = Sublingual\\\\\\\\nTL = Topical\\\\\\\\nTD = Transdermal' ;
+
+
+-- =================================  Start Nov 14 2020 =======================================
+-- ******** Bill Amendment
+INSERT INTO `algaeh_d_app_screens` (`screen_code`, `screen_name`, `page_to_redirect`, `module_id`, `other_language`) VALUES ('BL0007', 'OP Bill Adjustment', 'OPBillAdjustment', '5', 'تعديل فاتورة OP');
+
+ALTER TABLE `hims_f_billing_header` 
+ADD COLUMN `from_bill_id` INT NULL AFTER `bill_comments`,
+ADD COLUMN `adjusted` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `from_bill_id`,
+ADD COLUMN `adjusted_by` INT NULL AFTER `adjusted`,
+ADD COLUMN `adjusted_date` DATETIME NULL AFTER `adjusted_by`;
+
+ALTER TABLE `hims_f_patient_visit` 
+ADD COLUMN `shift_id` INT NULL AFTER `approval_limit_yesno`;
+
+ALTER TABLE `hims_f_billing_header` 
+ADD COLUMN `shift_id` INT NULL AFTER `adjusted_date`;
+
+UPDATE `algaeh_d_reports` SET `report_query` = 'select BH.hims_f_billing_header_id,BH.bill_date,BD.hims_f_billing_details_id,BD.service_type_id, ST.service_type_code,ST.service_type, sum(BD.net_amout)as total_amount from hims_f_billing_header BH inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id inner join hims_d_service_type ST on BD.service_type_id=ST.hims_d_service_type_id and ST.record_status=\'A\' where BH.hospital_id=? and  BH.record_status=\'A\' and BD.cancel_yes_no=\'N\' and adjusted=\'N\' and BD.record_status=\'A\' and date(BH.bill_date) between date(?) and date(?)  group by BD.service_type_id ' WHERE (report_name='opBillSummary' and `report_id` >0);
