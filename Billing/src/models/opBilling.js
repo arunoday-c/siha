@@ -301,14 +301,22 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT *,emp.full_name as doctor_name, bh.patient_payable as patient_payable_h, VST.sub_department_id \
-             FROM hims_f_billing_header bh \
-          left join hims_d_employee as emp on bh.incharge_or_provider = emp.hims_d_employee_id\
-          inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
-          inner join hims_f_patient_visit as VST on bh.visit_id = VST.hims_f_patient_visit_id\
-          where bh.record_status='A' AND bh.bill_number='" +
+            "SELECT bh.*, PAT.*, VST.*, emp.full_name as doctor_name, bh.patient_payable as patient_payable_h, \
+            VST.sub_department_id, \
+            max(if(AU.algaeh_d_app_user_id=bh.created_by, EU.full_name,'' )) as created_name, \
+            max(if(AU.algaeh_d_app_user_id=bh.cancel_by, EU.full_name,'' )) as cancelled_name,\
+            max(if(AU.algaeh_d_app_user_id=bh.adjusted_by, EU.full_name,'' )) as adjusted_name, \
+            FBH.bill_number as from_bill_number FROM hims_f_billing_header bh \
+            left join hims_d_employee as emp on bh.incharge_or_provider = emp.hims_d_employee_id \
+            inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id \
+            inner join hims_f_patient_visit as VST on bh.visit_id = VST.hims_f_patient_visit_id \
+            inner join algaeh_d_app_user AU on (bh.created_by = AU.algaeh_d_app_user_id or \
+            bh.cancel_by = AU.algaeh_d_app_user_id or bh.adjusted_by = AU.algaeh_d_app_user_id) \
+            inner join hims_d_employee EU on AU.employee_id = EU.hims_d_employee_id \
+            left join hims_f_billing_header FBH on bh.hims_f_billing_header_id = FBH.from_bill_id \
+            where bh.record_status='A' AND bh.bill_number='" +
             req.query.bill_number +
-            "'",
+            "' GROUP BY hims_f_billing_header_id;",
 
           printQuery: true,
         })

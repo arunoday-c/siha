@@ -182,11 +182,14 @@ export default {
         .executeQuery({
           query:
             "SELECT bh.*,PAT.*,vst.*,bill.bill_number, bill.bill_date ,bh.patient_payable , \
-            bh.receipt_header_id as cal_receipt_header_id FROM hims_f_bill_cancel_header bh \
-          inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
-          inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
-          inner join hims_f_billing_header as bill on bh.from_bill_id = bill.hims_f_billing_header_id \
-          where bh.record_status='A' AND bh.bill_cancel_number='" +
+            bh.receipt_header_id as cal_receipt_header_id, EU.full_name as created_name \
+            FROM hims_f_bill_cancel_header bh \
+            inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
+            inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
+            inner join hims_f_billing_header as bill on bh.from_bill_id = bill.hims_f_billing_header_id \
+            inner join algaeh_d_app_user AU on bh.created_by = AU.algaeh_d_app_user_id \
+            inner join hims_d_employee EU on AU.employee_id = EU.hims_d_employee_id \
+            where bh.record_status='A' AND bh.bill_cancel_number='" +
             req.query.bill_cancel_number +
             "'",
 

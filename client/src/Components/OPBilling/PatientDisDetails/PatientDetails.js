@@ -157,7 +157,7 @@ class DisPatientForm extends Component {
                         <h6>
                           {this.state.adjusted === "Y" ? (
                             <span className="badge badge-secondary">
-                              Adjusted
+                              Adjusted / New Bill {this.state.from_bill_number}
                             </span>
                           ) : this.state.cancelled === "Y" ? (
                             <span className="badge badge-secondary">
