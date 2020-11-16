@@ -10,7 +10,7 @@ import {
 
 import moment from "moment";
 import Options from "../../../../Options.json";
-import {  MainContext } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 
@@ -155,9 +155,6 @@ export default class RejoinAnnualLeave extends Component {
     });
   }
 
-  
-
-
   generateRejoinReport() {
     // const { episode_id, current_patient, visit_id } = Window.global;
     algaehApiCall({
@@ -178,8 +175,8 @@ export default class RejoinAnnualLeave extends Component {
               name: "hospital_id",
               value: this.state.hospital_id, // Window.global["episode_id"]
             },
-          ],          
-        outputFileType: "PDF",
+          ],
+          outputFileType: "PDF",
         },
       },
       onSuccess: (res) => {
@@ -198,49 +195,37 @@ export default class RejoinAnnualLeave extends Component {
     });
   }
 
-
-
-
   render() {
     return (
-      <div className="hims_hospitalservices" 
-      style={{ marginTop: -12 }}>
+      <div className="hims_hospitalservices" style={{ marginTop: -12 }}>
+        <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
+          <AlagehAutoComplete
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Select Branch",
+              isImp: true,
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.organisations,
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null,
+                });
+              },
+            }}
+          />
 
-
-<div
-          className="row inner-top-search"
-          style={{ paddingBottom: 10 }}
-        >
-
-<AlagehAutoComplete
-              div={{ className: "col-3 form-group mandatory" }}
-              label={{
-                forceLabel: "Select Branch",
-                isImp: true,
-              }}
-              selector={{
-                name: "hospital_id",
-                className: "select-fld",
-                value: this.state.hospital_id,
-                dataSource: {
-                  textField: "hospital_name",
-                  valueField: "hims_d_hospital_id",
-                  data: this.state.organisations,
-                },
-                onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    hospital_id: null,
-                  });
-                },
-              }}
-            />
-          
-
-
-            <div className="col">
+          <div className="col">
             <button
-               onClick={() => {
+              onClick={() => {
                 this.getAnnualLeaveEmployees();
               }}
               style={{ marginTop: 21 }}
@@ -250,8 +235,7 @@ export default class RejoinAnnualLeave extends Component {
             </button>{" "}
           </div>
 
-
-          <div className="col" style={{textAlign:"right"}}>
+          <div className="col" style={{ textAlign: "right" }}>
             <button
               onClick={this.generateRejoinReport.bind(this)}
               style={{ marginTop: 21 }}
@@ -260,15 +244,12 @@ export default class RejoinAnnualLeave extends Component {
               Download Report
             </button>{" "}
           </div>
-
         </div>
-
 
         <div
           className="portlet portlet-bordered margin-bottom-15"
           style={{ marginTop: 15 }}
         >
-
           <div className="portlet-body">
             <div className="row">
               <div className="col-lg-12" id="employeeIndexGrid">
@@ -299,95 +280,92 @@ export default class RejoinAnnualLeave extends Component {
                         style: { textAlign: "center" },
                       },
                     },
+                    {
+                      fieldName: "expectedDate",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Expected Rejoin Date" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>{this.dateFormater(row.expectedDate)}</span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 100,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
 
                     {
-                      fieldName: "last_salary_process_date",
+                      fieldName: "to_date",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Rejoin Date" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Actual Rejoined Date" }}
+                        />
                       ),
-                      // displayTemplate: row => {
-                      //   return (
-                      //     <span>
-                      //       {this.dateFormater(row.last_salary_process_date)}
-                      //     </span>
-                      //   );
-                      // },
                       displayTemplate: (row) => {
                         return (
                           <AlgaehDateHandler
                             div={{ className: "" }}
                             textBox={{
                               className: "txt-fld",
-                              name: "last_salary_process_date",
+                              name: "to_date",
                             }}
                             // others={{ disabled:true }}
                             events={{
                               onChange: this.gridOndateHandler.bind(this, row),
                             }}
-                            value={row.last_salary_process_date}
+                            value={row.to_date}
                           />
                         );
                       },
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 130,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
                     },
-                    // {
-                    //   fieldName: "to_date",
-                    //   label: (
-                    //     <AlgaehLabel
-                    //       label={{ forceLabel: "Expected Rejoin Date" }}
-                    //     />
-                    //   ),
-                    //   displayTemplate: (row) => {
-                    //     return <span>{this.dateFormater(row.to_date)}</span>;
-                    //   },
-                    //   others: {
-                    //     maxWidth: 150,
-                    //     resizable: false,
-                    //     style: { textAlign: "center" },
-                    //   },
-                    // },
                     {
                       fieldName: "employee_joined",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Rejoined" }}
-                        />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Rejoined" }} />,
                       displayTemplate: (row) => {
                         return (
                           <span>
-                            {row.employee_joined === "Y" ? <span className="badge badge-success">
-                          Yes
-                        </span> : <span className="badge badge-warning">
-                          No
-                        </span>}
+                            {row.employee_joined === "Y" ? (
+                              <span className="badge badge-success">Yes</span>
+                            ) : (
+                              <span className="badge badge-warning">No</span>
+                            )}
                           </span>
                         );
                       },
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 80,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
                     },
                     {
                       fieldName: "early_rejoin",
-                      label: <AlgaehLabel label={{ forceLabel: "Early rejoined" }} />,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Early rejoined" }} />
+                      ),
                       displayTemplate: (row) => {
                         return (
-                          <span>{row.early_rejoin === "Y" ?   <span className="badge badge-success">
-                          Yes
-                        </span> : <span className="badge badge-warning">
-                          No
-                        </span>}</span>
+                          <span>
+                            {row.early_rejoin === "Y" ? (
+                              <span className="badge badge-success">Yes</span>
+                            ) : (
+                              <span className="badge badge-warning">No</span>
+                            )}
+                          </span>
                         );
                       },
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 80,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -398,7 +376,7 @@ export default class RejoinAnnualLeave extends Component {
                         <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
                       ),
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 100,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -411,7 +389,7 @@ export default class RejoinAnnualLeave extends Component {
                       others: {
                         // minWidth: 200,
                         resizable: false,
-                        style: { textAlign: "center" },
+                        style: { textAlign: "left" },
                       },
                     },
 
@@ -422,24 +400,24 @@ export default class RejoinAnnualLeave extends Component {
                       ),
 
                       others: {
-                        maxWidth: 200,
-                        resizable: false,
-                        style: { textAlign: "center" },
-                      },
-                    },
-
-                    {
-                      fieldName: "department_name",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Department" }} />
-                      ),
-
-                      others: {
                         maxWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
                     },
+
+                    // {
+                    //   fieldName: "department_name",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Department" }} />
+                    //   ),
+
+                    //   others: {
+                    //     maxWidth: 150,
+                    //     resizable: false,
+                    //     style: { textAlign: "center" },
+                    //   },
+                    // },
                     {
                       fieldName: "sub_department_name",
                       label: (
@@ -463,7 +441,7 @@ export default class RejoinAnnualLeave extends Component {
                         return <span>{this.dateFormater(row.from_date)}</span>;
                       },
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 100,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -474,10 +452,12 @@ export default class RejoinAnnualLeave extends Component {
                         <AlgaehLabel label={{ forceLabel: "Leave To Date" }} />
                       ),
                       displayTemplate: (row) => {
-                        return <span>{this.dateFormater(row.actual_to_date)}</span>;
+                        return (
+                          <span>{this.dateFormater(row.actual_to_date)}</span>
+                        );
                       },
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 100,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
