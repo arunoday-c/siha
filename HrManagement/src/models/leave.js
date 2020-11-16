@@ -306,12 +306,14 @@ export default {
               validateLeaveApplictn(req.body, _mysql)
                 .then((deductionResult) => {
                   getLeaveAuthFields(input["auth_level"]).then((authFields) => {
+                    debugger;
                     _mysql
                       .executeQuery({
                         query:
                           "UPDATE hims_f_leave_application SET total_approved_days=total_applied_days, " +
                           authFields +
-                          ", updated_date=?, updated_by=?  WHERE hims_f_leave_application_id=? ",
+                          ", updated_date=?, updated_by=?  WHERE hims_f_leave_application_id=?;\
+                          ",
                         values: [
                           "Y",
                           new Date(),
@@ -654,6 +656,7 @@ export default {
                                             next(error);
                                           });
                                       } else {
+                                        debugger;
                                         singleYearAuthorize(
                                           month_number,
                                           deductionResult,

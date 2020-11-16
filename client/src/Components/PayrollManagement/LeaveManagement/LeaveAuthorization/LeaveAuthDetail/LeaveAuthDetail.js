@@ -31,13 +31,17 @@ class LeaveAuthDetail extends Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const selected_emp_nationality = nextProps.data.nationality;
-    nextProps.data.from_normal_salary = "N";
-    if (
-      selected_emp_nationality === this.state.default_nationality &&
-      nextProps.data.status === "PEN"
-    ) {
-      nextProps.data.from_normal_salary = "Y";
+    if (nextProps.data.from_normal_salary === null || nextProps.type !== "C") {
+      nextProps.data.from_normal_salary = "N";
+    } else {
+      if (
+        selected_emp_nationality === this.state.default_nationality &&
+        nextProps.data.status === "PEN"
+      ) {
+        nextProps.data.from_normal_salary = "Y";
+      }
     }
+
     this.setState(
       {
         data: nextProps.data,
@@ -516,7 +520,8 @@ class LeaveAuthDetail extends Component {
                           </div>
 
                           <div className="col-12 form-group">
-                            {this.state.data.leave_category === "A" ? (
+                            {this.state.data.leave_category === "A" &&
+                            this.state.data.auth_level > 1 ? (
                               <div
                                 className="customCheckbox"
                                 style={{
