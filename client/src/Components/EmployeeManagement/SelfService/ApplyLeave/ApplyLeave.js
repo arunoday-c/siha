@@ -33,7 +33,9 @@ class ApplyLeave extends Component {
       available_balance: 0.0,
       total_applied_days: 0.0,
       from_date: props.leave.from_date ? props.leave.from_date : null,
-      to_date: props.leave.to_date ? props.leave.to_date : null,
+      actual_to_date: props.leave.actual_to_date
+        ? props.leave.actual_to_date
+        : null,
       from_leave_session: props.leave.from_session
         ? props.leave.from_session
         : "FD",
@@ -146,15 +148,15 @@ class ApplyLeave extends Component {
 
   validate() {
     let from_date = this.state.from_date;
-    let to_date = this.state.to_date;
+    let actual_to_date = this.state.actual_to_date;
     let from_leave_session = this.state.from_leave_session;
     let to_leave_session = this.state.to_leave_session;
 
     if (
       from_date !== null &&
       from_date !== undefined &&
-      to_date !== null &&
-      to_date !== undefined &&
+      actual_to_date !== null &&
+      actual_to_date !== undefined &&
       from_leave_session !== null &&
       from_leave_session !== undefined &&
       to_leave_session !== null &&
@@ -162,7 +164,7 @@ class ApplyLeave extends Component {
     ) {
       if (
         moment(from_date).format("YYYYMMDD") ===
-        moment(to_date).format("YYYYMMDD")
+        moment(actual_to_date).format("YYYYMMDD")
       ) {
         if (from_leave_session === "SH" && to_leave_session === "FH") {
           swalMessage({
@@ -197,7 +199,7 @@ class ApplyLeave extends Component {
         this.getAppliedDays();
       } else if (
         moment(from_date).format("YYYYMMDD") <
-        moment(to_date).format("YYYYMMDD")
+        moment(actual_to_date).format("YYYYMMDD")
       ) {
         if (from_leave_session === "FH" && to_leave_session === "FH") {
           this.setState({
@@ -244,7 +246,7 @@ class ApplyLeave extends Component {
         from_session: this.state.from_leave_session,
         to_session: this.state.to_leave_session,
         from_date: this.state.from_date,
-        to_date: this.state.to_date,
+        actual_to_date: this.state.actual_to_date,
         hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
         religion_id: this.state.religion_id,
         leave_id: this.state.leave_id,
@@ -342,7 +344,10 @@ class ApplyLeave extends Component {
   dropDownHandler(value) {
     switch (value.name) {
       case "to_leave_session":
-        if (this.state.to_date === undefined || this.state.to_date === null) {
+        if (
+          this.state.actual_to_date === undefined ||
+          this.state.actual_to_date === null
+        ) {
           document.getElementById("toLvDt").focus();
           swalMessage({
             title: "Please select the to leave session",
@@ -444,7 +449,7 @@ class ApplyLeave extends Component {
       leave_id: null,
       from_date: null,
       from_leave_session: "FD",
-      to_date: null,
+      actual_to_date: null,
       to_leave_session: "FD",
       remarks: null,
       total_applied_days: 0.0,
@@ -504,7 +509,7 @@ class ApplyLeave extends Component {
             leave_id: this.state.leave_id,
             leave_type: this.state.leave_type,
             from_date: this.state.from_date,
-            to_date: this.state.to_date,
+            actual_to_date: this.state.actual_to_date,
             from_leave_session: this.state.from_leave_session,
             to_leave_session: this.state.to_leave_session,
             total_applied_days: this.state.total_applied_days,
@@ -549,7 +554,7 @@ class ApplyLeave extends Component {
                     leave_days: this.state.total_applied_days,
                     leave_type: leave_desc[0].leave_description,
                     from_date: this.state.from_date,
-                    to_date: this.state.to_date,
+                    actual_to_date: this.state.actual_to_date,
                     reason: this.state.remarks,
                     leave_code: res.data?.records[0]?.leave_application_code,
                     // applied_date:
@@ -837,7 +842,7 @@ class ApplyLeave extends Component {
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "to_date",
+                      name: "actual_to_date",
                       others: {
                         id: "toLvDt",
                         tabIndex: "6",
@@ -845,7 +850,9 @@ class ApplyLeave extends Component {
                           if (this.state.from_date !== undefined) {
                             if (
                               moment(this.state.from_date).format("YYYYMMDD") >
-                              moment(this.state.to_date).format("YYYYMMDD")
+                              moment(this.state.actual_to_date).format(
+                                "YYYYMMDD"
+                              )
                             ) {
                               swalMessage({
                                 title:
@@ -853,7 +860,7 @@ class ApplyLeave extends Component {
                                 type: "warning",
                               });
                               this.setState({
-                                to_date: null,
+                                actual_to_date: null,
                               });
                             }
                           }
@@ -871,12 +878,12 @@ class ApplyLeave extends Component {
                         } else {
                           this.setState(
                             {
-                              to_date: selDate,
+                              actual_to_date: selDate,
                             },
                             () => {
                               this.getDateRange(
                                 this.state.from_date,
-                                this.state.to_date
+                                this.state.actual_to_date
                               );
                               this.validate();
                             }
@@ -884,7 +891,7 @@ class ApplyLeave extends Component {
                         }
                       },
                     }}
-                    value={this.state.to_date}
+                    value={this.state.actual_to_date}
                     minDate={this.state.from_date}
                   />
                   <AlagehAutoComplete
@@ -1154,7 +1161,7 @@ class ApplyLeave extends Component {
                           },
                         },
                         {
-                          fieldName: "to_date",
+                          fieldName: "actual_to_date",
 
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave To" }} />
@@ -1162,7 +1169,9 @@ class ApplyLeave extends Component {
                           displayTemplate: (row) => {
                             return (
                               <span>
-                                {moment(row.to_date).format("DD-MM-YYYY")}
+                                {moment(row.actual_to_date).format(
+                                  "DD-MM-YYYY"
+                                )}
                               </span>
                             );
                           },

@@ -53,7 +53,7 @@ export default class LeaveAuthorization extends Component {
 
     this.setState({
       from_date: null,
-      to_date: null,
+      actual_to_date: null,
       hims_d_employee_id: null,
       employee_name: null,
       auth_level: auth_level !== null ? auth_level.value : null,
@@ -100,7 +100,7 @@ export default class LeaveAuthorization extends Component {
       from_session: data.from_leave_session,
       to_session: data.to_leave_session,
       from_date: data.from_date,
-      to_date: data.to_date,
+      actual_to_date: data.actual_to_date,
       leave_category: data.leave_category,
       leave_from: data.leave_from,
       absent_id: data.absent_id,
@@ -176,7 +176,7 @@ export default class LeaveAuthorization extends Component {
         employee_id: this.state.hims_d_employee_id,
         leave_status: this.state.leave_status,
         from_date: this.state.from_date,
-        to_date: this.state.to_date,
+        actual_to_date: this.state.actual_to_date,
       },
       onSuccess: (res) => {
         if (res.data.success) {
@@ -348,17 +348,17 @@ export default class LeaveAuthorization extends Component {
               label={{ forceLabel: "To Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
-                name: "to_date",
+                name: "actual_to_date",
               }}
               maxDate={new Date()}
               events={{
                 onChange: (selDate) => {
                   this.setState({
-                    to_date: selDate,
+                    actual_to_date: selDate,
                   });
                 },
               }}
-              value={this.state.to_date}
+              value={this.state.actual_to_date}
             />
 
             <AlagehAutoComplete
@@ -649,14 +649,14 @@ export default class LeaveAuthorization extends Component {
                         },
                       },
                       {
-                        fieldName: "to_date",
+                        fieldName: "actual_to_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "To Date" }} />
                         ),
                         displayTemplate: (row) => {
                           return (
                             <span>
-                              {moment(row.to_date).format("DD-MM-YYYY")}
+                              {moment(row.actual_to_date).format("DD-MM-YYYY")}
                             </span>
                           );
                         },

@@ -130,7 +130,7 @@ class LeaveAuthDetail extends Component {
       from_session: this.state.data.from_leave_session,
       to_session: this.state.data.to_leave_session,
       from_date: this.state.data.from_date,
-      to_date: this.state.data.to_date,
+      actual_to_date: this.state.data.actual_to_date,
       leave_from: this.state.data.leave_from,
       absent_id: this.state.data.absent_id,
       leave_category: this.state.data.leave_category,
@@ -300,7 +300,7 @@ class LeaveAuthDetail extends Component {
       from_session: this.state.data.from_leave_session,
       to_session: this.state.data.to_leave_session,
       from_date: this.state.data.from_date,
-      to_date: this.state.data.to_date,
+      actual_to_date: this.state.data.actual_to_date,
       leave_category: this.state.data.leave_category,
       hospital_id: this.state.data.hospital_id,
       leave_from: this.state.data.leave_from,
@@ -738,7 +738,7 @@ class LeaveAuthDetail extends Component {
                               },
                             },
                             {
-                              fieldName: "to_date",
+                              fieldName: "actual_to_date",
 
                               label: (
                                 <AlgaehLabel
@@ -748,7 +748,9 @@ class LeaveAuthDetail extends Component {
                               displayTemplate: (row) => {
                                 return (
                                   <span>
-                                    {moment(row.to_date).format("DD-MM-YYYY")}
+                                    {moment(row.actual_to_date).format(
+                                      "DD-MM-YYYY"
+                                    )}
                                   </span>
                                 );
                               },
