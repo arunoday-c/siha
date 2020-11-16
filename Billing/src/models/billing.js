@@ -1124,13 +1124,13 @@ export default {
                 .Where((w) => w.pay_type == "CD")
                 .Sum((s) => parseFloat(s.amount));
 
+              expected_card = parseFloat(result[0].expected_card) - expected_card;
               collected_cash = parseFloat(result[0].collected_cash) - collected_cash;
-              expected_cash = parseFloat(result[0].expected_cash) - expected_cash;
 
               _mysql
                 .executeQueryWithTransaction({
                   query:
-                    "update hims_f_cash_handover_detail set expected_cash=?,expected_card=?,\
+                    "update hims_f_cash_handover_detail set collected_cash=?,expected_card=?,\
                     updated_date=?,updated_by=? where record_status='A' \
                   and hims_f_cash_handover_detail_id=?;\
                   update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\

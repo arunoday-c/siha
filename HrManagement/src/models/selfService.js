@@ -443,7 +443,7 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "SELECT E.hims_d_employee_id, E.employee_code,LA.employee_joined,LA.early_rejoin, E.full_name,LA.actual_to_date, E.last_salary_process_date, \
+              "SELECT E.hims_d_employee_id, E.employee_code,LA.employee_joined,LA.early_rejoin, E.full_name,LA.actual_to_date,DATE_ADD(LA.actual_to_date, INTERVAL 1 DAY) as expectedDate, E.last_salary_process_date, \
                 SD.sub_department_name, D.department_name, EG.group_description, LA.from_date, \
                 LA.to_date, LA.hims_f_leave_application_id FROM hims_d_employee E \
                 inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \

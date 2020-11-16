@@ -420,20 +420,19 @@ let algaehSearchConfig = (searchName, req) => {
                      from hims_d_employee as E
                      inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
                      inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
-                     where E.record_status='A' and employee_status in('R','T','E','I')`,
+                     where E.record_status='A' and employee_status in('R','T','E')`,
         orderBy: "hims_d_employee_id desc",
       },
       {
         searchName: "exit_employees_final_settlement",
         searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
-        S.sub_department_name,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'PEN' 
-        THEN 'Pending' WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else '' END as final_settlement_status,
+        S.sub_department_name,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else 'Pending' END as final_settlement_status,
         CASE WHEN E.employee_status ='T' THEN 'Terminated' WHEN E.employee_status ='R' THEN 'Resigned' else 'Retirement' END as employee_status
         from hims_d_employee as E
         left join hims_f_final_settlement_header as FSH on FSH.employee_id=E.hims_d_employee_id
         inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
         inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
-        where E.record_status='A' and E.employee_status in('R','T','E','I')`,
+        where E.record_status='A' and E.employee_status in('R','T','E')`,
         orderBy: "E.hims_d_employee_id desc",
       },
       {
