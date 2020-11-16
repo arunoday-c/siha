@@ -835,10 +835,10 @@ export default {
               "select hims_d_employee_id,date_of_joining,exit_date from hims_d_employee\
                where record_status='A' and employee_status='A' and  hims_d_employee_id=?;\
               select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,from_date,to_leave_session,\
-              to_date from hims_f_leave_application\
-              where (`status`='APR' or `status`='PEN') and ((  date(?)>=date(from_date) and date(?)<=date(to_date)) or\
-              ( date(?)>=date(from_date) and   date(?)<=date(to_date))   or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or \
-              (date(to_date)>=date(?) and date(to_date)<= date(?) )\
+              actual_to_date as to_date from hims_f_leave_application\
+              where (`status`='APR' or `status`='PEN') and ((  date(?)>=date(from_date) and date(?)<=date(actual_to_date)) or\
+              ( date(?)>=date(from_date) and   date(?)<=date(actual_to_date))   or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or \
+              (date(actual_to_date)>=date(?) and date(actual_to_date)<= date(?) )\
               )and employee_id=?",
             values: [
               input.employee_id,
@@ -853,7 +853,7 @@ export default {
               input.employee_id,
             ],
 
-            printQuery: false,
+            printQuery: true,
           })
           .then((rest) => {
             const empResult = rest[0][0];
@@ -5175,10 +5175,11 @@ function leaveSessionValidate(result, _mysql, req, next, input) {
             leave_already_exist: true,
             location: "inside not_clashing_sessions: date clash not session",
             message:
-              " leave is already there between this dates " +
+              "Leave application exists between (" +
               not_clashing_sessions[0]["from_date"] +
-              " AND " +
-              not_clashing_sessions[0]["to_date"],
+              " and " +
+              not_clashing_sessions[0]["to_date"] +
+              ")",
           };
           next();
           return;
