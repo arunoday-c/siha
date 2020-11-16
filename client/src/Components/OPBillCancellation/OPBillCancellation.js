@@ -285,6 +285,18 @@ class OPBillCancellation extends Component {
                     : "DD/MM/YYYY"}
                 </h6>
               </div>
+
+              {this.state.bill_cancel_number !== null ?
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Created By",
+                    }}
+                  />
+                  <h6>{this.state.created_name}</h6>
+
+                </div>
+                : null}
             </div>
           }
           printArea={

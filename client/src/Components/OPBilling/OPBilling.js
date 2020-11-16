@@ -474,6 +474,35 @@ class OPBilling extends Component {
                     : "DD/MM/YYYY"}
                 </h6>
               </div>
+              {this.state.Billexists === true ? (
+
+                <div className="col">
+
+                  {this.state.adjusted === "Y" ? (
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Bill Adjusted By" }} />
+                        <h6> {this.state.adjusted_name}</h6>
+
+                      </div>
+                    </div>
+                  ) : this.state.cancelled === "Y" ? (
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Bill Cancelled By" }} />
+                        <h6>{this.state.cancelled_name}</h6>
+                      </div>
+                    </div>
+
+                  ) : (
+                        <div>
+                          <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
+                          <h6>{this.state.created_name}</h6>
+                        </div>
+                      )}
+
+                </div>
+              ) : null}
             </div>
           }
           printArea={

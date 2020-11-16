@@ -200,9 +200,8 @@ class OPBillAdjustment extends Component {
                   Billexists: true,
                 });
                 swalMessage({
-                  message: "Done Successfully",
-                  title: "Success",
-                  icon: "success",
+                  title: "Done Successfully",
+                  type: "success",
                 });
               } else {
                 AlgaehLoader({ show: false });
@@ -215,18 +214,16 @@ class OPBillAdjustment extends Component {
             onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
-                message: error.response.data.message || error.message,
-                title: "Error",
-                icon: "error",
+                title: error.response.data.message || error.message,
+                type: "error",
               });
             },
           });
         });
       } else {
         swalMessage({
-          message: "Please collect the amount.",
-          title: "Error",
-          icon: "error",
+          title: "Please collect the amount.",
+          type: "error",
         });
       }
     }
@@ -267,8 +264,8 @@ class OPBillAdjustment extends Component {
                       this.state.Billexists === true
                         ? "none"
                         : this.state.patient_code
-                        ? "none"
-                        : "",
+                          ? "none"
+                          : "",
                   }}
                 >
                   <AlgaehLabel label={{ fieldName: "bill_number" }} />
@@ -276,8 +273,8 @@ class OPBillAdjustment extends Component {
                     {this.state.bill_number ? (
                       this.state.bill_number
                     ) : (
-                      <AlgaehLabel label={{ fieldName: "bill_number" }} />
-                    )}
+                        <AlgaehLabel label={{ fieldName: "bill_number" }} />
+                      )}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
