@@ -270,6 +270,7 @@ export default class LeaveAuthorization extends Component {
           data={{
             ...this.state.currLeavAppln,
             auth_level: this.state.auth_level,
+            leave_levels: this.state.leave_levels,
           }}
           hospitals={this.state.hospitals || []}
           type={this.state.type}

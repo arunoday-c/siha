@@ -12,6 +12,7 @@
                         <th>Date<small>التاريخ</small></th>
                         <th>MRN No.<small>كود المريض</small></th>
                         <th>Patient Name<small>اسم المريض</small></th>
+                        <th>Patient ID<small>رقم المريض</small></th>
                         <th>Nationality<small>الجنسية</small></th>
                         <th>Company Name<small>اسم الشركة</small></th>
                         <th>Total Before VAT<small>الإجمالي قبل ضريبة القيمة المضافة</small></th>
@@ -28,6 +29,7 @@
                         <td>{{visit_date}}</td>
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
+                        <td>{{primary_id_no}}</td>
                         <td>{{nationality}}</td>
                         <td>{{insurance_sub_name}}</td>
                         <td class="numberFld">{{total_before_vat}}</td>
@@ -38,7 +40,7 @@
                     </tr>
                     {{/each }}
                     <tr class="numberFldTotalBottom">
-                        <td colspan="7"></td>
+                        <td colspan="8"></td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{total_after_vat}}</td>
                         {{!-- <td class="numberFld">{{patient_tax}}</td> --}}
