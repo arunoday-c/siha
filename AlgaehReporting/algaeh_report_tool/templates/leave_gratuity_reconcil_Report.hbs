@@ -15,9 +15,6 @@
                         <th>Designation</th>
                         <th>Date of Joining</th>
                         <th>Basic Salary</th>
-                        <th>Opening Gratuity</th>
-                        <th>Accured Gratuity</th>
-                        <th>Total Gratuity</th>
                         <th>Opening Leave</th>
                         <th>Accured Leave</th>
                         <th>Total Leave</th>
@@ -28,46 +25,8 @@
                         <th>Accured Airfare</th>
                         <th>Total Airfare</th>
                     </tr>
-                    {{!-- <tr>
-                        <th rowspan="2">Sl No.</th>
-                        <th rowspan="2">Employee Code</th>
-                        <th rowspan="2">Employee Name</th>
-                        <th rowspan="2">Designation</th>
-                        <th rowspan="2">Date of Joining</th>
-                        <th rowspan="2">Basic Salary</th>
-                        <th rowspan="2">Month & Year</th>
-                        <th colspan="2">Gratuity</th>
-                        <th colspan="4">Leave Pay</th>
-                        <th colspan="2">Airfare</th>
-                    </tr> --}}
-                    
-                    {{!-- <tr>
-                        <th>Accured Gratuity</th>
-                        <th>Total Gratuity</th>
-                        <th>Accured Leave</th>
-                        <th>Total Leave</th>
-                        <th>Accured Leave Salary</th>
-                        <th>Total Leave Salary</th>
-                        <th>Accured Airfare</th>
-                        <th>Total Airfare</th>
-                    </tr> --}}
                 </thead>
                 <tbody>
-                    {{!-- <tr class="numberFld numberFldTotalBottom">
-                      <td colspan="7" class="txtFld"></td>
-                        <td class="numberFld"></td>
-                        <td class="numberFld">{{total_gratuity_amount}}</td>
-                        <td class="numberFld">{{total_acc_gratuity}}</td>
-                        <td class="numberFld"></td>
-                        <td class="numberFld"></td>
-                        <td class="numberFld"></td>
-                        <td class="numberFld"></td>
-                        <td class="numberFld">{{total_leave_salary_amount}}</td>
-                        <td class="numberFld">{{total_balance_leave_salary_amount}}</td>
-                        <td class="numberFld"></td>
-                        <td class="numberFld">{{total_airticket_amount}}</td>
-                        <td class="numberFld">{{total_balance_airticket_amount}}</td>
-                    </tr> --}}
                     {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -76,25 +35,19 @@
                         <td>{{designation}}</td>
                         <td>{{date_of_joining}}</td>
                         <td>{{basic_salary}}</td>
-                        <td class="numberFld">{{gratuity_opening_balance}}</td>
-                        <td class="numberFld">{{gratuity_amount}}</td>
-                        <td class="numberFld">{{acc_gratuity}}</td>
                         <td class="numberFld">{{leavedays_opening_balance}}</td>
                         <td class="numberFld">{{leave_days}}</td>
-                        <td class="numberFld">{{balance_leave_days}}</td>
+                        <td class="numberFld">{{total_leave_days}}</td>
                         <td class="numberFld">{{leavesalary_opening_balance}}</td>
                         <td class="numberFld">{{leave_salary_amount}}</td>
-                        <td class="numberFld">{{balance_leave_salary_amount}}</td>
+                        <td class="numberFld">{{total_leave_salary_amount}}</td>
                         <td class="numberFld">{{airefare_opening_balance}}</td>
                         <td class="numberFld">{{airticket_amount}}</td>
-                        <td class="numberFld">{{balance_airticket_amount}}</td>
+                        <td class="numberFld">{{total_airticket_amount}}</td>
                     </tr>
                     {{/each }}
    <tr class="numberFld numberFldTotalBottom">
                   <td colspan="6" class="txtFld"></td>
-                        <td class="numberFld"></td>
-                        <td class="numberFld">{{total_gratuity_amount}}</td>
-                        <td class="numberFld">{{total_acc_gratuity}}</td>
                         <td class="numberFld"></td>
                         <td class="numberFld"></td>
                         <td class="numberFld"></td>

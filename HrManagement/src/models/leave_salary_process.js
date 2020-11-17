@@ -1083,7 +1083,7 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select SL.hims_f_salary_id,LSD.year,LSD.month,LSD.start_date,LSD.end_date,LSD.leave_start_date,LSD.leave_end_date,LSD.leave_category,\
+                  "select SL.hims_f_salary_id, hims_f_salary_id as salary_header_id,LSD.year,LSD.month,LSD.start_date,LSD.end_date,LSD.leave_start_date,LSD.leave_end_date,LSD.leave_category,\
                 LSD.leave_period,LSD.gross_amount, LSD.net_amount,SL.salary_number as salary_no,SL.salary_date from \
                 hims_f_leave_salary_detail LSD, hims_f_salary SL where  LSD.salary_header_id=SL.hims_f_salary_id\
                 and  leave_salary_header_id= ?;",

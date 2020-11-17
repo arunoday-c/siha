@@ -206,7 +206,8 @@ const selectAllPaySlip = ($this, e) => {
   const newData = data.map((item, index) => {
     return {
       ...item,
-      generate_pay_slip: item.salary_paid === "Y" ? isChecked ? "Y" : "N" : "N",
+      generate_pay_slip:
+        item.salary_paid === "Y" ? (isChecked ? "Y" : "N") : "N",
     };
   });
 
@@ -303,9 +304,6 @@ const selectToGeneratePaySlip = ($this, row, e) => {
   });
 };
 
-
-
-
 const generateLoanReconilationReport = ($this) => {
   algaehApiCall({
     uri: "/report",
@@ -353,7 +351,7 @@ const generateLoanReconilationReport = ($this) => {
             value: $this.state.inputs.hims_d_employee_id,
           },
         ],
-        outputFileType: "EXCEL" //"EXCEL", //"PDF",
+        outputFileType: "EXCEL", //"EXCEL", //"PDF",
       },
     },
     onSuccess: (res) => {
@@ -365,9 +363,7 @@ const generateLoanReconilationReport = ($this) => {
   });
 };
 
-
-
-const generateLeaveGratuityReconilationReport = ($this) => {
+const generateLeaveReconilationReport = ($this) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -414,11 +410,10 @@ const generateLeaveGratuityReconilationReport = ($this) => {
             value: $this.state.inputs.hims_d_employee_id,
           },
         ],
-        outputFileType: "EXCEL" //"EXCEL", //"PDF",
+        outputFileType: "EXCEL", //"EXCEL", //"PDF",
       },
     },
     onSuccess: (res) => {
-
       // let blob = new Blob([res.data], {
       //   type: "application/octet-stream",
       // });
@@ -429,9 +424,76 @@ const generateLeaveGratuityReconilationReport = ($this) => {
       // link.setAttribute("download", fileName);
       // link.click();
 
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave and Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
+      window.open(origin);
+    },
+  });
+};
+
+const generateGratuityReconilationReport = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "gratuity_reconcil_Report",
+        pageOrentation: "landscape",
+        reportParams: [
+          {
+            name: "hospital_id",
+            value: $this.state.inputs.hospital_id,
+          },
+          {
+            name: "year",
+            value: $this.state.inputs.year,
+          },
+          {
+            name: "month",
+            value: $this.state.inputs.month,
+          },
+          {
+            name: "department_id",
+            value: $this.state.inputs.department_id,
+          },
+          {
+            name: "sub_department_id",
+            value: $this.state.inputs.sub_department_id,
+          },
+          {
+            name: "designation_id",
+            value: $this.state.inputs.designation_id,
+          },
+          {
+            name: "group_id",
+            value: $this.state.inputs.group_id,
+          },
+          {
+            name: "hims_d_employee_id",
+            value: $this.state.inputs.hims_d_employee_id,
+          },
+        ],
+        outputFileType: "EXCEL", //"EXCEL", //"PDF",
+      },
+    },
+    onSuccess: (res) => {
+      // let blob = new Blob([res.data], {
+      //   type: "application/octet-stream",
+      // });
+      // const fileName = `EmployeeMaster.xlsx`;
+      // var objectUrl = URL.createObjectURL(blob);
+      // var link = document.createElement("a");
+      // link.setAttribute("href", objectUrl);
+      // link.setAttribute("download", fileName);
+      // link.click();
 
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave-Gratuity-Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Gratuity Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
       window.open(origin);
     },
   });
@@ -445,5 +507,8 @@ export {
   selectAll,
   generatePaySlip,
   selectToGeneratePaySlip,
-  selectAllPaySlip, generateLoanReconilationReport, generateLeaveGratuityReconilationReport,
+  selectAllPaySlip,
+  generateLoanReconilationReport,
+  generateLeaveReconilationReport,
+  generateGratuityReconilationReport,
 };
