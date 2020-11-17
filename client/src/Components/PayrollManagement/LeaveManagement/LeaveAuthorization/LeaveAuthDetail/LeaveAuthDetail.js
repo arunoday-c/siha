@@ -521,7 +521,8 @@ class LeaveAuthDetail extends Component {
 
                           <div className="col-12 form-group">
                             {this.state.data.leave_category === "A" &&
-                            this.state.data.auth_level > 1 ? (
+                            this.state.data.auth_level ===
+                              this.state.data.leave_levels.length ? (
                               <div
                                 className="customCheckbox"
                                 style={{

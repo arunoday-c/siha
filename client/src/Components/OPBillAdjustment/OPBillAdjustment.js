@@ -171,7 +171,6 @@ class OPBillAdjustment extends Component {
   }
 
   AdjustOPBill(e) {
-    debugger;
     const err = Validations(this);
     if (!err) {
       if (this.state.unbalanced_amount === 0) {
@@ -256,7 +255,7 @@ class OPBillAdjustment extends Component {
               >
                 {/* Patient code */}
 
-                <div
+                {/* <div
                   className="col-3 globalSearchCntr"
                   style={{
                     cursor: "pointer",
@@ -264,17 +263,16 @@ class OPBillAdjustment extends Component {
                       this.state.Billexists === true
                         ? "none"
                         : this.state.patient_code
-                          ? "none"
-                          : "",
+                        ? "none"
+                        : "",
                   }}
-                >
+                > */}
+                <div className="col-3 globalSearchCntr form-group">
                   <AlgaehLabel label={{ fieldName: "bill_number" }} />
                   <h6 onClick={BillSearch.bind(this, this)}>
-                    {this.state.bill_number ? (
-                      this.state.bill_number
-                    ) : (
-                        <AlgaehLabel label={{ fieldName: "bill_number" }} />
-                      )}
+                    {this.state.bill_number
+                      ? this.state.bill_number
+                      : "Bill Number"}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
