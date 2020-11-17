@@ -33,8 +33,8 @@ class DisPatientForm extends Component {
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",
-          mappingName: "patienttype"
-        }
+          mappingName: "patienttype",
+        },
       });
     }
   }
@@ -47,7 +47,7 @@ class DisPatientForm extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-display-patient-form">
               <div
                 className="row inner-top-search"
@@ -63,15 +63,17 @@ class DisPatientForm extends Component {
                       this.state.Billexists === true
                         ? "none"
                         : this.state.patient_code
-                          ? "none"
-                          : ""
+                        ? "none"
+                        : "",
                   }}
                 >
                   <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
                   <h6 onClick={PatientSearch.bind(this, this, context)}>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : <AlgaehLabel label={{ fieldName: "patient_code" }} />}
+                    {this.state.patient_code ? (
+                      this.state.patient_code
+                    ) : (
+                      <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                    )}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
@@ -79,10 +81,10 @@ class DisPatientForm extends Component {
                 <div className="col-10">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-3 mandatory" }}
+                      div={{ className: "col-2 mandatory" }}
                       label={{
                         fieldName: "select_visit",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "visit_id",
@@ -92,30 +94,30 @@ class DisPatientForm extends Component {
                         dataSource: {
                           textField: "visit_code",
                           valueField: "hims_f_patient_visit_id",
-                          data: this.state.visitDetails
+                          data: this.state.visitDetails,
                         },
                         others: { disabled: this.state.Billexists },
                         onChange: selectVisit.bind(this, this, context),
-                        template: item => (
+                        template: (item) => (
                           <div className="multiInfoList">
                             <h5>
                               {item.visit_date
                                 ? moment(item.visit_date).format(
-                                  "DD/MM/YYYY, hh:mm A"
-                                )
+                                    "DD/MM/YYYY, hh:mm A"
+                                  )
                                 : "DD/MM/YYYY"}
                             </h5>
                             <h6>{item.visit_code}</h6>
                             <p>{item.full_name}</p>
                             <p>{item.sub_department_name}</p>
                           </div>
-                        )
+                        ),
                       }}
                     />
-                    <div className="col">
+                    <div className="col-3">
                       <AlgaehLabel
                         label={{
-                          fieldName: "full_name"
+                          fieldName: "full_name",
                         }}
                       />
                       <h6>
@@ -128,7 +130,7 @@ class DisPatientForm extends Component {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          fieldName: "patient_type"
+                          fieldName: "patient_type",
                         }}
                       />
                       <h6>
@@ -141,7 +143,7 @@ class DisPatientForm extends Component {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          fieldName: "mode_of_pay"
+                          fieldName: "mode_of_pay",
                         }}
                       />
                       <h6>
@@ -152,12 +154,12 @@ class DisPatientForm extends Component {
                     </div>
 
                     {this.state.Billexists === true ? (
-                      <div className="col-2">
+                      <div className="col">
                         <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
                         <h6>
                           {this.state.adjusted === "Y" ? (
-                            <span className="badge badge-secondary">
-                              Adjusted / New Bill {this.state.from_bill_number}
+                            <span className="badge badge-info">
+                              Adjusted / {this.state.from_bill_number}
                             </span>
                           ) : this.state.cancelled === "Y" ? (
                             <span className="badge badge-secondary">
@@ -168,8 +170,8 @@ class DisPatientForm extends Component {
                               Not Settled
                             </span>
                           ) : (
-                                  <span className="badge badge-success">Settled</span>
-                                )}
+                            <span className="badge badge-success">Settled</span>
+                          )}
                         </h6>
                       </div>
                     ) : null}
@@ -195,7 +197,7 @@ class DisPatientForm extends Component {
 function mapStateToProps(state) {
   return {
     patienttype: state.patienttype,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
   };
 }
 
@@ -204,7 +206,7 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientType: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      getPatientPackage: AlgaehActions
+      getPatientPackage: AlgaehActions,
     },
     dispatch
   );

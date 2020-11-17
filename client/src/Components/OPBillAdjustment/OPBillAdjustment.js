@@ -267,7 +267,7 @@ class OPBillAdjustment extends Component {
                         : "",
                   }}
                 > */}
-                <div className="col-3 globalSearchCntr form-group">
+                <div className="col-2 globalSearchCntr">
                   <AlgaehLabel label={{ fieldName: "bill_number" }} />
                   <h6 onClick={BillSearch.bind(this, this)}>
                     {this.state.bill_number
@@ -297,7 +297,7 @@ class OPBillAdjustment extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    {/* <div className="col">
                       <AlgaehLabel
                         label={{ fieldName: "incharge_or_provider" }}
                       />
@@ -306,7 +306,7 @@ class OPBillAdjustment extends Component {
                           ? this.state.doctor_name
                           : "--------"}
                       </h6>
-                    </div>
+                    </div> */}
 
                     <div className="col">
                       <AlgaehLabel label={{ fieldName: "patient_code" }} />
@@ -317,7 +317,7 @@ class OPBillAdjustment extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-3">
                       <AlgaehLabel
                         label={{
                           fieldName: "full_name",
@@ -330,7 +330,7 @@ class OPBillAdjustment extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    {/* <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "mode_of_pay",
@@ -341,7 +341,7 @@ class OPBillAdjustment extends Component {
                           ? this.state.mode_of_pay
                           : "--------"}
                       </h6>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
