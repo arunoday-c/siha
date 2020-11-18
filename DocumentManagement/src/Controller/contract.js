@@ -1,7 +1,8 @@
 import contract from "../Model/contractDocs";
 import formidable from "formidable";
 import fs from "fs";
-
+import path from "path";
+const folder = process.env.UPLOADFOLDER || process.cwd();
 export const saveContractDoc = (req, res) => {
   const form = formidable({ multiples: true });
   form.parse(req, (err, fields, files) => {
@@ -45,6 +46,11 @@ export const deleteContractDoc = (req, res) => {
     if (err) {
       res.status(400).json({ error: err.message });
     } else {
+      if (docs.fromPath === true) {
+        const uploadExists = folder.toUpperCase().includes("UPLOAD");
+        const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
+        fs.unlinkSync(path.resolve(uploadPath, docs.filename));
+      }
       res.status(200).json({ success: true, data: docs });
     }
   });

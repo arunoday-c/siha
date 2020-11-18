@@ -14,6 +14,7 @@ export default (db) => {
         buffer += chunk.toString();
       });
       req.on("end", () => {
+        return;
         const _headerFile = JSON.parse(req.headers["x-file-details"]);
 
         // const _utf =

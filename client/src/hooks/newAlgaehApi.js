@@ -35,7 +35,14 @@ export async function generateHeaders(extra) {
 }
 
 export default async function newAlgaehApi(
-  inputs = { uri: "", method: "GET", module: "", data: {}, extraHeaders: {} }
+  inputs = {
+    uri: "",
+    method: "GET",
+    module: "",
+    data: {},
+    extraHeaders: {},
+    others: {},
+  }
 ) {
   // const token = await getItem("token");
   // const headers = {
@@ -51,6 +58,7 @@ export default async function newAlgaehApi(
       url: createUrl(inputs),
       method: inputs.method,
       headers,
+      ...inputs.others,
     };
     if (inputs.method === "GET" || !inputs.method) {
       responseObj.params = inputs.data;

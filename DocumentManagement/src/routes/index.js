@@ -23,14 +23,15 @@ import {
 } from "../Controller/radiologyDoc";
 import { setUserPreference, getUserPreferences } from "../Model/userPreference";
 import { getLogs } from "../Model/loggers";
+import { uploadFile, getUploadedFile } from "../files";
 const router = express();
 initializedDb((db) => {
   router.use("/Document", documentManagement(db));
   router.use("/setPreferences", setUserPreference);
   router.use("/getPreferences", getUserPreferences);
   router.use("/getLogs", getLogs);
-  router.post("/saveContractDoc", saveContractDoc);
-  router.get("/getContractDoc", getContractDoc);
+  router.post("/saveContractDoc", uploadFile); //saveContractDoc);
+  router.get("/getContractDoc", getUploadedFile); // getContractDoc);
   router.delete("/deleteContractDoc", deleteContractDoc);
   router.post("/saveInvoiceDoc", saveInvoiceDoc);
 
