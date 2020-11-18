@@ -12,7 +12,7 @@
       margin: 0;
       padding: 0;
       list-style: none;
-      height: 54.5vh;
+      height: 44vh;
       overflow: auto;
       .noPatientDiv {
         margin-top: 15%;
@@ -21,7 +21,7 @@
         color: #929292;
       }
       li {
-        margin: 4px 0;
+        margin: 0 0 4px;
         padding: 3px 0;
         list-style: none;
         border: 1px solid #f2f2f2;
@@ -52,12 +52,10 @@
               center;
             background-size: 80%;
           }
-          .opTime {
-          }
         }
         .op-sec-2 {
           width: 10px;
-          width: 56%;
+          width: calc(100% - 25%);
           vertical-align: text-top;
           display: inline-block;
           .opPatientName {
@@ -67,23 +65,13 @@
           }
           .opStatus {
             display: block;
+            font-size: 12px !important;
           }
           .nursing {
             color: #34b8bc;
           }
           .checkedIn {
             color: #00bb4b;
-          }
-        }
-        .op-sec-3 {
-          width: 20%;
-          line-height: 53px;
-          vertical-align: text-top;
-          display: inline-block;
-          text-align: center;
-          .opPatientStatus {
-            display: block;
-            line-height: 25px;
           }
           .newVisit {
             color: #ff8800;
@@ -117,7 +105,23 @@
   }
   .patientAllergyGrid_Cntr {
     .ReactTable {
-      max-height: 39vh !important;
+      max-height: 60vh !important;
     }
+  }
+  .chiefComplaintText {
+    height: 175px;
+  }
+}
+.noPatientCntr {
+  height: auto;
+  text-align: center;
+  margin: 20vh 0;
+
+  color: #dadada;
+  i {
+    font-size: 5rem;
+  }
+  p {
+    font-size: 3rem;
   }
 }
