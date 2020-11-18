@@ -15,7 +15,7 @@ const texthandle = ($this, e) => {
   }
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -30,6 +30,7 @@ const saveSubInsurance = ($this, context) => {
       insurance_provider_id: $this.state.insurance_provider_id,
       transaction_number: $this.state.transaction_number,
       card_format: $this.state.card_format,
+      ins_template_name: $this.state.ins_template_name,
       effective_start_date:
         $this.state.effective_start_date !== null
           ? moment($this.state.effective_start_date)._d
@@ -37,7 +38,7 @@ const saveSubInsurance = ($this, context) => {
       effective_end_date:
         $this.state.effective_end_date !== null
           ? moment($this.state.effective_end_date)._d
-          : null
+          : null,
     };
     let previous = $this.state.sub_insurance ? $this.state.sub_insurance : [];
     previous.push(obj);
@@ -47,49 +48,50 @@ const saveSubInsurance = ($this, context) => {
       uri: "/insurance/addSubInsuranceProvider",
       module: "insurance",
       data: updatedata,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           $this.setState({
             insurance_sub_saved: true,
-            sub_insurance: previous
+            sub_insurance: previous,
           });
 
           if (context !== undefined) {
             context.updateState({
-              sub_insurance: previous
+              sub_insurance: previous,
             });
           }
           addNewSubinsurance($this);
           swalMessage({
             type: "success",
-            title: "Added successfully . ."
+            title: "Added successfully . .",
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
     // }
   }
 };
 
-const addNewSubinsurance = $this => {
+const addNewSubinsurance = ($this) => {
   $this.setState({
     insurance_sub_code: null,
     insurance_sub_name: null,
     transaction_number: null,
     arabic_sub_name: null,
-    card_format: null
+    card_format: null,
+    ins_template_name: null,
   });
 };
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -101,11 +103,11 @@ const showconfirmDialog = ($this, id) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
+    cancelButtonText: "No",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let data = {
-        hims_d_insurance_sub_id: id
+        hims_d_insurance_sub_id: id,
         //updated_by: getCookie("UserID")
       };
       algaehApiCall({
@@ -113,21 +115,21 @@ const showconfirmDialog = ($this, id) => {
         module: "insurance",
         data: data,
         method: "DELETE",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             getSubInsuranceDetails($this);
             swalMessage({
               type: "success",
-              title: "Record deleted successfully . ."
+              title: "Record deleted successfully . .",
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.response.data.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   });
@@ -137,27 +139,27 @@ const deleteSubInsurance = ($this, row) => {
   showconfirmDialog($this, row.hims_d_insurance_sub_id);
 };
 
-const getSubInsuranceDetails = $this => {
+const getSubInsuranceDetails = ($this) => {
   algaehApiCall({
     uri: "/insurance/getSubInsurance",
     module: "insurance",
     method: "GET",
     data: {
-      insurance_provider_id: $this.state.insurance_provider_id
+      insurance_provider_id: $this.state.insurance_provider_id,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
           $this.setState({ sub_insurance: response.data.records });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -166,19 +168,19 @@ function getFinanceProviders() {
     uri: "/insurance/getFinanceInsuranceProviders",
     module: "insurance",
     method: "GET",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         this.setState({
-          finance_providers: response.data.records
-        })
+          finance_providers: response.data.records,
+        });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 }
 
@@ -188,21 +190,21 @@ const updateSubInsurance = ($this, data) => {
     module: "insurance",
     data: data,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         getSubInsuranceDetails($this);
         swalMessage({
           type: "success",
-          title: "Record updated successfully . ."
+          title: "Record updated successfully . .",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -222,11 +224,11 @@ const dateValidate = ($this, value, e) => {
     if (inRange) {
       swalMessage({
         title: "Active From cannot be grater than Valid Upto.",
-        type: "warning"
+        type: "warning",
       });
       e.target.focus();
       $this.setState({
-        [e.target.name]: null
+        [e.target.name]: null,
       });
     }
   } else if (e.target.name === "effective_end_date") {
@@ -236,11 +238,11 @@ const dateValidate = ($this, value, e) => {
     if (inRange) {
       swalMessage({
         title: "Valid Upto cannot be less than Active From.",
-        type: "warning"
+        type: "warning",
       });
       e.target.focus();
       $this.setState({
-        [e.target.name]: null
+        [e.target.name]: null,
       });
     }
   }
@@ -254,7 +256,7 @@ const loadAccounts = (input) => {
         data: input,
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
@@ -262,20 +264,19 @@ const loadAccounts = (input) => {
         onCatch: (error) => {
           swalMessage({
             type: "error",
-            title: error
+            title: error,
           });
           reject(error);
-        }
+        },
       });
-    }
-    catch (e) {
+    } catch (e) {
       swalMessage({
         type: "error",
-        title: e
+        title: e,
       });
       reject(e);
     }
-  })
+  });
 };
 
 export {
@@ -289,5 +290,5 @@ export {
   getSubInsuranceDetails,
   dateValidate,
   loadAccounts,
-  getFinanceProviders
+  getFinanceProviders,
 };

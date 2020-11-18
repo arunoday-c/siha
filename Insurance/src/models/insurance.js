@@ -286,6 +286,7 @@ export default {
         "arabic_sub_name",
         "insurance_provider_id",
         "card_format",
+        "ins_template_name",
         "transaction_number",
         "effective_start_date",
         "effective_end_date",
@@ -362,6 +363,7 @@ export default {
                   "arabic_sub_name",
                   "insurance_provider_id",
                   "card_format",
+                  "ins_template_name",
                   "transaction_number",
                   "effective_start_date",
                   "effective_end_date",
@@ -409,6 +411,7 @@ export default {
               "arabic_sub_name",
               "insurance_provider_id",
               "card_format",
+              "ins_template_name",
               "transaction_number",
               "effective_start_date",
               "effective_end_date",
@@ -460,7 +463,7 @@ export default {
         .executeQuery({
           query:
             "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,\
-            `arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,\
+            `arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,`ins_template_name`=?,\
             `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=?,\
            head_id=?,child_id=?\
              WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
@@ -470,6 +473,7 @@ export default {
             inputparam.arabic_sub_name,
             inputparam.insurance_provider_id,
             inputparam.card_format,
+            inputparam.ins_template_name,
             inputparam.transaction_number,
             inputparam.effective_start_date,
             inputparam.effective_end_date,
@@ -1478,13 +1482,13 @@ export default {
           let sqlQry;
           if (product_type.length == 1) {
             sqlQry = `SELECT hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-            card_format,transaction_number,effective_start_date,effective_end_date  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,I.head_id
+            card_format,ins_template_name,transaction_number,effective_start_date,effective_end_date  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,I.head_id
                         from hims_d_insurance_sub  I      
                         left join finance_account_child C on I.child_id=C.finance_account_child_id 
                         where record_status='A'${_stringData}; `;
           } else {
             sqlQry = ` select hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-            card_format,transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
+            card_format,ins_template_name,transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
           }
 
           _mysql

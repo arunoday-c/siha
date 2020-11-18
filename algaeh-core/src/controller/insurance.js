@@ -24,7 +24,7 @@ const {
   updatePriceListBulk,
   deleteNetworkAndNetworkOfficRecords,
   getInsuranceProviders,
-  getSubInsuraces
+  getSubInsuraces,
 } = insuranceModels;
 const { releaseConnection } = utils;
 
@@ -39,7 +39,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -54,7 +54,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -69,7 +69,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -84,7 +84,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -99,7 +99,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -114,7 +114,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -129,7 +129,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -144,7 +144,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -159,7 +159,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -174,7 +174,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -189,7 +189,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -204,7 +204,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -219,7 +219,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -233,7 +233,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -248,7 +248,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -263,7 +263,7 @@ export default ({ config, db }) => {
       if (result.length != 0) {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
         next();
       } else {
@@ -281,7 +281,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -296,7 +296,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -311,7 +311,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -323,7 +323,7 @@ export default ({ config, db }) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -333,7 +333,7 @@ export default ({ config, db }) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
