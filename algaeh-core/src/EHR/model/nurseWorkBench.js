@@ -57,8 +57,8 @@ let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
 
         connection.query(
           "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
-            insurtColumns.join("`,`") +
-            "`,created_date,updated_date) VALUES ?",
+          insurtColumns.join("`,`") +
+          "`,created_date,updated_date) VALUES ?",
           [
             jsonArrayToObject({
               sampleInputObject: insurtColumns,
@@ -93,8 +93,8 @@ let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_patient_vitals(" +
-                  insurtColumns.join(",") +
-                  ",created_date,updated_date) VALUES ?",
+                insurtColumns.join(",") +
+                ",created_date,updated_date) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -216,8 +216,8 @@ let addPatientNurseChiefComplaintsBCKP_27_05_2020 = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
-                  insurtColumns.join("`,`") +
-                  "`,created_date,updated_date,hospital_id) VALUES ?",
+                insurtColumns.join("`,`") +
+                "`,created_date,updated_date,hospital_id) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -280,8 +280,8 @@ let addPatientNurseChiefComplaintsBCKP_27_05_2020 = (req, res, next) => {
 
                 connection.query(
                   "INSERT INTO hims_f_patient_vitals(" +
-                    insurtColumns.join(",") +
-                    ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
+                  insurtColumns.join(",") +
+                  ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
@@ -899,11 +899,16 @@ let getNurseMyDay = (req, res, next) => {
         req.query.sub_department_id,
       ]);
     }
+    if (req.query.shift_id != null) {
+      _query += _mysql.mysqlQueryFormat(" and V.shift_id=? ", [
+        req.query.shift_id,
+      ]);
+    }
     _mysql
       .executeQuery({
         query:
           "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,P.gender,P.age,E.patient_id, \
-          V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
+          P.primary_id_no, V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
           E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id, \
           sub_department_id, visit_type_desc, inventory_location_id, L.location_type \
           from hims_f_patient_encounter E\
