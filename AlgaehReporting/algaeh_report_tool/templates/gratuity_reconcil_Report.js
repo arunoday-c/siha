@@ -6,7 +6,11 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -58,6 +62,18 @@ const executePDF = function executePDFMethod(options) {
             header,
             total_gratuity_amount,
             total_acc_gratuity,
+            decimalOnly: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyOnly: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {
