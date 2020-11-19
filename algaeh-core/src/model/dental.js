@@ -78,7 +78,7 @@ let addTreatmentPlan = (req, res, next) => {
           input.created_by,
           new Date(),
           input.updated_by,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
         printQuery: true,
       })
@@ -120,7 +120,7 @@ let addDentalTreatmentBack = (req, res, next) => {
         req.body.wednesday,
         req.body.thursday,
         req.body.friday,
-        req.body.saturday
+        req.body.saturday,
       ];
 
       for (let d = 0; d < 7; d++) {
@@ -148,20 +148,20 @@ let addDentalTreatmentBack = (req, res, next) => {
         "billed",
         "treatment_status",
         "created_by",
-        "updated_by"
+        "updated_by",
       ];
 
       connection.query(
         "INSERT INTO hims_f_dental_treatment(" +
-        insurtColumns.join(",") +
-        ",created_date,updated_date) VALUES ?",
+          insurtColumns.join(",") +
+          ",created_date,updated_date) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
             newFieldToInsert: [new Date(), new Date()],
-            req: req
-          })
+            req: req,
+          }),
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -287,10 +287,12 @@ let addDentalTreatment = (req, res, next) => {
   // }
 
   const _mysql = new algaehMysql({ path: keyPath });
-  let input = extend({}, req.body);
+  let input = extend({}, req.body.my_send_obj);
+  debugger;
+
   try {
     let finalInput = [];
-    if (this.state.price_tooth === "S") {
+    if (req.body.price_tooth === "S") {
       for (let i = 0; i < input.send_teeth.length; i++) {
         let surfaceArray = {
           distal: "N",
@@ -301,11 +303,11 @@ let addDentalTreatment = (req, res, next) => {
           labial: "N",
           cervical: "N",
           palatal: "N",
-          lingual: "N"
+          lingual: "N",
         };
 
         let singleObj = new LINQ(input.send_teeth[i]["details"])
-          .Select(s => s.surface)
+          .Select((s) => s.surface)
           .ToArray();
 
         let teeth_number = input.send_teeth[i]["teeth_number"];
@@ -331,51 +333,107 @@ let addDentalTreatment = (req, res, next) => {
 
         finalInput.push(surfaceArray);
       }
+      const insurtColumns = [
+        "teeth_number",
+        "distal",
+        "incisal",
+        "occlusal",
+        "mesial",
+        "buccal",
+        "labial",
+        "cervical",
+        "palatal",
+        "lingual",
+        "created_by",
+        "updated_by",
+      ];
+
+      _mysql
+        .executeQuery({
+          query: "INSERT INTO hims_f_dental_treatment(??) VALUES ?",
+          values: finalInput,
+          includeValues: insurtColumns,
+          extraValues: {
+            patient_id: input.patient_id,
+            episode_id: input.episode_id,
+            treatment_plan_id: input.treatment_plan_id,
+            service_id: input.service_id,
+            scheduled_date: new Date(input.scheduled_date),
+            created_date: new Date(),
+            updated_date: new Date(),
+            hospital_id: req.userIdentity.hospital_id,
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
     } else {
-
-    }
-
-
-    const insurtColumns = [
-      "teeth_number",
-      "distal",
-      "incisal",
-      "occlusal",
-      "mesial",
-      "buccal",
-      "labial",
-      "cervical",
-      "palatal",
-      "lingual",
-      "created_by",
-      "updated_by"
-    ];
-
-    _mysql
-      .executeQuery({
-        query:
-          "INSERT INTO hims_f_dental_treatment(??) VALUES ?",
-        values: finalInput,
-        includeValues: insurtColumns,
-        extraValues: {
-          patient_id: input.patient_id,
-          episode_id: input.episode_id,
-          treatment_plan_id: input.treatment_plan_id,
-          service_id: input.service_id,
-          scheduled_date: new Date(input.scheduled_date),
-          created_date: new Date(),
-          updated_date: new Date(),
-          hospital_id: req.userIdentity.hospital_id
-        },
-        bulkInsertOrUpdate: true,
-        printQuery: false,
-      })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result
-        next()
-
+      debugger;
+      let multipleTeeth = input.send_teeth.map((item) => {
+        return item.teeth_number;
       });
+      let multiTeethArray = multipleTeeth.join(",");
+
+      // const insurtColumns = [
+      //   "distal",
+      //   "incisal",
+      //   "occlusal",
+      //   "mesial",
+      //   "buccal",
+      //   "labial",
+      //   "cervical",
+      //   "palatal",
+      //   "lingual",
+      //   "created_by",
+      //   "updated_by",
+      // ];
+
+      _mysql
+        .executeQuery({
+          query: `INSERT INTO hims_f_dental_treatment (teeth_number,
+            patient_id,
+            episode_id,
+            treatment_plan_id,
+            service_id,
+            scheduled_date,
+      
+            created_date,
+       
+            updated_date,
+            hospital_id)
+                 value(?,?,?,?,?,?,?,?,?)`,
+          values: [
+            multiTeethArray,
+            input.patient_id,
+            input.episode_id,
+            input.treatment_plan_id,
+            input.service_id,
+            new Date(input.scheduled_date),
+
+            new Date(),
+
+            new Date(),
+            req.userIdentity.hospital_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    }
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -388,7 +446,7 @@ let getTreatmentPlan = (req, res, next) => {
   try {
     let input = extend({}, req.query);
 
-    let strQuery = ""
+    let strQuery = "";
     if (input.episode_id != null) {
       strQuery += " and episode_id=" + input.episode_id;
     }
@@ -399,12 +457,12 @@ let getTreatmentPlan = (req, res, next) => {
       strQuery += " and plan_status= '" + input.plan_status + "'";
     }
 
-
     _mysql
       .executeQuery({
         query:
           "select hims_f_treatment_plan_id, plan_name, patient_id, episode_id, visit_id, remarks,\
-        approve_status, plan_status,consult_date from  hims_f_treatment_plan where record_status='A' " + strQuery,
+        approve_status, plan_status,consult_date from  hims_f_treatment_plan where record_status='A' " +
+          strQuery,
         printQuery: true,
       })
       .then((result) => {
@@ -455,11 +513,9 @@ let getTreatmentPlan = (req, res, next) => {
 
 //created by irfan: to
 let getDentalTreatment = (req, res, next) => {
-
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-
-    let strQuery = ""
+    let strQuery = "";
     if (req.query.treatment_plan_id) {
       strQuery += " and treatment_plan_id=" + req.query.treatment_plan_id;
     }
@@ -469,7 +525,8 @@ let getDentalTreatment = (req, res, next) => {
         query:
           "select hims_f_dental_treatment_id, patient_id, episode_id, treatment_plan_id, service_id, teeth_number\
           , scheduled_date, distal, incisal, occlusal, mesial, buccal, labial, cervical, palatal, lingual,\
-          billed, treatment_status from hims_f_dental_treatment  where record_status='A' " + strQuery,
+          billed, treatment_status from hims_f_dental_treatment  where record_status='A' " +
+          strQuery,
         printQuery: true,
       })
       .then((result) => {
@@ -536,7 +593,7 @@ let approveTreatmentPlan = (req, res, next) => {
             input.approve_status,
             new Date(),
             input.updated_by,
-            input.hims_f_treatment_plan_id
+            input.hims_f_treatment_plan_id,
           ],
           printQuery: true,
         })
@@ -552,7 +609,8 @@ let approveTreatmentPlan = (req, res, next) => {
     } else if (input.approve_status === "C") {
       _mysql
         .executeQueryWithTransaction({
-          query: "delete from hims_f_dental_treatment where treatment_plan_id=?;",
+          query:
+            "delete from hims_f_dental_treatment where treatment_plan_id=?;",
           values: [input.hims_f_treatment_plan_id],
           printQuery: true,
         })
@@ -560,7 +618,8 @@ let approveTreatmentPlan = (req, res, next) => {
           if (results != null) {
             _mysql
               .executeQuery({
-                query: "delete from hims_f_treatment_plan where hims_f_treatment_plan_id=?",
+                query:
+                  "delete from hims_f_treatment_plan where hims_f_treatment_plan_id=?",
                 values: [input.hims_f_treatment_plan_id],
                 printQuery: true,
               })
@@ -590,7 +649,7 @@ let approveTreatmentPlan = (req, res, next) => {
           });
         });
     } else {
-      next()
+      next();
     }
   } catch (e) {
     _mysql.releaseConnection();
@@ -692,7 +751,6 @@ let approveTreatmentPlan = (req, res, next) => {
 let deleteDentalPlan = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-
     _mysql
       .executeQuery({
         query:
@@ -758,7 +816,7 @@ let updateDentalPlanStatus = (req, res, next) => {
             input.plan_status,
             new Date(),
             input.updated_by,
-            input.hims_f_treatment_plan_id
+            input.hims_f_treatment_plan_id,
           ],
           printQuery: true,
         })
@@ -837,20 +895,20 @@ let updateDentalTreatmentStatus = (req, res, next) => {
           input.treatment_status,
           new Date(),
           input.updated_by,
-          input.hims_f_dental_treatment_id
+          input.hims_f_dental_treatment_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(update_result => {
+      .then((update_result) => {
         _mysql
           .executeQuery({
             query:
               "select treatment_plan_id from hims_f_dental_treatment where treatment_plan_id = ? and \
               treatment_status !='CP';",
             values: [input.treatment_plan_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             if (result.length === 0) {
               _mysql
                 .executeQuery({
@@ -860,18 +918,18 @@ let updateDentalTreatmentStatus = (req, res, next) => {
                   values: [
                     new Date(),
                     input.updated_by,
-                    input.treatment_plan_id
+                    input.treatment_plan_id,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(plan_result => {
+                .then((plan_result) => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = plan_result;
                     next();
                   });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -884,13 +942,13 @@ let updateDentalTreatmentStatus = (req, res, next) => {
               });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
           });
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.rollBackTransaction(() => {
           next(error);
         });
@@ -939,7 +997,6 @@ let updateDentalTreatmentStatus = (req, res, next) => {
 
 //created by irfan: to
 let updateDentalTreatmentBilledStatus = (req, res, next) => {
-
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let input = extend({}, req.body);
@@ -953,7 +1010,7 @@ let updateDentalTreatmentBilledStatus = (req, res, next) => {
             input.billed,
             new Date(),
             input.updated_by,
-            input.hims_f_dental_treatment_id
+            input.hims_f_dental_treatment_id,
           ],
           printQuery: true,
         })
@@ -1052,7 +1109,7 @@ let updateDentalTreatment = (req, res, next) => {
             input.lingual,
             new Date(),
             input.updated_by,
-            input.hims_f_dental_treatment_id
+            input.hims_f_dental_treatment_id,
           ],
           printQuery: true,
         })
@@ -1150,5 +1207,5 @@ export default {
   updateDentalPlanStatus,
   updateDentalTreatmentStatus,
   updateDentalTreatmentBilledStatus,
-  updateDentalTreatment
+  updateDentalTreatment,
 };
