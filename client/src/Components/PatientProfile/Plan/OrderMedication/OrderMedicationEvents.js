@@ -289,12 +289,16 @@ const itemhandle = ($this, item) => {
           item.item_description !== undefined
             ? item.item_description.replace(/\w+/g, _.capitalize)
             : item.item_description,
-        item_id: item.hims_d_item_master_id,
+        item_id: item.hims_d_item_master_id
+          ? item.hims_d_item_master_id
+          : item.item_id,
         generic_id: item.generic_id,
         service_id: item.service_id,
-        uom_id: item.sales_uom_id,
-        item_category_id: item.category_id,
-        item_group_id: item.group_id,
+        uom_id: item.sales_uom_id ? item.sales_uom_id : item.uom_id,
+        item_category_id: item.category_id
+          ? item.category_id
+          : item.item_category_id,
+        item_group_id: item.group_id ? item.group_id : item.item_group_id,
         addItemEnable: false,
         total_quantity: 0,
         frequency_route: item.item_route ? item.item_route : "OR",
@@ -475,6 +479,7 @@ const AddItems = ($this) => {
     $this.state.item_group_id !== null
       ? true
       : false;
+
   if ($this.state.updateButton && validate) {
     deleteItems($this, $this.state.rowDetails);
     AddItemsOrUpdate($this);

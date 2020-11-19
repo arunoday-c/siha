@@ -256,7 +256,35 @@ let addPatientPrescriptionOLD = (req, res, next) => {
     next(e);
   }
 };
+let getFavMedication = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
 
+  try {
+    _mysql
+      .executeQueryWithTransaction({
+        query: ` SELECT M.*, IM.item_description,IM.sales_uom_id as uom_id,IM.generic_id,IM.service_id,IM.group_id as item_group_id,
+        IM.category_id as item_category_id, IG.generic_name FROM hims_f_favourite_icd_med M 
+        inner join hims_d_item_master IM on IM.hims_d_item_master_id = M.item_id 
+        inner join hims_d_item_generic IG on IG.hims_d_item_generic_id = IM.generic_id 
+        where   M.added_provider_id=? ;`,
+        values: [req.query.added_provider_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 let getPastMedication = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
@@ -516,7 +544,6 @@ function addChronic(data) {
 
 //created by sidhiqe: to add Medication to favourite
 function addFavMedcine(data) {
-  debugger;
   return new Promise((resolve, reject) => {
     const insurtColumn = ["item_id"];
     const { req, input, next, _mysql } = data;
@@ -964,6 +991,7 @@ export default {
   getPatientMedications,
   addPastMedication,
   getPastMedication,
+  getFavMedication,
   deletePastMedication,
   deletePatientPrescription,
 };

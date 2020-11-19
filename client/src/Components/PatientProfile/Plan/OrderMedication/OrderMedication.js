@@ -41,6 +41,12 @@ import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
 import MyContext from "../../../../utils/MyContext";
 import { setGlobal, removeGlobal } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import {
+  // AlgaehDataGrid,
+  AlgaehModal,
+  // AlgaehButton,
+} from "algaeh-react-components";
 class OrderMedication extends Component {
   constructor(props) {
     super(props);
@@ -93,6 +99,8 @@ class OrderMedication extends Component {
       frequency_time: "AM",
       frequency_route: "OR",
       total_quantity: 0,
+      favMedPop: false,
+      favMedicine: [],
       ...storedState,
     };
   }
@@ -204,6 +212,38 @@ class OrderMedication extends Component {
       });
     }
   }
+  setItemName(row) {
+    this.setState(
+      {
+        item_id: row.item_id,
+        favMedPop: false,
+        generic_name_item_description: row.item_description,
+      },
+      () => {
+        itemhandle(this, row);
+      }
+    );
+  }
+  favMedData() {
+    algaehApiCall({
+      uri: "/orderMedication/getFavMedication",
+
+      method: "GET",
+      data: {
+        added_provider_id: this.state.provider_id,
+      },
+
+      onSuccess: (data) => {
+        this.setState({
+          favMedData: data.data.records,
+          favMedPop: true,
+        });
+      },
+      onCatch: (error) => {
+        console.log("error", error);
+      },
+    });
+  }
 
   onInstructionsTextHandler(e) {
     this.setState({
@@ -297,6 +337,99 @@ class OrderMedication extends Component {
         <MyContext.Consumer>
           {(context) => (
             <div>
+              <AlgaehModal
+                wrapClassName="FavMedicationModal"
+                title="Select Favourite Medication "
+                visible={this.state.favMedPop}
+                // okButtonProps={{
+                //   loading: lodingAddtoList,
+                // }}
+                // okText={}
+                maskClosable={false}
+                // cancelButtonProps={{ disabled: lodingAddtoList }}
+                closable={true}
+                onCancel={() => {
+                  this.setState({
+                    favMedPop: false,
+                  });
+                }}
+                // onOk={onOK}
+              >
+                <div className="col-12" id="FavMedGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="hims_f_favourite_icd_med_id"
+                    columns={[
+                      {
+                        fieldName: "generic_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
+                        ),
+                      },
+                      {
+                        fieldName: "item_description",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span
+                              onClick={this.setItemName.bind(this, row)}
+                              className="item_description"
+                            >
+                              {row.item_description}
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                        },
+                        className: (drow) => {
+                          return "greenCell";
+                        },
+                      },
+
+                      // {
+                      //   fieldName: "isFavMedcine",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Is Favourite" }}
+                      //     />
+                      //   ),
+                      //   displayTemplate: (row) => {
+                      //     return (
+                      //       <span>
+                      //         {row.isFavMedcine === "Y" ? "yes" : "No"}
+                      //       </span>
+                      //     );
+                      //   },
+                      //   others: {
+                      //     minWidth: 100,
+                      //   },
+                      // },
+                    ]}
+                    keyId="item_id"
+                    dataSource={{
+                      data: this.state.favMedData,
+                    }}
+                    // actions={{
+                    //   allowEdit: false,
+                    // }}
+                    // isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    byForceEvents={true}
+                    events={
+                      {
+                        // onDelete: deleteItems.bind(this, this),
+                        // onEdit: this.onEditRow.bind(this, row),
+                        // onCancel: CancelGrid.bind(this, this),
+                        // onDone: updateItems.bind(this, this),
+                      }
+                    }
+                  />
+                </div>
+              </AlgaehModal>
               <div className="row popupInner">
                 <div className="col-4">
                   <div className="popLeftDiv">
@@ -356,6 +489,7 @@ class OrderMedication extends Component {
                         <button
                           className="btn btn-default btn-small"
                           style={{ marginTop: 21 }}
+                          onClick={this.favMedData.bind(this)}
                         >
                           Show Favourite
                         </button>

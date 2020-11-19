@@ -12,7 +12,8 @@ const {
   addPastMedication,
   deletePastMedication,
   getPastMedication,
-  deletePatientPrescription
+  getFavMedication,
+  deletePatientPrescription,
 } = orderModels;
 
 export default ({ config, db }) => {
@@ -75,6 +76,19 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientPrescription",
     getPatientPrescription,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.get(
+    "/getFavMedication",
+    getFavMedication,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
