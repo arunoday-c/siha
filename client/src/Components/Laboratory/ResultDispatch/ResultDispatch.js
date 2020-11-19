@@ -39,6 +39,10 @@ import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResu
 // import { AlgaehMessagePop } from "algaeh-react-components";
 const { Dragger } = Upload;
 const { confirm } = Modal;
+// const STATUS = {
+//   CHECK: true,
+//   UNCHECK: false,
+// };
 class ResultEntryList extends Component {
   constructor(props) {
     super(props);
@@ -141,6 +145,36 @@ class ResultEntryList extends Component {
       }
     });
   };
+  onCheckChangeRow(dol, row, e) {
+    const status = e.target.checked;
+    // const currentRow = row;
+    row.checked = status;
+    // const records = Enumerable.from(this.state.sample_collection)
+    // .where((w) => w.sample_status === "A")
+    // .toArray();
+    // const hasUncheck = records.filter((f) => {
+    //   return f.checked === undefined || f.checked === false;
+    // });
+    // const hasProceesed = hasUncheck.find((f) => f.salary_processed === "Y");
+    // const totalRecords = records.length;
+    // let ckStatus =
+    //   totalRecords === hasUncheck.length
+    //     ? "UNCHECK"
+    //     : hasUncheck.length === 0
+    //     ? "CHECK"
+    //     : "INDETERMINATE";
+    // if (hasProceesed !== undefined) {
+    //   ckStatus = "INDETERMINATE";
+    // }
+    // if (ckStatus === "INDETERMINATE") {
+    //   this.allChecked.indeterminate = true;
+    // } else {
+    //   this.allChecked.indeterminate = false;
+    // }
+    // this.setState({
+    //   selectAll: ckStatus,
+    // });
+  }
   PatientSearch = () => {
     AlgaehSearch({
       searchGrid: {
@@ -407,26 +441,28 @@ class ResultEntryList extends Component {
                         },
                       },
                       {
-                        fieldName: "result_checkBox",
-
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Select",
-                            }}
+                        fieldName: "select",
+                        label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
+                        displayTemplate: (row) => (
+                          <input
+                            type="checkbox"
+                            checked={row.checked}
+                            // disabled={
+                            //   row.salary_processed === "Y"
+                            //     ? true
+                            //     : false
+                            // }
+                            onChange={this.onCheckChangeRow.bind(
+                              this,
+                              this,
+                              row
+                            )}
                           />
                         ),
-                        //disabled: true
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              <input type="checkbox" value="" />
-                            </span>
-                          );
-                        },
                         others: {
-                          maxWidth: 150,
+                          maxWidth: 50,
                           filterable: false,
+                          sortable: false,
                         },
                       },
                       {
@@ -609,11 +645,15 @@ class ResultEntryList extends Component {
                 </div>
               </div>
             </div>
+
             <div className="hptl-phase1-footer">
               <div className="row">
                 <div className="col-lg-12">
-                  <button type="button" className="btn btn-primary" disabled="">
-                    Print Selected
+                  <button
+                    // onClick={saveDocumentCheck.bind(this, this)}
+                    className="btn btn-primary btn-sm"
+                  >
+                    print
                   </button>
                 </div>
               </div>
