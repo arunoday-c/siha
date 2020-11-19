@@ -1175,13 +1175,7 @@ class NurseWorkbench extends Component {
                   <span className="countNo">
                     Total Patient:
                     <b>
-                      {
-                        Enumerable.from(this.state.data)
-                          .where(
-                            (w) => w.status === "V" && w.nurse_examine === "N"
-                          )
-                          .toArray().length
-                      }
+                      {patientListArray.length}
                     </b>
                   </span>
                 </div>
