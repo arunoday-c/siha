@@ -304,7 +304,7 @@ class OrderMedication extends Component {
                     <div className="row medicationSearchCntr">
                       <AlgaehAutoSearch
                         div={{
-                          className: "col-12 form-group medicationSearchFld",
+                          className: "col-8 form-group medicationSearchFld",
                         }}
                         label={{ forceLabel: "Generic Name / Item Name" }}
                         title="Search by generic name / item name"
@@ -352,6 +352,14 @@ class OrderMedication extends Component {
                         onClear={this.clearItemCodeHandler.bind(this)}
                         onClick={this.itemChangeHandle.bind(this)}
                       />
+                      <div className="col-4">
+                        <button
+                          className="btn btn-default btn-small"
+                          style={{ marginTop: 21 }}
+                        >
+                          Show Favourite
+                        </button>
+                      </div>
                       <AlagehAutoComplete
                         div={{ className: "col-6  form-group" }}
                         label={{ forceLabel: "Frequency" }}
