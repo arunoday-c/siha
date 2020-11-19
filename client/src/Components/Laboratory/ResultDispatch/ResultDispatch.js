@@ -15,7 +15,7 @@ import {
   // AlgaehButton,
 } from "algaeh-react-components";
 import {
-  datehandle,
+  // datehandle,
   getSampleCollectionDetails,
   ResultEntryModel,
   closeResultEntry,
@@ -28,7 +28,7 @@ import { Upload, Modal } from "antd";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehDateHandler,
+  // AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import { newAlgaehApi } from "../../../hooks";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -329,7 +329,7 @@ class ResultEntryList extends Component {
                 <i className="fas fa-search fa-lg"></i>
               </h6>
             </div>
-            <AlgaehDateHandler
+            {/* <AlgaehDateHandler
               div={{ className: "col-2" }}
               label={{ fieldName: "from_date" }}
               textBox={{ className: "txt-fld", name: "from_date" }}
@@ -346,7 +346,7 @@ class ResultEntryList extends Component {
                 onChange: datehandle.bind(this, this),
               }}
               value={this.state.to_date}
-            />{" "}
+            />{" "} */}
             <div className="col" style={{ paddingTop: "21px" }}>
               <button
                 className="btn btn-default btn-sm"
@@ -441,23 +441,8 @@ class ResultEntryList extends Component {
                         },
                       },
                       {
-                        // label: (
-                        //   <input
-                        //     type="checkbox"
-                        //     defaultChecked={
-                        //       this.state.selectAll === "CHECK"
-                        //         ? true
-                        //         : false
-                        //     }
-                        //     ref={(input) => {
-                        //       this.allChecked = input;
-                        //     }}
-                        //     onChange={this.onChageCheckSelectAll.bind(
-                        //       this
-                        //     )}
-                        //   />
-                        // ),
                         fieldName: "select",
+                        label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: (row) => (
                           <input
                             type="checkbox"
@@ -475,7 +460,7 @@ class ResultEntryList extends Component {
                           />
                         ),
                         others: {
-                          minWidth: 50,
+                          maxWidth: 50,
                           filterable: false,
                           sortable: false,
                         },
@@ -660,13 +645,19 @@ class ResultEntryList extends Component {
                 </div>
               </div>
             </div>
-            <button
-              // onClick={saveDocumentCheck.bind(this, this)}
-              className="btn btn-primary btn-sm"
-            >
-              print
-            </button>
-            ;
+
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    // onClick={saveDocumentCheck.bind(this, this)}
+                    className="btn btn-primary btn-sm"
+                  >
+                    Print Selected
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           <ResultEntry
             open={this.state.isOpen}

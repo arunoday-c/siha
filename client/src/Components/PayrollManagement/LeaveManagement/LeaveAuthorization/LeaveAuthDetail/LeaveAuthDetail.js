@@ -105,7 +105,7 @@ class LeaveAuthDetail extends Component {
           });
         }
       },
-      onFailure: (err) => {},
+      onFailure: (err) => { },
     });
   }
 
@@ -305,6 +305,7 @@ class LeaveAuthDetail extends Component {
       to_session: this.state.data.to_leave_session,
       from_date: this.state.data.from_date,
       actual_to_date: this.state.data.actual_to_date,
+      to_date: this.state.data.actual_to_date,
       leave_category: this.state.data.leave_category,
       hospital_id: this.state.data.hospital_id,
       leave_from: this.state.data.leave_from,
@@ -454,10 +455,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.from_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.from_leave_session === "FH"
-                                  ? "First Half"
-                                  : this.state.data.from_leave_session === "SH"
-                                  ? "Second Half"
-                                  : "------"}
+                                    ? "First Half"
+                                    : this.state.data.from_leave_session === "SH"
+                                      ? "Second Half"
+                                      : "------"}
                                 )
                               </small>
                             </h6>
@@ -479,10 +480,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.to_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.to_leave_session === "FH"
-                                  ? "First Half"
-                                  : this.state.data.to_leave_session === "SH"
-                                  ? "Second Half"
-                                  : "------"}
+                                    ? "First Half"
+                                    : this.state.data.to_leave_session === "SH"
+                                      ? "Second Half"
+                                      : "------"}
                                 )
                               </small>
                             </h6>
@@ -521,35 +522,35 @@ class LeaveAuthDetail extends Component {
 
                           <div className="col-12 form-group">
                             {this.state.data.leave_category === "A" &&
-                            this.state.data.auth_level ===
+                              this.state.data.auth_level ===
                               this.state.data.leave_levels.length ? (
-                              <div
-                                className="customCheckbox"
-                                style={{
-                                  textAlign: "right",
-                                }}
-                              >
-                                <label className="checkbox inline">
-                                  <input
-                                    type="checkbox"
-                                    name="from_normal_salary"
-                                    value="Y"
-                                    checked={
-                                      this.state.data.from_normal_salary === "Y"
-                                        ? true
-                                        : false
-                                    }
-                                    onChange={this.radioChange.bind(this)}
-                                    disabled={
-                                      this.props.type !== undefined
-                                        ? true
-                                        : false
-                                    }
-                                  />
-                                  <span>From Normal Salary</span>
-                                </label>
-                              </div>
-                            ) : null}
+                                <div
+                                  className="customCheckbox"
+                                  style={{
+                                    textAlign: "right",
+                                  }}
+                                >
+                                  <label className="checkbox inline">
+                                    <input
+                                      type="checkbox"
+                                      name="from_normal_salary"
+                                      value="Y"
+                                      checked={
+                                        this.state.data.from_normal_salary === "Y"
+                                          ? true
+                                          : false
+                                      }
+                                      onChange={this.radioChange.bind(this)}
+                                      disabled={
+                                        this.props.type !== undefined
+                                          ? true
+                                          : false
+                                      }
+                                    />
+                                    <span>From Normal Salary</span>
+                                  </label>
+                                </div>
+                              ) : null}
                           </div>
                         </div>
                       </div>
@@ -576,10 +577,10 @@ class LeaveAuthDetail extends Component {
                                 </li>
                               ))
                             ) : (
-                              <div className="col-12 noAttachment" key={1}>
-                                <p>No Attachments Available</p>
-                              </div>
-                            )}
+                                <div className="col-12 noAttachment" key={1}>
+                                  <p>No Attachments Available</p>
+                                </div>
+                              )}
                           </ul>
                         </div>
                       )}
@@ -661,8 +662,8 @@ class LeaveAuthDetail extends Component {
                                         Processed
                                       </span>
                                     ) : (
-                                      "------"
-                                    )}
+                                                "------"
+                                              )}
                                   </span>
                                 );
                               },
@@ -672,14 +673,14 @@ class LeaveAuthDetail extends Component {
                                     {row.status === "PEN"
                                       ? "Pending"
                                       : row.status === "APR"
-                                      ? "Approved"
-                                      : row.status === "REJ"
-                                      ? "Rejected"
-                                      : row.status === "PRO"
-                                      ? "Processed"
-                                      : row.status === "CAN"
-                                      ? "Cancelled"
-                                      : "------"}
+                                        ? "Approved"
+                                        : row.status === "REJ"
+                                          ? "Rejected"
+                                          : row.status === "PRO"
+                                            ? "Processed"
+                                            : row.status === "CAN"
+                                              ? "Cancelled"
+                                              : "------"}
                                   </span>
                                 );
                               },
@@ -836,9 +837,9 @@ class LeaveAuthDetail extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
-                            onDelete: () => {},
-                            onDone: () => {},
+                            onEdit: () => { },
+                            onDelete: () => { },
+                            onDone: () => { },
                           }}
                         />
                       </div>

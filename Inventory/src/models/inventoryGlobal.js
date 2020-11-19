@@ -211,9 +211,8 @@ export default {
             "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, \
             batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, IL.item_type, grn_id,\
             grnno, sale_price, mrp_price, sales_uom, git_qty, IM.stocking_uom_id, vendor_batchno, IM.item_description from \
-            hims_m_inventory_item_location IL,\
-            hims_d_inventory_item_master IM where item_id = IM.hims_d_inventory_item_master_id and\
-            IL.record_status='A' and qtyhand>0" +
+            hims_m_inventory_item_location IL inner join hims_d_inventory_item_master IM on item_id = IM.hims_d_inventory_item_master_id \
+            where  (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and IL.record_status='A' and qtyhand>0" +
             strAppend +
             "order by date(expirydt)",
           values: intValues,
@@ -467,7 +466,7 @@ export default {
             left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id " +
             strOrder +
             " left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id \
-            where qtyhand> 0" +
+            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0" +
             strAppend +
             strGroup +
             " order by date(expirydt)",
