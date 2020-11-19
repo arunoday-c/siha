@@ -39,6 +39,10 @@ import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResu
 // import { AlgaehMessagePop } from "algaeh-react-components";
 const { Dragger } = Upload;
 const { confirm } = Modal;
+// const STATUS = {
+//   CHECK: true,
+//   UNCHECK: false,
+// };
 class ResultEntryList extends Component {
   constructor(props) {
     super(props);
@@ -141,6 +145,36 @@ class ResultEntryList extends Component {
       }
     });
   };
+  onCheckChangeRow(dol, row, e) {
+    const status = e.target.checked;
+    // const currentRow = row;
+    row.checked = status;
+    // const records = Enumerable.from(this.state.sample_collection)
+    // .where((w) => w.sample_status === "A")
+    // .toArray();
+    // const hasUncheck = records.filter((f) => {
+    //   return f.checked === undefined || f.checked === false;
+    // });
+    // const hasProceesed = hasUncheck.find((f) => f.salary_processed === "Y");
+    // const totalRecords = records.length;
+    // let ckStatus =
+    //   totalRecords === hasUncheck.length
+    //     ? "UNCHECK"
+    //     : hasUncheck.length === 0
+    //     ? "CHECK"
+    //     : "INDETERMINATE";
+    // if (hasProceesed !== undefined) {
+    //   ckStatus = "INDETERMINATE";
+    // }
+    // if (ckStatus === "INDETERMINATE") {
+    //   this.allChecked.indeterminate = true;
+    // } else {
+    //   this.allChecked.indeterminate = false;
+    // }
+    // this.setState({
+    //   selectAll: ckStatus,
+    // });
+  }
   PatientSearch = () => {
     AlgaehSearch({
       searchGrid: {
@@ -407,6 +441,46 @@ class ResultEntryList extends Component {
                         },
                       },
                       {
+                        // label: (
+                        //   <input
+                        //     type="checkbox"
+                        //     defaultChecked={
+                        //       this.state.selectAll === "CHECK"
+                        //         ? true
+                        //         : false
+                        //     }
+                        //     ref={(input) => {
+                        //       this.allChecked = input;
+                        //     }}
+                        //     onChange={this.onChageCheckSelectAll.bind(
+                        //       this
+                        //     )}
+                        //   />
+                        // ),
+                        fieldName: "select",
+                        displayTemplate: (row) => (
+                          <input
+                            type="checkbox"
+                            checked={row.checked}
+                            // disabled={
+                            //   row.salary_processed === "Y"
+                            //     ? true
+                            //     : false
+                            // }
+                            onChange={this.onCheckChangeRow.bind(
+                              this,
+                              this,
+                              row
+                            )}
+                          />
+                        ),
+                        others: {
+                          minWidth: 50,
+                          filterable: false,
+                          sortable: false,
+                        },
+                      },
+                      {
                         fieldName: "ordered_date",
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
@@ -586,6 +660,13 @@ class ResultEntryList extends Component {
                 </div>
               </div>
             </div>
+            <button
+              // onClick={saveDocumentCheck.bind(this, this)}
+              className="btn btn-primary btn-sm"
+            >
+              print
+            </button>
+            ;
           </div>
           <ResultEntry
             open={this.state.isOpen}
