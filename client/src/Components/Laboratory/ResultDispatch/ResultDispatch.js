@@ -653,7 +653,7 @@ class ResultEntryList extends Component {
                     // onClick={saveDocumentCheck.bind(this, this)}
                     className="btn btn-primary btn-sm"
                   >
-                    print
+                    Print Selected
                   </button>
                 </div>
               </div>
