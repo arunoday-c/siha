@@ -15,7 +15,7 @@ import {
   // AlgaehButton,
 } from "algaeh-react-components";
 import {
-  datehandle,
+  // datehandle,
   getSampleCollectionDetails,
   ResultEntryModel,
   closeResultEntry,
@@ -28,7 +28,7 @@ import { Upload, Modal } from "antd";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehDateHandler,
+  // AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import { newAlgaehApi } from "../../../hooks";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -295,7 +295,7 @@ class ResultEntryList extends Component {
                 <i className="fas fa-search fa-lg"></i>
               </h6>
             </div>
-            <AlgaehDateHandler
+            {/* <AlgaehDateHandler
               div={{ className: "col-2" }}
               label={{ fieldName: "from_date" }}
               textBox={{ className: "txt-fld", name: "from_date" }}
@@ -312,7 +312,7 @@ class ResultEntryList extends Component {
                 onChange: datehandle.bind(this, this),
               }}
               value={this.state.to_date}
-            />{" "}
+            />{" "} */}
             <div className="col" style={{ paddingTop: "21px" }}>
               <button
                 className="btn btn-default btn-sm"
@@ -404,6 +404,29 @@ class ResultEntryList extends Component {
                           maxWidth: 100,
                           resizable: false,
                           style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "result_checkBox",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Select",
+                            }}
+                          />
+                        ),
+                        //disabled: true
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              <input type="checkbox" value="" />
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 150,
+                          filterable: false,
                         },
                       },
                       {
@@ -583,6 +606,15 @@ class ResultEntryList extends Component {
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 20 }}
                   />
+                </div>
+              </div>
+            </div>
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button type="button" className="btn btn-primary" disabled="">
+                    Print Selected
+                  </button>
                 </div>
               </div>
             </div>
