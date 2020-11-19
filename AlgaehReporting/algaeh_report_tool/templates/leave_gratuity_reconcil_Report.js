@@ -2,7 +2,7 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
-
+      const moment = options.moment;
       let str = "";
       let input = {};
       let params = options.args.reportParams;
@@ -16,7 +16,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      console.log("INPUT:", input);
+      // console.log("INPUT:", input);
       // if (input.department_id) {
       //   str += ` and EM.department_id= '${input.department_id}'`;
       // }
@@ -52,7 +52,7 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
-          const header = result.length ? result[0] : {};
+          // const header = result.length ? result[0] : {};
 
           const newResult = _.chain(result)
             .groupBy((g) => g.employee_id)
@@ -116,9 +116,12 @@ const executePDF = function executePDFMethod(options) {
           const grand_total_balance_airticket_amount = _.sumBy(newResult, (s) =>
             parseFloat(s.total_airticket_amount)
           );
+
           resolve({
             result: newResult, //result,
-            header,
+            // header,
+            deducting_month: moment.months(parseInt(input.month) - 1),
+            year: input.year,
             grand_total_basic_salary,
             grand_total_opening_leave,
             grand_total_accured_leave,
