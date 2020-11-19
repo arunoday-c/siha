@@ -19,7 +19,7 @@
                         <th>Accured Gratuity</th>
                         <th>Total Gratuity</th>
                     </tr>
-                    </tr> --}}
+                    </tr>
                 </thead>
                 <tbody>
                     {{#each result}}
@@ -29,10 +29,10 @@
                         <td>{{full_name}}</td>
                         <td>{{designation}}</td>
                         <td>{{date_of_joining}}</td>
-                        <td>{{basic_salary}}</td>
-                        <td class="numberFld">{{gratuity_opening_balance}}</td>
-                        <td class="numberFld">{{gratuity_amount}}</td>
-                        <td class="numberFld">{{acc_gratuity}}</td>
+                        <td class="numberFld">{{numberFormating basic_salary ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating gratuity_opening_balance ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating gratuity_amount ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating acc_gratuity ../decimalOnly}}</td>
                     </tr>
                     {{/each }}
    <tr class="numberFld numberFldTotalBottom">
