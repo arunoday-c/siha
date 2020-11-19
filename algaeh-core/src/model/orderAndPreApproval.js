@@ -1238,7 +1238,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-        where.condition,
+          where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2428,11 +2428,11 @@ function deleteOrderServices(options) {
                 printQuery: true,
               })
               .then((delete_result) => {
-                console.log("delete_result")
+                console.log("delete_result");
                 resolve();
               })
               .catch((error) => {
-                console.log("error", error)
+                console.log("error", error);
                 options.next(error);
               });
           })
