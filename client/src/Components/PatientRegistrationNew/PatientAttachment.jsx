@@ -26,21 +26,59 @@ export function PatientAttachments({
   const [loading, setLoading] = useState(true);
 
   const downloadDoc = (doc, isPreview) => {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
+    if (doc.fromPath === true) {
+      setLoading(true);
+      newAlgaehApi({
+        uri: "/getContractDoc",
+        module: "documentManagement",
+        method: "GET",
+        extraHeaders: {
+          Accept: "blon",
+        },
+        others: {
+          responseType: "blob",
+        },
+        data: {
+          contract_no: doc.contract_no,
+          filename: doc.filename,
+          download: true,
+        },
+      })
+        .then((resp) => {
+          const urlBlob = URL.createObjectURL(resp.data);
+          if (isPreview) {
+            window.open(urlBlob);
+          } else {
+            const link = document.createElement("a");
+            link.download = doc.filename;
+            link.href = urlBlob;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
         });
+    } else {
+      const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+      const link = document.createElement("a");
+      if (!isPreview) {
+        link.download = doc.filename;
+        link.href = fileUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        fetch(fileUrl)
+          .then((res) => res.blob())
+          .then((fblob) => {
+            const newUrl = URL.createObjectURL(fblob);
+            window.open(newUrl);
+          });
+      }
     }
   };
 

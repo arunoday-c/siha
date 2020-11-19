@@ -6,17 +6,25 @@ import keys from "algaeh-keys";
 import router from "./routes";
 import translation from "./routes/translation";
 import utils from "./Utils/logging";
+import busboy from "connect-busboy";
 const { logger } = utils;
 const app = exxpress();
 const portNumber = process.env.PORT; //keys.port;
 app.server = http.createServer(app);
 app.use(cors());
+app.use(
+  busboy({
+    highWaterMark: 10 * 1024 * 1024, // 10 MB buffer
+  })
+);
+
 //parse application json
 app.use(
   bodyParser.json({
     limit: keys.bodyLimit,
   })
 );
+
 console.log(process.env.ENABLE_I18N);
 if (process.env.ENABLE_I18N) {
   const pathUI = `${process.cwd()}/translation-ui/public`;

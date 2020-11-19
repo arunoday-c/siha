@@ -514,6 +514,45 @@ function addChronic(data) {
   });
 }
 
+//created by sidhiqe: to add Medication to favourite
+function addFavMedcine(data) {
+  debugger;
+  return new Promise((resolve, reject) => {
+    const insurtColumn = ["item_id"];
+    const { req, input, next, _mysql } = data;
+    try {
+      if (input.isFavMedicationsItems.length > 0) {
+        _mysql
+          .executeQueryWithTransaction({
+            query: "INSERT INTO hims_f_favourite_icd_med(??) VALUES ?",
+            values: input.isFavMedicationsItems,
+            includeValues: insurtColumn,
+            printQuery: true,
+            bulkInsertOrUpdate: true,
+            extraValues: {
+              fav_category: "M",
+              created_date: new Date(),
+              added_provider_id: req.userIdentity.algaeh_d_app_user_id,
+              updated_date: new Date(),
+              updated_provider_id: req.userIdentity.algaeh_d_app_user_id,
+              // hospital_id: req.userIdentity.hospital_id,
+            },
+          })
+
+          .then(() => {
+            resolve({});
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      } else {
+        resolve();
+      }
+    } catch (e) {
+      next(e);
+    }
+  });
+}
 let addPatientPrescription = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
@@ -582,119 +621,128 @@ let addPatientPrescription = (req, res, next) => {
               next: next,
               _mysql: _mysql,
             }).then(() => {
-              let services = [];
-              input.medicationitems.forEach((item) => {
-                services.push(item.service_id);
-              });
-
-              if (services.length > 0) {
-                _mysql
-                  .executeQuery({
-                    query:
-                      "SELECT hims_f_prescription_detail_id, service_id from hims_f_prescription P, hims_f_prescription_detail PD\
-                    where P.hims_f_prescription_id = PD.prescription_id and P.`patient_id`=? and \
-                    P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and hospital_id=? and `service_id` in (?)",
-                    values: [
-                      input.patient_id,
-                      input.provider_id,
-                      input.encounter_id,
-                      input.episode_id,
-                      req.userIdentity.hospital_id,
-                      services,
-                    ],
-
-                    printQuery: true,
-                  })
-                  .then((detail_res) => {
-                    let insertArr = [];
-
-                    detail_res.forEach((recd) => {
-                      let pre_aprov = input.medicationitems
-                        .filter((f) => {
-                          return (
-                            f.pre_approval == "Y" &&
-                            f.service_id == recd.service_id
-                          );
-                        })
-                        .map((m) => {
-                          return {
-                            ...m,
-                            prescription_detail_id:
-                              recd["hims_f_prescription_detail_id"],
-                          };
-                        });
-
-                      insertArr.push(...pre_aprov);
-                    });
-
-                    if (insertArr.length > 0) {
-                      const insurtColumn = [
-                        "prescription_detail_id",
-                        "item_id",
-                        "service_id",
-                        "requested_quantity",
-                        "approved_qty",
-                        "insurance_service_name",
-                        "doctor_id",
-                        "gross_amt",
-                        "net_amount",
-                      ];
-
-                      _mysql
-                        .executeQueryWithTransaction({
-                          query:
-                            "INSERT INTO hims_f_medication_approval(??) VALUES ?",
-                          values: insertArr,
-                          includeValues: insurtColumn,
-                          printQuery: false,
-                          bulkInsertOrUpdate: true,
-                          extraValues: {
-                            insurance_provider_id: input.insurance_provider_id,
-                            sub_insurance_id: input.sub_insurance_id,
-                            network_id: input.network_id,
-                            insurance_network_office_id:
-                              input.insurance_network_office_id,
-                            patient_id: input.patient_id,
-                            visit_id: input.visit_id,
-                            created_date: new Date(),
-                            created_by: req.userIdentity.algaeh_d_app_user_id,
-                            updated_date: new Date(),
-                            updated_by: req.userIdentity.algaeh_d_app_user_id,
-                            hospital_id: req.userIdentity.hospital_id,
-                          },
-                        })
-                        .then((med) => {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = med;
-                            next();
-                          });
-                        })
-                        .catch((error) => {
-                          _mysql.rollBackTransaction(() => {
-                            next(error);
-                          });
-                        });
-                    } else {
-                      _mysql.commitTransaction(() => {
-                        _mysql.releaseConnection();
-                        req.records = resultDet;
-                        next();
-                      });
-                    }
-                  })
-                  .catch((error) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
-                  });
-              } else {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = resultDet;
-                  next();
+              debugger;
+              addFavMedcine({
+                req: req,
+                input: input,
+                next: next,
+                _mysql: _mysql,
+              }).then(() => {
+                let services = [];
+                input.medicationitems.forEach((item) => {
+                  services.push(item.service_id);
                 });
-              }
+
+                if (services.length > 0) {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "SELECT hims_f_prescription_detail_id, service_id from hims_f_prescription P, hims_f_prescription_detail PD\
+                  where P.hims_f_prescription_id = PD.prescription_id and P.`patient_id`=? and \
+                  P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and hospital_id=? and `service_id` in (?)",
+                      values: [
+                        input.patient_id,
+                        input.provider_id,
+                        input.encounter_id,
+                        input.episode_id,
+                        req.userIdentity.hospital_id,
+                        services,
+                      ],
+
+                      printQuery: true,
+                    })
+                    .then((detail_res) => {
+                      let insertArr = [];
+
+                      detail_res.forEach((recd) => {
+                        let pre_aprov = input.medicationitems
+                          .filter((f) => {
+                            return (
+                              f.pre_approval == "Y" &&
+                              f.service_id == recd.service_id
+                            );
+                          })
+                          .map((m) => {
+                            return {
+                              ...m,
+                              prescription_detail_id:
+                                recd["hims_f_prescription_detail_id"],
+                            };
+                          });
+
+                        insertArr.push(...pre_aprov);
+                      });
+
+                      if (insertArr.length > 0) {
+                        const insurtColumn = [
+                          "prescription_detail_id",
+                          "item_id",
+                          "service_id",
+                          "requested_quantity",
+                          "approved_qty",
+                          "insurance_service_name",
+                          "doctor_id",
+                          "gross_amt",
+                          "net_amount",
+                        ];
+
+                        _mysql
+                          .executeQueryWithTransaction({
+                            query:
+                              "INSERT INTO hims_f_medication_approval(??) VALUES ?",
+                            values: insertArr,
+                            includeValues: insurtColumn,
+                            printQuery: false,
+                            bulkInsertOrUpdate: true,
+                            extraValues: {
+                              insurance_provider_id:
+                                input.insurance_provider_id,
+                              sub_insurance_id: input.sub_insurance_id,
+                              network_id: input.network_id,
+                              insurance_network_office_id:
+                                input.insurance_network_office_id,
+                              patient_id: input.patient_id,
+                              visit_id: input.visit_id,
+                              created_date: new Date(),
+                              created_by: req.userIdentity.algaeh_d_app_user_id,
+                              updated_date: new Date(),
+                              updated_by: req.userIdentity.algaeh_d_app_user_id,
+                              hospital_id: req.userIdentity.hospital_id,
+                            },
+                          })
+                          .then((med) => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = med;
+                              next();
+                            });
+                          })
+                          .catch((error) => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+                      } else {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = resultDet;
+                          next();
+                        });
+                      }
+                    })
+                    .catch((error) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = resultDet;
+                    next();
+                  });
+                }
+              });
             });
           })
           .catch((error) => {

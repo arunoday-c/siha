@@ -3,7 +3,6 @@ import swal from "sweetalert2";
 import moment from "moment";
 
 const showconfirmDialog = ($this, row) => {
-  debugger
   swal({
     title: "Are you sure you want to delete this Network Plan?",
     type: "warning",
@@ -48,26 +47,14 @@ const showconfirmDialog = ($this, row) => {
                 });
               },
             });
-            // $this.props.getNetworkPlans({
-            //   uri: "/insurance/getNetworkAndNetworkOfficRecords",
-            //   method: "GET",
-            //   printInput: true,
-            //   data: {
-            //     insuranceProviderId: $this.state.insurance_provider_id
-            //   },
-            //   redux: {
-            //     type: "NETWORK_PLAN_GET_DATA",
-            //     mappingName: "networkandplans"
-            //   },
-            //   afterSuccess: data => {
-            //     $this.setState({
-            //       network_plan: data
-            //     });
-            //   }
-            // });
             swalMessage({
               type: "success",
               title: "Record deleted successfully . .",
+            });
+          } else {
+            swalMessage({
+              title: response.data.records.message,
+              type: "error",
             });
           }
         },
@@ -83,7 +70,6 @@ const showconfirmDialog = ($this, row) => {
 };
 
 const deleteNetWorkPlan = ($this, row) => {
-  debugger
   showconfirmDialog($this, row);
 };
 

@@ -119,6 +119,11 @@ class LeaveSalaryProcess extends Component {
   }
 
   generateLeaveSalarySlip() {
+    debugger;
+    let salary_header_id = this.state.leave_salary_detail.map((o) => {
+      return o.salary_header_id;
+    });
+
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -183,6 +188,10 @@ class LeaveSalaryProcess extends Component {
             {
               name: "total_amount",
               value: this.state.total_amount,
+            },
+            {
+              name: "salary_header_id",
+              value: salary_header_id,
             },
           ],
           outputFileType: "PDF",

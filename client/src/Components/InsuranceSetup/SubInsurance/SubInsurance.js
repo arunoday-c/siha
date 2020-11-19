@@ -47,6 +47,7 @@ class SubInsurance extends PureComponent {
       insurance_provider_id: null,
       transaction_number: null,
       card_format: null,
+      ins_template_name: null,
       effective_start_date: null,
       effective_end_date: null,
       maxDate_end_date: null,
@@ -263,6 +264,26 @@ class SubInsurance extends PureComponent {
                           },
                         }}
                       />
+
+                      <AlagehFormGroup
+                        div={{ className: "col  form-group" }}
+                        label={{
+                          forceLabel: "Template Name",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          value: this.state.ins_template_name,
+                          className: "txt-fld",
+                          name: "ins_template_name",
+
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            "data-subdata": true,
+                          },
+                        }}
+                      />
                       {/* <AlagehFormGroup
                         div={{ className: "col  form-group" }}
                         textBox={{
@@ -435,6 +456,34 @@ class SubInsurance extends PureComponent {
                                   value: row.card_format,
                                   className: "txt-fld",
                                   name: "card_format",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    ),
+                                  },
+                                }}
+                              />
+                            );
+                          },
+                        },
+
+                        {
+                          fieldName: "ins_template_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Template Name" }}
+                            />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.ins_template_name,
+                                  className: "txt-fld",
+                                  name: "ins_template_name",
                                   events: {
                                     onChange: onchangegridcol.bind(
                                       this,

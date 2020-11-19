@@ -286,6 +286,7 @@ export default {
         "arabic_sub_name",
         "insurance_provider_id",
         "card_format",
+        "ins_template_name",
         "transaction_number",
         "effective_start_date",
         "effective_end_date",
@@ -362,6 +363,7 @@ export default {
                   "arabic_sub_name",
                   "insurance_provider_id",
                   "card_format",
+                  "ins_template_name",
                   "transaction_number",
                   "effective_start_date",
                   "effective_end_date",
@@ -409,6 +411,7 @@ export default {
               "arabic_sub_name",
               "insurance_provider_id",
               "card_format",
+              "ins_template_name",
               "transaction_number",
               "effective_start_date",
               "effective_end_date",
@@ -460,7 +463,7 @@ export default {
         .executeQuery({
           query:
             "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,\
-            `arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,\
+            `arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,`ins_template_name`=?,\
             `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=?,\
            head_id=?,child_id=?\
              WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
@@ -470,6 +473,7 @@ export default {
             inputparam.arabic_sub_name,
             inputparam.insurance_provider_id,
             inputparam.card_format,
+            inputparam.ins_template_name,
             inputparam.transaction_number,
             inputparam.effective_start_date,
             inputparam.effective_end_date,
@@ -1321,7 +1325,7 @@ export default {
         strQuery += mysql.format(
           "UPDATE `hims_d_services_insurance` SET `pre_approval`=?,`updated_by`=?, `updated_date`=? \
           WHERE `record_status`='A' and `insurance_id`=?" +
-            parameters,
+          parameters,
           [
             inputParam.pre_approval,
             inputParam.updated_by,
@@ -1333,7 +1337,7 @@ export default {
         strQuery += mysql.format(
           "UPDATE `hims_d_services_insurance` SET `covered`=?,`updated_by`=?, `updated_date`=? \
           WHERE `record_status`='A' and `insurance_id`=?" +
-            parameters,
+          parameters,
           [
             inputParam.covered,
             inputParam.updated_by,
@@ -1347,7 +1351,7 @@ export default {
             "UPDATE `hims_d_services_insurance` SET `corporate_discount_percent`=?,\
             `corporate_discount_amt`=(gross_amt*?)/100, `net_amount`=(gross_amt-(gross_amt*?)/100),\
             `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?" +
-              parameters,
+            parameters,
             [
               inputParam.corporate_discount,
               inputParam.corporate_discount,
@@ -1362,7 +1366,7 @@ export default {
             "UPDATE `hims_d_services_insurance` SET `corporate_discount_amt`=?, \
             `corporate_discount_percent`=(?/gross_amt)*100,`net_amount`=gross_amt-?, \
             `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?" +
-              parameters,
+            parameters,
             [
               inputParam.corporate_discount,
               inputParam.corporate_discount,
@@ -1400,24 +1404,47 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "UPDATE hims_d_insurance_network_office SET  record_status='I', \
-          updated_by=?,updated_date=? WHERE hims_d_insurance_network_office_id=?",
-          values: [
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            req.body.hims_d_insurance_network_office_id,
-          ],
+            "select hims_f_patient_insurance_mapping_id from hims_m_patient_insurance_mapping where primary_network_id=?;",
+          values: [req.body.hims_d_insurance_network_id],
           printQuery: false,
         })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+        .then((ins_policy_result) => {
+          if (ins_policy_result.length > 0) {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_data: true,
+              message: "Selected Policy is already is used, Cannot Delete.",
+            };
+            next();
+            return
+          }
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE hims_d_insurance_network_office SET  record_status='I', \
+            updated_by=?,updated_date=? WHERE hims_d_insurance_network_office_id=?",
+              values: [
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.body.hims_d_insurance_network_office_id,
+              ],
+              printQuery: false,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              next(error);
+            });
         })
         .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
+
     } catch (e) {
       next(e);
     }
@@ -1478,13 +1505,13 @@ export default {
           let sqlQry;
           if (product_type.length == 1) {
             sqlQry = `SELECT hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-            card_format,transaction_number,effective_start_date,effective_end_date  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,I.head_id
+            card_format,ins_template_name,transaction_number,effective_start_date,effective_end_date  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,I.head_id
                         from hims_d_insurance_sub  I      
                         left join finance_account_child C on I.child_id=C.finance_account_child_id 
                         where record_status='A'${_stringData}; `;
           } else {
             sqlQry = ` select hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
-            card_format,transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
+            card_format,ins_template_name,transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
           }
 
           _mysql
@@ -2050,12 +2077,12 @@ export function updateInsuranceStatement(req, res, next) {
               .executeQuery({
                 query: `update hims_f_invoice_header set remittance_amount${
                   level == 1 ? "" : level
-                }=${rest["ramt"]}, claim_status=?,
+                  }=${rest["ramt"]}, claim_status=?,
                   denial_amount${level == 1 ? "" : level}=${
                   rest["damt"]
-                },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
+                  },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
                   rest["damt"]
-                } where hims_f_invoice_header_id=?`,
+                  } where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {

@@ -7,6 +7,7 @@ let contractSchema = new Schema({
   filename: String,
   filetype: String,
   updatedDate: Date,
+  fromPath: { type: Boolean, default: false },
 });
 
 const contractModel = mongoose.model("algaeh_hims_contracts", contractSchema);

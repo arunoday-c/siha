@@ -9,7 +9,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import { BillSearch } from "./PatientVisitDetailsEvent";
 import moment from "moment";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 class PatientVisitDetails extends Component {
   constructor(props) {
     super(props);
@@ -63,14 +63,14 @@ class PatientVisitDetails extends Component {
   }
 
   render() {
-    let provider_name = null;
+    // let provider_name = null;
 
-    if (this.state.doctor_id !== null) {
-      provider_name = Enumerable.from(this.props.opcacelproviders)
-        .where((w) => w.hims_d_employee_id === this.state.doctor_id)
-        .select((s) => s.full_name)
-        .firstOrDefault();
-    }
+    // if (this.state.doctor_id !== null) {
+    //   provider_name = Enumerable.from(this.props.opcacelproviders)
+    //     .where((w) => w.hims_d_employee_id === this.state.doctor_id)
+    //     .select((s) => s.full_name)
+    //     .firstOrDefault();
+    // }
 
     return (
       <React.Fragment>
@@ -84,15 +84,15 @@ class PatientVisitDetails extends Component {
                 {/* Patient code */}
 
                 <div
-                  className="col-3 globalSearchCntr"
+                  className="col-2 globalSearchCntr"
                   style={{
                     cursor: "pointer",
                     pointerEvents:
                       this.state.Billexists === true
                         ? "none"
                         : this.state.patient_code
-                          ? "none"
-                          : "",
+                        ? "none"
+                        : "",
                   }}
                 >
                   <AlgaehLabel label={{ fieldName: "bill_number" }} />
@@ -100,13 +100,13 @@ class PatientVisitDetails extends Component {
                     {this.state.bill_number ? (
                       this.state.bill_number
                     ) : (
-                        <AlgaehLabel label={{ fieldName: "bill_number" }} />
-                      )}
+                      <AlgaehLabel label={{ fieldName: "bill_number" }} />
+                    )}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
 
-                <div className="col-lg-9">
+                <div className="col-lg-10">
                   <div className="row">
                     <div className="col">
                       <AlgaehLabel label={{ fieldName: "bill_date" }} />
@@ -125,13 +125,13 @@ class PatientVisitDetails extends Component {
                           : "--------"}
                       </h6>
                     </div>
-
+                    {/* 
                     <div className="col">
                       <AlgaehLabel
                         label={{ fieldName: "incharge_or_provider" }}
                       />
                       <h6>{provider_name ? provider_name : "--------"}</h6>
-                    </div>
+                    </div> */}
 
                     <div className="col">
                       <AlgaehLabel label={{ fieldName: "patient_code" }} />
@@ -142,7 +142,7 @@ class PatientVisitDetails extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-3">
                       <AlgaehLabel
                         label={{
                           fieldName: "full_name",

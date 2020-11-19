@@ -49,7 +49,7 @@ class OPBillCancellation extends Component {
       cheque_amount: 0,
       advance: 0,
       cancel_remarks: null,
-      cancel_checkin: "N"
+      cancel_checkin: "N",
     };
   }
 
@@ -98,18 +98,14 @@ class OPBillCancellation extends Component {
       getCtrlCode(this, queryParams.get("bill_cancel_number"));
     }
 
-
-
-    RawSecurityComponent({ componentCode: "OP_CAL_CON" }).then(
-      (result) => {
-        debugger
-        if (result === "show") {
-          getCashiersAndShiftMAP(this, "Y");
-        } else {
-          getCashiersAndShiftMAP(this, "N");
-        }
+    RawSecurityComponent({ componentCode: "OP_CAL_CON" }).then((result) => {
+      debugger;
+      if (result === "show") {
+        getCashiersAndShiftMAP(this, "Y");
+      } else {
+        getCashiersAndShiftMAP(this, "N");
       }
-    );
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -286,33 +282,32 @@ class OPBillCancellation extends Component {
                 </h6>
               </div>
 
-              {this.state.bill_cancel_number !== null ?
+              {this.state.bill_cancel_number !== null ? (
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Created By",
+                      forceLabel: "Cancelled By",
                     }}
                   />
                   <h6>{this.state.created_name}</h6>
-
                 </div>
-                : null}
+              ) : null}
             </div>
           }
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}

@@ -14,7 +14,7 @@ const { whereCondition, releaseDBConnection, jsonArrayToObject } = utils;
 let getPatientInsurance = (req, res, next) => {
   let patientInsuranceModel = {
     patient_id: null,
-    patient_visit_id: null
+    patient_visit_id: null,
   };
 
   debugFunction("getPatientInsurance");
@@ -68,7 +68,7 @@ let getPatientInsurance = (req, res, next) => {
             patientInsuranceModel.patient_id,
             patientInsuranceModel.patient_visit_id,
             patientInsuranceModel.patient_id,
-            patientInsuranceModel.patient_visit_id
+            patientInsuranceModel.patient_visit_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -156,7 +156,7 @@ let addPatientInsuranceData = (req, res, next) => {
         secondary_policy_num: null,
         created_by: req.userIdentity.algaeh_d_app_user_id,
 
-        updated_by: req.userIdentity.algaeh_d_app_user_id
+        updated_by: req.userIdentity.algaeh_d_app_user_id,
       },
       req.body
     );
@@ -202,7 +202,7 @@ let addPatientInsuranceData = (req, res, next) => {
         input.created_by,
         new Date(),
         input.updated_by,
-        new Date()
+        new Date(),
       ],
       (error, resdata) => {
         debugLog("Result: ", resdata);
@@ -257,7 +257,7 @@ let addPatientInsurance = (connection, req, res, next) => {
     secondary_policy_num: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
 
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
   debugFunction("addPatientInsurence");
   try {
@@ -297,7 +297,7 @@ let addPatientInsurance = (connection, req, res, next) => {
         input.created_by,
         new Date(),
         input.updated_by,
-        new Date()
+        new Date(),
       ],
       (error, resdata) => {
         releaseDBConnection(db, connection);
@@ -316,7 +316,7 @@ let addPatientInsurance = (connection, req, res, next) => {
 //created by:irfan,to get list of all insurence providers
 let getListOfInsuranceProvider = (req, res, next) => {
   let insuranceWhereCondition = {
-    hims_d_insurance_provider_id: "ALL"
+    hims_d_insurance_provider_id: "ALL",
   };
 
   debugFunction("getListOfInsurenceProvider");
@@ -358,7 +358,7 @@ let getListOfInsuranceProvider = (req, res, next) => {
 //created by:nowshad,to get list of all sub insurence
 let getSubInsurance = (req, res, next) => {
   let insuranceWhereCondition = {
-    insurance_sub_code: "ALL"
+    insurance_sub_code: "ALL",
   };
 
   debugFunction("getSubInsurance");
@@ -423,7 +423,7 @@ let addInsuranceProvider = (req, res, next) => {
     effective_start_date: null,
     effective_end_date: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   try {
@@ -471,7 +471,7 @@ let addInsuranceProvider = (req, res, next) => {
           inputparam.ins_rej_per,
           inputparam.effective_start_date,
           inputparam.effective_end_date,
-          inputparam.created_by
+          inputparam.created_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -514,7 +514,7 @@ let updateInsuranceProvider = (req, res, next) => {
     ins_rej_per: null,
     effective_start_date: null,
     effective_end_date: null,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   try {
@@ -562,7 +562,7 @@ let updateInsuranceProvider = (req, res, next) => {
           inputparam.effective_start_date,
           inputparam.effective_end_date,
           inputparam.updated_by,
-          inputparam.hims_d_insurance_provider_id
+          inputparam.hims_d_insurance_provider_id,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -602,10 +602,11 @@ let addSubInsuranceProvider = (req, res, next) => {
         "arabic_sub_name",
         "insurance_provider_id",
         "card_format",
+        "ins_template_name",
         "transaction_number",
         "effective_start_date",
         "effective_end_date",
-        "created_by"
+        "created_by",
       ];
 
       debugLog("Test: ", req.body);
@@ -618,8 +619,8 @@ let addSubInsuranceProvider = (req, res, next) => {
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
             newFieldToInsert: [new Date()],
-            req: req
-          })
+            req: req,
+          }),
         ],
         (error, result) => {
           if (error) {
@@ -654,7 +655,7 @@ let updateSubInsuranceProvider = (req, res, next) => {
       }
 
       connection.query(
-        "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,`arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,\
+        "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,`arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,`ins_template_name`=?,\
         `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=? WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
         [
           inputparam.insurance_sub_code,
@@ -662,11 +663,12 @@ let updateSubInsuranceProvider = (req, res, next) => {
           inputparam.arabic_sub_name,
           inputparam.insurance_provider_id,
           inputparam.card_format,
+          inputparam.ins_template_name,
           inputparam.transaction_number,
           inputparam.effective_start_date,
           inputparam.effective_end_date,
           inputparam.updated_by,
-          inputparam.hims_d_insurance_sub_id
+          inputparam.hims_d_insurance_sub_id,
         ],
         (error, result) => {
           if (error) {
@@ -696,7 +698,7 @@ let addNetwork = (req, res, next) => {
 
     created_by: req.userIdentity.algaeh_d_app_user_id,
 
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   try {
@@ -727,7 +729,7 @@ let addNetwork = (req, res, next) => {
           inputparam.created_by,
           new Date(),
           inputparam.updated_by,
-          inputparam.record_status
+          inputparam.record_status,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -805,7 +807,7 @@ let NetworkOfficeMaster = (req, res, next) => {
     diagnostic_min: null,
     diagnostic_max: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   try {
@@ -889,7 +891,7 @@ let NetworkOfficeMaster = (req, res, next) => {
           new Date(),
           inputparam.created_by,
           new Date(),
-          inputparam.updated_by
+          inputparam.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -919,7 +921,7 @@ let addPlanAndPolicy = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1001,7 +1003,7 @@ let addPlanAndPolicy = (req, res, next) => {
               optical_max: null,
               copay_diagnostic: null,
               diagnostic_min: null,
-              diagnostic_max: null
+              diagnostic_max: null,
             },
             jsonArr[i]
           );
@@ -1020,7 +1022,7 @@ let addPlanAndPolicy = (req, res, next) => {
               moment(String(obj.effective_start_date)).format("YYYY-MM-DD"),
               moment(String(obj.effective_end_date)).format("YYYY-MM-DD"),
               obj.created_by,
-              obj.created_by
+              obj.created_by,
             ],
             (error, result) => {
               if (error) {
@@ -1221,7 +1223,7 @@ let addPlanAndPolicy = (req, res, next) => {
                       });
                     }
 
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -1281,7 +1283,7 @@ let deleteSubInsurance = (req, res, next) => {
 let getPriceList = (req, res, next) => {
   let priselistWhereCondition = {
     insurance_id: "ALL",
-    services_id: "ALL"
+    services_id: "ALL",
   };
 
   debugFunction("getPriceList");
@@ -1344,14 +1346,14 @@ let getPolicyPriceList = (req, res, next) => {
         corporate_discount_amt,net_amount from hims_d_services_insurance_network where record_status='A' " +
           _stringData,
         values: inputValues,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1404,15 +1406,15 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
         and net.record_status='A' and netoff.record_status='A' " +
           _stringData,
         values: inputValues,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         // utilities.logger().log("result: ", result);
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1470,7 +1472,7 @@ let updatePriceList = (req, res, next) => {
     net_amount: null,
     pre_approval: null,
     covered: null,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   if (req.db == null) {
@@ -1497,7 +1499,7 @@ let updatePriceList = (req, res, next) => {
         inputParam.covered,
         inputParam.updated_by,
         new Date(),
-        inputParam.hims_d_services_insurance_id
+        inputParam.hims_d_services_insurance_id,
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -1583,7 +1585,7 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
     copay_diagnostic: null,
     diagnostic_min: null,
     diagnostic_max: null,
-    arabic_network_type: null
+    arabic_network_type: null,
   };
 
   try {
@@ -1598,7 +1600,7 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
         next(error);
       }
 
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1620,7 +1622,7 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
             inputparam.effective_end_date,
             new Date(),
             inputparam.updated_by,
-            inputparam.hims_d_insurance_network_id
+            inputparam.hims_d_insurance_network_id,
           ],
           (error, result) => {
             if (error) {
@@ -1700,7 +1702,7 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
                   inputparam.diagnostic_max,
                   new Date(),
                   inputparam.updated_by,
-                  inputparam.hims_d_insurance_network_office_id
+                  inputparam.hims_d_insurance_network_office_id,
                 ],
                 (error, results) => {
                   if (error) {
@@ -1710,7 +1712,7 @@ let updateNetworkAndNetworkOffice = (req, res, next) => {
                     });
                   }
 
-                  connection.commit(error => {
+                  connection.commit((error) => {
                     releaseDBConnection(db, connection);
                     if (error) {
                       connection.rollback(() => {
@@ -1743,7 +1745,7 @@ let updatePriceListBulk = (req, res, next) => {
     pre_approval: null,
     covered: null,
     updated_by: req.userIdentity.algaeh_d_app_user_id,
-    record_status: null
+    record_status: null,
   };
 
   if (req.db == null) {
@@ -1762,7 +1764,7 @@ let updatePriceListBulk = (req, res, next) => {
       inputParam.pre_approval,
       inputParam.updated_by,
       new Date(),
-      inputParam.insurance_id
+      inputParam.insurance_id,
     ];
   } else if (inputParam.update === "covered") {
     strQuery =
@@ -1773,7 +1775,7 @@ let updatePriceListBulk = (req, res, next) => {
       inputParam.covered,
       inputParam.updated_by,
       new Date(),
-      inputParam.insurance_id
+      inputParam.insurance_id,
     ];
   } else if (inputParam.update === "corporate_discount") {
     if (inputParam.discountType === "P") {
@@ -1788,7 +1790,7 @@ let updatePriceListBulk = (req, res, next) => {
         inputParam.corporate_discount,
         inputParam.updated_by,
         new Date(),
-        inputParam.insurance_id
+        inputParam.insurance_id,
       ];
     } else if (inputParam.discountType === "A") {
       strQuery =
@@ -1802,7 +1804,7 @@ let updatePriceListBulk = (req, res, next) => {
         inputParam.corporate_discount,
         inputParam.updated_by,
         new Date(),
-        inputParam.insurance_id
+        inputParam.insurance_id,
       ];
     }
   }
@@ -1841,7 +1843,7 @@ let deleteNetworkAndNetworkOfficRecords = (req, res, next) => {
         [
           req.body.updated_by,
           new Date(),
-          req.body.hims_d_insurance_network_office_id
+          req.body.hims_d_insurance_network_office_id,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1860,7 +1862,7 @@ let deleteNetworkAndNetworkOfficRecords = (req, res, next) => {
 
 let getInsuranceProviders = (req, res, next) => {
   let selectWhere = {
-    hims_d_insurance_provider_id: null
+    hims_d_insurance_provider_id: null,
   };
   try {
     if (req.db == null) {
@@ -1898,7 +1900,7 @@ let getInsuranceProviders = (req, res, next) => {
 
 let getSubInsuraces = (req, res, next) => {
   let selectWhere = {
-    insurance_provider_id: null
+    insurance_provider_id: null,
   };
   try {
     if (req.db == null) {
@@ -1956,6 +1958,6 @@ export default {
   addPatientInsuranceData,
   deleteNetworkAndNetworkOfficRecords,
   getInsuranceProviders,
-  getSubInsuraces
+  getSubInsuraces,
   // getPreAprovalList
 };

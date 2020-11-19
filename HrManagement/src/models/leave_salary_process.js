@@ -150,19 +150,19 @@ export default {
                       if (intValue > 0) {
                         fromDate_firstDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_st_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
 
                         fromDate_lastDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_end_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         )
                           .add(1, "M")
@@ -170,10 +170,10 @@ export default {
                       } else {
                         fromDate_firstDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_st_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         )
                           .add(-1, "M")
@@ -181,10 +181,10 @@ export default {
 
                         fromDate_lastDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_end_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
                       }
@@ -200,19 +200,19 @@ export default {
 
                         fromDate_firstDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_st_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
 
                         fromDate_lastDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_end_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         )
                           .add(1, "M")
@@ -220,10 +220,10 @@ export default {
                       } else {
                         fromDate_firstDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_st_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         )
                           .add(-1, "M")
@@ -231,10 +231,10 @@ export default {
 
                         fromDate_lastDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_end_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
                       }
@@ -462,9 +462,9 @@ export default {
                   date_month = selected_month;
                   req.query.yearAndMonth = moment(
                     selected_year +
-                      "-" +
-                      selected_month +
-                      hrms_options[0].at_st_date,
+                    "-" +
+                    selected_month +
+                    hrms_options[0].at_st_date,
                     "YYYY-MM-DD"
                   )._d;
                 } else {
@@ -537,10 +537,10 @@ export default {
 
                   fromDate_lastDate = moment(
                     _selected_year +
-                      "-" +
-                      _selected_month +
-                      "-" +
-                      hrms_options[0].at_end_date
+                    "-" +
+                    _selected_month +
+                    "-" +
+                    hrms_options[0].at_end_date
                   ).format("YYYY-MM-DD");
                 } else {
                   fromDate_lastDate = moment(start_date)
@@ -657,7 +657,7 @@ export default {
       const decimal_places = req.userIdentity.decimal_places;
       // const utilities = new algaehUtilities();
 
-      // utilities.logger().log("InsertLeaveSalary: ");
+      console.log("InsertLeaveSalary: ");
 
       _mysql
         .generateRunningNumber({
@@ -765,7 +765,7 @@ export default {
                         const sal_end_date =
                           inputParam.leave_salary_detail[i].end_date; //moment(inputParam.leave_salary_detail[i].end_date, "YYYYMMDD").format("YYYYMMDD");
 
-                        //console.log("leave_end_date", leave_end_date)
+                        // console.log("inputParam.leave_salary_detail", inputParam.leave_salary_detail)
                         // console.log("sal_end_date", sal_end_date)
                         if (
                           parseInt(leave_end_date) >= parseInt(sal_end_date)
@@ -931,9 +931,7 @@ export default {
                                       })
                                         .then((Employee_Leave_Salary) => {
                                           InsertGratuityProvision({
-                                            salary_end_date:
-                                              inputParam.leave_salary_detail[i]
-                                                .end_date,
+                                            leave_salary_detail: inputParam.leave_salary_detail[i],
                                             inputParam: inputParam,
                                             _mysql: _mysql,
                                             next: next,
@@ -947,7 +945,7 @@ export default {
                                                 i ==
                                                 inputParam.leave_salary_detail
                                                   .length -
-                                                  1
+                                                1
                                               ) {
                                                 // console.log("bulk_year", bulk_year)
 
@@ -1083,7 +1081,7 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select SL.hims_f_salary_id,LSD.year,LSD.month,LSD.start_date,LSD.end_date,LSD.leave_start_date,LSD.leave_end_date,LSD.leave_category,\
+                  "select SL.hims_f_salary_id, hims_f_salary_id as salary_header_id,LSD.year,LSD.month,LSD.start_date,LSD.end_date,LSD.leave_start_date,LSD.leave_end_date,LSD.leave_category,\
                 LSD.leave_period,LSD.gross_amount, LSD.net_amount,SL.salary_number as salary_no,SL.salary_date from \
                 hims_f_leave_salary_detail LSD, hims_f_salary SL where  LSD.salary_header_id=SL.hims_f_salary_id\
                 and  leave_salary_header_id= ?;",
@@ -1290,11 +1288,11 @@ export default {
                           inputParam.leave_salary_number,
                           inputParam.ScreenCode,
                           "Salary for Employee " +
-                            inputParam.employee_code +
-                            "/" +
-                            inputParam.employee_name +
-                            " Amount " +
-                            inputParam.salary_amount,
+                          inputParam.employee_code +
+                          "/" +
+                          inputParam.employee_name +
+                          " Amount " +
+                          inputParam.salary_amount,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                         ],
@@ -1821,12 +1819,18 @@ function InsertEmployeeLeaveSalary(options) {
 function InsertGratuityProvision(options) {
   return new Promise((resolve, reject) => {
     try {
+      // console.log("options.leave_salary_detail", options.leave_salary_detail.end_date)
       let _mysql = options._mysql;
       const inputParam = options.inputParam;
-      const salary_end_date = options.salary_end_date;
+      const salary_end_date = options.leave_salary_detail.end_date;
       const decimal_places = options.decimal_places;
 
+      // console.log("InsertGratuityProvision", salary_end_date)
+      const gra_month = options.leave_salary_detail.month
+      const gra_year = options.leave_salary_detail.year
+
       const utilities = new algaehUtilities();
+
 
       _mysql
         .executeQuery({
@@ -1842,6 +1846,7 @@ function InsertGratuityProvision(options) {
         .then((result) => {
           const _employee = result[0];
           const _options = result[1];
+          // console.log("_employee", _employee)
 
           if (_employee.length == 0) {
             resolve();
@@ -1863,43 +1868,43 @@ function InsertGratuityProvision(options) {
                     if (
                       _employee[k].endOfServiceYears >= 0 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range1
+                      _optionsDetals.from_service_range1
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days1;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                        _optionsDetals.from_service_range1 &&
+                      _optionsDetals.from_service_range1 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range2
+                      _optionsDetals.from_service_range2
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days2;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                        _optionsDetals.from_service_range2 &&
+                      _optionsDetals.from_service_range2 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range3
+                      _optionsDetals.from_service_range3
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days3;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                        _optionsDetals.from_service_range3 &&
+                      _optionsDetals.from_service_range3 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range4
+                      _optionsDetals.from_service_range4
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days4;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                        _optionsDetals.from_service_range4 &&
+                      _optionsDetals.from_service_range4 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range5
+                      _optionsDetals.from_service_range5
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
@@ -2089,8 +2094,8 @@ function InsertGratuityProvision(options) {
                       ON DUPLICATE KEY UPDATE `gratuity_amount`=?,`acc_gratuity`=?;",
                         [
                           _employee[k].hims_d_employee_id,
-                          inputParam.year,
-                          inputParam.month,
+                          gra_year,
+                          gra_month,
                           gratuity_amount,
                           _computatedAmoutSum,
                           gratuity_amount,

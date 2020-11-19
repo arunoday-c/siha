@@ -205,10 +205,18 @@ export default () => {
     deleteNetworkAndNetworkOfficRecords,
     (req, res, next) => {
       let result = req.records;
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: result,
-      });
+
+      if (result.invalid_data == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: result,
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: result,
+        });
+      }
       next();
     }
   );

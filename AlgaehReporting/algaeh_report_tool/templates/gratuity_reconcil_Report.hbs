@@ -1,0 +1,49 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <h3>Reconciliation Report For: {{header.deducting_month}}-{{header.year}}</h3>
+                <thead>
+
+                      <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Designation</th>
+                        <th>Date of Joining</th>
+                        <th>Basic Salary</th>
+                        <th>Opening Gratuity</th>
+                        <th>Accured Gratuity</th>
+                        <th>Total Gratuity</th>
+                    </tr>
+                    </tr> --}}
+                </thead>
+                <tbody>
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{designation}}</td>
+                        <td>{{date_of_joining}}</td>
+                        <td>{{basic_salary}}</td>
+                        <td class="numberFld">{{gratuity_opening_balance}}</td>
+                        <td class="numberFld">{{gratuity_amount}}</td>
+                        <td class="numberFld">{{acc_gratuity}}</td>
+                    </tr>
+                    {{/each }}
+   <tr class="numberFld numberFldTotalBottom">
+                  <td colspan="6" class="txtFld"></td>
+                        <td class="numberFld"></td>
+                        <td class="numberFld">{{total_gratuity_amount}}</td>
+                        <td class="numberFld">{{total_acc_gratuity}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

@@ -13,7 +13,10 @@ import {
   selectAll,
   generatePaySlip,
   selectToGeneratePaySlip,
-  selectAllPaySlip,generateLoanReconilationReport,generateLeaveGratuityReconilationReport,
+  selectAllPaySlip,
+  generateLoanReconilationReport,
+  generateLeaveReconilationReport,
+  generateGratuityReconilationReport,
 } from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -345,7 +348,67 @@ class NewSalaryPayment extends Component {
           <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
             <div className="hptl-phase1-footer">
               <div className="row">
-                <div className="col-lg-12">
+                <div className="col leftBtnGroup">
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generateLoanReconilationReport.bind(this, this)}
+                    disabled={
+                      this.state.salary_payment.length === 0 ? true : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Loan Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generateLeaveReconilationReport.bind(this, this)}
+                    disabled={
+                      this.state.salary_payment.length === 0 ? true : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Leave & Airfare Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generateGratuityReconilationReport.bind(
+                      this,
+                      this
+                    )}
+                    disabled={
+                      this.state.salary_payment.length === 0 ? true : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Gratuity Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </div>
+                <div className="col">
+                  {" "}
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generatePaySlip.bind(this, this)}
+                    disabled={this.state.generatePayslip}
+                  >
+                    Generate Payslip PDF
+                  </button>
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -356,7 +419,6 @@ class NewSalaryPayment extends Component {
                       label={{ forceLabel: "Pay Salary", returnText: true }}
                     />
                   </button>
-
                   <button
                     type="button"
                     className="btn btn-default"
@@ -366,57 +428,6 @@ class NewSalaryPayment extends Component {
                       label={{ forceLabel: "Clear", returnText: true }}
                     />
                   </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={generatePaySlip.bind(this, this)}
-                    disabled={this.state.generatePayslip}
-                  >
-                    Generate Payslip PDF
-                  </button>
-
-
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={generateLoanReconilationReport.bind(this, this)}
-                    disabled={
-                      this.state.salary_payment.length === 0
-                        ? true
-                        : false
-                    }
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Loan Reconciliation Report",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={generateLeaveGratuityReconilationReport.bind(this, this)}
-                    disabled={
-                      this.state.salary_payment.length === 0
-                        ? true
-                        : false
-                    }
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Leave Gratuity & Airfare Reconilation Report",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-
-
-
-
-
-
                 </div>
               </div>
             </div>

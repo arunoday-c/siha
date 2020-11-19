@@ -25,6 +25,7 @@ import {
 } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
+import swal from "sweetalert2";
 // import { RawSecurityComponent } from "algaeh-react-components";
 
 class OPBillAdjustment extends Component {
@@ -174,50 +175,62 @@ class OPBillAdjustment extends Component {
     const err = Validations(this);
     if (!err) {
       if (this.state.unbalanced_amount === 0) {
-        this.GenerateReciept(($this) => {
-          let Inputobj = $this.state;
+        swal({
+          title: "Are you sure you want to Adjust Selected Bill Number " + this.state.bill_number + " ?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No",
+        }).then((willProceed) => {
+          if (willProceed.value) {
+            this.GenerateReciept(($this) => {
+              let Inputobj = $this.state;
 
-          Inputobj.patient_payable = $this.state.patient_payable_h;
-          Inputobj.insurance_yesno = $this.state.insured;
-          Inputobj.ScreenCode = "BL0001";
-          AlgaehLoader({ show: true });
-          algaehApiCall({
-            uri: "/opBilling/addOPBillAdjustment",
-            module: "billing",
-            data: Inputobj,
-            method: "POST",
-            onSuccess: (response) => {
-              if (response.data.success) {
-                AlgaehLoader({ show: false });
-                $this.setState({
-                  // bill_number: response.data.records.bill_number,
-                  // receipt_number: response.data.records.receipt_number,
-                  saveEnable: true,
-                });
-                this.setState({
-                  addNewService: true,
-                  Billexists: true,
-                });
-                swalMessage({
-                  title: "Done Successfully",
-                  type: "success",
-                });
-              } else {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                  type: "error",
-                  title: response.data.records.message,
-                });
-              }
-            },
-            onFailure: (error) => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.response.data.message || error.message,
-                type: "error",
+              Inputobj.patient_payable = $this.state.patient_payable_h;
+              Inputobj.insurance_yesno = $this.state.insured;
+              Inputobj.ScreenCode = "BL0001";
+              AlgaehLoader({ show: true });
+              algaehApiCall({
+                uri: "/opBilling/addOPBillAdjustment",
+                module: "billing",
+                data: Inputobj,
+                method: "POST",
+                onSuccess: (response) => {
+                  if (response.data.success) {
+                    AlgaehLoader({ show: false });
+                    $this.setState({
+                      // bill_number: response.data.records.bill_number,
+                      // receipt_number: response.data.records.receipt_number,
+                      saveEnable: true,
+                    });
+                    this.setState({
+                      addNewService: true,
+                      Billexists: true,
+                    });
+                    swalMessage({
+                      title: "Done Successfully",
+                      type: "success",
+                    });
+                  } else {
+                    AlgaehLoader({ show: false });
+                    swalMessage({
+                      type: "error",
+                      title: response.data.records.message,
+                    });
+                  }
+                },
+                onFailure: (error) => {
+                  AlgaehLoader({ show: false });
+                  swalMessage({
+                    title: error.response.data.message || error.message,
+                    type: "error",
+                  });
+                },
               });
-            },
-          });
+            });
+          }
         });
       } else {
         swalMessage({
@@ -267,7 +280,7 @@ class OPBillAdjustment extends Component {
                         : "",
                   }}
                 > */}
-                <div className="col-3 globalSearchCntr form-group">
+                <div className="col-2 globalSearchCntr">
                   <AlgaehLabel label={{ fieldName: "bill_number" }} />
                   <h6 onClick={BillSearch.bind(this, this)}>
                     {this.state.bill_number
@@ -297,7 +310,7 @@ class OPBillAdjustment extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    {/* <div className="col">
                       <AlgaehLabel
                         label={{ fieldName: "incharge_or_provider" }}
                       />
@@ -306,7 +319,7 @@ class OPBillAdjustment extends Component {
                           ? this.state.doctor_name
                           : "--------"}
                       </h6>
-                    </div>
+                    </div> */}
 
                     <div className="col">
                       <AlgaehLabel label={{ fieldName: "patient_code" }} />
@@ -317,7 +330,7 @@ class OPBillAdjustment extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-3">
                       <AlgaehLabel
                         label={{
                           fieldName: "full_name",
@@ -330,7 +343,7 @@ class OPBillAdjustment extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    {/* <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "mode_of_pay",
@@ -341,7 +354,7 @@ class OPBillAdjustment extends Component {
                           ? this.state.mode_of_pay
                           : "--------"}
                       </h6>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

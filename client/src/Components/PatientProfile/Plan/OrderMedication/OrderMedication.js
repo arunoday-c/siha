@@ -87,6 +87,7 @@ class OrderMedication extends Component {
       updateButton: false,
       rowDetails: [],
       chronic_inactive: "N",
+      isFavMedcine: "N",
 
       frequency_type: "PD",
       frequency_time: "AM",
@@ -224,6 +225,7 @@ class OrderMedication extends Component {
       dispense: null,
       frequency_type: "PD",
       chronic_inactive: "N",
+      isFavMedcine: "N",
       frequency_time: "AM",
       frequency_route: "OR",
       uom_id: null,
@@ -507,6 +509,30 @@ class OrderMedication extends Component {
                                     })
                                   : this.setState({
                                       chronic_inactive: "N",
+                                    });
+                              }}
+                            />
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col">
+                        <label>Add to Favourite</label>
+                        <div className="customCheckbox">
+                          <label className="checkbox block">
+                            <input
+                              type="checkbox"
+                              name="isFavMedcine"
+                              value={this.state.isFavMedcine}
+                              checked={this.state.isFavMedcine === "Y"}
+                              // disabled={this.state.disableEdit}
+                              onChange={(e) => {
+                                e.target.checked
+                                  ? this.setState({
+                                      isFavMedcine: "Y",
+                                    })
+                                  : this.setState({
+                                      isFavMedcine: "N",
                                     });
                               }}
                             />
@@ -1011,6 +1037,24 @@ class OrderMedication extends Component {
                               // editorTemplate: (row) => {
                               //   return <span>{dateFormater(row.start_date)}</span>;
                               // },
+                              others: {
+                                minWidth: 100,
+                              },
+                            },
+                            {
+                              fieldName: "isFavMedcine",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Is Favourite" }}
+                                />
+                              ),
+                              displayTemplate: (row) => {
+                                return (
+                                  <span>
+                                    {row.isFavMedcine === "Y" ? "yes" : "No"}
+                                  </span>
+                                );
+                              },
                               others: {
                                 minWidth: 100,
                               },
