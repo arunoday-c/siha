@@ -102,6 +102,7 @@ const vendortexthandle = ($this, e) => {
     data: { vendor_status: "A", hims_d_vendor_id: e.value },
     onSuccess: (result) => {
       let records = result.data.records[0];
+
       let validate =
         records.vendor_code !== null &&
         records.contact_number !== null &&
@@ -120,7 +121,7 @@ const vendortexthandle = ($this, e) => {
           [name]: value,
           vendor_name: e.selected.vendor_name,
           payment_terms: e.selected.payment_terms,
-
+          vendorDetails: result.data.records,
           ReqData: ReqData,
         });
       } else {
