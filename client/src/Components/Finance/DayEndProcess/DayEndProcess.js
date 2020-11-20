@@ -9,12 +9,12 @@ import {
   // AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { MainContext, Modal, AlgaehButton } from "algaeh-react-components";
+import { MainContext, Modal, AlgaehButton, Tooltip } from "algaeh-react-components";
 import swal from "sweetalert2";
 // const modules = [
 //   {
@@ -88,7 +88,7 @@ class DayEndProcess extends Component {
       popUpRecords: {},
       posted: "N",
       module_id: null,
-      screen_code: null
+      screen_code: null,
     };
     this.selectedDayEndIds = "";
   }
@@ -103,19 +103,19 @@ class DayEndProcess extends Component {
       decimal_places,
       addSymbol: false,
       symbol_position,
-      currency_symbol
+      currency_symbol,
     };
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("from_date")) {
       this.setState({
-        from_date: params?.get("from_date")
+        from_date: params?.get("from_date"),
       });
     }
     if (params?.get("to_date")) {
       this.setState(
         {
           to_date: params?.get("to_date"),
-          currency: currency
+          currency: currency,
         },
         () => this.getDayEndProcess(this)
       );
@@ -125,16 +125,16 @@ class DayEndProcess extends Component {
       algaehApiCall({
         uri: "/finance/getDayEndData",
         data: {
-          child_id: this.props.location.state.data.finance_account_child_id
+          child_id: this.props.location.state.data.finance_account_child_id,
         },
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           this.setState({ dayEnd: response.data.result });
         },
-        onCatch: error => {
+        onCatch: (error) => {
           swalMessage({ title: error, type: "error" });
-        }
+        },
       });
     }
   }
@@ -159,15 +159,15 @@ class DayEndProcess extends Component {
         data: inputObj,
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           this.setState({ dayEnd: response.data.result });
           return this.props.history?.push(
             `${this.props.location?.pathname}?from_date=${this.state.from_date}&to_date=${this.state.to_date}`
           );
         },
-        onCatch: error => {
+        onCatch: (error) => {
           swalMessage({ title: error, type: "error" });
-        }
+        },
       });
     } catch (e) {
       console.error(e);
@@ -188,13 +188,13 @@ class DayEndProcess extends Component {
         data: { finance_day_end_header_id: finance_day_end_header_id },
         method: "POST",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           swalMessage({ type: "success", title: "Successfully Posted" });
           this.getDayEndProcess();
         },
-        onCatch: error => {
+        onCatch: (error) => {
           swalMessage({ title: error, type: "error" });
-        }
+        },
       });
     } catch (e) {
       console.error(e);
@@ -225,11 +225,11 @@ class DayEndProcess extends Component {
           },
           method: "PUT",
           onSuccess: (response) => {
-            this.getDayEndProcess(this)
+            this.getDayEndProcess(this);
             swalMessage({
               title: "Reverted Successfully . .",
               type: "success",
-            })
+            });
           },
           onFailure: (error) => {
             swalMessage({
@@ -245,7 +245,7 @@ class DayEndProcess extends Component {
   checkHandaler(e) {
     this.setState({
       [e.target.name]: e.target.checked ? "Y" : "N",
-      dayEnd: []
+      dayEnd: [],
     });
   }
 
@@ -254,12 +254,12 @@ class DayEndProcess extends Component {
       case "module_id":
         this.setState({
           trans_type: value.selected.trans_type,
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -321,7 +321,7 @@ class DayEndProcess extends Component {
         data: { day_end_header_id: row.finance_day_end_header_id },
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           const { result, success, message } = response.data;
           if (success === true) {
             that.setState({ popUpRecords: result, openPopup: true });
@@ -330,9 +330,9 @@ class DayEndProcess extends Component {
             swalMessage({ title: message, type: "error" });
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           swalMessage({ title: error, type: "error" });
-        }
+        },
       });
     } catch (e) {
       swalMessage({ title: e, type: "error" });
@@ -348,21 +348,21 @@ class DayEndProcess extends Component {
       if (inRange) {
         swalMessage({
           title: "From Date cannot be grater than To Date.",
-          type: "warning"
+          type: "warning",
         });
         event.target.focus();
         this.setState({
-          [event.target.name]: null
+          [event.target.name]: null,
         });
       }
     } else if (event.target.name === "to_date") {
       if (this.state.from_date === undefined || this.state.from_date === null) {
         swalMessage({
           title: "Select From Date.",
-          type: "warning"
+          type: "warning",
         });
         this.setState({
-          [event.target.name]: null
+          [event.target.name]: null,
         });
         return;
       }
@@ -372,11 +372,11 @@ class DayEndProcess extends Component {
       if (inRange) {
         swalMessage({
           title: "To Date cannot be less than From Date.",
-          type: "warning"
+          type: "warning",
         });
         event.target.focus();
         this.setState({
-          [event.target.name]: null
+          [event.target.name]: null,
         });
       }
     }
@@ -391,7 +391,7 @@ class DayEndProcess extends Component {
           events={{
             onClose: () => {
               this.setState({ popUpRecords: {}, openPopup: false });
-            }
+            },
           }}
         >
           <div className="col-lg-12 popupInner">
@@ -428,51 +428,51 @@ class DayEndProcess extends Component {
                       fieldName: "to_account",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "To Account" }} />
-                      )
+                      ),
                     },
 
                     {
                       fieldName: "payment_type",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "payment_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "debit_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {GetAmountFormart(row.debit_amount, {
-                              appendSymbol: false
+                              appendSymbol: false,
                             })}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "credit_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {GetAmountFormart(row.credit_amount, {
-                              appendSymbol: false
+                              appendSymbol: false,
                             })}
                           </span>
                         );
-                      }
-                    }
+                      },
+                    },
 
                     // {
                     //   fieldName: "narration",
@@ -483,7 +483,7 @@ class DayEndProcess extends Component {
                     data:
                       this.state.popUpRecords.entries === undefined
                         ? []
-                        : this.state.popUpRecords.entries
+                        : this.state.popUpRecords.entries,
                   }}
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -497,7 +497,7 @@ class DayEndProcess extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={e => {
+                  onClick={(e) => {
                     this.setState({ popUpRecords: {}, openPopup: false });
                   }}
                 >
@@ -562,16 +562,16 @@ class DayEndProcess extends Component {
                   label={{ forceLabel: "From Date" }}
                   textBox={{
                     className: "txt-fld",
-                    name: "from_date"
+                    name: "from_date",
                   }}
                   events={{
-                    onChange: selectedDate => {
+                    onChange: (selectedDate) => {
                       this.setState({
                         from_date: selectedDate,
-                        to_date: undefined
+                        to_date: undefined,
                       });
                     },
-                    onBlur: this.dateValidate.bind(this)
+                    onBlur: this.dateValidate.bind(this),
                   }}
                   value={this.state.from_date}
                 />
@@ -581,16 +581,16 @@ class DayEndProcess extends Component {
                   label={{ forceLabel: "To Date" }}
                   textBox={{
                     className: "txt-fld",
-                    name: "to_date"
+                    name: "to_date",
                   }}
                   {...(this.state.from_date !== undefined
                     ? { minDate: new Date(this.state.from_date) }
                     : {})}
                   events={{
-                    onChange: selectedDate => {
+                    onChange: (selectedDate) => {
                       this.setState({ to_date: selectedDate });
                     },
-                    onBlur: this.dateValidate.bind(this)
+                    onBlur: this.dateValidate.bind(this),
                   }}
                   value={this.state.to_date}
                 />
@@ -661,45 +661,56 @@ class DayEndProcess extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Select" }} />
                           ),
-                          displayTemplate: row => (
+                          displayTemplate: (row) => (
                             <>
                               {this.state.posted === "N" ? (
-                                <i
-                                  className="fas fa-paper-plane"
-                                  onClick={() => {
-                                    this.postDayEndProcess(
-                                      row.finance_day_end_header_id
-                                    );
-                                  }}
-                                ></i>
+                                <Tooltip title="Post to Finance">
+                                  <i
+                                    className="fas fa-paper-plane"
+                                    onClick={() => {
+                                      this.postDayEndProcess(
+                                        row.finance_day_end_header_id
+                                      );
+                                    }}
+                                  ></i>
+                                </Tooltip>
                               ) : null}
 
-                              {this.state.posted === "N" && (row.from_screen === "PR0004" || row.from_screen === "SAL005") ? (<i
-                                className="fa fa-times"
-                                aria-hidden="true"
-                                onClick={() => this.setState({ revert_visible: true, selected_data: row })}
-                              // onClick={this.RejectProcess.bind(this, row)}
-                              />) : null}
+                              {this.state.posted === "N" &&
+                                (row.from_screen === "PR0004" ||
+                                  row.from_screen === "SAL005") ? (
+                                  <Tooltip title="Revert">
+                                    <i
+                                      className="fa fa-times"
+                                      aria-hidden="true"
+                                      onClick={() => this.setState({ revert_visible: true, selected_data: row })}
+                                    // onClick={this.RejectProcess.bind(this, row)}
+                                    />
+                                  </Tooltip>
+                                ) : null}
 
-
-                              <i
-                                className="fas fa-eye"
-                                onClick={() => {
-                                  this.onOpenPreviewPopUP(row, this);
-                                }}
-                              ></i>
-                              <i
-                                className="fa fa-exchange-alt"
-                                onClick={() => {
-                                  this.DrillDownScree(row, this);
-                                }}
-                              ></i>
+                              <Tooltip title="View Details">
+                                <i
+                                  className="fas fa-eye"
+                                  onClick={() => {
+                                    this.onOpenPreviewPopUP(row, this);
+                                  }}
+                                ></i>
+                              </Tooltip>
+                              <Tooltip title="DrillDown">
+                                <i
+                                  className="fa fa-exchange-alt"
+                                  onClick={() => {
+                                    this.DrillDownScree(row, this);
+                                  }}
+                                ></i>
+                              </Tooltip>
                             </>
                           ),
                           others: {
                             maxWidth: 160,
-                            filterable: false
-                          }
+                            filterable: false,
+                          },
                         },
 
                         // {
@@ -753,7 +764,7 @@ class DayEndProcess extends Component {
                               label={{ forceLabel: "Document No." }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "invoice_no",
@@ -762,7 +773,7 @@ class DayEndProcess extends Component {
                               label={{ forceLabel: "Invoice No." }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
 
                         {
@@ -772,7 +783,7 @@ class DayEndProcess extends Component {
                               label={{ forceLabel: "Document  Date" }}
                             />
                           ),
-                          others: { filterable: false }
+                          others: { filterable: false },
                         },
 
                         {
@@ -782,12 +793,12 @@ class DayEndProcess extends Component {
                               label={{ forceLabel: "Voucher Type" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return _.startCase(
                               row.voucher_type ? row.voucher_type : ""
                             );
                           },
-                          disabled: true
+                          disabled: true,
                           // others: { filterable: false }
                         },
                         {
@@ -796,16 +807,16 @@ class DayEndProcess extends Component {
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
 
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {GetAmountFormart(row.amount, {
-                                  appendSymbol: false
+                                  appendSymbol: false,
                                 })}
                               </span>
                             );
                           },
-                          others: { filterable: false }
+                          others: { filterable: false },
                         },
 
                         {
@@ -815,7 +826,7 @@ class DayEndProcess extends Component {
                               label={{ forceLabel: "From Document" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                           // others: { filterable: false }
                         },
                         {
@@ -824,12 +835,12 @@ class DayEndProcess extends Component {
                             <AlgaehLabel label={{ forceLabel: "Narration" }} />
                           ),
                           disabled: false,
-                          others: { filterable: true }
-                        }
+                          others: { filterable: true },
+                        },
                       ]}
                       keyId="finance_day_end_header_id"
                       dataSource={{
-                        data: this.state.dayEnd
+                        data: this.state.dayEnd,
                       }}
                       isEditable={false}
                       filter={true}
