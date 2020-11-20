@@ -95,12 +95,50 @@ const vendortexthandle = ($this, e) => {
     ReqData = false;
   }
 
-  $this.setState({
-    [name]: value,
-    vendor_name: e.selected.vendor_name,
-    payment_terms: e.selected.payment_terms,
+  algaehApiCall({
+    uri: "/vendor/getVendorMaster",
+    module: "masterSettings",
+    method: "GET",
+    data: { vendor_status: "A", hims_d_vendor_id: e.value },
+    onSuccess: (result) => {
+      let records = result.data.records[0];
+      let validate =
+        records.vendor_code !== null &&
+        records.contact_number !== null &&
+        records.email_id_1 !== null &&
+        records.address !== "" &&
+        records.bank_account_no !== null &&
+        records.bank_name !== "" &&
+        records.business_registration_no !== "" &&
+        records.payment_mode !== "" &&
+        records.country_id !== null &&
+        records.state_id !== null
+          ? true
+          : false;
+      if (validate) {
+        $this.setState({
+          [name]: value,
+          vendor_name: e.selected.vendor_name,
+          payment_terms: e.selected.payment_terms,
 
-    ReqData: ReqData,
+          ReqData: ReqData,
+        });
+      } else {
+        swalMessage({
+          title: `Please Fill mandatory Details of vendor In vendor master for Vendor ${e.selected.vendor_name}  `,
+          type: "error",
+        });
+        return;
+      }
+    },
+
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
   });
 };
 
@@ -989,8 +1027,8 @@ const getReportForMail = (data, vedorData) => {
           vendor_email: email_id_1
             ? email_id_1
             : email_id_2
-              ? email_id_2
-              : email_id_1,
+            ? email_id_2
+            : email_id_1,
           po_from: po_from,
           net_total,
           location_name,
