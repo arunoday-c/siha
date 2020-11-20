@@ -303,6 +303,11 @@ const SaveReceiptEnrty = ($this) => {
           type: "success",
           title: "Saved successfully . .",
         });
+      } else {
+        swalMessage({
+          title: response.data.message,
+          type: "error",
+        });
       }
       AlgaehLoader({ show: false });
     },

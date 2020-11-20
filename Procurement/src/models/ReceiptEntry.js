@@ -119,162 +119,188 @@ export default {
     try {
       let input = { ...req.body };
       let grn_number = "";
-
       _mysql
-        .generateRunningNumber({
-          user_id: req.userIdentity.algaeh_d_app_user_id,
-          numgen_codes: ["RE_NUM"],
-          table_name: "hims_f_procurement_numgen"
+        .executeQuery({
+          query:
+            "select hims_f_procurement_grn_header_id from hims_f_procurement_grn_header where inovice_number=?;",
+          values: [
+            input.inovice_number,
+          ],
+          printQuery: true
         })
-        .then(generatedNumbers => {
-          grn_number = generatedNumbers.RE_NUM;
-
-          let year = moment().format("YYYY");
-
-          let today = moment().format("YYYY-MM-DD");
-
-          let month = moment().format("MM");
-
-          let period = month;
-
+        .then(invocie_detail => {
+          if (invocie_detail.length > 0) {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: false,
+              message: "Given Invoice Number already entered.",
+            };
+            next();
+            return;
+          }
+          console.log("1")
           _mysql
-            .executeQuery({
-              query:
-                "INSERT INTO `hims_f_procurement_grn_header` (grn_number,grn_date, receipt_mode,grn_for, `year`, period,\
+            .generateRunningNumber({
+              user_id: req.userIdentity.algaeh_d_app_user_id,
+              numgen_codes: ["RE_NUM"],
+              table_name: "hims_f_procurement_numgen"
+            })
+            .then(generatedNumbers => {
+              console.log("2")
+              grn_number = generatedNumbers.RE_NUM;
+
+              let year = moment().format("YYYY");
+
+              let today = moment().format("YYYY-MM-DD");
+
+              let month = moment().format("MM");
+
+              let period = month;
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO `hims_f_procurement_grn_header` (grn_number,grn_date, receipt_mode,grn_for, `year`, period,\
                   pharmcy_location_id,inventory_location_id,location_type,vendor_id, po_id, payment_terms, \
                   comment, description, sub_total, detail_discount, extended_total,sheet_level_discount_percent,\
                   sheet_level_discount_amount,net_total,total_tax, net_payable, additional_cost,reciept_total,\
                   inovice_number,invoice_date,created_by,created_date, updated_by,updated_date,hospital_id) \
             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-              values: [
-                grn_number,
-                today,
-                input.receipt_mode,
-                input.grn_for,
-                year,
-                period,
-                input.pharmcy_location_id,
-                input.inventory_location_id,
-                input.location_type,
-                input.vendor_id,
-                input.po_id,
+                  values: [
+                    grn_number,
+                    today,
+                    input.receipt_mode,
+                    input.grn_for,
+                    year,
+                    period,
+                    input.pharmcy_location_id,
+                    input.inventory_location_id,
+                    input.location_type,
+                    input.vendor_id,
+                    input.po_id,
 
-                input.payment_terms,
-                input.comment,
-                input.description,
-                input.sub_total,
-                input.detail_discount,
-                input.extended_total,
-                input.sheet_level_discount_percent,
-                input.sheet_level_discount_amount,
+                    input.payment_terms,
+                    input.comment,
+                    input.description,
+                    input.sub_total,
+                    input.detail_discount,
+                    input.extended_total,
+                    input.sheet_level_discount_percent,
+                    input.sheet_level_discount_amount,
 
-                input.net_total,
-                input.total_tax,
-                input.net_payable,
-                input.additional_cost,
-                input.reciept_total,
-                input.inovice_number,
-                input.invoice_date,
+                    input.net_total,
+                    input.total_tax,
+                    input.net_payable,
+                    input.additional_cost,
+                    input.reciept_total,
+                    input.inovice_number,
+                    input.invoice_date,
 
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.hospital_id
-              ],
-              printQuery: true
-            })
-            .then(headerResult => {
-              req.connection = {
-                connection: _mysql.connection,
-                isTransactionConnection: _mysql.isTransactionConnection,
-                pool: _mysql.pool
-              };
-              let IncludeValues = []
-              if (input.receipt_mode === "I") {
-                IncludeValues = [
-                  "dn_header_id",
-                  "extended_cost",
-                  "discount_amount",
-                  "net_extended_cost",
-                  "tax_percentage",
-                  "tax_amount",
-                  "total_amount"
-                ];
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    req.userIdentity.hospital_id
+                  ],
+                  printQuery: true
+                })
+                .then(headerResult => {
+                  req.connection = {
+                    connection: _mysql.connection,
+                    isTransactionConnection: _mysql.isTransactionConnection,
+                    pool: _mysql.pool
+                  };
+                  let IncludeValues = []
+                  if (input.receipt_mode === "I") {
+                    IncludeValues = [
+                      "dn_header_id",
+                      "extended_cost",
+                      "discount_amount",
+                      "net_extended_cost",
+                      "tax_percentage",
+                      "tax_amount",
+                      "total_amount"
+                    ];
 
-                _mysql
-                  .executeQuery({
-                    query:
-                      "INSERT INTO hims_f_procurement_grn_detail(??) VALUES ?",
-                    values: input.receipt_entry_detail,
-                    includeValues: IncludeValues,
-                    extraValues: {
-                      grn_header_id: headerResult.insertId
-                    },
-                    bulkInsertOrUpdate: true,
-                    printQuery: true
-                  })
-                  .then(detailResult => {
-                    // _mysql.commitTransaction(() => {
-                    //   _mysql.releaseConnection();
-                    req.records = {
-                      grn_number: grn_number,
-                      hims_f_procurement_grn_header_id: headerResult.insertId,
-                      year: year,
-                      period: period
-                    };
-                    next();
-                    // });
-                  })
-                  .catch(error => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO hims_f_procurement_grn_detail(??) VALUES ?",
+                        values: input.receipt_entry_detail,
+                        includeValues: IncludeValues,
+                        extraValues: {
+                          grn_header_id: headerResult.insertId
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(detailResult => {
+                        // _mysql.commitTransaction(() => {
+                        //   _mysql.releaseConnection();
+                        req.records = {
+                          grn_number: grn_number,
+                          hims_f_procurement_grn_header_id: headerResult.insertId,
+                          year: year,
+                          period: period
+                        };
+                        next();
+                        // });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else {
+                    IncludeValues = [
+                      "services_id",
+                      "unit_cost",
+                      "quantity",
+                      "extended_cost",
+                      "discount_percentage",
+                      "discount_amount",
+                      "net_extended_cost",
+                      "tax_percentage",
+                      "tax_amount",
+                      "total_amount"
+                    ];
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO hims_f_procurement_grn_service(??) VALUES ?",
+                        values: input.receipt_entry_detail_services,
+                        includeValues: IncludeValues,
+                        extraValues: {
+                          grn_header_id: headerResult.insertId
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(detailResult => {
+                        // _mysql.commitTransaction(() => {
+                        //   _mysql.releaseConnection();
+                        req.records = {
+                          grn_number: grn_number,
+                          hims_f_procurement_grn_header_id: headerResult.insertId,
+                          year: year,
+                          period: period
+                        };
+                        next();
+                        // });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  }
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
                   });
-              } else {
-                IncludeValues = [
-                  "services_id",
-                  "unit_cost",
-                  "quantity",
-                  "extended_cost",
-                  "discount_percentage",
-                  "discount_amount",
-                  "net_extended_cost",
-                  "tax_percentage",
-                  "tax_amount",
-                  "total_amount"
-                ];
-
-                _mysql
-                  .executeQuery({
-                    query:
-                      "INSERT INTO hims_f_procurement_grn_service(??) VALUES ?",
-                    values: input.receipt_entry_detail_services,
-                    includeValues: IncludeValues,
-                    extraValues: {
-                      grn_header_id: headerResult.insertId
-                    },
-                    bulkInsertOrUpdate: true,
-                    printQuery: true
-                  })
-                  .then(detailResult => {
-                    // _mysql.commitTransaction(() => {
-                    //   _mysql.releaseConnection();
-                    req.records = {
-                      grn_number: grn_number,
-                      hims_f_procurement_grn_header_id: headerResult.insertId,
-                      year: year,
-                      period: period
-                    };
-                    next();
-                    // });
-                  })
-                  .catch(error => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
-                  });
-              }
+                });
             })
             .catch(e => {
               _mysql.rollBackTransaction(() => {
@@ -375,6 +401,12 @@ export default {
     }
   },
   updatePurchaseOrder: (req, res, next) => {
+    console.log("PO1")
+    if (req.records.invalid_input == false) {
+      next()
+      return;
+    }
+    console.log("updatePurchaseOrder")
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
@@ -417,6 +449,12 @@ export default {
   },
 
   updateDNEntry: (req, res, next) => {
+    console.log("DN 1")
+    if (req.records.invalid_input == false) {
+      next()
+      return;
+    }
+    console.log("updateDNEntry")
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {

@@ -47,10 +47,27 @@ export default () => {
     updatePurchaseOrder,
     updateDNEntry,
     (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
+      if (req.records.invalid_input == false) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            message: req.records.message
+          })
+          .end();
+      } else {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .json({
+            success: true,
+            records: req.records
+          })
+          .end();
+      }
+      // res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      //   success: true,
+      //   records: req.records
+      // });
     }
   );
 
