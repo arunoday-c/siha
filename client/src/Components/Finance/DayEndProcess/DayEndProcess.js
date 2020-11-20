@@ -7,13 +7,14 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   // AlagehAutoComplete,
+  AlagehFormGroup,
   AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, Modal, AlgaehButton } from "algaeh-react-components";
 import swal from "sweetalert2";
 // const modules = [
 //   {
@@ -200,9 +201,11 @@ class DayEndProcess extends Component {
     }
   }
 
-  RejectProcess(row) {
+  RejectProcess() {
+    debugger
+    let selected_data = this.state.selected_data
     swal({
-      title: "Are you sure you want to Revert " + row.document_number + " ?",
+      title: "Are you sure you want to Revert " + selected_data.document_number + " ?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -215,9 +218,10 @@ class DayEndProcess extends Component {
           uri: "/finance/revertDayEnd",
           module: "finance",
           data: {
-            finance_day_end_header_id: row.finance_day_end_header_id,
-            from_screen: row.from_screen,
-            document_number: row.document_number
+            finance_day_end_header_id: selected_data.finance_day_end_header_id,
+            from_screen: selected_data.from_screen,
+            document_number: selected_data.document_number,
+            revert_reason: this.state.revert_reason
           },
           method: "PUT",
           onSuccess: (response) => {
@@ -673,7 +677,8 @@ class DayEndProcess extends Component {
                               {this.state.posted === "N" && (row.from_screen === "PR0004" || row.from_screen === "SAL005") ? (<i
                                 className="fa fa-times"
                                 aria-hidden="true"
-                                onClick={this.RejectProcess.bind(this, row)}
+                                onClick={() => this.setState({ revert_visible: true, selected_data: row })}
+                              // onClick={this.RejectProcess.bind(this, row)}
                               />) : null}
 
 
@@ -836,6 +841,48 @@ class DayEndProcess extends Component {
             </div>
           </div>
         </div>
+        <Modal
+          title="Revert"
+          visible={this.state.revert_visible}
+          width={1080}
+          footer={null}
+          onCancel={() => this.setState({ revert_visible: false })}
+          className={`row algaehNewModal invoiceRevertModal`}
+        >
+          <AlagehFormGroup
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Enter reason for invoice reversal",
+              isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "revert_reason",
+              value: this.state.revert_reason,
+              events: {
+                onChange: (e) => {
+                  this.setState({ revert_reason: e.target.value });
+                },
+              },
+            }}
+          />
+
+          <div className="popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-12">
+                  <AlgaehButton
+                    className="btn btn-primary"
+
+                    onClick={this.RejectProcess.bind(this)}
+                  >
+                    Reject
+                  </AlgaehButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
         {/* <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col">

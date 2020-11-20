@@ -1423,31 +1423,179 @@ export default {
     // const utilities = new algaehUtilities();
     let input = req.body;
 
-    let strQuery = ""
+    let strQuery = `delete from finance_day_end_sub_detail where day_end_header_id=${input.finance_day_end_header_id};
+    delete from finance_day_end_header where finance_day_end_header_id=${input.finance_day_end_header_id};`
     if (input.from_screen == "PR0004") {
-      strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
+      _mysql
+        .executeQuery({
+          query: `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';` + strQuery,
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+      // strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
     } else if (input.from_screen == "SAL005") {
-      strQuery += `update hims_f_sales_invoice_header set is_posted='N' where invoice_number='${input.document_number}';`;
+      // strQuery += `update hims_f_sales_invoice_header set is_posted='N' where invoice_number='${input.document_number}';`;
+
+      _mysql
+        .executeQueryWithTransaction({
+          query: "select hims_f_sales_invoice_header_id, sales_invoice_mode, sales_order_id from hims_f_sales_invoice_header where invoice_number=?;",
+          values: [input.document_number],
+          printQuery: true
+        })
+        .then(invoie_result => {
+
+          let strQry = "";
+
+          if (invoie_result[0].sales_invoice_mode === "S") {
+            strQry = _mysql.mysqlQueryFormat(
+              " select * from hims_f_sales_order_services where sales_order_id=?;",
+              [invoie_result[0].sales_order_id]
+            );
+          } else if (invoie_result[0].sales_invoice_mode === "I") {
+            strQry = _mysql.mysqlQueryFormat(
+              " select * from hims_f_sales_order_items where sales_order_id=?;",
+              [invoie_result[0].sales_order_id]
+            );
+          }
+
+
+          _mysql
+            .executeQueryWithTransaction({
+              query: "UPDATE hims_f_sales_order SET is_posted='N', authorize1='N', authorize2='N',\
+                    is_revert='Y', revert_reason=?, reverted_date=?, reverted_by=? WHERE hims_f_sales_order_id=?; \
+                    UPDATE hims_f_sales_invoice_header SET is_posted='N', is_revert='Y', reverted_date=?, reverted_by=? \
+                    WHERE hims_f_sales_invoice_header_id=?;"+ strQry,
+              values: [
+                input.revert_reason,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                invoie_result[0].sales_order_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                invoie_result[0].hims_f_sales_invoice_header_id
+              ],
+              printQuery: true
+            })
+            .then(result => {
+              const sales_order_services = result[2]
+              let IncludeValues = []
+              if (invoie_result[0].sales_invoice_mode === "S") {
+                IncludeValues = [
+                  "sales_order_id",
+                  "services_id",
+                  "service_frequency",
+                  "unit_cost",
+                  "quantity",
+                  "extended_cost",
+                  "discount_percentage",
+                  "discount_amount",
+                  "net_extended_cost",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount",
+                  "comments",
+                  "arabic_comments"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      `INSERT INTO hims_f_sales_order_adj_services(??) VALUES ?;` + strQuery,
+                    values: sales_order_services,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      created_by: req.userIdentity.algaeh_d_app_user_id,
+                      created_date: new Date()
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true,
+                  })
+                  .then((detailResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = detailResult;
+                      next();
+                    });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              } else if (invoie_result[0].sales_invoice_mode === "I") {
+                IncludeValues = [
+                  "sales_order_id",
+                  "item_id",
+                  "uom_id",
+                  "unit_cost",
+                  "quantity",
+                  "extended_cost",
+                  "discount_percentage",
+                  "discount_amount",
+                  "net_extended_cost",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount",
+                  "quantity_outstanding",
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      `INSERT INTO hims_f_sales_order_adj_item(??) VALUES ?;` + strQuery,
+                    values: sales_order_services,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      created_by: req.userIdentity.algaeh_d_app_user_id,
+                      created_date: new Date()
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true,
+                  })
+                  .then((detailResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = detailResult;
+                      next();
+                    });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              } else {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = detailResult;
+                  next();
+                });
+              }
+
+
+            })
+
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
     }
-    _mysql
-      .executeQuery({
-        query: `delete from finance_day_end_sub_detail where day_end_header_id=?; \
-        delete from finance_day_end_header where finance_day_end_header_id=?;`+ strQuery,
-        values: [
-          input.finance_day_end_header_id,
-          input.finance_day_end_header_id
-        ],
-        printQuery: false,
-      })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch((e) => {
-        _mysql.releaseConnection();
-        next(e);
-      });
+
 
   },
   //created by irfan: to

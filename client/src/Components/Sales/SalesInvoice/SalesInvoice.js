@@ -199,7 +199,7 @@ class SalesInvoice extends Component {
                       forceLabel: "Created By",
                     }}
                   />
-                  <h6>{this.state.full_name}</h6>
+                  <h6>{this.state.created_name}</h6>
 
                 </div>
               ) : null}
@@ -327,6 +327,19 @@ class SalesInvoice extends Component {
               </div>
             </div>
           </div>
+          {this.state.is_revert === "Y" ?
+            <div className="alert alert-danger">
+              <div className="row">
+                <div className="col"> <p>
+                  Reason:<b>{this.state.revert_reason}</b>
+                </p>
+                </div>
+                <div className="col-4"> <p>
+                  Reverted By:<b>{this.state.reverted_name}</b>
+                </p></div>
+
+              </div>
+            </div> : null}
 
           <MyContext.Provider
             value={{

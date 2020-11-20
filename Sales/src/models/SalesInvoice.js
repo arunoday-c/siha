@@ -11,14 +11,17 @@ export function getInvoiceEntry(req, res, next) {
         _mysql
             .executeQuery({
                 query: "SELECT SIH.*, C.customer_name, H.hospital_name, SO.sales_order_number, \
-                P.project_desc as project_name, E.full_name from hims_f_sales_invoice_header SIH \
+                P.project_desc as project_name, SO.revert_reason, \
+                max(if(U.algaeh_d_app_user_id = SO.reverted_by, E.full_name,'' )) as reverted_name, \
+                max(if(U.algaeh_d_app_user_id = SO.created_by, E.full_name,'' )) as created_name \
+                from hims_f_sales_invoice_header SIH \
                 inner join  hims_f_sales_order SO on  SIH.sales_order_id = SO.hims_f_sales_order_id \
                 inner join  hims_d_customer C on  SIH.customer_id = C.hims_d_customer_id \
                 inner join  hims_d_hospital H on  SIH.hospital_id = H.hims_d_hospital_id \
                 inner join hims_d_project P  on SIH.project_id = P.hims_d_project_id \
-                inner join algaeh_d_app_user U on SO.created_by = U.algaeh_d_app_user_id \
+                inner join algaeh_d_app_user U on (SO.created_by = U.algaeh_d_app_user_id or SO.reverted_by = U.algaeh_d_app_user_id) \
                 inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
-                where SIH.invoice_number =? ",
+                where SIH.invoice_number =? group by hims_f_sales_invoice_header_id;",
                 values: [req.query.invoice_number],
                 printQuery: true
             })
