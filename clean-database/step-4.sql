@@ -802,3 +802,45 @@ ALTER TABLE `hims_f_billing_header`
 ADD COLUMN `shift_id` INT NULL AFTER `adjusted_date`;
 
 UPDATE `algaeh_d_reports` SET `report_query` = 'select BH.hims_f_billing_header_id,BH.bill_date,BD.hims_f_billing_details_id,BD.service_type_id, ST.service_type_code,ST.service_type, sum(BD.net_amout)as total_amount from hims_f_billing_header BH inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id inner join hims_d_service_type ST on BD.service_type_id=ST.hims_d_service_type_id and ST.record_status=\'A\' where BH.hospital_id=? and  BH.record_status=\'A\' and BD.cancel_yes_no=\'N\' and adjusted=\'N\' and BD.record_status=\'A\' and date(BH.bill_date) between date(?) and date(?)  group by BD.service_type_id ' WHERE (report_name='opBillSummary' and `report_id` >0);
+
+
+-- =================================  Start Nov 16 2020 =======================================
+-- ******** Haematology Report
+
+UPDATE `algaeh_d_reports` SET `report_query` = 'select P.patient_code,trim(E.full_name) as doctor_name,P.full_name as patient_name,SD.sub_department_name, gender, age_in_years,   age_in_months,age_in_days, IP.insurance_provider_name, P.primary_id_no from hims_f_patient P    inner join hims_f_patient_visit V on P.hims_d_patient_id = V.patient_id    inner join hims_d_employee E on E.hims_d_employee_id = V.doctor_id    inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id   left join hims_m_patient_insurance_mapping IM on IM.patient_visit_id=V.hims_f_patient_visit_id  left join hims_d_insurance_provider IP on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id    where P.hims_d_patient_id=? and V.hims_f_patient_visit_id=?;   select MS.hims_d_lab_specimen_id, MS.`description` as investigation_name,LA.description as analyte_name, LO.ordered_date,LO.entered_date,LO.validated_date, LO.critical_status,LO.comments,OA.result,OA.result_unit,TRIM(TRAILING \'.\' FROM TRIM(TRAILING \'0\' from OA.normal_low)) as normal_low, TRIM(TRAILING \'.\' FROM TRIM(TRAILING \'0\' from OA.normal_high)) as normal_high, OA.critical_low,OA.critical_high,S.service_name,    E.full_name as validated_by,OA.critical_type, TC.category_name, OA.text_value, OA.analyte_type from hims_f_lab_order LO   inner join hims_f_lab_sample LS on LO.hims_f_lab_order_id = LS.order_id    inner join hims_f_ord_analytes OA on LO.hims_f_lab_order_id = OA.order_id    inner join hims_d_lab_specimen MS on LS.sample_id = MS.hims_d_lab_specimen_id    inner join hims_d_lab_analytes LA on OA.analyte_id = LA.hims_d_lab_analytes_id     inner join hims_d_services S on S.hims_d_services_id= LO.service_id     inner join algaeh_d_app_user U on LO.validated_by=U.algaeh_d_app_user_id   inner join hims_d_employee E on  U.employee_id=E.hims_d_employee_id     inner join hims_d_investigation_test IT on IT.services_id= LO.service_id   inner join hims_d_test_category TC on TC.hims_d_test_category_id= IT.category_id  where LO.visit_id = ? and LO.hims_f_lab_order_id=? order by hims_f_ord_analytes_id;' WHERE (report_name = 'hematologyTestReport' and `report_id` >0);
+
+
+-- =================================  Start Nov 17 2020 =======================================
+-- ******** Leave and Gratuity Report Seperted
+
+INSERT INTO `algaeh_d_reports` (`report_id`, `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('155', 'gratuity_reconcil_Report', 'Gratuity Reconciliation Report', '[\"hospital_id\",\"year\",\"month\",\"sub_department_id\",\"employee_id\",\"employee_group_id\"]', 'reportHeader', 'A', '2019-06-18 14:53:28', '2019-06-18 14:53:28');
+UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Leave & Airfare Reconciliation Report' WHERE (`report_id` = '148');
+
+-- =================================  Start Nov 18 2020 =======================================
+-- ******** Insurance Template Field Added
+ALTER TABLE `hims_d_insurance_sub` 
+ADD COLUMN `ins_template_name` VARCHAR(100) NULL DEFAULT NULL AFTER `child_id`;
+
+-- ******** Medicine and ICD Favorite Table
+CREATE TABLE `hims_f_favourite_icd_med` (
+  `hims_f_favourite_icd_med_id` int NOT NULL AUTO_INCREMENT,
+  `fav_category` ENUM('M', 'I') NOT NULL DEFAULT 'M',
+  `icd_id` int DEFAULT NULL,
+  `item_id` int DEFAULT NULL,
+  `added_provider_id` int DEFAULT NULL,
+  `created_by` int DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_provider_id` int DEFAULT NULL,
+  `updated_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`hims_f_favourite_icd_med_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ******** Clinical Desk Dental Functionality changes
+ALTER TABLE `hims_f_ordered_services` 
+CHANGE COLUMN `teeth_number` `teeth_number` VARCHAR(100) NULL DEFAULT NULL ;
+Alter table hims_f_dental_treatment drop column teeth_number;
+alter table hims_f_dental_treatment Add column teeth_number varchar(100);
+-- ============
+ALTER TABLE `hims_f_billing_details` 
+CHANGE COLUMN `teeth_number` `teeth_number` VARCHAR(100) NULL DEFAULT NULL ;
