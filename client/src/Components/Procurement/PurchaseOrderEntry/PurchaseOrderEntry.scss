@@ -1,18 +1,73 @@
-.hims-purchase-order-entry {
-}
-#POGrid {
-	.ReactTable {
-		max-width: 95vw !important;
-		max-height: 50vh !important;
-	}
+@import "../../../styles/algaehCssVariables.scss";
 
-	@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-		.ReactTable {
-			max-width: 93vw !important;
-		}
-	}
-}
-.disableFinder{
-	opacity: 0.4;
-	pointer-events: none;
+#POGrid {
+  .ReactTable {
+    max-width: 95vw !important;
+    max-height: 50vh !important;
   }
+
+  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+    .ReactTable {
+      max-width: 93vw !important;
+    }
+  }
+}
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.hoverVendor {
+  &:hover {
+    .vendorDetCntr {
+      display: block;
+    }
+  }
+  .vendorDetCntr {
+    position: absolute;
+    top: 54px;
+    right: 15px;
+    z-index: 999;
+    width: 700px;
+    height: auto;
+    background: $color-white;
+    box-shadow: 0 20px 20px lighten($color-black, 60%);
+    border-radius: 0 4px 4px 4px;
+    padding: 6px;
+    display: none;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      tbody {
+        margin: 0;
+        padding: 0;
+        tr {
+          &:nth-child(even) {
+            background: lighten($color-black, 95%);
+          }
+
+          td {
+            border: 1px solid #ccc;
+            padding: 3px 10px;
+            margin: 0;
+            text-align: left;
+            span {
+              font-weight: bold;
+            }
+            &:last-child {
+              font-weight: bolder;
+              color: $color-black;
+            }
+
+            &.hdr {
+              background: lighten($color-black, 90%);
+            }
+            &.imgSection {
+              padding: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
