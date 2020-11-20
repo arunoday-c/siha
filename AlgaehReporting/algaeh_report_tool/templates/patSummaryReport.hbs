@@ -1,0 +1,48 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+    <section>
+        <h3>VISIT DETAILS:-</h3>
+        <table class="tableForLabel" cell-padding="0">
+            <tr>
+                <td><label>Date & Time</label></td>
+                <td> <span>{{pat_details.visit_date}}</span></td>
+                <td><label>Doctor</label></td>
+                <td><span>Dr. {{pat_details.doctor_name}}</span></td>
+
+            </tr>
+            <tr>
+                <td><label>Visit Code</label></td>
+                <td><span>{{pat_details.visit_code}}</span></td>
+
+                <td><label>Department</label></td>
+                <td> <span>{{pat_details.sub_department_name}}</span></td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <h3>Patient DETAILS:-</h3>
+        <table class="tableForLabel" cell-padding="0">
+            <tr>
+                <td><label>Patient Code</label></td>
+                <td> <span>{{pat_details.patient_code}}</span></td>
+                <td><label>Name</label></td>
+                <td><span>{{pat_details.full_name}} / {{pat_details.arabic_name}}</span></td>
+
+            </tr>
+            <tr>
+                <td><label>Age & DOB</label></td>
+                <td><span>{{pat_details.gender}}/{{pat_details.date_of_birth}}</span></td>
+
+                <td><label>Mobile No.</label></td>
+                <td> <span>{{pat_details.tel_code}} {{pat_details.contact_number}}</span></td>
+            </tr>
+        </table>
+    </section>
+        
+    </div>
+    
+</body>

@@ -354,6 +354,51 @@ class Encounters extends Component {
     });
   }
 
+  printPatSummary() {
+    // const { episode_id, current_patient, visit_id } = Window.global;
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "patSummaryReport",
+          reportParams: [
+            {
+              name: "patient_id",
+              value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
+            },
+            {
+              name: "visit_id",
+              value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
+            },
+            {
+              name: "episode_id",
+              value: this.state.generalInfo.episode_id, // Window.global["episode_id"]
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Patient Summary Report`;
+        window.open(origin);
+        // window.document.title = "";
+      },
+
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
   printSickleave() {
     // const { episode_id, current_patient, visit_id } = Window.global;
     algaehApiCall({
@@ -595,6 +640,13 @@ class Encounters extends Component {
 
                 {this.state.generalInfo !== undefined ? (
                   <div className="actions">
+                    <button
+                      className="btn btn-default"
+                      style={{ marginRight: 10 }}
+                      onClick={this.printPatSummary.bind(this)}
+                    >
+                      Print Summary Report
+                    </button>
                     <button
                       className="btn btn-default"
                       style={{ marginRight: 10 }}
