@@ -288,7 +288,6 @@ let addDentalTreatment = (req, res, next) => {
 
   const _mysql = new algaehMysql({ path: keyPath });
   let input = extend({}, req.body.my_send_obj);
-  debugger;
 
   try {
     let finalInput = [];
@@ -376,7 +375,6 @@ let addDentalTreatment = (req, res, next) => {
           next(error);
         });
     } else {
-      debugger;
       let multipleTeeth = input.send_teeth.map((item) => {
         return item.teeth_number;
       });
@@ -615,7 +613,7 @@ let approveTreatmentPlan = (req, res, next) => {
           printQuery: true,
         })
         .then((result) => {
-          if (results != null) {
+          if (result != null) {
             _mysql
               .executeQuery({
                 query:
