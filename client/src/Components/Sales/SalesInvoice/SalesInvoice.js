@@ -37,6 +37,11 @@ import {
   AlgaehButton,
   MainContext,
 } from "algaeh-react-components";
+import TransationDetails from "../../Finance/DayEndProcess/TransationDetails"
+import {
+  swalMessage,
+  algaehApiCall
+} from "../../../utils/algaehApiCall";
 
 class SalesInvoice extends Component {
   constructor(props) {
@@ -89,6 +94,35 @@ class SalesInvoice extends Component {
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("invoice_number")) {
       getCtrlCode(this, queryParams.get("invoice_number"));
+    }
+  }
+
+  onOpenPreviewPopUP() {
+    try {
+      debugger
+      const queryParams = new URLSearchParams(this.props.location.search);
+      const finance_day_end_header_id = queryParams.get("finance_day_end_header_id")
+      algaehApiCall({
+        uri: "/finance/previewDayEndEntries",
+        data: { day_end_header_id: finance_day_end_header_id },
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          const { result, success, message } = response.data;
+          if (success === true) {
+            this.setState({ popUpRecords: result, openPopup: true, finance_day_end_header_id: finance_day_end_header_id });
+          } else {
+            this.setState({ popUpRecords: {}, openPopup: false });
+            swalMessage({ title: message, type: "error" });
+          }
+        },
+        onCatch: (error) => {
+          swalMessage({ title: error, type: "error" });
+        },
+      });
+    } catch (e) {
+      swalMessage({ title: e, type: "error" });
+      console.error(e);
     }
   }
 
@@ -462,7 +496,15 @@ class SalesInvoice extends Component {
                       }}
                     />
                   </button>
+
+
                 ) : null}
+                <button
+                  className="btn btn-primary"
+                  onClick={this.onOpenPreviewPopUP.bind(this)}
+                >
+                  Finance Transaction
+                </button>
               </div>
               <div className="col-8">
                 <AlgaehSecurityComponent componentCode="SALES_INV_MAIN">
@@ -577,6 +619,7 @@ class SalesInvoice extends Component {
                     </div>
                   </div>
                 </div>
+
               </Modal>
 
               <Modal
@@ -615,11 +658,18 @@ class SalesInvoice extends Component {
                         >
                           Revert Invoice
                         </AlgaehButton>
+
+
                       </div>
                     </div>
                   </div>
                 </div>
               </Modal>
+              <TransationDetails
+                openPopup={this.state.openPopup}
+                popUpRecords={this.state.popUpRecords}
+                finance_day_end_header_id={this.state.finance_day_end_header_id}
+              />
             </div>
           </div>
         </div>

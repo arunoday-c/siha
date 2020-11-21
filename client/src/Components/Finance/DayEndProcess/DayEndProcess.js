@@ -9,13 +9,14 @@ import {
   // AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDateHandler,
-  AlgaehModalPopUp,
+  // AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { MainContext, Modal, AlgaehButton, Tooltip } from "algaeh-react-components";
 import swal from "sweetalert2";
+import TransationDetails from "./TransationDetails"
 // const modules = [
 //   {
 //     name: "OP Bill",
@@ -141,6 +142,7 @@ class DayEndProcess extends Component {
 
   getDayEndProcess() {
     try {
+      debugger
       let inputObj = { posted: this.state.posted };
       if (this.state.screen_code !== null) {
         inputObj.screen_code = this.state.screen_code;
@@ -202,7 +204,6 @@ class DayEndProcess extends Component {
   }
 
   RejectProcess() {
-    debugger
     let selected_data = this.state.selected_data
     swal({
       title: "Are you sure you want to Revert " + selected_data.document_number + " ?",
@@ -290,7 +291,7 @@ class DayEndProcess extends Component {
     } else if (row.from_screen === "SAL005") {
       // Sales Invoice
       this.props.history.push(
-        `/SalesInvoice?invoice_number=${row.document_number}`
+        `/SalesInvoice?invoice_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
       );
     } else if (row.from_screen === "SAL008") {
       //Sales Return
@@ -305,7 +306,7 @@ class DayEndProcess extends Component {
     } else if (row.from_screen === "PR0004") {
       //Receipt Entry
       this.props.history.push(
-        `/ReceiptEntry?grn_number=${row.document_number}`
+        `/ReceiptEntry?grn_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
       );
     } else if (row.from_screen === "PR0006") {
       //Purchase Return
@@ -324,7 +325,7 @@ class DayEndProcess extends Component {
         onSuccess: (response) => {
           const { result, success, message } = response.data;
           if (success === true) {
-            that.setState({ popUpRecords: result, openPopup: true });
+            that.setState({ popUpRecords: result, openPopup: true, finance_day_end_header_id: row.finance_day_end_header_id });
           } else {
             that.setState({ popUpRecords: {}, openPopup: false });
             swalMessage({ title: message, type: "error" });
@@ -382,10 +383,31 @@ class DayEndProcess extends Component {
     }
   }
 
+  CloseTransationDetail(e) {
+    debugger
+    this.setState(
+      {
+        openPopup: false,
+        popUpRecords: {},
+        finance_day_end_header_id: null
+      },
+      () => {
+        debugger
+        this.getDayEndProcess(this);
+      }
+    );
+  }
+
   render() {
     return (
       <div className="day_end_prc">
-        <AlgaehModalPopUp
+        <TransationDetails
+          openPopup={this.state.openPopup}
+          popUpRecords={this.state.popUpRecords}
+          finance_day_end_header_id={this.state.finance_day_end_header_id}
+          onClose={this.CloseTransationDetail.bind(this)}
+        />
+        {/* <AlgaehModalPopUp
           title="Accounting Entries"
           openPopup={this.state.openPopup}
           events={{
@@ -395,31 +417,7 @@ class DayEndProcess extends Component {
           }}
         >
           <div className="col-lg-12 popupInner">
-            <div className="row" style={{ paddingTop: 15 }}>
-              {/* <div className="col-2">
-                <AlgaehLabel
-                  label={{
-                forceLabel: "Cash"
-                  }}
-                />
-                <h6>{this.state.popUpRecords.cash}</h6>
-                </div>
-                <div className="col-2">
-                <AlgaehLabel
-                  label={{
-                forceLabel: "Card"
-                  }}
-                />
-                <h6>{this.state.popUpRecords.card}</h6>
-                </div>
-                <div className="col-2">
-                <AlgaehLabel
-                  label={{
-                forceLabel: "Cheque"
-                  }}
-                />
-                <h6>{this.state.popUpRecords.cheque}</h6>
-              </div> */}
+            <div className="row" style={{ paddingTop: 15 }}>              
               <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
                 <AlgaehDataGrid
                   id="dayEndProcessDetailsGrid"
@@ -506,7 +504,7 @@ class DayEndProcess extends Component {
               </div>
             </div>
           </div>
-        </AlgaehModalPopUp>
+        </AlgaehModalPopUp> */}
         {this.props.location.state ? null : (
           <div
             className="row inner-top-search margin-bottom-15"
