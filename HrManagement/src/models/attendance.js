@@ -5131,13 +5131,15 @@ export default {
                           E.date_of_joining <= date(?) and
                           (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'    ${strQry}  ;                
                           
-                          select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
+                          select hims_f_leave_application_id,LA.employee_id,leave_application_code,from_leave_session,
                           case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
                           L.leave_description,from_date,to_leave_session, holiday_included,
                           CASE WHEN L.leave_category='A' and AN.from_normal_salary='N' THEN DATE_ADD(LA.to_date, INTERVAL 1 DAY) else LA.to_date END as to_date,
                           weekoff_included,total_applied_days from hims_f_leave_application LA 
                           inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
-                          inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id ${deptStr}
+                          inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
+                          left join hims_f_employee_annual_leave AN on 
+                            LA.hims_f_leave_application_id=AN.leave_application_id ${deptStr}
                           where E.hospital_id=? and LA.status='APR' ${strQry} and  
                           (from_date between date(?) and date(?) or to_date between date(?) and date(?) or
                           date(?) between  from_date and to_date) ;
@@ -5221,13 +5223,15 @@ export default {
                         (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
                        ${strQry}  ;                
                         
-                        select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
+                        select hims_f_leave_application_id,LA.employee_id,leave_application_code,from_leave_session,
                         case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
                         L.leave_description,from_date,to_leave_session,holiday_included,
                         CASE WHEN L.leave_category='A' and AN.from_normal_salary='N' THEN DATE_SUB(LA.to_date, INTERVAL 1 DAY) else LA.to_date END as to_date,
                         weekoff_included,total_applied_days from hims_f_leave_application LA 
                         inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
-                        inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id ${deptStr}
+                        inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
+                        left join hims_f_employee_annual_leave AN on 
+                            LA.hims_f_leave_application_id=AN.leave_application_id ${deptStr}
                         where E.hospital_id=? and LA.status='APR' ${strQry} and  
                         (from_date between date(?) and date(?) or to_date between date(?) and date(?) or
                         date(?) between  from_date and to_date) ;
