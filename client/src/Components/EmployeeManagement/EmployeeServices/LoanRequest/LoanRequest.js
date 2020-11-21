@@ -44,7 +44,8 @@ class LoanRequest extends Component {
       loan_limit: 0,
       start_year: moment().year(), //parseInt(moment().year(), 10),
       deducting_year: moment().year(),
-      deducting_month: moment().add(1, "months").format("M"), //parseInt(, 10) + 1
+      // deducting_month: moment().add(1, "months").format("M"), //parseInt(, 10) + 1
+      deducting_month: parseInt(moment(new Date()).format("M"), 10),
       // request_type: "LO"
       start_month: moment().add(1, "months").format("M"),
       decimal_places: 0,
@@ -225,7 +226,7 @@ class LoanRequest extends Component {
     exclude = exclude || [];
     let items = {
       deducting_year: moment().year(),
-      deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
+      deducting_month: parseInt(moment(new Date()).format("M"), 10),
       advance_amount: null,
       advance_reason: null,
       employee_name: null,

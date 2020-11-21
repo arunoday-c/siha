@@ -33,7 +33,7 @@ class LoanRequest extends Component {
       loan_limit: 0,
       start_year: moment().year(),
       deducting_year: moment().year(),
-      deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
+      deducting_month: parseInt(moment(new Date()).format("M"), 10),
       request_type: "LO",
       hospital_id: "",
       decimal_places: 0,
@@ -124,7 +124,7 @@ class LoanRequest extends Component {
   clearAdvanceState() {
     this.setState({
       deducting_year: moment().year(),
-      deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
+      deducting_month: parseInt(moment(new Date()).format("M"), 10),
       advance_amount: null,
       advance_reason: null,
     });
