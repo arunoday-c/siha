@@ -682,6 +682,7 @@ class PurchaseOrderEntry extends Component {
                         onClear: () => {
                           this.setState({
                             vendor_id: null,
+                            vendorDetails: [],
                           });
                         },
                       }}
