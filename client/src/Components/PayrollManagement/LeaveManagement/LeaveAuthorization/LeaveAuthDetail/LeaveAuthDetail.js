@@ -6,7 +6,10 @@ import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehLoader from "../../../..//Wrapper/fullPageLoader";
 import { MainContext } from "algaeh-react-components";
-import { AlgaehSecurityElement } from "algaeh-react-components";
+import {
+  AlgaehSecurityElement,
+  AlgaehMessagePop,
+} from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../../hooks";
 
 class LeaveAuthDetail extends Component {
@@ -51,13 +54,13 @@ class LeaveAuthDetail extends Component {
         if (nextProps.open) {
           this.getEmployeeLeaveHistory();
           if (this.state.data.document_mandatory === "Y") {
+            debugger;
             this.getDocuments(this.state.data.leave_application_code);
           }
         }
       }
     );
   }
-
   getDocuments = (contract_no) => {
     newAlgaehApi({
       uri: "/getContractDoc",
@@ -70,6 +73,7 @@ class LeaveAuthDetail extends Component {
       .then((res) => {
         if (res.data.success) {
           let { data } = res.data;
+
           this.setState(
             {
               contract_docs: data,
@@ -81,10 +85,9 @@ class LeaveAuthDetail extends Component {
         }
       })
       .catch((e) => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: e.message,
+        AlgaehMessagePop({
           type: "error",
+          display: e.message,
         });
       });
   };
@@ -105,7 +108,7 @@ class LeaveAuthDetail extends Component {
           });
         }
       },
-      onFailure: (err) => { },
+      onFailure: (err) => {},
     });
   }
 
@@ -455,10 +458,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.from_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.from_leave_session === "FH"
-                                    ? "First Half"
-                                    : this.state.data.from_leave_session === "SH"
-                                      ? "Second Half"
-                                      : "------"}
+                                  ? "First Half"
+                                  : this.state.data.from_leave_session === "SH"
+                                  ? "Second Half"
+                                  : "------"}
                                 )
                               </small>
                             </h6>
@@ -480,10 +483,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.to_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.to_leave_session === "FH"
-                                    ? "First Half"
-                                    : this.state.data.to_leave_session === "SH"
-                                      ? "Second Half"
-                                      : "------"}
+                                  ? "First Half"
+                                  : this.state.data.to_leave_session === "SH"
+                                  ? "Second Half"
+                                  : "------"}
                                 )
                               </small>
                             </h6>
@@ -522,35 +525,35 @@ class LeaveAuthDetail extends Component {
 
                           <div className="col-12 form-group">
                             {this.state.data.leave_category === "A" &&
-                              this.state.data.auth_level ===
+                            this.state.data.auth_level ===
                               this.state.data.leave_levels.length ? (
-                                <div
-                                  className="customCheckbox"
-                                  style={{
-                                    textAlign: "right",
-                                  }}
-                                >
-                                  <label className="checkbox inline">
-                                    <input
-                                      type="checkbox"
-                                      name="from_normal_salary"
-                                      value="Y"
-                                      checked={
-                                        this.state.data.from_normal_salary === "Y"
-                                          ? true
-                                          : false
-                                      }
-                                      onChange={this.radioChange.bind(this)}
-                                      disabled={
-                                        this.props.type !== undefined
-                                          ? true
-                                          : false
-                                      }
-                                    />
-                                    <span>From Normal Salary</span>
-                                  </label>
-                                </div>
-                              ) : null}
+                              <div
+                                className="customCheckbox"
+                                style={{
+                                  textAlign: "right",
+                                }}
+                              >
+                                <label className="checkbox inline">
+                                  <input
+                                    type="checkbox"
+                                    name="from_normal_salary"
+                                    value="Y"
+                                    checked={
+                                      this.state.data.from_normal_salary === "Y"
+                                        ? true
+                                        : false
+                                    }
+                                    onChange={this.radioChange.bind(this)}
+                                    disabled={
+                                      this.props.type !== undefined
+                                        ? true
+                                        : false
+                                    }
+                                  />
+                                  <span>From Normal Salary</span>
+                                </label>
+                              </div>
+                            ) : null}
                           </div>
                         </div>
                       </div>
@@ -577,10 +580,10 @@ class LeaveAuthDetail extends Component {
                                 </li>
                               ))
                             ) : (
-                                <div className="col-12 noAttachment" key={1}>
-                                  <p>No Attachments Available</p>
-                                </div>
-                              )}
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Attachments Available</p>
+                              </div>
+                            )}
                           </ul>
                         </div>
                       )}
@@ -662,8 +665,8 @@ class LeaveAuthDetail extends Component {
                                         Processed
                                       </span>
                                     ) : (
-                                                "------"
-                                              )}
+                                      "------"
+                                    )}
                                   </span>
                                 );
                               },
@@ -673,14 +676,14 @@ class LeaveAuthDetail extends Component {
                                     {row.status === "PEN"
                                       ? "Pending"
                                       : row.status === "APR"
-                                        ? "Approved"
-                                        : row.status === "REJ"
-                                          ? "Rejected"
-                                          : row.status === "PRO"
-                                            ? "Processed"
-                                            : row.status === "CAN"
-                                              ? "Cancelled"
-                                              : "------"}
+                                      ? "Approved"
+                                      : row.status === "REJ"
+                                      ? "Rejected"
+                                      : row.status === "PRO"
+                                      ? "Processed"
+                                      : row.status === "CAN"
+                                      ? "Cancelled"
+                                      : "------"}
                                   </span>
                                 );
                               },
@@ -837,9 +840,9 @@ class LeaveAuthDetail extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => { },
-                            onDelete: () => { },
-                            onDone: () => { },
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {},
                           }}
                         />
                       </div>

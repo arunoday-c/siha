@@ -306,7 +306,6 @@ export default {
               validateLeaveApplictn(req.body, _mysql)
                 .then((deductionResult) => {
                   getLeaveAuthFields(input["auth_level"]).then((authFields) => {
-                    debugger;
                     _mysql
                       .executeQuery({
                         query:
@@ -656,7 +655,6 @@ export default {
                                             next(error);
                                           });
                                       } else {
-                                        debugger;
                                         singleYearAuthorize(
                                           month_number,
                                           deductionResult,
@@ -3989,16 +3987,18 @@ function validateLeaveApplictn(inputs, my_sql, req) {
       let _mysql = my_sql;
 
       const from_year = moment(input.from_date, "YYYY-MM-DD").format("YYYY");
-      const to_year = moment(input.actual_to_date, "YYYY-MM-DD").format("YYYY");
+      const to_year = moment(
+        input.actual_to_date ? input.actual_to_date : input.to_date,
+        "YYYY-MM-DD"
+      ).format("YYYY");
 
       input["year"] = from_year;
       // console.log("from_year", from_year)
       // console.log("to_year", to_year)
       //for sinle  year leave
-      debugger;
+
       if (parseInt(from_year) == parseInt(to_year)) {
         console.log("OPTION1:");
-        debugger;
 
         calculateNoLeaveDays(input, _mysql)
           .then((sameYearResult) => {
