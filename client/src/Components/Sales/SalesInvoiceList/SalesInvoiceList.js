@@ -142,8 +142,7 @@ class SalesInvoiceList extends Component {
                                                 others: {
                                                     maxWidth: 60,
                                                     resizable: false,
-                                                    style: { textAlign: "center" },
-                                                    filterable: false,
+                                                    style: { textAlign: "center" }
                                                 },
                                             },
                                             {
@@ -159,8 +158,7 @@ class SalesInvoiceList extends Component {
                                                 others: {
                                                     maxWidth: 60,
                                                     resizable: false,
-                                                    style: { textAlign: "center" },
-                                                    filterable: false,
+                                                    style: { textAlign: "center" }
                                                 },
                                             },
                                             {
@@ -176,8 +174,7 @@ class SalesInvoiceList extends Component {
                                                 others: {
                                                     maxWidth: 100,
                                                     resizable: false,
-                                                    style: { textAlign: "center" },
-                                                    filterable: false,
+                                                    style: { textAlign: "center" }
                                                 },
                                             },
                                             {
