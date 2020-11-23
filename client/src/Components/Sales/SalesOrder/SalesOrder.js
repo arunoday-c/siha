@@ -103,6 +103,7 @@ class SalesOrder extends Component {
       canceled_reason_sales: "",
       rejectVisible: false,
       is_posted: "N",
+      is_revert: "N",
     };
   }
 

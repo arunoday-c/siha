@@ -376,7 +376,8 @@ const ClearData = ($this, e) => {
     dataPosted: true,
     canceled_reason_sales: "",
     rejectVisible: false,
-    is_posted: "N"
+    is_posted: "N",
+    is_revert: "N"
     // services_required: "N"
   };
 
