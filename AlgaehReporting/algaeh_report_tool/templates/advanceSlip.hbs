@@ -1,0 +1,75 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{header.hospital_name}}</span></td>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{header.employee_code}}</span>
+                    </td>
+                    <td colspan="2"><label class="textEnLft">Employee Name:</label><span
+                            class="valueText">{{header.full_name}}</span></td>
+                </tr>
+            </table>
+        </section>
+  <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                
+                <tr>
+                    <td><label class="textEnLft">Request No:</label><span class="valueText">{{header.advance_number}}</span></td>
+
+                    <td><label class="textEnLft">Request Date: </label><span class="valueText">
+                            {{header.created_date}}</span></td>
+                    <td><label class="textEnLft">Request Status</label><span class="valueText">{{header.advance_status}} </span></td>
+
+                   
+
+                </tr>
+        
+                <tr>
+                    <td><label class="textEnLft">Requested Amount:</label><span class="valueText"> {{numberFormating header.advance_amount currencyheader}}</span>
+              
+                    <td><label class="textEnLft">Deducting On</label><span class="valueText">{{header.month_name}} {{header.deducting_year}} </span></td>
+
+                    <td><label class="textEnLft">Advance Reason: </label><span class="valueText">
+                            {{header.advance_reason}}</span></td>
+
+
+                </tr>
+                
+              
+
+            </table>
+        </section>
+        </br>
+        </br>
+        <section>
+            <table class="tableForLabelSignature labelBlock" cell-padding="0">
+                <tr>
+                    <td width="50%">
+                        <p>I hereby request to avail of the company Advance facility and guarantee to repay as agreed on the Advance slip.</p>
+                        <span>{{header.full_name}}</span>
+                        <span>{{header.employee_code}}</span>
+                        <small>{{header.designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
+                    <td width="50%" class="numberFld">
+                        <p>أطلب بموجب هذا الاستفادة من تسهيلات الشركة المسبقة وضمان السداد كما هو متفق عليه في القسيمة المسبقة</p>
+                      
+                        <span>{{header.arabic_name}}</span>
+                        <span>{{header.employee_code}}</span>
+                        <small>{{header.designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
+                </tr>
+
+
+            </table>
+        </section>
+        <p style="text-align: center">This is a system generated Advance Slip on {{currentDateTime 'date'}}. </p>
+    
+    </div>
+</body>
