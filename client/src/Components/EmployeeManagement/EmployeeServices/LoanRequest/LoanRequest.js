@@ -578,6 +578,36 @@ class LoanRequest extends Component {
     );
   }
 
+  generateAdvReport(row) {
+    console.log(row);
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "advanceSlip",
+          reportParams: [
+            {
+              name: "hims_f_employee_advance_id",
+              value: row.hims_f_employee_advance_id,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Advance Request Slip for ${row.employee_code}-${row.employee_name}`;
+        window.open(origin);
+      },
+    });
+  }
+
   cancelAdvance(row) {
     swal({
       title: "Are you Sure you want to Cancel?",
@@ -838,17 +868,21 @@ class LoanRequest extends Component {
                       ),
                       displayTemplate: (row) => {
                         return (
-                          <span
-                            style={{
-                              pointerEvents:
-                                row.advance_status !== "APR" ? "none" : null,
-                              opacity:
-                                row.advance_status !== "APR" ? "0.1" : null,
-                            }}
-                          >
+                          <span>
                             <i
+                              style={{
+                                pointerEvents:
+                                  row.advance_status !== "APR" ? "none" : null,
+                                opacity:
+                                  row.advance_status !== "APR" ? "0.1" : null,
+                              }}
                               className="fas fa-times"
                               onClick={this.cancelAdvance.bind(this, row)}
+                            ></i>
+
+                            <i
+                              className="fas fa-print"
+                              onClick={this.generateAdvReport.bind(this, row)}
                             ></i>
                           </span>
                         );
