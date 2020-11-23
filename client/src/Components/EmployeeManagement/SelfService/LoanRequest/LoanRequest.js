@@ -985,15 +985,16 @@ class LoanRequest extends Component {
                         ),
                         displayTemplate: (row) => {
                           return (
-                            <span
-                              style={{
-                                pointerEvents:
-                                  row.advance_status !== "APR" ? "none" : null,
-                                opacity:
-                                  row.advance_status !== "APR" ? "0.1" : null,
-                              }}
-                            >
+                            <span>
                               <i
+                                style={{
+                                  pointerEvents:
+                                    row.advance_status !== "APR"
+                                      ? "none"
+                                      : null,
+                                  opacity:
+                                    row.advance_status !== "APR" ? "0.1" : null,
+                                }}
                                 className="fas fa-times"
                                 onClick={this.cancelAdvance.bind(this, row)}
                               ></i>
