@@ -65,7 +65,7 @@ class DispatchNote extends Component {
       batch_detail_view: false,
       dispatched_quantity: 0,
       inventory_stock_detail: [],
-      calcelEnable: true
+      calcelEnable: true,
     };
     this.baseState = this.state;
   }
@@ -137,8 +137,8 @@ class DispatchNote extends Component {
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-          ? " disableFinder"
-          : "";
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -186,7 +186,7 @@ class DispatchNote extends Component {
           }}
           userArea={
             <div className="row">
-              <div className="col">
+              <div className="col-3">
                 <AlgaehLabel
                   label={{
                     forceLabel: "DN Date",
@@ -195,20 +195,19 @@ class DispatchNote extends Component {
                 <h6>
                   {this.state.dispatch_note_date
                     ? moment(this.state.dispatch_note_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
               {this.state.dataExists === true ? (
-                <div className="col">
+                <div className="col-9 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",
                     }}
                   />
                   <h6>{this.state.full_name}</h6>
-
                 </div>
               ) : null}
             </div>
@@ -216,17 +215,17 @@ class DispatchNote extends Component {
           printArea={
             this.state.dispatch_note_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Dispatch Report",
-                    events: {
-                      onClick: () => {
-                        generateDispatchReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Dispatch Report",
+                      events: {
+                        onClick: () => {
+                          generateDispatchReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}

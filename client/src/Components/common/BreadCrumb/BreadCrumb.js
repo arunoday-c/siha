@@ -40,7 +40,7 @@ class BreadCrumb extends PureComponent {
   showSpotlightSearch() {
     if (this.props.soptlightSearch !== undefined) {
       return (
-        <div className="col">
+        <div className="col-2">
           <div
             className="row spotlightSearchBox"
             onClick={SearchDetails.bind(this, this)}
@@ -134,7 +134,7 @@ class BreadCrumb extends PureComponent {
           // style={{ ...this.props.breadStyle }}
         >
           <div className="breadCrumb-Data row">
-            <div className="col-3 text hdg_bredcrump">
+            <div className="col-2 text hdg_bredcrump">
               <h5 className="header">{this.props.title}</h5>
               <ul>
                 {this.props.pageNavPath !== undefined
@@ -155,7 +155,7 @@ class BreadCrumb extends PureComponent {
 
             {this.showSpotlightSearch()}
 
-            <div className="col margin-top-15">{this.showUserArea()}</div>
+            <div className="col-6 margin-top-15">{this.showUserArea()}</div>
 
             <div className="col print-area">
               <div>

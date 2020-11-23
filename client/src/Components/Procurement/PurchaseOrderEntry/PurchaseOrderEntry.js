@@ -363,7 +363,7 @@ class PurchaseOrderEntry extends Component {
           }}
           userArea={
             <div className="row">
-              <div className="col">
+              <div className="col-3">
                 <AlgaehLabel
                   label={{
                     forceLabel: "PO Date",
@@ -377,7 +377,7 @@ class PurchaseOrderEntry extends Component {
               </div>
 
               {this.state.dataExitst === true ? (
-                <div className="col">
+                <div className="col-3">
                   <AlgaehLabel
                     label={{
                       forceLabel: "PO Status",
@@ -413,7 +413,7 @@ class PurchaseOrderEntry extends Component {
                 </div>
               ) : this.state.dataExitst === false &&
                 this.state.purchase_number !== null ? (
-                <div className="col">
+                <div className="col-3">
                   <AlgaehLabel
                     label={{
                       forceLabel: "PO Status",
@@ -428,7 +428,7 @@ class PurchaseOrderEntry extends Component {
                 </div>
               ) : null}
               {this.state.dataExitst === true ? (
-                <div className="col">
+                <div className="col-6 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",
