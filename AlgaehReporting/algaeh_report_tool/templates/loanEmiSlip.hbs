@@ -51,6 +51,7 @@
 
             </table>
         </section>
+                    {{#hasElement result}}
         <h3>Installment Details:-</h3>
             <table class="tableForData" cell-padding="0">
                 <thead>
@@ -66,7 +67,6 @@
                 </thead>
                 <tbody>
                     
-                    {{#hasElement result}}
                     {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -78,12 +78,39 @@
                         <td  class="numberFld">{{numberFormating closing_balance ../currency}}</td>
                     </tr>
                     {{/each }}
-                       {{else}}
-                    <tr>
-                        <td colspan="7" class="noResultTextReport">No Records Found</td>
-                    </tr>{{/hasElement }}
                 </tbody>
             </table>
+                       {{else}}{{/hasElement }}
         </section>
+        </br>
+        </br>
+        <section>
+            <table class="tableForLabelSignature labelBlock" cell-padding="0">
+                <tr>
+                    <td width="50%">
+                        <p>I hereby request to avail of company loan facility and guarantee to repay as agreed on loan slip.</p>
+                       
+                        <span>{{header.full_name}}</span>
+                        <span>{{header.employee_code}}</span>
+                        <small>{{header.designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
+                    <td width="50%" class="numberFld">
+                        <p>أطلب بموجب هذا الاستفادة من تسهيلات قرض الشركة وضمان السداد كما هو متفق عليه في قسيمة القرض.</p>
+                      
+                        <span>{{header.arabic_name}}</span>
+                        <span>{{header.employee_code}}</span>
+                        <small>{{header.designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
+                </tr>
+
+
+            </table>
+        </section>
+        <p style="text-align: center">This is a system generated Loan Slip on {{currentDateTime 'date'}}. </p>
+    
     </div>
 </body>
