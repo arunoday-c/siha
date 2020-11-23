@@ -1,7 +1,7 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import labModels from "../models/laboratory";
-
+import { labResultDispatch } from "../models/labDispatch";
 const {
   getLabOrderedServices,
   getLabOrderedServicesPatient,
@@ -157,6 +157,12 @@ export default () => {
       });
     }
   );
+  api.get("/labResultDispatch", labResultDispatch, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   return api;
 };

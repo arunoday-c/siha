@@ -343,11 +343,12 @@ export default {
   getReport: async (req, res) => {
     const input = req.query;
     const _mysql = new algaehMysql();
+    // const multiMerdgeReport = input.multiMerdgeReport;
+
     try {
       const _inputParam = JSON.parse(input.report);
-      const { others } = _inputParam;
+      const { others, multiMerdgeReport } = _inputParam;
       let usehbs = "";
-
       let singleHeaderFooter = false;
       if (others) {
         usehbs = others.usehbs ? others.usehbs : "";
@@ -372,11 +373,26 @@ export default {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           _inputParam["crypto"] = req.userIdentity;
 
-          const _reportCount = data[0].length;
+          let _reportCount = data[0].length;
+          let considerSameReport = false;
+          let reportValues = {};
+          if (multiMerdgeReport) {
+            // console.log("multiMerdgeReport", multiMerdgeReport);
+            considerSameReport = true;
+            _reportCount =
+              typeof multiMerdgeReport === "string"
+                ? parseInt(multiMerdgeReport)
+                : multiMerdgeReport;
+          }
+
           if (_reportCount > 0) {
             let _reportOutput = [];
             for (let r = 0; r < _reportCount; r++) {
-              const _data = data[0][r];
+              let _r = r;
+              if (considerSameReport) {
+                _r = 0;
+              }
+              const _data = data[0][_r];
 
               const _inputOrders = eval(
                 _data.report_input_series === null
@@ -385,12 +401,20 @@ export default {
               );
 
               let _value = [];
-
               for (var i = 0; i < _inputOrders.length; i++) {
-                const _params = _.find(
-                  _inputParam.reportParams,
-                  (f) => f.name == _inputOrders[i]
-                );
+                let _params = undefined;
+                if (multiMerdgeReport) {
+                  _params = _.find(
+                    _inputParam.reportParams[r],
+                    (f) => f.name == _inputOrders[i]
+                  );
+                } else {
+                  _params = _.find(
+                    _inputParam.reportParams,
+                    (f) => f.name == _inputOrders[i]
+                  );
+                }
+
                 if (_params != undefined) {
                   _value.push(_params.value);
                 } else if (_inputOrders[i] == "login_branch") {
@@ -419,8 +443,11 @@ export default {
                   const _path = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates/Output",
-                    _data.report_name + moment().format("YYYYMMDDHHmmss")
+                    `${_data.report_name + moment().format("YYYYMMDDHHmmss")}${
+                      multiMerdgeReport ? "_" + r : ""
+                    }`
                   );
+
                   const singleHeader = _data.report_type ? true : false;
                   // const _reportType = "PDF";
                   const _supportingJS = path.join(
@@ -478,30 +505,39 @@ export default {
                       ) {
                         //const _header
 
-                        header_format = await compile(
-                          _data.report_header_file_name,
-                          {
-                            reqHeader: _header,
-                            ...data[1][0],
-                            identity: req.userIdentity,
-                            user_name: req.userIdentity["username"],
-                            report_name_for_header:
-                              _data.report_name_for_header,
-                            filter:
-                              _inputParam.reportParams == null
-                                ? []
-                                : _inputParam.reportParams,
-                          }
-                        );
+                        const callHeader = async () => {
+                          header_format = await compile(
+                            _data.report_header_file_name,
+                            {
+                              reqHeader: _header,
+                              ...data[1][0],
+                              identity: req.userIdentity,
+                              user_name: req.userIdentity["username"],
+                              report_name_for_header:
+                                _data.report_name_for_header,
+                              filter:
+                                _inputParam.reportParams == null
+                                  ? []
+                                  : _inputParam.reportParams,
+                            }
+                          );
 
-                        // const styleObj = String(_data.report_props);
-                        _pdfTemplating["headerTemplate"] = header_format;
+                          // const styleObj = String(_data.report_props);
+                          _pdfTemplating["headerTemplate"] = header_format;
 
-                        _pdfTemplating["margin"] = {
-                          top: styleObj.header.top,
-                          // bottom: styleObj.header.bottom?styleObj.header.bottom:""
-                          ..._inputParam.headerProps,
+                          _pdfTemplating["margin"] = {
+                            top: styleObj.header.top,
+                            // bottom: styleObj.header.bottom?styleObj.header.bottom:""
+                            ..._inputParam.headerProps,
+                          };
                         };
+                        if (multiMerdgeReport) {
+                          if (r === 0) {
+                            callHeader();
+                          }
+                        } else {
+                          callHeader();
+                        }
                       }
                     } else {
                       if (_data.report_type) {
@@ -523,48 +559,52 @@ export default {
                         _data.report_footer_file_name != null &&
                         _data.report_footer_file_name != ""
                       ) {
-                        footerFormat = await compile(
-                          _data.report_footer_file_name,
-                          {
-                            reqHeader: _header,
-                            ...data[1][0],
-                            identity: req.userIdentity,
-                            report_name_for_header:
-                              _data.report_name_for_header,
-                          }
-                        );
+                        if (!multiMerdgeReport) {
+                          footerFormat = await compile(
+                            _data.report_footer_file_name,
+                            {
+                              reqHeader: _header,
+                              ...data[1][0],
+                              identity: req.userIdentity,
+                              report_name_for_header:
+                                _data.report_name_for_header,
+                            }
+                          );
 
-                        _pdfTemplating["footerTemplate"] = footerFormat;
-                        _pdfTemplating["margin"] = {
-                          ..._pdfTemplating["margin"],
-                          bottom: styleObj.footer.bottom,
-                          ..._inputParam.footerProps,
-                        };
-                      } else {
-                        footerFormat = `<style> .pdffooter { font-size: 8px;
-                        font-family: Arial, Helvetica, sans-serif; font-weight: bold; width:96%; text-align: center; color: grey; padding-left: 10px; }
-                      .showreportname{float:left;padding-left:5px;font-size: 08px;}
-                      .showcompay{float:right;padding-right:5px;font-size: 08px;}
-                      </style>
-                      <div class="pdffooter">
-                      <span class="showreportname">System Generated Report (Generated By: ${
-                        req.userIdentity["employee_code"]
-                      }/${
-                          req.userIdentity["full_name"]
-                        } on ${moment().format("DD-MM-YYYY")})</span>
-                      <span>Page </span>
-                      <span class="pageNumber"></span> / <span class="totalPages"></span>
-                      <span class="showcompay">Powered by Algaeh Techonologies</span>
-                    </div>`;
-                        if (singleHeaderFooter === false) {
                           _pdfTemplating["footerTemplate"] = footerFormat;
+                          _pdfTemplating["margin"] = {
+                            ..._pdfTemplating["margin"],
+                            bottom: styleObj.footer.bottom,
+                            ..._inputParam.footerProps,
+                          };
                         }
+                      } else {
+                        if (!multiMerdgeReport) {
+                          footerFormat = `<style> .pdffooter { font-size: 8px;
+                            font-family: Arial, Helvetica, sans-serif; font-weight: bold; width:96%; text-align: center; color: grey; padding-left: 10px; }
+                          .showreportname{float:left;padding-left:5px;font-size: 08px;}
+                          .showcompay{float:right;padding-right:5px;font-size: 08px;}
+                          </style>
+                          <div class="pdffooter">
+                          <span class="showreportname">System Generated Report (Generated By: ${
+                            req.userIdentity["employee_code"]
+                          }/${
+                            req.userIdentity["full_name"]
+                          } on ${moment().format("DD-MM-YYYY")})</span>
+                          <span>Page </span>
+                          <span class="pageNumber"></span> / <span class="totalPages"></span>
+                          <span class="showcompay">Powered by Algaeh Techonologies</span>
+                        </div>`;
+                          if (singleHeaderFooter === false) {
+                            _pdfTemplating["footerTemplate"] = footerFormat;
+                          }
 
-                        _pdfTemplating["margin"] = {
-                          ..._pdfTemplating["margin"],
-                          bottom: styleObj.footer.bottom,
-                          ..._inputParam.footerProps,
-                        };
+                          _pdfTemplating["margin"] = {
+                            ..._pdfTemplating["margin"],
+                            bottom: styleObj.footer.bottom,
+                            ..._inputParam.footerProps,
+                          };
+                        }
                       }
                     } else {
                       if (_data.report_type) {
@@ -667,8 +707,9 @@ export default {
                     });
 
                     await browser.close();
-
+                    // console.log("r", r);
                     if (r == _reportCount - 1) {
+                      console.log("last r value", r);
                       let _outfileName =
                         "merdge_" + moment().format("YYYYMMDDHHmmss") + ".pdf";
                       let _rOut = path.join(

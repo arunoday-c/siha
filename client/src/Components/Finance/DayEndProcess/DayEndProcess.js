@@ -107,15 +107,16 @@ class DayEndProcess extends Component {
       currency_symbol,
     };
     const params = new URLSearchParams(this.props.location?.search);
+    debugger
     if (params?.get("from_date")) {
       this.setState({
-        from_date: params?.get("from_date"),
+        from_date: moment(params?.get("from_date"))._d//,params?.get("from_date"),
       });
     }
     if (params?.get("to_date")) {
       this.setState(
         {
-          to_date: params?.get("to_date"),
+          to_date: moment(params?.get("to_date"))._d,//params?.get("to_date"),
           currency: currency,
         },
         () => this.getDayEndProcess(this)
