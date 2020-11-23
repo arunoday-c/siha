@@ -148,7 +148,7 @@ export default class RejoinAnnualLeave extends Component {
     let employee_data = this.state.employee_data;
     let _index = employee_data.indexOf(row);
 
-    row["last_salary_process_date"] = moment(e)._d;
+    row["to_date"] = moment(e)._d;
     employee_data[_index] = row;
     this.setState({
       employee_data: employee_data,
@@ -261,7 +261,7 @@ export default class RejoinAnnualLeave extends Component {
 
                       label: <AlgaehLabel label={{ forceLabel: "action" }} />,
                       displayTemplate: (row) => {
-                        return row.employee_joined === "N" ? (
+                        return (
                           <span>
                             <i
                               className="fa fa-check"
@@ -271,7 +271,7 @@ export default class RejoinAnnualLeave extends Component {
                               )}
                             />
                           </span>
-                        ) : null;
+                        );
                       },
                       others: {
                         maxWidth: 65,
