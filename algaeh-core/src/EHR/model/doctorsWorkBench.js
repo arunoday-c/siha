@@ -961,7 +961,7 @@ let getMyDay = (req, res, next) => {
           on V.appointment_id = PA.hims_f_patient_appointment_id inner join hims_d_title as T 
           on P.title_id = T.his_d_title_id
           inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id
-          left join hims_f_patient_diagnosis PD on PD.episode_id=V.episode_id and PD.diagnosis_type='P'
+          left join hims_f_patient_diagnosis PD on PD.episode_id=V.episode_id and PD.diagnosis_type='P' and PD.record_status='A'
           left join hims_d_icd ICD on ICD.hims_d_icd_id=PD.daignosis_id
           where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND ${_query}`,
         values: [req.userIdentity.hospital_id],

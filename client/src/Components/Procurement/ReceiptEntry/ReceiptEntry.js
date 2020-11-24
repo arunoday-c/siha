@@ -237,7 +237,7 @@ class ReceiptEntry extends Component {
           }}
           userArea={
             <div className="row">
-              <div className="col">
+              <div className="col-3">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Receipt Date",
@@ -250,7 +250,7 @@ class ReceiptEntry extends Component {
                 </h6>
               </div>
               {this.state.dataExitst === true ? (
-                <div className="col">
+                <div className="col-9 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Receipt Status",
@@ -606,9 +606,8 @@ class ReceiptEntry extends Component {
 
           <div className="col-12">
             <div className="row" style={{ marginBottom: 55 }}>
-              <div className="col" >
-                <div className="row" >
-
+              <div className="col">
+                <div className="row">
                   <div
                     className="portlet portlet-bordered"
                     style={{ marginBottom: 60 }}
@@ -619,7 +618,6 @@ class ReceiptEntry extends Component {
                       </div>
                     </div>
                     <div className="portlet-body">
-
                       <div className="row">
                         <div className="col-3">
                           {" "}
@@ -673,7 +671,9 @@ class ReceiptEntry extends Component {
                                         ></i>
                                         <i
                                           className="fas fa-eye"
-                                          onClick={() => this.downloadDoc(doc, true)}
+                                          onClick={() =>
+                                            this.downloadDoc(doc, true)
+                                          }
                                         ></i>
                                         {!this.state.postEnable ? (
                                           <i
@@ -692,8 +692,11 @@ class ReceiptEntry extends Component {
                               </ul>
                             </div>
                           </div>
-                        </div></div></div>
-                  </div></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="col-lg-5" style={{ textAlign: "right" }}>
                 <div className="row">

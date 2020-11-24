@@ -353,6 +353,7 @@ class OrderMedication extends Component {
                     favMedPop: false,
                   });
                 }}
+                className={`row algaehNewModal`}
                 // onOk={onOK}
               >
                 <div className="col-12" id="FavMedGrid_Cntr">
@@ -381,7 +382,6 @@ class OrderMedication extends Component {
                           );
                         },
                         others: {
-                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" },
                         },
@@ -389,25 +389,6 @@ class OrderMedication extends Component {
                           return "greenCell";
                         },
                       },
-
-                      // {
-                      //   fieldName: "isFavMedcine",
-                      //   label: (
-                      //     <AlgaehLabel
-                      //       label={{ forceLabel: "Is Favourite" }}
-                      //     />
-                      //   ),
-                      //   displayTemplate: (row) => {
-                      //     return (
-                      //       <span>
-                      //         {row.isFavMedcine === "Y" ? "yes" : "No"}
-                      //       </span>
-                      //     );
-                      //   },
-                      //   others: {
-                      //     minWidth: 100,
-                      //   },
-                      // },
                     ]}
                     keyId="item_id"
                     dataSource={{
@@ -417,6 +398,7 @@ class OrderMedication extends Component {
                     //   allowEdit: false,
                     // }}
                     // isEditable={true}
+                    filter={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     byForceEvents={true}
                     events={

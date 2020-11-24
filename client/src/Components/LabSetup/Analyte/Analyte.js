@@ -7,7 +7,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -16,7 +16,7 @@ import {
   changeTexts,
   onchangegridcol,
   insertLabAnalytes,
-  updateLabAnalytes  
+  updateLabAnalytes,
 } from "./AnalyteEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -33,7 +33,8 @@ class LabAnalyte extends Component {
       result_unit: null,
       active: {},
       description_error: false,
-      description_error_txt: ""
+      description_error_txt: "",
+      reference_range_required: false,
     };
     this.baseState = this.state;
   }
@@ -42,7 +43,7 @@ class LabAnalyte extends Component {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
     if (
       this.props.labanalytes === undefined ||
@@ -54,8 +55,8 @@ class LabAnalyte extends Component {
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "labanalytes"
-        }
+          mappingName: "labanalytes",
+        },
       });
     }
   }
@@ -66,18 +67,29 @@ class LabAnalyte extends Component {
     }
   }
 
-  ShowModel = row => {
+  ShowModel = (row) => {
     this.setState({
       isOpen: !this.state.isOpen,
-      active: row
+      active: row,
     });
   };
 
   CloseModel(e) {
     this.setState({
       isOpen: !this.state.isOpen,
-      active: {}
+      active: {},
     });
+  }
+  changeChecks(e) {
+    this.setState({
+      [e.target.name]: e.target.checked,
+    });
+  }
+  gridLevelUpdate(row, e) {
+    e = e.name === undefined ? e.currentTarget : e;
+    row[e.name] = e.checked ? "Y" : "N";
+
+    row.update();
   }
   render() {
     return (
@@ -87,15 +99,15 @@ class LabAnalyte extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Analyte Description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "description",
               value: this.state.description,
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
 
@@ -103,7 +115,7 @@ class LabAnalyte extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "analyte_type",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "analyte_type",
@@ -112,26 +124,37 @@ class LabAnalyte extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.FORMAT_ANALYTE_TYPE
+                data: GlobalVariables.FORMAT_ANALYTE_TYPE,
               },
-              onChange: changeTexts.bind(this, this)
+              onChange: changeTexts.bind(this, this),
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               fieldName: "result_unit",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "result_unit",
               value: this.state.result_unit,
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
+          <div className="customCheckbox">
+            <label className="checkbox block">
+              <input
+                type="checkbox"
+                name="reference_range_required"
+                checked={this.state.reference_range_required}
+                onChange={this.changeChecks.bind(this)}
+              />
+              <span>Reference Range Required</span>
+            </label>
+          </div>
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
             <button
               onClick={insertLabAnalytes.bind(this, this)}
@@ -163,7 +186,7 @@ class LabAnalyte extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Analyte Range" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -173,7 +196,7 @@ class LabAnalyte extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -187,8 +210,8 @@ class LabAnalyte extends Component {
                         maxWidth: 120,
                         resizable: false,
                         filterable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "description",
@@ -197,7 +220,7 @@ class LabAnalyte extends Component {
                           label={{ forceLabel: "Analyte Description" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             textBox={{
@@ -205,30 +228,30 @@ class LabAnalyte extends Component {
                               className: "txt-fld",
                               name: "description",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
+                                onChange: onchangegridcol.bind(this, this, row),
                               },
                               others: {
                                 errormessage: "Description - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "analyte_type",
                       label: (
                         <AlgaehLabel label={{ fieldName: "analyte_type" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.analyte_type === "QU"
                           ? "Quality"
                           : row.analyte_type === "QN"
                           ? "Quantity"
                           : "Text";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -239,30 +262,30 @@ class LabAnalyte extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_ANALYTE_TYPE
+                                data: GlobalVariables.FORMAT_ANALYTE_TYPE,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Analyte Type - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 150 }
+                      others: { maxWidth: 150 },
                     },
                     {
                       fieldName: "result_unit",
                       label: (
                         <AlgaehLabel label={{ fieldName: "result_unit" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.result_unit === "NULL"
                           ? "--"
                           : row.result_unit;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -274,29 +297,58 @@ class LabAnalyte extends Component {
                               className: "txt-fld",
                               name: "result_unit",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
+                                onChange: onchangegridcol.bind(this, this, row),
                               },
                               others: {
                                 errormessage: "Result Unit - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 100 }
+                      others: { maxWidth: 100 },
+                    },
+                    {
+                      fieldName: "reference_range_required",
+                      label: (
+                        <AlgaehLabel
+                          label={{ fieldName: "reference_range_required" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return row.reference_range_required === "Y"
+                          ? "Yes"
+                          : "No";
+                      },
+                      editorTemplate: (row) => {
+                        const _inactive =
+                          row.reference_range_required === "N" ? false : true;
+                        return (
+                          <div>
+                            <input
+                              type="checkbox"
+                              name="reference_range_required"
+                              checked={_inactive}
+                              onChange={this.gridLevelUpdate.bind(this, row)}
+                            />
+                            <span>Yes</span>
+                          </div>
+                        );
+                      },
+                      others: { maxWidth: 100 },
                     },
                     {
                       fieldName: "created_by",
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_by" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
+                                (f) => f.algaeh_d_app_user_id === row.created_by
                               );
 
                         return (
@@ -308,12 +360,12 @@ class LabAnalyte extends Component {
                         );
                       },
 
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
+                                (f) => f.algaeh_d_app_user_id === row.created_by
                               );
 
                         return (
@@ -324,7 +376,7 @@ class LabAnalyte extends Component {
                           </span>
                         );
                       },
-                      others: { maxWidth: 150 }
+                      others: { maxWidth: 150 },
                       // disabled: true
                     },
                     {
@@ -332,29 +384,29 @@ class LabAnalyte extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      others: { maxWidth: 100 }
+                      others: { maxWidth: 100 },
                     },
                     {
                       fieldName: "analyte_status",
                       label: (
                         <AlgaehLabel label={{ fieldName: "inv_status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.analyte_status === "A"
                           ? "Active"
                           : "Inactive";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -365,38 +417,38 @@ class LabAnalyte extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
+                                data: GlobalVariables.FORMAT_STATUS,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 100 }
-                    }
+                      others: { maxWidth: 100 },
+                    },
                   ]}
                   keyId="hims_d_lab_section_id"
                   dataSource={{
                     data:
                       this.props.labanalytes === undefined
                         ? []
-                        : this.props.labanalytes
+                        : this.props.labanalytes,
                   }}
                   isEditable={true}
                   actions={{
-                    allowDelete: false
+                    allowDelete: false,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //onDelete: deleteLabAnalytes.bind(this, this),
-                    onEdit: row => {},
+                    onEdit: (row) => {},
 
-                    onDone: updateLabAnalytes.bind(this, this)
+                    onDone: updateLabAnalytes.bind(this, this),
                   }}
                 />
               </div>
@@ -411,14 +463,14 @@ class LabAnalyte extends Component {
 function mapStateToProps(state) {
   return {
     labanalytes: state.labanalytes,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLabAnalytes: AlgaehActions
+      getLabAnalytes: AlgaehActions,
     },
     dispatch
   );

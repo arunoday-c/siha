@@ -26,14 +26,14 @@ export default {
             _strAppend +
             "order by hims_d_lab_section_id desc",
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -56,16 +56,16 @@ export default {
             inputParam.description,
             inputParam.test_section,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -90,16 +90,16 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.section_status,
-            inputParam.hims_d_lab_section_id
+            inputParam.hims_d_lab_section_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -121,16 +121,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_d_lab_section_id
+            inputParam.hims_d_lab_section_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -163,14 +163,14 @@ export default {
             _strAppend +
             "order by hims_d_lab_container_id desc",
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -193,16 +193,16 @@ export default {
             inputParam.description,
             inputParam.container_id,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -227,16 +227,16 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.container_status,
-            inputParam.hims_d_lab_container_id
+            inputParam.hims_d_lab_container_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -258,16 +258,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.hims_d_lab_container_id
+            req.body.hims_d_lab_container_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -302,14 +302,14 @@ export default {
             _strAppend +
             "order by hims_d_lab_specimen_id desc",
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -333,16 +333,16 @@ export default {
             inputParam.storage_type,
             inputParam.urine_specimen,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -369,16 +369,16 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.specimen_status,
-            inputParam.hims_d_lab_specimen_id
+            inputParam.hims_d_lab_specimen_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -400,16 +400,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.hims_d_lab_specimen_id
+            req.body.hims_d_lab_specimen_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -442,14 +442,14 @@ export default {
             _strAppend +
             "order by hims_d_lab_analytes_id desc",
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -465,24 +465,25 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_lab_analytes` (`description`, `analyte_type`,`result_unit`,\
+            "INSERT INTO `hims_d_lab_analytes` (`description`, `analyte_type`,`result_unit`,`reference_range_required`,\
               `created_by` ,`created_date`) \
-              VALUES ( ?, ?, ?, ?, ?)",
+              VALUES ( ?, ?, ?, ?, ?,?)",
           values: [
             inputParam.description,
             inputParam.analyte_type,
             inputParam.result_unit,
+            inputParam.reference_range_required ? "Y" : "N",
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -499,7 +500,7 @@ export default {
         .executeQuery({
           query:
             "UPDATE `hims_d_lab_analytes` \
-          SET `description`=?, `analyte_type` = ?, `result_unit` = ?,`updated_by`=?, `updated_date`=?,`analyte_status`=? \
+          SET `description`=?, `analyte_type` = ?, `result_unit` = ?,`updated_by`=?, `updated_date`=?,`analyte_status`=?,`reference_range_required`=? \
           WHERE `record_status`='A' and `hims_d_lab_analytes_id`=?",
           values: [
             inputParam.description,
@@ -508,16 +509,17 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.analyte_status,
-            inputParam.hims_d_lab_analytes_id
+            inputParam.reference_range_required,
+            inputParam.hims_d_lab_analytes_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -539,16 +541,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.hims_d_lab_analytes_id
+            req.body.hims_d_lab_analytes_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -585,14 +587,14 @@ export default {
             _strAppend +
             "order by hims_d_test_category_id desc",
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -616,16 +618,16 @@ export default {
             inputParam.test_section,
             inputParam.investigation_type,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -652,16 +654,16 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.category_status,
-            inputParam.hims_d_test_category_id
+            inputParam.hims_d_test_category_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -683,16 +685,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.hims_d_test_category_id
+            req.body.hims_d_test_category_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -725,14 +727,14 @@ export default {
             _strAppend +
             "order by hims_d_antibiotic_id desc",
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -755,16 +757,16 @@ export default {
             inputParam.antibiotic_code,
             inputParam.antibiotic_name,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -789,16 +791,16 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.antibiotic_status,
-            inputParam.hims_d_antibiotic_id
+            inputParam.hims_d_antibiotic_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -820,16 +822,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.hims_d_antibiotic_id
+            req.body.hims_d_antibiotic_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -862,14 +864,14 @@ export default {
             _strAppend +
             "order by hims_d_micro_group_id desc",
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -893,16 +895,16 @@ export default {
             inputParam.arabic_group_name,
             inputParam.group_type,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -929,16 +931,16 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.group_status,
-            inputParam.hims_d_micro_group_id
+            inputParam.hims_d_micro_group_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -979,14 +981,14 @@ export default {
               WHERE GA.`record_status`='A' " +
             _strAppend,
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1009,16 +1011,16 @@ export default {
             inputParam.antibiotic_id,
             inputParam.group_types,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1044,16 +1046,16 @@ export default {
             inputParam.map_status,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_m_group_antibiotic_id
+            inputParam.hims_m_group_antibiotic_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1095,14 +1097,14 @@ export default {
             _strAppend +
             "order by hims_m_machine_analytes_header_id desc",
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1123,15 +1125,15 @@ export default {
           values: [
             inputParam.machine_id,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(header_result => {
+        .then((header_result) => {
           const analyts_data = [
             "machine_analyte_code",
             "machine_analyte_name",
-            "analyte_id"
+            "analyte_id",
           ];
 
           _mysql
@@ -1140,25 +1142,25 @@ export default {
               values: inputParam.analytes_data,
               includeValues: analyts_data,
               extraValues: {
-                machine_analytes_header_id: header_result.insertId
+                machine_analytes_header_id: header_result.insertId,
               },
               bulkInsertOrUpdate: true,
-              printQuery: true
+              printQuery: true,
             })
-            .then(ord_analytes => {
+            .then((ord_analytes) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = ord_analytes;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -1181,18 +1183,18 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_m_machine_analytes_header_id
+            inputParam.hims_m_machine_analytes_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           new Promise((resolve, reject) => {
             if (inputParam.insert_analytes_data.length > 0) {
               const analyts_data = [
                 "machine_analytes_header_id",
                 "machine_analyte_code",
                 "machine_analyte_name",
-                "analyte_id"
+                "analyte_id",
               ];
               _mysql
                 .executeQuery({
@@ -1201,12 +1203,12 @@ export default {
                   values: inputParam.insert_analytes_data,
                   includeValues: analyts_data,
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(insert_data => {
+                .then((insert_data) => {
                   resolve(insert_data);
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
@@ -1214,7 +1216,7 @@ export default {
             } else {
               resolve({});
             }
-          }).then(result => {
+          }).then((result) => {
             console.log("DeleteQry", inputParam.delete_analytes_data.length);
             if (inputParam.delete_analytes_data.length > 0) {
               let DeleteQry = "";
@@ -1223,7 +1225,7 @@ export default {
                   "DELETE from `hims_m_machine_analytes_detail`  where hims_m_machine_analytes_detail_id=?;",
                   [
                     inputParam.delete_analytes_data[i]
-                      .hims_m_machine_analytes_detail_id
+                      .hims_m_machine_analytes_detail_id,
                   ]
                 );
               }
@@ -1231,16 +1233,16 @@ export default {
               _mysql
                 .executeQuery({
                   query: DeleteQry,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(result => {
+                .then((result) => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = result;
                     next();
                   });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
@@ -1255,7 +1257,7 @@ export default {
             }
           });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -1284,16 +1286,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1317,16 +1319,16 @@ export default {
             inputParam.comment_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_d_group_comment_id
+            inputParam.hims_d_group_comment_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1354,14 +1356,14 @@ export default {
             strQuery +
             "order by hims_d_group_comment_id desc ",
           values: [req.query.micro_group_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1385,15 +1387,15 @@ export default {
                then 'days' end as age_desc,from_age,to_age,from_oprator,to_operator, \
                low_operator,high_operator from hims_d_lab_analytes_range where analyte_id=? ",
             values: [input[0].analyte_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             let errorStr = "";
 
             //ST-VALIDATION FOR AGE RANGE
             if (result.length > 0) {
-              input.forEach(item => {
-                const existData = result.filter(f => {
+              input.forEach((item) => {
+                const existData = result.filter((f) => {
                   return (
                     f.age_type == item.age_type &&
                     (f.gender == item.gender.toUpperCase() ||
@@ -1402,7 +1404,7 @@ export default {
                 });
 
                 if (existData) {
-                  let err = existData.find(data => {
+                  let err = existData.find((data) => {
                     return (
                       (data.from_age <= item.from_age &&
                         item.from_age <= data.to_age) ||
@@ -1427,7 +1429,7 @@ export default {
               let message = `Analytes Range Exist For: ${errorStr.gender} between ${errorStr.from_age}-${errorStr.to_age} ${errorStr.age_desc}`;
               req.records = {
                 invalid_input: true,
-                message: message
+                message: message,
               };
               next();
             } else {
@@ -1446,7 +1448,7 @@ export default {
                 "from_oprator",
                 "to_operator",
                 "low_operator",
-                "high_operator"
+                "high_operator",
               ];
 
               _mysql
@@ -1458,30 +1460,30 @@ export default {
                     created_date: new Date(),
                     created_by: req.userIdentity.algaeh_d_app_user_id,
                     updated_date: new Date(),
-                    updated_by: req.userIdentity.algaeh_d_app_user_id
+                    updated_by: req.userIdentity.algaeh_d_app_user_id,
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(Result => {
+                .then((Result) => {
                   _mysql.releaseConnection();
                   req.records = Result;
                   next();
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.releaseConnection();
                   next(e);
                 });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please Provide Valid Input"
+          message: "Please Provide Valid Input",
         };
         next();
       }
@@ -1502,14 +1504,14 @@ export default {
             critical_low,critical_high,normal_low,normal_qualitative_value,text_value,normal_high,\
             from_oprator,to_operator,low_operator,high_operator from hims_d_lab_analytes_range where analyte_id=? ",
           values: [req.query.analyte_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1534,14 +1536,14 @@ export default {
                then 'days' end as age_desc,from_age,to_age,from_oprator,to_operator,\
                low_operator,high_operator from hims_d_lab_analytes_range where analyte_id=? and  hims_d_lab_analytes_range_id<>?; ",
             values: [item.analyte_id, item.hims_d_lab_analytes_range_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             let errorStr = "";
 
             //ST-VALIDATION FOR AGE RANGE
             if (result.length > 0) {
-              const existData = result.filter(f => {
+              const existData = result.filter((f) => {
                 return (
                   f.age_type == item.age_type &&
                   f.gender == item.gender.toUpperCase()
@@ -1549,7 +1551,7 @@ export default {
               });
 
               if (existData) {
-                let err = existData.find(data => {
+                let err = existData.find((data) => {
                   return (
                     (data.from_age <= item.from_age &&
                       item.from_age <= data.to_age) ||
@@ -1572,7 +1574,7 @@ export default {
               let message = `Analytes Range Exist For: ${errorStr.gender} between ${errorStr.from_age}-${errorStr.to_age} ${errorStr.age_desc}`;
               req.records = {
                 invalid_input: true,
-                message: message
+                message: message,
               };
               next();
             } else {
@@ -1601,29 +1603,29 @@ export default {
                     item.to_operator,
                     item.low_operator,
                     item.high_operator,
-                    item.hims_d_lab_analytes_range_id
+                    item.hims_d_lab_analytes_range_id,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(result => {
+                .then((result) => {
                   _mysql.releaseConnection();
                   req.records = result;
                   next();
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.releaseConnection();
                   next(error);
                 });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please Provide Valid Input"
+          message: "Please Provide Valid Input",
         };
         next();
       }
@@ -1643,9 +1645,9 @@ export default {
           query:
             "  delete  from hims_d_lab_analytes_range where hims_d_lab_analytes_range_id=?; ",
           values: [req.body.hims_d_lab_analytes_range_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
           if (result.affectedRows > 0) {
@@ -1654,12 +1656,12 @@ export default {
           } else {
             req.records = {
               invalid_input: true,
-              message: "Please Provide Valid Input"
+              message: "Please Provide Valid Input",
             };
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1667,5 +1669,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

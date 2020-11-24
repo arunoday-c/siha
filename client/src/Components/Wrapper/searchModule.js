@@ -355,6 +355,7 @@ class SearchModule extends Component {
                   <div className="col">
                     <input
                       type="text"
+                      autoComplete="off"
                       ref={this.searchRef}
                       id="spotlightInput"
                       tabIndex="1"

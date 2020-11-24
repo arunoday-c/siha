@@ -128,7 +128,7 @@ class DeliveryNoteEntry extends Component {
           }}
           userArea={
             <div className="row">
-              <div className="col">
+              <div className="col-3">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Delivery Date",
@@ -142,33 +142,31 @@ class DeliveryNoteEntry extends Component {
               </div>
 
               {this.state.dataExitst === true ? (
-                <div className="col">
+                <div className="col-9 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",
                     }}
                   />
                   <h6>{this.state.full_name}</h6>
-
                 </div>
               ) : null}
             </div>
-
           }
           printArea={
             this.state.hims_f_inventory_consumption_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateDeliveryNoteReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateDeliveryNoteReceipt(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}

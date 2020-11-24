@@ -986,7 +986,7 @@ class PatientProfile extends Component {
                     algaehsoap="subjective"
                     className="nav-link active"
                   >
-                    Subjective
+                    SOAP
                   </span>
                 </li>
 
