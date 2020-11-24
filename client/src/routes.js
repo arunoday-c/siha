@@ -151,9 +151,9 @@ const FrontDesk = React.lazy(() =>
 const ResultEntryList = React.lazy(() =>
   retry(() => import("./Components/Laboratory/ResultEntryList/ResultEntryList"))
 );
-// const ResultDispatch = React.lazy(() =>
-//   retry(() => import("./Components/Laboratory/ResultDispatch/ResultDispatch"))
-// );
+const ResultDispatch = React.lazy(() =>
+  retry(() => import("./Components/Laboratory/ResultDispatch/ResultDispatch"))
+);
 const RequisitionEntry = React.lazy(() =>
   retry(() => import("./Components/Pharmacy/RequisitionEntry/RequisitionEntry"))
 );
@@ -1511,12 +1511,12 @@ function Routes() {
             );
           })
         ) : (
-            <div className="loader-container">
-              <div className="algaeh-progress float shadow">
-                <div className="progress__item">loading</div>
-              </div>
+          <div className="loader-container">
+            <div className="algaeh-progress float shadow">
+              <div className="progress__item">loading</div>
             </div>
-          )}
+          </div>
+        )}
       </Switch>
     </BrowserRouter>
   );
