@@ -1181,11 +1181,11 @@ const privateRoutes = [
     isExactPath: true,
     component: <ResultEntryList />,
   },
-  // {
-  //   path: "/ResultDispatch",
-  //   isExactPath: true,
-  //   component: <ResultDispatch />,
-  // },
+  {
+    path: "/ResultDispatch",
+    isExactPath: true,
+    component: <ResultDispatch />,
+  },
 
   {
     path: "/RadOrderedList",
