@@ -1,0 +1,18 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+{{#each records}}
+  <caption>{{investigation_name}}</caption>
+  <table>
+      <tbody>
+          {{#each details}}
+          <tr>
+              <td>{{analyte_name}}</td>
+              <td>{{result}} <sup>{{critical_type}}</sup></td>
+              <td>{{result_unit}}</td>
+              <td> {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
+                        {{normal_high}}{{/if}}</td>
+          </tr>
+          {{/each}}
+      </tbody>
+  </table>
+{{/each}}

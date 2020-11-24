@@ -1,8 +1,8 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { Collapse, Checkbox } from "algaeh-react-components";
 import moment from "moment";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
-import { useEffect } from "react";
+// import _ from "lodash";
 const { Panel } = Collapse;
 export default memo(function ({ details }) {
   const { visit_date, doc_name, mlc_accident_reg_no, list } = details;
@@ -13,18 +13,20 @@ export default memo(function ({ details }) {
   }
   function showReport() {
     let sentItems = [];
-    list
+
+    const records = list
       .filter((f) => f.checked === true)
-      .forEach((m) => {
-        let internal = [];
-        internal.push({ name: "hims_d_patient_id", value: m.patient_id });
-        internal.push({ name: "visit_id", value: m.hims_f_patient_visit_id });
-        internal.push({
-          name: "hims_f_lab_order_id",
-          value: m.hims_f_lab_order_id,
-        });
-        sentItems.push(internal);
+      .map((m, index) => {
+        if (index === 0) {
+          sentItems.push({ name: "hims_d_patient_id", value: m.patient_id });
+          sentItems.push({
+            name: "visit_id",
+            value: m.hims_f_patient_visit_id,
+          });
+        }
+        return m.hims_f_lab_order_id;
       });
+    sentItems.push({ name: "lab_order_ids", value: records });
     console.log("sentItems", sentItems);
 
     algaehApiCall({
@@ -37,7 +39,7 @@ export default memo(function ({ details }) {
       others: { responseType: "blob" },
       data: {
         report: {
-          reportName: "hematologyTestReport",
+          reportName: "labMerge", //"hematologyTestReport",
           reportParams: sentItems,
           // reportParams: [
           //   { name: "hims_d_patient_id", value: data.patient_id },
@@ -52,12 +54,12 @@ export default memo(function ({ details }) {
           // ],
 
           outputFileType: "PDF",
-          multiMerdgeReport: sentItems.length,
+          // multiMerdgeReport: sentItems.length,
         },
       },
       onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Hematology Test Report`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Visit wise lab report`;
         window.open(origin);
       },
     });

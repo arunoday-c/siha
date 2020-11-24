@@ -1,0 +1,42 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+<style>
+     @media print {
+         p.bodyText {font-family:georgia, times, serif;}
+          .pageStart {
+	background-color: red!important;
+     height:200px;
+}
+      }
+   
+</style>
+<div class="pageStart">
+    <h1  class="pageNumber"></h1>
+    <span class="title"></span>
+<div class="row">
+    <table>
+        <tr>
+            <td>PATIENT CODE : </td>
+            <td>{{patient_code}}</td>
+        </tr>
+        <tr>
+            <td>NAME : </td>
+            <td>{{patient_name}}</td>
+        </tr>
+         <tr>
+            <td>AGE : </td>
+            <td>{{age_in_years}} YRS / {{age_in_months}} MTH / {{age_in_days}} DYS</td>
+        </tr>
+    </table>
+    <br />
+    <div class="row">
+    <table>
+        <tr>
+            <td>TEST NAME</td>
+              <td>RESULT</td>
+              <td>RESULT UNITS</td>
+              <td>NORMAL RANGE</td>
+        </tr>
+    </table>
+</div>
+</div>
+</div>

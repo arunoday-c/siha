@@ -738,3 +738,6 @@ body {
   font-weight: bold;
   margin: 0;
 }
+.mainheader {
+  display: block;
+}

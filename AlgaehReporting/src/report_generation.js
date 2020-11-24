@@ -511,6 +511,7 @@ export default {
                             {
                               reqHeader: _header,
                               ...data[1][0],
+                              ...result.headRecord,
                               identity: req.userIdentity,
                               user_name: req.userIdentity["username"],
                               report_name_for_header:
@@ -709,7 +710,7 @@ export default {
                     await browser.close();
                     // console.log("r", r);
                     if (r == _reportCount - 1) {
-                      console.log("last r value", r);
+                      // console.log("last r value", r);
                       let _outfileName =
                         "merdge_" + moment().format("YYYYMMDDHHmmss") + ".pdf";
                       let _rOut = path.join(
