@@ -236,7 +236,7 @@ class ReceiptEntry extends Component {
           }}
           userArea={
             <div className="row">
-              <div className="col">
+              <div className="col-3">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Receipt Date",
@@ -249,14 +249,13 @@ class ReceiptEntry extends Component {
                 </h6>
               </div>
               {this.state.dataExitst === true ? (
-                <div className="col">
+                <div className="col-9 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",
                     }}
                   />
                   <h6>{this.state.full_name}</h6>
-
                 </div>
               ) : null}
             </div>
@@ -264,17 +263,17 @@ class ReceiptEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt Entry Report",
-                    events: {
-                      onClick: () => {
-                        generateReceiptEntryReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Receipt Entry Report",
+                      events: {
+                        onClick: () => {
+                          generateReceiptEntryReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -357,28 +356,28 @@ class ReceiptEntry extends Component {
                     </div>
                   </div>
                 ) : (
-                    <div className="col-6">
-                      <div className="row">
-                        <div className="col">
-                          <AlgaehLabel label={{ forceLabel: "Branch" }} />
-                          <h6>
-                            {this.state.hospital_name
-                              ? this.state.hospital_name
-                              : "------"}
-                          </h6>
-                        </div>
+                  <div className="col-6">
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                        <h6>
+                          {this.state.hospital_name
+                            ? this.state.hospital_name
+                            : "------"}
+                        </h6>
+                      </div>
 
-                        <div className="col">
-                          <AlgaehLabel label={{ forceLabel: "Project" }} />
-                          <h6>
-                            {this.state.project_desc
-                              ? this.state.project_desc
-                              : "------"}
-                          </h6>
-                        </div>
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Project" }} />
+                        <h6>
+                          {this.state.project_desc
+                            ? this.state.project_desc
+                            : "------"}
+                        </h6>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Vendor" }} />
@@ -566,15 +565,14 @@ class ReceiptEntry extends Component {
                 <ReceiptServiceList ReceiptEntryInp={this.state} />
               </div>
             ) : (
-                <ReceiptItemList ReceiptEntryInp={this.state} />
-              )}
+              <ReceiptItemList ReceiptEntryInp={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="col-12">
             <div className="row" style={{ marginBottom: 55 }}>
-              <div className="col" >
-                <div className="row" >
-
+              <div className="col">
+                <div className="row">
                   <div
                     className="portlet portlet-bordered"
                     style={{ marginBottom: 60 }}
@@ -585,7 +583,6 @@ class ReceiptEntry extends Component {
                       </div>
                     </div>
                     <div className="portlet-body">
-
                       <div className="row">
                         <div className="col-3">
                           {" "}
@@ -639,7 +636,9 @@ class ReceiptEntry extends Component {
                                         ></i>
                                         <i
                                           className="fas fa-eye"
-                                          onClick={() => this.downloadDoc(doc, true)}
+                                          onClick={() =>
+                                            this.downloadDoc(doc, true)
+                                          }
                                         ></i>
                                         {!this.state.postEnable ? (
                                           <i
@@ -651,15 +650,18 @@ class ReceiptEntry extends Component {
                                     </li>
                                   ))
                                 ) : (
-                                    <div className="col-12 noAttachment" key={1}>
-                                      <p>No Attachments Available</p>
-                                    </div>
-                                  )}
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
                               </ul>
                             </div>
                           </div>
-                        </div></div></div>
-                  </div></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="col-lg-5" style={{ textAlign: "right" }}>
                 <div className="row">
@@ -720,20 +722,20 @@ class ReceiptEntry extends Component {
                     />
                   </button>
                 ) : (
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={SaveReceiptEnrty.bind(this, this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Save",
-                          returnText: true,
-                        }}
-                      />
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveReceiptEnrty.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Save",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                )}
 
                 <button
                   type="button"

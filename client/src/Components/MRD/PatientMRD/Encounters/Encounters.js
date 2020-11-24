@@ -113,8 +113,6 @@ class Encounters extends Component {
           onSuccess: (response) => {
             algaehLoader({ show: false });
             if (response.data.success && response.data.records.length !== 0) {
-              console.log("vita=========", response.data.records);
-
               const _Vitals =
                 response.data.records !== undefined &&
                 response.data.records.length > 0
@@ -556,7 +554,6 @@ class Encounters extends Component {
   // data: {
   //   hims_f_package_header_id: this.state.hims_f_package_header_id,
   render() {
-    console.log("patientVital=========", this.state.patientVital);
     return (
       <div className="encounters">
         <div className="row">

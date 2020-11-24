@@ -1873,7 +1873,8 @@ td {
   .fa-random,
   .fa-undo-alt,
   .fa-paper-plane,
-  .fa-paperclip {
+  .fa-paperclip,
+  .fa-share {
     cursor: pointer;
     border: 1px solid lighten($primary-color, 10%);
     height: 28px;
@@ -1911,7 +1912,8 @@ td {
   .fa-print:hover,
   .fa-random:hover,
   .fa-paper-plane:hover,
-  .fa-paperclip:hover {
+  .fa-paperclip:hover,
+  .fa-share:hover {
     background: $primary-color;
     color: #fff;
     border-color: $primary-color;
@@ -2056,4 +2058,12 @@ td {
 }
 .ant-picker-dropdown {
   z-index: 99999 !important;
+}
+.createdUserCntr {
+  h6 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
 }

@@ -4,7 +4,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./SalesInvoice.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-import { AlgaehLabel, AlagehFormGroup, AlgaehDateHandler } from "../../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlagehFormGroup,
+  AlgaehDateHandler,
+} from "../../Wrapper/algaehWrapper";
 // import Options from "../../../Options.json";
 // import moment from "moment";
 // import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
@@ -22,7 +26,7 @@ import {
   CancelSalesInvoice,
   SaveNarration,
   dateValidate,
-  datehandle
+  datehandle,
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
@@ -37,11 +41,8 @@ import {
   AlgaehButton,
   MainContext,
 } from "algaeh-react-components";
-import TransationDetails from "../../Finance/DayEndProcess/TransationDetails"
-import {
-  swalMessage,
-  algaehApiCall
-} from "../../../utils/algaehApiCall";
+import TransationDetails from "../../Finance/DayEndProcess/TransationDetails";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 class SalesInvoice extends Component {
   constructor(props) {
@@ -99,9 +100,11 @@ class SalesInvoice extends Component {
 
   onOpenPreviewPopUP() {
     try {
-      debugger
+      debugger;
       const queryParams = new URLSearchParams(this.props.location.search);
-      const finance_day_end_header_id = queryParams.get("finance_day_end_header_id")
+      const finance_day_end_header_id = queryParams.get(
+        "finance_day_end_header_id"
+      );
       algaehApiCall({
         uri: "/finance/previewDayEndEntries",
         data: { day_end_header_id: finance_day_end_header_id },
@@ -110,7 +113,11 @@ class SalesInvoice extends Component {
         onSuccess: (response) => {
           const { result, success, message } = response.data;
           if (success === true) {
-            this.setState({ popUpRecords: result, openPopup: true, finance_day_end_header_id: finance_day_end_header_id });
+            this.setState({
+              popUpRecords: result,
+              openPopup: true,
+              finance_day_end_header_id: finance_day_end_header_id,
+            });
           } else {
             this.setState({ popUpRecords: {}, openPopup: false });
             swalMessage({ title: message, type: "error" });
@@ -177,7 +184,7 @@ class SalesInvoice extends Component {
           userArea={
             <div className="row" style={{ marginTop: -10 }}>
               <AlgaehDateHandler
-                div={{ className: "col mandatory" }}
+                div={{ className: "col-3 mandatory" }}
                 label={{
                   forceLabel: "Invoice Date",
                   isImp: true,
@@ -207,7 +214,7 @@ class SalesInvoice extends Component {
                 </h6>
               </div> */}
               {this.state.dataExitst === true ? (
-                <div className="col">
+                <div className="col-3">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Invoice Status",
@@ -221,20 +228,19 @@ class SalesInvoice extends Component {
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                            <span className="badge badge-success">Posted</span>
-                          )}
+                      <span className="badge badge-success">Posted</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
               {this.state.dataExitst === true ? (
-                <div className="col">
+                <div className="col-6 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",
                     }}
                   />
                   <h6>{this.state.created_name}</h6>
-
                 </div>
               ) : null}
             </div>
@@ -242,17 +248,17 @@ class SalesInvoice extends Component {
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Invoice",
-                    events: {
-                      onClick: () => {
-                        generateSalesInvoiceReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Invoice",
+                      events: {
+                        onClick: () => {
+                          generateSalesInvoiceReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -361,19 +367,24 @@ class SalesInvoice extends Component {
               </div>
             </div>
           </div>
-          {this.state.is_revert === "Y" ?
+          {this.state.is_revert === "Y" ? (
             <div className="alert alert-danger">
               <div className="row">
-                <div className="col"> <p>
-                  Reason:<b>{this.state.revert_reason}</b>
-                </p>
+                <div className="col">
+                  {" "}
+                  <p>
+                    Reason:<b>{this.state.revert_reason}</b>
+                  </p>
                 </div>
-                <div className="col-4"> <p>
-                  Reverted By:<b>{this.state.reverted_name}</b>
-                </p></div>
-
+                <div className="col-4">
+                  {" "}
+                  <p>
+                    Reverted By:<b>{this.state.reverted_name}</b>
+                  </p>
+                </div>
               </div>
-            </div> : null}
+            </div>
+          ) : null}
 
           <MyContext.Provider
             value={{
@@ -388,8 +399,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-                <InvoiceItemList SALESInvoiceIOputs={this.state} />
-              )}
+              <InvoiceItemList SALESInvoiceIOputs={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="row">
@@ -496,8 +507,6 @@ class SalesInvoice extends Component {
                       }}
                     />
                   </button>
-
-
                 ) : null}
                 <button
                   className="btn btn-primary"
@@ -619,7 +628,6 @@ class SalesInvoice extends Component {
                     </div>
                   </div>
                 </div>
-
               </Modal>
 
               <Modal
@@ -658,8 +666,6 @@ class SalesInvoice extends Component {
                         >
                           Revert Invoice
                         </AlgaehButton>
-
-
                       </div>
                     </div>
                   </div>

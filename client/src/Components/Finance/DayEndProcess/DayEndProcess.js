@@ -14,9 +14,14 @@ import {
 import moment from "moment";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { MainContext, Modal, AlgaehButton, Tooltip } from "algaeh-react-components";
+import {
+  MainContext,
+  Modal,
+  AlgaehButton,
+  Tooltip,
+} from "algaeh-react-components";
 import swal from "sweetalert2";
-import TransationDetails from "./TransationDetails"
+import TransationDetails from "./TransationDetails";
 // const modules = [
 //   {
 //     name: "OP Bill",
@@ -107,16 +112,16 @@ class DayEndProcess extends Component {
       currency_symbol,
     };
     const params = new URLSearchParams(this.props.location?.search);
-    debugger
+    debugger;
     if (params?.get("from_date")) {
       this.setState({
-        from_date: moment(params?.get("from_date"))._d//,params?.get("from_date"),
+        from_date: moment(params?.get("from_date"))._d, //,params?.get("from_date"),
       });
     }
     if (params?.get("to_date")) {
       this.setState(
         {
-          to_date: moment(params?.get("to_date"))._d,//params?.get("to_date"),
+          to_date: moment(params?.get("to_date"))._d, //params?.get("to_date"),
           currency: currency,
         },
         () => this.getDayEndProcess(this)
@@ -143,7 +148,7 @@ class DayEndProcess extends Component {
 
   getDayEndProcess() {
     try {
-      debugger
+      debugger;
       let inputObj = { posted: this.state.posted };
       if (this.state.screen_code !== null) {
         inputObj.screen_code = this.state.screen_code;
@@ -205,9 +210,12 @@ class DayEndProcess extends Component {
   }
 
   RejectProcess() {
-    let selected_data = this.state.selected_data
+    let selected_data = this.state.selected_data;
     swal({
-      title: "Are you sure you want to Revert " + selected_data.document_number + " ?",
+      title:
+        "Are you sure you want to Revert " +
+        selected_data.document_number +
+        " ?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -223,7 +231,7 @@ class DayEndProcess extends Component {
             finance_day_end_header_id: selected_data.finance_day_end_header_id,
             from_screen: selected_data.from_screen,
             document_number: selected_data.document_number,
-            revert_reason: this.state.revert_reason
+            revert_reason: this.state.revert_reason,
           },
           method: "PUT",
           onSuccess: (response) => {
@@ -326,7 +334,11 @@ class DayEndProcess extends Component {
         onSuccess: (response) => {
           const { result, success, message } = response.data;
           if (success === true) {
-            that.setState({ popUpRecords: result, openPopup: true, finance_day_end_header_id: row.finance_day_end_header_id });
+            that.setState({
+              popUpRecords: result,
+              openPopup: true,
+              finance_day_end_header_id: row.finance_day_end_header_id,
+            });
           } else {
             that.setState({ popUpRecords: {}, openPopup: false });
             swalMessage({ title: message, type: "error" });
@@ -385,15 +397,15 @@ class DayEndProcess extends Component {
   }
 
   CloseTransationDetail(e) {
-    debugger
+    debugger;
     this.setState(
       {
         openPopup: false,
         popUpRecords: {},
-        finance_day_end_header_id: null
+        finance_day_end_header_id: null,
       },
       () => {
-        debugger
+        debugger;
         this.getDayEndProcess(this);
       }
     );
@@ -675,19 +687,6 @@ class DayEndProcess extends Component {
                                 </Tooltip>
                               ) : null}
 
-                              {this.state.posted === "N" &&
-                                (row.from_screen === "PR0004" ||
-                                  row.from_screen === "SAL005") ? (
-                                  <Tooltip title="Revert">
-                                    <i
-                                      className="fa fa-times"
-                                      aria-hidden="true"
-                                      onClick={() => this.setState({ revert_visible: true, selected_data: row })}
-                                    // onClick={this.RejectProcess.bind(this, row)}
-                                    />
-                                  </Tooltip>
-                                ) : null}
-
                               <Tooltip title="View Details">
                                 <i
                                   className="fas fa-eye"
@@ -704,10 +703,28 @@ class DayEndProcess extends Component {
                                   }}
                                 ></i>
                               </Tooltip>
+
+                              {this.state.posted === "N" &&
+                              (row.from_screen === "PR0004" ||
+                                row.from_screen === "SAL005") ? (
+                                <Tooltip title="Revert">
+                                  <i
+                                    className="fa fa-share fa-flip-horizontal"
+                                    aria-hidden="true"
+                                    onClick={() =>
+                                      this.setState({
+                                        revert_visible: true,
+                                        selected_data: row,
+                                      })
+                                    }
+                                    // onClick={this.RejectProcess.bind(this, row)}
+                                  />
+                                </Tooltip>
+                              ) : null}
                             </>
                           ),
                           others: {
-                            maxWidth: 160,
+                            maxWidth: 170,
                             filterable: false,
                           },
                         },
@@ -883,7 +900,6 @@ class DayEndProcess extends Component {
                 <div className="col-lg-12">
                   <AlgaehButton
                     className="btn btn-primary"
-
                     onClick={this.RejectProcess.bind(this)}
                   >
                     Reject

@@ -141,300 +141,475 @@ export default {
       return;
     } else {
       _mysql
-        .generateRunningNumber({
-          user_id: req.userIdentity.algaeh_d_app_user_id,
-          numgen_codes: [voucher_type],
-          table_name: "finance_numgen",
+        .executeQuery({
+          query:
+            "SELECT cost_center_type, cost_center_required, auth_level, allow_negative_balance  FROM finance_options limit 1; ",
+          printQuery: true
         })
-        .then((numgen) => {
-          let transaction_date = "";
+        .then((resul) => {
+          new Promise((resolve, reject) => {
+            console.log("resul", resul[0].auth_level)
+            if (resul[0].allow_negative_balance == "Y") {
+              resolve({});
+            } else {
+              if (resul[0].auth_level == "N") {
+                console.log("1")
+                const child_ids = [];
+                input.details.forEach((child) => {
+                  child_ids.push(child.child_id);
+                });
 
-          if (
-            moment(input.transaction_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
-          ) {
-            transaction_date = input.transaction_date;
-          } else {
-            transaction_date = new Date();
-          }
+                _mysql
+                  .executeQuery({
+                    query:
+                      "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                      coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred from finance_voucher_details \
+                      where auth_status='A' and child_id in (?) group by child_id;\
+                      select finance_account_child_id,root_id, child_name from finance_account_child C \
+                      inner join finance_account_head H on H.finance_account_head_id=C.head_id \
+                      where finance_account_child_id in (?)",
+                    values: [child_ids, child_ids],
+                    printQuery: true,
+                  })
+                  .then((close_bal) => {
+                    let internal_eror = false;
+                    const closeBalance = close_bal[0];
+                    const led_data = close_bal[1];
+                    console.log("input.details", input.details)
+                    //ST-closing balance CHECK
+                    input.details.forEach((entry) => {
+                      //checking debit balance for asset and expence
+                      const led_data_root = led_data.find(f => f.finance_account_child_id == entry.child_id)
+                      console.log("led_data_root", led_data_root)
+                      if (
+                        (led_data_root.root_id == 1 || led_data_root.root_id == 5) &&
+                        entry.payment_type == "CR"
+                      ) {
 
-          let credit_amount = 0;
-          let debit_amount = 0;
-          // input.details.forEach((item) => {
-          //   if (item.payment_type == "CR") {
-          //     credit_amount =
-          //       parseFloat(credit_amount) + parseFloat(item.amount);
-          //     item["credit_amount"] = item.amount;
-          //     item["debit_amount"] = 0;
-          //   } else if (item.payment_type == "DR") {
-          //     debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
-          //     item["credit_amount"] = 0;
-          //     item["debit_amount"] = item.amount;
-          //   }
-          // });
-          credit_amount = _.chain(input.details)
-            .filter((f) => f.payment_type === "CR")
-            .sumBy((s) => {
-              return parseFloat(s.amount);
-            })
-            .value();
-          debit_amount = _.chain(input.details)
-            .filter((f) => f.payment_type === "DR")
-            .sumBy((s) => {
-              return parseFloat(s.amount);
-            })
-            .value();
+                        let ledger = closeBalance.find((f) => {
+                          return f.child_id == entry.child_id;
+                        });
 
-          if (credit_amount == debit_amount) {
-            _mysql
-              .executeQuery({
-                query:
-                  "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; ",
-              })
-              .then((resul) => {
-                if (
-                  resul.length == 1 &&
-                  (resul[0]["cost_center_type"] == "P" ||
-                    resul[0]["cost_center_type"] == "SD")
-                ) {
-                  /* commented by noor to intruduce detail level costcenter*/
-                  // let project_cost_center = null;
-                  // let subDept_cost_center = null;
-                  // if (resul[0]["cost_center_type"] == "P") {
-                  //   project_cost_center = input.cost_center_id;
-                  // } else if (resul[0]["cost_center_type"] == "SD") {
-                  //   subDept_cost_center = input.cost_center_id;
-                  // }
-                  const month = moment(transaction_date, "YYYY-MM-DD").format(
-                    "M"
-                  );
-                  const year = moment(transaction_date, "YYYY-MM-DD").format(
-                    "YYYY"
-                  );
+                        if (ledger != undefined) {
+                          console.log("1", ledger.deb_minus_cred)
+                          console.log("1", entry.amount)
 
-                  /* added by noor for detail level costcenters */
-                  const cost_center_type = resul[0]["cost_center_type"];
-                  const cost_center_required = resul[0]["cost_center_required"];
-                  const newDetails = input.details.map((item) => {
-                    const {
-                      cost_center_id,
-                      slno,
-                      payment_mode,
-                      sourceName,
-                      amount,
-                      hims_d_hospital_id,
-                      ...rest
-                    } = item;
-                    const typeSel =
-                      cost_center_type === "P"
-                        ? {
-                          project_id: cost_center_id,
-                          sub_department_id: null,
-                        }
-                        : cost_center_type === "SD"
-                          ? {
-                            project_id: null,
-                            sub_department_id: cost_center_id,
+                          const temp =
+                            parseFloat(ledger.deb_minus_cred) -
+                            parseFloat(entry.amount);
+
+                          console.log("1", temp)
+                          if (temp < 0) {
+                            internal_eror = true;
+                            req.records = {
+                              invalid_input: true,
+                              message: `${led_data_root.child_name} doesn't have debit balance`,
+                            };
+                            next();
+                            return;
+                          } else {
+                            ledger.deb_minus_cred = temp;
                           }
-                          : {};
+                        } else {
+                          internal_eror = true;
+                          req.records = {
+                            invalid_input: true,
+                            message: `${led_data_root.child_name} doesn't have debit balance`,
+                          };
+                          next();
+                          return;
+                        }
+                      }
+                      //checking credit balance for liabilty,capital and income
+                      else if (
+                        (led_data_root.root_id == 2 ||
+                          led_data_root.root_id == 3 ||
+                          led_data_root.root_id == 4) &&
+                        entry.payment_type == "DR"
+                      ) {
+                        let ledger = closeBalance.find((f) => {
+                          return f.child_id == entry.child_id;
+                        });
 
-                    return {
-                      ...rest,
-                      ...typeSel,
-                      debit_amount: item.payment_type === "DR" ? amount : 0,
-                      credit_amount: item.payment_type === "CR" ? amount : 0,
-                      payment_date: transaction_date,
-                      month: month,
-                      year: year,
-                      entered_by: algaeh_d_app_user_id,
-                      hospital_id:
-                        cost_center_required === "Y"
-                          ? hims_d_hospital_id
-                          : input.hospital_id,
-                    };
+                        if (ledger != undefined) {
+                          const temp =
+                            parseFloat(ledger.cred_minus_deb) -
+                            parseFloat(entry.amount);
+
+                          if (temp < 0) {
+                            internal_eror = true;
+                            req.records = {
+                              invalid_input: true,
+                              message: `${led_data_root.child_name} doesn't have credit balance`,
+                            };
+                            next();
+                            return;
+                          } else {
+                            ledger.deb_minus_cred = temp;
+                          }
+                        } else {
+                          internal_eror = true;
+                          req.records = {
+                            invalid_input: true,
+                            message: `${led_data_root.child_name} doesn't have credit balance`,
+                          };
+                          next();
+                          return;
+                        }
+                      }
+                    });
+
+                    //END-closing balance CHECK
+                    if (internal_eror == false) {
+                      resolve({});
+                    } else {
+                      next();
+                    }
+                  })
+                  .catch((error) => {
+                    _mysql.releaseConnection();
+                    next(error);
                   });
+              } else {
+                console.log("2")
+                resolve({});
+              }
 
-                  let cheque_date = null;
-                  let ref_no = null;
-                  let payment_mode = "N";
-                  switch (input.payment_mode) {
-                    case "CASH":
-                    case "CHEQUE":
-                    case "RTGS":
-                    case "NEFT":
-                    case "IMPS":
-                      payment_mode = input.payment_mode;
-                  }
+            }
+          }).then((res) => {
+            let credit_amount = 0;
+            let debit_amount = 0;
+            // input.details.forEach((item) => {
+            //   if (item.payment_type == "CR") {
+            //     credit_amount =
+            //       parseFloat(credit_amount) + parseFloat(item.amount);
+            //     item["credit_amount"] = item.amount;
+            //     item["debit_amount"] = 0;
+            //   } else if (item.payment_type == "DR") {
+            //     debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
+            //     item["credit_amount"] = 0;
+            //     item["debit_amount"] = item.amount;
+            //   }
+            // });
+            credit_amount = _.chain(input.details)
+              .filter((f) => f.payment_type === "CR")
+              .sumBy((s) => {
+                return parseFloat(s.amount);
+              })
+              .value();
+            debit_amount = _.chain(input.details)
+              .filter((f) => f.payment_type === "DR")
+              .sumBy((s) => {
+                return parseFloat(s.amount);
+              })
+              .value();
+            if (credit_amount == debit_amount) {
+              _mysql
+                .generateRunningNumber({
+                  user_id: req.userIdentity.algaeh_d_app_user_id,
+                  numgen_codes: [voucher_type],
+                  table_name: "finance_numgen",
+                })
+                .then((numgen) => {
+                  let transaction_date = "";
 
                   if (
-                    input.cheque_date != null &&
-                    input.cheque_date != undefined
+                    moment(input.transaction_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
                   ) {
-                    cheque_date = input.cheque_date;
+                    transaction_date = input.transaction_date;
+                  } else {
+                    transaction_date = new Date();
                   }
-                  if (input.ref_no != null && input.ref_no != undefined) {
-                    ref_no = input.ref_no;
-                  }
-                  const isMultipleInvoices =
-                    input.receipt_type === undefined ? "S" : input.receipt_type;
 
-                  _mysql
-                    .executeQueryWithTransaction({
-                      query:
-                        "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
+
+                  // if (credit_amount == debit_amount) {
+
+                  console.log("resul====", resul)
+                  if (
+                    resul.length == 1 &&
+                    (resul[0]["cost_center_type"] == "P" ||
+                      resul[0]["cost_center_type"] == "SD")
+                  ) {
+                    /* commented by noor to intruduce detail level costcenter*/
+                    // let project_cost_center = null;
+                    // let subDept_cost_center = null;
+                    // if (resul[0]["cost_center_type"] == "P") {
+                    //   project_cost_center = input.cost_center_id;
+                    // } else if (resul[0]["cost_center_type"] == "SD") {
+                    //   subDept_cost_center = input.cost_center_id;
+                    // }
+                    const month = moment(transaction_date, "YYYY-MM-DD").format(
+                      "M"
+                    );
+                    const year = moment(transaction_date, "YYYY-MM-DD").format(
+                      "YYYY"
+                    );
+
+                    /* added by noor for detail level costcenters */
+                    const cost_center_type = resul[0]["cost_center_type"];
+                    const cost_center_required = resul[0]["cost_center_required"];
+                    const newDetails = input.details.map((item) => {
+                      const {
+                        cost_center_id,
+                        slno,
+                        payment_mode,
+                        sourceName,
+                        amount,
+                        hims_d_hospital_id,
+                        ...rest
+                      } = item;
+                      const typeSel =
+                        cost_center_type === "P"
+                          ? {
+                            project_id: cost_center_id,
+                            sub_department_id: null,
+                          }
+                          : cost_center_type === "SD"
+                            ? {
+                              project_id: null,
+                              sub_department_id: cost_center_id,
+                            }
+                            : {};
+
+                      const auth_details =
+                        resul[0].auth_level === "N"
+                          ? {
+                            auth1: "Y", auth2: "Y", auth_status: "A"
+                          } : {};
+                      return {
+                        ...rest,
+                        ...typeSel,
+                        ...auth_details,
+                        debit_amount: item.payment_type === "DR" ? amount : 0,
+                        credit_amount: item.payment_type === "CR" ? amount : 0,
+                        payment_date: transaction_date,
+                        month: month,
+                        year: year,
+                        entered_by: algaeh_d_app_user_id,
+                        hospital_id:
+                          cost_center_required === "Y"
+                            ? hims_d_hospital_id
+                            : input.hospital_id,
+                      };
+                    });
+
+                    let cheque_date = null;
+                    let ref_no = null;
+                    let payment_mode = "N";
+                    switch (input.payment_mode) {
+                      case "CASH":
+                      case "CHEQUE":
+                      case "RTGS":
+                      case "NEFT":
+                      case "IMPS":
+                        payment_mode = input.payment_mode;
+                    }
+
+                    if (
+                      input.cheque_date != null &&
+                      input.cheque_date != undefined
+                    ) {
+                      cheque_date = input.cheque_date;
+                    }
+                    if (input.ref_no != null && input.ref_no != undefined) {
+                      ref_no = input.ref_no;
+                    }
+                    const isMultipleInvoices =
+                      input.receipt_type === undefined ? "S" : input.receipt_type;
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
                        narration, voucher_no, voucher_type,from_screen,invoice_no,invoice_ref_no,posted_from,\
                        created_by, updated_by, created_date, updated_date,receipt_type)\
                        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                      values: [
-                        payment_mode,
-                        ref_no,
-                        cheque_date,
-                        credit_amount,
-                        transaction_date,
-                        month,
-                        year,
-                        input.narration,
-                        numgen[voucher_type],
-                        input.voucher_type,
-                        input.from_screen,
-                        invoice_no,
-                        invoice_ref_no,
-                        "V",
-                        req.userIdentity.algaeh_d_app_user_id,
-                        req.userIdentity.algaeh_d_app_user_id,
-                        new Date(),
-                        new Date(),
-                        isMultipleInvoices,
-                      ],
-                      printQuery: true,
-                    })
-                    .then((result) => {
-                      // const IncludeValues = ["amount", "payment_mode"];
-                      // const insertColumns = [
-                      //   "head_id",
-                      //   "child_id",
-                      //   "debit_amount",
-                      //   "credit_amount",
-                      //   "payment_type",
-                      //   "hospital_id",
-                      //   "project_id",
-                      //   "sub_department_id"
-                      // ];
-                      let arrCounter = [];
-                      if (isMultipleInvoices === "M") {
-                        let queryString = "";
-                        for (let i = 0; i < merdgeRecords.length; i++) {
-                          const {
-                            balance_amount,
-                            invoice_no,
-                            voucher_type,
-                          } = merdgeRecords[i];
-                          queryString += _mysql.mysqlQueryFormat(
-                            "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
-                            [
-                              result.insertId,
-                              invoice_no,
+                        values: [
+                          payment_mode,
+                          ref_no,
+                          cheque_date,
+                          credit_amount,
+                          transaction_date,
+                          month,
+                          year,
+                          input.narration,
+                          numgen[voucher_type],
+                          input.voucher_type,
+                          input.from_screen,
+                          invoice_no,
+                          invoice_ref_no,
+                          "V",
+                          req.userIdentity.algaeh_d_app_user_id,
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          new Date(),
+                          isMultipleInvoices,
+                        ],
+                        printQuery: true,
+                      })
+                      .then((result) => {
+                        // const IncludeValues = ["amount", "payment_mode"];
+                        // const insertColumns = [
+                        //   "head_id",
+                        //   "child_id",
+                        //   "debit_amount",
+                        //   "credit_amount",
+                        //   "payment_type",
+                        //   "hospital_id",
+                        //   "project_id",
+                        //   "sub_department_id"
+                        // ];
+                        let arrCounter = [];
+                        if (isMultipleInvoices === "M") {
+                          let queryString = "";
+                          for (let i = 0; i < merdgeRecords.length; i++) {
+                            const {
                               balance_amount,
+                              invoice_no,
                               voucher_type,
-                            ]
-                          );
-                          newDetails.forEach((item) => {
-                            const { amount, ...rest } = item;
-                            arrCounter.push({
-                              ...rest,
-                              debit_amount:
-                                item.payment_type === "DR" ? balance_amount : 0,
-                              credit_amount:
-                                item.payment_type === "CR" ? balance_amount : 0,
+                            } = merdgeRecords[i];
+
+                            if (resul[0].auth_level === "N") {
+                              queryString += _mysql.mysqlQueryFormat(
+                                `insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,
+                                amount,voucher_type, auth1, auth2, auth_status) value(?,?,?,?,?,?,?);`,
+                                [
+                                  result.insertId,
+                                  invoice_no,
+                                  balance_amount,
+                                  voucher_type,
+                                  "Y",
+                                  "Y",
+                                  "A"
+                                ]
+                              );
+                            } else {
+                              queryString += _mysql.mysqlQueryFormat(
+                                "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
+                                [
+                                  result.insertId,
+                                  invoice_no,
+                                  balance_amount,
+                                  voucher_type
+                                ]
+                              );
+                            }
+
+                            newDetails.forEach((item) => {
+                              const { amount, ...rest } = item;
+                              arrCounter.push({
+                                ...rest,
+                                debit_amount:
+                                  item.payment_type === "DR" ? balance_amount : 0,
+                                credit_amount:
+                                  item.payment_type === "CR" ? balance_amount : 0,
+                              });
                             });
-                          });
+                          }
+                          _mysql
+                            .executeQueryWithTransaction({
+                              query: queryString,
+                            })
+                            .then((resultsubheader) => {
+                              //Done.....
+                              // console.log("Subdetails are inserted");
+                            })
+                            .catch((error) => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                              return;
+                            });
+                        } else {
+                          arrCounter = newDetails;
                         }
+                        console.log("arrCounter", arrCounter);
                         _mysql
                           .executeQueryWithTransaction({
-                            query: queryString,
+                            query:
+                              "insert into finance_voucher_details (??) values ?;",
+                            values: arrCounter,
+                            // values: input.details,
+                            // includeValues: insertColumns,
+                            bulkInsertOrUpdate: true,
+                            printQuery: true,
+                            excludeValues: ["disabled", "paytypedisable"],
+                            extraValues: {
+                              voucher_header_id: result.insertId,
+                              hospital_id: input.hospital_id,
+                            },
+                            // extraValues: {
+                            //   payment_date: transaction_date,
+                            //   month: month,
+                            //   year: year,
+                            //   voucher_header_id: result.insertId,
+                            //   entered_by: algaeh_d_app_user_id,
+                            //   hospital_id: input.hospital_id,
+                            //   project_id: project_cost_center,
+                            //   sub_department_id: subDept_cost_center
+                            // }
                           })
-                          .then((resultsubheader) => {
-                            //Done.....
-                            // console.log("Subdetails are inserted");
+                          .then((result2) => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = {
+                                voucher_no: numgen[voucher_type],
+                              };
+                              next();
+                            });
                           })
                           .catch((error) => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
-                            return;
                           });
-                      } else {
-                        arrCounter = newDetails;
-                      }
-                      // console.log("arrCounter", arrCounter);
-                      _mysql
-                        .executeQueryWithTransaction({
-                          query:
-                            "insert into finance_voucher_details (??) values ?;",
-                          values: arrCounter,
-                          // values: input.details,
-                          // includeValues: insertColumns,
-                          bulkInsertOrUpdate: true,
-                          printQuery: true,
-                          excludeValues: ["disabled", "paytypedisable"],
-                          extraValues: {
-                            voucher_header_id: result.insertId,
-                            hospital_id: input.hospital_id,
-                          },
-                          // extraValues: {
-                          //   payment_date: transaction_date,
-                          //   month: month,
-                          //   year: year,
-                          //   voucher_header_id: result.insertId,
-                          //   entered_by: algaeh_d_app_user_id,
-                          //   hospital_id: input.hospital_id,
-                          //   project_id: project_cost_center,
-                          //   sub_department_id: subDept_cost_center
-                          // }
-                        })
-                        .then((result2) => {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = {
-                              voucher_no: numgen[voucher_type],
-                            };
-                            next();
-                          });
-                        })
-                        .catch((error) => {
-                          _mysql.rollBackTransaction(() => {
-                            next(error);
-                          });
+                      })
+                      .catch((e) => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
                         });
-                    })
-                    .catch((e) => {
-                      _mysql.rollBackTransaction(() => {
-                        next(e);
                       });
+                  } else {
+                    _mysql.rollBackTransaction(() => {
+                      req.records = {
+                        invalid_input: true,
+                        message: "Please Define cost center type",
+                      };
+                      next();
                     });
-                } else {
+                  }
+                  // })
+                  // .catch((e) => {
+                  //   _mysql.rollBackTransaction(() => {
+                  //     next(e);
+                  //   });
+                  // });
+                  // } else {
+                  //   _mysql.rollBackTransaction(() => {
+                  //     req.records = {
+                  //       invalid_input: true,
+                  //       message: "Credit and Debit Amount are not equal",
+                  //     };
+                  //     next();
+                  //   });
+                  // }
+                })
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
-                    req.records = {
-                      invalid_input: true,
-                      message: "Please Define cost center type",
-                    };
-                    next();
+                    next(e);
                   });
-                }
-              })
-              .catch((e) => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
                 });
+            } else {
+              _mysql.rollBackTransaction(() => {
+                req.records = {
+                  invalid_input: true,
+                  message: "Credit and Debit Amount are not equal",
+                };
+                next();
               });
-          } else {
-            _mysql.rollBackTransaction(() => {
-              req.records = {
-                invalid_input: true,
-                message: "Credit and Debit Amount are not equal",
-              };
-              next();
-            });
-          }
+            }
+          });
+
         })
         .catch((e) => {
           _mysql.rollBackTransaction(() => {

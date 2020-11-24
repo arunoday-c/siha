@@ -263,13 +263,13 @@ export default {
       //       " group by hims_f_ordered_services_id order by OS.visit_id desc",
       _mysql
         .executeQuery({
-          query: `select hims_f_lab_order_id, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
-          LO.status as lab_ord_status from hims_f_lab_order LO 
+          query: `select hims_f_lab_order_id, LO.visit_id, LO.patient_id, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
+          LO.status as lab_ord_status, S.service_type_id from hims_f_lab_order LO 
           inner join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
           inner join hims_d_services S on LO.service_id=S.hims_d_services_id 
           inner join hims_d_employee  E on LO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData} order by hims_f_lab_order_id;
           select hims_f_rad_order_id, visit_date, E.full_name as provider_name, S.service_name, RO.billed as rad_billed, 
-          RO.status as rad_ord_status from hims_f_rad_order RO 
+          RO.status as rad_ord_status,  S.service_type_id from hims_f_rad_order RO 
           inner join hims_f_patient_visit V on RO.visit_id = V.hims_f_patient_visit_id
           inner join hims_d_services S on RO.service_id=S.hims_d_services_id 
           inner join hims_d_employee  E on RO.provider_id=E.hims_d_employee_id where 1=1 ${_stringData}
@@ -283,7 +283,6 @@ export default {
           let final_result = result[0];
           final_result = final_result.concat(result[1]);
 
-          console.log("final_result", final_result);
           req.records = final_result;
           next();
         })

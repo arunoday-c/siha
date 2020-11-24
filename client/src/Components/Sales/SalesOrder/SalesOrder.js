@@ -102,7 +102,8 @@ class SalesOrder extends Component {
       itemAdd: false,
       canceled_reason_sales: "",
       rejectVisible: false,
-      is_posted: "N"
+      is_posted: "N",
+      is_revert: "N",
     };
   }
 
@@ -118,10 +119,10 @@ class SalesOrder extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "NO_FINANCE"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
@@ -293,7 +294,8 @@ class SalesOrder extends Component {
   };
 
   render() {
-    const class_finder = this.state.selectedData === true ? " disableFinder" : "";
+    const class_finder =
+      this.state.selectedData === true ? " disableFinder" : "";
 
     const class_emp_finder =
       this.state.selectedData === true ? " disableFinder" : "";
@@ -343,7 +345,7 @@ class SalesOrder extends Component {
           userArea={
             <div className="row" style={{ marginTop: -10 }}>
               <AlgaehDateHandler
-                div={{ className: "col-6 mandatory" }}
+                div={{ className: "col-3 mandatory" }}
                 label={{
                   forceLabel: "Order Date",
                   isImp: true,
@@ -376,7 +378,7 @@ class SalesOrder extends Component {
               </div> */}
 
               {this.state.selectedData === true ? (
-                <div className="col-6">
+                <div className="col-3">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Order Status",
@@ -387,56 +389,55 @@ class SalesOrder extends Component {
                       <span className="badge badge-danger">Rejected</span>
                     ) : this.state.is_posted === "N" &&
                       this.state.is_revert === "N" ? (
-                          <span className="badge badge-danger">Not Posted</span>
-                        ) : this.state.is_posted === "N" &&
-                          this.state.is_revert === "Y" ? (
-                            <span className="badge badge-danger">
-                              Not Posted/Re-Generate
-                            </span>
-                          ) : this.state.authorize1 === "Y" &&
-                            this.state.authorize2 === "Y" &&
-                            this.state.is_completed === "N" ? (
-                              this.state.sales_order_mode === "S" ? (
-                                <span className="badge badge-success">Authorized</span>
-                              ) : (
-                                  <span className="badge badge-success">
-                                    Authorized / Dispatch Pending
-                                  </span>
-                                )
-                            ) : this.state.authorize1 === "Y" &&
-                              this.state.authorize2 === "N" ? (
-                                <span className="badge badge-danger">
-                                  Authorized 2 Pending
-                                </span>
-                              ) : this.state.authorize1 === "N" &&
-                                this.state.authorize2 === "N" ? (
-                                  <span className="badge badge-danger">
-                                    Posted/Pending For Authorize
-                                  </span>
-                                ) : this.state.is_completed === "Y" &&
-                                  this.state.invoice_generated === "N" ? (
-                                    <span className="badge badge-danger">
-                                      Invoice Generation Pending
-                                    </span>
-                                  ) : this.state.invoice_generated === "Y" ? (
-                                    <span className="badge badge-success">
-                                      Invoice Generated
-                                    </span>
-                                  ) : (
-                                      <span className="badge badge-danger">Pending</span>
-                                    )}
+                      <span className="badge badge-danger">Not Posted</span>
+                    ) : this.state.is_posted === "N" &&
+                      this.state.is_revert === "Y" ? (
+                      <span className="badge badge-danger">
+                        Not Posted/Re-Generate
+                      </span>
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "Y" &&
+                      this.state.is_completed === "N" ? (
+                      this.state.sales_order_mode === "S" ? (
+                        <span className="badge badge-success">Authorized</span>
+                      ) : (
+                        <span className="badge badge-success">
+                          Authorized / Dispatch Pending
+                        </span>
+                      )
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Authorized 2 Pending
+                      </span>
+                    ) : this.state.authorize1 === "N" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
+                      </span>
+                    ) : this.state.is_completed === "Y" &&
+                      this.state.invoice_generated === "N" ? (
+                      <span className="badge badge-danger">
+                        Invoice Generation Pending
+                      </span>
+                    ) : this.state.invoice_generated === "Y" ? (
+                      <span className="badge badge-success">
+                        Invoice Generated
+                      </span>
+                    ) : (
+                      <span className="badge badge-danger">Pending</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
               {this.state.dataExists === true ? (
-                <div className="col">
+                <div className="col-6 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",
                     }}
                   />
                   <h6>{this.state.full_name}</h6>
-
                 </div>
               ) : null}
             </div>
@@ -444,17 +445,17 @@ class SalesOrder extends Component {
           printArea={
             this.state.sales_order_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Sales Order Report",
-                    events: {
-                      onClick: () => {
-                        generateSalesOrderReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Sales Order Report",
+                      events: {
+                        onClick: () => {
+                          generateSalesOrderReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -515,16 +516,16 @@ class SalesOrder extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <div className={"col globalSearchCntr" + class_finder}>
-                      <AlgaehLabel label={{ forceLabel: "Contract No." }} />
-                      <h6 onClick={ContractSearch.bind(this, this)}>
-                        {this.state.contract_number
-                          ? this.state.contract_number
-                          : "Contract No."}
-                        <i className="fas fa-search fa-lg"></i>
-                      </h6>
-                    </div>
-                  )}
+                  <div className={"col globalSearchCntr" + class_finder}>
+                    <AlgaehLabel label={{ forceLabel: "Contract No." }} />
+                    <h6 onClick={ContractSearch.bind(this, this)}>
+                      {this.state.contract_number
+                        ? this.state.contract_number
+                        : "Contract No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                )}
 
                 <AlagehAutoComplete
                   div={{ className: "col form-group mandatory" }}
@@ -593,25 +594,25 @@ class SalesOrder extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Name of Sales Person",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "sales_man",
-                        value: this.state.sales_man,
-                        events: {
-                          onChange: texthandle.bind(this, this),
-                        },
-                        others: {
-                          disabled: this.state.dataExists,
-                        },
-                      }}
-                    />
-                  )}
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: texthandle.bind(this, this),
+                      },
+                      others: {
+                        disabled: this.state.dataExists,
+                      },
+                    }}
+                  />
+                )}
               </div>
               <div className="row">
                 {this.state.sales_order_mode === "I" ? (
@@ -649,7 +650,7 @@ class SalesOrder extends Component {
                       onChange: texthandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.is_posted === "Y" ? true : false
+                      disabled: this.state.is_posted === "Y" ? true : false,
                     },
                   }}
                 />
@@ -700,7 +701,7 @@ class SalesOrder extends Component {
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      disabled: this.state.is_posted === "Y" ? true : false
+                      disabled: this.state.is_posted === "Y" ? true : false,
                     },
                     onClear: () => {
                       this.setState({
@@ -723,26 +724,31 @@ class SalesOrder extends Component {
                       onChange: texthandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.is_posted === "Y" ? true : false
+                      disabled: this.state.is_posted === "Y" ? true : false,
                     },
                   }}
                 />
               </div>
             </div>
           </div>
-          {this.state.cancelled === "Y" || this.state.is_revert === "Y" ?
+          {this.state.cancelled === "Y" || this.state.is_revert === "Y" ? (
             <div className="alert alert-danger">
               <div className="row">
-                <div className="col"> <p>
-                  Reason:<b>{this.state.revert_reason}</b>
-                </p>
+                <div className="col">
+                  {" "}
+                  <p>
+                    Reason:<b>{this.state.revert_reason}</b>
+                  </p>
                 </div>
-                <div className="col-4"> <p>
-                  Reverted By:<b>{this.state.user_display_name}</b>
-                </p></div>
-
+                <div className="col-4">
+                  {" "}
+                  <p>
+                    Reverted By:<b>{this.state.user_display_name}</b>
+                  </p>
+                </div>
               </div>
-            </div> : null}
+            </div>
+          ) : null}
           <div className="row">
             <MyContext.Provider
               value={{
@@ -755,11 +761,11 @@ class SalesOrder extends Component {
               {this.state.sales_order_mode === "S" ? (
                 <SalesOrdListService SALESIOputs={this.state} />
               ) : (
-                  <SalesOrdListItems
-                    SALESIOputs={this.state}
-                    sales_order_number={this.props.sales_order_number}
-                  />
-                )}
+                <SalesOrdListItems
+                  SALESIOputs={this.state}
+                  sales_order_number={this.props.sales_order_number}
+                />
+              )}
             </MyContext.Provider>
           </div>
         </div>
@@ -836,10 +842,10 @@ class SalesOrder extends Component {
                               </li>
                             ))
                           ) : (
-                              <div className="col-12 noAttachment" key={1}>
-                                <p>No Attachments Available</p>
-                              </div>
-                            )}
+                            <div className="col-12 noAttachment" key={1}>
+                              <p>No Attachments Available</p>
+                            </div>
+                          )}
                         </ul>
                       </div>
                     </div>
@@ -921,36 +927,36 @@ class SalesOrder extends Component {
           <div className="row">
             <div className="col-lg-12">
               {this.state.dataExists &&
-                this.state.docChanged &&
-                this.state.is_completed !== "Y" ? (
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.saveDocument}
-                    disabled={!this.state.docChanged}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Update Documents",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SaveSalesOrderEnrty.bind(this, this, "S")}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Save Order",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                )}
+              this.state.docChanged &&
+              this.state.is_completed !== "Y" ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.saveDocument}
+                  disabled={!this.state.docChanged}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Update Documents",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={SaveSalesOrderEnrty.bind(this, this, "S")}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Save Order",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              )}
               <button
                 type="button"
                 className="btn btn-primary"
@@ -1003,8 +1009,8 @@ class SalesOrder extends Component {
                             ? true
                             : this.state.authorize1 === "Y" &&
                               this.state.authorize2 === "Y"
-                              ? true
-                              : false
+                            ? true
+                            : false
                         }
                         onClick={AuthorizeOrderEntry.bind(
                           this,
@@ -1020,8 +1026,8 @@ class SalesOrder extends Component {
                               this.state.authorize1 === "N"
                                 ? "Authorize 1"
                                 : this.state.sales_order_auth_level === "2"
-                                  ? "Authorize 2"
-                                  : "Authorize 1",
+                                ? "Authorize 2"
+                                : "Authorize 1",
                             returnText: true,
                           }}
                         />

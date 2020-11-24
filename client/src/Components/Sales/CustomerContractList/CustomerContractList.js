@@ -299,7 +299,7 @@ class SalesOrderList extends Component {
                         fieldName: "contract_date",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Controct Date" }}
+                            label={{ forceLabel: "Contract Date" }}
                           />
                         ),
                         displayTemplate: (row) => {
