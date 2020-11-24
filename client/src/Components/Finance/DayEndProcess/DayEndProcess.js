@@ -168,7 +168,7 @@ class DayEndProcess extends Component {
         method: "GET",
         module: "finance",
         onSuccess: (response) => {
-          this.setState({ dayEnd: response.data.result });
+          this.setState({ dayEnd: response.data.result, revert_visible: false });
           return this.props.history?.push(
             `${this.props.location?.pathname}?from_date=${this.state.from_date}&to_date=${this.state.to_date}`
           );
@@ -705,22 +705,22 @@ class DayEndProcess extends Component {
                               </Tooltip>
 
                               {this.state.posted === "N" &&
-                              (row.from_screen === "PR0004" ||
-                                row.from_screen === "SAL005") ? (
-                                <Tooltip title="Revert">
-                                  <i
-                                    className="fa fa-share fa-flip-horizontal"
-                                    aria-hidden="true"
-                                    onClick={() =>
-                                      this.setState({
-                                        revert_visible: true,
-                                        selected_data: row,
-                                      })
-                                    }
+                                (row.from_screen === "PR0004" ||
+                                  row.from_screen === "SAL005") ? (
+                                  <Tooltip title="Revert">
+                                    <i
+                                      className="fa fa-share fa-flip-horizontal"
+                                      aria-hidden="true"
+                                      onClick={() =>
+                                        this.setState({
+                                          revert_visible: true,
+                                          selected_data: row,
+                                        })
+                                      }
                                     // onClick={this.RejectProcess.bind(this, row)}
-                                  />
-                                </Tooltip>
-                              ) : null}
+                                    />
+                                  </Tooltip>
+                                ) : null}
                             </>
                           ),
                           others: {

@@ -250,7 +250,7 @@ class ReceiptEntry extends Component {
                 </h6>
               </div>
               {this.state.dataExitst === true ? (
-                <div className="col-9 createdUserCntr">
+                <div className="col-3 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Receipt Status",
@@ -269,7 +269,7 @@ class ReceiptEntry extends Component {
               ) : null}
 
               {this.state.dataExitst === true ? (
-                <div className="col">
+                <div className="col-6 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",

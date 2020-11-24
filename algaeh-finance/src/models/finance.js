@@ -1427,18 +1427,46 @@ export default {
     delete from finance_day_end_header where finance_day_end_header_id=${input.finance_day_end_header_id};`
     if (input.from_screen == "PR0004") {
       _mysql
-        .executeQuery({
-          query: `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';` + strQuery,
-          printQuery: false,
+        .executeQueryWithTransaction({
+          query: "select hims_f_procurement_grn_header_id, po_id from hims_f_procurement_grn_header where grn_number=?;",
+          values: [input.document_number],
+          printQuery: true
         })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+        .then(receipt_result => {
+          _mysql
+            .executeQueryWithTransaction({
+              query: `UPDATE hims_f_procurement_po_header SET is_posted='N', authorize1='N', authorize2='N',\
+                    is_revert='Y', revert_reason=?, reverted_date=?, reverted_by=? WHERE hims_f_procurement_po_header_id=?; \
+                    UPDATE hims_f_procurement_grn_header SET posted='N', is_revert='Y', reverted_date=?, reverted_by=? \
+                    WHERE hims_f_procurement_grn_header_id=?;` + strQuery,
+              values: [
+                input.revert_reason,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                receipt_result[0].po_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                receipt_result[0].hims_f_procurement_grn_header_id
+              ],
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            })
+            .catch((e) => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
         .catch((e) => {
-          _mysql.releaseConnection();
-          next(e);
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
       // strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
     } else if (input.from_screen == "SAL005") {
