@@ -85,8 +85,8 @@ const loctexthandle = ($this, e) => {
 
 const vendortexthandle = ($this, e) => {
   // ;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let name = e.name || e.vendor_name;
+  let value = e.value || e.vendor_id;
   let ReqData = true;
   if (
     $this.state.pharmcy_location_id !== null ||
@@ -99,7 +99,10 @@ const vendortexthandle = ($this, e) => {
     uri: "/vendor/getVendorMaster",
     module: "masterSettings",
     method: "GET",
-    data: { vendor_status: "A", hims_d_vendor_id: e.value },
+    data: {
+      vendor_status: "A",
+      hims_d_vendor_id: value,
+    },
     onSuccess: (result) => {
       let records = result.data.records[0];
 
@@ -117,18 +120,30 @@ const vendortexthandle = ($this, e) => {
           ? true
           : false;
       if (validate) {
-        $this.setState({
+        let details = {
           [name]: value,
-          vendor_name: e.selected.vendor_name,
-          payment_terms: e.selected.payment_terms,
+          vendor_name: e.selected?.vendor_name ?? name,
+          payment_terms: e.selected?.payment_terms ?? e.payment_terms,
           vendorDetails: result.data.records,
           ReqData: ReqData,
+        };
+
+        $this.setState(details, () => {
+          console.log("this.state.vendorDetails", $this.state.vendorDetails);
         });
       } else {
-        swalMessage({
-          title: `Please Fill mandatory Details of vendor In vendor master for Vendor ${e.selected.vendor_name}  `,
-          type: "error",
-        });
+        $this.setState(
+          {
+            vendorDetails: [],
+          },
+          swalMessage({
+            title: `Please Fill mandatory Details of vendor In vendor master for Vendor ${
+              e.selected?.vendor_name ?? name
+            }   `,
+            type: "error",
+          })
+        );
+
         return;
       }
     },
@@ -402,6 +417,9 @@ const ClearData = ($this, e) => {
     }
     $this.setState(IOputs);
   });
+  $this.setState({
+    vendorDetails: [],
+  });
 };
 
 const SavePOEnrty = ($this, from) => {
@@ -502,6 +520,7 @@ const SavePOEnrty = ($this, from) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
+
   let IOputs = POEntry.inputParam();
   IOputs.dataExitst = false;
   $this.setState(IOputs, () => {
@@ -566,7 +585,9 @@ const getCtrlCode = ($this, docNumber) => {
           data.organizations = $this.props.hospitaldetails;
           $this.state.email_id_1 = data.email_id_1;
           data.addedItem = true;
-          $this.setState(data);
+          $this.setState(data, () => {
+            vendortexthandle($this, data);
+          });
           AlgaehLoader({ show: false });
 
           // $this.setState({ ...response.data.records });
