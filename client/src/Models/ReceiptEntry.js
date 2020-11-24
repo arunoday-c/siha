@@ -58,6 +58,8 @@ export default {
       receipt_entry_detail_services: [],
       hospital_name: null,
       project_desc: null,
+      revert_visible: false,
+      is_revert: "N"
     };
     return output;
   },

@@ -29,6 +29,7 @@ import {
   textEventhandle,
   generateReceiptEntryReport,
   getPOOptions,
+  RevertReceiptEntry
 } from "./ReceiptEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
@@ -252,10 +253,29 @@ class ReceiptEntry extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
+                      forceLabel: "Receipt Status",
+                    }}
+                  />
+                  <h6>
+                    {this.state.is_revert === "Y" ? (
+                      <span className="badge badge-danger">Reverted</span>
+                    ) : this.state.posted === "N" ? (
+                      <span className="badge badge-danger">Not Posted</span>
+                    ) : (
+                          <span className="badge badge-success">Posted</span>
+                        )}
+                  </h6>
+                </div>
+              ) : null}
+
+              {this.state.dataExitst === true ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
                       forceLabel: "Created By",
                     }}
                   />
-                  <h6>{this.state.full_name}</h6>
+                  <h6>{this.state.created_name}</h6>
 
                 </div>
               ) : null}
@@ -552,6 +572,20 @@ class ReceiptEntry extends Component {
             </div>
           </div>
 
+          {this.state.is_revert === "Y" ?
+            <div className="alert alert-danger">
+              <div className="row">
+                <div className="col"> <p>
+                  Reason:<b>{this.state.revert_reason}</b>
+                </p>
+                </div>
+                <div className="col-4"> <p>
+                  Reverted By:<b>{this.state.reverted_name}</b>
+                </p></div>
+
+              </div>
+            </div> : null}
+
           <MyContext.Provider
             value={{
               state: this.state,
@@ -700,6 +734,49 @@ class ReceiptEntry extends Component {
                 </div>
               </div>
             </div>
+            <Modal
+              title="Invoice Revert"
+              visible={this.state.revert_visible}
+              width={1080}
+              footer={null}
+              onCancel={() => this.setState({ revert_visible: false })}
+              className={`row algaehNewModal invoiceRevertModal`}
+            >
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Enter reason for invoice reversal",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "revert_reason",
+                  value: this.state.revert_reason,
+                  events: {
+                    onChange: (e) => {
+                      this.setState({ revert_reason: e.target.value });
+                    },
+                  },
+                }}
+              />
+
+              <div className="popupFooter">
+                <div className="col-lg-12">
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <button
+                        className="btn btn-primary"
+                        onClick={RevertReceiptEntry.bind(this, this)}
+                      >
+                        Revert Receipt
+                      </button>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Modal>
           </div>
 
           <div className="hptl-phase1-footer">
@@ -745,6 +822,21 @@ class ReceiptEntry extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
+
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  disabled={this.state.dataRevert}
+                  onClick={() => this.setState({ revert_visible: true })}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Revert",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+
                 <button
                   type="button"
                   className="btn btn-other"

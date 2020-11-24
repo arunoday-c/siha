@@ -10,6 +10,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReceiptEntryInv from "../../../Models/ReceiptEntry";
 import _ from "lodash";
 import { newAlgaehApi } from "../../../hooks";
+import swal from "sweetalert2";
 
 let texthandlerInterval = null;
 
@@ -353,7 +354,7 @@ const getDocuments = ($this) => {
       });
     });
 };
-const getCtrlCode = ($this, docNumber, row) => {
+const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
   let IOputs = ReceiptEntryInv.inputParam();
@@ -376,6 +377,7 @@ const getCtrlCode = ($this, docNumber, row) => {
             data.ItemDisable = true;
             data.ClearDisable = true;
           }
+          debugger
           data.saveEnable = true;
           data.dataExitst = true;
 
@@ -384,10 +386,13 @@ const getCtrlCode = ($this, docNumber, row) => {
           }
 
           data.addedItem = true;
-          if (data.posted === "Y") {
+
+          if (data.posted === "Y" || data.is_revert === "Y") {
             data.postEnable = true;
+            data.dataRevert = true;
           } else {
             data.postEnable = false;
+            data.dataRevert = false;
           }
           // data.location_name = row.loc_description;
           // data.vendor_name = row.vendor_name;
@@ -759,6 +764,56 @@ const getPOOptions = ($this) => {
   });
 };
 
+const RevertReceiptEntry = ($this) => {
+  if ($this.state.revert_reason === null || $this.state.revert_reason === "") {
+    swalMessage({
+      type: "warning",
+      title: "Revert reason is Mandatory",
+    });
+    return
+  }
+  swal({
+    title: "Are you sure you want to Revert ?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willDelete) => {
+    if (willDelete.value) {
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/ReceiptEntry/revertReceiptEntry",
+        module: "procurement",
+        method: "PUT",
+        data: {
+          hims_f_procurement_grn_header_id: $this.state.hims_f_procurement_grn_header_id,
+          po_id: $this.state.po_id,
+          revert_reason: $this.state.revert_reason,
+          // sales_invoice_mode: $this.state.sales_invoice_mode
+        },
+        onSuccess: (response) => {
+          if (response.data.success) {
+            getCtrlCode($this, $this.state.grn_number)
+            swalMessage({
+              type: "success",
+              title: "Reverted successfully ...",
+            });
+            AlgaehLoader({ show: false });
+          } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              type: "error",
+              title: response.data.records.message,
+            });
+          }
+        },
+      });
+    }
+  });
+}
+
 export {
   texthandle,
   poforhandle,
@@ -778,4 +833,5 @@ export {
   textEventhandle,
   generateReceiptEntryReport,
   getPOOptions,
+  RevertReceiptEntry
 };

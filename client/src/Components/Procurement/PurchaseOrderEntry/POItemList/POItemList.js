@@ -858,6 +858,7 @@ export default class POItemList extends Component {
                           isEditable={true}
                           actions={{
                             allowDelete: !this.state.dataExitst,
+                            allowEdit: this.state.is_revert === "Y" ? false : true,
                           }}
                           byForceEvents={true}
                           // forceRender={true}

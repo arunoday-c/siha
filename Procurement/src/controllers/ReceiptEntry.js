@@ -11,7 +11,8 @@ const {
   postReceiptEntry,
   generateAccountingEntry,
   updatePurchaseOrder,
-  getPOServiceReceipt
+  getPOServiceReceipt,
+  revertReceiptEntry
 } = receiptModels;
 
 export default () => {
@@ -72,6 +73,13 @@ export default () => {
   );
 
   api.put("/updateReceiptEntry", updateReceiptEntry, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/revertReceiptEntry", revertReceiptEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records

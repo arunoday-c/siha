@@ -95,7 +95,6 @@ class PurchaseOrderEntry extends Component {
       RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
         (result) => {
           if (result === "show") {
-            getData(this, "INV");
             po_from = "INV";
             bothExisits = false;
           }
@@ -109,6 +108,7 @@ class PurchaseOrderEntry extends Component {
             po_from = "PHR";
             bothExisits = bothExisits === false ? false : true;
           } else {
+            getData(this, "INV");
             bothExisits = true;
           }
           this.setState({
@@ -120,8 +120,8 @@ class PurchaseOrderEntry extends Component {
     }
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "HRMS_ERP"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -158,15 +158,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where((w) => w.location_type === "WH")
-            .toArray();
+          .where((w) => w.location_type === "WH")
+          .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <AlgaehModal
@@ -385,48 +385,60 @@ class PurchaseOrderEntry extends Component {
                   />
 
                   <h6>
-                    {this.state.is_posted === "N" ? (
-                      <span className="badge badge-danger">Not Posted</span>
-                    ) : this.state.cancelled === "Y" ? (
+                    {this.state.cancelled === "Y" ? (
                       <span className="badge badge-danger">Rejected</span>
-                    ) : this.state.receipt_generated === "Y" ? (
-                      <span className="badge badge-success">PO Closed</span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "Y" ? (
-                      <span className="badge badge-success">Authorized</span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
-                      </span>
-                    ) : this.state.authorize1 === "N" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
-                      </span>
-                    ) : (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
-                      </span>
-                    )}
+                    ) : this.state.is_posted === "N" && this.state.is_revert === "N" ? (
+                      <span className="badge badge-danger">Not Posted</span>
+                    ) : this.state.is_posted === "N" &&
+                      this.state.is_revert === "Y" ? (
+                            <span className="badge badge-danger">
+                              Not Posted/Re-Generate
+                            </span>
+                          ) : this.state.receipt_generated === "Y" ? (
+                            <span className="badge badge-success">PO Closed</span>
+                          ) : this.state.authorize1 === "Y" &&
+                            this.state.authorize2 === "Y" ? (
+                                <span className="badge badge-success">Authorized</span>
+                              ) : this.state.authorize1 === "Y" &&
+                                this.state.authorize2 === "N" ? (
+                                  <span className="badge badge-danger">
+                                    Posted/Pending For Authorize
+                                  </span>
+                                ) : this.state.authorize1 === "N" &&
+                                  this.state.authorize2 === "N" ? (
+                                    <span className="badge badge-danger">
+                                      Posted/Pending For Authorize
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-danger">
+                                      Posted/Pending For Authorize
+                                    </span>
+                                  )}
                   </h6>
                 </div>
               ) : this.state.dataExitst === false &&
                 this.state.purchase_number !== null ? (
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "PO Status",
-                    }}
-                  />
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "PO Status",
+                        }}
+                      />
 
-                  <h6>
-                    <span className="badge badge-danger">
-                      Send for Authorization pending
-                    </span>
-                  </h6>
-                </div>
-              ) : null}
+                      <h6>
+                        {this.state.is_posted === "N" &&
+                          this.state.is_revert === "Y" ? (
+                            <span className="badge badge-danger">
+                              Not Posted/Re-Generate
+                            </span>
+                          ) :
+                          <span className="badge badge-danger">
+                            Send for Authorization pending
+                          </span>}
+
+                      </h6>
+                    </div>
+                  ) : null}
               {this.state.dataExitst === true ? (
                 <div className="col">
                   <AlgaehLabel
@@ -434,7 +446,7 @@ class PurchaseOrderEntry extends Component {
                       forceLabel: "Created By",
                     }}
                   />
-                  <h6>{this.state.full_name}</h6>
+                  <h6>{this.state.created_name}</h6>
                 </div>
               ) : null}
             </div>
@@ -442,25 +454,25 @@ class PurchaseOrderEntry extends Component {
           printArea={
             this.state.purchase_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print PO",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print PO",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       },
                     },
-                    // {
-                    //   label: "Receipt for Vendor",
-                    //   events: {
-                    //     onClick: () => {
-                    //       generatePOReceiptNoPrice(this.state);
-                    //     },
-                    //   },
-                    // },
-                  ],
-                }
+                  },
+                  // {
+                  //   label: "Receipt for Vendor",
+                  //   events: {
+                  //     onClick: () => {
+                  //       generatePOReceiptNoPrice(this.state);
+                  //     },
+                  //   },
+                  // },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -598,66 +610,66 @@ class PurchaseOrderEntry extends Component {
                     </div>
                   </div>
                 ) : (
-                  <div className="col">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-6 form-group mandatory" }}
-                        label={{
-                          forceLabel: "Select Project",
-                          isImp: true,
-                        }}
-                        selector={{
-                          name: "project_id",
-                          className: "select-fld",
-                          value: this.state.project_id,
-                          dataSource: {
-                            textField: "cost_center",
-                            valueField: "cost_center_id",
-                            data: this.state.cost_projects,
-                          },
-                          onChange: texthandle.bind(this, this),
-                          others: {
-                            disabled: this.state.dataExists,
-                          },
-                          onClear: () => {
-                            this.setState({
-                              project_id: null,
-                              hospital_id: null,
-                              organizations: [],
-                            });
-                          },
-                        }}
-                      />
+                    <div className="col">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col-6 form-group mandatory" }}
+                          label={{
+                            forceLabel: "Select Project",
+                            isImp: true,
+                          }}
+                          selector={{
+                            name: "project_id",
+                            className: "select-fld",
+                            value: this.state.project_id,
+                            dataSource: {
+                              textField: "cost_center",
+                              valueField: "cost_center_id",
+                              data: this.state.cost_projects,
+                            },
+                            onChange: texthandle.bind(this, this),
+                            others: {
+                              disabled: this.state.dataExists,
+                            },
+                            onClear: () => {
+                              this.setState({
+                                project_id: null,
+                                hospital_id: null,
+                                organizations: [],
+                              });
+                            },
+                          }}
+                        />
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-6 mandatory" }}
-                        label={{
-                          forceLabel: "Select Branch",
-                          isImp: true,
-                        }}
-                        selector={{
-                          name: "hospital_id",
-                          className: "select-fld",
-                          value: this.state.hospital_id,
-                          dataSource: {
-                            textField: "hospital_name",
-                            valueField: "hims_d_hospital_id",
-                            data: this.state.organizations,
-                          },
-                          onChange: texthandle.bind(this, this),
-                          others: {
-                            disabled: this.state.dataExists,
-                          },
-                          onClear: () => {
-                            this.setState({
-                              hospital_id: null,
-                            });
-                          },
-                        }}
-                      />
+                        <AlagehAutoComplete
+                          div={{ className: "col-6 mandatory" }}
+                          label={{
+                            forceLabel: "Select Branch",
+                            isImp: true,
+                          }}
+                          selector={{
+                            name: "hospital_id",
+                            className: "select-fld",
+                            value: this.state.hospital_id,
+                            dataSource: {
+                              textField: "hospital_name",
+                              valueField: "hims_d_hospital_id",
+                              data: this.state.organizations,
+                            },
+                            onChange: texthandle.bind(this, this),
+                            others: {
+                              disabled: this.state.dataExists,
+                            },
+                            onClear: () => {
+                              this.setState({
+                                hospital_id: null,
+                              });
+                            },
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 <div className="col-3">
                   <div className="row hoverVendor">
                     <AlagehAutoComplete
@@ -689,94 +701,94 @@ class PurchaseOrderEntry extends Component {
                     />
                     {this.state.vendorDetails.length > 0
                       ? this.state.vendorDetails.map((item) => {
-                          return (
-                            <div className="vendorDetCntr animated slideInDown faster">
-                              <div className="row">
-                                <div className="col">
-                                  {" "}
-                                  <table>
-                                    <tbody>
-                                      <tr>
-                                        <td colspan="2" className="hdr">
-                                          <span>Vendor Details:-</span>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Vendor Code:</td>
-                                        <td>{item.vendor_code}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Vendor Name:</td>
-                                        <td>{item.vendor_name}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>BUSINESS REG. NO.</td>
-                                        <td>{item.business_registration_no}</td>
-                                      </tr>{" "}
-                                      <tr>
-                                        <td colspan="2" className="hdr">
-                                          <span>Contact Details:-</span>
-                                        </td>
-                                      </tr>{" "}
-                                      <tr>
-                                        <td>CONTACT NUMBER</td>
-                                        <td>{item.contact_number}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Email Address Primary</td>
-                                        <td>{item.email_id_1}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Email Address Secondary</td>
-                                        <td>
-                                          {item.email_id_2
-                                            ? item.email_id_2
-                                            : "---"}
-                                        </td>
-                                      </tr>{" "}
-                                      <tr>
-                                        <td>Address</td>
-                                        <td>{item.address}</td>
-                                      </tr>{" "}
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <div className="col">
-                                  {" "}
-                                  <table>
-                                    <tbody>
-                                      <tr>
-                                        <td colspan="2" className="hdr">
-                                          <span>Payment Information:-</span>
-                                        </td>
-                                      </tr>{" "}
-                                      <tr>
-                                        <td>PAYMENT TERMS IN DAYS</td>
-                                        <td>{item.payment_terms}</td>
-                                      </tr>{" "}
-                                      <tr>
-                                        <td>PAYMENT MODE</td>
-                                        <td>{item.payment_mode}</td>
-                                      </tr>{" "}
-                                      <tr>
-                                        <td>VAT NUMBER</td>
-                                        <td>{item.vat_number}</td>
-                                      </tr>{" "}
-                                      <tr>
-                                        <td>BANK NAME</td>
-                                        <td>{item.bank_name}</td>
-                                      </tr>{" "}
-                                      <tr>
-                                        <td>ACCOUNT NUMBER</td>
-                                        <td>{item.bank_account_no}</td>
-                                      </tr>{" "}
-                                    </tbody>
-                                  </table>
-                                </div>
+                        return (
+                          <div className="vendorDetCntr animated slideInDown faster">
+                            <div className="row">
+                              <div className="col">
+
+                                <table>
+                                  <tbody>
+                                    <tr>
+                                      <td colspan="2" className="hdr">
+                                        <span>Vendor Details:-</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Vendor Code:</td>
+                                      <td>{item.vendor_code}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Vendor Name:</td>
+                                      <td>{item.vendor_name}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>BUSINESS REG. NO.</td>
+                                      <td>{item.business_registration_no}</td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="2" className="hdr">
+                                        <span>Contact Details:-</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>CONTACT NUMBER</td>
+                                      <td>{item.contact_number}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Email Address Primary</td>
+                                      <td>{item.email_id_1}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Email Address Secondary</td>
+                                      <td>
+                                        {item.email_id_2
+                                          ? item.email_id_2
+                                          : "---"}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Address</td>
+                                      <td>{item.address}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div className="col">
+
+                                <table>
+                                  <tbody>
+                                    <tr>
+                                      <td colspan="2" className="hdr">
+                                        <span>Payment Information:-</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>PAYMENT TERMS IN DAYS</td>
+                                      <td>{item.payment_terms}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>PAYMENT MODE</td>
+                                      <td>{item.payment_mode}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>VAT NUMBER</td>
+                                      <td>{item.vat_number}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>BANK NAME</td>
+                                      <td>{item.bank_name}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>ACCOUNT NUMBER</td>
+                                      <td>{item.bank_account_no}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </div>
                             </div>
-                          );
-                        })
+                          </div>
+                        );
+                      })
                       : null}
                   </div>
                 </div>
@@ -827,7 +839,7 @@ class PurchaseOrderEntry extends Component {
                     others: {
                       placeholder: "0",
                       disabled:
-                        this.state.po_entry_detail.length > 0 ? true : false,
+                        this.state.is_revert === "Y" ? false : this.state.po_entry_detail.length > 0 ? true : false,
                     },
                   }}
                 />
@@ -859,6 +871,19 @@ class PurchaseOrderEntry extends Component {
               </div>
             </div>
           </div>
+          {this.state.cancelled === "Y" || this.state.is_revert === "Y" ?
+            <div className="alert alert-danger">
+              <div className="row">
+                <div className="col"> <p>
+                  Reason:<b>{this.state.revert_reason}</b>
+                </p>
+                </div>
+                <div className="col-4"> <p>
+                  Reverted By:<b>{this.state.reverted_name}</b>
+                </p></div>
+
+              </div>
+            </div> : null}
           <MyContext.Provider
             value={{
               state: this.state,
@@ -870,8 +895,8 @@ class PurchaseOrderEntry extends Component {
             {this.state.po_mode === "S" ? (
               <POServiceList POEntry={this.state} />
             ) : (
-              <POItemList POEntry={this.state} />
-            )}
+                <POItemList POEntry={this.state} />
+              )}
           </MyContext.Provider>
           <div className="row">
             <div className="col-lg-12">
@@ -937,8 +962,8 @@ class PurchaseOrderEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" ||
                             this.state.cancelled === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -967,8 +992,8 @@ class PurchaseOrderEntry extends Component {
                           ? true
                           : this.state.authorize2 === "Y" ||
                             this.state.cancelled === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -995,7 +1020,7 @@ class PurchaseOrderEntry extends Component {
                     disabled={
                       (this.state.authorize2 === "Y" &&
                         this.state.authorize2 === "Y") ||
-                      this.state.cancelled === "Y"
+                        this.state.cancelled === "Y"
                         ? true
                         : false
                     }
