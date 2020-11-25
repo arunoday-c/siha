@@ -29,13 +29,12 @@ export default {
               left join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id \
               where  GH.grn_number=?",
           values: [req.query.grn_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             let strQuery = "";
             if (headerResult[0].receipt_mode == "S") {
-
               strQuery = mysql.format(
                 "select SIS.*, S.service_name from hims_f_procurement_grn_service SIS \
                   inner join hims_d_services S on S.hims_d_services_id = SIS.services_id \
@@ -84,17 +83,17 @@ export default {
             _mysql
               .executeQuery({
                 query: strQuery,
-                printQuery: true
+                printQuery: true,
               })
-              .then(receipt_entry_detail => {
+              .then((receipt_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ receipt_entry_detail }
+                  ...{ receipt_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -104,7 +103,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -123,12 +122,10 @@ export default {
         .executeQuery({
           query:
             "select hims_f_procurement_grn_header_id from hims_f_procurement_grn_header where inovice_number=?;",
-          values: [
-            input.inovice_number,
-          ],
-          printQuery: true
+          values: [input.inovice_number],
+          printQuery: true,
         })
-        .then(invocie_detail => {
+        .then((invocie_detail) => {
           if (invocie_detail.length > 0) {
             _mysql.releaseConnection();
             req.records = {
@@ -138,15 +135,15 @@ export default {
             next();
             return;
           }
-          console.log("1")
+          console.log("1");
           _mysql
             .generateRunningNumber({
               user_id: req.userIdentity.algaeh_d_app_user_id,
               numgen_codes: ["RE_NUM"],
-              table_name: "hims_f_procurement_numgen"
+              table_name: "hims_f_procurement_numgen",
             })
-            .then(generatedNumbers => {
-              console.log("2")
+            .then((generatedNumbers) => {
+              console.log("2");
               grn_number = generatedNumbers.RE_NUM;
 
               let year = moment().format("YYYY");
@@ -200,17 +197,17 @@ export default {
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
-                    req.userIdentity.hospital_id
+                    req.userIdentity.hospital_id,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(headerResult => {
+                .then((headerResult) => {
                   req.connection = {
                     connection: _mysql.connection,
                     isTransactionConnection: _mysql.isTransactionConnection,
-                    pool: _mysql.pool
+                    pool: _mysql.pool,
                   };
-                  let IncludeValues = []
+                  let IncludeValues = [];
                   if (input.receipt_mode === "I") {
                     IncludeValues = [
                       "dn_header_id",
@@ -219,7 +216,7 @@ export default {
                       "net_extended_cost",
                       "tax_percentage",
                       "tax_amount",
-                      "total_amount"
+                      "total_amount",
                     ];
 
                     _mysql
@@ -229,24 +226,25 @@ export default {
                         values: input.receipt_entry_detail,
                         includeValues: IncludeValues,
                         extraValues: {
-                          grn_header_id: headerResult.insertId
+                          grn_header_id: headerResult.insertId,
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(detailResult => {
+                      .then((detailResult) => {
                         // _mysql.commitTransaction(() => {
                         //   _mysql.releaseConnection();
                         req.records = {
                           grn_number: grn_number,
-                          hims_f_procurement_grn_header_id: headerResult.insertId,
+                          hims_f_procurement_grn_header_id:
+                            headerResult.insertId,
                           year: year,
-                          period: period
+                          period: period,
                         };
                         next();
                         // });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -262,7 +260,7 @@ export default {
                       "net_extended_cost",
                       "tax_percentage",
                       "tax_amount",
-                      "total_amount"
+                      "total_amount",
                     ];
 
                     _mysql
@@ -272,44 +270,44 @@ export default {
                         values: input.receipt_entry_detail_services,
                         includeValues: IncludeValues,
                         extraValues: {
-                          grn_header_id: headerResult.insertId
+                          grn_header_id: headerResult.insertId,
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(detailResult => {
+                      .then((detailResult) => {
                         // _mysql.commitTransaction(() => {
                         //   _mysql.releaseConnection();
                         req.records = {
                           grn_number: grn_number,
-                          hims_f_procurement_grn_header_id: headerResult.insertId,
+                          hims_f_procurement_grn_header_id:
+                            headerResult.insertId,
                           year: year,
-                          period: period
+                          period: period,
                         };
                         next();
                         // });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
-
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -337,15 +335,15 @@ export default {
             inputParam.posted,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_grn_header_id
+            inputParam.hims_f_procurement_grn_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
 
           if (headerResult != null) {
@@ -364,20 +362,20 @@ export default {
                   details[i].rejected_quantity,
                   details[i].outstanding_quantity,
                   details[i].expiry_date,
-                  details[i].hims_f_procurement_grn_detail_id
+                  details[i].hims_f_procurement_grn_detail_id,
                 ]
               );
             }
             _mysql
               .executeQuery({
                 query: qry,
-                printQuery: true
+                printQuery: true,
               })
-              .then(detailResult => {
+              .then((detailResult) => {
                 req.records = detailResult;
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -389,7 +387,7 @@ export default {
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -400,43 +398,77 @@ export default {
       });
     }
   },
+  getReceiptEntryList: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `select  GH.*, date(GH.grn_date) as grn_date, CASE GH.grn_for WHEN 'INV' then 
+          'Inventory' else 'Pharmacy' end as grn_for , CASE GH.grn_for WHEN 'INV' then IL.location_description 
+          else PL.location_description end as loc_description,V.vendor_name, CASE GH.grn_for WHEN 'INV' then IL.location_type 
+          else PL.location_type end as location_type, PH.purchase_number from hims_f_procurement_grn_header GH 
+          inner join hims_f_procurement_po_header PH on PH.hims_f_procurement_po_header_id = GH.po_id 
+          inner join hims_d_vendor V on GH.vendor_id = V.hims_d_vendor_id 
+          left join hims_d_pharmacy_location PL on GH.pharmcy_location_id = PL.hims_d_pharmacy_location_id
+          left join hims_d_inventory_location IL on GH.inventory_location_id = IL.hims_d_inventory_location_id 
+          where date(GH.grn_date)
+          between date(?) and date(?)`,
+          values: [req.query.from_date, req.query.to_date],
+          printQuery: true,
+        })
+        .then((Result) => {
+          _mysql.releaseConnection();
+          req.records = Result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   updatePurchaseOrder: (req, res, next) => {
-    console.log("PO1")
+    console.log("PO1");
     if (req.records.invalid_input == false) {
-      next()
+      next();
       return;
     }
-    console.log("updatePurchaseOrder")
+    console.log("updatePurchaseOrder");
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
       _mysql
         .executeQuery({
-          query: "select is_completed from hims_f_procurement_po_header where hims_f_procurement_po_header_id=?",
+          query:
+            "select is_completed from hims_f_procurement_po_header where hims_f_procurement_po_header_id=?",
           values: [req.body.po_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(po_data => {
+        .then((po_data) => {
           if (po_data[0].is_completed === "Y") {
             _mysql
               .executeQuery({
-                query: "update hims_f_procurement_po_header set receipt_generated='Y' where hims_f_procurement_po_header_id=?",
+                query:
+                  "update hims_f_procurement_po_header set receipt_generated='Y' where hims_f_procurement_po_header_id=?",
                 values: [req.body.po_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(po_data => {
-                next()
+              .then((po_data) => {
+                next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           } else {
-            next()
+            next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -449,12 +481,12 @@ export default {
   },
 
   updateDNEntry: (req, res, next) => {
-    console.log("DN 1")
+    console.log("DN 1");
     if (req.records.invalid_input == false) {
-      next()
+      next();
       return;
     }
-    console.log("updateDNEntry")
+    console.log("updateDNEntry");
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
@@ -462,7 +494,6 @@ export default {
         let inputParam = { ...req.body };
 
         let complete = "Y";
-
 
         let details = inputParam.receipt_entry_detail;
 
@@ -477,23 +508,23 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              details[i].dn_header_id
+              details[i].dn_header_id,
             ]
           );
         }
         _mysql
           .executeQuery({
             query: qry,
-            printQuery: true
+            printQuery: true,
           })
-          .then(detailResult => {
+          .then((detailResult) => {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.dnrecords = detailResult;
               next();
             });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -519,14 +550,14 @@ export default {
           query:
             "SELECT * from  hims_f_procurement_dn_header where is_completed = 'N' and purchase_order_id=?",
           values: [req.query.purchase_order_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           _mysql.releaseConnection();
           req.records = headerResult;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -546,14 +577,14 @@ export default {
             where DND.hims_f_procurement_dn_detail_id = DNB.hims_f_procurement_dn_detail_id \
             and hims_f_procurement_dn_header_id=?",
           values: [req.query.dn_header_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           _mysql.releaseConnection();
           req.records = headerResult;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -580,19 +611,19 @@ export default {
             inputParam.posted,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_grn_header_id
+            inputParam.hims_f_procurement_grn_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -607,36 +638,38 @@ export default {
   getPOServiceReceipt: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      console.log("getPOServiceReceipt: ")
+      console.log("getPOServiceReceipt: ");
 
       _mysql
         .executeQuery({
-          query: "SELECT PH.*, V.vendor_name, H.hospital_name, P.project_desc as project_name \
+          query:
+            "SELECT PH.*, V.vendor_name, H.hospital_name, P.project_desc as project_name \
                 from hims_f_procurement_po_header PH inner join  hims_d_vendor V on  PH.vendor_id = V.hims_d_vendor_id \
                 inner join hims_d_hospital H  on PH.hospital_id = H.hims_d_hospital_id \
                 inner join hims_d_project P  on PH.project_id = P.hims_d_project_id \
                 where PH.hims_f_procurement_po_header_id =? ",
           values: [req.query.purchase_order_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
-                query: "select OS.*, S.service_name from hims_f_procurement_po_services OS \
+                query:
+                  "select OS.*, S.service_name from hims_f_procurement_po_services OS \
                           inner join hims_d_services S on S.hims_d_services_id = OS.services_id where procurement_header_id=?;",
                 values: [req.query.purchase_order_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(receipt_entry_detail_services => {
+              .then((receipt_entry_detail_services) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ receipt_entry_detail_services }
+                  ...{ receipt_entry_detail_services },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -646,7 +679,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -662,13 +695,13 @@ export default {
     try {
       let inputParam = { ...req.body };
 
-      console.log("generateAccountingEntry")
+      console.log("generateAccountingEntry");
       _mysql
         .executeQuery({
-          query: "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
         })
-        .then(org_data => {
-
+        .then((org_data) => {
           if (
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
@@ -679,61 +712,71 @@ export default {
                   "select head_id, child_id from finance_accounts_maping where account in ('INPUT_TAX');\
                   select hims_d_sub_department_id from hims_d_sub_department where department_type='I';\
                   select hims_d_sub_department_id from hims_d_sub_department where department_type='PH';\
-                  select cost_center_type, cost_center_required from finance_options limit 1;"
+                  select cost_center_type, cost_center_required from finance_options limit 1;",
               })
-              .then(result => {
-                const input_tax_acc = result[0][0]
-                let sub_department_id = null
-                let strQuery = ""
+              .then((result) => {
+                const input_tax_acc = result[0][0];
+                let sub_department_id = null;
+                let strQuery = "";
 
                 if (inputParam.grn_for === "PHR") {
-                  strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
+                  strQuery =
+                    "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
                     GH.net_total, GH.total_tax, GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id, \
                     V.head_id as v_head_id, V.child_id as v_child_id, V.vendor_name \
                     from hims_f_procurement_grn_header GH \
                     inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id\
                     inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
-                    where hims_f_procurement_grn_header_id=?;"
-                  sub_department_id = result[2].length > 0 ? result[2][0].hims_d_sub_department_id : null
-                }
-                else {
-
-                  strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
+                    where hims_f_procurement_grn_header_id=?;";
+                  sub_department_id =
+                    result[2].length > 0
+                      ? result[2][0].hims_d_sub_department_id
+                      : null;
+                } else {
+                  strQuery =
+                    "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
                     GH.net_total, GH.total_tax, \
                     GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id, V.head_id as v_head_id, V.child_id as v_child_id, \
                     V.vendor_name from hims_f_procurement_grn_header GH \
                     inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = GH.inventory_location_id \
                     inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
-                    where hims_f_procurement_grn_header_id=?;"
-                  sub_department_id = result[1].length > 0 ? result[1][0].hims_d_sub_department_id : null
+                    where hims_f_procurement_grn_header_id=?;";
+                  sub_department_id =
+                    result[1].length > 0
+                      ? result[1][0].hims_d_sub_department_id
+                      : null;
                 }
 
-                if (result[3][0].cost_center_required === "Y" && result[3][0].cost_center_type === "P") {
+                if (
+                  result[3][0].cost_center_required === "Y" &&
+                  result[3][0].cost_center_type === "P"
+                ) {
                   strQuery += `select  hims_m_division_project_id, project_id from hims_m_division_project D \
                     inner join hims_d_project P on D.project_id=P.hims_d_project_id \
                     inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
-                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`;
                 }
 
                 _mysql
                   .executeQuery({
                     query: strQuery,
                     values: [inputParam.hims_f_procurement_grn_header_id],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(header_result => {
+                  .then((header_result) => {
                     let project_id = null;
-                    let headerResult = []
+                    let headerResult = [];
                     if (header_result.length > 1) {
-                      headerResult = header_result[0]
-                      project_id = header_result[1][0].project_id
+                      headerResult = header_result[0];
+                      project_id = header_result[1][0].project_id;
                     } else {
-                      headerResult = header_result
+                      headerResult = header_result;
                     }
 
                     _mysql
                       .executeQuery({
-                        query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
+                        query:
+                          "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
                         document_number, from_screen, narration,  invoice_no, due_date, entered_date, entered_by) \
                         VALUES (?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
@@ -743,16 +786,20 @@ export default {
                           headerResult[0].hims_f_procurement_grn_header_id,
                           headerResult[0].grn_number,
                           inputParam.ScreenCode,
-                          "Receipt Generated " + "/" + headerResult[0].vendor_name + "/" + headerResult[0].net_payable,
+                          "Receipt Generated " +
+                            "/" +
+                            headerResult[0].vendor_name +
+                            "/" +
+                            headerResult[0].net_payable,
                           headerResult[0].inovice_number,
                           inputParam.due_date,
                           new Date(),
-                          req.userIdentity.algaeh_d_app_user_id
+                          req.userIdentity.algaeh_d_app_user_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(day_end_header => {
-                        let insertSubDetail = []
+                      .then((day_end_header) => {
+                        let insertSubDetail = [];
                         const month = moment().format("M");
                         const year = moment().format("YYYY");
                         const IncludeValuess = [
@@ -762,7 +809,7 @@ export default {
                           "debit_amount",
                           "payment_type",
                           "credit_amount",
-                          "hospital_id"
+                          "hospital_id",
                         ];
 
                         //Vendor Entry
@@ -773,7 +820,7 @@ export default {
                           debit_amount: 0,
                           payment_type: "CR",
                           credit_amount: headerResult[0].net_payable,
-                          hospital_id: req.userIdentity.hospital_id
+                          hospital_id: req.userIdentity.hospital_id,
                         });
 
                         //Tax Entry
@@ -785,7 +832,7 @@ export default {
                             debit_amount: headerResult[0].total_tax,
                             payment_type: "DR",
                             credit_amount: 0,
-                            hospital_id: req.userIdentity.hospital_id
+                            hospital_id: req.userIdentity.hospital_id,
                           });
                         }
 
@@ -796,9 +843,8 @@ export default {
                           debit_amount: headerResult[0].net_total,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: headerResult[0].hospital_id
+                          hospital_id: headerResult[0].hospital_id,
                         });
-
 
                         // console.log("insertSubDetail", insertSubDetail)
                         _mysql
@@ -813,36 +859,36 @@ export default {
                               year: year,
                               month: month,
                               project_id: project_id,
-                              sub_department_id: sub_department_id
+                              sub_department_id: sub_department_id,
                             },
-                            printQuery: false
+                            printQuery: false,
                           })
-                          .then(subResult => {
+                          .then((subResult) => {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               req.records = subResult;
                               next();
                             });
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
                           });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -855,16 +901,15 @@ export default {
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
         });
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
     }
-  }
+  },
 };

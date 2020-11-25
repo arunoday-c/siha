@@ -546,6 +546,11 @@ const DeliveryNoteEntry = React.lazy(() =>
 const ReceiptEntry = React.lazy(() =>
   retry(() => import("./Components/Procurement/ReceiptEntry/ReceiptEntry"))
 );
+const ReceiptEntryList = React.lazy(() =>
+  retry(() =>
+    import("./Components/Procurement/ReceiptEntryList/ReceiptEntryList")
+  )
+);
 const ShipmentEntry = React.lazy(() =>
   retry(() => import("./Components/Procurement/ShipmentEntry/ShipmentEntry"))
 );
@@ -1326,6 +1331,11 @@ const privateRoutes = [
     component: <ReceiptEntry />,
   },
   {
+    path: "/ReceiptEntryList",
+    isExactPath: true,
+    component: <ReceiptEntryList />,
+  },
+  {
     path: "/ShipmentEntry",
     isExactPath: true,
     component: <ShipmentEntry />,
@@ -1511,12 +1521,12 @@ function Routes() {
             );
           })
         ) : (
-            <div className="loader-container">
-              <div className="algaeh-progress float shadow">
-                <div className="progress__item">loading</div>
-              </div>
+          <div className="loader-container">
+            <div className="algaeh-progress float shadow">
+              <div className="progress__item">loading</div>
             </div>
-          )}
+          </div>
+        )}
       </Switch>
     </BrowserRouter>
   );
