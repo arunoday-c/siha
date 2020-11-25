@@ -1,4 +1,5 @@
 import React, { memo, useState, useEffect } from "react";
+import "../ResultDispatch.scss";
 import { Collapse, Checkbox } from "algaeh-react-components";
 import moment from "moment";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
@@ -65,7 +66,7 @@ export default memo(function ({ details }) {
     });
   }
   return (
-    <Collapse>
+    <Collapse className="accCntr">
       <Panel
         header={
           <div>
@@ -80,21 +81,23 @@ export default memo(function ({ details }) {
         }
         key="1"
       >
-        <Checkbox defaultChecked={selectAll} onChange={changeSelectStatus}>
-          Select All Validated Test
-        </Checkbox>
-        <button onClick={showReport}>Print Selected Reports</button>
-        <table>
-          <tr>
-            <th>
-              <td>Selector</td>
-              <td>Test Name</td>
-              <td>Critical</td>
-              <td>Status</td>
-              <td>Billed</td>
-              <td>Send Out</td>
-            </th>
-          </tr>
+        <table className="accrTable">
+          <thead>
+            <tr>
+              <th>
+                {" "}
+                <Checkbox
+                  defaultChecked={selectAll}
+                  onChange={changeSelectStatus}
+                ></Checkbox>
+              </th>
+              <th>Test Name</th>
+              <th>Critical</th>
+              <th>Status</th>
+              <th>Billed</th>
+              <th>Send Out</th>
+            </tr>
+          </thead>
           <tbody>
             {list.map((item, index) => {
               const {
@@ -107,12 +110,14 @@ export default memo(function ({ details }) {
 
               return (
                 <tr key={index}>
-                  <td>
+                  <td width="10">
                     <CheckBoxCheck item={item} />
                   </td>
-                  <td>{service_name}</td>
-                  <td>{critical_status === "Y" ? "Yes" : "No"}</td>
-                  <td>
+                  <td style={{ textAlign: "left", fontWeight: "bold" }}>
+                    {service_name}
+                  </td>
+                  <td width="20">{critical_status === "Y" ? "Yes" : "No"}</td>
+                  <td width="120">
                     {status === "O"
                       ? "Ordered"
                       : status === "CL"
@@ -125,13 +130,18 @@ export default memo(function ({ details }) {
                       ? "Validated"
                       : "Validation Pending"}
                   </td>
-                  <td>{billed === "Y" ? "Yes" : "No"}</td>
-                  <td>{send_out_test === "Y" ? "Yes" : "No"}</td>
+                  <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
+                  <td width="70">{send_out_test === "Y" ? "Yes" : "No"}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+        <div className="accFooter">
+          <button className="btn btn-default btn-sm" onClick={showReport}>
+            Print Selected Reports
+          </button>
+        </div>
       </Panel>
     </Collapse>
   );

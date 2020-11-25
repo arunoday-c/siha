@@ -1,18 +1,24 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
+<div class="print-body">
 {{#each records}}
-  <caption>{{investigation_name}}</caption>
-  <table>
-      <tbody>
-          {{#each details}}
-          <tr>
-              <td>{{analyte_name}}</td>
-              <td>{{result}} <sup>{{critical_type}}</sup></td>
-              <td>{{result_unit}}</td>
-              <td> {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
-                        {{normal_high}}{{/if}}</td>
-          </tr>
-          {{/each}}
-      </tbody>
-  </table>
+    <table class="tableForDataNoBorder" cell-padding="0">
+        <tbody>
+        <tr class="tableSubHdg2" style="background-color:rgb(250, 250, 250);">
+            <td colspan="4" class="txtFld">
+                <b>{{investigation_name}}</b>
+            </td>
+        </tr>
+        {{#each details}}
+        <tr>
+            <td width="40%" class="txtFld">{{analyte_name}}</td>
+            <td  width="20%" class="numberFld">{{result}} <sup>{{critical_type}}</sup></td>
+            <td  width="20%" class="numberFld">{{result_unit}}</td>
+            <td  width="20%" class="numberFld"> {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
+            {{normal_high}}{{/if}}</td>
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
 {{/each}}
+</div>
