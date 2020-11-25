@@ -12,7 +12,8 @@ const {
   generateAccountingEntry,
   updatePurchaseOrder,
   getPOServiceReceipt,
-  revertReceiptEntry
+  getReceiptEntryList,
+  revertReceiptEntry,
 } = receiptModels;
 
 export default () => {
@@ -20,14 +21,19 @@ export default () => {
   api.get("/getReceiptEntry", getReceiptEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
-
+  api.get("/getReceiptEntryList", getReceiptEntryList, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.get("/getDeliveryForReceipt", getDeliveryForReceipt, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
@@ -37,7 +43,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -53,7 +59,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -61,7 +67,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().ok)
           .json({
             success: true,
-            records: req.records
+            records: req.records,
           })
           .end();
       }
@@ -75,35 +81,35 @@ export default () => {
   api.put("/updateReceiptEntry", updateReceiptEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
   api.put("/revertReceiptEntry", revertReceiptEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
-  api.put("/postReceiptEntry",
+  api.put(
+    "/postReceiptEntry",
     postReceiptEntry,
     generateAccountingEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
-    });
+    }
+  );
 
-  api.get("/getPOServiceReceipt",
-    getPOServiceReceipt,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
+  api.get("/getPOServiceReceipt", getPOServiceReceipt, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
     });
+  });
 
   return api;
 };

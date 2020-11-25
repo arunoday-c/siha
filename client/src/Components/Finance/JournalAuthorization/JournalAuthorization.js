@@ -174,7 +174,6 @@ class JournalAuthorization extends Component {
             },
           }}
         >
-          {" "}
           <div className="col-lg-12 popupInner">
             <div className="row" style={{ paddingTop: 15 }}>
               <div className="col-2">

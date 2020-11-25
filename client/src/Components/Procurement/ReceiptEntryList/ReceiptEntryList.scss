@@ -1,0 +1,66 @@
+@import "../../../styles/algaehCssVariables.scss";
+
+#ReceiptGrid {
+  .ReactTable {
+    max-width: 96vw !important;
+    max-height: 44vh !important;
+  }
+
+  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+    .ReactTable {
+      max-width: 95vw !important;
+    }
+  }
+}
+
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.receiptEntryAttachment {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid lighten($color-black, 70%) !important;
+  max-height: 20vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid lighten($color-black, 70%) !important;
+    b {
+      display: inline-block;
+      width: calc(100% - 73px);
+      padding: 3px 5px;
+    }
+    span {
+      display: inline-block;
+      width: 73px;
+      text-align: right;
+      i {
+        padding: 10px;
+        border-left: 1px dashed lighten($color-black, 70%) !important;
+        &:hover {
+          background-color: $primary-color;
+          color: $color-white;
+          cursor: pointer;
+        }
+      }
+    }
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  .noAttachment {
+    min-height: 137px;
+    max-height: 137px;
+    text-align: center;
+    p {
+      line-height: 137px;
+      padding: 0 10px;
+    }
+  }
+}
