@@ -11,20 +11,22 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT PH.*, VQH.vendor_quotation_number, E.full_name, \
+            "SELECT PH.*, VQH.vendor_quotation_number,\
             CASE WHEN PH.po_from = 'INV' THEN (select material_requisition_number from hims_f_inventory_material_header \
             where hims_f_inventory_material_header_id=PH.inv_requisition_id ) \
             else (select material_requisition_number from hims_f_pharamcy_material_header  \
             where hims_f_pharamcy_material_header_id=PH.phar_requisition_id) END as material_requisition_number,\
             CASE PH.po_from WHEN 'INV' then IL.location_description \
-            else PL.location_description end as location_name, V.vendor_name,V.email_id_1\
+            else PL.location_description end as location_name, V.vendor_name,V.email_id_1,\
+            max(if(U.algaeh_d_app_user_id = PH.reverted_by, E.full_name,'' )) as reverted_name, \
+            max(if(U.algaeh_d_app_user_id = PH.created_by, E.full_name,'' )) as created_name \
             from  hims_f_procurement_po_header PH inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
-            inner join algaeh_d_app_user U on PH.created_by = U.algaeh_d_app_user_id \
+            inner join algaeh_d_app_user U on (PH.created_by = U.algaeh_d_app_user_id or PH.reverted_by = U.algaeh_d_app_user_id)\
             inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
             left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id \
             left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id \
             left join hims_f_procurement_vendor_quotation_header VQH on VQH.hims_f_procurement_vendor_quotation_header_id = PH.vendor_quotation_header_id \
-            where purchase_number=?",
+            where purchase_number=? group by hims_f_procurement_po_header_id",
           values: [req.query.purchase_number],
           printQuery: true,
         })
@@ -340,10 +342,11 @@ export default {
         _mysql
           .executeQueryWithTransaction({
             query:
-              "UPDATE `hims_f_procurement_po_header` SET is_posted= ?, sub_total =? , detail_discount =?, extended_total =?,\
+              "UPDATE `hims_f_procurement_po_header` SET payment_terms=?, is_posted= ?, sub_total =? , detail_discount =?, extended_total =?,\
                 sheet_level_discount_percent = ?, sheet_level_discount_amount = ?, net_total = ?, total_tax = ?, \
                 net_payable=?, updated_by=?,updated_date=? where hims_f_procurement_po_header_id=?;",
             values: [
+              input.payment_terms,
               input.is_posted,
               input.sub_total,
               input.detail_discount,
@@ -604,12 +607,24 @@ export default {
         req.mySQl = _mysql;
 
         let strQuery = "";
+        let strUpdQry = "";
+        let strRecptQry = "select 1=1";
+
+        // console.log("inputParam.is_revert", inputParam.is_revert)
+        if (inputParam.is_revert == "Y") {
+          strUpdQry = " is_revert='N',";
+          strRecptQry = mysql.format(
+            `select hims_f_procurement_grn_header_id from hims_f_procurement_grn_header where po_id=?`,
+            [inputParam.hims_f_procurement_po_header_id]
+          );
+          inputParam.is_completed = "Y"
+        }
         // console.log("inputParam.authorize", inputParam.authorize);
         // console.log("inputParam.authorize", inputParam.po_auth_level);
         if (inputParam.po_auth_level == "1") {
           strQuery = mysql.format(
-            "UPDATE `hims_f_procurement_po_header` SET is_completed = ?, `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
-            `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_procurement_po_header_id`=?",
+            `UPDATE hims_f_procurement_po_header SET ${strUpdQry} is_completed = ?, authorize1=?, authorize_by_date=?, authorize_by_1=?, \
+            authorize2=?, authorize2_date=?, authorize2_by=? WHERE hims_f_procurement_po_header_id=?; ` + strRecptQry,
             [
               inputParam.is_completed,
               inputParam.authorize1,
@@ -625,7 +640,7 @@ export default {
           if (inputParam.authorize == "authorize1") {
             strQuery = mysql.format(
               "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=? \
-              WHERE `hims_f_procurement_po_header_id`=?",
+              WHERE `hims_f_procurement_po_header_id`=?;" + "select 1=1",
               [
                 inputParam.authorize1,
                 new Date(),
@@ -635,8 +650,8 @@ export default {
             );
           } else if (inputParam.authorize == "authorize2") {
             strQuery = mysql.format(
-              "UPDATE `hims_f_procurement_po_header` SET is_completed = ?, \
-                  `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_procurement_po_header_id`=?",
+              `UPDATE hims_f_procurement_po_header SET ${strUpdQry} is_completed = ?, \
+                  authorize2=?, authorize2_date=?, authorize2_by=? WHERE hims_f_procurement_po_header_id=?;` + strRecptQry,
               [
                 inputParam.is_completed,
                 inputParam.authorize2,
@@ -658,63 +673,72 @@ export default {
               isTransactionConnection: _mysql.isTransactionConnection,
               pool: _mysql.pool,
             };
-            if (headerResult != null) {
-              // console.log(
-              //   "inputParam.po_entry_detail",
-              //   inputParam.po_entry_detail
-              // );
-              let details = inputParam.po_entry_detail;
+            // let receipt_data = headerResult[1][0];
 
-              if (details.length > 0) {
-                let qry = "";
+            // console.log("headerResult", headerResult[1][0])
+            let receipt_data = [];
+            headerResult[1].map((o) => {
+              if (o.hims_f_procurement_grn_header_id !== undefined) {
+                receipt_data.push(o.hims_f_procurement_grn_header_id);
+              }
+            });
 
-                for (let i = 0; i < details.length; i++) {
-                  qry += mysql.format(
-                    "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
+            // console.log("receipt_data", receipt_data)
+            let details = inputParam.po_entry_detail;
+
+            if (details.length > 0) {
+              let qry = "";
+
+              for (let i = 0; i < details.length; i++) {
+                qry += mysql.format(
+                  "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
                       quantity_recieved=?, quantity_outstanding=?\
                       where `hims_f_procurement_po_detail_id`=?;",
-                    [
-                      details[i].authorize_quantity,
-                      details[i].rejected_quantity,
-                      details[i].quantity_recieved,
-                      details[i].quantity_outstanding,
-                      details[i].hims_f_procurement_po_detail_id,
-                    ]
-                  );
+                  [
+                    details[i].authorize_quantity,
+                    details[i].rejected_quantity,
+                    details[i].quantity_recieved,
+                    details[i].quantity_outstanding,
+                    details[i].hims_f_procurement_po_detail_id,
+                  ]
+                );
 
-                  if (i == details.length - 1) {
-                    qryExecute = true;
-                  }
+                if (i == details.length - 1) {
+                  qryExecute = true;
                 }
-                if (qryExecute == true) {
-                  _mysql
-                    .executeQuery({
-                      query: qry,
-                      printQuery: true,
-                    })
-                    .then((detailResult) => {
-                      _mysql.commitTransaction(() => {
-                        _mysql.releaseConnection();
-                        req.records = detailResult;
-                        next();
-                      });
-                    })
-                    .catch((e) => {
-                      _mysql.rollBackTransaction(() => {
-                        next(e);
-                      });
+              }
+              if (receipt_data.length > 0) {
+                qry += mysql.format("UPDATE hims_f_procurement_grn_header SET is_revert='N', payment_terms=? WHERE hims_f_procurement_grn_header_id in (?); ",
+                  [
+                    inputParam.payment_terms,
+                    receipt_data
+                  ]
+                );
+              }
+
+              if (qryExecute == true) {
+                _mysql
+                  .executeQuery({
+                    query: qry,
+                    printQuery: true,
+                  })
+                  .then((detailResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = detailResult;
+                      next();
                     });
-                }
-              } else {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = headerResult;
-                  next();
-                });
+                  })
+                  .catch((e) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
               }
             } else {
-              _mysql.rollBackTransaction(() => {
-                req.records = {};
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = headerResult;
                 next();
               });
             }

@@ -372,6 +372,21 @@ class PurchaseOrderList extends Component {
                         },
                       },
                       {
+                        fieldName: "is_revert",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Receipt Reverted" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.is_revert === "Y" ? (
+                            <span className="badge badge-success">Yes</span>
+                          ) : (
+                              <span className="badge badge-danger">No</span>
+                            );
+                        }
+                      },
+                      {
                         fieldName: "purchase_number",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "PO Number" }} />

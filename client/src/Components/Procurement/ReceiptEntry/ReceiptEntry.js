@@ -29,6 +29,7 @@ import {
   textEventhandle,
   generateReceiptEntryReport,
   getPOOptions,
+  RevertReceiptEntry
 } from "./ReceiptEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
@@ -249,13 +250,33 @@ class ReceiptEntry extends Component {
                 </h6>
               </div>
               {this.state.dataExitst === true ? (
-                <div className="col-9 createdUserCntr">
+                <div className="col-3 createdUserCntr">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Receipt Status",
+                    }}
+                  />
+                  <h6>
+                    {this.state.is_revert === "Y" ? (
+                      <span className="badge badge-danger">Reverted</span>
+                    ) : this.state.posted === "N" ? (
+                      <span className="badge badge-danger">Not Posted</span>
+                    ) : (
+                          <span className="badge badge-success">Posted</span>
+                        )}
+                  </h6>
+                </div>
+              ) : null}
+
+              {this.state.dataExitst === true ? (
+                <div className="col-6 createdUserCntr">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",
                     }}
                   />
-                  <h6>{this.state.full_name}</h6>
+                  <h6>{this.state.created_name}</h6>
+
                 </div>
               ) : null}
             </div>
@@ -263,17 +284,17 @@ class ReceiptEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt Entry Report",
-                      events: {
-                        onClick: () => {
-                          generateReceiptEntryReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Receipt Entry Report",
+                    events: {
+                      onClick: () => {
+                        generateReceiptEntryReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -356,28 +377,28 @@ class ReceiptEntry extends Component {
                     </div>
                   </div>
                 ) : (
-                  <div className="col-6">
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Branch" }} />
-                        <h6>
-                          {this.state.hospital_name
-                            ? this.state.hospital_name
-                            : "------"}
-                        </h6>
-                      </div>
+                    <div className="col-6">
+                      <div className="row">
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                          <h6>
+                            {this.state.hospital_name
+                              ? this.state.hospital_name
+                              : "------"}
+                          </h6>
+                        </div>
 
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Project" }} />
-                        <h6>
-                          {this.state.project_desc
-                            ? this.state.project_desc
-                            : "------"}
-                        </h6>
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Project" }} />
+                          <h6>
+                            {this.state.project_desc
+                              ? this.state.project_desc
+                              : "------"}
+                          </h6>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Vendor" }} />
@@ -551,6 +572,20 @@ class ReceiptEntry extends Component {
             </div>
           </div>
 
+          {this.state.is_revert === "Y" ?
+            <div className="alert alert-danger">
+              <div className="row">
+                <div className="col"> <p>
+                  Reason:<b>{this.state.revert_reason}</b>
+                </p>
+                </div>
+                <div className="col-4"> <p>
+                  Reverted By:<b>{this.state.reverted_name}</b>
+                </p></div>
+
+              </div>
+            </div> : null}
+
           <MyContext.Provider
             value={{
               state: this.state,
@@ -565,8 +600,8 @@ class ReceiptEntry extends Component {
                 <ReceiptServiceList ReceiptEntryInp={this.state} />
               </div>
             ) : (
-              <ReceiptItemList ReceiptEntryInp={this.state} />
-            )}
+                <ReceiptItemList ReceiptEntryInp={this.state} />
+              )}
           </MyContext.Provider>
 
           <div className="col-12">
@@ -650,10 +685,10 @@ class ReceiptEntry extends Component {
                                     </li>
                                   ))
                                 ) : (
-                                  <div className="col-12 noAttachment" key={1}>
-                                    <p>No Attachments Available</p>
-                                  </div>
-                                )}
+                                    <div className="col-12 noAttachment" key={1}>
+                                      <p>No Attachments Available</p>
+                                    </div>
+                                  )}
                               </ul>
                             </div>
                           </div>
@@ -702,6 +737,49 @@ class ReceiptEntry extends Component {
                 </div>
               </div>
             </div>
+            <Modal
+              title="Invoice Revert"
+              visible={this.state.revert_visible}
+              width={1080}
+              footer={null}
+              onCancel={() => this.setState({ revert_visible: false })}
+              className={`row algaehNewModal invoiceRevertModal`}
+            >
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Enter reason for invoice reversal",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "revert_reason",
+                  value: this.state.revert_reason,
+                  events: {
+                    onChange: (e) => {
+                      this.setState({ revert_reason: e.target.value });
+                    },
+                  },
+                }}
+              />
+
+              <div className="popupFooter">
+                <div className="col-lg-12">
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <button
+                        className="btn btn-primary"
+                        onClick={RevertReceiptEntry.bind(this, this)}
+                      >
+                        Revert Receipt
+                      </button>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Modal>
           </div>
 
           <div className="hptl-phase1-footer">
@@ -722,20 +800,20 @@ class ReceiptEntry extends Component {
                     />
                   </button>
                 ) : (
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SaveReceiptEnrty.bind(this, this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Save",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                )}
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={SaveReceiptEnrty.bind(this, this)}
+                      disabled={this.state.saveEnable}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Save",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  )}
 
                 <button
                   type="button"
@@ -747,6 +825,21 @@ class ReceiptEntry extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
+
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  disabled={this.state.dataRevert}
+                  onClick={() => this.setState({ revert_visible: true })}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Revert",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+
                 <button
                   type="button"
                   className="btn btn-other"

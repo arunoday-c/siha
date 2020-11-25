@@ -844,3 +844,9 @@ alter table hims_f_dental_treatment Add column teeth_number varchar(100);
 -- ============
 ALTER TABLE `hims_f_billing_details` 
 CHANGE COLUMN `teeth_number` `teeth_number` VARCHAR(100) NULL DEFAULT NULL ;
+
+
+-- Merge lab reports
+insert into algaeh_d_reports(report_name,report_name_for_header,report_header_file_name) 
+values('labMerge','Visit wise lab report','labMergeHead');
+-- emd

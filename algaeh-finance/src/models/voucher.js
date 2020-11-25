@@ -448,6 +448,7 @@ export default {
                         printQuery: true,
                       })
                       .then((result) => {
+                        const finance_voucher_header_id = result.insertId
                         // const IncludeValues = ["amount", "payment_mode"];
                         // const insertColumns = [
                         //   "head_id",
@@ -469,31 +470,29 @@ export default {
                               voucher_type,
                             } = merdgeRecords[i];
 
-                            if (resul[0].auth_level === "N") {
-                              queryString += _mysql.mysqlQueryFormat(
-                                `insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,
-                                amount,voucher_type, auth1, auth2, auth_status) value(?,?,?,?,?,?,?);`,
-                                [
-                                  result.insertId,
-                                  invoice_no,
-                                  balance_amount,
-                                  voucher_type,
-                                  "Y",
-                                  "Y",
-                                  "A"
-                                ]
-                              );
-                            } else {
-                              queryString += _mysql.mysqlQueryFormat(
-                                "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
-                                [
-                                  result.insertId,
-                                  invoice_no,
-                                  balance_amount,
-                                  voucher_type
-                                ]
-                              );
-                            }
+                            queryString += _mysql.mysqlQueryFormat(
+                              "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
+                              [
+                                result.insertId,
+                                invoice_no,
+                                balance_amount,
+                                voucher_type
+                              ]
+                            );
+                            // if (resul[0].auth_level === "N") {
+                            //   queryString += _mysql.mysqlQueryFormat(
+                            //     `insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,
+                            //     amount,voucher_type) value(?,?,?,?);`,
+                            //     [
+                            //       result.insertId,
+                            //       invoice_no,
+                            //       balance_amount,
+                            //       voucher_type,
+                            //     ]
+                            //   );
+                            // } else {
+
+                            // }
 
                             newDetails.forEach((item) => {
                               const { amount, ...rest } = item;
@@ -554,6 +553,7 @@ export default {
                               _mysql.releaseConnection();
                               req.records = {
                                 voucher_no: numgen[voucher_type],
+                                finance_voucher_header_id: finance_voucher_header_id
                               };
                               next();
                             });

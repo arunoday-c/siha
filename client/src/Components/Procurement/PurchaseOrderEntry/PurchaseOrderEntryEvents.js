@@ -108,15 +108,15 @@ const vendortexthandle = ($this, e) => {
 
       let validate =
         records.vendor_code !== null &&
-        records.contact_number !== null &&
-        records.email_id_1 !== null &&
-        records.address !== "" &&
-        records.bank_account_no !== null &&
-        records.bank_name !== "" &&
-        records.business_registration_no !== "" &&
-        records.payment_mode !== "" &&
-        records.country_id !== null &&
-        records.state_id !== null
+          records.contact_number !== null &&
+          records.email_id_1 !== null &&
+          records.address !== "" &&
+          records.bank_account_no !== null &&
+          records.bank_name !== "" &&
+          records.business_registration_no !== "" &&
+          records.payment_mode !== "" &&
+          records.country_id !== null &&
+          records.state_id !== null
           ? true
           : false;
       if (validate) {
@@ -574,7 +574,7 @@ const getCtrlCode = ($this, docNumber) => {
           } else {
             data.dataPosted = false;
             data.saveEnable = false;
-            data.dataExitst = false;
+            data.dataExitst = data.is_revert === "Y" ? true : false;
           }
 
           if (data.po_from === "PHR") {
@@ -779,6 +779,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       "is_completed",
       "po_auth_level",
       "authorize",
+      "is_revert"
     ];
     let sendJsonBody = {};
     procumentInputs.forEach((item) => {
@@ -1049,8 +1050,8 @@ const getReportForMail = (data, vedorData) => {
           vendor_email: email_id_1
             ? email_id_1
             : email_id_2
-            ? email_id_2
-            : email_id_1,
+              ? email_id_2
+              : email_id_1,
           po_from: po_from,
           net_total,
           location_name,

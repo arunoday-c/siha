@@ -95,6 +95,7 @@ class DayEndProcess extends Component {
       posted: "N",
       module_id: null,
       screen_code: null,
+      revert_trans: "N"
     };
     this.selectedDayEndIds = "";
   }
@@ -111,8 +112,8 @@ class DayEndProcess extends Component {
       symbol_position,
       currency_symbol,
     };
+    debugger
     const params = new URLSearchParams(this.props.location?.search);
-    debugger;
     if (params?.get("from_date")) {
       this.setState({
         from_date: moment(params?.get("from_date"))._d, //,params?.get("from_date"),
@@ -123,6 +124,8 @@ class DayEndProcess extends Component {
         {
           to_date: moment(params?.get("to_date"))._d, //params?.get("to_date"),
           currency: currency,
+          revert_trans: params?.get("revert_trans"),
+          posted: params?.get("posted")
         },
         () => this.getDayEndProcess(this)
       );
@@ -148,8 +151,7 @@ class DayEndProcess extends Component {
 
   getDayEndProcess() {
     try {
-      debugger;
-      let inputObj = { posted: this.state.posted };
+      let inputObj = { posted: this.state.posted, revert_trans: this.state.revert_trans };
       if (this.state.screen_code !== null) {
         inputObj.screen_code = this.state.screen_code;
       }
@@ -162,15 +164,16 @@ class DayEndProcess extends Component {
       if (this.state.to_date !== null) {
         inputObj.to_date = this.state.to_date;
       }
+
       algaehApiCall({
         uri: "/finance/getDayEndData",
         data: inputObj,
         method: "GET",
         module: "finance",
         onSuccess: (response) => {
-          this.setState({ dayEnd: response.data.result });
+          this.setState({ dayEnd: response.data.result, revert_visible: false });
           return this.props.history?.push(
-            `${this.props.location?.pathname}?from_date=${this.state.from_date}&to_date=${this.state.to_date}`
+            `${this.props.location?.pathname}?from_date=${this.state.from_date}&to_date=${this.state.to_date}&revert_trans=${this.state.revert_trans}&posted=${this.state.posted}`
           );
         },
         onCatch: (error) => {
@@ -253,10 +256,24 @@ class DayEndProcess extends Component {
   }
 
   checkHandaler(e) {
-    this.setState({
-      [e.target.name]: e.target.checked ? "Y" : "N",
-      dayEnd: [],
-    });
+    switch (e.target.name) {
+      case "revert_trans":
+        this.setState({
+          [e.target.name]: e.target.checked ? "Y" : "N",
+          dayEnd: [],
+          from_date: undefined,
+          to_date: undefined,
+          posted: "N",
+        });
+        break;
+      default:
+        this.setState({
+          [e.target.name]: e.target.checked ? "Y" : "N",
+          dayEnd: [],
+        });
+        break;
+    }
+
   }
 
   dropDownHandle(value) {
@@ -328,7 +345,7 @@ class DayEndProcess extends Component {
     try {
       algaehApiCall({
         uri: "/finance/previewDayEndEntries",
-        data: { day_end_header_id: row.finance_day_end_header_id },
+        data: { day_end_header_id: row.finance_day_end_header_id, revert_trans: this.state.revert_trans },
         method: "GET",
         module: "finance",
         onSuccess: (response) => {
@@ -397,7 +414,6 @@ class DayEndProcess extends Component {
   }
 
   CloseTransationDetail(e) {
-    debugger;
     this.setState(
       {
         openPopup: false,
@@ -405,10 +421,24 @@ class DayEndProcess extends Component {
         finance_day_end_header_id: null,
       },
       () => {
-        debugger;
         this.getDayEndProcess(this);
       }
     );
+  }
+
+  ClearData() {
+    debugger
+    this.setState({
+      dayEnd: [],
+      from_date: undefined,
+      to_date: undefined,
+      openPopup: false,
+      posted: "N",
+      module_id: null,
+      screen_code: null,
+      revert_trans: "N"
+    })
+    return this.props.history?.push(this.props.location?.pathname);
   }
 
   render() {
@@ -585,6 +615,7 @@ class DayEndProcess extends Component {
                     onBlur: this.dateValidate.bind(this),
                   }}
                   value={this.state.from_date}
+                  disabled={this.state.revert_trans === "Y" ? true : false}
                 />
 
                 <AlgaehDateHandler
@@ -604,6 +635,7 @@ class DayEndProcess extends Component {
                     onBlur: this.dateValidate.bind(this),
                   }}
                   value={this.state.to_date}
+                  disabled={this.state.revert_trans === "Y" ? true : false}
                 />
                 {/* <AlagehFormGroup
                   div={{ className: "col" }}
@@ -632,11 +664,30 @@ class DayEndProcess extends Component {
                       type="checkbox"
                       name="posted"
                       checked={this.state.posted === "Y" ? true : false}
+                      disabled={this.state.revert_trans === "Y" ? true : false}
                       onChange={this.checkHandaler.bind(this)}
                     />
 
                     <span style={{ fontSize: "0.8rem" }}>
                       Posted Trancation
+                    </span>
+                  </label>
+                </div>
+
+                <div
+                  className="customCheckbox col"
+                  style={{ border: "none", marginTop: "20px" }}
+                >
+                  <label className="checkbox" style={{ color: "#212529" }}>
+                    <input
+                      type="checkbox"
+                      name="revert_trans"
+                      checked={this.state.revert_trans === "Y" ? true : false}
+                      onChange={this.checkHandaler.bind(this)}
+                    />
+
+                    <span style={{ fontSize: "0.8rem" }}>
+                      Reverted Trancation
                     </span>
                   </label>
                 </div>
@@ -649,6 +700,13 @@ class DayEndProcess extends Component {
                   >
                     Preview
                   </button>
+                  <button
+                    className="btn btn-default"
+                    style={{ marginTop: 20 }}
+                    onClick={this.ClearData.bind(this)}
+                  >
+                    Clear
+                  </button>
                 </div>
               </div>
             </div>
@@ -657,7 +715,6 @@ class DayEndProcess extends Component {
         <div className="row">
           <div className="col-lg-12">
             <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
-              {" "}
               <div className="portlet-body">
                 <div className="row">
                   <div
@@ -674,7 +731,7 @@ class DayEndProcess extends Component {
                           ),
                           displayTemplate: (row) => (
                             <>
-                              {this.state.posted === "N" ? (
+                              {this.state.posted === "N" && this.state.revert_trans === "N" ? (
                                 <Tooltip title="Post to Finance">
                                   <i
                                     className="fas fa-paper-plane"
@@ -704,23 +761,23 @@ class DayEndProcess extends Component {
                                 ></i>
                               </Tooltip>
 
-                              {this.state.posted === "N" &&
-                              (row.from_screen === "PR0004" ||
-                                row.from_screen === "SAL005") ? (
-                                <Tooltip title="Revert">
-                                  <i
-                                    className="fa fa-share fa-flip-horizontal"
-                                    aria-hidden="true"
-                                    onClick={() =>
-                                      this.setState({
-                                        revert_visible: true,
-                                        selected_data: row,
-                                      })
-                                    }
+                              {this.state.posted === "N" && this.state.revert_trans === "N" &&
+                                (row.from_screen === "PR0004" ||
+                                  row.from_screen === "SAL005") ? (
+                                  <Tooltip title="Revert">
+                                    <i
+                                      className="fa fa-share fa-flip-horizontal"
+                                      aria-hidden="true"
+                                      onClick={() =>
+                                        this.setState({
+                                          revert_visible: true,
+                                          selected_data: row,
+                                        })
+                                      }
                                     // onClick={this.RejectProcess.bind(this, row)}
-                                  />
-                                </Tooltip>
-                              ) : null}
+                                    />
+                                  </Tooltip>
+                                ) : null}
                             </>
                           ),
                           others: {

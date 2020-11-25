@@ -98,7 +98,8 @@ export default {
 
       group_description: null,
       category_desc: null,
-      purchase_uom_desc: null
+      purchase_uom_desc: null,
+      revert_data: false
     };
     return output;
   },

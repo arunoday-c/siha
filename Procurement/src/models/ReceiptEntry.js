@@ -16,18 +16,21 @@ export default {
               GH.`sheet_level_discount_amount`, GH.`net_total`, GH.`total_tax`, GH.`net_payable`,\
               GH.`additional_cost`, GH.`reciept_total`, GH.`created_by`, GH.`created_date`, \
               GH.`updated_by`, GH.`updated_date`, GH.`posted`, GH.`posted_by`, GH.`posted_date`, \
-              GH.`inovice_number`, GH.`invoice_date`, GH.`invoice_posted`,PH.purchase_number, V.vendor_name, \
-              H.hospital_name, P.project_desc, E.full_name, CASE GH.grn_for WHEN 'INV' then IL.location_description \
-              else PL.location_description end as location_name from hims_f_procurement_grn_header GH \
+              GH.`inovice_number`, GH.`invoice_date`, GH.`invoice_posted`, GH.is_revert, PH.purchase_number, V.vendor_name, \
+              H.hospital_name, P.project_desc, CASE GH.grn_for WHEN 'INV' then IL.location_description \
+              else PL.location_description end as location_name, PH.revert_reason,\
+              max(if(U.algaeh_d_app_user_id = GH.reverted_by, E.full_name,'' )) as reverted_name, \
+              max(if(U.algaeh_d_app_user_id = GH.created_by, E.full_name,'' )) as created_name \
+              from hims_f_procurement_grn_header GH \
               inner join hims_f_procurement_po_header PH on GH.po_id=PH.hims_f_procurement_po_header_id \
-              inner join algaeh_d_app_user U on GH.created_by = U.algaeh_d_app_user_id \
+              inner join algaeh_d_app_user U on (GH.created_by = U.algaeh_d_app_user_id or GH.reverted_by = U.algaeh_d_app_user_id) \
               inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
               inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id \
               left join hims_d_hospital H on H.hims_d_hospital_id = PH.hospital_id \
               left join hims_d_project P on P.hims_d_project_id = PH.project_id \
               left join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = GH.inventory_location_id \
               left join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id \
-              where  GH.grn_number=?",
+              where  GH.grn_number=? group by hims_f_procurement_grn_header_id;",
           values: [req.query.grn_number],
           printQuery: true,
         })
@@ -910,6 +913,45 @@ export default {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
+    }
+  },
+
+  revertReceiptEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let inputParam = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            " UPDATE hims_f_procurement_po_header SET is_posted='N', authorize1='N', authorize2='N',\
+                    is_revert='Y', revert_reason=?, reverted_date=?, reverted_by=? WHERE hims_f_procurement_po_header_id=?; \
+                    UPDATE hims_f_procurement_grn_header SET is_revert='Y', reverted_date=?, reverted_by=? \
+                    WHERE hims_f_procurement_grn_header_id=?;",
+          values: [
+            inputParam.revert_reason,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.po_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.hims_f_procurement_grn_header_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
     }
   },
 };

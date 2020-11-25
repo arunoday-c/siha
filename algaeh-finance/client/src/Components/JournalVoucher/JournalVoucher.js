@@ -45,7 +45,8 @@ let dataPayment = [
 export default function JournalVoucher() {
   const location = useLocation();
   const [voucherDate, setVoucherDate] = useState(moment());
-  // const [voucher_no, setVoucherNo] = useState("");
+  const [voucher_no, setVoucherNo] = useState("");
+  const [voucher_id, setVoucherID] = useState("");
   const [voucherType, setVoucherType] = useState(undefined);
   const [accounts, setAccounts] = useState([{}]);
   const [invoiceData, setInvoiceData] = useState([]);
@@ -69,7 +70,10 @@ export default function JournalVoucher() {
   const [finOptions, setFinOptions] = useState(false);
   const [payment, setPayment] = useState(basePayment);
   const [loading, setLoading] = useState(false);
+  const [savedEnable, setSavedEnable] = useState(false);
+  const [printLoading, setPrintLoad] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
+  const [printEnable, setPrintEnable] = useState(true);
   const [costCenterField, setCostCenterField] = useState(undefined);
   const baseJournalList = [
     {
@@ -117,9 +121,9 @@ export default function JournalVoucher() {
                 displayTemplate: row => {
                   const valueRow =
                     options["default_branch_id"] !== undefined &&
-                    options["default_branch_id"] !== "" &&
-                    options["default_cost_center_id"] !== undefined &&
-                    options["default_cost_center_id"] !== ""
+                      options["default_branch_id"] !== "" &&
+                      options["default_cost_center_id"] !== undefined &&
+                      options["default_cost_center_id"] !== ""
                       ? `${options["default_branch_id"]}-${options["default_cost_center_id"]}`
                       : "";
                   return (
@@ -248,8 +252,8 @@ export default function JournalVoucher() {
           voucher_type === "sales"
             ? "receipt"
             : voucher_type === "purchase"
-            ? "payment"
-            : voucher_type;
+              ? "payment"
+              : voucher_type;
         setVoucherType(currentVoucher);
         const records = Details.map((single, index) => ({
           slno: index + 1,
@@ -277,8 +281,8 @@ export default function JournalVoucher() {
           voucher_type === "sales"
             ? "receipt"
             : voucher_type === "purchase"
-            ? "payment"
-            : null;
+              ? "payment"
+              : null;
         if (merdge !== undefined) {
           setDisableAmount(true);
           setMerdgeRecords(merdge);
@@ -466,7 +470,7 @@ export default function JournalVoucher() {
           type: "info",
           display: `Please select proper amount / account ${
             finOptions.cost_center_required === "Y" ? "/ cost center" : ""
-          }` //"Please select an Account and enter proper amount",
+            }` //"Please select an Account and enter proper amount",
         });
         setLoading(false);
         return;
@@ -485,13 +489,13 @@ export default function JournalVoucher() {
       voucher_type: voucherType,
       invoice_no:
         voucherType === "payment" ||
-        voucherType === "receipt" ||
-        voucherType === "credit_note" ||
-        voucherType === "debit_note"
+          voucherType === "receipt" ||
+          voucherType === "credit_note" ||
+          voucherType === "debit_note"
           ? selInvoice
           : voucherType === "purchase" || voucherType === "sales"
-          ? invoiceNo
-          : null,
+            ? invoiceNo
+            : null,
       // voucher_no: `${voucher_no}`,
       hospital_id: hospital_id,
       cost_center_id: cost_center_id,
@@ -505,17 +509,19 @@ export default function JournalVoucher() {
     })
       .then(result => {
         setLoading(false);
-        setClearLoading(true);
-        setJournerList([]);
-        setNarration("");
-        setPayment(basePayment);
-        setVoucherType("");
-        setAccounts([]);
-        // setVoucherNo(result.voucher_no);
-        dataPayment = dataPayment.map(m => {
-          delete m["seltype"];
-          return m;
-        });
+        setSavedEnable(true);
+        setPrintEnable(false);
+        // setJournerList([]);
+        // setNarration("");
+        // setPayment(basePayment);
+        // setVoucherType("");
+        // setAccounts([]);
+        setVoucherNo(result.voucher_no);
+        setVoucherID(result.finance_voucher_header_id);
+        // dataPayment = dataPayment.map(m => {
+        //   delete m["seltype"];
+        //   return m;
+        // });
         AlgaehMessagePop({
           type: "success",
           display: "Successfully updated.."
@@ -550,8 +556,60 @@ export default function JournalVoucher() {
     setCostCenter(null);
     setClearLoading(false);
     setLoading(false);
+    setSavedEnable(false);
+    setPrintLoad(false);
+    setPrintEnable(true);
   };
 
+  const printVoucher = () => {
+
+    setPrintLoad(true);
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: voucherType === "journal" ? "JVReport_journal"
+            : voucherType === "contra" ? "JVReport_contra"
+              : voucherType === "receipt" ? "JVReport_receipt"
+                : voucherType === "payment" ? "JVReport_payment"
+                  : voucherType === "sales" ? "JVReport_sales"
+                    : voucherType === "purchase" ? "JVReport_purchase"
+                      : voucherType === "credit_note" ? "JVReport_creditNote"
+                        : voucherType === "debit_note" ? "JVReport_debitNote"
+                          : "JVReport_expense",
+          reportParams: [
+            {
+              name: "voucher_header_id",
+              value: voucher_id
+            },
+            {
+              name: "voucher_type",
+              value: voucherType
+            },
+            {
+              name: "voucher_no",
+              value: voucher_no
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+
+        setPrintLoad(false);
+        const urlBlob = URL.createObjectURL(res.data);
+        // const documentName = `${record.voucher_type} Voucher Report`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Voucher Report - ${voucherType} (${voucher_no}) `;
+        window.open(origin);
+      }
+    });
+  }
   const closeDrawer = () => setDrawer(false);
 
   const gridTree = (row, record) => {
@@ -604,8 +662,8 @@ export default function JournalVoucher() {
       ? record.paytypedisable
         ? { disabled: record.paytypedisable }
         : record.disabled
-        ? { disabled: record.disabled }
-        : {}
+          ? { disabled: record.disabled }
+          : {}
       : {};
 
     return (
@@ -815,28 +873,28 @@ export default function JournalVoucher() {
             voucherType === "receipt" ||
             voucherType === "credit_note" ||
             voucherType === "debit_note" ? (
-            <AlgaehAutoComplete
-              div={{ className: "col-2" }}
-              label={{
-                forceLabel: "Select Invoice No.",
-                isImp: true
-              }}
-              selector={{
-                value: selInvoice,
-                dataSource: {
-                  data: invoiceData,
-                  valueField: "invoice_no",
-                  textField: "invoice_no"
-                },
-                onChange: selected => {
-                  setSelInvoice(selected.invoice_no);
-                },
-                onClear: () => {
-                  setSelInvoice("");
-                }
-              }}
-            />
-          ) : null}
+                <AlgaehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{
+                    forceLabel: "Select Invoice No.",
+                    isImp: true
+                  }}
+                  selector={{
+                    value: selInvoice,
+                    dataSource: {
+                      data: invoiceData,
+                      valueField: "invoice_no",
+                      textField: "invoice_no"
+                    },
+                    onChange: selected => {
+                      setSelInvoice(selected.invoice_no);
+                    },
+                    onClear: () => {
+                      setSelInvoice("");
+                    }
+                  }}
+                />
+              ) : null}
           {}
 
           {/* <PaymentComponent
@@ -1046,6 +1104,7 @@ export default function JournalVoucher() {
               <AlgaehButton
                 className="btn btn-primary"
                 loading={loading}
+                disabled={savedEnable}
                 onClick={saveJournal}
               >
                 Save
@@ -1056,6 +1115,14 @@ export default function JournalVoucher() {
                 onClick={clearState}
               >
                 Clear
+              </AlgaehButton>
+              <AlgaehButton
+                loading={printLoading}
+                className="btn btn-default"
+                onClick={printVoucher}
+                disabled={printEnable}
+              >
+                Print
               </AlgaehButton>
             </div>
           </div>

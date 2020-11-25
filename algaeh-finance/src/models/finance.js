@@ -814,19 +814,27 @@ export default {
     //  H.finance_day_end_header_id=SD.day_end_header_id
     // left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
     // group by  finance_day_end_header_id;
+    let strQuery = ""
+    if (input.revert_trans == "Y") {
+      strQuery = `select finance_revert_day_end_header_id as finance_day_end_header_id, transaction_date,    
+          ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
+          invoice_no, from_screen, narration, entered_date 
+          from finance_revert_day_end_header`
 
+    } else {
+      strQuery = `select finance_day_end_header_id, transaction_date,    
+          ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
+          invoice_no, screen_name, ref_no as cheque_no,cheque_date, from_screen,
+          ROUND( cheque_amount , ${decimal_places}) as  cheque_amount, narration, 
+          U.username as entered_by, entered_date from finance_day_end_header H 
+          ${joinStr}
+          left join  algaeh_d_app_screens S on H.from_screen=S.screen_code
+          left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
+          where ${strQry}; `
+    }
     _mysql
       .executeQuery({
-        query: `select finance_day_end_header_id, transaction_date,    
-        ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
-        invoice_no, screen_name, ref_no as cheque_no,cheque_date, from_screen,
-         ROUND( cheque_amount , ${decimal_places}) as  cheque_amount, narration, 
-        U.username as entered_by, entered_date from finance_day_end_header H 
-        ${joinStr}
-        left join  algaeh_d_app_screens S on H.from_screen=S.screen_code
-        left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
-        where ${strQry}; `,
-
+        query: strQuery,
         printQuery: true,
       })
       .then((result) => {
@@ -1422,180 +1430,283 @@ export default {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
+    _mysql
+      .executeQueryWithTransaction({
+        query: "select * from finance_day_end_header where finance_day_end_header_id=?; \
+                select * from finance_day_end_sub_detail where day_end_header_id=?",
+        values: [input.finance_day_end_header_id, input.finance_day_end_header_id],
+        printQuery: true
+      })
+      .then(voucher_result => {
+        const voucher_header = voucher_result[0][0];
+        const voucher_detail = voucher_result[1];
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "INSERT INTO finance_revert_day_end_header (day_end_header_id, transaction_date, amount, voucher_type, document_id,\
+              document_number, invoice_no, from_screen, narration, entered_by, entered_date) \
+              VALUES (?,?,?,?,?,?,?,?,?,?,?);",
+            values: [
+              voucher_header.finance_day_end_header_id,
+              voucher_header.transaction_date,
+              voucher_header.amount,
+              voucher_header.voucher_type,
+              voucher_header.document_id,
+              voucher_header.document_number,
+              voucher_header.invoice_no,
+              voucher_header.from_screen,
+              voucher_header.narration,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+            ],
+            printQuery: true,
+          })
+          .then(header_result => {
+            const IncludeValuess = [
+              "payment_date",
+              "head_id",
+              "child_id",
+              "debit_amount",
+              "payment_type",
+              "credit_amount",
+              "hospital_id",
+              "project_id",
+              "sub_department_id",
+              "year",
+              "month",
+            ];
 
-    let strQuery = `delete from finance_day_end_sub_detail where day_end_header_id=${input.finance_day_end_header_id};
-    delete from finance_day_end_header where finance_day_end_header_id=${input.finance_day_end_header_id};`
-    if (input.from_screen == "PR0004") {
-      _mysql
-        .executeQuery({
-          query: `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';` + strQuery,
-          printQuery: false,
-        })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch((e) => {
-          _mysql.releaseConnection();
-          next(e);
-        });
-      // strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
-    } else if (input.from_screen == "SAL005") {
-      // strQuery += `update hims_f_sales_invoice_header set is_posted='N' where invoice_number='${input.document_number}';`;
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO finance_revert_day_end_sub_detail (??) VALUES ? ;",
+                values: voucher_detail,
+                includeValues: IncludeValuess,
+                bulkInsertOrUpdate: true,
+                extraValues: {
+                  revert_day_end_header_id: header_result.insertId,
+                },
+                printQuery: true,
+              })
+              .then((subResult) => {
+                let strQuery = `delete from finance_day_end_sub_detail where day_end_header_id=${input.finance_day_end_header_id};
+                  delete from finance_day_end_header where finance_day_end_header_id=${input.finance_day_end_header_id};`
+                if (input.from_screen == "PR0004") {
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query: "select hims_f_procurement_grn_header_id, po_id from hims_f_procurement_grn_header where grn_number=?;",
+                      values: [input.document_number],
+                      printQuery: true
+                    })
+                    .then(receipt_result => {
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query: `UPDATE hims_f_procurement_po_header SET is_posted='N', authorize1='N', authorize2='N',\
+                    is_revert='Y', revert_reason=?, reverted_date=?, reverted_by=? WHERE hims_f_procurement_po_header_id=?; \
+                    UPDATE hims_f_procurement_grn_header SET posted='N', is_revert='Y', reverted_date=?, reverted_by=? \
+                    WHERE hims_f_procurement_grn_header_id=?;` + strQuery,
+                          values: [
+                            input.revert_reason,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            receipt_result[0].po_id,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            receipt_result[0].hims_f_procurement_grn_header_id
+                          ],
+                          printQuery: true,
+                        })
+                        .then((result) => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = result;
+                            next();
+                          });
+                        })
+                        .catch((e) => {
+                          _mysql.rollBackTransaction(() => {
+                            next(e);
+                          });
+                        });
+                    })
+                    .catch((e) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                  // strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
+                } else if (input.from_screen == "SAL005") {
+                  // strQuery += `update hims_f_sales_invoice_header set is_posted='N' where invoice_number='${input.document_number}';`;
 
-      _mysql
-        .executeQueryWithTransaction({
-          query: "select hims_f_sales_invoice_header_id, sales_invoice_mode, sales_order_id from hims_f_sales_invoice_header where invoice_number=?;",
-          values: [input.document_number],
-          printQuery: true
-        })
-        .then(invoie_result => {
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query: "select hims_f_sales_invoice_header_id, sales_invoice_mode, sales_order_id from hims_f_sales_invoice_header where invoice_number=?;",
+                      values: [input.document_number],
+                      printQuery: true
+                    })
+                    .then(invoie_result => {
 
-          let strQry = "";
+                      let strQry = "";
 
-          if (invoie_result[0].sales_invoice_mode === "S") {
-            strQry = _mysql.mysqlQueryFormat(
-              " select * from hims_f_sales_order_services where sales_order_id=?;",
-              [invoie_result[0].sales_order_id]
-            );
-          } else if (invoie_result[0].sales_invoice_mode === "I") {
-            strQry = _mysql.mysqlQueryFormat(
-              " select * from hims_f_sales_order_items where sales_order_id=?;",
-              [invoie_result[0].sales_order_id]
-            );
-          }
+                      if (invoie_result[0].sales_invoice_mode === "S") {
+                        strQry = _mysql.mysqlQueryFormat(
+                          " select * from hims_f_sales_order_services where sales_order_id=?;",
+                          [invoie_result[0].sales_order_id]
+                        );
+                      } else if (invoie_result[0].sales_invoice_mode === "I") {
+                        strQry = _mysql.mysqlQueryFormat(
+                          " select * from hims_f_sales_order_items where sales_order_id=?;",
+                          [invoie_result[0].sales_order_id]
+                        );
+                      }
 
 
-          _mysql
-            .executeQueryWithTransaction({
-              query: "UPDATE hims_f_sales_order SET is_posted='N', authorize1='N', authorize2='N',\
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query: "UPDATE hims_f_sales_order SET is_posted='N', authorize1='N', authorize2='N',\
                     is_revert='Y', revert_reason=?, reverted_date=?, reverted_by=? WHERE hims_f_sales_order_id=?; \
                     UPDATE hims_f_sales_invoice_header SET is_posted='N', is_revert='Y', reverted_date=?, reverted_by=? \
                     WHERE hims_f_sales_invoice_header_id=?;"+ strQry,
-              values: [
-                input.revert_reason,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                invoie_result[0].sales_order_id,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                invoie_result[0].hims_f_sales_invoice_header_id
-              ],
-              printQuery: true
-            })
-            .then(result => {
-              const sales_order_services = result[2]
-              let IncludeValues = []
-              if (invoie_result[0].sales_invoice_mode === "S") {
-                IncludeValues = [
-                  "sales_order_id",
-                  "services_id",
-                  "service_frequency",
-                  "unit_cost",
-                  "quantity",
-                  "extended_cost",
-                  "discount_percentage",
-                  "discount_amount",
-                  "net_extended_cost",
-                  "tax_percentage",
-                  "tax_amount",
-                  "total_amount",
-                  "comments",
-                  "arabic_comments"
-                ];
+                          values: [
+                            input.revert_reason,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            invoie_result[0].sales_order_id,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            invoie_result[0].hims_f_sales_invoice_header_id
+                          ],
+                          printQuery: true
+                        })
+                        .then(result => {
+                          const sales_order_services = result[2]
+                          let IncludeValues = []
+                          if (invoie_result[0].sales_invoice_mode === "S") {
+                            IncludeValues = [
+                              "sales_order_id",
+                              "services_id",
+                              "service_frequency",
+                              "unit_cost",
+                              "quantity",
+                              "extended_cost",
+                              "discount_percentage",
+                              "discount_amount",
+                              "net_extended_cost",
+                              "tax_percentage",
+                              "tax_amount",
+                              "total_amount",
+                              "comments",
+                              "arabic_comments"
+                            ];
 
-                _mysql
-                  .executeQuery({
-                    query:
-                      `INSERT INTO hims_f_sales_order_adj_services(??) VALUES ?;` + strQuery,
-                    values: sales_order_services,
-                    includeValues: IncludeValues,
-                    extraValues: {
-                      created_by: req.userIdentity.algaeh_d_app_user_id,
-                      created_date: new Date()
-                    },
-                    bulkInsertOrUpdate: true,
-                    printQuery: true,
-                  })
-                  .then((detailResult) => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = detailResult;
-                      next();
-                    });
-                  })
-                  .catch((error) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
-                  });
-              } else if (invoie_result[0].sales_invoice_mode === "I") {
-                IncludeValues = [
-                  "sales_order_id",
-                  "item_id",
-                  "uom_id",
-                  "unit_cost",
-                  "quantity",
-                  "extended_cost",
-                  "discount_percentage",
-                  "discount_amount",
-                  "net_extended_cost",
-                  "tax_percentage",
-                  "tax_amount",
-                  "total_amount",
-                  "quantity_outstanding",
-                ];
+                            _mysql
+                              .executeQuery({
+                                query:
+                                  `INSERT INTO hims_f_sales_order_adj_services(??) VALUES ?;` + strQuery,
+                                values: sales_order_services,
+                                includeValues: IncludeValues,
+                                extraValues: {
+                                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                                  created_date: new Date()
+                                },
+                                bulkInsertOrUpdate: true,
+                                printQuery: true,
+                              })
+                              .then((detailResult) => {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = detailResult;
+                                  next();
+                                });
+                              })
+                              .catch((error) => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(error);
+                                });
+                              });
+                          } else if (invoie_result[0].sales_invoice_mode === "I") {
+                            IncludeValues = [
+                              "sales_order_id",
+                              "item_id",
+                              "uom_id",
+                              "unit_cost",
+                              "quantity",
+                              "extended_cost",
+                              "discount_percentage",
+                              "discount_amount",
+                              "net_extended_cost",
+                              "tax_percentage",
+                              "tax_amount",
+                              "total_amount",
+                              "quantity_outstanding",
+                            ];
 
-                _mysql
-                  .executeQuery({
-                    query:
-                      `INSERT INTO hims_f_sales_order_adj_item(??) VALUES ?;` + strQuery,
-                    values: sales_order_services,
-                    includeValues: IncludeValues,
-                    extraValues: {
-                      created_by: req.userIdentity.algaeh_d_app_user_id,
-                      created_date: new Date()
-                    },
-                    bulkInsertOrUpdate: true,
-                    printQuery: true,
-                  })
-                  .then((detailResult) => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = detailResult;
-                      next();
+                            _mysql
+                              .executeQuery({
+                                query:
+                                  `INSERT INTO hims_f_sales_order_adj_item(??) VALUES ?;` + strQuery,
+                                values: sales_order_services,
+                                includeValues: IncludeValues,
+                                extraValues: {
+                                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                                  created_date: new Date()
+                                },
+                                bulkInsertOrUpdate: true,
+                                printQuery: true,
+                              })
+                              .then((detailResult) => {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = detailResult;
+                                  next();
+                                });
+                              })
+                              .catch((error) => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(error);
+                                });
+                              });
+                          } else {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = detailResult;
+                              next();
+                            });
+                          }
+
+
+                        })
+
+                        .catch(e => {
+                          _mysql.rollBackTransaction(() => {
+                            next(e);
+                          });
+                        });
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
                     });
-                  })
-                  .catch((error) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
-                  });
-              } else {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = detailResult;
-                  next();
+                }
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
                 });
-              }
-
-
-            })
-
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
               });
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
             });
-        })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
           });
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
         });
-    }
-
+      });
 
   },
   //created by irfan: to
@@ -1742,28 +1853,32 @@ export default {
   previewDayEndEntries: (req, res, next) => {
     const _mysql = new algaehMysql();
 
-    // select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
-    //     child_id,concat(account_name,'-->',child_name ) as to_account,debit_amount,
-    //     case payment_type when 'CR' then 'Credit' else 'Debit' end
-    //      as payment_type,credit_amount
-    //     from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
-    //     left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;
-    //     select coalesce(sum(cash),0)as cash,coalesce(sum(card),0)as card,coalesce(sum(cheque),0)as cheque
-    //     from (select  case when payment_mode = "CA" then amount end as cash,
-    //     case when payment_mode = "CD" then amount end as card,
-    //     case when payment_mode = "CH" then amount end as cheque
-    //     from finance_day_end_detail where day_end_header_id=?) as A ;
+    let strQuery = ""
+
     const decimal_places = req.userIdentity.decimal_places;
+
+    if (req.query.revert_trans == "Y") {
+      strQuery = `select finance_revert_day_end_sub_detail_id ,payment_date,SD.head_id,
+      child_id,concat(account_name,'-->',child_name ) as to_account,  ROUND( debit_amount , ${decimal_places}) as debit_amount,
+      case payment_type when 'CR' then 'Credit' else 'Debit' end
+       as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
+      from finance_revert_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
+      left join finance_account_child C on SD.child_id=C.finance_account_child_id where revert_day_end_header_id=? order by payment_type desc;`
+
+    } else {
+      strQuery = `select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
+      child_id,concat(account_name,'-->',child_name ) as to_account,  ROUND( debit_amount , ${decimal_places}) as debit_amount,
+      case payment_type when 'CR' then 'Credit' else 'Debit' end
+       as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
+      from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
+      left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=? order by payment_type desc;`
+    }
+
     _mysql
       .executeQuery({
-        query: `select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
-        child_id,concat(account_name,'-->',child_name ) as to_account,  ROUND( debit_amount , ${decimal_places}) as debit_amount,
-        case payment_type when 'CR' then 'Credit' else 'Debit' end
-         as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
-        from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
-        left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=? order by payment_type desc;`,
+        query: strQuery,
         values: [req.query.day_end_header_id],
-        printQuery: false,
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
