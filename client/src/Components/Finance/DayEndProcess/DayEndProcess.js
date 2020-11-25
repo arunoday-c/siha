@@ -427,7 +427,6 @@ class DayEndProcess extends Component {
   }
 
   ClearData() {
-    debugger
     this.setState({
       dayEnd: [],
       from_date: undefined,
