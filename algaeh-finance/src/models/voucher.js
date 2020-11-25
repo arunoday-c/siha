@@ -448,6 +448,7 @@ export default {
                         printQuery: true,
                       })
                       .then((result) => {
+                        const finance_voucher_header_id = result.insertId
                         // const IncludeValues = ["amount", "payment_mode"];
                         // const insertColumns = [
                         //   "head_id",
@@ -552,6 +553,7 @@ export default {
                               _mysql.releaseConnection();
                               req.records = {
                                 voucher_no: numgen[voucher_type],
+                                finance_voucher_header_id: finance_voucher_header_id
                               };
                               next();
                             });
