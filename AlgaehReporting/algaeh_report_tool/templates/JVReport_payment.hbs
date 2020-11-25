@@ -2,26 +2,28 @@
 
 <body>
 <div class="print-body">
-     
     <section>
         <table class="tableNoBorder" cell-padding="0">
         <tr>
-            <td colspan="2"><h1 class="voucherHdg">Remittance Advice</h1></td>
+            <td colspan="2"><h1 class="voucherHdg">Payment Voucher</h1></td>
         <tr>
-        <tr>
-            <td width="55%">
+            
+        <tr style="vertical-align: bottom;">
+             <td width="55%">
                 <table class="tableNoBorder">
                     <tr>
                         <td  class="txtFld">
                             <p>Payment To:</p>
-                            <p><b>{{resultHeader.vendor_name}}</b></p>
-                            <p><b>{{resultHeader.address}}</b></p>
-                            <p><b>{{resultHeader.contact_number}}</b></p>
+                            <p><b>{{resultHeader.vendor_code}} - {{resultHeader.vendor_name}}</b></p>
+                            <p>Mob: {{resultHeader.contact_number}}</p>
+                            <p>Address: {{resultHeader.address}}</p>
+                            <p>Vat No.: {{resultHeader.vat_number}}</p>
                         </td>
                     </tr>
                 </table>
             </td>
-            <td width="55%">
+           
+              <td width="55%">
                 <table class="tableNoBorder">
                     <tr>
                         <td  class="numberFld"><p>Date: <b>{{resultHeader.payment_date}}</b></p></td>
@@ -33,31 +35,30 @@
             </td>
         </tr>
         </table>
-    </section> 
+    </section>
         <section>
-        
             <table class="tableForData" cell-padding="0">
                 <thead>
-                    <tr>
+                  <tr>
                         <th>Sl No.</th>
-                        <th>Bill No.</th>
-                        <th>Bill Date</th>
-                        <th>Due Date</th>
-                        <th>Orginal Amount</th>
-                        <th>Balance</th>
-                        <th>Payment</th>
+                        <th>Invoice No.</th>
+                        <th>Invoice Date</th>
+                        <th>Net Total</th>
+                        <th>Discount</th>
+                        <th>Tax</th>
+                        <th>Net Payable</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each resultInvoice}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{invoice_no}}</td>
-                        <td>{{payment_date}}</td>
-                        <td>{{due_date}}</td>
-                        <td class="numberFld">{{numberFormating amount ../currency}}</td>
-                        <td class="numberFld">{{numberFormating balance ../currency}}</td>
-                        <td class="numberFld">{{numberFormating settled_amount ../currency}}</td>
+                        <td>{{inovice_number}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td class="numberFld">{{numberFormating sub_total ../currency}}</td>
+                        <td class="numberFld">{{numberFormating detail_discount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating total_tax ../currency}}</td>
+                        <td class="numberFld">{{numberFormating net_payable ../currency}}</td>
                     </tr>
                     {{/each }}
 
@@ -68,62 +69,11 @@
                 <tr class="footerTotalUp">
                     <td class="txtFld" width="60%" rowspan="3"><b>Memo:</b>
                     <p>{{resultHeader.narration}}</p></td>
-                    <td class="numberFld">Sub Total: </td>
-                     <td class="numberFld">{{numberFormating resultHeader.amount currencyHeader}}</td>
-
-                     
-                </tr>
-                 <tr class="footerTotalUp">
-                    <td class="numberFld">Credits Included: </td>
-                    <td class="numberFld">0.00</td>
-                </tr>
-                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total: </td>
-                    <td class="numberFld">0.00</td>
+                    <td class="numberFld">Total Net Payable: </td>
+                     <td class="numberFld">{{numberFormating totalNetPayable currencyHeader}}</td>
                 </tr>
             </table>
         </section>
-        
-    <section>
-        <table class="tableNoBorder" cell-padding="0">
-        <tr>
-            <td colspan="2"><h3 class="voucherSubHdg">Credits Summary</h3></td>
-        <tr>
-        </table>
-        
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Credit No.</th>
-                        <th>Credit Date</th>
-                        <th>Orginal Amount</th>
-                        <th>Balance</th>
-                        <th>Payment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                     {{!-- {{#each resultDebitNote} --}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{invoice_no}}</td>
-                        <td>{{payment_date}}</td>
-                        <td>{{due_date}}</td>
-                        <td>{{amount}}</td>
-                        <td>{{account_name}}</td>
-                    </tr>
-                    {{!-- {{/each }} --}}
-
-                </tbody>
-            </table>
-            <br>
-            <table class="tableNoBorder">
-                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total: </td>
-                    <td class="numberFld" width="25%">0.00</td>
-                </tr>
-            </table>
-    </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
 </body>
