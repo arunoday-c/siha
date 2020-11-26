@@ -254,6 +254,9 @@ class LabAnalyte extends Component {
                           />
                         );
                       },
+                      others: {
+                        minWidth: 300,
+                      },
                     },
                     {
                       fieldName: "analyte_type",
