@@ -94,12 +94,25 @@
             <td class="txtFld" style="width: 55%">{{analyte_name}}</td>
             <td data-value="{{critical_type}}">{{result}} <sup>{{critical_type}}</sup></td>
             <td style="width: 10%">{{result_unit}}</td>
-            {{!-- <td> {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
-                {{normal_high}}{{/if}}</td> --}}
 
-                    <td> {{#if reference_range_required "Y"}} {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
-                {{normal_high}}{{/if}} {{else}} -- {{/if}}</td>
-            {{!-- <td class="numberFld">{{critical_low}} - {{critical_high}}</td> --}}
+                    <td>
+
+
+                         {{#if reference_range_required "Y"}} {{#if analyte_type "T"}} 
+                         
+                         <ul class="rangeUl"> 
+                             {{#each (commentBreakUp text_value commentBreakUp)}}
+                                <li>{{this}}</li>
+                             {{/each}}
+                        </ul>
+                
+                
+                 {{else}} {{normal_low }} -
+                {{normal_high}}{{/if}} {{else}} -- {{/if}}
+                
+                
+                
+                </td>
         </tr>
         {{/each }}{{/each }}{{/each }}
             {{else}}
