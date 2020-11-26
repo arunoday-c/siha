@@ -40,7 +40,7 @@ export function generateLabResultReport(data) {
     },
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Hematology Test Report`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Hematology Test Report`;
       window.open(origin);
     },
   });
@@ -116,11 +116,12 @@ const onvalidate = ($this) => {
   console.time("valid");
   let test_analytes = $this.state.test_analytes;
 
-  let strTitle = "Are you sure want to Validate?"
+  let strTitle = "Are you sure want to Validate?";
 
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].confirm === "N") {
-      strTitle = "Are you sure want to Validate, for few Analytes no Result Entered?"
+      strTitle =
+        "Are you sure want to Validate, for few Analytes no Result Entered?";
       // swalMessage({
       //   type: "warning",
       //   title: "Please confirm result for all the Analytes",
@@ -163,7 +164,7 @@ const getAnalytes = ($this) => {
       // console.timeEnd("lab");
       if (response.data.success) {
         // let data = response.data.records;
-        // for (let i = 0; i < data.length; i++) {        
+        // for (let i = 0; i < data.length; i++) {
         //   data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
         //   if (data[i].status === "E" || data[i].status === "N") {
         //     data[i].validate = "N";
@@ -176,16 +177,19 @@ const getAnalytes = ($this) => {
         //     data[i].confirm = "Y";
         //   }
         // }
-      $this.setState({ 
-        test_analytes: response.data.records,
-        ordered_by_name:response.data.records[0].ordered_by_name,
-        entered_by_name:response.data.records[0].entered_by_name,
-        confirm_by_name:response.data.records[0].confirm_by_name,
-        validate_by_name:response.data.records[0].validate_by_name
-      }, () => {
-          AlgaehLoader({ show: false });
-          console.timeEnd("lab");
-        });
+        $this.setState(
+          {
+            test_analytes: response.data.records,
+            ordered_by_name: response.data.records[0].ordered_by_name,
+            entered_by_name: response.data.records[0].entered_by_name,
+            confirm_by_name: response.data.records[0].confirm_by_name,
+            validate_by_name: response.data.records[0].validate_by_name,
+          },
+          () => {
+            AlgaehLoader({ show: false });
+            console.timeEnd("lab");
+          }
+        );
       }
     },
   });
@@ -320,10 +324,11 @@ const resultEntryUpdate = ($this) => {
 const onconfirm = ($this) => {
   let test_analytes = $this.state.test_analytes;
 
-  let strTitle = "Are you sure want to Confirm?"
+  let strTitle = "Are you sure want to Confirm?";
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result === null || test_analytes[k].result === "") {
-      strTitle = "Are you sure want to Confirm, for few Analytes no Result Entered?"
+      strTitle =
+        "Are you sure want to Confirm, for few Analytes no Result Entered?";
       // swalMessage({
       //   type: "warning",
       //   title: "Please enter result for all the Analytes.",

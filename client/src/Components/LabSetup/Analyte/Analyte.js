@@ -144,7 +144,7 @@ class LabAnalyte extends Component {
               },
             }}
           />
-          <div className="customCheckbox">
+          {/* <div className="customCheckbox">
             <label className="checkbox block">
               <input
                 type="checkbox"
@@ -154,7 +154,23 @@ class LabAnalyte extends Component {
               />
               <span>Reference Range Required</span>
             </label>
+          </div> */}
+
+          <div className="col">
+            <label>Reference Range Required</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  name="reference_range_required"
+                  checked={this.state.reference_range_required}
+                  onChange={this.changeChecks.bind(this)}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
           </div>
+
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
             <button
               onClick={insertLabAnalytes.bind(this, this)}

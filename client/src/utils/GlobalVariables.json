@@ -397,8 +397,16 @@
       "value": "P"
     },
     {
-      "name": "Microscopic",
+      "name": "Microscopic Examination",
       "value": "M"
+    },
+    {
+      "name": "Differential Leukocyte Count",
+      "value": "D"
+    },
+    {
+      "name": "Chemical Examination",
+      "value": "C"
     },
     {
       "name": "None",
