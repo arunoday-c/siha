@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
+  AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../utils/GlobalVariables.json";
 export default function RangeInput({ addAnalyte, analyteType }) {
@@ -317,21 +318,29 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           }}
         />
       ) : (
-        <AlagehFormGroup
-          div={{ className: "col" }}
-          label={{
-            forceLabel: "Text",
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "text_value",
-            value: inputs.text_value,
-            events: {
-              onChange: handleChange,
-            },
-          }}
-        />
-      )}
+            <div className="col">
+              <AlgaehLabel label={{ forceLabel: "Text" }} />
+              <textarea
+                value={inputs.text_value}
+                name="text_value"
+                onChange={handleChange}
+              />
+            </div>
+            // <AlagehFormGroup
+            //   div={{ className: "col" }}
+            //   label={{
+            //     forceLabel: "Text",
+            //   }}
+            //   textBox={{
+            //     className: "txt-fld",
+            //     name: "text_value",
+            //     value: inputs.text_value,
+            //     events: {
+            //       onChange: handleChange,
+            //     },
+            //   }}
+            // />
+          )}
 
       <div className="col" style={{ padding: 0 }}>
         <button

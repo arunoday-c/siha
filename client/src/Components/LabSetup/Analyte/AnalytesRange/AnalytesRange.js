@@ -537,17 +537,22 @@ class AnalytesRange extends PureComponent {
                         label: <AlgaehLabel label={{ forceLabel: "Text" }} />,
                         editorTemplate: row => {
                           return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.text_value,
-                                className: "txt-fld",
-                                name: "text_value",
-                                events: {
-                                  onChange: e => this.handleChange(row, e)
-                                }
-                              }}
+                            <textarea
+                              value={row.text_value}
+                              name="text_value"
+                              onChange={e => this.handleChange(row, e)}
                             />
+                            // <AlagehFormGroup
+                            //   div={{}}
+                            //   textBox={{
+                            //     value: row.text_value,
+                            //     className: "txt-fld",
+                            //     name: "text_value",
+                            //     events: {
+                            //       onChange: e => this.handleChange(row, e)
+                            //     }
+                            //   }}
+                            // />
                           );
                         },
                         others: {
