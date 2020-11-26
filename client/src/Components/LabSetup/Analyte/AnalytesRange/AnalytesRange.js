@@ -32,7 +32,12 @@ class AnalytesRange extends PureComponent {
       try {
         if (hims_d_lab_analytes_id) {
           const result = await this.getAnalyteDetail(hims_d_lab_analytes_id);
-          console.log("result.data.records", result.data.records);
+          // console.log("result.data.records", result.data.records);
+
+
+          for (let i = 0; i < result.data.records.length; i++) {
+            result.data.records[i].text_value_data = result.data.records[i].text_value.split("<br/>")
+          }
           this.setState({
             analyteDetail: result.data.records,
             refresh: false,
@@ -73,6 +78,7 @@ class AnalytesRange extends PureComponent {
       input.low_operator === "notselected" ? null : input.low_operator;
     input.high_operator =
       input.high_operator === "notselected" ? null : input.high_operator;
+    input.text_value = input.text_value.replace(/\r?\n/g, '<br/>')
     try {
       const res = await newAlgaehApi({
         uri: "/labmasters/addAnalyteRages",
@@ -94,6 +100,7 @@ class AnalytesRange extends PureComponent {
 
   updateAnalyte = async row => {
     try {
+      row.text_value = row.text_value.replace(/\r?\n/g, '<br/>')
       const res = await newAlgaehApi({
         uri: "/labmasters/updateAnalyteRage",
         module: "laboratory",
@@ -535,6 +542,18 @@ class AnalytesRange extends PureComponent {
                       {
                         fieldName: "text_value",
                         label: <AlgaehLabel label={{ forceLabel: "Text" }} />,
+                        displayTemplate: row => {
+
+                          return (<ul>
+                            {row.text_value_data.length > 0
+                              ? row.text_value_data.map((row) => {
+                                return (
+                                  <li>{row}</li>
+                                );
+                              })
+                              : null}
+                          </ul>)
+                        },
                         editorTemplate: row => {
                           return (
                             <textarea
@@ -593,6 +612,9 @@ class AnalytesRange extends PureComponent {
                     loading={this.state.loading}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
+                    actions={{
+                      allowEdit: false
+                    }}
                     events={{
                       onDelete: this.deleteAnalyte,
                       onEdit: row => { },
