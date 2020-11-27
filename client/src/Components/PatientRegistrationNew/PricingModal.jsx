@@ -177,7 +177,7 @@ export function PricingModals({ visible, onClose }) {
                     </div>
                     <div className="actions"></div>
                   </div> */}
-                  <div className="portlet-body pricingListGrid_Cntr">
+                  <div className="portlet-body" id="pricingListGrid_Cntr">
                     {isInsurance === false ? (
                       <AlgaehDataGrid
                         className="PricingList"
@@ -258,6 +258,11 @@ export function PricingModals({ visible, onClose }) {
                             label: "Net Amount",
                             sortable: true,
                             filterable: true,
+                            others: {
+                              style: {
+                                textAlign: "right",
+                              },
+                            },
                           },
                         ]}
                         loading={false}
