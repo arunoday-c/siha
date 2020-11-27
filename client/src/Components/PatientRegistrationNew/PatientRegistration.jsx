@@ -8,6 +8,7 @@ import { FrontdeskContext } from "./FrontdeskContext";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
 import { PatientAttachments } from "./PatientAttachment";
+import { PricingModals } from "./PricingModal";
 import { UpdatePatient } from "./UpdatePatient";
 import {
   MainContext,
@@ -175,6 +176,7 @@ export function PatientRegistration() {
   } = useContext(MainContext);
   const [openPopup, setOpenPopup] = useState(false);
   const [attachmentVisible, setAttachmentVisible] = useState(false);
+  const [priceModalVisible, setPriceModalVisible] = useState(false);
   const [showPackage, setShowPackage] = useState(false);
   const [showUpdateModal, setUpdateModal] = useState(false);
   const [showAdvModal, setShowAdvModal] = useState(false);
@@ -775,6 +777,7 @@ export function PatientRegistration() {
                 />
                 <h6>{moment().format("DD-MM-YYYY")}</h6>
               </div>
+
               <AlgaehSecurityComponent componentCode="PAT_SMT_CRD">
                 <div className="col">
                   {/* PAT_SMT_CRD */}
@@ -869,6 +872,12 @@ export function PatientRegistration() {
                   errors={errors}
                 />
               </div>
+              <PricingModals
+                onClose={() => {
+                  setPriceModalVisible(false);
+                }}
+                visible={priceModalVisible}
+              />
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
                 <BillDetails
                   control={control}
@@ -928,6 +937,17 @@ export function PatientRegistration() {
                       label={{ fieldName: "btn_clear", returnText: true }}
                     />
                   </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setPriceModalVisible(true);
+                    }}
+                  >
+                    Price Modal
+                  </button>
+
                   <AdvanceModal patient={patientData?.patientRegistration} />
                   {!!savedPatient && ( // eslint-disable-line
                     <>

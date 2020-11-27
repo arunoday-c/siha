@@ -13,6 +13,7 @@ import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
+import { PricingModals } from "../PatientRegistrationNew/PricingModal";
 import {
   ClearData,
   Validations,
@@ -60,6 +61,7 @@ class OPBilling extends Component {
       addNewService: false,
       isPackOpen: false,
       userToken: {},
+      priceModalVisible: false,
     };
   }
   static contextType = MainContext;
@@ -475,32 +477,31 @@ class OPBilling extends Component {
                 </h6>
               </div>
               {this.state.Billexists === true ? (
-
                 <div className="col">
-
                   {this.state.adjusted === "Y" ? (
                     <div className="row">
                       <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Bill Adjusted By" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Bill Adjusted By" }}
+                        />
                         <h6> {this.state.adjusted_name}</h6>
-
                       </div>
                     </div>
                   ) : this.state.cancelled === "Y" ? (
                     <div className="row">
                       <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Bill Cancelled By" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Bill Cancelled By" }}
+                        />
                         <h6>{this.state.cancelled_name}</h6>
                       </div>
                     </div>
-
                   ) : (
-                        <div>
-                          <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
-                          <h6>{this.state.created_name}</h6>
-                        </div>
-                      )}
-
+                    <div>
+                      <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
+                      <h6>{this.state.created_name}</h6>
+                    </div>
+                  )}
                 </div>
               ) : null}
             </div>
@@ -508,25 +509,25 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
+                        },
                       },
                     },
-                  },
-                  {
-                    label: "Print Receipt Small",
-                    events: {
-                      onClick: () => {
-                        generateReceiptSmall(this, this);
+                    {
+                      label: "Print Receipt Small",
+                      events: {
+                        onClick: () => {
+                          generateReceiptSmall(this, this);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -546,6 +547,14 @@ class OPBilling extends Component {
               },
             }}
           >
+            <PricingModals
+              onClose={() => {
+                this.setState({
+                  priceModalVisible: false,
+                });
+              }}
+              visible={this.state.priceModalVisible}
+            />
             <PatientDetails BillingIOputs={this.state} />
             {/* <DisplayVisitDetails BillingIOputs={this.state} /> */}
             {/* <DisplayInsuranceDetails BillingIOputs={this.state} /> */}
@@ -588,8 +597,8 @@ class OPBilling extends Component {
                     this.state.patient_id === null
                       ? true
                       : this.state.Billexists === true
-                        ? true
-                        : false
+                      ? true
+                      : false
                   }
                 >
                   <AlgaehLabel
@@ -608,7 +617,15 @@ class OPBilling extends Component {
                   />
                 </button>
               )}
-
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  this.setState({ priceModalVisible: true });
+                }}
+              >
+                Pricing Modal
+              </button>
               {Package_Exists.length > 0 ? (
                 <button
                   type="button"
