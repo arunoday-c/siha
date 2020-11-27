@@ -656,6 +656,9 @@ class MicroGroupType extends Component {
                           />
                         );
                       },
+                      others: {
+                        minWidth: 300,
+                      },
                     },
                     {
                       fieldName: "arabic_group_name",
@@ -686,6 +689,9 @@ class MicroGroupType extends Component {
                             }}
                           />
                         );
+                      },
+                      others: {
+                        minWidth: 300,
                       },
                     },
                     {

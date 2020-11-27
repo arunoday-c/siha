@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import "./ReceiptEntryList.scss";
 import {
   //   AlgaehAutoComplete,
@@ -24,7 +24,7 @@ import Options from "../../../Options.json";
 export default function ReceiptInvoiceList() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const location = useLocation();
+  const location = useLocation();
   const history = useHistory();
   //   const [visible, setVisible] = useState(false);
 
@@ -67,6 +67,7 @@ export default function ReceiptInvoiceList() {
         });
         if (res.data.success) {
           setRequests(res.data.records);
+          history.push(`${location.pathname}?from_date=${data.start_date}&to_date=${data.end_date}`);
         }
       } catch (e) {
         AlgaehMessagePop({
@@ -190,8 +191,8 @@ export default function ReceiptInvoiceList() {
                     onChange(undefined);
                   },
                 }}
-                // others={{ disabled: !prepayment_type_id }}
-                // maxDate={moment().add(1, "days")}
+              // others={{ disabled: !prepayment_type_id }}
+              // maxDate={moment().add(1, "days")}
               />
             )}
           />
@@ -231,8 +232,8 @@ export default function ReceiptInvoiceList() {
                     onChange(undefined);
                   },
                 }}
-                // others={{ disabled: true }}
-                // maxDate={moment().add(1, "days")}
+              // others={{ disabled: true }}
+              // maxDate={moment().add(1, "days")}
               />
             )}
           />
@@ -297,21 +298,21 @@ export default function ReceiptInvoiceList() {
                         return row.posted === "Y" ? (
                           <span className="badge badge-success">Yes</span>
                         ) : (
-                          <span className="badge badge-danger">No</span>
-                        );
+                            <span className="badge badge-danger">No</span>
+                          );
                       },
                     },
                     {
-                      fieldName: "return_done",
+                      fieldName: "is_revert",
                       label: "Revert",
                       filterable: true,
-
+                      // return_done
                       displayTemplate: (row) => {
-                        return row.return_done === "Y" ? (
+                        return row.is_revert === "Y" ? (
                           <span className="badge badge-success">Yes</span>
                         ) : (
-                          <span className="badge badge-danger">No</span>
-                        );
+                            <span className="badge badge-danger">No</span>
+                          );
                       },
                     },
 

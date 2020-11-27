@@ -7,7 +7,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -16,7 +16,7 @@ import {
   changeTexts,
   onchangegridcol,
   insertAntibiotic,
-  updateAntibiotic
+  updateAntibiotic,
 } from "./AntiBioMasterEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -28,7 +28,7 @@ class AntiBioMaster extends Component {
     this.state = {
       hims_d_antibiotic_id: null,
       antibiotic_code: null,
-      antibiotic_name: null
+      antibiotic_name: null,
     };
     this.baseState = this.state;
   }
@@ -37,7 +37,7 @@ class AntiBioMaster extends Component {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
     if (
       this.props.antibiotic === undefined ||
@@ -49,8 +49,8 @@ class AntiBioMaster extends Component {
         method: "GET",
         redux: {
           type: "ANTIBIOTIC_GET_DATA",
-          mappingName: "antibiotic"
-        }
+          mappingName: "antibiotic",
+        },
       });
     }
   }
@@ -69,15 +69,15 @@ class AntiBioMaster extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Antibiotic Code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "antibiotic_code",
               value: this.state.antibiotic_code,
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
 
@@ -85,15 +85,15 @@ class AntiBioMaster extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Antibiotic Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "antibiotic_name",
               value: this.state.antibiotic_name,
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
@@ -119,7 +119,7 @@ class AntiBioMaster extends Component {
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Antibiotic Code" }} />
                     ),
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehFormGroup
                           div={{}}
@@ -128,23 +128,23 @@ class AntiBioMaster extends Component {
                             className: "txt-fld",
                             name: "antibiotic_code",
                             events: {
-                              onChange: onchangegridcol.bind(this, this, row)
+                              onChange: onchangegridcol.bind(this, this, row),
                             },
                             others: {
                               errormessage: "Antibiotic Code - cannot be blank",
-                              required: true
-                            }
+                              required: true,
+                            },
                           }}
                         />
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "antibiotic_name",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Antibiotic Name" }} />
                     ),
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehFormGroup
                           div={{}}
@@ -153,27 +153,30 @@ class AntiBioMaster extends Component {
                             className: "txt-fld",
                             name: "antibiotic_name",
                             events: {
-                              onChange: onchangegridcol.bind(this, this, row)
+                              onChange: onchangegridcol.bind(this, this, row),
                             },
                             others: {
                               errormessage: "Antibiotic Name - cannot be blank",
-                              required: true
-                            }
+                              required: true,
+                            },
                           }}
                         />
                       );
-                    }
+                    },
+                    others: {
+                      minWidth: 300,
+                    },
                   },
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       let display =
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                            f => f.algaeh_d_app_user_id === row.created_by
-                          );
+                              (f) => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                       return (
                         <span>
@@ -183,13 +186,13 @@ class AntiBioMaster extends Component {
                         </span>
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       let display =
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                            f => f.algaeh_d_app_user_id === row.created_by
-                          );
+                              (f) => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                       return (
                         <span>
@@ -200,8 +203,8 @@ class AntiBioMaster extends Component {
                       );
                     },
                     others: {
-                      maxWidth: 150
-                    }
+                      maxWidth: 150,
+                    },
                     //disabled: true
                   },
                   {
@@ -209,27 +212,27 @@ class AntiBioMaster extends Component {
                     label: (
                       <AlgaehLabel label={{ fieldName: "created_date" }} />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     },
                     others: {
-                      maxWidth: 100
-                    }
+                      maxWidth: 100,
+                    },
 
                     //disabled: true
                   },
                   {
                     fieldName: "antibiotic_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return row.antibiotic_status === "A"
                         ? "Active"
                         : "Inactive";
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
@@ -240,39 +243,39 @@ class AntiBioMaster extends Component {
                             dataSource: {
                               textField: "name",
                               valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
+                              data: GlobalVariables.FORMAT_STATUS,
                             },
                             onChange: onchangegridcol.bind(this, this, row),
                             others: {
                               errormessage: "Status - cannot be blank",
-                              required: true
-                            }
+                              required: true,
+                            },
                           }}
                         />
                       );
                     },
                     others: {
-                      maxWidth: 100
-                    }
-                  }
+                      maxWidth: 100,
+                    },
+                  },
                 ]}
                 keyId="hims_d_lab_container_id"
                 dataSource={{
                   data:
                     this.props.antibiotic === undefined
                       ? []
-                      : this.props.antibiotic
+                      : this.props.antibiotic,
                 }}
                 isEditable={true}
                 actions={{
-                  allowDelete: false
+                  allowDelete: false,
                 }}
                 filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   //onDelete: deleteAntibiotic.bind(this, this),
-                  onEdit: row => { },
-                  onDone: updateAntibiotic.bind(this, this)
+                  onEdit: (row) => {},
+                  onDone: updateAntibiotic.bind(this, this),
                 }}
               />
             </div>
@@ -286,22 +289,19 @@ class AntiBioMaster extends Component {
 function mapStateToProps(state) {
   return {
     antibiotic: state.antibiotic,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getAntibiotic: AlgaehActions
+      getAntibiotic: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AntiBioMaster)
+  connect(mapStateToProps, mapDispatchToProps)(AntiBioMaster)
 );

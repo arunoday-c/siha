@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../utils/GlobalVariables.json";
 export default function RangeInput({ addAnalyte, analyteType }) {
@@ -54,7 +55,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
   return (
     <div className="row" data-validate="analyte_range_details">
       <AlagehAutoComplete
-        div={{ className: "col" }}
+        div={{ className: "col-6 form-group" }}
         label={{
           forceLabel: "Gender",
           isImp: false,
@@ -72,7 +73,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         }}
       />
       <AlagehAutoComplete
-        div={{ className: "col" }}
+        div={{ className: "col-6 form-group" }}
         label={{
           forceLabel: "Age Type",
           isImp: false,
@@ -90,7 +91,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         }}
       />
       {/* <AlagehAutoComplete
-        div={{ className: "col" }}
+        div={{ className: "col-6 form-group" }}
         label={{
           forceLabel: "Operator",
           isImp: false
@@ -116,7 +117,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         }}
       /> */}
       <AlagehFormGroup
-        div={{ className: "col" }}
+        div={{ className: "col-6 form-group" }}
         label={{
           forceLabel: `From Age (in ${TYPES[inputs.age_type]})`,
           isImp: false,
@@ -138,7 +139,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         }}
       />
       {/* <AlagehAutoComplete
-        div={{ className: "col" }}
+        div={{ className: "col-6 form-group" }}
         label={{
           forceLabel: "Operator",
           isImp: false
@@ -164,7 +165,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         }}
       /> */}
       <AlagehFormGroup
-        div={{ className: "col" }}
+        div={{ className: "col-6 form-group" }}
         label={{
           forceLabel: `To Age (in ${TYPES[inputs.age_type]})`,
           isImp: false,
@@ -189,7 +190,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
       {analyteType === "QN" ? (
         <>
           {/* <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-6 form-group" }}
             label={{
               forceLabel: "Operator",
               isImp: false
@@ -215,7 +216,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
             }}
           /> */}
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col-6 form-group" }}
             label={{
               forceLabel: "Low",
             }}
@@ -230,7 +231,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
             }}
           />
           {/* <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-6 form-group" }}
             label={{
               forceLabel: "Operator",
               isImp: false
@@ -256,7 +257,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
             }}
           /> */}
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col-6 form-group" }}
             label={{
               forceLabel: "High",
             }}
@@ -271,7 +272,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
             }}
           />
           {/* <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col-6 form-group" }}
             label={{
               forceLabel: "critical_low"
             }}
@@ -286,7 +287,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
             }}
           />
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col-6 form-group" }}
             label={{
               forceLabel: "critical_high"
             }}
@@ -303,7 +304,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         </>
       ) : analyteType === "QU" ? (
         <AlagehFormGroup
-          div={{ className: "col" }}
+          div={{ className: "col-6 form-group" }}
           label={{
             forceLabel: "Qualitative value",
           }}
@@ -317,23 +318,31 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           }}
         />
       ) : (
-        <AlagehFormGroup
-          div={{ className: "col" }}
-          label={{
-            forceLabel: "Text",
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "text_value",
-            value: inputs.text_value,
-            events: {
-              onChange: handleChange,
-            },
-          }}
-        />
+        <div className="col">
+          <AlgaehLabel label={{ forceLabel: "Text" }} />
+          <textarea
+            value={inputs.text_value}
+            name="text_value"
+            onChange={handleChange}
+          />
+        </div>
+        // <AlagehFormGroup
+        //   div={{ className: "col-6 form-group" }}
+        //   label={{
+        //     forceLabel: "Text",
+        //   }}
+        //   textBox={{
+        //     className: "txt-fld",
+        //     name: "text_value",
+        //     value: inputs.text_value,
+        //     events: {
+        //       onChange: handleChange,
+        //     },
+        //   }}
+        // />
       )}
 
-      <div className="col" style={{ padding: 0 }}>
+      <div className="col-12" style={{ padding: 0 }}>
         <button
           className="btn btn-primary"
           style={{ marginTop: 20 }}

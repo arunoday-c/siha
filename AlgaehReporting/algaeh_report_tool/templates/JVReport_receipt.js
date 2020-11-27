@@ -16,29 +16,47 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      console.log("INPUT:", input);
-
       options.mysql
         .executeQuery({
-          query: `SELECT AD.account_name, AD.arabic_account_name, CD.child_name,CD.arabic_child_name, FD.debit_amount, FD.credit_amount, FD.payment_type, FD.payment_date, FD.narration as narration_detail,VD.narration as narration_head
-          FROM finance_voucher_details as FD
-          inner join finance_account_head AD on FD.head_id = AD.finance_account_head_id
-          inner join finance_account_child CD on FD.child_id = CD.finance_account_child_id
-          inner join finance_voucher_header VD on FD.voucher_header_id = VD.finance_voucher_header_id
+          query: `SELECT VD.voucher_type,VD.voucher_no,VD.amount,VD.payment_mode,VD.payment_date,
+          VD.narration,VD.due_date,VD.settled_amount,VD.created_by,IVH.customer_id,IVH.sales_order_id,
+          CO.customer_name,CO.customer_code,CO.contact_number,CO.address,CO.vat_number
+          -- if (VD.receipt_type = 'M', VD.invoice_ref_no,VD.invoice_no) as invoiceNum
+          FROM finance_voucher_header VD
+          inner join hims_f_sales_invoice_header IVH on IVH.invoice_number = VD.invoice_ref_no
+          inner join hims_d_customer CO on CO.hims_d_customer_id = IVH.customer_id
+          where VD.finance_voucher_header_id=?;
+          SELECT IVH.invoice_number,
+          IVH.invoice_date,IVH.sales_invoice_mode,IVH.sales_order_id,IVH.customer_id,
+          IVH.sub_total,IVH.net_total,IVH.discount_amount,IVH.total_tax,IVH.net_payable,
+          IVH.narration as invNarration,IVH.hospital_id
+          -- if (VD.receipt_type = 'M', VD.invoice_ref_no,VD.invoice_no) as invoiceNum
+          FROM finance_voucher_header VD
+          inner join hims_f_sales_invoice_header IVH on IVH.invoice_number = VD.invoice_ref_no
           where VD.finance_voucher_header_id=?;`,
-          values: [input.voucher_header_id],
+          values: [input.voucher_header_id, input.voucher_header_id],
           printQuery: true,
         })
         .then((result) => {
+          // console.log(subTotal);
           resolve({
-            result: result,
-            // no_employees: result.length,
+            resultHeader: result[0].length > 0 ? result[0][0] : {},
+            resultInvoice: result[1],
+            totalNetPayable: _.sumBy(result[1], (s) =>
+              parseFloat(s.net_payable)
+            ),
             currency: {
               decimal_places,
               addSymbol: false,
               symbol_position,
-              currency_symbol
-            }
+              currency_symbol,
+            },
+            currencyHeader: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {
