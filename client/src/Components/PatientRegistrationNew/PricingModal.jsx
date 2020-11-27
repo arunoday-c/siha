@@ -150,7 +150,7 @@ export function PricingModals({ visible, onClose }) {
                         forceLabel: "Selected Company Name",
                       }}
                     />
-                    <h6>{companyName}</h6>
+                    <h6>{companyName ? companyName : "-- --"}</h6>
                   </div>
                   <div className="col-2">
                     <button
