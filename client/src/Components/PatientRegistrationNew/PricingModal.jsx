@@ -20,7 +20,7 @@ export function PricingModals({ visible, onClose }) {
   const { userLanguage, userToken } = useContext(MainContext);
   const [fileList, setFileList] = useState([]);
   const [isInsurance, setIsInsurance] = useState(false);
-  const [isCash, setIsCash] = useState(false);
+  // const [isCash, setIsCash] = useState(true);
   const [loading, setLoading] = useState(true);
   const [companyName, setCompanyName] = useState("");
   const [insuranceCompany, setInsuranceCompany] = useState([]);
@@ -104,9 +104,9 @@ export function PricingModals({ visible, onClose }) {
                     <input
                       type="radio"
                       name="is_cash"
-                      checked={isCash}
-                      onChange={(e) => {
-                        e.target.checked ? setIsCash(false) : setIsCash(true);
+                      checked={!isInsurance}
+                      onChange={() => {
+                        setIsInsurance(false);
                       }}
                     />
                     <span>By Cash</span>
@@ -117,10 +117,8 @@ export function PricingModals({ visible, onClose }) {
                       type="radio"
                       name="is_insurance"
                       checked={isInsurance}
-                      onChange={(e) => {
-                        e.target.checked
-                          ? setIsInsurance(true)
-                          : setIsInsurance(false);
+                      onChange={() => {
+                        setIsInsurance(true);
                       }}
                     />
                     <span>By Insurance Company</span>
