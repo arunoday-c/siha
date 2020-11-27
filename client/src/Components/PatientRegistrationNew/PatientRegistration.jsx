@@ -892,7 +892,18 @@ export function PatientRegistration() {
             </div>
             <div className="hptl-phase1-footer">
               <div className="row">
-                <div className="col-lg-12">
+                <div className="col-4 leftBtnGroup">
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={() => {
+                      setPriceModalVisible(true);
+                    }}
+                  >
+                    View Price List
+                  </button>
+                </div>
+                <div className="col">
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -936,16 +947,6 @@ export function PatientRegistration() {
                     <AlgaehLabel
                       label={{ fieldName: "btn_clear", returnText: true }}
                     />
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => {
-                      setPriceModalVisible(true);
-                    }}
-                  >
-                    Price Modal
                   </button>
 
                   <AdvanceModal patient={patientData?.patientRegistration} />

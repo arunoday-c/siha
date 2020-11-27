@@ -576,7 +576,18 @@ class OPBilling extends Component {
 
         <div className="hptl-phase1-footer">
           <div className="row">
-            <div className="col-lg-12">
+            <div className="col-4 leftBtnGroup">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={() => {
+                  this.setState({ priceModalVisible: true });
+                }}
+              >
+                View Price List
+              </button>
+            </div>
+            <div className="col">
               <button
                 type="button"
                 className="btn btn-primary"
@@ -617,15 +628,7 @@ class OPBilling extends Component {
                   />
                 </button>
               )}
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => {
-                  this.setState({ priceModalVisible: true });
-                }}
-              >
-                Pricing Modal
-              </button>
+
               {Package_Exists.length > 0 ? (
                 <button
                   type="button"
