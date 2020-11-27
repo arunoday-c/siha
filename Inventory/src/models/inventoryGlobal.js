@@ -238,11 +238,11 @@ export default {
       let intValues = [];
       let strAppend = "";
       if (req.query.item_id != null) {
-        strAppend += " and item_id=?";
+        strAppend += " and item_id=? ";
         intValues.push(req.query.item_id);
       }
       if (req.query.inventory_location_id != null) {
-        strAppend += " and inventory_location_id=?";
+        strAppend += " and inventory_location_id=? ";
         intValues.push(req.query.inventory_location_id);
       }
       _mysql
@@ -250,8 +250,9 @@ export default {
           query:
             `SELECT IM.item_description as Item, ILOC.location_description as Location, batchno as 'Batch Number', expirydt as 'Expiry Date',  qtyhand as 'Quantity' from 
             hims_m_inventory_item_location IL,hims_d_inventory_item_master IM, hims_d_inventory_location ILOC 
-            where item_id = IM.hims_d_inventory_item_master_id and inventory_location_id = ILOC.hims_d_inventory_location_id and
-            IL.record_status='A' and qtyhand>0` +
+            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0 and 
+            item_id = IM.hims_d_inventory_item_master_id and inventory_location_id = ILOC.hims_d_inventory_location_id and
+            IL.record_status='A'` +
             strAppend +
             "order by date(expirydt)",
           values: intValues,
@@ -503,7 +504,7 @@ export default {
         intValues.push(req.query.item_id);
       }
       if (req.query.inventory_location_id != null) {
-        strAppend += " and inventory_location_id=?";
+        strAppend += " and inventory_location_id=? ";
         intValues.push(req.query.inventory_location_id);
       }
       _mysql
@@ -529,13 +530,12 @@ export default {
             hims_d_inventory_uom IU ON IU.hims_d_inventory_uom_id = IM.stocking_uom_id
                 LEFT JOIN
             hims_d_inventory_location ILOC ON ILOC.hims_d_inventory_location_id = inventory_location_id
-        WHERE
-            qtyhand > 0
+        WHERE (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0 
         ` +
             strAppend +
-            "group by IL.item_id order by date(expirydt)",
+            " group by IL.item_id order by date(expirydt)",
           values: intValues,
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
