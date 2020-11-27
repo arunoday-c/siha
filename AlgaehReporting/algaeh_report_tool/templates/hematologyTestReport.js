@@ -42,7 +42,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_insurance_provider IP on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id
           where P.hims_d_patient_id=? and V.hims_f_patient_visit_id=?;
           select MS.hims_d_lab_specimen_id, MS.description as investigation_name,LA.description as analyte_name,LA.reference_range_required,
-          LM.analyte_report_group, CASE WHEN LM.analyte_report_group = 'P' THEN 'Physical Appearance' WHEN LM.analyte_report_group = 'M' THEN 'Microscopic Examination' WHEN LM.analyte_report_group = 'D' THEN 'Differential Leukocyte Count'  WHEN LM.analyte_report_group = 'C' THEN 'Chemical Examination' ELSE '--' END AS analyte_report_group_desc,
+          LM.analyte_report_group, CASE WHEN LM.analyte_report_group = 'P' THEN 'Physical Appearance' WHEN LM.analyte_report_group = 'M' THEN 'Microscopic Examination' WHEN LM.analyte_report_group = 'D' THEN 'Differential Leukocyte Count'  WHEN LM.analyte_report_group = 'C' THEN 'Chemical Examination' ELSE '' END AS analyte_report_group_desc,
           LO.ordered_date,LO.entered_date,LO.validated_date, LO.critical_status,LO.comments,
           OA.result,OA.result_unit,TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)) as normal_low,
           TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_high)) as normal_high, OA.critical_low,OA.critical_high,
@@ -84,15 +84,20 @@ const executePDF = function executePDFMethod(options) {
             for (let i = 0; i < specimenWise.length; i++) {
               const groupWise = _.chain(specimenWise[i])
                 .groupBy((g) => g.analyte_report_group)
+                // (N, M, C, P, D)
                 .map((detail, key) => {
                   return {
                     analyte_report_group_desc:
                       detail[0].analyte_report_group_desc,
+
+                    order: key === "N" ? 0 : 1,
+
                     sub_no_employee: detail.length,
                     hims_d_lab_specimen_id: key,
                     groupDetail: detail,
                   };
                 })
+                .orderBy((o) => o.order)
                 .value();
 
               outputArray.push({

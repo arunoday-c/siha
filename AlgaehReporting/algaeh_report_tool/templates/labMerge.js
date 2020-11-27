@@ -54,9 +54,9 @@ const executePDF = function executePDFMethod(options) {
             })
             .value();
           //ToDO need to remove only for testing
-          records = records.concat(records);
+          // records = records.concat(records);
           //ToDO need to remove only for testing
-          records = records.concat(records);
+          //records = records.concat(records);
 
           resolve({ headRecord, records });
         });

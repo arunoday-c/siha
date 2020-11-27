@@ -84,10 +84,15 @@
                
             </tr>
             {{#each groupWise}}
-            <tr>
+
+             {{#if hims_d_lab_specimen_id "N" }}
+             
+             {{else}}
+             <tr>
                 <td colspan="4" class="tableSubHdg2 txtFld" >{{analyte_report_group_desc}}</td>
-               
             </tr>
+            {{/if}}
+
         {{#each groupDetail}}
         <tr>
             {{!-- <td>{{inc @index}}</td> --}}
