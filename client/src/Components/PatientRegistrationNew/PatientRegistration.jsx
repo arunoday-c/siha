@@ -893,15 +893,17 @@ export function PatientRegistration() {
             <div className="hptl-phase1-footer">
               <div className="row">
                 <div className="col-4 leftBtnGroup">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={() => {
-                      setPriceModalVisible(true);
-                    }}
-                  >
-                    View Price List
-                  </button>
+                  <AlgaehSecurityComponent componentCode="VEW_PRS_LST">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={() => {
+                        setPriceModalVisible(true);
+                      }}
+                    >
+                      View Price List
+                    </button>
+                  </AlgaehSecurityComponent>
                 </div>
                 <div className="col">
                   <button

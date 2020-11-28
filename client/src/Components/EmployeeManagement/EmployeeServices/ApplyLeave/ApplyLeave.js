@@ -255,7 +255,7 @@ class ApplyLeave extends Component {
             {
               to_leave_session: "FD",
             },
-            () => {}
+            () => { }
           );
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
           this.setState({
@@ -311,7 +311,7 @@ class ApplyLeave extends Component {
               title: "Applying across the year leave?",
               text: `Employee have ${
                 available_balance - calculatedLeaveDays
-              } balance leave, Do you want to Encash Leave or Transfer to next year?`,
+                } balance leave, Do you want to Encash Leave or Transfer to next year?`,
               type: "warning",
               showCancelButton: true,
               confirmButtonText: "Request Encashment",
@@ -448,24 +448,26 @@ class ApplyLeave extends Component {
         break;
 
       case "leave_id":
+        debugger
         this.setState(
           {
             [value.name]: value.value,
             hims_d_leave_detail_id: value.selected.hims_d_leave_detail_id,
           },
           () => {
+            debugger
             let myObj = Enumerable.from(this.state.leave_types)
               .where((w) => w.hims_d_leave_id === value.value)
               .firstOrDefault();
 
             this.setState({
               available_balance: value.selected.close_balance,
-              document_mandatory: myObj.document_mandatory === "Y",
+              document_mandatory: myObj.document_mandatory === "Y" ? true : false,
               leave_type: myObj !== undefined ? myObj.leave_type : null,
               leave_category: myObj.leave_category,
               projected_leave_enable:
                 myObj.leave_category === "A" &&
-                myObj.avail_if_no_balance === "Y"
+                  myObj.avail_if_no_balance === "Y"
                   ? true
                   : false,
             });
@@ -652,7 +654,7 @@ class ApplyLeave extends Component {
           });
         }
       },
-      onFailure: (err) => {},
+      onFailure: (err) => { },
     });
   }
 
@@ -675,7 +677,7 @@ class ApplyLeave extends Component {
           });
         }
       },
-      onFailure: (err) => {},
+      onFailure: (err) => { },
     });
   }
 
@@ -865,16 +867,16 @@ class ApplyLeave extends Component {
                   </div>
                   {(this.state.projected_leave_enable === true &&
                     this.state.is_projected_leave === "Y") ||
-                  parseFloat(this.state.projected_applied_leaves) > 0 ? (
-                    <div className="col-12 margin-bottom-15">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Projected Leaves",
-                        }}
-                      />
-                      <h6>{this.state.projected_applied_leaves} day(s)</h6>
-                    </div>
-                  ) : null}
+                    parseFloat(this.state.projected_applied_leaves) > 0 ? (
+                      <div className="col-12 margin-bottom-15">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Projected Leaves",
+                          }}
+                        />
+                        <h6>{this.state.projected_applied_leaves} day(s)</h6>
+                      </div>
+                    ) : null}
                   <AlgaehDateHandler
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
@@ -1188,8 +1190,8 @@ class ApplyLeave extends Component {
                                     Cancelled
                                   </span>
                                 ) : (
-                                  "------"
-                                )}
+                                          "------"
+                                        )}
                               </span>
                             );
                           },
@@ -1363,9 +1365,9 @@ class ApplyLeave extends Component {
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => {},
-                        onDelete: () => {},
-                        onDone: () => {},
+                        onEdit: () => { },
+                        onDelete: () => { },
+                        onDone: () => { },
                       }}
                     />
                   </div>
@@ -1402,8 +1404,8 @@ class ApplyLeave extends Component {
                       </div>
                     ))
                   ) : (
-                    <div className="noResult">Not Eligible for any Leaves</div>
-                  )}
+                      <div className="noResult">Not Eligible for any Leaves</div>
+                    )}
                 </div>
               </div>
             </div>

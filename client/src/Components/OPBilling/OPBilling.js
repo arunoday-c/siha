@@ -37,7 +37,7 @@ import moment from "moment";
 // import Options from "../../Options.json";
 import OrderingPackages from "../PatientProfile/Assessment/OrderingPackages/OrderingPackages";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehSecurityComponent } from "algaeh-react-components";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -577,15 +577,17 @@ class OPBilling extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-4 leftBtnGroup">
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={() => {
-                  this.setState({ priceModalVisible: true });
-                }}
-              >
-                View Price List
-              </button>
+              <AlgaehSecurityComponent componentCode="OP_VEW_PRS_LST">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={() => {
+                    this.setState({ priceModalVisible: true });
+                  }}
+                >
+                  View Price List
+                </button>
+              </AlgaehSecurityComponent>
             </div>
             <div className="col">
               <button
