@@ -11,8 +11,7 @@ import {
 import { getCostCentersForVoucher } from "./event";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 
-export default function EditVoucher({ visible, voucherNo, inVisible, data }) {
-  debugger;
+export default function EditVoucher({ visible, voucherNo, onClose, data }) {
   const baseJournalList = [
     {
       child_id: undefined,
@@ -41,6 +40,26 @@ export default function EditVoucher({ visible, voucherNo, inVisible, data }) {
 
   // let narration = data[0];
   useEffect(() => {
+    setJournerList((state) => {
+      const first = state[0];
+      const second = state[1];
+      first.head_id = data.head_id;
+      first.child_id = data.child_id;
+      first.sourceName = `${data.head_id}-${data.child_id}`;
+      second.head_id = parseInt(data.head_id, 10);
+      second.child_id = data.child_id;
+      second.sourceName = `${data.head_id}-${data.child_id}`;
+      first.amount = parseInt(data.credit_amount);
+      second.amount = parseInt(data.debit_amount);
+
+      return [first, second];
+    });
+    getHeaders({ voucher_type: data.voucher_type })
+      .then((result) => {
+        setAccounts(result);
+      })
+      .catch((e) => console.log(e));
+
     getCostCentersForVoucher().then((result) => {
       setbranchData(result);
       algaehApiCall({
@@ -132,7 +151,7 @@ export default function EditVoucher({ visible, voucherNo, inVisible, data }) {
         },
       });
     });
-  }, []);
+  }, [data]);
 
   const gridTree = (row, record) => {
     let isDisabled = record
@@ -178,6 +197,29 @@ export default function EditVoucher({ visible, voucherNo, inVisible, data }) {
       />
     );
   };
+  function getHeaders(input) {
+    input = input || {};
+    return new Promise((resolve, reject) => {
+      try {
+        algaehApiCall({
+          uri: "/finance/getAccountHeadsForDropdown",
+          data: input,
+          method: "GET",
+          module: "finance",
+          onSuccess: (response) => {
+            if (response.data.success === true) {
+              resolve(response.data.result);
+            }
+          },
+          onCatch: (error) => {
+            reject(error);
+          },
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
 
   const PaymentInput = (record) => {
     let isDisabled = record
@@ -262,9 +304,7 @@ export default function EditVoucher({ visible, voucherNo, inVisible, data }) {
       visible={visible}
       destroyOnClose={true}
       okButtonProps={{ style: { display: "none" } }}
-      onCancel={() => {
-        inVisible();
-      }}
+      onCancel={onClose}
       className={`row algaehNewModal JVModalDetail`}
     >
       <div className="col-12">

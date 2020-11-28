@@ -178,10 +178,21 @@ export default memo(function (props) {
     }
 
     function openVoucherEdit(e) {
-      debugger;
       // finance_voucher_header_id = record.finance_voucher_header_id;
-      setVoucherNo(record.voucher_no);
-      setVoucherVisibale(true);
+      LoadVoucherDetails({
+        finance_voucher_header_id: record.finance_voucher_header_id,
+      })
+        .then((result) => {
+          setRowDetails({ ...result[0], ...record });
+          setVoucherNo(record.voucher_no);
+          setVoucherVisibale(true);
+        })
+        .catch((error) => {
+          AlgaehMessagePop({
+            type: "error",
+            display: error,
+          });
+        });
     }
 
     function generateJVReport(e) {
@@ -338,7 +349,7 @@ export default memo(function (props) {
         padding: 0,
         color: "blue",
       }}
-      // icon="search"
+      // icon="search"voucherCol
       onClick={() => {
         LoadVoucherDetails({
           finance_voucher_header_id: record["finance_voucher_header_id"],
@@ -395,6 +406,7 @@ export default memo(function (props) {
           setVoucherVisibale(false);
         }}
         voucherNo={voucherNo}
+        data={rowDetails}
       />
 
       <Details
@@ -512,6 +524,7 @@ export default memo(function (props) {
                           fieldName: "id",
                           label: "Actions",
                           displayTemplate: actions,
+
                           others: {
                             width: 100,
                           },
