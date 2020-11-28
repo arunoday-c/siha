@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -28,7 +28,8 @@ export default {
       batchno: null,
       grn_no: null,
       saveEnable: true,
-      inventory_stock_detail: []
+      inventory_stock_detail: [],
+      item_description: ""
     };
     return output;
   }
