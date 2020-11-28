@@ -67,13 +67,15 @@ export function ApproveReject(input) {
     }
   });
 }
-export function getCostCentersForVoucher(input) {
+
+export function LoadVoucherData(input) {
   return new Promise((resolve, reject) => {
     try {
       algaehApiCall({
-        uri: "/finance_masters/getCostCentersForVoucher",
+        uri: "/voucher/getVouchersDetailsToAdjust",
         method: "GET",
         module: "finance",
+        data: input,
         onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
@@ -83,8 +85,8 @@ export function getCostCentersForVoucher(input) {
           reject(error);
         },
       });
-    } catch (e) {
-      reject(e);
+    } catch (error) {
+      reject(error);
     }
   });
 }

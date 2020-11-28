@@ -14,22 +14,25 @@ import {
 } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import Details from "./details";
-import EditVoucher from "./editVoucher";
 import {
   LoadVouchersToAuthorize,
   ApproveReject,
   LoadVoucherDetails,
+  LoadVoucherData
 } from "./event";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { useLocation, useHistory } from "react-router-dom";
 
 const { confirm } = Modal;
 let rejectText = "";
 let finance_voucher_header_id = "";
 export default memo(function (props) {
+  const history = useHistory();
+  const location = useLocation();
+
   const [data, setData] = useState([]);
   const [visible, setVisibale] = useState(false);
-  // const [visibleEditVoucher,setVisibleEditVoucher]=useState(false)
-  const [vouchervisible, setVoucherVisibale] = useState(false);
+  // const [visibleEditVoucher,setVisibleEditVoucher]=useState(false)  
   const [rowDetails, setRowDetails] = useState([]);
   const [voucherNo, setVoucherNo] = useState("");
   const [level, setLevel] = useState("1");
@@ -178,14 +181,17 @@ export default memo(function (props) {
     }
 
     function openVoucherEdit(e) {
+
       // finance_voucher_header_id = record.finance_voucher_header_id;
-      LoadVoucherDetails({
+      LoadVoucherData({
         finance_voucher_header_id: record.finance_voucher_header_id,
       })
         .then((result) => {
-          setRowDetails({ ...result[0], ...record });
-          setVoucherNo(record.voucher_no);
-          setVoucherVisibale(true);
+          history.push("/JournalVoucher", {
+            type: "Adjust",
+            data: result,
+            finance_voucher_header_id: record.finance_voucher_header_id
+          });
         })
         .catch((error) => {
           AlgaehMessagePop({
@@ -211,20 +217,20 @@ export default memo(function (props) {
               record.voucher_type === "journal"
                 ? "JVReport_journal"
                 : record.voucher_type === "contra"
-                ? "JVReport_contra"
-                : record.voucher_type === "receipt"
-                ? "JVReport_receipt"
-                : record.voucher_type === "payment"
-                ? "JVReport_payment"
-                : record.voucher_type === "sales"
-                ? "JVReport_sales"
-                : record.voucher_type === "purchase"
-                ? "JVReport_purchase"
-                : record.voucher_type === "credit_note"
-                ? "JVReport_creditNote"
-                : record.voucher_type === "debit_note"
-                ? "JVReport_debitNote"
-                : "JVReport_expense",
+                  ? "JVReport_contra"
+                  : record.voucher_type === "receipt"
+                    ? "JVReport_receipt"
+                    : record.voucher_type === "payment"
+                      ? "JVReport_payment"
+                      : record.voucher_type === "sales"
+                        ? "JVReport_sales"
+                        : record.voucher_type === "purchase"
+                          ? "JVReport_purchase"
+                          : record.voucher_type === "credit_note"
+                            ? "JVReport_creditNote"
+                            : record.voucher_type === "debit_note"
+                              ? "JVReport_debitNote"
+                              : "JVReport_expense",
             // pageOrentation: "landscape",
             reportParams: [
               {
@@ -282,8 +288,8 @@ export default memo(function (props) {
             </Tooltip>
           </>
         ) : (
-          "----"
-        )}
+              "----"
+            )}
       </>
     );
   };
@@ -400,14 +406,6 @@ export default memo(function (props) {
           }}
         />
       </AlgaehModal>
-      <EditVoucher
-        visible={vouchervisible}
-        onClose={() => {
-          setVoucherVisibale(false);
-        }}
-        voucherNo={voucherNo}
-        data={rowDetails}
-      />
 
       <Details
         visible={visible}
@@ -420,7 +418,6 @@ export default memo(function (props) {
         data={rowDetails}
       />
 
-      <editVoucher visible={vouchervisible} voucherNo={voucherNo} />
       <div className="col-12">
         <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
           <AlgaehAutoComplete
@@ -550,8 +547,8 @@ export default memo(function (props) {
                                     Rejected
                                   </span>
                                 ) : (
-                                  "------"
-                                )}
+                                        "------"
+                                      )}
                               </span>
                             );
                           },

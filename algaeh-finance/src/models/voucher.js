@@ -364,23 +364,23 @@ export default {
                       const typeSel =
                         cost_center_type === "P"
                           ? {
-                              project_id: cost_center_id,
-                              sub_department_id: null,
-                            }
+                            project_id: cost_center_id,
+                            sub_department_id: null,
+                          }
                           : cost_center_type === "SD"
-                          ? {
+                            ? {
                               project_id: null,
                               sub_department_id: cost_center_id,
                             }
-                          : {};
+                            : {};
 
                       const auth_details =
                         resul[0].auth_level === "N"
                           ? {
-                              auth1: "Y",
-                              auth2: "Y",
-                              auth_status: "A",
-                            }
+                            auth1: "Y",
+                            auth2: "Y",
+                            auth_status: "A",
+                          }
                           : {};
                       return {
                         ...rest,
@@ -630,6 +630,79 @@ export default {
     }
   },
 
+  updateVoucher: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.body;
+    let finance_voucher_id = []
+
+    console.log("input"), input
+    let queryString = ""
+    for (let i = 0; i < input.details.length; i++) {
+      queryString += _mysql.mysqlQueryFormat(
+        "update finance_voucher_details set head_id=?, child_id=? where finance_voucher_id=?;",
+        [
+          input.details[i].head_id,
+          input.details[i].child_id,
+          input.details[i].finance_voucher_id
+        ]
+      );
+      if (input.details[i].child_id != input.details[i].og_child_id) {
+        finance_voucher_id.push(input.details[i].finance_voucher_id)
+      }
+    }
+    console.log("finance_voucher_id", finance_voucher_id)
+    _mysql
+      .executeQueryWithTransaction({
+        query: queryString,
+      })
+      .then((result) => {
+        if (finance_voucher_id.length > 0) {
+          _mysql
+            .executeQueryWithTransaction({
+              query: "select * from finance_voucher_details where finance_voucher_id in (?)",
+              values: [finance_voucher_id]
+            })
+            .then((voucher_result) => {
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "insert into finance_adjust_voucher_details (??) values ?;",
+                  values: voucher_result,
+                  bulkInsertOrUpdate: true,
+                  excludeValues: ["voucher_header_id"],
+                  printQuery: true,
+                })
+                .then((result2) => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result2
+                    next();
+                  });
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
   //created by irfan:
   getCostCentersBAKUPDEC20: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -1685,9 +1758,9 @@ export default {
                                   .then((BalanceInvoice) => {
                                     if (
                                       result[0]["voucher_type"] ==
-                                        "credit_note" ||
+                                      "credit_note" ||
                                       result[0]["voucher_type"] ==
-                                        "debit_note" ||
+                                      "debit_note" ||
                                       result[0]["voucher_type"] == "payment" ||
                                       result[0]["voucher_type"] == "receipt"
                                     ) {
@@ -1743,7 +1816,7 @@ export default {
                                           "YYYY-MM-DD"
                                         )}',updated_by=${
                                           req.userIdentity.algaeh_d_app_user_id
-                                        } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                          } where finance_voucher_header_id=${finance_voucher_header_id};`;
                                       }
 
                                       // if (hasMultiple === "M") {
@@ -2024,6 +2097,36 @@ export default {
         next(e);
       });
   },
+
+  getVouchersDetailsToAdjust: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const decimal_places = req.userIdentity.decimal_places;
+    const input = req.query;
+
+    _mysql
+      .executeQuery({
+        query: `select VH.payment_date, VH.narration, VH.voucher_type, VH.invoice_ref_no, 
+        VD.*, CONCAT(VD.head_id, '-', VD.child_id) as sourceName,VD.head_id as og_head_id, VD.child_id as og_child_id,
+        ROUND( debit_amount,${decimal_places}) as debit_amount,
+        ROUND( credit_amount,${decimal_places}) as credit_amount,
+        CASE WHEN payment_type = 'DR' THEN ROUND(debit_amount,2) 
+        else ROUND(credit_amount,2) END as amount
+        from finance_voucher_details VD inner join finance_voucher_header VH on VH.finance_voucher_header_id=VD.voucher_header_id 
+        where VD.voucher_header_id=? order by payment_type; `,
+        values: [input.finance_voucher_header_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
 
   //created by irfan:
   getVoucherNo: (req, res, next) => {

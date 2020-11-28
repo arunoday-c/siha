@@ -8,13 +8,34 @@ const {
   authorizeVoucher,
   getVouchersToAuthorize,
   getVouchersDetailsToAuthorize,
+  getVouchersDetailsToAdjust,
   getUnSettledInvoices,
+  updateVoucher
 } = voucher;
 
 export default () => {
   const api = Router();
 
   api.post("/addVoucher", addVoucher, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+        .json({
+          success: false,
+          message: req.records.message,
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
+    }
+  });
+  api.post("/updateVoucher", updateVoucher, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
@@ -99,6 +120,29 @@ export default () => {
   api.get(
     "/getVouchersDetailsToAuthorize",
     getVouchersDetailsToAuthorize,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            message: req.records.message,
+          })
+          .end();
+      } else {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .json({
+            success: true,
+            result: req.records,
+          })
+          .end();
+      }
+    }
+  );
+  api.get(
+    "/getVouchersDetailsToAdjust",
+    getVouchersDetailsToAdjust,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res

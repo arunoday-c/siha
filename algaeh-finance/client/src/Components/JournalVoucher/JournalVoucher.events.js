@@ -18,7 +18,7 @@ export function getVoucherNumber(input) {
           reject(error);
         },
       });
-    } catch (e) {}
+    } catch (e) { }
   });
 }
 export function getHeaders(input) {
@@ -71,11 +71,15 @@ export function getInvoiceDetail(input) {
 
 export function addJurnorLedger(input) {
   const { merdgeRecords, ...rest } = input;
-  if (merdgeRecords.length > 0) {
-    input["receipt_type"] = "M";
-    return addVoucher(input, "/voucher/addVoucher");
+  if (input.finance_voucher_header_id > 0) {
+    return addVoucher(rest, "/voucher/updateVoucher");
   } else {
-    return addVoucher(rest, "/voucher/addVoucher");
+    if (merdgeRecords.length > 0) {
+      input["receipt_type"] = "M";
+      return addVoucher(input, "/voucher/addVoucher");
+    } else {
+      return addVoucher(rest, "/voucher/addVoucher");
+    }
   }
 }
 function addVoucher(input, url) {

@@ -92,6 +92,7 @@ export default function JournalVoucher() {
     }
   ];
   const [journerList, setJournerList] = useState(baseJournalList);
+  const [finance_voucher_header_id, setFinanceVoucherHeaderID] = useState(null);
   // const [loadAsset, setLoadAsset] = useState([]);
   const [merdgeRecords, setMerdgeRecords] = useState([]);
   const [bankAmount, setBankAmount] = useState("0.00");
@@ -245,80 +246,89 @@ export default function JournalVoucher() {
     if (location.state) {
       const { type, data, merdge } = location.state;
 
-      setPayment(state => ({ ...state, payment_mode: "CASH" }));
-      if (type === "duplicate") {
-        const { Details, voucher_type, amount } = data;
-        let currentVoucher =
-          voucher_type === "sales"
-            ? "receipt"
-            : voucher_type === "purchase"
-              ? "payment"
-              : voucher_type;
-        setVoucherType(currentVoucher);
-        const records = Details.map((single, index) => ({
-          slno: index + 1,
-          head_id: single.head_id,
-          child_id: single.child_id,
-          sourceName: `${single.head_id}-${single.child_id}`,
-          payment_type: single.payment_type,
-          amount
-        }));
-        if (merdge !== undefined) {
-          setDisableAmount(true);
-          setMerdgeRecords(merdge);
-        }
-        setJournerList(records);
+      if (type === "Adjust") {
+        setJournerList(data)
+        setFinanceVoucherHeaderID(location.state.finance_voucher_header_id)
+        setVoucherType(data[0].voucher_type);
+        setVoucherDate(moment(data[0].payment_date)._d);
+        setInvoiceData(data[0].invoice_ref_no);
+        // setPayment(state => ({ ...state, ...data }));
       } else {
-        const {
-          voucher_type,
-          invoice_no,
-          balance_amount,
-          head_id,
-          child_id,
-          disabled
-        } = data;
-        let currentVoucher =
-          voucher_type === "sales"
-            ? "receipt"
-            : voucher_type === "purchase"
-              ? "payment"
-              : null;
-        if (merdge !== undefined) {
-          setDisableAmount(true);
-          setMerdgeRecords(merdge);
+        setPayment(state => ({ ...state, payment_mode: "CASH" }));
+        if (type === "duplicate") {
+          const { Details, voucher_type, amount } = data;
+          let currentVoucher =
+            voucher_type === "sales"
+              ? "receipt"
+              : voucher_type === "purchase"
+                ? "payment"
+                : voucher_type;
+          setVoucherType(currentVoucher);
+          const records = Details.map((single, index) => ({
+            slno: index + 1,
+            head_id: single.head_id,
+            child_id: single.child_id,
+            sourceName: `${single.head_id}-${single.child_id}`,
+            payment_type: single.payment_type,
+            amount
+          }));
+          if (merdge !== undefined) {
+            setDisableAmount(true);
+            setMerdgeRecords(merdge);
+          }
+          setJournerList(records);
+        } else {
+          const {
+            voucher_type,
+            invoice_no,
+            balance_amount,
+            head_id,
+            child_id,
+            disabled
+          } = data;
+          let currentVoucher =
+            voucher_type === "sales"
+              ? "receipt"
+              : voucher_type === "purchase"
+                ? "payment"
+                : null;
+          if (merdge !== undefined) {
+            setDisableAmount(true);
+            setMerdgeRecords(merdge);
+          }
+          setVoucherType(currentVoucher);
+          setSelInvoice(invoice_no);
+          getCashAccount()
+            .then(res => {
+              if (res.data.success) {
+                const [defaultAC] = res.data.result;
+                setJournerList(state => {
+                  const first = state[0];
+                  const second = state[1];
+                  first.head_id = defaultAC.head_id;
+                  first.child_id = defaultAC.child_id;
+                  first.sourceName = `${defaultAC.head_id}-${defaultAC.child_id}`;
+                  second.head_id = parseInt(head_id, 10);
+                  second.child_id = child_id;
+                  second.sourceName = `${head_id}-${child_id}`;
+                  first.amount = balance_amount;
+                  second.amount = balance_amount;
+                  if (type === "customer") {
+                    first.payment_type = "DR";
+                    second.payment_type = "CR";
+                    second.disabled = disabled;
+                  }
+                  if (type === "supplier") {
+                    first.payment_type = "CR";
+                    second.payment_type = "DR";
+                    second.disabled = disabled;
+                  }
+                  return [first, second];
+                });
+              }
+            })
+            .catch(e => console.log(e));
         }
-        setVoucherType(currentVoucher);
-        setSelInvoice(invoice_no);
-        getCashAccount()
-          .then(res => {
-            if (res.data.success) {
-              const [defaultAC] = res.data.result;
-              setJournerList(state => {
-                const first = state[0];
-                const second = state[1];
-                first.head_id = defaultAC.head_id;
-                first.child_id = defaultAC.child_id;
-                first.sourceName = `${defaultAC.head_id}-${defaultAC.child_id}`;
-                second.head_id = parseInt(head_id, 10);
-                second.child_id = child_id;
-                second.sourceName = `${head_id}-${child_id}`;
-                first.amount = balance_amount;
-                second.amount = balance_amount;
-                if (type === "customer") {
-                  first.payment_type = "DR";
-                  second.payment_type = "CR";
-                  second.disabled = disabled;
-                }
-                if (type === "supplier") {
-                  first.payment_type = "CR";
-                  second.payment_type = "DR";
-                  second.disabled = disabled;
-                }
-                return [first, second];
-              });
-            }
-          })
-          .catch(e => console.log(e));
       }
     }
   }, [location.state]);
@@ -505,7 +515,8 @@ export default function JournalVoucher() {
       // hospital_id: getCookie("HospitalId"),
       details: _journerList,
       narration: narration,
-      merdgeRecords
+      merdgeRecords,
+      finance_voucher_header_id: finance_voucher_header_id
     })
       .then(result => {
         setLoading(false);
@@ -769,6 +780,7 @@ export default function JournalVoucher() {
                 }
               }
             }}
+            others={{ disabled: finance_voucher_header_id === null ? false : true }}
           />
           <AlgaehAutoComplete
             div={{ className: "col-2" }}
@@ -793,7 +805,8 @@ export default function JournalVoucher() {
                 setVoucherType("");
                 setAccounts([]);
                 setPayment(basePayment);
-              }
+              },
+              others: { disabled: finance_voucher_header_id === null ? false : true }
             }}
           />
           {voucherType === "expense_voucher" ? (
@@ -891,7 +904,8 @@ export default function JournalVoucher() {
                     },
                     onClear: () => {
                       setSelInvoice("");
-                    }
+                    },
+                    others: { disabled: finance_voucher_header_id === null ? false : true }
                   }}
                 />
               ) : null}
