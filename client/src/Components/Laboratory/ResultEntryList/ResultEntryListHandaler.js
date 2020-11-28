@@ -5,6 +5,7 @@ import Options from "../../../Options.json";
 // import Enumerable from "linq";
 import { newAlgaehApi } from "../../../hooks";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+// import { message } from "algaeh-react-components";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -68,7 +69,13 @@ export function saveDocument(files = [], contract_no, contract_id, $this) {
     method: "POST",
     module: "documentManagement",
   })
-    .then((value) => getDocuments(contract_no, $this))
+    .then((value) => {
+      swalMessage({
+        type: "success",
+        title: "Document Upload Successfull...",
+      });
+      getDocuments(contract_no, $this);
+    })
     .catch((e) => console.log(e));
 }
 
