@@ -8,8 +8,18 @@ export function AddAnalytes() {
     querySelector: "data-validate='analyte_details'",
     onSuccess: () => {
       const { state } = this.context;
-      let insert_analytes = state.insert_analytes;
       let analytes = state.analytes;
+      const analyte_exists = analytes.find(f => f.analyte_id === state.analyte_id)
+
+      if (analyte_exists !== undefined) {
+        swalMessage({
+          type: "warning",
+          title: "Selected Analyte Already Exists in List",
+        });
+        return
+      }
+      let insert_analytes = state.insert_analytes;
+
       let obj = {
         analyte_id: state.analyte_id,
         analyte_report_group: state.analyte_report_group,

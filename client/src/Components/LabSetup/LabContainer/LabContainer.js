@@ -7,7 +7,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 
@@ -16,8 +16,8 @@ import { getCookie } from "../../../utils/algaehApiCall.js";
 import {
   changeTexts,
   onchangegridcol,
-  insertLabContainer,  
-  updateLabContainer  
+  insertLabContainer,
+  updateLabContainer,
 } from "./LabContainerEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -29,7 +29,7 @@ class LabContainer extends Component {
     this.state = {
       hims_d_lab_container_id: "",
       description: "",
-      container_id: null
+      container_id: null,
     };
     this.baseState = this.state;
   }
@@ -38,7 +38,7 @@ class LabContainer extends Component {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
     if (
       this.props.labcontainer === undefined ||
@@ -50,8 +50,8 @@ class LabContainer extends Component {
         method: "GET",
         redux: {
           type: "CONTAINER_GET_DATA",
-          mappingName: "labcontainer"
-        }
+          mappingName: "labcontainer",
+        },
       });
     }
   }
@@ -70,7 +70,7 @@ class LabContainer extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Container Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -78,8 +78,8 @@ class LabContainer extends Component {
               value: this.state.description,
 
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
 
@@ -87,7 +87,7 @@ class LabContainer extends Component {
             div={{ className: "col-2 mandatory" }}
             label={{
               fieldName: "container_id",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -95,8 +95,8 @@ class LabContainer extends Component {
               value: this.state.container_id,
 
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
@@ -131,7 +131,7 @@ class LabContainer extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Container Name" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -140,23 +140,26 @@ class LabContainer extends Component {
                               className: "txt-fld",
                               name: "description",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
+                                onChange: onchangegridcol.bind(this, this, row),
                               },
                               others: {
                                 errormessage: "Description - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
+                      others: {
+                        minWidth: 600,
+                      },
                     },
                     {
                       fieldName: "container_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "container_id" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -165,26 +168,26 @@ class LabContainer extends Component {
                               className: "txt-fld",
                               name: "container_id",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
-                              }
+                                onChange: onchangegridcol.bind(this, this, row),
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 120 }
+                      others: { maxWidth: 120 },
                     },
                     {
                       fieldName: "created_by",
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_by" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                                (f) => f.algaeh_d_app_user_id === row.created_by
+                              );
 
                         return (
                           <span>
@@ -194,13 +197,13 @@ class LabContainer extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                                (f) => f.algaeh_d_app_user_id === row.created_by
+                              );
 
                         return (
                           <span>
@@ -210,24 +213,24 @@ class LabContainer extends Component {
                           </span>
                         );
                       },
-                      others: { maxWidth: 150 }
+                      others: { maxWidth: 150 },
                     },
                     {
                       fieldName: "created_date",
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      others: { maxWidth: 100 }
+                      others: { maxWidth: 100 },
                       //disabled: true
                     },
                     {
@@ -235,12 +238,12 @@ class LabContainer extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "inv_status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.container_status === "A"
                           ? "Active"
                           : "Inactive";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             selector={{
@@ -250,37 +253,37 @@ class LabContainer extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
+                                data: GlobalVariables.FORMAT_STATUS,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 100 }
-                    }
+                      others: { maxWidth: 100 },
+                    },
                   ]}
                   keyId="hims_d_lab_container_id"
                   dataSource={{
                     data:
                       this.props.labcontainer === undefined
                         ? []
-                        : this.props.labcontainer
+                        : this.props.labcontainer,
                   }}
                   isEditable={true}
                   actions={{
-                    allowDelete: false
+                    allowDelete: false,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //onDelete: deleteLabContainer.bind(this, this),
-                    onEdit: row => { },
-                    onDone: updateLabContainer.bind(this, this)
+                    onEdit: (row) => {},
+                    onDone: updateLabContainer.bind(this, this),
                   }}
                 />
               </div>
@@ -295,22 +298,19 @@ class LabContainer extends Component {
 function mapStateToProps(state) {
   return {
     labcontainer: state.labcontainer,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLabContainer: AlgaehActions
+      getLabContainer: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LabContainer)
+  connect(mapStateToProps, mapDispatchToProps)(LabContainer)
 );

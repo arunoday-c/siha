@@ -546,6 +546,11 @@ const DeliveryNoteEntry = React.lazy(() =>
 const ReceiptEntry = React.lazy(() =>
   retry(() => import("./Components/Procurement/ReceiptEntry/ReceiptEntry"))
 );
+const ReceiptEntryList = React.lazy(() =>
+  retry(() =>
+    import("./Components/Procurement/ReceiptEntryList/ReceiptEntryList")
+  )
+);
 const ShipmentEntry = React.lazy(() =>
   retry(() => import("./Components/Procurement/ShipmentEntry/ShipmentEntry"))
 );
@@ -1324,6 +1329,11 @@ const privateRoutes = [
     path: "/ReceiptEntry",
     isExactPath: true,
     component: <ReceiptEntry />,
+  },
+  {
+    path: "/ReceiptEntryList",
+    isExactPath: true,
+    component: <ReceiptEntryList />,
   },
   {
     path: "/ShipmentEntry",

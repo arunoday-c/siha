@@ -13,6 +13,7 @@ import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/Billing";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
+import { PricingModals } from "../PatientRegistrationNew/PricingModal";
 import {
   ClearData,
   Validations,
@@ -36,7 +37,7 @@ import moment from "moment";
 // import Options from "../../Options.json";
 import OrderingPackages from "../PatientProfile/Assessment/OrderingPackages/OrderingPackages";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehSecurityComponent } from "algaeh-react-components";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ class OPBilling extends Component {
       addNewService: false,
       isPackOpen: false,
       userToken: {},
+      priceModalVisible: false,
     };
   }
   static contextType = MainContext;
@@ -475,32 +477,31 @@ class OPBilling extends Component {
                 </h6>
               </div>
               {this.state.Billexists === true ? (
-
                 <div className="col">
-
                   {this.state.adjusted === "Y" ? (
                     <div className="row">
                       <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Bill Adjusted By" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Bill Adjusted By" }}
+                        />
                         <h6> {this.state.adjusted_name}</h6>
-
                       </div>
                     </div>
                   ) : this.state.cancelled === "Y" ? (
                     <div className="row">
                       <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Bill Cancelled By" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Bill Cancelled By" }}
+                        />
                         <h6>{this.state.cancelled_name}</h6>
                       </div>
                     </div>
-
                   ) : (
-                        <div>
-                          <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
-                          <h6>{this.state.created_name}</h6>
-                        </div>
-                      )}
-
+                    <div>
+                      <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
+                      <h6>{this.state.created_name}</h6>
+                    </div>
+                  )}
                 </div>
               ) : null}
             </div>
@@ -508,25 +509,25 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
+                        },
                       },
                     },
-                  },
-                  {
-                    label: "Print Receipt Small",
-                    events: {
-                      onClick: () => {
-                        generateReceiptSmall(this, this);
+                    {
+                      label: "Print Receipt Small",
+                      events: {
+                        onClick: () => {
+                          generateReceiptSmall(this, this);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -546,6 +547,14 @@ class OPBilling extends Component {
               },
             }}
           >
+            <PricingModals
+              onClose={() => {
+                this.setState({
+                  priceModalVisible: false,
+                });
+              }}
+              visible={this.state.priceModalVisible}
+            />
             <PatientDetails BillingIOputs={this.state} />
             {/* <DisplayVisitDetails BillingIOputs={this.state} /> */}
             {/* <DisplayInsuranceDetails BillingIOputs={this.state} /> */}
@@ -567,7 +576,20 @@ class OPBilling extends Component {
 
         <div className="hptl-phase1-footer">
           <div className="row">
-            <div className="col-lg-12">
+            <div className="col-4 leftBtnGroup">
+              <AlgaehSecurityComponent componentCode="OP_VEW_PRS_LST">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={() => {
+                    this.setState({ priceModalVisible: true });
+                  }}
+                >
+                  View Price List
+                </button>
+              </AlgaehSecurityComponent>
+            </div>
+            <div className="col">
               <button
                 type="button"
                 className="btn btn-primary"
@@ -588,8 +610,8 @@ class OPBilling extends Component {
                     this.state.patient_id === null
                       ? true
                       : this.state.Billexists === true
-                        ? true
-                        : false
+                      ? true
+                      : false
                   }
                 >
                   <AlgaehLabel

@@ -144,16 +144,16 @@ export default {
         .executeQuery({
           query:
             "SELECT cost_center_type, cost_center_required, auth_level, allow_negative_balance  FROM finance_options limit 1; ",
-          printQuery: true
+          printQuery: true,
         })
         .then((resul) => {
           new Promise((resolve, reject) => {
-            console.log("resul", resul[0].auth_level)
+            console.log("resul", resul[0].auth_level);
             if (resul[0].allow_negative_balance == "Y") {
               resolve({});
             } else {
               if (resul[0].auth_level == "N") {
-                console.log("1")
+                console.log("1");
                 const child_ids = [];
                 input.details.forEach((child) => {
                   child_ids.push(child.child_id);
@@ -175,30 +175,32 @@ export default {
                     let internal_eror = false;
                     const closeBalance = close_bal[0];
                     const led_data = close_bal[1];
-                    console.log("input.details", input.details)
+                    console.log("input.details", input.details);
                     //ST-closing balance CHECK
                     input.details.forEach((entry) => {
                       //checking debit balance for asset and expence
-                      const led_data_root = led_data.find(f => f.finance_account_child_id == entry.child_id)
-                      console.log("led_data_root", led_data_root)
+                      const led_data_root = led_data.find(
+                        (f) => f.finance_account_child_id == entry.child_id
+                      );
+                      console.log("led_data_root", led_data_root);
                       if (
-                        (led_data_root.root_id == 1 || led_data_root.root_id == 5) &&
+                        (led_data_root.root_id == 1 ||
+                          led_data_root.root_id == 5) &&
                         entry.payment_type == "CR"
                       ) {
-
                         let ledger = closeBalance.find((f) => {
                           return f.child_id == entry.child_id;
                         });
 
                         if (ledger != undefined) {
-                          console.log("1", ledger.deb_minus_cred)
-                          console.log("1", entry.amount)
+                          console.log("1", ledger.deb_minus_cred);
+                          console.log("1", entry.amount);
 
                           const temp =
                             parseFloat(ledger.deb_minus_cred) -
                             parseFloat(entry.amount);
 
-                          console.log("1", temp)
+                          console.log("1", temp);
                           if (temp < 0) {
                             internal_eror = true;
                             req.records = {
@@ -271,10 +273,9 @@ export default {
                     next(error);
                   });
               } else {
-                console.log("2")
+                console.log("2");
                 resolve({});
               }
-
             }
           }).then((res) => {
             let credit_amount = 0;
@@ -314,17 +315,18 @@ export default {
                   let transaction_date = "";
 
                   if (
-                    moment(input.transaction_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+                    moment(input.transaction_date, "YYYY-MM-DD").format(
+                      "YYYYMMDD"
+                    ) > 0
                   ) {
                     transaction_date = input.transaction_date;
                   } else {
                     transaction_date = new Date();
                   }
 
-
                   // if (credit_amount == debit_amount) {
 
-                  console.log("resul====", resul)
+                  console.log("resul====", resul);
                   if (
                     resul.length == 1 &&
                     (resul[0]["cost_center_type"] == "P" ||
@@ -347,7 +349,8 @@ export default {
 
                     /* added by noor for detail level costcenters */
                     const cost_center_type = resul[0]["cost_center_type"];
-                    const cost_center_required = resul[0]["cost_center_required"];
+                    const cost_center_required =
+                      resul[0]["cost_center_required"];
                     const newDetails = input.details.map((item) => {
                       const {
                         cost_center_id,
@@ -374,8 +377,11 @@ export default {
                       const auth_details =
                         resul[0].auth_level === "N"
                           ? {
-                            auth1: "Y", auth2: "Y", auth_status: "A"
-                          } : {};
+                            auth1: "Y",
+                            auth2: "Y",
+                            auth_status: "A",
+                          }
+                          : {};
                       return {
                         ...rest,
                         ...typeSel,
@@ -415,7 +421,9 @@ export default {
                       ref_no = input.ref_no;
                     }
                     const isMultipleInvoices =
-                      input.receipt_type === undefined ? "S" : input.receipt_type;
+                      input.receipt_type === undefined
+                        ? "S"
+                        : input.receipt_type;
 
                     _mysql
                       .executeQueryWithTransaction({
@@ -448,6 +456,7 @@ export default {
                         printQuery: true,
                       })
                       .then((result) => {
+                        const finance_voucher_header_id = result.insertId;
                         // const IncludeValues = ["amount", "payment_mode"];
                         // const insertColumns = [
                         //   "head_id",
@@ -469,40 +478,42 @@ export default {
                               voucher_type,
                             } = merdgeRecords[i];
 
-                            if (resul[0].auth_level === "N") {
-                              queryString += _mysql.mysqlQueryFormat(
-                                `insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,
-                                amount,voucher_type, auth1, auth2, auth_status) value(?,?,?,?,?,?,?);`,
-                                [
-                                  result.insertId,
-                                  invoice_no,
-                                  balance_amount,
-                                  voucher_type,
-                                  "Y",
-                                  "Y",
-                                  "A"
-                                ]
-                              );
-                            } else {
-                              queryString += _mysql.mysqlQueryFormat(
-                                "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
-                                [
-                                  result.insertId,
-                                  invoice_no,
-                                  balance_amount,
-                                  voucher_type
-                                ]
-                              );
-                            }
+                            queryString += _mysql.mysqlQueryFormat(
+                              "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
+                              [
+                                result.insertId,
+                                invoice_no,
+                                balance_amount,
+                                voucher_type,
+                              ]
+                            );
+                            // if (resul[0].auth_level === "N") {
+                            //   queryString += _mysql.mysqlQueryFormat(
+                            //     `insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,
+                            //     amount,voucher_type) value(?,?,?,?);`,
+                            //     [
+                            //       result.insertId,
+                            //       invoice_no,
+                            //       balance_amount,
+                            //       voucher_type,
+                            //     ]
+                            //   );
+                            // } else {
+
+                            // }
 
                             newDetails.forEach((item) => {
                               const { amount, ...rest } = item;
                               arrCounter.push({
                                 ...rest,
                                 debit_amount:
-                                  item.payment_type === "DR" ? balance_amount : 0,
+                                  item.payment_type === "DR"
+                                    ? balance_amount
+                                    : 0,
                                 credit_amount:
-                                  item.payment_type === "CR" ? balance_amount : 0,
+                                  item.payment_type === "CR"
+                                    ? balance_amount
+                                    : 0,
                               });
                             });
                           }
@@ -554,6 +565,7 @@ export default {
                               _mysql.releaseConnection();
                               req.records = {
                                 voucher_no: numgen[voucher_type],
+                                finance_voucher_header_id: finance_voucher_header_id,
                               };
                               next();
                             });
@@ -609,7 +621,6 @@ export default {
               });
             }
           });
-
         })
         .catch((e) => {
           _mysql.rollBackTransaction(() => {
@@ -619,6 +630,79 @@ export default {
     }
   },
 
+  updateVoucher: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.body;
+    let finance_voucher_id = []
+
+    console.log("input"), input
+    let queryString = ""
+    for (let i = 0; i < input.details.length; i++) {
+      queryString += _mysql.mysqlQueryFormat(
+        "update finance_voucher_details set head_id=?, child_id=? where finance_voucher_id=?;",
+        [
+          input.details[i].head_id,
+          input.details[i].child_id,
+          input.details[i].finance_voucher_id
+        ]
+      );
+      if (input.details[i].child_id != input.details[i].og_child_id) {
+        finance_voucher_id.push(input.details[i].finance_voucher_id)
+      }
+    }
+    console.log("finance_voucher_id", finance_voucher_id)
+    _mysql
+      .executeQueryWithTransaction({
+        query: queryString,
+      })
+      .then((result) => {
+        if (finance_voucher_id.length > 0) {
+          _mysql
+            .executeQueryWithTransaction({
+              query: "select * from finance_voucher_details where finance_voucher_id in (?)",
+              values: [finance_voucher_id]
+            })
+            .then((voucher_result) => {
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "insert into finance_adjust_voucher_details (??) values ?;",
+                  values: voucher_result,
+                  bulkInsertOrUpdate: true,
+                  excludeValues: ["voucher_header_id"],
+                  printQuery: true,
+                })
+                .then((result2) => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result2
+                    next();
+                  });
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
   //created by irfan:
   getCostCentersBAKUPDEC20: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -1960,7 +2044,7 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select distinct finance_voucher_header_id,voucher_type, ROUND(amount,${decimal_places}) as amount,H.payment_date,\
+          query: `select distinct finance_voucher_header_id,VD.head_id,VD.child_id,voucher_type, ROUND(amount,${decimal_places}) as amount,H.payment_date,\
           H.narration,voucher_no,payment_mode, ref_no, H.cheque_date,   VD.auth_status ,U.username as entered_by from finance_voucher_header H\
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
@@ -2013,6 +2097,36 @@ export default {
         next(e);
       });
   },
+
+  getVouchersDetailsToAdjust: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const decimal_places = req.userIdentity.decimal_places;
+    const input = req.query;
+
+    _mysql
+      .executeQuery({
+        query: `select VH.payment_date, VH.narration, VH.voucher_type, VH.invoice_ref_no, 
+        VD.*, CONCAT(VD.head_id, '-', VD.child_id) as sourceName,VD.head_id as og_head_id, VD.child_id as og_child_id,
+        ROUND( debit_amount,${decimal_places}) as debit_amount,
+        ROUND( credit_amount,${decimal_places}) as credit_amount,
+        CASE WHEN payment_type = 'DR' THEN ROUND(debit_amount,2) 
+        else ROUND(credit_amount,2) END as amount
+        from finance_voucher_details VD inner join finance_voucher_header VH on VH.finance_voucher_header_id=VD.voucher_header_id 
+        where VD.voucher_header_id=? order by payment_type; `,
+        values: [input.finance_voucher_header_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
 
   //created by irfan:
   getVoucherNo: (req, res, next) => {

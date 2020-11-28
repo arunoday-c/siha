@@ -7,7 +7,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -16,7 +16,7 @@ import {
   changeTexts,
   onchangegridcol,
   insertTestCategory,
-  updateTestCategory
+  updateTestCategory,
 } from "./TestCategoryEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -29,7 +29,7 @@ class TestCategory extends Component {
       hims_d_test_category_id: "",
       category_name: "",
       test_section: "O",
-      investigation_type: null
+      investigation_type: null,
     };
     this.baseState = this.state;
   }
@@ -38,7 +38,7 @@ class TestCategory extends Component {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
     if (
       this.props.testcategory === undefined ||
@@ -50,8 +50,8 @@ class TestCategory extends Component {
         method: "GET",
         redux: {
           type: "TESTCATEGORY_GET_DATA",
-          mappingName: "testcategory"
-        }
+          mappingName: "testcategory",
+        },
       });
     }
   }
@@ -70,15 +70,15 @@ class TestCategory extends Component {
             div={{ className: "col-4 form-group mandatory" }}
             label={{
               forceLabel: "Test Category Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "category_name",
               value: this.state.category_name,
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
           <AlagehAutoComplete
@@ -91,15 +91,15 @@ class TestCategory extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.TEST_SECTION
+                data: GlobalVariables.TEST_SECTION,
               },
 
               onChange: changeTexts.bind(this, this),
               onClear: () => {
                 this.setState({
-                  test_section: null
+                  test_section: null,
                 });
-              }
+              },
             }}
           />
 
@@ -113,15 +113,15 @@ class TestCategory extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.FORMAT_LAB_RAD
+                data: GlobalVariables.FORMAT_LAB_RAD,
               },
 
               onChange: changeTexts.bind(this, this),
               onClear: () => {
                 this.setState({
-                  investigation_type: null
+                  investigation_type: null,
                 });
-              }
+              },
             }}
           />
 
@@ -150,7 +150,7 @@ class TestCategory extends Component {
                           label={{ forceLabel: "Test Category Name" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -159,16 +159,19 @@ class TestCategory extends Component {
                               className: "txt-fld",
                               name: "category_name",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
+                                onChange: onchangegridcol.bind(this, this, row),
                               },
                               others: {
                                 errormessage: "Category Name - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
+                      others: {
+                        minWidth: 400,
+                      },
                     },
                     {
                       fieldName: "investigation_type",
@@ -177,9 +180,9 @@ class TestCategory extends Component {
                           label={{ forceLabel: "Investigation Type" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display = GlobalVariables.FORMAT_LAB_RAD.filter(
-                          f => f.value === row.investigation_type
+                          (f) => f.value === row.investigation_type
                         );
 
                         return (
@@ -190,7 +193,7 @@ class TestCategory extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -201,33 +204,33 @@ class TestCategory extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_LAB_RAD
+                                data: GlobalVariables.FORMAT_LAB_RAD,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage:
                                   "Investigation Type - cannot be blank",
-                                required: true
+                                required: true,
                               },
                               onClear: () => {
                                 this.setState({
-                                  test_section: null
+                                  test_section: null,
                                 });
-                              }
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 100 }
+                      others: { maxWidth: 100 },
                     },
                     {
                       fieldName: "test_section",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Test Section" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display = GlobalVariables.TEST_SECTION.filter(
-                          f => f.value === row.test_section
+                          (f) => f.value === row.test_section
                         );
 
                         return (
@@ -238,7 +241,7 @@ class TestCategory extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -249,23 +252,23 @@ class TestCategory extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.TEST_SECTION
+                                data: GlobalVariables.TEST_SECTION,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Test Section - cannot be blank",
-                                required: true
+                                required: true,
                               },
                               onClear: () => {
                                 this.setState({
-                                  test_section: null
+                                  test_section: null,
                                 });
-                              }
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 200 }
+                      others: { maxWidth: 200 },
                     },
 
                     {
@@ -273,13 +276,13 @@ class TestCategory extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_by" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                                (f) => f.algaeh_d_app_user_id === row.created_by
+                              );
 
                         return (
                           <span>
@@ -289,13 +292,13 @@ class TestCategory extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                                (f) => f.algaeh_d_app_user_id === row.created_by
+                              );
 
                         return (
                           <span>
@@ -305,7 +308,7 @@ class TestCategory extends Component {
                           </span>
                         );
                       },
-                      others: { maxWidth: 150 }
+                      others: { maxWidth: 150 },
                       //disabled: true
                     },
                     {
@@ -313,17 +316,17 @@ class TestCategory extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      others: { maxWidth: 100 }
+                      others: { maxWidth: 100 },
                       //disabled: true
                     },
                     {
@@ -331,12 +334,12 @@ class TestCategory extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "inv_status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.category_status === "A"
                           ? "Active"
                           : "Inactive";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -347,42 +350,42 @@ class TestCategory extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
+                                data: GlobalVariables.FORMAT_STATUS,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
+                                required: true,
                               },
                               onClear: () => {
                                 this.setState({
-                                  test_section: null
+                                  test_section: null,
                                 });
-                              }
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 100 }
-                    }
+                      others: { maxWidth: 100 },
+                    },
                   ]}
                   keyId="hims_d_lab_container_id"
                   dataSource={{
                     data:
                       this.props.testcategory === undefined
                         ? []
-                        : this.props.testcategory
+                        : this.props.testcategory,
                   }}
                   isEditable={true}
                   filter={true}
                   actions={{
-                    allowDelete: false
+                    allowDelete: false,
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //onDelete: deleteTestCategory.bind(this, this),
-                    onEdit: row => { },
-                    onDone: updateTestCategory.bind(this, this)
+                    onEdit: (row) => {},
+                    onDone: updateTestCategory.bind(this, this),
                   }}
                 />
               </div>
@@ -397,22 +400,19 @@ class TestCategory extends Component {
 function mapStateToProps(state) {
   return {
     testcategory: state.testcategory,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getTestCategory: AlgaehActions
+      getTestCategory: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TestCategory)
+  connect(mapStateToProps, mapDispatchToProps)(TestCategory)
 );

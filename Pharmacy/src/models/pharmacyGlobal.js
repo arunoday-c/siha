@@ -250,8 +250,8 @@ export default {
             "SELECT hims_m_item_location_id, item_description, item_id, pharmacy_location_id, item_location_status, batchno, expirydt, \
             barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, \
             mrp_price, sales_uom, git_qty, IM.stocking_uom_id, vendor_batchno from hims_m_item_location IL, \
-            hims_d_item_master IM where item_id = IM.hims_d_item_master_id and IL.record_status='A' \
-            and IL.qtyhand>0" +
+            hims_d_item_master IM \
+            where item_id = IM.hims_d_item_master_id and (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and IL.record_status='A' and qtyhand>0" +
             strAppend +
             "order by date(expirydt);",
           values: intValues,
@@ -289,8 +289,9 @@ export default {
           query:
             "SELECT item_description as Item, IPL.location_description, batchno as 'Batch Number', expirydt as 'Expiry Date', \
             qtyhand as 'Quantity At Hand' from hims_m_item_location IL, \
-            hims_d_item_master IM, hims_d_pharmacy_location IPL where item_id = IM.hims_d_item_master_id and pharmacy_location_id = IPL.hims_d_pharmacy_location_id and IL.record_status='A' \
-            and IL.qtyhand>0" +
+            hims_d_item_master IM, hims_d_pharmacy_location IPL \
+            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0 \
+            and item_id = IM.hims_d_item_master_id and pharmacy_location_id = IPL.hims_d_pharmacy_location_id and IL.record_status='A'" +
             strAppend +
             "order by date(expirydt)",
           values: intValues,
@@ -433,11 +434,11 @@ export default {
       let intValues = [req.query.pharmacy_location_id];
       let strAppend = "";
       if (req.query.item_id != null) {
-        strAppend += " and IL.item_id=?";
+        strAppend += " and IL.item_id=? ";
         intValues.push(req.query.item_id);
       }
       if (req.query.pharmacy_location_id != null) {
-        strAppend += " and pharmacy_location_id=?";
+        strAppend += " and pharmacy_location_id=? ";
         intValues.push(req.query.pharmacy_location_id);
       }
 
@@ -464,8 +465,7 @@ export default {
             hims_d_pharmacy_uom IU ON IU.hims_d_pharmacy_uom_id = IM.stocking_uom_id
                 LEFT JOIN
                 hims_d_pharmacy_location ILOC ON ILOC.hims_d_pharmacy_location_id = pharmacy_location_id
-        WHERE
-            qtyhand > 0
+        WHERE (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0
         ` +
             strAppend +
             "group by IL.item_id order by date(expirydt)",

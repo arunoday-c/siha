@@ -9,6 +9,12 @@ import Enumerable from "linq";
 import Options from "../../../../Options.json";
 // import Summary from "../Summary/Summary";
 import { Dimmer, Loader } from "semantic-ui-react";
+import {
+  // AlgaehDataGrid,
+  AlgaehModal,
+  // AlgaehButton,
+} from "algaeh-react-components";
+import { newAlgaehApi } from "../../../../hooks";
 class Encounters extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +32,8 @@ class Encounters extends Component {
       loaderChiefComp: false,
       loaderSignificantSigns_Others: false,
       loaderVitals: false,
+      openAttachmentsModal: false,
+      attached_docs: [],
     };
   }
 
@@ -549,10 +557,73 @@ class Encounters extends Component {
       },
     });
   }
-  // uri: "/orderAndPreApproval/getPatientPackage",
-  // method: "GET",
-  // data: {
-  //   hims_f_package_header_id: this.state.hims_f_package_header_id,
+  downloadDoc(doc, isPreview) {
+    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    const link = document.createElement("a");
+    if (!isPreview) {
+      link.download = doc.filename;
+      link.href = fileUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      fetch(fileUrl)
+        .then((res) => res.blob())
+        .then((fblob) => {
+          const newUrl = URL.createObjectURL(fblob);
+          window.open(newUrl);
+        });
+    }
+  }
+  getSavedDocument(row) {
+    newAlgaehApi({
+      uri: "/getContractDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        contract_no: row.lab_id_number,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          this.setState({
+            attached_docs: data,
+          });
+        }
+      })
+      .catch((e) => {
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  }
+  getDocuments(row) {
+    newAlgaehApi({
+      uri: "/getRadiologyDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        hims_f_rad_order_id: row.hims_f_rad_order_id,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          this.setState({
+            attached_docs: data,
+          });
+        }
+      })
+      .catch((e) => {
+        // AlgaehLoader({ show: false });
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  }
   render() {
     return (
       <div className="encounters">
@@ -962,6 +1033,75 @@ class Encounters extends Component {
                                   ) : null;
                                 },
                               },
+                              {
+                                fieldName: "action",
+                                label: "Attachments",
+                                displayTemplate: (row) => {
+                                  return row.lab_billed === "Y" ? (
+                                    <span>
+                                      <i
+                                        className="fas fa-paperclip"
+                                        aria-hidden="true"
+                                        onClick={() => {
+                                          this.setState(
+                                            {
+                                              openAttachmentsModal: true,
+                                              // currentRow: row,
+                                              // lab_id_number: row.lab_id_number,
+                                            },
+
+                                            this.getSavedDocument.bind(
+                                              this,
+                                              row
+                                            )
+                                          );
+                                        }}
+                                      />
+                                    </span>
+                                  ) : (
+                                    "----"
+                                  );
+                                },
+                              },
+                              {
+                                fieldName: "radiology_attachments",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Radiology Attachments",
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return row.rad_billed === "Y" ? (
+                                    <span>
+                                      <i
+                                        // style={{
+                                        //   pointerEvents:
+                                        //     row.status === "O"
+                                        //       ? ""
+                                        //       : row.sample_status === "N"
+                                        //       ? "none"
+                                        //       : "",
+                                        // }}
+                                        className="fas fa-paperclip"
+                                        aria-hidden="true"
+                                        onClick={(e) => {
+                                          this.setState(
+                                            {
+                                              openAttachmentsModal: true,
+                                            },
+
+                                            this.getDocuments.bind(this, row)
+                                          );
+                                        }}
+                                      />
+                                    </span>
+                                  ) : (
+                                    "----"
+                                  );
+                                },
+                              },
                             ]}
                             keyId="index"
                             dataSource={{
@@ -980,6 +1120,75 @@ class Encounters extends Component {
                     </div>
                   </div>
                 ) : null}
+                <AlgaehModal
+                  title="View Attachments"
+                  visible={this.state.openAttachmentsModal}
+                  mask={true}
+                  maskClosable={false}
+                  onCancel={() => {
+                    this.setState({
+                      openAttachmentsModal: false,
+
+                      attached_docs: [],
+                    });
+                  }}
+                  footer={[
+                    <div className="col-12">
+                      <button
+                        onClick={() => {
+                          this.setState({
+                            openAttachmentsModal: false,
+
+                            attached_docs: [],
+                          });
+                        }}
+                        className="btn btn-default btn-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>,
+                  ]}
+                  className={`algaehNewModal investigationAttachmentModal`}
+                >
+                  <div className="portlet-body">
+                    <div className="col-12">
+                      <div className="row">
+                        <div className="col-3"></div>
+                        <div className="col-6">
+                          <div className="row">
+                            <div className="col-12">
+                              <ul className="AttachmentList">
+                                {this.state.attached_docs.length ? (
+                                  this.state.attached_docs.map((doc) => (
+                                    <li>
+                                      <b> {doc.filename} </b>
+                                      <span>
+                                        <i
+                                          className="fas fa-download"
+                                          onClick={() => this.downloadDoc(doc)}
+                                        ></i>
+                                        <i
+                                          className="fas fa-eye"
+                                          onClick={() =>
+                                            this.downloadDoc(doc, true)
+                                          }
+                                        ></i>
+                                      </span>
+                                    </li>
+                                  ))
+                                ) : (
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </AlgaehModal>
                 {this.state.patientPakages.length !== 0 ? (
                   <div className="row investigation">
                     <div className="col-lg-12">

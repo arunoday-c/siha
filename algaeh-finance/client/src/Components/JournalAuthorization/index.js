@@ -10,23 +10,29 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   Tooltip,
-  Modal
+  Modal,
 } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import Details from "./details";
 import {
   LoadVouchersToAuthorize,
   ApproveReject,
-  LoadVoucherDetails
+  LoadVoucherDetails,
+  LoadVoucherData
 } from "./event";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { useLocation, useHistory } from "react-router-dom";
 
 const { confirm } = Modal;
 let rejectText = "";
 let finance_voucher_header_id = "";
-export default memo(function(props) {
+export default memo(function (props) {
+  const history = useHistory();
+  const location = useLocation();
+
   const [data, setData] = useState([]);
   const [visible, setVisibale] = useState(false);
+  // const [visibleEditVoucher,setVisibleEditVoucher]=useState(false)  
   const [rowDetails, setRowDetails] = useState([]);
   const [voucherNo, setVoucherNo] = useState("");
   const [level, setLevel] = useState("1");
@@ -61,7 +67,7 @@ export default memo(function(props) {
       setLoading(false);
       AlgaehMessagePop({
         type: "info",
-        display: "Please select Level"
+        display: "Please select Level",
       });
       return;
     }
@@ -72,15 +78,15 @@ export default memo(function(props) {
     }
 
     LoadVouchersToAuthorize({ auth_level: level, ...others })
-      .then(result => {
+      .then((result) => {
         setLoading(false);
         setData(result);
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false);
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   };
@@ -95,7 +101,7 @@ export default memo(function(props) {
       if (level === undefined) {
         AlgaehMessagePop({
           type: "info",
-          display: "Level can not be blank"
+          display: "Level can not be blank",
         });
         return;
       }
@@ -112,9 +118,9 @@ export default memo(function(props) {
           ApproveReject({
             voucher_header_id: record.finance_voucher_header_id,
             auth_status: "A",
-            auth_level: level
+            auth_level: level,
           })
-            .then(result => {
+            .then((result) => {
               let others = { auth_status: status };
               if (dates !== undefined && dates.length > 0) {
                 others["from_date"] = dates[0];
@@ -122,30 +128,30 @@ export default memo(function(props) {
               }
               LoadVouchersToAuthorize({
                 auth_level: level,
-                ...others
+                ...others,
               })
-                .then(result => {
+                .then((result) => {
                   setData(result);
                 })
-                .catch(error => {
+                .catch((error) => {
                   AlgaehMessagePop({
                     type: "error",
-                    display: error
+                    display: error,
                   });
                 });
 
               AlgaehMessagePop({
                 type: "success",
-                display: "Successfully approved"
+                display: "Successfully approved",
               });
             })
-            .catch(error => {
+            .catch((error) => {
               AlgaehMessagePop({
                 type: "error",
-                display: error
+                display: error,
               });
             });
-        }
+        },
       });
     }
 
@@ -153,7 +159,7 @@ export default memo(function(props) {
       if (level === undefined) {
         AlgaehMessagePop({
           type: "info",
-          display: "Level can not be blank"
+          display: "Level can not be blank",
         });
         return;
       }
@@ -170,8 +176,29 @@ export default memo(function(props) {
           finance_voucher_header_id = record.finance_voucher_header_id;
           setVoucherNo(record.voucher_no);
           setRejectVisible(true);
-        }
+        },
       });
+    }
+
+    function openVoucherEdit(e) {
+
+      // finance_voucher_header_id = record.finance_voucher_header_id;
+      LoadVoucherData({
+        finance_voucher_header_id: record.finance_voucher_header_id,
+      })
+        .then((result) => {
+          history.push("/JournalVoucher", {
+            type: "Adjust",
+            data: result,
+            finance_voucher_header_id: record.finance_voucher_header_id
+          });
+        })
+        .catch((error) => {
+          AlgaehMessagePop({
+            type: "error",
+            display: error,
+          });
+        });
     }
 
     function generateJVReport(e) {
@@ -180,46 +207,54 @@ export default memo(function(props) {
         method: "GET",
         module: "reports",
         headers: {
-          Accept: "blob"
+          Accept: "blob",
         },
         others: { responseType: "blob" },
         data: {
           report: {
-
             // enum('journal','contra','receipt','payment','sales','purchase','credit_note','debit_note','expense_voucher')
-            reportName: record.voucher_type === "journal" ? "JVReport_journal" 
-            : record.voucher_type === "contra" ? "JVReport_contra" 
-            : record.voucher_type === "receipt" ? "JVReport_receipt" 
-            : record.voucher_type === "payment" ? "JVReport_payment" 
-            : record.voucher_type === "sales" ? "JVReport_sales" 
-            : record.voucher_type === "purchase" ? "JVReport_purchase" 
-            : record.voucher_type === "credit_note" ? "JVReport_creditNote" 
-            : record.voucher_type === "debit_note" ? "JVReport_debitNote" 
-            : "JVReport_expense",
+            reportName:
+              record.voucher_type === "journal"
+                ? "JVReport_journal"
+                : record.voucher_type === "contra"
+                  ? "JVReport_contra"
+                  : record.voucher_type === "receipt"
+                    ? "JVReport_receipt"
+                    : record.voucher_type === "payment"
+                      ? "JVReport_payment"
+                      : record.voucher_type === "sales"
+                        ? "JVReport_sales"
+                        : record.voucher_type === "purchase"
+                          ? "JVReport_purchase"
+                          : record.voucher_type === "credit_note"
+                            ? "JVReport_creditNote"
+                            : record.voucher_type === "debit_note"
+                              ? "JVReport_debitNote"
+                              : "JVReport_expense",
             // pageOrentation: "landscape",
             reportParams: [
               {
                 name: "voucher_header_id",
-                value: record.finance_voucher_header_id
+                value: record.finance_voucher_header_id,
               },
               {
                 name: "voucher_type",
-                value: record.voucher_type
+                value: record.voucher_type,
               },
               {
                 name: "voucher_no",
-                value: record.voucher_no
-              }
+                value: record.voucher_no,
+              },
             ],
-            outputFileType: "PDF"
-          }
+            outputFileType: "PDF",
+          },
         },
-        onSuccess: res => {
+        onSuccess: (res) => {
           const urlBlob = URL.createObjectURL(res.data);
           // const documentName = `${record.voucher_type} Voucher Report`;
           const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Voucher Report - ${record.voucher_type} (${record.voucher_no}) `;
           window.open(origin);
-        }
+        },
       });
     }
 
@@ -240,9 +275,18 @@ export default memo(function(props) {
             {/* <i className="fas fa-thumbs-up" onClick={approve}></i><i className="fas fa-thumbs-down" onClick={reject}></i> */}
           </>
         ) : record.auth_status === "A" ? (
-          <span>
-            <i className="fas fa-print" onClick={generateJVReport}></i>
-          </span>
+          <>
+            <Tooltip title="Print">
+              <span onClick={generateJVReport}>
+                <i className="fas fa-print"></i>
+              </span>
+            </Tooltip>
+            <Tooltip title="Edit Voucher">
+              <span onClick={openVoucherEdit}>
+                <i className="fas fa-pen"></i>
+              </span>
+            </Tooltip>
+          </>
         ) : (
               "----"
             )}
@@ -254,7 +298,7 @@ export default memo(function(props) {
     if (rejectText === "") {
       AlgaehMessagePop({
         type: "info",
-        display: "With out reason you con't save"
+        display: "With out reason you con't save",
       });
       return;
     }
@@ -262,37 +306,37 @@ export default memo(function(props) {
       voucher_header_id: finance_voucher_header_id,
       auth_status: "R",
       auth_level: level,
-      rejected_reason: rejectText
+      rejected_reason: rejectText,
     })
-      .then(result => {
+      .then((result) => {
         let others = { auth_status: status };
         if (dates !== undefined && dates.length > 0) {
           others["from_date"] = dates[0];
           others["to_date"] = dates[1];
         }
         LoadVouchersToAuthorize({ auth_level: level, ...others })
-          .then(result => {
+          .then((result) => {
             setData(result);
             setRejectVisible(false);
             finance_voucher_header_id = "";
             rejectText = "";
           })
-          .catch(error => {
+          .catch((error) => {
             AlgaehMessagePop({
               type: "error",
-              display: error
+              display: error,
             });
           });
 
         AlgaehMessagePop({
           type: "success",
-          display: "Successfully approved"
+          display: "Successfully approved",
         });
       })
-      .catch(error => {
+      .catch((error) => {
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   }
@@ -309,22 +353,22 @@ export default memo(function(props) {
         border: "none",
         background: "none",
         padding: 0,
-        color: "blue"
+        color: "blue",
       }}
-      // icon="search"
+      // icon="search"voucherCol
       onClick={() => {
         LoadVoucherDetails({
-          finance_voucher_header_id: record["finance_voucher_header_id"]
+          finance_voucher_header_id: record["finance_voucher_header_id"],
         })
-          .then(result => {
+          .then((result) => {
             setVoucherNo(text);
             setRowDetails(result);
             setVisibale(true);
           })
-          .catch(error => {
+          .catch((error) => {
             AlgaehMessagePop({
               type: "error",
-              display: error
+              display: error,
             });
           });
       }}
@@ -353,15 +397,16 @@ export default memo(function(props) {
           multiline={true}
           textBox={{
             row: 3,
-            defaultValue: rejectText
+            defaultValue: rejectText,
           }}
           events={{
-            onChange: e => {
+            onChange: (e) => {
               rejectText = e.target.value;
-            }
+            },
           }}
         />
       </AlgaehModal>
+
       <Details
         visible={visible}
         voucherNo={voucherNo}
@@ -372,40 +417,41 @@ export default memo(function(props) {
         }}
         data={rowDetails}
       />
+
       <div className="col-12">
         <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
           <AlgaehAutoComplete
             div={{
-              className: "col-2"
+              className: "col-2",
             }}
             label={{
-              forceLabel: "Levels"
+              forceLabel: "Levels",
             }}
             selector={{
               dataSource: {
                 data: [
                   { text: "Level 1", value: "1" },
-                  { text: "Level 2", value: "2" }
+                  { text: "Level 2", value: "2" },
                 ],
                 valueField: "value",
-                textField: "text"
+                textField: "text",
               },
               value: level,
 
-              onChange: selected => {
+              onChange: (selected) => {
                 setLevel(selected.value);
               },
               onClear: () => {
                 setLevel(undefined);
-              }
+              },
             }}
           />
           <AlgaehAutoComplete
             div={{
-              className: "col-2"
+              className: "col-2",
             }}
             label={{
-              forceLabel: "Record Status"
+              forceLabel: "Record Status",
             }}
             selector={{
               dataSource: {
@@ -413,18 +459,18 @@ export default memo(function(props) {
                   { text: "All Records", value: "" },
                   { text: "Pending", value: "P" },
                   { text: "Rejected", value: "R" },
-                  { text: "Approved", value: "A" }
+                  { text: "Approved", value: "A" },
                 ],
                 valueField: "value",
-                textField: "text"
+                textField: "text",
               },
               value: status,
-              onChange: selected => {
+              onChange: (selected) => {
                 setStatus(selected.value);
               },
               onClear: () => {
                 setStatus(undefined);
-              }
+              },
             }}
           />
           <AlgaehDateHandler
@@ -432,12 +478,12 @@ export default memo(function(props) {
             label={{ forceLabel: "Selected Range" }}
             type="range"
             textBox={{
-              value: dates
+              value: dates,
             }}
             events={{
-              onChange: selected => {
+              onChange: (selected) => {
                 setDates(selected);
-              }
+              },
             }}
           />
           <div className="col">
@@ -475,16 +521,17 @@ export default memo(function(props) {
                           fieldName: "id",
                           label: "Actions",
                           displayTemplate: actions,
+
                           others: {
-                            width: 100
-                          }
+                            width: 100,
+                          },
                         },
                         {
                           fieldName: "auth_status",
                           label: "Record Status",
                           sortable: true,
                           filterable: true,
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.auth_status === "P" ? (
@@ -504,27 +551,30 @@ export default memo(function(props) {
                                       )}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "voucher_no",
                           label: "Voucher Number",
                           filterable: true,
                           sortable: true,
-                          displayTemplate: voucherCol
+                          displayTemplate: voucherCol,
                         },
                         {
                           fieldName: "voucher_type",
                           label: "Voucher Type",
                           filterable: true,
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return _.startCase(
                               row.voucher_type ? row.voucher_type : ""
                             );
-                          }
+                          },
                         },
-                        { fieldName: "payment_date", label: "Payment Date" ,
-                        filterable: true,},
+                        {
+                          fieldName: "payment_date",
+                          label: "Payment Date",
+                          filterable: true,
+                        },
                         // ...paymentTemplates,
                         /* Commented paymentTemplates there is no condition we can use directly   */
                         // {
@@ -551,15 +601,18 @@ export default memo(function(props) {
                                 })}
                               </span>
                             );
-                          }
+                          },
                         },
-                        { fieldName: "narration", label: "Narration",
-                          filterable: true, },
+                        {
+                          fieldName: "narration",
+                          label: "Narration",
+                          filterable: true,
+                        },
                         {
                           fieldName: "entered_by",
                           label: "Enterd By",
                           filterable: true,
-                        }
+                        },
                       ]}
                       height="40vh"
                       isFilterable={true}

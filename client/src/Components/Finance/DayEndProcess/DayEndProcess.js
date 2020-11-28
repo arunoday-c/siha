@@ -100,6 +100,7 @@ class DayEndProcess extends Component {
       module_id: null,
       screen_code: null,
       persistence: null,
+      revert_trans: "N",
     };
     this.selectedDayEndIds = "";
   }
@@ -116,15 +117,14 @@ class DayEndProcess extends Component {
         const userToken = this.context.userToken;
 
         const { decimal_places, symbol_position, currency_symbol } = userToken;
-
         const currency = {
           decimal_places,
           addSymbol: false,
           symbol_position,
           currency_symbol,
         };
-        const params = new URLSearchParams(this.props.location?.search);
 
+        const params = new URLSearchParams(this.props.location?.search);
         if (params?.get("from_date")) {
           this.setState({
             from_date: moment(params?.get("from_date"))._d, //,params?.get("from_date"),
@@ -135,10 +135,35 @@ class DayEndProcess extends Component {
             {
               to_date: moment(params?.get("to_date"))._d, //params?.get("to_date"),
               currency: currency,
+              revert_trans: params?.get("revert_trans"),
+              posted: params?.get("posted"),
             },
             () => this.getDayEndProcess(this)
           );
         }
+
+        // const currency = {
+        //   decimal_places,
+        //   addSymbol: false,
+        //   symbol_position,
+        //   currency_symbol,
+        // };
+        // const params = new URLSearchParams(this.props.location?.search);
+
+        // if (params?.get("from_date")) {
+        //   this.setState({
+        //     from_date: moment(params?.get("from_date"))._d, //,params?.get("from_date"),
+        //   });
+        // }
+        // if (params?.get("to_date")) {
+        //   this.setState(
+        //     {
+        //       to_date: moment(params?.get("to_date"))._d, //params?.get("to_date"),
+        //       currency: currency,
+        //     },
+        //     () => this.getDayEndProcess(this)
+        //   );
+        // }
 
         if (this.props.location.state) {
           algaehApiCall({
@@ -162,7 +187,11 @@ class DayEndProcess extends Component {
 
   getDayEndProcess() {
     try {
-      let inputObj = { posted: this.state.posted };
+      // let inputObj = { posted: this.state.posted };
+      let inputObj = {
+        posted: this.state.posted,
+        revert_trans: this.state.revert_trans,
+      };
       if (this.state.screen_code !== null) {
         inputObj.screen_code = this.state.screen_code;
       }
@@ -175,15 +204,19 @@ class DayEndProcess extends Component {
       if (this.state.to_date !== null) {
         inputObj.to_date = this.state.to_date;
       }
+
       algaehApiCall({
         uri: "/finance/getDayEndData",
         data: inputObj,
         method: "GET",
         module: "finance",
         onSuccess: (response) => {
-          this.setState({ dayEnd: response.data.result });
+          this.setState({
+            dayEnd: response.data.result,
+            revert_visible: false,
+          });
           return this.props.history?.push(
-            `${this.props.location?.pathname}?from_date=${this.state.from_date}&to_date=${this.state.to_date}`
+            `${this.props.location?.pathname}?from_date=${this.state.from_date}&to_date=${this.state.to_date}&revert_trans=${this.state.revert_trans}&posted=${this.state.posted}`
           );
         },
         onCatch: (error) => {
@@ -266,10 +299,23 @@ class DayEndProcess extends Component {
   }
 
   checkHandaler(e) {
-    this.setState({
-      [e.target.name]: e.target.checked ? "Y" : "N",
-      dayEnd: [],
-    });
+    switch (e.target.name) {
+      case "revert_trans":
+        this.setState({
+          [e.target.name]: e.target.checked ? "Y" : "N",
+          dayEnd: [],
+          from_date: undefined,
+          to_date: undefined,
+          posted: "N",
+        });
+        break;
+      default:
+        this.setState({
+          [e.target.name]: e.target.checked ? "Y" : "N",
+          dayEnd: [],
+        });
+        break;
+    }
   }
 
   dropDownHandle(value) {
@@ -393,7 +439,10 @@ class DayEndProcess extends Component {
     try {
       algaehApiCall({
         uri: "/finance/previewDayEndEntries",
-        data: { day_end_header_id: row.finance_day_end_header_id },
+        data: {
+          day_end_header_id: row.finance_day_end_header_id,
+          revert_trans: this.state.revert_trans,
+        },
         method: "GET",
         module: "finance",
         onSuccess: (response) => {
@@ -472,6 +521,20 @@ class DayEndProcess extends Component {
         this.getDayEndProcess(this);
       }
     );
+  }
+
+  ClearData() {
+    this.setState({
+      dayEnd: [],
+      from_date: undefined,
+      to_date: undefined,
+      openPopup: false,
+      posted: "N",
+      module_id: null,
+      screen_code: null,
+      revert_trans: "N",
+    });
+    return this.props.history?.push(this.props.location?.pathname);
   }
 
   render() {
@@ -632,7 +695,7 @@ class DayEndProcess extends Component {
                   }}
                 /> */}
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "From Date" }}
                   textBox={{
                     className: "txt-fld",
@@ -648,10 +711,11 @@ class DayEndProcess extends Component {
                     onBlur: this.dateValidate.bind(this),
                   }}
                   value={this.state.from_date}
+                  disabled={this.state.revert_trans === "Y" ? true : false}
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "To Date" }}
                   textBox={{
                     className: "txt-fld",
@@ -667,6 +731,7 @@ class DayEndProcess extends Component {
                     onBlur: this.dateValidate.bind(this),
                   }}
                   value={this.state.to_date}
+                  disabled={this.state.revert_trans === "Y" ? true : false}
                 />
                 {/* <AlagehFormGroup
                   div={{ className: "col" }}
@@ -686,7 +751,7 @@ class DayEndProcess extends Component {
                   }}
                 /> */}
 
-                <div
+                {/* <div
                   className="customCheckbox col"
                   style={{ border: "none", marginTop: "20px" }}
                 >
@@ -695,6 +760,7 @@ class DayEndProcess extends Component {
                       type="checkbox"
                       name="posted"
                       checked={this.state.posted === "Y" ? true : false}
+                      disabled={this.state.revert_trans === "Y" ? true : false}
                       onChange={this.checkHandaler.bind(this)}
                     />
 
@@ -702,12 +768,69 @@ class DayEndProcess extends Component {
                       Posted Trancation
                     </span>
                   </label>
-                </div>
+                </div> */}
 
                 <div className="col">
+                  <label>Show Only Posted Trancation</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="posted"
+                        checked={this.state.posted === "Y" ? true : false}
+                        disabled={
+                          this.state.revert_trans === "Y" ? true : false
+                        }
+                        onChange={this.checkHandaler.bind(this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="col">
+                  <label>Show Only Reverted Trancation</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="revert_trans"
+                        checked={this.state.revert_trans === "Y" ? true : false}
+                        onChange={this.checkHandaler.bind(this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* <div
+                  className="customCheckbox col"
+                  style={{ border: "none", marginTop: "20px" }}
+                >
+                  <label className="checkbox" style={{ color: "#212529" }}>
+                    <input
+                      type="checkbox"
+                      name="revert_trans"
+                      checked={this.state.revert_trans === "Y" ? true : false}
+                      onChange={this.checkHandaler.bind(this)}
+                    />
+
+                    <span style={{ fontSize: "0.8rem" }}>
+                      Reverted Trancation
+                    </span>
+                  </label>
+                </div> */}
+
+                <div className="col" style={{ textAlign: "right" }}>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-default btn-small"
                     style={{ marginTop: 20 }}
+                    onClick={this.ClearData.bind(this)}
+                  >
+                    Clear
+                  </button>
+                  <button
+                    className="btn btn-primary btn-small"
+                    style={{ marginTop: 20, marginLeft: 10 }}
                     onClick={this.getDayEndProcess.bind(this)}
                   >
                     Preview
@@ -720,7 +843,6 @@ class DayEndProcess extends Component {
         <div className="row">
           <div className="col-lg-12">
             <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
-              {" "}
               <div className="portlet-body">
                 <div className="row">
                   <div
@@ -737,7 +859,8 @@ class DayEndProcess extends Component {
                           ),
                           displayTemplate: (row) => (
                             <>
-                              {this.state.posted === "N" ? (
+                              {this.state.posted === "N" &&
+                              this.state.revert_trans === "N" ? (
                                 <Tooltip title="Post to Finance">
                                   <i
                                     className="fas fa-paper-plane"
@@ -769,6 +892,7 @@ class DayEndProcess extends Component {
                               </Tooltip>
 
                               {this.state.posted === "N" &&
+                              this.state.revert_trans === "N" &&
                               (row.from_screen === "PR0004" ||
                                 row.from_screen === "SAL005") ? (
                                 <Tooltip title="Revert">

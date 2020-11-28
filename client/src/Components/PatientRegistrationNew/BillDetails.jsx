@@ -115,7 +115,7 @@ export function BillDetails({
   const [visible, setVisible] = useState(false);
   const [applyDiscount, setApplyDiscount] = useState(false);
   const { userToken } = useContext(MainContext);
-  debugger;
+
   const {
     default_nationality,
     local_vat_applicable,
@@ -235,7 +235,6 @@ export function BillDetails({
   function calculateBillDetails(billData = {}) {
     const sendingObject = { ...billData };
 
-    debugger;
     // Sheet Level Discount Nullify
     sendingObject.sheet_discount_amount = 0;
     sendingObject.sheet_discount_percentage = 0;

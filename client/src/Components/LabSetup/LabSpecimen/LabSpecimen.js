@@ -7,14 +7,14 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import {
   changeTexts,
   onchangegridcol,
   insertLabSpecimen,
-  updateLabSpecimen,  
-  UrineSpecimen
+  updateLabSpecimen,
+  UrineSpecimen,
 } from "./LabSpecimenEvents";
 
 import GlobalVariables from "../../../utils/GlobalVariables";
@@ -32,7 +32,7 @@ class LabSpecimen extends Component {
       description: "",
       storage_type: null,
       urine_specimen: "N",
-      urineSpecimen: false
+      urineSpecimen: false,
     };
     this.baseState = this.state;
   }
@@ -41,7 +41,7 @@ class LabSpecimen extends Component {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
     if (
       this.props.labspecimen === undefined ||
@@ -53,8 +53,8 @@ class LabSpecimen extends Component {
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",
-          mappingName: "labspecimen"
-        }
+          mappingName: "labspecimen",
+        },
       });
     }
   }
@@ -73,15 +73,15 @@ class LabSpecimen extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Specimen Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "description",
               value: this.state.description,
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
 
@@ -89,7 +89,7 @@ class LabSpecimen extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Select Storage Type",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "storage_type",
@@ -98,9 +98,9 @@ class LabSpecimen extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.FORMAT_STORAGE_TYPE
+                data: GlobalVariables.FORMAT_STORAGE_TYPE,
               },
-              onChange: changeTexts.bind(this, this)
+              onChange: changeTexts.bind(this, this),
             }}
           />
           <div className="col-3" style={{ marginTop: 20 }}>
@@ -140,7 +140,7 @@ class LabSpecimen extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Specimen Name" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -149,30 +149,33 @@ class LabSpecimen extends Component {
                               className: "txt-fld",
                               name: "SpeDescription",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
+                                onChange: onchangegridcol.bind(this, this, row),
                               },
                               others: {
                                 errormessage: "Description - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
+                      others: {
+                        minWidth: 500,
+                      },
                     },
                     {
                       fieldName: "storage_type",
                       label: (
                         <AlgaehLabel label={{ fieldName: "storage_type" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.storage_type === "N"
                           ? "Normal"
                           : row.storage_type === "F"
                           ? "Frozen"
                           : "Refrigerate";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             selector={{
@@ -182,28 +185,28 @@ class LabSpecimen extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STORAGE_TYPE
+                                data: GlobalVariables.FORMAT_STORAGE_TYPE,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Storage Type - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 200 }
+                      others: { maxWidth: 200 },
                     },
                     {
                       fieldName: "urine_specimen",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Urine Specimen" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.urine_specimen === "N" ? "No" : "Yes";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -214,31 +217,31 @@ class LabSpecimen extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
+                                data: GlobalVariables.FORMAT_YESNO,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage:
                                   "Urine Specimen - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 100 }
+                      others: { maxWidth: 100 },
                     },
                     {
                       fieldName: "created_by",
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_by" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
+                                (f) => f.algaeh_d_app_user_id === row.created_by
                               );
 
                         return (
@@ -249,12 +252,12 @@ class LabSpecimen extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
+                                (f) => f.algaeh_d_app_user_id === row.created_by
                               );
 
                         return (
@@ -265,24 +268,24 @@ class LabSpecimen extends Component {
                           </span>
                         );
                       },
-                      others: { maxWidth: 150 }
+                      others: { maxWidth: 150 },
                     },
                     {
                       fieldName: "created_date",
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      others: { maxWidth: 100 }
+                      others: { maxWidth: 100 },
                       //disabled: true
                     },
                     {
@@ -290,12 +293,12 @@ class LabSpecimen extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "inv_status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.specimen_status === "A"
                           ? "Active"
                           : "Inactive";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -306,38 +309,38 @@ class LabSpecimen extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
+                                data: GlobalVariables.FORMAT_STATUS,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage:
                                   "Specimen Status - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
                       },
-                      others: { maxWidth: 100 }
-                    }
+                      others: { maxWidth: 100 },
+                    },
                   ]}
                   keyId="hims_d_lab_section_id"
                   dataSource={{
                     data:
                       this.props.labspecimen === undefined
                         ? []
-                        : this.props.labspecimen
+                        : this.props.labspecimen,
                   }}
                   isEditable={true}
                   actions={{
-                    allowDelete: false
+                    allowDelete: false,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //onDelete: deleteLabSpecimen.bind(this, this),
-                    onEdit: row => {},
-                    onDone: updateLabSpecimen.bind(this, this)
+                    onEdit: (row) => {},
+                    onDone: updateLabSpecimen.bind(this, this),
                   }}
                 />
               </div>
@@ -352,22 +355,19 @@ class LabSpecimen extends Component {
 function mapStateToProps(state) {
   return {
     labspecimen: state.labspecimen,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLabSpecimen: AlgaehActions
+      getLabSpecimen: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LabSpecimen)
+  connect(mapStateToProps, mapDispatchToProps)(LabSpecimen)
 );

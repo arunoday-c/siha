@@ -67,3 +67,26 @@ export function ApproveReject(input) {
     }
   });
 }
+
+export function LoadVoucherData(input) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/voucher/getVouchersDetailsToAdjust",
+        method: "GET",
+        module: "finance",
+        data: input,
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}

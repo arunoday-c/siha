@@ -301,7 +301,8 @@ class LabInvestigation extends Component {
                             );
                           },
                           others: {
-                            minWidth: 400,
+                            minWidth: 200,
+                            style: { textAlign: "left" },
                           },
                         },
                         {
@@ -315,9 +316,13 @@ class LabInvestigation extends Component {
                             return (
                               <span>
                                 {row.analyte_report_group === "M"
-                                  ? "Microscopic"
+                                  ? "Microscopic Examination"
                                   : row.analyte_report_group === "P"
                                   ? "Physical Appearance"
+                                  : row.analyte_report_group === "D"
+                                  ? "Differential Leukocyte Count"
+                                  : row.analyte_report_group === "C"
+                                  ? "Chemical Examination"
                                   : "None"}
                               </span>
                             );
@@ -346,6 +351,10 @@ class LabInvestigation extends Component {
                                 }}
                               />
                             );
+                          },
+                          others: {
+                            minWidth: 200,
+                            style: { textAlign: "left" },
                           },
                         },
                       ]}
