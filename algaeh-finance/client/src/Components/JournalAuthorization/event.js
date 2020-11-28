@@ -67,3 +67,24 @@ export function ApproveReject(input) {
     }
   });
 }
+export function getCostCentersForVoucher(input) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_masters/getCostCentersForVoucher",
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}

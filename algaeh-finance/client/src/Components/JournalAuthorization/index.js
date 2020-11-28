@@ -14,6 +14,7 @@ import {
 } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import Details from "./details";
+import editVoucher from "./editVoucher";
 import {
   LoadVouchersToAuthorize,
   ApproveReject,
@@ -24,9 +25,10 @@ import { getAmountFormart } from "../../utils/GlobalFunctions";
 const { confirm } = Modal;
 let rejectText = "";
 let finance_voucher_header_id = "";
-export default memo(function(props) {
+export default memo(function (props) {
   const [data, setData] = useState([]);
   const [visible, setVisibale] = useState(false);
+  const [vouchervisible, setVoucherVisibale] = useState(false);
   const [rowDetails, setRowDetails] = useState([]);
   const [voucherNo, setVoucherNo] = useState("");
   const [level, setLevel] = useState("1");
@@ -174,6 +176,13 @@ export default memo(function(props) {
       });
     }
 
+    function openVoucherEdit(e) {
+      debugger
+      // finance_voucher_header_id = record.finance_voucher_header_id;
+      setVoucherNo(record.voucher_no);
+      setVoucherVisibale(true);
+    }
+
     function generateJVReport(e) {
       algaehApiCall({
         uri: "/report",
@@ -187,15 +196,15 @@ export default memo(function(props) {
           report: {
 
             // enum('journal','contra','receipt','payment','sales','purchase','credit_note','debit_note','expense_voucher')
-            reportName: record.voucher_type === "journal" ? "JVReport_journal" 
-            : record.voucher_type === "contra" ? "JVReport_contra" 
-            : record.voucher_type === "receipt" ? "JVReport_receipt" 
-            : record.voucher_type === "payment" ? "JVReport_payment" 
-            : record.voucher_type === "sales" ? "JVReport_sales" 
-            : record.voucher_type === "purchase" ? "JVReport_purchase" 
-            : record.voucher_type === "credit_note" ? "JVReport_creditNote" 
-            : record.voucher_type === "debit_note" ? "JVReport_debitNote" 
-            : "JVReport_expense",
+            reportName: record.voucher_type === "journal" ? "JVReport_journal"
+              : record.voucher_type === "contra" ? "JVReport_contra"
+                : record.voucher_type === "receipt" ? "JVReport_receipt"
+                  : record.voucher_type === "payment" ? "JVReport_payment"
+                    : record.voucher_type === "sales" ? "JVReport_sales"
+                      : record.voucher_type === "purchase" ? "JVReport_purchase"
+                        : record.voucher_type === "credit_note" ? "JVReport_creditNote"
+                          : record.voucher_type === "debit_note" ? "JVReport_debitNote"
+                            : "JVReport_expense",
             // pageOrentation: "landscape",
             reportParams: [
               {
@@ -240,9 +249,18 @@ export default memo(function(props) {
             {/* <i className="fas fa-thumbs-up" onClick={approve}></i><i className="fas fa-thumbs-down" onClick={reject}></i> */}
           </>
         ) : record.auth_status === "A" ? (
-          <span>
-            <i className="fas fa-print" onClick={generateJVReport}></i>
-          </span>
+          <>
+            <Tooltip title="Print">
+              <span onClick={generateJVReport}>
+                <i className="fas fa-print" ></i>
+              </span>
+            </Tooltip>
+            <Tooltip title="Edit Voucher">
+              <span onClick={openVoucherEdit}>
+                <i className="fas fa-pen"></i>
+              </span>
+            </Tooltip>
+          </>
         ) : (
               "----"
             )}
@@ -372,6 +390,8 @@ export default memo(function(props) {
         }}
         data={rowDetails}
       />
+
+      <editVoucher visible={vouchervisible} voucherNo={voucherNo} />
       <div className="col-12">
         <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
           <AlgaehAutoComplete
@@ -523,8 +543,10 @@ export default memo(function(props) {
                             );
                           }
                         },
-                        { fieldName: "payment_date", label: "Payment Date" ,
-                        filterable: true,},
+                        {
+                          fieldName: "payment_date", label: "Payment Date",
+                          filterable: true,
+                        },
                         // ...paymentTemplates,
                         /* Commented paymentTemplates there is no condition we can use directly   */
                         // {
@@ -553,8 +575,10 @@ export default memo(function(props) {
                             );
                           }
                         },
-                        { fieldName: "narration", label: "Narration",
-                          filterable: true, },
+                        {
+                          fieldName: "narration", label: "Narration",
+                          filterable: true,
+                        },
                         {
                           fieldName: "entered_by",
                           label: "Enterd By",
