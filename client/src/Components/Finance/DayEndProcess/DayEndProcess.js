@@ -4,7 +4,7 @@ import _ from "lodash";
 import "./day_end_prc.scss";
 
 import {
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
   // AlagehAutoComplete,
   AlagehFormGroup,
@@ -15,10 +15,14 @@ import moment from "moment";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
+  AlgaehTable,
   MainContext,
   Modal,
   AlgaehButton,
   Tooltip,
+  persistStateOnBack,
+  persistStageOnGet,
+  persistStorageOnRemove,
 } from "algaeh-react-components";
 import swal from "sweetalert2";
 import TransationDetails from "./TransationDetails";
@@ -95,60 +99,69 @@ class DayEndProcess extends Component {
       posted: "N",
       module_id: null,
       screen_code: null,
+      persistence: null,
     };
     this.selectedDayEndIds = "";
   }
 
   static contextType = MainContext;
   componentDidMount() {
-    const userToken = this.context.userToken;
+    (async () => {
+      const records = await persistStageOnGet();
 
-    const { decimal_places, symbol_position, currency_symbol } = userToken;
+      if (records) {
+        this.setState({ ...records });
+        persistStorageOnRemove();
+      } else {
+        const userToken = this.context.userToken;
 
-    const currency = {
-      decimal_places,
-      addSymbol: false,
-      symbol_position,
-      currency_symbol,
-    };
-    const params = new URLSearchParams(this.props.location?.search);
-    debugger;
-    if (params?.get("from_date")) {
-      this.setState({
-        from_date: moment(params?.get("from_date"))._d, //,params?.get("from_date"),
-      });
-    }
-    if (params?.get("to_date")) {
-      this.setState(
-        {
-          to_date: moment(params?.get("to_date"))._d, //params?.get("to_date"),
-          currency: currency,
-        },
-        () => this.getDayEndProcess(this)
-      );
-    }
+        const { decimal_places, symbol_position, currency_symbol } = userToken;
 
-    if (this.props.location.state) {
-      algaehApiCall({
-        uri: "/finance/getDayEndData",
-        data: {
-          child_id: this.props.location.state.data.finance_account_child_id,
-        },
-        method: "GET",
-        module: "finance",
-        onSuccess: (response) => {
-          this.setState({ dayEnd: response.data.result });
-        },
-        onCatch: (error) => {
-          swalMessage({ title: error, type: "error" });
-        },
-      });
-    }
+        const currency = {
+          decimal_places,
+          addSymbol: false,
+          symbol_position,
+          currency_symbol,
+        };
+        const params = new URLSearchParams(this.props.location?.search);
+
+        if (params?.get("from_date")) {
+          this.setState({
+            from_date: moment(params?.get("from_date"))._d, //,params?.get("from_date"),
+          });
+        }
+        if (params?.get("to_date")) {
+          this.setState(
+            {
+              to_date: moment(params?.get("to_date"))._d, //params?.get("to_date"),
+              currency: currency,
+            },
+            () => this.getDayEndProcess(this)
+          );
+        }
+
+        if (this.props.location.state) {
+          algaehApiCall({
+            uri: "/finance/getDayEndData",
+            data: {
+              child_id: this.props.location.state.data.finance_account_child_id,
+            },
+            method: "GET",
+            module: "finance",
+            onSuccess: (response) => {
+              this.setState({ dayEnd: response.data.result });
+            },
+            onCatch: (error) => {
+              swalMessage({ title: error, type: "error" });
+            },
+          });
+        }
+      }
+    })();
   }
 
   getDayEndProcess() {
     try {
-      debugger;
       let inputObj = { posted: this.state.posted };
       if (this.state.screen_code !== null) {
         inputObj.screen_code = this.state.screen_code;
@@ -275,6 +288,7 @@ class DayEndProcess extends Component {
     }
   }
   DrillDownScree(row) {
+    persistStateOnBack(this.state, true);
     if (
       row.from_screen === "FD0002" ||
       row.from_screen === "BL0001" ||
@@ -323,6 +337,57 @@ class DayEndProcess extends Component {
         `/PurchaseReturnEntry?purchase_return_number=${row.document_number}`
       );
     }
+
+    // persistStateOnBack(this.state, () => {
+    //   if (
+    //     row.from_screen === "FD0002" ||
+    //     row.from_screen === "BL0001" ||
+    //     row.from_screen === "BL0002"
+    //   ) {
+    //     // Billing
+    //     this.props.history.push(`/OPBilling?bill_code=${row.document_number}`);
+    //   } else if (row.from_screen === "BL0003") {
+    //     // Billing
+    //     this.props.history.push(
+    //       `/OPBillCancellation?bill_cancel_number=${row.document_number}`
+    //     );
+    //   } else if (row.from_screen === "INV0009") {
+    //     // Inventory Transfer
+    //     this.props.history.push(
+    //       `/InvTransferEntry?transfer_number=${row.document_number}`
+    //     );
+    //   } else if (row.from_screen === "INV0007") {
+    //     // Inventory Consumorion
+    //     this.props.history.push(
+    //       `/InvConsumptionEntry?consumption_number=${row.document_number}`
+    //     );
+    //   } else if (row.from_screen === "SAL005") {
+    //     // Sales Invoice
+    //     this.props.history.push(
+    //       `/SalesInvoice?invoice_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
+    //     );
+    //   } else if (row.from_screen === "SAL008") {
+    //     //Sales Return
+    //     this.props.history.push(
+    //       `/SalesReturnEntry?sales_return_number=${row.document_number}`
+    //     );
+    //   } else if (row.from_screen === "PR0003") {
+    //     // Delivery Note
+    //     this.props.history.push(
+    //       `/DeliveryNoteEntry?delivery_note_number=${row.document_number}`
+    //     );
+    //   } else if (row.from_screen === "PR0004") {
+    //     //Receipt Entry
+    //     this.props.history.push(
+    //       `/ReceiptEntry?grn_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
+    //     );
+    //   } else if (row.from_screen === "PR0006") {
+    //     //Purchase Return
+    //     this.props.history.push(
+    //       `/PurchaseReturnEntry?purchase_return_number=${row.document_number}`
+    //     );
+    //   }
+    // });
   }
   onOpenPreviewPopUP(row, that) {
     try {
@@ -397,7 +462,6 @@ class DayEndProcess extends Component {
   }
 
   CloseTransationDetail(e) {
-    debugger;
     this.setState(
       {
         openPopup: false,
@@ -405,7 +469,6 @@ class DayEndProcess extends Component {
         finance_day_end_header_id: null,
       },
       () => {
-        debugger;
         this.getDayEndProcess(this);
       }
     );
@@ -664,7 +727,165 @@ class DayEndProcess extends Component {
                     className="col-lg-12 customCheckboxGrid"
                     id="dayEndProcessCntr"
                   >
-                    <AlgaehDataGrid
+                    <AlgaehTable
+                      id="dayEndProcessGrid"
+                      columns={[
+                        {
+                          fieldName: "select_id",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Select" }} />
+                          ),
+                          displayTemplate: (row) => (
+                            <>
+                              {this.state.posted === "N" ? (
+                                <Tooltip title="Post to Finance">
+                                  <i
+                                    className="fas fa-paper-plane"
+                                    onClick={() => {
+                                      this.postDayEndProcess(
+                                        row.finance_day_end_header_id
+                                      );
+                                    }}
+                                  ></i>
+                                </Tooltip>
+                              ) : null}
+
+                              <Tooltip title="View Details">
+                                <i
+                                  className="fas fa-eye"
+                                  onClick={() => {
+                                    this.onOpenPreviewPopUP(row, this);
+                                  }}
+                                ></i>
+                              </Tooltip>
+                              <Tooltip title="DrillDown">
+                                <i
+                                  className="fa fa-exchange-alt"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    this.DrillDownScree(row, this);
+                                  }}
+                                ></i>
+                              </Tooltip>
+
+                              {this.state.posted === "N" &&
+                              (row.from_screen === "PR0004" ||
+                                row.from_screen === "SAL005") ? (
+                                <Tooltip title="Revert">
+                                  <i
+                                    className="fa fa-share fa-flip-horizontal"
+                                    aria-hidden="true"
+                                    onClick={() =>
+                                      this.setState({
+                                        revert_visible: true,
+                                        selected_data: row,
+                                      })
+                                    }
+                                    // onClick={this.RejectProcess.bind(this, row)}
+                                  />
+                                </Tooltip>
+                              ) : null}
+                            </>
+                          ),
+                          others: {
+                            width: 170,
+                            maxWidth: 200,
+                            filterable: false,
+                          },
+                        },
+                        {
+                          fieldName: "document_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Document No." }}
+                            />
+                          ),
+                          disabled: true,
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "invoice_no",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Invoice No." }}
+                            />
+                          ),
+                          disabled: true,
+                          filterable: true,
+                        },
+
+                        {
+                          fieldName: "transaction_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Document  Date" }}
+                            />
+                          ),
+                          filterable: true,
+                          // others: { filterable: false },
+                        },
+
+                        {
+                          fieldName: "voucher_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Voucher Type" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return _.startCase(
+                              row.voucher_type ? row.voucher_type : ""
+                            );
+                          },
+                          disabled: true,
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "amount",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                          ),
+
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {GetAmountFormart(row.amount, {
+                                  appendSymbol: false,
+                                })}
+                              </span>
+                            );
+                          },
+                          others: { filterable: false },
+                        },
+
+                        {
+                          fieldName: "screen_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "From Document" }}
+                            />
+                          ),
+                          disabled: true,
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "narration",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                          ),
+                          disabled: false,
+                          others: { filterable: true },
+                        },
+                      ]}
+                      // rowUniqueId="finance_day_end_header_id"
+                      data={this.state.dayEnd}
+                      // height="80vh"
+                      pagination={true}
+                      isFilterable={true}
+                      persistence={this.state.persistence}
+                      // paging={{ page: 3, rowsPerPage: 20 }}
+                    />
+                    {/* <AlgaehDataGrid
                       id="dayEndProcessGrid"
                       columns={[
                         {
@@ -728,51 +949,6 @@ class DayEndProcess extends Component {
                             filterable: false,
                           },
                         },
-
-                        // {
-                        //   fieldName: "select_id",
-                        //   label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
-                        //   displayTemplate: row => (
-                        //     <>
-                        //       {this.state.posted === "N" ? (
-                        //         <span style={{ padding: 6 }}>
-                        //           <input
-                        //             type="checkbox"
-                        //             onClick={e => {
-                        //               if (e.target.checked === true) {
-                        //                 this.selectedDayEndIds.push(
-                        //                   row.finance_day_end_header_id
-                        //                 );
-                        //               } else {
-                        //                 const itemExists = this.selectedDayEndIds.findIndex(
-                        //                   f => f === row.finance_day_end_header_id
-                        //                 );
-                        //                 this.selectedDayEndIds.splice(
-                        //                   itemExists,
-                        //                   1
-                        //                 );
-                        //               }
-                        //             }}
-                        //           />
-                        //           {/* <label for="">gfgh</label> */}
-                        //         </span>
-                        //       ) : null}
-
-                        //       <i
-                        //         className="fas fa-eye"
-                        //         onClick={() => {
-                        //           this.onOpenPreviewPopUP(row, this);
-                        //           // this.setState({openPopup:true});
-                        //         }}
-                        //       ></i>
-                        //     </>
-                        //   ),
-                        //   others: {
-                        //     maxWidth: 80,
-                        //     filterable: false
-                        //   }
-                        // },
-
                         {
                           fieldName: "document_number",
                           label: (
@@ -815,7 +991,7 @@ class DayEndProcess extends Component {
                             );
                           },
                           disabled: true,
-                          // others: { filterable: false }
+                         
                         },
                         {
                           fieldName: "amount",
@@ -843,7 +1019,7 @@ class DayEndProcess extends Component {
                             />
                           ),
                           disabled: true,
-                          // others: { filterable: false }
+                       
                         },
                         {
                           fieldName: "narration",
@@ -860,8 +1036,8 @@ class DayEndProcess extends Component {
                       }}
                       isEditable={false}
                       filter={true}
-                      paging={{ page: 0, rowsPerPage: 20 }}
-                    />
+                      paging={{ page: 3, rowsPerPage: 20 }}
+                    /> */}
                   </div>
                 </div>
               </div>
