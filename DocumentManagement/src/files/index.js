@@ -1,5 +1,4 @@
 import path from "path";
-import busboy from "connect-busboy";
 import fs from "fs-extra";
 import contract from "../Model/contractDocs";
 // import formidable from "formidable";
@@ -11,6 +10,9 @@ export function uploadFile(req, res, next) {
       ? JSON.parse(req.headers["x-file-details"])
       : {};
     const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
+    if (!fs.pathExistsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
     req.pipe(req.busboy);
 
     req.busboy.on("field", function (key, value) {
