@@ -2,7 +2,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
 
@@ -12,7 +12,7 @@ const executePDF = function executePDFMethod(options) {
       const params = options.args.reportParams;
 
       const decimal_places = options.args.crypto.decimal_places;
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -30,9 +30,9 @@ const executePDF = function executePDFMethod(options) {
           .executeQuery({
             query: `SELECT cost_center_type  FROM finance_options limit 1;`,
             values: [input.head_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             if (result.length > 0) {
               //ST-cost center
               // if (
@@ -63,9 +63,9 @@ const executePDF = function executePDFMethod(options) {
                   inner join cte on H.parent_acc_id = cte.finance_account_head_id    
                   )select * from cte ) ${strQry}   group by VD.payment_date,VD.child_id,voucher_no  order by VD.payment_date;`,
                   values: [input.head_id],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(final_result => {
+                .then((final_result) => {
                   let total_debit = parseFloat(0).toFixed(decimal_places);
                   let total_credit = parseFloat(0).toFixed(decimal_places);
                   if (final_result.length > 0) {
@@ -74,7 +74,7 @@ const executePDF = function executePDFMethod(options) {
                     // if (input.parent_id == 1 || input.parent_id == 5) {
                     //   //DR
                     // }
-                    final_result.forEach(item => {
+                    final_result.forEach((item) => {
                       total_credit = (
                         parseFloat(total_credit) +
                         parseFloat(item.credit_amount)
@@ -84,45 +84,46 @@ const executePDF = function executePDFMethod(options) {
                       ).toFixed(decimal_places);
                     });
 
-                    const dateWiseGroup = _.chain(final_result)
-                      .groupBy(g => g.payment_date)
-                      .value();
+                    // const dateWiseGroup = _.chain(final_result)
+                    //   .groupBy((g) => g.payment_date)
+                    //   .value();
 
-                    const outputArray = [];
+                    // const outputArray = [];
 
-                    for (let i in dateWiseGroup) {
-                      dateWiseGroup[i][0]["transaction_date"] = i;
-                      outputArray.push(...dateWiseGroup[i]);
-                    }
-
+                    // for (let i in dateWiseGroup) {
+                    //   dateWiseGroup[i][0]["transaction_date"] = i;
+                    //   outputArray.push(...dateWiseGroup[i]);
+                    // }
+                    const outputArray = final_result;
+                    console.log("outputArray======", outputArray);
                     resolve({
                       details: outputArray,
                       total_debit: total_debit,
-                      total_credit: total_credit
+                      total_credit: total_credit,
                     });
                   } else {
                     resolve({
-                      details: []
+                      details: [],
                     });
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   options.mysql.releaseConnection();
                   next(e);
                 });
             } else {
               resolve({
-                details: []
+                details: [],
               });
             }
           })
-          .catch(e => {
+          .catch((e) => {
             options.mysql.releaseConnection();
             next(e);
           });
       } else {
         resolve({
-          details: []
+          details: [],
         });
       }
     } catch (e) {

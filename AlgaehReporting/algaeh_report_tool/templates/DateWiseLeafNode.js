@@ -75,7 +75,6 @@ const executePDF = function executePDFMethod(options) {
               })
               .then((output) => {
                 let result = output[0];
-                console.log("result", result)
                 let opening_balance = parseFloat(0).toFixed(decimal_places);
                 let closing_balance = parseFloat(0).toFixed(decimal_places);
                 options.mysql.releaseConnection();
