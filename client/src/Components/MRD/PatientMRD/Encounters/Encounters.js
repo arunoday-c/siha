@@ -931,14 +931,58 @@ class Encounters extends Component {
                             id="investigation-grid"
                             columns={[
                               {
+                                fieldName: "service_type_id",
+                                label: "Service Type",
+                                displayTemplate: (row) => {
+                                  return row.service_type_id === 5 ? (
+                                    <span>Lab</span>
+                                  ) : row.service_type_id === 11 ? (
+                                    <span>Radiology</span>
+                                  ) : null;
+                                },
+                              },
+                              {
                                 fieldName: "service_name",
                                 label: "Service Name",
                               },
+                              // {
+                              //   fieldName: "lab_ord_status",
+                              //   label: "Lab Order Status",
+                              //   displayTemplate: (row) => {
+                              //     return (
+                              //       <span>
+                              //         {row.lab_ord_status === "O"
+                              //           ? "Ordered"
+                              //           : row.lab_ord_status === "CL"
+                              //           ? "Specimen Collected"
+                              //           : row.lab_ord_status === "CN"
+                              //           ? "Test Cancelled"
+                              //           : row.lab_ord_status === "CF"
+                              //           ? "Result Confirmed "
+                              //           : row.lab_ord_status === "V"
+                              //           ? "Result Validated"
+                              //           : "----"}
+                              //       </span>
+                              //     );
+                              //   },
+                              // },
+                              // {
+                              //   fieldName: "lab_billed",
+                              //   label: "Lab Billed",
+                              //   displayTemplate: (row) => {
+                              //     return (
+                              //       <span>
+                              //         {row.lab_billed === "Y" ? "Yes" : "----"}
+                              //       </span>
+                              //     );
+                              //   },
+                              // },
+
                               {
-                                fieldName: "lab_ord_status",
-                                label: "Lab Order Status",
+                                fieldName: "hims_f_ordered_services_id",
+                                label: "Status",
                                 displayTemplate: (row) => {
-                                  return (
+                                  return row.service_type_id === 5 ? (
                                     <span>
                                       {row.lab_ord_status === "O"
                                         ? "Ordered"
@@ -952,25 +996,7 @@ class Encounters extends Component {
                                         ? "Result Validated"
                                         : "----"}
                                     </span>
-                                  );
-                                },
-                              },
-                              {
-                                fieldName: "lab_billed",
-                                label: "Lab Billed",
-                                displayTemplate: (row) => {
-                                  return (
-                                    <span>
-                                      {row.lab_billed === "Y" ? "Yes" : "----"}
-                                    </span>
-                                  );
-                                },
-                              },
-                              {
-                                fieldName: "rad_ord_status",
-                                label: "Radiology Order Status",
-                                displayTemplate: (row) => {
-                                  return (
+                                  ) : row.service_type_id === 11 ? (
                                     <span>
                                       {row.rad_ord_status === "O"
                                         ? "Ordered"
@@ -986,23 +1012,47 @@ class Encounters extends Component {
                                         ? "Result Available"
                                         : "----"}
                                     </span>
-                                  );
+                                  ) : null;
                                 },
                               },
-                              {
-                                fieldName: "rad_billed",
-                                label: "Radiology Billed",
-                                displayTemplate: (row) => {
-                                  return (
-                                    <span>
-                                      {row.rad_billed === "Y" ? "Yes" : "----"}
-                                    </span>
-                                  );
-                                },
-                              },
+
+                              // {
+                              //   fieldName: "rad_ord_status",
+                              //   label: "Radiology Order Status",
+                              //   displayTemplate: (row) => {
+                              //     return (
+                              //       <span>
+                              //         {row.rad_ord_status === "O"
+                              //           ? "Ordered"
+                              //           : row.rad_ord_status === "S"
+                              //           ? "Scheduled"
+                              //           : row.rad_ord_status === "UP"
+                              //           ? "Under Process"
+                              //           : row.rad_ord_status === "CN"
+                              //           ? "Cancelled"
+                              //           : row.rad_ord_status === "RC"
+                              //           ? "Result Confirmed"
+                              //           : row.rad_ord_status === "RA"
+                              //           ? "Result Available"
+                              //           : "----"}
+                              //       </span>
+                              //     );
+                              //   },
+                              // },
+                              // {
+                              //   fieldName: "rad_billed",
+                              //   label: "Radiology Billed",
+                              //   displayTemplate: (row) => {
+                              //     return (
+                              //       <span>
+                              //         {row.rad_billed === "Y" ? "Yes" : "----"}
+                              //       </span>
+                              //     );
+                              //   },
+                              // },
                               {
                                 fieldName: "hims_f_ordered_services_id",
-                                label: "View Report",
+                                label: "Internal Report",
                                 displayTemplate: (row) => {
                                   return row.service_type_id === 5 &&
                                     row.lab_ord_status === "V" ? (
@@ -1033,11 +1083,13 @@ class Encounters extends Component {
                                   ) : null;
                                 },
                               },
+
                               {
-                                fieldName: "action",
-                                label: "Attachments",
+                                fieldName: "hims_f_ordered_services_id",
+                                label: "External Report",
                                 displayTemplate: (row) => {
-                                  return row.lab_billed === "Y" ? (
+                                  return row.service_type_id === 5 &&
+                                    row.lab_ord_status === "V" ? (
                                     <span>
                                       <i
                                         className="fas fa-paperclip"
@@ -1046,8 +1098,6 @@ class Encounters extends Component {
                                           this.setState(
                                             {
                                               openAttachmentsModal: true,
-                                              // currentRow: row,
-                                              // lab_id_number: row.lab_id_number,
                                             },
 
                                             this.getSavedDocument.bind(
@@ -1058,32 +1108,10 @@ class Encounters extends Component {
                                         }}
                                       />
                                     </span>
-                                  ) : (
-                                    "----"
-                                  );
-                                },
-                              },
-                              {
-                                fieldName: "radiology_attachments",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Radiology Attachments",
-                                    }}
-                                  />
-                                ),
-                                displayTemplate: (row) => {
-                                  return row.rad_billed === "Y" ? (
+                                  ) : row.service_type_id === 11 &&
+                                    row.rad_ord_status === "RA" ? (
                                     <span>
                                       <i
-                                        // style={{
-                                        //   pointerEvents:
-                                        //     row.status === "O"
-                                        //       ? ""
-                                        //       : row.sample_status === "N"
-                                        //       ? "none"
-                                        //       : "",
-                                        // }}
                                         className="fas fa-paperclip"
                                         aria-hidden="true"
                                         onClick={(e) => {
@@ -1097,11 +1125,78 @@ class Encounters extends Component {
                                         }}
                                       />
                                     </span>
-                                  ) : (
-                                    "----"
-                                  );
+                                  ) : null;
                                 },
                               },
+                              // {
+                              //   fieldName: "action",
+                              //   label: "Attachments",
+                              //   displayTemplate: (row) => {
+                              //     return row.lab_billed === "Y" ? (
+                              //       <span>
+                              //         <i
+                              //           className="fas fa-paperclip"
+                              //           aria-hidden="true"
+                              //           onClick={() => {
+                              //             this.setState(
+                              //               {
+                              //                 openAttachmentsModal: true,
+                              //                 // currentRow: row,
+                              //                 // lab_id_number: row.lab_id_number,
+                              //               },
+
+                              //               this.getSavedDocument.bind(
+                              //                 this,
+                              //                 row
+                              //               )
+                              //             );
+                              //           }}
+                              //         />
+                              //       </span>
+                              //     ) : (
+                              //       "----"
+                              //     );
+                              //   },
+                              // },
+                              // {
+                              //   fieldName: "radiology_attachments",
+                              //   label: (
+                              //     <AlgaehLabel
+                              //       label={{
+                              //         forceLabel: "Radiology Attachments",
+                              //       }}
+                              //     />
+                              //   ),
+                              //   displayTemplate: (row) => {
+                              //     return row.rad_billed === "Y" ? (
+                              //       <span>
+                              //         <i
+                              //           // style={{
+                              //           //   pointerEvents:
+                              //           //     row.status === "O"
+                              //           //       ? ""
+                              //           //       : row.sample_status === "N"
+                              //           //       ? "none"
+                              //           //       : "",
+                              //           // }}
+                              //           className="fas fa-paperclip"
+                              //           aria-hidden="true"
+                              //           onClick={(e) => {
+                              //             this.setState(
+                              //               {
+                              //                 openAttachmentsModal: true,
+                              //               },
+
+                              //               this.getDocuments.bind(this, row)
+                              //             );
+                              //           }}
+                              //         />
+                              //       </span>
+                              //     ) : (
+                              //       "----"
+                              //     );
+                              //   },
+                              // },
                             ]}
                             keyId="index"
                             dataSource={{
