@@ -8,10 +8,21 @@ const { Panel } = Collapse;
 export default memo(function ({ details }) {
   const { visit_date, doc_name, mlc_accident_reg_no, list } = details;
   const [selectAll, setSelectAll] = useState(false);
+  const [listOfDetails, setListOfDetails] = useState(list);
   function changeSelectStatus(event) {
     const checkState = event.target.checked;
     setSelectAll(checkState);
+    const test = list
+      .filter((item) => {
+        return item.checked === undefined;
+      })
+      .map((item) => {
+        return { ...item, checked: item.status === "V" ? checkState : false };
+      });
+    setListOfDetails(test);
+    // setCheckState(event.target.checked);
   }
+
   function showReport() {
     let sentItems = [];
 
@@ -87,7 +98,7 @@ export default memo(function ({ details }) {
               <th>
                 {" "}
                 <Checkbox
-                  defaultChecked={selectAll}
+                  checked={selectAll}
                   onChange={changeSelectStatus}
                 ></Checkbox>
               </th>
@@ -99,7 +110,7 @@ export default memo(function ({ details }) {
             </tr>
           </thead>
           <tbody>
-            {list.map((item, index) => {
+            {listOfDetails.map((item, index) => {
               const {
                 status,
                 service_name,
@@ -111,7 +122,11 @@ export default memo(function ({ details }) {
               return (
                 <tr key={index}>
                   <td width="10">
-                    <CheckBoxCheck item={item} />
+                    <CheckBoxCheck
+                      item={item}
+                      setSelectAll={setSelectAll}
+                      items={listOfDetails}
+                    />
                   </td>
                   <td style={{ textAlign: "left", fontWeight: "bold" }}>
                     {service_name}
@@ -147,7 +162,7 @@ export default memo(function ({ details }) {
   );
 });
 
-function CheckBoxCheck({ item }) {
+function CheckBoxCheck({ item, setSelectAll, items }) {
   const [checkState, setCheckState] = useState(item.checked);
   useEffect(() => {
     setCheckState(item.checked);
@@ -157,11 +172,20 @@ function CheckBoxCheck({ item }) {
     const tarCheck = event.target.checked;
     item.checked = tarCheck;
     setCheckState(tarCheck);
+    const hasUncheck = items.filter((item) => {
+      return item.checked === false;
+    });
+    if (hasUncheck.length > 0) {
+      setSelectAll(false);
+    } else {
+      setSelectAll(true);
+    }
   }
   return (
     <Checkbox
       disabled={item.status !== "V" ? true : false}
-      defaultChecked={checkState}
+      name={item.hims_f_lab_order_id}
+      checked={checkState}
       onChange={onChangeHandler}
     />
   );
