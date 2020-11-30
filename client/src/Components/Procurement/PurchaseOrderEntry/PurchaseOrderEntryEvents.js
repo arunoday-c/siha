@@ -94,68 +94,106 @@ const vendortexthandle = ($this, e) => {
   ) {
     ReqData = false;
   }
+  let validate =
+    e.selected.vendor_code !== null &&
+      e.selected.contact_number !== null &&
+      e.selected.email_id_1 !== null &&
+      e.selected.address !== "" &&
+      e.selected.business_registration_no !== "" &&
+      e.selected.payment_mode !== "" &&
+      e.selected.country_id !== null &&
+      e.selected.state_id !== null
+      ? e.selected.payment_mode === "BT" ? e.selected.bank_account_no !== null &&
+        e.selected.bank_name !== "" ? true : false : true : false;
+  if (validate) {
+    let details = {
+      [name]: value,
+      vendor_name: e.selected?.vendor_name ?? name,
+      payment_terms: e.selected?.payment_terms ?? e.payment_terms,
+      vendorDetails: [e.selected],
+      ReqData: ReqData,
+    };
 
-  algaehApiCall({
-    uri: "/vendor/getVendorMaster",
-    module: "masterSettings",
-    method: "GET",
-    data: {
-      vendor_status: "A",
-      hims_d_vendor_id: value,
-    },
-    onSuccess: (result) => {
-      let records = result.data.records[0];
-
-      let validate =
-        records.vendor_code !== null &&
-          records.contact_number !== null &&
-          records.email_id_1 !== null &&
-          records.address !== "" &&
-          records.bank_account_no !== null &&
-          records.bank_name !== "" &&
-          records.business_registration_no !== "" &&
-          records.payment_mode !== "" &&
-          records.country_id !== null &&
-          records.state_id !== null
-          ? true
-          : false;
-      if (validate) {
-        let details = {
-          [name]: value,
-          vendor_name: e.selected?.vendor_name ?? name,
-          payment_terms: e.selected?.payment_terms ?? e.payment_terms,
-          vendorDetails: result.data.records,
-          ReqData: ReqData,
-        };
-
-        $this.setState(details, () => {
-          console.log("this.state.vendorDetails", $this.state.vendorDetails);
-        });
-      } else {
-        $this.setState(
-          {
-            vendorDetails: [],
-          },
-          swalMessage({
-            title: `Please Fill mandatory Details of vendor In vendor master for Vendor ${
-              e.selected?.vendor_name ?? name
-            }   `,
-            type: "error",
-          })
-        );
-
-        return;
-      }
-    },
-
-    onFailure: (error) => {
-      AlgaehLoader({ show: false });
+    $this.setState(details, () => {
+      console.log("this.state.vendorDetails", $this.state.vendorDetails);
+    });
+  } else {
+    $this.setState(
+      {
+        vendorDetails: [],
+      },
       swalMessage({
-        title: error.message,
+        title: `Please Fill mandatory Details of vendor In vendor master for Vendor ${
+          e.selected?.vendor_name ?? name
+          }   `,
         type: "error",
-      });
-    },
-  });
+      })
+    );
+
+    return;
+  }
+
+  // algaehApiCall({
+  //   uri: "/vendor/getVendorMaster",
+  //   module: "masterSettings",
+  //   method: "GET",
+  //   data: {
+  //     vendor_status: "A",
+  //     hims_d_vendor_id: value,
+  //   },
+  //   onSuccess: (result) => {
+  //     let records = result.data.records[0];
+  //     debugger
+
+  //     let validate =
+  //       records.vendor_code !== null &&
+  //         records.contact_number !== null &&
+  //         records.email_id_1 !== null &&
+  //         records.address !== "" &&
+  //         records.business_registration_no !== "" &&
+  //         records.payment_mode !== "" &&
+  //         records.country_id !== null &&
+  //         records.state_id !== null
+  //         ? true
+  //         : records.payment_mode === "BT" && records.bank_account_no !== null &&
+  //           records.bank_name !== "" ? true : false;
+  //     if (validate) {
+  //       let details = {
+  //         [name]: value,
+  //         vendor_name: e.selected?.vendor_name ?? name,
+  //         payment_terms: e.selected?.payment_terms ?? e.payment_terms,
+  //         vendorDetails: result.data.records,
+  //         ReqData: ReqData,
+  //       };
+
+  //       $this.setState(details, () => {
+  //         console.log("this.state.vendorDetails", $this.state.vendorDetails);
+  //       });
+  //     } else {
+  //       $this.setState(
+  //         {
+  //           vendorDetails: [],
+  //         },
+  //         swalMessage({
+  //           title: `Please Fill mandatory Details of vendor In vendor master for Vendor ${
+  //             e.selected?.vendor_name ?? name
+  //             }   `,
+  //           type: "error",
+  //         })
+  //       );
+
+  //       return;
+  //     }
+  //   },
+
+  //   onFailure: (error) => {
+  //     AlgaehLoader({ show: false });
+  //     swalMessage({
+  //       title: error.message,
+  //       type: "error",
+  //     });
+  //   },
+  // });
 };
 
 const poforhandle = ($this, e) => {
