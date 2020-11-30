@@ -4,12 +4,12 @@ import {
   // AlgaehButton,
   // AlgaehAutoComplete,
 } from "algaeh-react-components";
-import ByYear from "./pandLYear";
-import ByCostCenter from "./pandLCostCenter";
+// import ByYear from "./pandLYear";
+// import ByCostCenter from "./pandLCostCenter";
 import Comparision from "./comparision";
-import PnLTree from "./PnLTree";
+// import PnLTree from "./PnLTree";
 import { newAlgaehApi } from "../../../hooks";
-import { getYears } from "../../../utils/GlobalFunctions";
+// import { getYears } from "../../../utils/GlobalFunctions";
 import { handleFile } from "../FinanceReportEvents";
 import Filter from "../filter";
 import moment from "moment";
@@ -458,10 +458,10 @@ export default function PnLReport({
           </p>
         </div>
       ) : (
-        <>
-          <Content />
-        </>
-      )}
+          <>
+            <Content />
+          </>
+        )}
     </>
   );
 }
