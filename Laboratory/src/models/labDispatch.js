@@ -15,7 +15,7 @@ export function labResultDispatch(req, res, next) {
           on LO.visit_id = PV.hims_f_patient_visit_id
           inner join hims_d_services as S on S.hims_d_services_id = LO.service_id
           inner join hims_d_employee as E on E.hims_d_employee_id = PV.doctor_id
-          inner join hims_d_title as T on E.title_id = T.his_d_title_id
+          left join hims_d_title as T on E.title_id = T.his_d_title_id
            where LO.patient_id=? and PV.visit_status != 'CN' and LO.cancelled='N' and PV.hospital_id=? ;`,
         values: [patient_id, hospital_id],
         printQuery: true,
