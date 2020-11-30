@@ -846,7 +846,98 @@ ALTER TABLE `hims_f_billing_details`
 CHANGE COLUMN `teeth_number` `teeth_number` VARCHAR(100) NULL DEFAULT NULL ;
 
 
--- Merge lab reports
-insert into algaeh_d_reports(report_name,report_name_for_header,report_header_file_name) 
-values('labMerge','Visit wise lab report','labMergeHead');
--- emd
+
+-- =================================  Start Nov 22 2020 =======================================
+
+-- ******** Advance Salary Slip
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('advanceSlip', 'Advance Request Slip', '[\"hims_f_employee_advance_id\"]', 'reportHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+
+
+-- =================================  Start Nov 23 2020 =======================================
+
+-- ******** PO Revert Option
+ALTER TABLE `hims_f_procurement_po_header` 
+ADD COLUMN `is_revert` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `authorize2_date`,
+ADD COLUMN `revert_reason` VARCHAR(200) NULL AFTER `is_revert`,
+ADD COLUMN `reverted_by` INT NULL AFTER `revert_reason`,
+ADD COLUMN `reverted_date` DATETIME NULL AFTER `reverted_by`;
+
+
+ALTER TABLE `hims_f_procurement_grn_header` 
+ADD COLUMN `is_revert` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `invoice_posted`,
+ADD COLUMN `reverted_by` INT NULL DEFAULT NULL AFTER `is_revert`,
+ADD COLUMN `reverted_date` DATETIME NULL DEFAULT NULL AFTER `reverted_by`;
+
+
+
+-- =================================  Start Nov 24 2020 =======================================
+
+-- ******** Sales Invoice - Service Decimal Value Issue
+UPDATE `algaeh_d_reports` SET `report_query` = 'select H.*, D.*,S.service_name, S.arabic_service_name, SO.sales_order_number, CASE WHEN D.service_frequency=\'M\' THEN \'Monthly\' WHEN D.service_frequency=\'W\'  THEN \'Weekly\' WHEN D.service_frequency=\'D\' THEN \'Daily\'  WHEN D.service_frequency=\'H\' THEN \'Hourly\' END as service_frequency,  SO.customer_po_no, C.customer_name, C.bank_account_no, C.bank_name,  C.address, C.arabic_customer_name, C.vat_number, ROUND(D.tax_percentage, 0) as tax_percentage, D.quantity , HO.hospital_name, CASE WHEN H.is_posted=\'N\' THEN \'Invoice Not Finalized\' ELSE \'\' END as invoice_status from hims_f_sales_invoice_header H   inner join hims_f_sales_invoice_services D on H.hims_f_sales_invoice_header_id = D.sales_invoice_header_id   inner join hims_d_services S on S.hims_d_services_id = D.services_id   inner join hims_d_customer C on C.hims_d_customer_id = H.customer_id   inner join hims_d_hospital HO on HO.hims_d_hospital_id = H.hospital_id   left join hims_f_sales_order SO on SO.hims_f_sales_order_id=H.sales_order_id where invoice_number=?; select organization_name from hims_d_organization;' WHERE (`report_id` = '134');
+
+
+-- ******** Lab Merge Report Query
+insert into algaeh_d_reports(report_name,report_name_for_header,report_header_file_name) values('labMerge','Visit wise lab report','labMergeHead');
+
+-- ******** Revert From Dayend
+CREATE TABLE `finance_revert_day_end_header` (
+  `finance_revert_day_end_header_id` int NOT NULL AUTO_INCREMENT,
+  `day_end_header_id` int DEFAULT NULL,
+  `transaction_date` date NOT NULL,
+  `amount` decimal(15,4) DEFAULT NULL,
+  `voucher_type` enum('journal','contra','receipt','payment','sales','purchase','credit_note','debit_note') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note',
+  `document_number` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `document_id` int DEFAULT NULL,
+  `invoice_no` varchar(45) DEFAULT NULL,
+  `from_screen` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `narration` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `entered_by` int DEFAULT NULL,
+  `entered_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`finance_revert_day_end_header_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `finance_revert_day_end_sub_detail` (
+  `finance_revert_day_end_sub_detail_id` int NOT NULL AUTO_INCREMENT,
+  `revert_day_end_header_id` int NOT NULL,
+  `month` tinyint unsigned DEFAULT NULL,
+  `year` smallint unsigned DEFAULT NULL,
+  `payment_date` date NOT NULL,
+  `head_id` int NOT NULL,
+  `child_id` int unsigned NOT NULL,
+  `debit_amount` decimal(15,4) DEFAULT NULL,
+  `payment_type` enum('DR','CR') NOT NULL COMMENT 'DR=DEBIT,CR=CREDIT',
+  `credit_amount` decimal(15,4) DEFAULT NULL,
+  `hospital_id` int unsigned DEFAULT NULL,
+  `project_id` int DEFAULT NULL,
+  `sub_department_id` int DEFAULT NULL,
+  PRIMARY KEY (`finance_revert_day_end_sub_detail_id`),
+  KEY `finance_revert_day_end_sub_detail_fk1_idx` (`revert_day_end_header_id`),
+  CONSTRAINT `finance_revert_day_end_sub_detail_fk1` FOREIGN KEY (`revert_day_end_header_id`) REFERENCES `finance_revert_day_end_header` (`finance_revert_day_end_header_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ******** Lab Analyte reference_range_required
+ALTER TABLE `hims_d_lab_analytes` Add column reference_range_required enum('Y','N') Default 'Y';
+
+ALTER TABLE `hims_m_lab_analyte` 
+CHANGE COLUMN `analyte_report_group` `analyte_report_group` ENUM('P', 'M', 'D', 'C', 'N') NULL DEFAULT 'N' COMMENT 'P=Physical Appearance,M=Microscopic Examination,D=Differential leukocyte Count,C=Chemical Examination,N=None' ;
+
+
+
+-- =================================  Start Nov 25 2020 =======================================
+
+-- ******** Receipt Entry List New Screen
+INSERT INTO `algaeh_d_app_screens` (`algaeh_app_screens_id`, `screen_code`, `screen_name`, `page_to_redirect`, `module_id`, `other_language`, `created_date`, `updated_date`, `record_status`) VALUES ('183', 'PR0011', 'Receipt Entry List', 'ReceiptEntryList', '15', 'قائمة إدخال الإيصال', '2020-11-25 09:17:22', '2020-11-25 09:17:22', 'A');
+
+
+
+-- =================================  Start Nov 27 2020 =======================================
+
+-- ******** Added View Price List Under Security (by default inactive for all client)
+INSERT INTO `algaeh_d_app_component` (`algaeh_d_app_component_id`, `screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('214', '18', 'VEW_PRS_LST', 'View Price List', '2020-11-27 15:05:23', '2020-11-27 15:05:23', 'I');
+INSERT INTO `algaeh_d_app_component` (`algaeh_d_app_component_id`, `screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('216', '24', 'OP_VEW_PRS_LST', 'View Price List', '2020-11-27 15:05:51', '2020-11-27 15:05:51', 'I');
+
+-- ******** Leave Approval Closing Balance Issue
+ALTER TABLE `hims_f_employee_monthly_leave` 
+CHANGE COLUMN `close_balance` `close_balance` DECIMAL(10,2) NULL DEFAULT '0.00' ;
+

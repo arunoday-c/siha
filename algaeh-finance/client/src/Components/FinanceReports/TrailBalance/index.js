@@ -6,11 +6,13 @@ import { newAlgaehApi } from "../../../hooks";
 import Filter from "../filter";
 import TrailTable from "./TrailbalanceTable";
 // import TrailTree from "./TrailBalanceTree";
+import moment from "moment";
 
 export default function TrailBalance({ layout, dates, finOptions }) {
   const [type] = useState("table");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState([]);
   // const createPrintObject = useRef(undefined);
 
   // useEffect(() => {
@@ -40,7 +42,8 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [type, dates]);
 
-  async function getData(ACCOUNTS, drillDownLevel) {
+  async function getData(ACCOUNTS, drillDownLevel, dates) {
+    debugger
     const input = {
       hospital_id: finOptions.default_branch_id,
       cost_center_id: finOptions.default_cost_center_id,
@@ -85,14 +88,36 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                     type: "AC",
                     data: "LEVELS",
                     initalStates: "2"
-                  }
+                  },
+                  {
+                    className: "col-12 form-group",
+                    type: "DH|RANGE",
+                    data: "YEAR",
+                    title: "RANGE",
+                    maxDate: moment(),
+                    initalStates: [moment().startOf("month"), moment()],
+                    onChange: (selected, val, cb) => {
+                      if (filter.length > 0) {
+                        const frdt = selected[0].clone();
+                        const tdt = selected[1].clone();
+                        const previousfrom = frdt.subtract(1, "years");
+                        const previousto = tdt.subtract(1, "years");
+                        cb({
+                          PREVIOUSRANGE: [previousfrom, previousto],
+                          RANGE: selected,
+                        });
+                      } else {
+                        cb({ RANGE: selected });
+                      }
+                    },
+                  },
                 ]
               ]}
               callBack={(inputs, cb) => {
-                const { ACCOUNTS, LEVELS } = inputs;
+                const { ACCOUNTS, LEVELS, RANGE } = inputs;
 
                 setLoading(true);
-                getData(ACCOUNTS, LEVELS)
+                getData(ACCOUNTS, LEVELS, RANGE)
                   .then(() => {
                     setLoading(false);
                     cb();
@@ -107,7 +132,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
           <TrailTable
             data={data}
             layout={layout}
-            // createPrintObject={createPrintObject}
+          // createPrintObject={createPrintObject}
           />
         </>
       );
