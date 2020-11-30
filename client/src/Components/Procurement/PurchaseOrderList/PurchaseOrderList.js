@@ -50,6 +50,7 @@ class PurchaseOrderList extends Component {
   }
 
   componentDidMount() {
+    debugger
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("po_from")) {
       this.setState({
@@ -95,6 +96,26 @@ class PurchaseOrderList extends Component {
           if (result === "show") {
             bothExisits = false;
             poSelected = false;
+          }
+        }
+      );
+
+      RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
+        (result) => {
+          if (result === "show") {
+            this.setState(
+              {
+                poSelected: poSelected,
+                po_from: bothExisits === true ? "INV" : "PHR",
+                status: bothExisits === true ? status : "0",
+                bothExisits: bothExisits,
+              },
+              () => {
+                getData(this);
+                getPurchaseOrderList(this);
+              }
+            );
+          } else {
             this.setState(
               {
                 po_from: "PHR",
@@ -107,35 +128,9 @@ class PurchaseOrderList extends Component {
                 getPurchaseOrderList(this);
               }
             );
-          } else {
-            RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
-              (result) => {
-                if (result === "show") {
-                  this.setState(
-                    {
-                      poSelected: poSelected,
-                      po_from: "INV",
-                      status: bothExisits === true ? status : "0",
-                      bothExisits: bothExisits,
-                    },
-                    () => {
-                      getData(this);
-                      getPurchaseOrderList(this);
-                    }
-                  );
-                }
-              }
-            );
-            // this.setState({
-            //   bothExisits: true,
-            //   poSelected: poSelected === false ? false : true,
-            //   status: bothExisits === false ? status : "0",
-            // });
           }
         }
       );
-
-
 
 
     }
@@ -239,9 +234,9 @@ class PurchaseOrderList extends Component {
                         status: null,
                       });
                     },
-                    others: {
-                      disabled: this.state.poSelected,
-                    },
+                    // others: {
+                    //   disabled: this.state.poSelected,
+                    // },
                   }}
                 />
                 {/* <AlagehAutoComplete
