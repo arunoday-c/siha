@@ -5,8 +5,9 @@ import Screens from "./Screens/Screens";
 import ScreenElements from "./ScreenElements/ScreenElements";
 import Formula from "./Formula/Formula";
 import LisConfigList from "./LisConfig/LisConfigList";
-
+import ReportMaster from "./ReportMaster/ReportMaster";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 import "./algaeh.scss";
 
 class Algaeh extends Component {
@@ -23,14 +24,98 @@ class Algaeh extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
   render() {
     return (
       <div className="algaeh">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Modules",
+                  }}
+                />
+              ),
+              children: <Modules />,
+              componentCode: "ALG_MODLES",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Screens",
+                  }}
+                />
+              ),
+              children: <Screens />,
+              componentCode: "ALG_SCREEN",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Components",
+                  }}
+                />
+              ),
+              children: <Components />,
+              componentCode: "ALG_COMPO",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Screen Elements",
+                  }}
+                />
+              ),
+              children: <ScreenElements />,
+              componentCode: "ALG_SCR_ELE",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Formula",
+                  }}
+                />
+              ),
+              children: <Formula />,
+              componentCode: "ALG_FORM",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Lab Configuration",
+                  }}
+                />
+              ),
+              children: <LisConfigList />,
+              componentCode: "ALG_LAB_CONF",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "ReportMaster",
+                  }}
+                />
+              ),
+              children: <ReportMaster />,
+              componentCode: "ALG_RPT_MST",
+            },
+          ]}
+          renderClass="AlgaehMastersSection"
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
@@ -41,7 +126,7 @@ class Algaeh extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Modules"
+                      forceLabel: "Modules",
                     }}
                   />
                 }
@@ -54,7 +139,7 @@ class Algaeh extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Screens"
+                      forceLabel: "Screens",
                     }}
                   />
                 }
@@ -67,7 +152,7 @@ class Algaeh extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Components"
+                      forceLabel: "Components",
                     }}
                   />
                 }
@@ -80,7 +165,7 @@ class Algaeh extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Screen Elements"
+                      forceLabel: "Screen Elements",
                     }}
                   />
                 }
@@ -93,11 +178,11 @@ class Algaeh extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Formula"
+                      forceLabel: "Formula",
                     }}
                   />
                 }
-              </li>{" "}
+              </li>
               <li
                 algaehtabs={"LisConfig"}
                 className={"nav-item tab-button"}
@@ -106,16 +191,29 @@ class Algaeh extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "LIS Configuration"
+                      forceLabel: "LIS Configuration",
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"reportMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Report Master",
                     }}
                   />
                 }
               </li>
             </ul>
           </div>
-        </div>
+        </div> */}
 
-        <div className="" style={{ marginTop: 33 }}>
+        {/* <div className="" style={{ marginTop: 33 }}>
           {this.state.pageDisplay === "Modules" ? (
             <Modules />
           ) : this.state.pageDisplay === "Screens" ? (
@@ -128,8 +226,10 @@ class Algaeh extends Component {
             <Formula />
           ) : this.state.pageDisplay === "LisConfig" ? (
             <LisConfigList />
+          ) : this.state.pageDisplay === "ReportMaster" ? (
+            <ReportMaster />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
