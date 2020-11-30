@@ -13,6 +13,7 @@ import { getInvoicesForSupplier, getDebitNotes } from "./SupPaymentEvents";
 import { Button, Spin, Checkbox, Modal } from "antd";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import { VerifyAuthorization } from "../../CustomerListFinance/CustomerPayment/CusPaymentEvents";
+
 export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
@@ -193,29 +194,37 @@ export default memo(function (props) {
             <div className="row">
               <div className="col">
                 <label className="style_Label ">Payment Amount</label>
-                <h6>{totalAmount}</h6>
+                <h6>{getAmountFormart(totalAmount, {
+                  appendSymbol: false,
+                })}</h6>
               </div>
               <i className="fas fa-minus calcSybmbol"></i>
 
               <div className="col">
                 <label className="style_Label ">Debit Note Amount</label>
-                <h6>{debitNoteTotal}</h6>
+                <h6>{getAmountFormart(debitNoteTotal, {
+                  appendSymbol: false,
+                })}</h6>
               </div>
 
               <i className="fas fa-equals calcSybmbol"></i>
               <div className="col">
                 <label className="style_Label ">Net Total</label>
-                <h6>{grandTotal}</h6>
+                <h6>{getAmountFormart(grandTotal, {
+                  appendSymbol: false,
+                })}</h6>
               </div>
             </div>
           ) : (
-            <div className="row">
-              <div className="col">
-                <label className="style_Label ">Payment amount</label>
-                <h6>{totalAmount}</h6>
+              <div className="row">
+                <div className="col">
+                  <label className="style_Label ">Payment amount</label>
+                  <h6>{getAmountFormart(totalAmount, {
+                    appendSymbol: false,
+                  })}</h6>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       ),
       okText: "Continue to Payment",

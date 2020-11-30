@@ -126,7 +126,11 @@ export default memo(function (props) {
         title: "Are you sure do you want to process ?",
         content: (
           <span>
-            Total amount<b>{totalAmount} </b>for the <b>{narration}</b>
+            Total amount <b>
+              {getAmountFormart(totalAmount, {
+                appendSymbol: false,
+              })} </b>
+            {/* for the <b>{narration}</b> */}
           </span>
         ),
         okText: "Proceed",
