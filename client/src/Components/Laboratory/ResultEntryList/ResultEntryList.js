@@ -302,22 +302,21 @@ class ResultEntryList extends Component {
               }}
               value={this.state.to_date}
             />{" "}
-            <div className="col" style={{ paddingTop: "19px" }}>
-              <button
-                className="btn btn-primary btn-sm"
-                type="button"
-                onClick={getSampleCollectionDetails.bind(this, this)}
-              >
-                Load
-              </button>
-
+            <div className="col" style={{ marginTop: "21px" }}>
               <button
                 className="btn btn-default btn-sm"
-                style={{ marginLeft: "10px" }}
                 type="button"
                 onClick={Refresh.bind(this, this)}
               >
                 Clear
+              </button>
+              <button
+                className="btn btn-primary btn-sm"
+                style={{ marginLeft: "10px" }}
+                type="button"
+                onClick={getSampleCollectionDetails.bind(this, this)}
+              >
+                Load
               </button>
             </div>
           </div>
