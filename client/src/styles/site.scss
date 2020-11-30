@@ -2210,19 +2210,20 @@ input.autoselect-input:disabled {
   }
 }
 
-.algaehGrpPassword{
-  .ant-space-item{ width: 100%;}
-.algaehFldPassword {
-
-  input[type="password"]{
-
-max-height: 29px !important;
-/* border: 1px solid #e9e9e9; */
-padding: 0;
-margin: 0;
-line-height: 0px;
-min-height: 23px;
-}}
+.algaehGrpPassword {
+  .ant-space-item {
+    width: 100%;
+  }
+  .algaehFldPassword {
+    input[type="password"] {
+      max-height: 29px !important;
+      /* border: 1px solid #e9e9e9; */
+      padding: 0;
+      margin: 0;
+      line-height: 0px;
+      min-height: 23px;
+    }
+  }
 }
 /*====================== New Patient Registration CSS starts here ======================*/
 .ant-input {
@@ -2436,21 +2437,7 @@ min-height: 23px;
     padding: 0 15px;
   }
 }
-.newStickyGrid {
-  tr {
-    th {
-      position: sticky;
-      top: 0;
-      z-index: 99999;
-    }
-  }
-  .filterEnable {
-    th {
-      position: sticky;
-      top: 0;
-    }
-  }
-}
+
 .calcSybmbol {
   border: 1px solid #000;
   height: 19px;

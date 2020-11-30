@@ -79,21 +79,6 @@
       max-height: 50vh !important;
       overflow: auto;
       // background-color: red;
-      thead {
-        tr {
-          th {
-            padding: 7px 5px !important;
-          }
-        }
-      }
-      .filterEnable {
-        position: sticky;
-        top: 30px;
-        th {
-          z-index: 9 !important;
-          top: inherit !important;
-        }
-      }
     }
   }
 }

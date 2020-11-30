@@ -897,8 +897,9 @@ class DayEndProcess extends Component {
                                 row.from_screen === "SAL005") ? (
                                 <Tooltip title="Revert">
                                   <i
-                                    className="fa fa-share fa-flip-horizontal"
-                                    aria-hidden="true"
+                                    className="fa fa-share fa-flip-horizontal "
+                                    // className="fa fa-exchange-alt"
+                                    // aria-hidden="true"
                                     onClick={() =>
                                       this.setState({
                                         revert_visible: true,
@@ -911,6 +912,7 @@ class DayEndProcess extends Component {
                               ) : null}
                             </>
                           ),
+
                           others: {
                             width: 170,
                             maxWidth: 200,
@@ -926,6 +928,21 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
+                          // filterType: "choices",
+                          // choices: [
+                          //   {
+                          //     name: "Paid",
+                          //     value: "paid",
+                          //   },
+                          //   {
+                          //     name: "Un Paid",
+                          //     value: "unpaid",
+                          //   },
+                          // ],
+
+                          others: {
+                            width: 140,
+                          },
                         },
                         {
                           fieldName: "invoice_no",
@@ -936,17 +953,25 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
+
+                          others: {
+                            width: 130,
+                          },
                         },
 
                         {
                           fieldName: "transaction_date",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Document  Date" }}
+                              label={{ forceLabel: "Document Date" }}
                             />
                           ),
                           filterable: true,
-                          // others: { filterable: false },
+                          filterType: "date",
+
+                          others: {
+                            width: 130,
+                          },
                         },
 
                         {
@@ -963,6 +988,10 @@ class DayEndProcess extends Component {
                           },
                           disabled: true,
                           filterable: true,
+
+                          others: {
+                            width: 120,
+                          },
                         },
                         {
                           fieldName: "amount",
@@ -979,7 +1008,10 @@ class DayEndProcess extends Component {
                               </span>
                             );
                           },
-                          others: { filterable: false },
+
+                          others: {
+                            width: 100,
+                          },
                         },
 
                         {
@@ -991,14 +1023,20 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
+                          others: {
+                            width: 140,
+                          },
                         },
                         {
                           fieldName: "narration",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Narration" }} />
                           ),
-                          disabled: false,
-                          others: { filterable: true },
+                          disabled: true,
+                          filterable: true,
+                          // others: {
+                          //   width: 140,
+                          // },
                         },
                       ]}
                       // rowUniqueId="finance_day_end_header_id"
