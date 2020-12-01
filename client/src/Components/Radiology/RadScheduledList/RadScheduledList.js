@@ -161,21 +161,62 @@ class RadScheduledList extends Component {
     }
   };
   downloadDoc(doc, isPreview) {
-    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-    const link = document.createElement("a");
-    if (!isPreview) {
-      link.download = doc.filename;
-      link.href = fileUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    if (doc.fromPath === true) {
+      this.setState({ pdfLoading: true }, () => {
+        newAlgaehApi({
+          uri: "/getRadiologyDoc",
+          module: "documentManagement",
+          method: "GET",
+
+          extraHeaders: {
+            Accept: "blon",
+          },
+          others: {
+            responseType: "blob",
+          },
+          data: {
+            hims_f_rad_order_id: doc.hims_f_rad_order_id,
+
+            filename: doc.filename,
+            download: true,
+          },
+        })
+          .then((resp) => {
+            const urlBlob = URL.createObjectURL(resp.data);
+            if (isPreview) {
+              window.open(urlBlob);
+            } else {
+              const link = document.createElement("a");
+              link.download = doc.filename;
+              link.href = urlBlob;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
+            this.setState({ pdfLoading: false });
+          })
+          .catch((error) => {
+            console.log(error);
+            this.setState({ pdfLoading: false });
+          });
+      });
     } else {
-      fetch(fileUrl)
-        .then((res) => res.blob())
-        .then((fblob) => {
-          const newUrl = URL.createObjectURL(fblob);
-          window.open(newUrl);
-        });
+      const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+      const link = document.createElement("a");
+      if (!isPreview) {
+        link.download = doc.filename;
+        link.href = fileUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        fetch(fileUrl)
+          .then((res) => res.blob())
+          .then((fblob) => {
+            const newUrl = URL.createObjectURL(fblob);
+            window.open(newUrl);
+          });
+      }
     }
   }
 
