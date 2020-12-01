@@ -62,7 +62,9 @@ export function getUploadedFile(req, res, next) {
             const mimetype = docs[0]["filetype"];
             res.setHeader(
               "Content-disposition",
-              "attachment; filename=" + fileN
+              "attachment; filename='" +
+                fileN.replace(/\,/g, "_").replace(/\;/g, "_") +
+                "'"
             );
             res.setHeader("Content-type", mimetype);
             readStream.on("open", function () {
