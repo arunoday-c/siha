@@ -172,23 +172,24 @@ function CheckBoxCheck({ item, setSelectAll, items, setEnablePrintButton }) {
   const [checkState, setCheckState] = useState(item.checked);
   useEffect(() => {
     setCheckState(item.checked);
-    console.log("Changed", item.checked);
   }, [item.checked]);
   function onChangeHandler(event) {
     const tarCheck = event.target.checked;
     item.checked = tarCheck;
     setCheckState(tarCheck);
-    const hasUncheck = items.filter((item) => {
-      return item.checked || item.checked === false;
-    });
+
+    // const hasUncheck = items.filter((item) => {
+    //   return item.checked || item.checked === false;
+    // });
     const checked = items.filter((item) => {
-      return item.checked || item.checked === true;
+      return item.checked === true;
     });
-    if (hasUncheck.length < items.length) {
-      setSelectAll(false);
-    } else {
-      setSelectAll(true);
-    }
+    checked.length < items.length ? setSelectAll(false) : setSelectAll(true);
+    // if (hasUncheck.length <= items.length) {
+    //   setSelectAll(false);
+    // } else {
+    //   setSelectAll(true);
+    // }
     if (checked.length > 0) {
       setEnablePrintButton(false);
     } else {
