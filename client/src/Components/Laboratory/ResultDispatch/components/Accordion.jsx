@@ -9,12 +9,13 @@ export default memo(function ({ details }) {
   const { visit_date, doc_name, mlc_accident_reg_no, list } = details;
   const [selectAll, setSelectAll] = useState(false);
   const [listOfDetails, setListOfDetails] = useState(list);
+  const [enablePrintButton, setEnablePrintButton] = useState(true);
   function changeSelectStatus(event) {
     const checkState = event.target.checked;
     setSelectAll(checkState);
     const test = list
       .filter((item) => {
-        return item.checked === undefined;
+        return item.checked || item.checked === false;
       })
       .map((item) => {
         return { ...item, checked: item.status === "V" ? checkState : false };
@@ -126,6 +127,7 @@ export default memo(function ({ details }) {
                       item={item}
                       setSelectAll={setSelectAll}
                       items={listOfDetails}
+                      setEnablePrintButton={setEnablePrintButton}
                     />
                   </td>
                   <td style={{ textAlign: "left", fontWeight: "bold" }}>
@@ -153,7 +155,11 @@ export default memo(function ({ details }) {
           </tbody>
         </table>
         <div className="accFooter">
-          <button className="btn btn-default btn-sm" onClick={showReport}>
+          <button
+            className="btn btn-default btn-sm"
+            onClick={showReport}
+            disabled={enablePrintButton}
+          >
             Print Selected Reports
           </button>
         </div>
@@ -162,7 +168,7 @@ export default memo(function ({ details }) {
   );
 });
 
-function CheckBoxCheck({ item, setSelectAll, items }) {
+function CheckBoxCheck({ item, setSelectAll, items, setEnablePrintButton }) {
   const [checkState, setCheckState] = useState(item.checked);
   useEffect(() => {
     setCheckState(item.checked);
@@ -173,12 +179,20 @@ function CheckBoxCheck({ item, setSelectAll, items }) {
     item.checked = tarCheck;
     setCheckState(tarCheck);
     const hasUncheck = items.filter((item) => {
-      return item.checked === false;
+      return item.checked || item.checked === false;
     });
-    if (hasUncheck.length > 0) {
+    const checked = items.filter((item) => {
+      return item.checked || item.checked === true;
+    });
+    if (hasUncheck.length < items.length) {
       setSelectAll(false);
     } else {
       setSelectAll(true);
+    }
+    if (checked.length > 0) {
+      setEnablePrintButton(false);
+    } else {
+      setEnablePrintButton(true);
     }
   }
   return (
