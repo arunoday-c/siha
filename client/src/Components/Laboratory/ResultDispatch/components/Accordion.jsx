@@ -15,7 +15,7 @@ export default memo(function ({ details }) {
     setSelectAll(checkState);
     const test = list
       .filter((item) => {
-        return item.checked || item.checked === false;
+        return item.checked === undefined || item.checked === false;
       })
       .map((item) => {
         return { ...item, checked: item.status === "V" ? checkState : false };
@@ -182,7 +182,7 @@ function CheckBoxCheck({ item, setSelectAll, items, setEnablePrintButton }) {
     //   return item.checked || item.checked === false;
     // });
     const checked = items.filter((item) => {
-      return item.checked === true;
+      return item.checked || item.checked === true;
     });
     checked.length < items.length ? setSelectAll(false) : setSelectAll(true);
     // if (hasUncheck.length <= items.length) {
