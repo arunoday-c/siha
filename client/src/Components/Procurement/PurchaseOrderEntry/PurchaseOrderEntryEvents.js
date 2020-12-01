@@ -612,6 +612,7 @@ const getCtrlCode = ($this, docNumber) => {
             data.dataPosted = false;
             data.saveEnable = false;
             data.dataExitst = data.is_revert === "Y" ? true : false;
+            data.authBtnEnable = true
           }
 
           if (data.po_from === "PHR") {
