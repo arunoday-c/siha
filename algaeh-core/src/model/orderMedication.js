@@ -648,7 +648,6 @@ let addPatientPrescription = (req, res, next) => {
               next: next,
               _mysql: _mysql,
             }).then(() => {
-              debugger;
               addFavMedcine({
                 req: req,
                 input: input,
@@ -788,7 +787,51 @@ let addPatientPrescription = (req, res, next) => {
     next(e);
   }
 };
+let updatePatientPrescription = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
 
+  try {
+    let input = req.body.medicationobj;
+
+    _mysql
+      .executeQuery({
+        query: `Update hims_f_prescription_detail set item_id=?,generic_id=?,dosage=?,med_units=?,
+          service_id=?,uom_id=?,item_category_id=?,item_group_id=?,frequency=?,no_of_days=?,frequency_type=?,
+          frequency_time=?,frequency_route=?,instructions=?,start_date=? where hims_f_prescription_detail_id=? `,
+        values: [
+          input.item_id,
+          input.generic_id,
+          input.dosage,
+          input.med_units,
+          input.service_id,
+          input.uom_id,
+          input.item_category_id,
+          input.item_group_id,
+          input.frequency,
+          input.no_of_days,
+          input.frequency_type,
+          input.frequency_time,
+          input.frequency_route,
+          input.instructions,
+          input.start_date,
+          input.hims_f_prescription_detail_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 //created by irfan: getPatientPrescription
 let getPatientPrescriptionOLD = (req, res, next) => {
   let selectWhere = {
@@ -994,4 +1037,5 @@ export default {
   getFavMedication,
   deletePastMedication,
   deletePatientPrescription,
+  updatePatientPrescription,
 };
