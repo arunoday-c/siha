@@ -12,16 +12,18 @@ export default memo(function ({ details }) {
   const [enablePrintButton, setEnablePrintButton] = useState(true);
   function changeSelectStatus(event) {
     const checkState = event.target.checked;
-    setSelectAll(checkState);
+
     const test = list
       .filter((item) => {
         return item.checked === undefined || item.checked === false;
       })
       .map((item) => {
+        setEnablePrintButton(item.status === "V" && checkState ? false : true);
+        setSelectAll(item.status === "V" && checkState ? checkState : false);
         return { ...item, checked: item.status === "V" ? checkState : false };
       });
     setListOfDetails(test);
-    setEnablePrintButton(checkState ? false : true);
+
     // setCheckState(event.target.checked);
   }
 
