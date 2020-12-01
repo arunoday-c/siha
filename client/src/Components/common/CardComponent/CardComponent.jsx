@@ -10,13 +10,14 @@ import { getCards } from "../../BusinessSetup/CardMaster/api";
 import MaskedInput from "react-maskedinput";
 
 export default function CardComponent({
-  onChangeCard = () => {},
-  onChangeNumber = () => {},
+  onChangeCard = () => { },
+  onChangeNumber = () => { },
   card_id,
   card_number,
   disabled,
   errors,
 }) {
+  debugger
   const { data: cards, isLoading } = useQuery("card", getCards, {
     initialData: [],
     initialStale: true,
@@ -28,6 +29,7 @@ export default function CardComponent({
   const mask = currentCard?.[0]?.card_format;
 
   useEffect(() => {
+    debugger
     onChangeCard(null, null);
     onChangeNumber("");
     // eslint-disable-next-line
@@ -71,7 +73,7 @@ export default function CardComponent({
             value={card_number}
             guide={false}
             id="my-input-id"
-            onBlur={() => {}}
+            onBlur={() => { }}
             onChange={(e) => {
               const { value } = e.target;
               onChangeNumber(value);
@@ -80,27 +82,27 @@ export default function CardComponent({
           />
         </div>
       ) : (
-        <AlgaehFormGroup
-          div={{
-            className: "col no-padding-left-right  mandatory",
-          }}
-          label={{
-            fieldName: "card_check_number",
-            isImp: false,
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "card_number",
-            disabled: isLoading || disabled,
-            value: card_number,
-            type: "number",
-            onChange: (e) => {
-              const { value } = e.target;
-              onChangeNumber(value);
-            },
-          }}
-        />
-      )}
+          <AlgaehFormGroup
+            div={{
+              className: "col no-padding-left-right  mandatory",
+            }}
+            label={{
+              fieldName: "card_check_number",
+              isImp: false,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "card_number",
+              disabled: isLoading || disabled,
+              value: card_number,
+              type: "number",
+              onChange: (e) => {
+                const { value } = e.target;
+                onChangeNumber(value);
+              },
+            }}
+          />
+        )}
     </>
   );
 }

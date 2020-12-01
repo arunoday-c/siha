@@ -63,7 +63,6 @@ export default {
       let inputParam = { ...req.body };
 
       const utilities = new algaehUtilities();
-      // utilities.logger().log("inputParam Receipt: ", inputParam);
 
       let Module_Name = "";
       //Advance
@@ -80,10 +79,6 @@ export default {
           table_name: "hims_f_app_numgen",
         })
         .then((generatedNumbers) => {
-          // console.log(
-          //   "isTransactionConnection: ",
-          //   _mysql.isTransactionConnection
-          // );
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
@@ -116,7 +111,6 @@ export default {
               printQuery: true,
             })
             .then((headerRcptResult) => {
-              // utilities.logger().log("headerRcptResult: ", headerRcptResult);
               if (
                 headerRcptResult.insertId != null &&
                 headerRcptResult.insertId != ""
@@ -124,6 +118,7 @@ export default {
                 req.body.receipt_header_id = headerRcptResult.insertId;
                 const receptSample = [
                   "card_check_number",
+                  "bank_card_id",
                   "expiry_date",
                   "pay_type",
                   "amount",

@@ -91,7 +91,26 @@ class PrescribedItemList extends Component {
                                 ) : (
                                     <span className="badge badge-success">
                                       Yes
-                                  </span>
+                                    </span>
+                                  )}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "stock_ava",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Stock Available" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.batches.length > 0 ? (
+                                  <span className="badge badge-success">Yes</span>
+                                ) : (
+                                    <span className="badge badge-danger">
+                                      No
+                                    </span>
                                   )}
                               </span>
                             );
@@ -142,7 +161,7 @@ class PrescribedItemList extends Component {
                                   )}
                                 >
                                   Required
-                              </span>
+                                </span>
                               );
                           },
                           disabled: true

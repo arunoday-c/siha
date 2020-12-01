@@ -331,6 +331,7 @@ class OPBilling extends Component {
           amount: this.state.card_amount,
           updated_date: null,
           card_type: null,
+          bank_card_id: this.state.selectedCard?.hims_d_bank_card_id
         });
       }
       if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
@@ -497,11 +498,11 @@ class OPBilling extends Component {
                       </div>
                     </div>
                   ) : (
-                    <div>
-                      <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
-                      <h6>{this.state.created_name}</h6>
-                    </div>
-                  )}
+                        <div>
+                          <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
+                          <h6>{this.state.created_name}</h6>
+                        </div>
+                      )}
                 </div>
               ) : null}
             </div>
@@ -509,25 +510,25 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       },
                     },
-                    {
-                      label: "Print Receipt Small",
-                      events: {
-                        onClick: () => {
-                          generateReceiptSmall(this, this);
-                        },
+                  },
+                  {
+                    label: "Print Receipt Small",
+                    events: {
+                      onClick: () => {
+                        generateReceiptSmall(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -610,8 +611,8 @@ class OPBilling extends Component {
                     this.state.patient_id === null
                       ? true
                       : this.state.Billexists === true
-                      ? true
-                      : false
+                        ? true
+                        : false
                   }
                 >
                   <AlgaehLabel

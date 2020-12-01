@@ -62,8 +62,8 @@ export default class AddReciptForm extends Component {
                       {this.state.receipt_number
                         ? this.state.receipt_number
                         : this.state.selectedLang === "en"
-                        ? "Not Generated"
-                        : "غير مولدة"}
+                          ? "Not Generated"
+                          : "غير مولدة"}
                     </h6>
                   </div>
                   <div className="col-lg-3">
@@ -215,6 +215,7 @@ export default class AddReciptForm extends Component {
                     card_id={this.state.selectedCard?.hims_d_bank_card_id}
                     onChangeCard={(e) => {
                       this.setState({ selectedCard: e });
+                      context.updateState({ selectedCard: e });
                     }}
                   />
 

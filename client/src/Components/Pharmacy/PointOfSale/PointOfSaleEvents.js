@@ -22,29 +22,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-            [name]: value,
-            mode_of_pay: "1",
-            OTItemAddDis: false,
-          })
+          [name]: value,
+          mode_of_pay: "1",
+          OTItemAddDis: false,
+        })
         : $this.setState({
-            [name]: value,
-            mode_of_pay: "",
-            OTItemAddDis: false,
-          });
+          [name]: value,
+          mode_of_pay: "",
+          OTItemAddDis: false,
+        });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-            [name]: value,
-            insurance_yesno: "N",
-            insured: "N",
-          })
+          [name]: value,
+          insurance_yesno: "N",
+          insured: "N",
+        })
         : $this.setState({
-            [name]: value,
-            insurance_yesno: "Y",
-            insured: "Y",
-          });
+          [name]: value,
+          insurance_yesno: "Y",
+          insured: "Y",
+        });
       break;
 
     default:
@@ -103,23 +103,31 @@ const getPosEntry = ($this, pos_number) => {
 
         data.hims_d_insurance_network_office_id = data.network_office_id;
 
-        if (data.receiptdetails.length !== 0) {
+        debugger
+        if (data.receiptdetails.length > 0) {
           for (let i = 0; i < data.receiptdetails.length; i++) {
-            if (data.receiptdetails[i].pay_type === "CA") {
-              data.Cashchecked = true;
-              data.cash_amount = data.receiptdetails[i].amount;
-            }
+            data.Cashchecked = data.receiptdetails[i].pay_type === "CA" ? true : false
+            data.cash_amount = data.receiptdetails[i].pay_type === "CA" ? data.receiptdetails[i].amount : 0
 
-            if (data.receiptdetails[i].pay_type === "CD") {
-              data.Cardchecked = true;
-              data.card_amount = data.receiptdetails[i].amount;
-            }
+            data.Cardchecked = data.receiptdetails[i].pay_type === "CD" ? true : false
+            data.card_amount = data.receiptdetails[i].pay_type === "CD" ? data.receiptdetails[i].amount : 0
+            data.card_check_number = data.receiptdetails[i].pay_type === "CD" ? data.receiptdetails[i].card_check_number : null
+            data.selectedCard = data.receiptdetails[i].pay_type === "CD" ? { hims_d_bank_card_id: data.receiptdetails[i].bank_card_id } : null
+            // if (data.receiptdetails[i].pay_type === "CA") {
+            //   data.Cashchecked = true;
+            //   data.cash_amount = data.receiptdetails[i].amount;
+            // }
 
-            if (data.receiptdetails[i].pay_type === "CH") {
-              data.Checkchecked = true;
-              data.cheque_amount = data.receiptdetails[i].amount;
-              data.cheque_amount = data.receiptdetails[i].amount;
-            }
+            // if (data.receiptdetails[i].pay_type === "CD") {
+            //   data.Cardchecked = true;
+            //   data.card_amount = data.receiptdetails[i].amount;
+            // }
+
+            // if (data.receiptdetails[i].pay_type === "CH") {
+            //   data.Checkchecked = true;
+            //   data.cheque_amount = data.receiptdetails[i].amount;
+            //   data.cheque_amount = data.receiptdetails[i].amount;
+            // }
           }
         } else {
           data.Cashchecked = true;
@@ -334,6 +342,7 @@ const GenerateReciept = ($this, callBack) => {
         amount: $this.state.card_amount,
         updated_date: null,
         card_type: null,
+        bank_card_id: $this.state.selectedCard?.hims_d_bank_card_id
       });
     }
     if ($this.state.cheque_amount > 0 || $this.state.Checkchecked === true) {
