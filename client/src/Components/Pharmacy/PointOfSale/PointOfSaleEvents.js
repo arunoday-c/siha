@@ -242,6 +242,7 @@ const ClearData = ($this, e) => {
   IOputs.advance = 0;
   IOputs.total_quantity = 0;
   IOputs.dataExitst = false;
+  IOputs.selectedCard = {}
 
   IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
   IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;

@@ -17,7 +17,6 @@ export default function CardComponent({
   disabled,
   errors,
 }) {
-  debugger
   const { data: cards, isLoading } = useQuery("card", getCards, {
     initialData: [],
     initialStale: true,
@@ -29,9 +28,13 @@ export default function CardComponent({
   const mask = currentCard?.[0]?.card_format;
 
   useEffect(() => {
-    debugger
-    onChangeCard(null, null);
-    onChangeNumber("");
+    if (card_id > 0) {
+      return
+    }
+    else {
+      onChangeCard(null, null);
+      onChangeNumber("");
+    }
     // eslint-disable-next-line
   }, [disabled]);
 

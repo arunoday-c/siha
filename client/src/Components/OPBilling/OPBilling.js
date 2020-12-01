@@ -244,22 +244,29 @@ class OPBilling extends Component {
           // data.visit_id = data.hims_f_patient_visit_id;
           if (data.receiptdetails.length !== 0) {
             for (let i = 0; i < data.receiptdetails.length; i++) {
-              data.Cashchecked = false;
-              data.Cardchecked = false;
-              if (data.receiptdetails[i].pay_type === "CA") {
-                data.Cashchecked = true;
-                data.cash_amount = data.receiptdetails[i].amount;
-              }
+              data.Cashchecked = data.receiptdetails[i].pay_type === "CA" ? true : false
+              data.cash_amount = data.receiptdetails[i].pay_type === "CA" ? data.receiptdetails[i].amount : 0
 
-              if (data.receiptdetails[i].pay_type === "CD") {
-                data.Cardchecked = true;
-                data.card_amount = data.receiptdetails[i].amount;
-              }
+              data.Cardchecked = data.receiptdetails[i].pay_type === "CD" ? true : false
+              data.card_amount = data.receiptdetails[i].pay_type === "CD" ? data.receiptdetails[i].amount : 0
+              data.card_check_number = data.receiptdetails[i].pay_type === "CD" ? data.receiptdetails[i].card_check_number : null
+              data.selectedCard = data.receiptdetails[i].pay_type === "CD" ? { hims_d_bank_card_id: data.receiptdetails[i].bank_card_id } : null
+              // data.Cashchecked = false;
+              // data.Cardchecked = false;
+              // if (data.receiptdetails[i].pay_type === "CA") {
+              //   data.Cashchecked = true;
+              //   data.cash_amount = data.receiptdetails[i].amount;
+              // }
 
-              if (data.receiptdetails[i].pay_type === "CH") {
-                data.Checkchecked = true;
-                data.cheque_amount = data.receiptdetails[i].amount;
-              }
+              // if (data.receiptdetails[i].pay_type === "CD") {
+              //   data.Cardchecked = true;
+              //   data.card_amount = data.receiptdetails[i].amount;
+              // }
+
+              // if (data.receiptdetails[i].pay_type === "CH") {
+              //   data.Checkchecked = true;
+              //   data.cheque_amount = data.receiptdetails[i].amount;
+              // }
             }
           }
 
