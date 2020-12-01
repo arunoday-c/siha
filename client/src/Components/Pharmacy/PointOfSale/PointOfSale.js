@@ -458,6 +458,19 @@ class PointOfSale extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
+                  onClick={PostPosEntry.bind(this, this)}
+                  disabled={this.state.postEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Collect & Print",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
                   onClick={SavePosEnrty.bind(this, this)}
                   disabled={this.state.postEnable}
                 >
@@ -477,19 +490,6 @@ class PointOfSale extends Component {
                     label={{ forceLabel: "Clear Bill", returnText: true }}
                   />
                 </button>{" "}
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={PostPosEntry.bind(this, this)}
-                  disabled={this.state.postEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Collect & Print",
-                      returnText: true,
-                    }}
-                  />
-                </button>
                 <button
                   type="button"
                   className="btn btn-danger"

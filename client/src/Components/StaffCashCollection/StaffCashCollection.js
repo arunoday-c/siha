@@ -97,9 +97,9 @@ class StaffCashCollection extends Component {
       onSuccess: () => {
         let srtMessage = "Are you sure want to";
         if (status === "A") {
-          srtMessage += " Authorize ?"
+          srtMessage += " Authorize ?";
         } else {
-          srtMessage += " Close ?"
+          srtMessage += " Close ?";
         }
 
         swal({
@@ -109,8 +109,8 @@ class StaffCashCollection extends Component {
           confirmButtonText: "Yes",
           confirmButtonColor: "#44b8bd",
           cancelButtonColor: "#d33",
-          cancelButtonText: "No"
-        }).then(willProceed => {
+          cancelButtonText: "No",
+        }).then((willProceed) => {
           if (willProceed.value) {
             AlgaehLoader({ show: true });
 
@@ -336,19 +336,19 @@ class StaffCashCollection extends Component {
   render() {
     const _cash =
       this.state.difference_cash !== undefined &&
-        this.state.difference_cash !== ""
+      this.state.difference_cash !== ""
         ? parseFloat(this.state.difference_cash)
         : 0;
     const _card =
       this.state.difference_card !== undefined &&
-        this.state.difference_card !== ""
+      this.state.difference_card !== ""
         ? parseFloat(this.state.difference_card)
         : 0;
-    const _cheque =
-      this.state.difference_cheque !== undefined &&
-        this.state.difference_cheque !== ""
-        ? parseFloat(this.state.difference_cheque)
-        : 0;
+    // const _cheque =
+    //   this.state.difference_cheque !== undefined &&
+    //   this.state.difference_cheque !== ""
+    //     ? parseFloat(this.state.difference_cheque)
+    //     : 0;
 
     return (
       <div className="staffCashCollection">
@@ -359,25 +359,25 @@ class StaffCashCollection extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-        // pageNavPath={[
-        //   {
-        //     pageName: (
-        //       <AlgaehLabel
-        //         label={{
-        //           fieldName: "front_desk",
-        //           align: "ltr",
-        //         }}
-        //       />
-        //     ),
-        //   },
-        //   {
-        //     pageName: (
-        //       <AlgaehLabel
-        //         label={{ fieldName: "staff_cash_collection", align: "ltr" }}
-        //       />
-        //     ),
-        //   },
-        // ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           fieldName: "front_desk",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ fieldName: "staff_cash_collection", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
         />
         <div className="row" style={{ marginTop: 90 }}>
           <div className="col-3">
@@ -474,8 +474,8 @@ class StaffCashCollection extends Component {
                         </div>
                       ))
                     ) : (
-                        <span className="noDataStyle">Select Shift Date</span>
-                      )}
+                      <span className="noDataStyle">Select Shift Date</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -516,10 +516,10 @@ class StaffCashCollection extends Component {
                         </div>
                       ))
                     ) : (
-                        <div className="noDataStyle">
-                          Relax! No more Open Shift Available.
-                        </div>
-                      )}
+                      <div className="noDataStyle">
+                        Relax! No more Open Shift Available.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -596,8 +596,8 @@ class StaffCashCollection extends Component {
                                 Authorized
                               </span>
                             ) : (
-                                    "------"
-                                  );
+                              "------"
+                            );
                           },
                           others: {
                             maxWidth: 100,
@@ -673,8 +673,8 @@ class StaffCashCollection extends Component {
                                 Shortage
                               </span>
                             ) : (
-                                    "------"
-                                  );
+                              "------"
+                            );
                           },
                           others: {
                             maxWidth: 100,
@@ -728,8 +728,8 @@ class StaffCashCollection extends Component {
                                 Shortage
                               </span>
                             ) : (
-                                    "------"
-                                  );
+                              "------"
+                            );
                           },
                           others: {
                             maxWidth: 100,
@@ -738,19 +738,19 @@ class StaffCashCollection extends Component {
                           },
                         },
 
-                        {
-                          fieldName: "expected_cheque",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Exp. Cheque" }}
-                            />
-                          ),
-                          others: {
-                            maxWidth: 100,
-                            resizable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
+                        // {
+                        //   fieldName: "expected_cheque",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Exp. Cheque" }}
+                        //     />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 100,
+                        //     resizable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
                         // {
                         //   fieldName: "actual_cheque",
                         //   label: (
@@ -763,49 +763,49 @@ class StaffCashCollection extends Component {
                         //     style: { textAlign: "center" }
                         //   }
                         // },
-                        {
-                          fieldName: "difference_cheque",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Cheque Diff." }}
-                            />
-                          ),
-                          others: {
-                            maxWidth: 100,
-                            resizable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          fieldName: "cheque_status",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "cheque_status" }}
-                            />
-                          ),
-                          displayTemplate: (row) => {
-                            return row.cheque_status === "T" ? (
-                              <span className="badge badge-success">
-                                Tallied
-                              </span>
-                            ) : row.cheque_status === "E" ? (
-                              <span className="badge badge-warning">
-                                Excess
-                              </span>
-                            ) : row.cheque_status === "S" ? (
-                              <span className="badge badge-danger">
-                                Shortage
-                              </span>
-                            ) : (
-                                    "------"
-                                  );
-                          },
-                          others: {
-                            maxWidth: 105,
-                            resizable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
+                        // {
+                        //   fieldName: "difference_cheque",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Cheque Diff." }}
+                        //     />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 100,
+                        //     resizable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "cheque_status",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ fieldName: "cheque_status" }}
+                        //     />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return row.cheque_status === "T" ? (
+                        //       <span className="badge badge-success">
+                        //         Tallied
+                        //       </span>
+                        //     ) : row.cheque_status === "E" ? (
+                        //       <span className="badge badge-warning">
+                        //         Excess
+                        //       </span>
+                        //     ) : row.cheque_status === "S" ? (
+                        //       <span className="badge badge-danger">
+                        //         Shortage
+                        //       </span>
+                        //     ) : (
+                        //       "------"
+                        //     );
+                        //   },
+                        //   others: {
+                        //     maxWidth: 105,
+                        //     resizable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
                       ]}
                       keyId="hims_f_cash_handover_detail_id"
                       dataSource={{
@@ -921,19 +921,19 @@ class StaffCashCollection extends Component {
                         <h6>{this.state.refunded_cash}</h6>
                       </div>
                       <div className="col-12">
-                        <table className="table table-responsive  table-sm table-bordered">
+                        <table className="table  table-sm table-bordered">
                           <tbody>
                             <tr>
                               <td />
                               <td>Cash</td>
                               <td>Credit/Debit Card</td>
-                              <td>Cheque</td>
+                              {/* <td>Cheque</td> */}
                             </tr>
                             <tr>
                               <td>Expected</td>
                               <td>{this.state.expected_cash}</td>
                               <td>{this.state.expected_card}</td>
-                              <td>{this.state.expected_cheque}</td>
+                              {/* <td>{this.state.expected_cheque}</td> */}
                             </tr>
                             <tr>
                               <td>Collected</td>
@@ -985,7 +985,7 @@ class StaffCashCollection extends Component {
                                   />
                                 </span>
                               </td>
-                              <td>
+                              {/* <td>
                                 <span className="row">
                                   <AlagehFormGroup
                                     div={{ className: "col" }}
@@ -1008,13 +1008,13 @@ class StaffCashCollection extends Component {
                                     }}
                                   />
                                 </span>
-                              </td>
+                              </td> */}
                             </tr>
                             <tr>
                               <td>Difference</td>
                               <td>{Math.abs(_cash)}</td>
                               <td>{Math.abs(_card)}</td>
-                              <td>{Math.abs(_cheque)}</td>
+                              {/* <td>{Math.abs(_cheque)}</td> */}
                             </tr>
                             <tr>
                               <td> Status</td>
@@ -1032,8 +1032,8 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                        "------"
-                                      )}
+                                  "------"
+                                )}
                               </td>
                               <td>
                                 {this.state.card_status === "T" ? (
@@ -1049,10 +1049,10 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                        "------"
-                                      )}
+                                  "------"
+                                )}
                               </td>
-                              <td>
+                              {/* <td>
                                 {this.state.cheque_status === "T" ? (
                                   <span className="badge badge-success">
                                     Tallied
@@ -1066,9 +1066,9 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                        "------"
-                                      )}
-                              </td>
+                                  "------"
+                                )}
+                              </td> */}
                             </tr>
                             {/* <tr>
                       <td />
