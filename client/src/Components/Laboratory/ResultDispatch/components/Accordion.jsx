@@ -21,6 +21,7 @@ export default memo(function ({ details }) {
         return { ...item, checked: item.status === "V" ? checkState : false };
       });
     setListOfDetails(test);
+    setEnablePrintButton(checkState ? false : true);
     // setCheckState(event.target.checked);
   }
 
