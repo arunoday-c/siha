@@ -148,7 +148,6 @@ export default function Inventory({
         pageSize: "A4",
         pageOrentation: "portrait", //"landscape",
         reportParameters: [
-          
           {
             className: "col-3 form-group mandatory",
             type: "dropdown",
@@ -351,7 +350,7 @@ export default function Inventory({
                 });
               },
             },
-            // value: hospital_id,
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -406,6 +405,17 @@ export default function Inventory({
             initialLoad: true,
             isImp: false,
             label: "Location",
+            link: {
+              uri: "/inventory/getInventoryLocation",
+              module: "inventory",
+              // method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_inventory_location_id",
@@ -419,14 +429,20 @@ export default function Inventory({
             initialLoad: true,
             isImp: false,
             label: "Group",
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_item_group_id",
-              data: [],
-            },
+
             link: {
               uri: "/inventory/getItemGroup",
               module: "inventory",
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_inventory_item_group_id",
+              data: [],
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -461,7 +477,7 @@ export default function Inventory({
             label: "Category",
             dataSource: {
               textField: "category_desc",
-              valueField: "hims_d_inventory_location_id",
+              valueField: "hims_d_inventory_tem_category_id",
               data: [],
             },
             events: {
@@ -498,7 +514,7 @@ export default function Inventory({
             label: "Item",
             dataSource: {
               textField: "item_description",
-              valueField: "hims_d_item_master_id",
+              valueField: "hims_d_inventory_item_master_id",
               data: [],
             },
           },

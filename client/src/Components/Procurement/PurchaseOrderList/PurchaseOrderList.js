@@ -52,8 +52,6 @@ class PurchaseOrderList extends Component {
       status: "1",
       persistence: null
     };
-
-
   }
 
   componentDidMount() {
@@ -150,7 +148,6 @@ class PurchaseOrderList extends Component {
     })();
 
   }
-
 
   render() {
     // const _mainStore = Enumerable.from(this.props.polocations)
@@ -399,7 +396,7 @@ class PurchaseOrderList extends Component {
                           ) : (
                               <span className="badge badge-danger">No</span>
                             );
-                        }
+                        },
                       },
                       {
                         fieldName: "purchase_number",
