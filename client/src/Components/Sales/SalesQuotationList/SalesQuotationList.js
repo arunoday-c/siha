@@ -19,7 +19,7 @@ import {
 } from "./SalesQuotationListEvent";
 
 import {
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
   // AlagehAutoComplete,
   AlgaehDateHandler,
@@ -27,8 +27,14 @@ import {
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { MainContext } from "algaeh-react-components";
-import { AlgaehSecurityComponent } from "algaeh-react-components";
 import SalesQuotationTransfer from "./SalesQuotationTransfer";
+import {
+  AlgaehTable,
+  AlgaehSecurityComponent,
+  persistStorageOnRemove,
+  persistStageOnGet,
+  persistStateOnBack
+} from "algaeh-react-components";
 
 class SalesQuotationList extends Component {
   constructor(props) {
@@ -39,52 +45,62 @@ class SalesQuotationList extends Component {
       checkAll: false,
       checkUserWise: false,
       transferPopup: false,
+      quotation_list: []
     };
   }
 
   static contextType = MainContext;
   componentDidMount() {
-    const userToken = this.context.userToken;
 
-    this.HRMNGMT_Active =
-      userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "NO_FINANCE"
-        ? true
-        : false;
+    (async () => {
+      const records = await persistStageOnGet();
 
-    let month = moment().format("MM");
-    let year = moment().format("YYYY");
-    //to load the same list when user come back from whatever screen they went.
-    if (this.props.backToAuth) {
-      const { from_date, to_date, customer_id } = this.props.prev;
-      this.setState(
-        {
-          from_date,
-          to_date,
-          customer_id,
-          sales_person_id: userToken.employee_id,
-          hospital_id: userToken.hims_d_hospital_id,
-        },
-        () => getSalesQuotationList(this)
-      );
-    } else {
-      this.setState(
-        {
-          to_date: new Date(),
-          from_date: moment("01" + month + year, "DDMMYYYY")._d,
-          customer_id: null,
-          quotation_list: [],
-          sales_person_id: userToken.employee_id,
-          loged_in_employee: userToken.employee_id,
-          hospital_id: userToken.hims_d_hospital_id,
-        },
-        () => getSalesQuotationList(this)
-      );
-    }
+      if (records) {
+        this.setState({ ...records });
+        persistStorageOnRemove();
+      } else {
+        const userToken = this.context.userToken;
 
+        this.HRMNGMT_Active =
+          userToken.product_type === "HIMS_ERP" ||
+            userToken.product_type === "HRMS" ||
+            userToken.product_type === "HRMS_ERP" ||
+            userToken.product_type === "FINANCE_ERP" ||
+            userToken.product_type === "NO_FINANCE"
+            ? true
+            : false;
+
+        let month = moment().format("MM");
+        let year = moment().format("YYYY");
+        //to load the same list when user come back from whatever screen they went.
+        if (this.props.backToAuth) {
+          const { from_date, to_date, customer_id } = this.props.prev;
+          this.setState(
+            {
+              from_date,
+              to_date,
+              customer_id,
+              sales_person_id: userToken.employee_id,
+              hospital_id: userToken.hims_d_hospital_id,
+            },
+            () => getSalesQuotationList(this)
+          );
+        } else {
+          this.setState(
+            {
+              to_date: new Date(),
+              from_date: moment("01" + month + year, "DDMMYYYY")._d,
+              customer_id: null,
+              quotation_list: [],
+              sales_person_id: userToken.employee_id,
+              loged_in_employee: userToken.employee_id,
+              hospital_id: userToken.hims_d_hospital_id,
+            },
+            () => getSalesQuotationList(this)
+          );
+        }
+      }
+    })();
     this.props.getCustomerMaster({
       uri: "/customer/getCustomerMaster",
       module: "masterSettings",
@@ -229,7 +245,7 @@ class SalesQuotationList extends Component {
             <div className="col-lg-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-body" id="SalesQuotationListCntr">
-                  <AlgaehDataGrid
+                  <AlgaehTable
                     id="SalesQuotationList_grid"
                     columns={[
                       {
@@ -246,11 +262,15 @@ class SalesQuotationList extends Component {
                                 }}
                                 className="fas fa-eye"
                                 onClick={() => {
-                                  this.ourOwnMiniNavigator({
-                                    RQ_Screen: "SalesQuotation",
-                                    sales_quotation_number:
-                                      row.sales_quotation_number,
-                                  });
+                                  persistStateOnBack(this.state, true);
+                                  this.props.history.push(
+                                    `/SalesQuotation?sales_quotation_number=${row.sales_quotation_number}`
+                                  );
+                                  // this.ourOwnMiniNavigator({
+                                  //   RQ_Screen: "SalesQuotation",
+                                  //   sales_quotation_number:
+                                  //     row.sales_quotation_number,
+                                  // });
                                 }}
                               />
                               <i
@@ -297,6 +317,7 @@ class SalesQuotationList extends Component {
                           maxWidth: 100,
                           resizable: false,
                         },
+                        filterable: true
                       },
                       {
                         fieldName: "sales_quotation_number",
@@ -311,6 +332,7 @@ class SalesQuotationList extends Component {
                           resizable: false,
                           style: { textAlign: "center" },
                         },
+                        filterable: true
                       },
                       {
                         fieldName: "sales_quotation_date",
@@ -346,6 +368,7 @@ class SalesQuotationList extends Component {
                           resizable: false,
                           style: { textAlign: "center" },
                         },
+                        filterable: true
                       },
                       {
                         fieldName: "full_name",
@@ -359,7 +382,8 @@ class SalesQuotationList extends Component {
                           maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
-                        }
+                        },
+                        filterable: true
                       },
                       {
                         fieldName: "quote_validity",
@@ -416,13 +440,18 @@ class SalesQuotationList extends Component {
                         },
                       },
                     ]}
-                    keyId="sales_quotation_number"
-                    filter={true}
-                    dataSource={{
-                      data: this.state.quotation_list,
-                    }}
-                    noDataText="No data available"
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    data={this.state.quotation_list}
+                    // height="80vh"
+                    pagination={true}
+                    isFilterable={true}
+                    persistence={this.state.persistence}
+                  // keyId="sales_quotation_number"
+                  // filter={true}
+                  // dataSource={{
+                  //   data: this.state.quotation_list,
+                  // }}
+                  // noDataText="No data available"
+                  // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>

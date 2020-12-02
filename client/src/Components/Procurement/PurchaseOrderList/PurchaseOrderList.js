@@ -20,14 +20,20 @@ import {
 } from "./PurchaseOrderListEvent";
 
 import {
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { RawSecurityComponent } from "algaeh-react-components";
+import {
+  AlgaehTable,
+  RawSecurityComponent,
+  persistStorageOnRemove,
+  persistStageOnGet,
+  persistStateOnBack
+} from "algaeh-react-components";
 
 class PurchaseOrderList extends Component {
   constructor(props) {
@@ -44,96 +50,105 @@ class PurchaseOrderList extends Component {
       authorize1: "Y",
       poSelected: false,
       status: "1",
+      persistence: null
     };
 
 
   }
 
   componentDidMount() {
-    debugger
-    const params = new URLSearchParams(this.props.location?.search);
-    if (params?.get("po_from")) {
-      this.setState({
-        po_from: params?.get("po_from")
-      });
-    }
-    if (params?.get("status")) {
-      this.setState({
-        status: params?.get("status")
-      });
-    }
-    if (params?.get("from_date")) {
-      this.setState({
-        // from_date: params?.get("from_date"),
-        from_date: moment(params?.get("from_date"))._d,
-      });
-    }
-    debugger
-    if (params?.get("to_date")) {
-      this.setState(
-        {
-          to_date: moment(params?.get("to_date"))._d,
-          bothExisits: JSON.parse(params?.get("bothExisits")),
-          poSelected: JSON.parse(params?.get("poSelected"))
-        },
-        () => {
-          getData(this);
-          getPurchaseOrderList(this);
-        }
-      );
-    } else {
-      let bothExisits = true,
-        poSelected = true, status = "1";
+    (async () => {
+      const records = await persistStageOnGet();
 
-      RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
-        if (result === "show") {
-          status = "2";
+      if (records) {
+        this.setState({ ...records });
+        persistStorageOnRemove();
+      } else {
+        const params = new URLSearchParams(this.props.location?.search);
+        if (params?.get("po_from")) {
+          this.setState({
+            po_from: params?.get("po_from")
+          });
         }
-      });
-
-      RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
-        (result) => {
-          if (result === "show") {
-            bothExisits = false;
-            poSelected = false;
-          }
+        if (params?.get("status")) {
+          this.setState({
+            status: params?.get("status")
+          });
         }
-      );
+        if (params?.get("from_date")) {
+          this.setState({
+            // from_date: params?.get("from_date"),
+            from_date: moment(params?.get("from_date"))._d,
+          });
+        }
 
-      RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
-        (result) => {
-          if (result === "show") {
-            this.setState(
-              {
-                poSelected: poSelected,
-                po_from: bothExisits === true ? "INV" : "PHR",
-                status: bothExisits === true ? status : "0",
-                bothExisits: bothExisits,
-              },
-              () => {
-                getData(this);
-                getPurchaseOrderList(this);
+        if (params?.get("to_date")) {
+          this.setState(
+            {
+              to_date: moment(params?.get("to_date"))._d,
+              bothExisits: JSON.parse(params?.get("bothExisits")),
+              poSelected: JSON.parse(params?.get("poSelected"))
+            },
+            () => {
+              getData(this);
+              getPurchaseOrderList(this);
+            }
+          );
+        } else {
+          let bothExisits = true,
+            poSelected = true, status = "1";
+
+          RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
+            if (result === "show") {
+              status = "2";
+            }
+          });
+
+          RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
+            (result) => {
+              if (result === "show") {
+                bothExisits = false;
+                poSelected = false;
               }
-            );
-          } else {
-            this.setState(
-              {
-                po_from: "PHR",
-                bothExisits: bothExisits === false ? false : true,
-                poSelected: poSelected === false ? false : true,
-                status: bothExisits === false ? status : "0",
-              },
-              () => {
-                getData(this);
-                getPurchaseOrderList(this);
+            }
+          );
+
+          RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
+            (result) => {
+              if (result === "show") {
+                this.setState(
+                  {
+                    poSelected: poSelected,
+                    po_from: bothExisits === true ? "INV" : "PHR",
+                    status: bothExisits === true ? status : "0",
+                    bothExisits: bothExisits,
+                  },
+                  () => {
+                    getData(this);
+                    getPurchaseOrderList(this);
+                  }
+                );
+              } else {
+                this.setState(
+                  {
+                    po_from: "PHR",
+                    bothExisits: bothExisits === false ? false : true,
+                    poSelected: poSelected === false ? false : true,
+                    status: bothExisits === false ? status : "0",
+                  },
+                  () => {
+                    getData(this);
+                    getPurchaseOrderList(this);
+                  }
+                );
               }
-            );
-          }
+            }
+          );
+
         }
-      );
+      }
+    })();
 
-
-    }
   }
 
 
@@ -272,7 +287,7 @@ class PurchaseOrderList extends Component {
             <div className="col-lg-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-body" id="purchaseOrderListCntr">
-                  <AlgaehDataGrid
+                  <AlgaehTable
                     id="PurchaseOrderList_grid"
                     columns={[
                       {
@@ -284,6 +299,7 @@ class PurchaseOrderList extends Component {
                               <i
                                 className="fas fa-eye"
                                 onClick={() => {
+                                  persistStateOnBack(this.state, true);
                                   this.props.history.push(
                                     `/PurchaseOrderEntry?purchase_number=${row.purchase_number}`
                                   );
@@ -299,6 +315,8 @@ class PurchaseOrderList extends Component {
                                 <i
                                   className="fa fa-exchange-alt"
                                   onClick={() => {
+                                    debugger
+                                    persistStateOnBack(this.state, true);
                                     setGlobal({
                                       "RQ-STD": "DeliveryNoteEntry",
                                       purchase_number: row.purchase_number,
@@ -322,6 +340,7 @@ class PurchaseOrderList extends Component {
                       {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        filterable: true,
                         displayTemplate: (row) => {
                           return row.status === "Delivery Completed" &&
                             row.po_mode === "I" ? (
@@ -373,6 +392,7 @@ class PurchaseOrderList extends Component {
                             label={{ forceLabel: "Receipt Reverted" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: row => {
                           return row.is_revert === "Y" ? (
                             <span className="badge badge-success">Yes</span>
@@ -388,10 +408,9 @@ class PurchaseOrderList extends Component {
                         ),
                         disabled: true,
                         others: {
-                          resizable: false,
-                          style: { textAlign: "center" },
-                          maxWidth: 180,
+                          width: 140,
                         },
+                        filterable: true,
                       },
                       {
                         fieldName: "vendor_name",
@@ -399,6 +418,7 @@ class PurchaseOrderList extends Component {
                           <AlgaehLabel label={{ forceLabel: "Vendor Name" }} />
                         ),
                         disabled: true,
+                        filterable: true,
                         others: {
                           resizable: false,
                           style: { textAlign: "left" },
@@ -414,6 +434,8 @@ class PurchaseOrderList extends Component {
                         },
 
                         disabled: true,
+                        filterable: true,
+                        filterType: "date",
                         others: {
                           maxWidth: 150,
                           resizable: false,
@@ -457,6 +479,7 @@ class PurchaseOrderList extends Component {
                           );
                         },
                         disabled: true,
+                        filterable: true,
                         others: {
                           resizable: false,
                           style: { textAlign: "center" },
@@ -468,6 +491,7 @@ class PurchaseOrderList extends Component {
                           <AlgaehLabel label={{ forceLabel: "Created By" }} />
                         ),
                         disabled: true,
+                        filterable: true,
                         others: {
                           resizable: false,
                           // style: { textAlign: "left" },
@@ -479,6 +503,7 @@ class PurchaseOrderList extends Component {
                           <AlgaehLabel label={{ forceLabel: "Auth Level 1" }} />
                         ),
                         disabled: true,
+                        filterable: true,
                         others: {
                           resizable: false,
                           // style: { textAlign: "left" },
@@ -497,13 +522,18 @@ class PurchaseOrderList extends Component {
                         },
                       },
                     ]}
-                    keyId="purchase_number"
-                    dataSource={{
-                      data: this.state.purchase_list,
-                    }}
-                    filter={true}
-                    noDataText="No data available for location"
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    data={this.state.purchase_list}
+                    // height="80vh"
+                    pagination={true}
+                    isFilterable={true}
+                    persistence={this.state.persistence}
+                  // keyId="purchase_number"
+                  // dataSource={{
+                  //   data: this.state.purchase_list,
+                  // }}
+                  // filter={true}
+                  // noDataText="No data available for location"
+                  // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>

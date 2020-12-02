@@ -12,12 +12,19 @@ import {
 } from "./SalesInvoiceListEvent";
 import Options from "../../../Options.json";
 import {
-    AlgaehDataGrid,
+    // AlgaehDataGrid,
     AlgaehLabel,
     AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { Tooltip } from "antd";
+import {
+    AlgaehTable,
+    persistStorageOnRemove,
+    persistStageOnGet,
+    persistStateOnBack
+} from "algaeh-react-components";
+
 // import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class SalesInvoiceList extends Component {
@@ -35,23 +42,32 @@ class SalesInvoiceList extends Component {
     }
 
     componentDidMount() {
-        const params = new URLSearchParams(this.props.location?.search);
-        if (params?.get("from_date")) {
-            this.setState({
-                // from_date: params?.get("from_date"),
-                from_date: moment(params?.get("from_date"))._d,
-            });
-        }
-        if (params?.get("to_date")) {
-            this.setState(
-                {
-                    to_date: moment(params?.get("to_date"))._d,
-                },
-                () => getSalesInvoiceList(this)
-            );
-        } else {
-            getSalesInvoiceList(this);
-        }
+        (async () => {
+            const records = await persistStageOnGet();
+
+            if (records) {
+                this.setState({ ...records });
+                persistStorageOnRemove();
+            } else {
+                const params = new URLSearchParams(this.props.location?.search);
+                if (params?.get("from_date")) {
+                    this.setState({
+                        // from_date: params?.get("from_date"),
+                        from_date: moment(params?.get("from_date"))._d,
+                    });
+                }
+                if (params?.get("to_date")) {
+                    this.setState(
+                        {
+                            to_date: moment(params?.get("to_date"))._d,
+                        },
+                        () => getSalesInvoiceList(this)
+                    );
+                } else {
+                    getSalesInvoiceList(this);
+                }
+            }
+        })();
     }
 
     render() {
@@ -90,7 +106,7 @@ class SalesInvoiceList extends Component {
                         <div className="col-lg-12">
                             <div className="portlet portlet-bordered margin-bottom-15">
                                 <div className="portlet-body" id="SalesInvoiceListCntr">
-                                    <AlgaehDataGrid
+                                    <AlgaehTable
                                         id="SalesInvoiceList_grid"
                                         columns={[
                                             {
@@ -103,6 +119,7 @@ class SalesInvoiceList extends Component {
                                                                 <i
                                                                     className="fas fa-file-alt"
                                                                     onClick={() => {
+                                                                        persistStateOnBack(this.state, true);
                                                                         this.props.history.push(
                                                                             `/SalesInvoice?invoice_number=${row.invoice_number}`
                                                                         );
@@ -113,6 +130,7 @@ class SalesInvoiceList extends Component {
                                                                 <i
                                                                     className="fas fa-eye"
                                                                     onClick={() => {
+                                                                        persistStateOnBack(this.state, true);
                                                                         this.props.history.push(
                                                                             `/SalesOrder?sales_order_number=${row.sales_order_number}`
                                                                         );
@@ -125,8 +143,7 @@ class SalesInvoiceList extends Component {
                                                 others: {
                                                     maxWidth: 100,
                                                     resizable: false,
-                                                    style: { textAlign: "center" },
-                                                    filterable: false,
+                                                    style: { textAlign: "center" }
                                                 },
                                             },
                                             {
@@ -143,8 +160,8 @@ class SalesInvoiceList extends Component {
                                                     maxWidth: 60,
                                                     resizable: false,
                                                     style: { textAlign: "center" },
-                                                    filterable: true,
                                                 },
+                                                filterable: true,
                                             },
                                             {
                                                 fieldName: "is_revert",
@@ -160,8 +177,8 @@ class SalesInvoiceList extends Component {
                                                     maxWidth: 60,
                                                     resizable: false,
                                                     style: { textAlign: "center" },
-                                                    filterable: true,
                                                 },
+                                                filterable: true,
                                             },
                                             {
                                                 fieldName: "correction",
@@ -180,8 +197,8 @@ class SalesInvoiceList extends Component {
                                                     maxWidth: 100,
                                                     resizable: false,
                                                     style: { textAlign: "center" },
-                                                    filterable: true,
                                                 },
+                                                filterable: true,
                                             },
                                             {
                                                 fieldName: "invoice_number",
@@ -194,6 +211,7 @@ class SalesInvoiceList extends Component {
                                                     resizable: false,
                                                     style: { textAlign: "center" },
                                                 },
+                                                filterable: true,
                                             },
                                             {
                                                 fieldName: "invoice_date",
@@ -211,8 +229,7 @@ class SalesInvoiceList extends Component {
                                                 },
                                                 others: {
                                                     maxWidth: 150,
-                                                    resizable: false,
-                                                    filterable: false,
+                                                    resizable: false
                                                 },
                                             },
                                             {
@@ -226,6 +243,7 @@ class SalesInvoiceList extends Component {
                                                     resizable: false,
                                                     style: { textAlign: "center" },
                                                 },
+                                                filterable: true
                                             },
                                             {
                                                 fieldName: "sales_order_date",
@@ -243,9 +261,9 @@ class SalesInvoiceList extends Component {
                                                 },
                                                 others: {
                                                     maxWidth: 150,
-                                                    resizable: false,
-                                                    filterable: false,
+                                                    resizable: false
                                                 },
+                                                filterable: true
                                             },
                                             {
                                                 fieldName: "customer_name",
@@ -259,6 +277,7 @@ class SalesInvoiceList extends Component {
                                                     resizable: false,
                                                     style: { textAlign: "center" },
                                                 },
+                                                filterable: true
                                             },
                                             {
                                                 fieldName: "customer_po_no",
@@ -273,15 +292,21 @@ class SalesInvoiceList extends Component {
                                                     resizable: false,
                                                     style: { textAlign: "center" },
                                                 },
+                                                filterable: true
                                             },
                                         ]}
-                                        keyId="invoice_number"
-                                        filter={true}
-                                        dataSource={{
-                                            data: this.state.invoice_list,
-                                        }}
-                                        noDataText="No data available"
-                                        paging={{ page: 0, rowsPerPage: 10 }}
+                                        data={this.state.invoice_list}
+                                        // height="80vh"
+                                        pagination={true}
+                                        isFilterable={true}
+                                        persistence={this.state.persistence}
+                                    // keyId="invoice_number"
+                                    // filter={true}
+                                    // dataSource={{
+                                    //     data: this.state.invoice_list,
+                                    // }}
+                                    // noDataText="No data available"
+                                    // paging={{ page: 0, rowsPerPage: 10 }}
                                     />
                                 </div>
                             </div>
