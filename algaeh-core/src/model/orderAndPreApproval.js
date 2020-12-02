@@ -550,8 +550,10 @@ let insertOrderedServices = (req, res, next) => {
                             query:
                               // delete_str +
                               "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, \
-                              OS.test_type, S.physiotherapy_service, S.service_name from hims_f_ordered_services OS \
+                              OS.test_type, S.physiotherapy_service, S.service_name, hims_d_investigation_test_id as test_id \
+                              from hims_f_ordered_services OS \
                               inner join hims_d_services S on  S.hims_d_services_id = OS.services_id\
+                              left join hims_d_investigation_test IT on OS.services_id=IT.services_id \
                               left join hims_f_service_approval SA on SA.ordered_services_id=OS.hims_f_ordered_services_id\
                              where   OS.patient_id=? and OS.doctor_id=? and OS.visit_id=? and OS.services_id in (?)  and hims_f_service_approval_id is null ;",
                             values: [patient_id, doctor_id, visit_id, services],
@@ -1238,7 +1240,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-          where.condition,
+        where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
