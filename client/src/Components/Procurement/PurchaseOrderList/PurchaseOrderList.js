@@ -45,21 +45,18 @@ class PurchaseOrderList extends Component {
       poSelected: false,
       status: "1",
     };
-
-
   }
 
   componentDidMount() {
-    debugger
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("po_from")) {
       this.setState({
-        po_from: params?.get("po_from")
+        po_from: params?.get("po_from"),
       });
     }
     if (params?.get("status")) {
       this.setState({
-        status: params?.get("status")
+        status: params?.get("status"),
       });
     }
     if (params?.get("from_date")) {
@@ -68,13 +65,13 @@ class PurchaseOrderList extends Component {
         from_date: moment(params?.get("from_date"))._d,
       });
     }
-    debugger
+
     if (params?.get("to_date")) {
       this.setState(
         {
           to_date: moment(params?.get("to_date"))._d,
           bothExisits: JSON.parse(params?.get("bothExisits")),
-          poSelected: JSON.parse(params?.get("poSelected"))
+          poSelected: JSON.parse(params?.get("poSelected")),
         },
         () => {
           getData(this);
@@ -83,13 +80,16 @@ class PurchaseOrderList extends Component {
       );
     } else {
       let bothExisits = true,
-        poSelected = true, status = "1";
+        poSelected = true,
+        status = "1";
 
-      RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
-        if (result === "show") {
-          status = "2";
+      RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then(
+        (result) => {
+          if (result === "show") {
+            status = "2";
+          }
         }
-      });
+      );
 
       RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
         (result) => {
@@ -131,11 +131,8 @@ class PurchaseOrderList extends Component {
           }
         }
       );
-
-
     }
   }
-
 
   render() {
     // const _mainStore = Enumerable.from(this.props.polocations)
@@ -151,25 +148,25 @@ class PurchaseOrderList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-          // pageNavPath={[
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{
-          //           forceLabel: "Home",
-          //           align: "ltr",
-          //         }}
-          //       />
-          //     ),
-          //   },
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
-          //       />
-          //     ),
-          //   },
-          // ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr",
+            //         }}
+            //       />
+            //     ),
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
+            //       />
+            //     ),
+            //   },
+            // ]}
           />
           <div
             className="row inner-top-search"
@@ -325,39 +322,39 @@ class PurchaseOrderList extends Component {
                         displayTemplate: (row) => {
                           return row.status === "Delivery Completed" &&
                             row.po_mode === "I" ? (
-                              <span className="badge badge-success">
-                                Delivery Completed / Receipt Pending
-                              </span>
-                            ) : row.status === "Delivery Completed" &&
-                              row.po_mode === "S" ? (
-                                <span className="badge badge-success">
-                                  Receipt Pending
-                                </span>
-                              ) : row.status === "PO Closed" ? (
-                                <span className="badge badge-success">
-                                  PO Closed
-                                </span>
-                              ) : row.status === "Delivery Pending" ? (
-                                <span className="badge badge-warning">
-                                  Delivery Pending
-                                </span>
-                              ) : row.status === "Autorization 1 Pending" ? (
-                                <span className="badge badge-danger">
-                                  Auth 1 Pending
-                                </span>
-                              ) : row.status === "Final Autorization Pending" ? (
-                                <span className="badge badge-danger">
-                                  Auth 2 Pending
-                                </span>
-                              ) : row.status === "PO Rejected" ? (
-                                <span className="badge badge-danger">
-                                  {row.status}
-                                </span>
-                              ) : row.status === null ? (
-                                <span className="badge badge-danger">
-                                  Send for Authorization pending
-                                </span>
-                              ) : null;
+                            <span className="badge badge-success">
+                              Delivery Completed / Receipt Pending
+                            </span>
+                          ) : row.status === "Delivery Completed" &&
+                            row.po_mode === "S" ? (
+                            <span className="badge badge-success">
+                              Receipt Pending
+                            </span>
+                          ) : row.status === "PO Closed" ? (
+                            <span className="badge badge-success">
+                              PO Closed
+                            </span>
+                          ) : row.status === "Delivery Pending" ? (
+                            <span className="badge badge-warning">
+                              Delivery Pending
+                            </span>
+                          ) : row.status === "Autorization 1 Pending" ? (
+                            <span className="badge badge-danger">
+                              Auth 1 Pending
+                            </span>
+                          ) : row.status === "Final Autorization Pending" ? (
+                            <span className="badge badge-danger">
+                              Auth 2 Pending
+                            </span>
+                          ) : row.status === "PO Rejected" ? (
+                            <span className="badge badge-danger">
+                              {row.status}
+                            </span>
+                          ) : row.status === null ? (
+                            <span className="badge badge-danger">
+                              Send for Authorization pending
+                            </span>
+                          ) : null;
                         },
 
                         others: {
@@ -373,13 +370,13 @@ class PurchaseOrderList extends Component {
                             label={{ forceLabel: "Receipt Reverted" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.is_revert === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                              <span className="badge badge-danger">No</span>
-                            );
-                        }
+                            <span className="badge badge-danger">No</span>
+                          );
+                        },
                       },
                       {
                         fieldName: "purchase_number",
@@ -432,21 +429,21 @@ class PurchaseOrderList extends Component {
 
                           this.state.po_from === "PHR"
                             ? (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  (f) =>
-                                    f.hims_d_pharmacy_location_id ===
-                                    row.pharmcy_location_id
-                                ))
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      (f) =>
+                                        f.hims_d_pharmacy_location_id ===
+                                        row.pharmcy_location_id
+                                    ))
                             : (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  (f) =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.inventory_location_id
-                                ));
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      (f) =>
+                                        f.hims_d_inventory_location_id ===
+                                        row.inventory_location_id
+                                    ));
 
                           return (
                             <span>

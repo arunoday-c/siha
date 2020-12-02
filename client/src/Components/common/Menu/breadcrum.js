@@ -22,10 +22,10 @@ export default memo(function ({ userMenu, setSelectedMenuItem }) {
     });
     setPos(e.target.offsetLeft + 15);
   }
-  function onClickScreen(item, display, others) {
+  async function onClickScreen(item, display, others) {
     const screenName = display.replace(/ /g, "");
     const selMenu = { ...item, ...others };
-    setItem("userSelectedMenu", selMenu);
+    await setItem("userSelectedMenu", selMenu);
     setSelectedMenuItem(selMenu);
     setCookie("ScreenName", screenName);
     const extraParam =
