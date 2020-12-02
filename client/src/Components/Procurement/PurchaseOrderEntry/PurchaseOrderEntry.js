@@ -1018,7 +1018,7 @@ class PurchaseOrderEntry extends Component {
                     type="button"
                     className="btn btn-danger"
                     disabled={
-                      (this.state.authorize2 === "Y" &&
+                      (this.state.is_posted === "N" ? true : this.state.authorize2 === "Y" &&
                         this.state.authorize2 === "Y") ||
                         this.state.cancelled === "Y"
                         ? true

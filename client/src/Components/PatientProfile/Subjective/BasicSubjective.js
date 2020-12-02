@@ -4,7 +4,13 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../utils/MyContext";
 import "./subjective.scss";
-
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import {
+  PRESCRIPTION_FREQ_PERIOD,
+  PRESCRIPTION_FREQ_TIME,
+  PRESCRIPTION_FREQ_DURATION,
+  PRESCRIPTION_FREQ_ROUTE,
+} from "../../../utils/GlobalVariables.json";
 import {
   AlgaehLabel,
   AlagehFormGroup,
@@ -39,6 +45,8 @@ import moment from "moment";
 import { Dimmer, Loader } from "semantic-ui-react";
 import { PatientAttachments } from "../../PatientRegistrationNew/PatientAttachment";
 import { printPrescription } from "../PatientProfileHandlers";
+import { AlgaehModal } from "algaeh-react-components";
+// import { Button } from "antd";
 
 class BasicSubjective extends Component {
   constructor(props) {
@@ -70,6 +78,10 @@ class BasicSubjective extends Component {
       loadingUnderMedication: true,
       deltaOpen: false,
       allReportOpen: false,
+      editPrescriptionModal: false,
+      no_of_days: 0,
+      dosage: 1,
+      med_units: "",
     };
     this.isMale = Window?.global?.gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 500;
@@ -119,7 +131,6 @@ class BasicSubjective extends Component {
   }
 
   deletePrecription(medicine, context) {
-    debugger;
     SubjectiveHandler().deletePrecription(this, medicine, context);
   }
 
@@ -142,7 +153,118 @@ class BasicSubjective extends Component {
       });
     }
   }
+  instructionItems() {
+    const frequency = _.find(
+      PRESCRIPTION_FREQ_PERIOD,
+      (f) => f.value === this.state.frequency
+    );
+    const frequencyType = _.find(
+      PRESCRIPTION_FREQ_TIME,
+      (f) => f.value === this.state.frequency_type
+    );
+    const consume = _.find(
+      PRESCRIPTION_FREQ_DURATION,
+      (f) => f.value === this.state.frequency_time
+    );
+    const route = _.find(
+      PRESCRIPTION_FREQ_ROUTE,
+      (f) => f.value === this.state.frequency_route
+    );
+    if (frequency !== undefined && frequencyType !== undefined) {
+      this.setState({
+        instructions: `${this.state.dosage}-${this.state.med_units}, ${
+          frequency.name
+        }, ${frequencyType.name}, ${
+          consume !== undefined ? consume.name : ""
+        }, ${route !== undefined ? route.name : ""} for ${
+          this.state.no_of_days
+        } day(s)`,
+      });
+    }
+  }
+  onInstructionsTextHandler(e) {
+    this.setState({
+      instructions: e.currentTarget.value,
+    });
+  }
+  texthandle = (e) => {
+    let name = e.name || e.target.name;
+    let value = e.value === "" ? null : e.value || e.target.value;
+    this.setState(
+      {
+        [name]: value,
+      },
+      () => {
+        this.instructionItems();
+        this.calcuateDispense(e);
+      }
+    );
+  };
+  calcuateDispense = (e) => {
+    // if (e.target === null || e.target.value !== e.target.oldvalue) {
 
+    let frequency = 0;
+    let frequency_type = 0;
+    let dispense = 0;
+    if (this.state.no_of_days !== 0) {
+      //Frequency
+      if (
+        this.state.frequency === "0" ||
+        this.state.frequency === "4" ||
+        this.state.frequency === "5"
+      ) {
+        frequency = 2;
+      } else if (
+        this.state.frequency === "1" ||
+        this.state.frequency === "2" ||
+        this.state.frequency === "3"
+      ) {
+        frequency = 1;
+      } else if (this.state.frequency === "6") {
+        frequency = 3;
+      }
+
+      //Frequency Type
+      if (this.state.frequency_type === "PD" && frequency === 2) {
+        frequency_type = 2;
+      } else if (this.state.frequency_type === "PD" && frequency === 1) {
+        frequency_type = 1;
+      } else if (this.state.frequency_type === "PD" && frequency === 3) {
+        frequency_type = 3;
+      } else if (this.state.frequency_type === "PH" && frequency === 2) {
+        frequency_type = 2 * 24;
+      } else if (this.state.frequency_type === "PH" && frequency === 1) {
+        frequency_type = 1 * 24;
+      } else if (this.state.frequency_type === "PH" && frequency === 3) {
+        frequency_type = 3 * 24;
+      } else if (this.state.frequency_type === "PW" && frequency === 2) {
+        frequency_type = 2;
+      } else if (this.state.frequency_type === "PW" && frequency === 1) {
+        frequency_type = 1;
+      } else if (this.state.frequency_type === "PW" && frequency === 3) {
+        frequency_type = 3;
+      } else if (this.state.frequency_type === "PM" && frequency === 2) {
+        frequency_type = 2;
+      } else if (this.state.frequency_type === "PM" && frequency === 1) {
+        frequency_type = 1;
+      } else if (this.state.frequency_type === "PM" && frequency === 3) {
+        frequency_type = 3;
+      } else if (this.state.frequency_type === "AD" && frequency === 2) {
+        frequency_type = 2;
+      } else if (this.state.frequency_type === "AD" && frequency === 1) {
+        frequency_type = 1;
+      } else if (this.state.frequency_type === "AD" && frequency === 3) {
+        frequency_type = 3;
+      }
+
+      dispense = this.state.no_of_days * this.state.dosage * frequency_type;
+
+      this.setState({
+        dispense: dispense,
+      });
+    }
+    // }
+  };
   getPatientMedications() {
     const { current_patient } = Window.global;
     this.setState(
@@ -269,7 +391,6 @@ class BasicSubjective extends Component {
     });
   }
   showAllReport() {
-    debugger;
     this.setState({
       allReportOpen: !this.state.allReportOpen,
     });
@@ -379,6 +500,187 @@ class BasicSubjective extends Component {
     //   });
     // }
   }
+  clearItemCodeHandler() {
+    this.setState({
+      generic_name_item_description: "",
+      service_id: null,
+      uom_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      addItemEnable: true,
+      instructions: "",
+      total_quantity: 0,
+      frequency_route: "OR",
+    });
+  }
+  // favMedData() {
+  //   algaehApiCall({
+  //     uri: "/orderMedication/getFavMedication",
+
+  //     method: "GET",
+  //     data: {
+  //       added_provider_id: this.state.provider_id,
+  //     },
+
+  //     onSuccess: (data) => {
+  //       this.setState({
+  //         favMedData: data.data.records,
+  //         favMedPop: true,
+  //       });
+  //     },
+  //     onCatch: (error) => {
+  //       console.log("error", error);
+  //     },
+  //   });
+  // }
+  numberhandle = (ctrl, e) => {
+    e = e || ctrl;
+
+    let name = e.name;
+    if (e.value === "") {
+      this.setState({
+        [name]: "",
+      });
+      return;
+    }
+    let value = parseFloat(e.value, 10);
+    if (typeof value === "number" && value < 0) {
+      swalMessage({
+        title: "Cannot be lessthan Zero.",
+        type: "warning",
+      });
+    } else {
+      this.setState(
+        {
+          [name]: value,
+        },
+        () => {
+          this.instructionItems();
+          this.calcuateDispense(e);
+        }
+      );
+    }
+  };
+  onEditRow(row, context) {
+    this.setState({
+      // rowDetails: row,
+      // generic_name_item_description: row.generic_name,
+      editPrescriptionModal: true,
+      // addItemEnable: false,
+      hims_f_prescription_detail_id: row.hims_f_prescription_detail_id,
+      frequency: row.frequency,
+      dispense: row.dispense,
+
+      pre_approval: row.pre_approval,
+      frequency_type: row.frequency_type,
+      frequency_time: row.frequency_time,
+      frequency_route: row.frequency_route,
+      dosage: row.dosage,
+
+      // total_quantity:row.
+      updateButton: true,
+
+      med_units: row.med_units,
+      no_of_days: row.no_of_days,
+      start_date: row.start_date,
+      instructions: row.instructions,
+      generic_name_item_description: row.item_description,
+      generic_name: row.generic_name,
+      item_description: row.item_description,
+      item_id: row.item_id,
+      generic_id: row.generic_id,
+      service_id: row.service_id,
+      uom_id: row.uom_id,
+      item_category_id: row.item_category_id,
+      item_group_id: row.item_group_id,
+    });
+  }
+  itemHandle(item) {
+    if (item.service_id === null || item.service_id === undefined) {
+      swalMessage({
+        title: "Service not setup to the selected Item.",
+        type: "error",
+      });
+      this.setState({
+        total_quantity: 0,
+        generic_id: null,
+      });
+    } else {
+      this.setState(
+        {
+          generic_name_item_description:
+            item.generic_name_item_description !== undefined
+              ? item.generic_name_item_description.replace(/\w+/g, _.capitalize)
+              : item.generic_name_item_description,
+          generic_name:
+            item.generic_name !== undefined
+              ? item.generic_name.replace(/\w+/g, _.capitalize)
+              : item.generic_name,
+          item_description:
+            item.item_description !== undefined
+              ? item.item_description.replace(/\w+/g, _.capitalize)
+              : item.item_description,
+          item_id: item.hims_d_item_master_id
+            ? item.hims_d_item_master_id
+            : item.item_id,
+          generic_id: item.generic_id,
+          service_id: item.service_id,
+          uom_id: item.sales_uom_id ? item.sales_uom_id : item.uom_id,
+          item_category_id: item.category_id
+            ? item.category_id
+            : item.item_category_id,
+          item_group_id: item.group_id ? item.group_id : item.item_group_id,
+          addItemEnable: false,
+          total_quantity: 0,
+          frequency_route: item.item_route ? item.item_route : "OR",
+        }
+        // () => {
+        //   getItemStock(this);
+        // }
+      );
+    }
+  }
+
+  updatePrescription() {
+    let medicationobj = {
+      item_id: this.state.item_id,
+      generic_id: this.state.generic_id,
+      dosage: this.state.dosage,
+      med_units: this.state.med_units,
+      frequency: this.state.frequency,
+      no_of_days: this.state.no_of_days,
+      frequency_type: this.state.frequency_type,
+      frequency_time: this.state.frequency_time,
+      frequency_route: this.state.frequency_route,
+      start_date: this.state.start_date,
+      uom_id: this.state.uom_id,
+      service_id: this.state.service_id,
+      item_category_id: this.state.item_category_id,
+      item_group_id: this.state.item_group_id,
+      instructions: this.state.instructions,
+      insured: this.state.insured,
+      hims_f_prescription_detail_id: this.state.hims_f_prescription_detail_id,
+    };
+    algaehApiCall({
+      uri: "/orderMedication/updatePatientPrescription",
+      method: "PUT",
+      data: { medicationobj },
+      onSuccess: (response) => {
+        swalMessage({
+          title: "Prescription Updated Successful ...",
+          type: "success",
+        });
+        this.setState({ editPrescriptionModal: false });
+        this.getPatientMedications();
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
   componentDidMount() {
     this.getPatientMedications();
     if (this.isMale) {
@@ -416,6 +718,82 @@ class BasicSubjective extends Component {
     return (
       <MyContext.Consumer>
         {(context) => (
+          // <div>
+          //   <AlgaehModal
+          //     wrapClassName="FavMedicationModal"
+          //     title="Select Favourite Medication "
+          //     visible={this.state.favMedPop}
+          //     // okButtonProps={{
+          //     //   loading: lodingAddtoList,
+          //     // }}
+          //     // okText={}
+          //     maskClosable={false}
+          //     // cancelButtonProps={{ disabled: lodingAddtoList }}
+          //     closable={true}
+          //     onCancel={() => {
+          //       this.setState({
+          //         favMedPop: false,
+          //       });
+          //     }}
+          //     className={`row algaehNewModal`}
+          //     // onOk={onOK}
+          //   >
+          //     <div className="col-12" id="FavMedGrid_Cntr">
+          //       <AlgaehDataGrid
+          //         id="hims_f_favourite_icd_med_id"
+          //         columns={[
+          //           {
+          //             fieldName: "generic_name",
+          //             label: (
+          //               <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
+          //             ),
+          //           },
+          //           {
+          //             fieldName: "item_description",
+          //             label: (
+          //               <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+          //             ),
+          //             displayTemplate: (row) => {
+          //               return (
+          //                 <span
+          //                   onClick={this.setItemName.bind(this, row)}
+          //                   className="item_description"
+          //                 >
+          //                   {row.item_description}
+          //                 </span>
+          //               );
+          //             },
+          //             others: {
+          //               resizable: false,
+          //               style: { textAlign: "center" },
+          //             },
+          //             className: (drow) => {
+          //               return "greenCell";
+          //             },
+          //           },
+          //         ]}
+          //         keyId="item_id"
+          //         dataSource={{
+          //           data: this.state.favMedData,
+          //         }}
+          //         // actions={{
+          //         //   allowEdit: false,
+          //         // }}
+          //         // isEditable={true}
+          //         filter={true}
+          //         paging={{ page: 0, rowsPerPage: 10 }}
+          //         byForceEvents={true}
+          //         events={
+          //           {
+          //             // onDelete: deleteItems.bind(this, this),
+          //             // onEdit: this.onEditRow.bind(this, row),
+          //             // onCancel: CancelGrid.bind(this, this),
+          //             // onDone: updateItems.bind(this, this),
+          //           }
+          //         }
+          //       />
+          //     </div>
+          //   </AlgaehModal>
           <div className="subjective basicSubjective">
             <div className="row margin-top-15">
               <div className="algaeh-fixed-right-menu">
@@ -623,7 +1001,10 @@ class BasicSubjective extends Component {
 
                               <AlagehAutoComplete
                                 div={{ className: "col paddingLeft-0" }}
-                                label={{ forceLabel: "Interval", isImp: false }}
+                                label={{
+                                  forceLabel: "Interval",
+                                  isImp: false,
+                                }}
                                 selector={{
                                   name: "interval",
                                   className: "select-fld",
@@ -882,6 +1263,303 @@ class BasicSubjective extends Component {
                     </div>
                   </div>
 
+                  <AlgaehModal
+                    title={"Update Prescription "}
+                    visible={this.state.editPrescriptionModal}
+                    mask={true}
+                    maskClosable={true}
+                    onCancel={() => {
+                      this.setState({ editPrescriptionModal: false });
+                    }}
+                    width={720}
+                    footer={null}
+                    // className={`${userLanguage}_comp row algaehNewModal`}
+                  >
+                    <div className="row popupInner">
+                      <div className="row medicationSearchCntr">
+                        <AlgaehAutoSearch
+                          div={{
+                            className: "col-8 form-group medicationSearchFld",
+                          }}
+                          label={{
+                            forceLabel: "Generic Name / Item Name",
+                          }}
+                          title="Search by generic name / item name"
+                          name="generic_name_item_description"
+                          columns={[
+                            { fieldName: "item_description" },
+                            { fieldName: "item_code" },
+                            { fieldName: "sfda_code" },
+                            {
+                              fieldName: "generic_name",
+                            },
+                          ]}
+                          displayField="generic_name_item_description"
+                          value={this.state.generic_name_item_description}
+                          searchName="ItemMasterOrderMedication"
+                          template={({
+                            item_code,
+                            item_description,
+                            sfda_code,
+                            storage_description,
+                            sales_price,
+                            generic_name,
+                          }) => {
+                            return (
+                              <div className="medicationSearchList">
+                                <h6>
+                                  {item_description
+                                    .split(" ")
+                                    .map(_.capitalize)
+                                    .join(" ")}{" "}
+                                  <small>
+                                    {_.startCase(_.toLower(generic_name))}
+                                  </small>
+                                </h6>
+                                {storage_description !== null &&
+                                storage_description !== "" ? (
+                                  <small>
+                                    Storage :{" "}
+                                    {_.startCase(
+                                      _.toLower(storage_description)
+                                    )}
+                                  </small>
+                                ) : null}
+                              </div>
+                            );
+                          }}
+                          onClear={this.clearItemCodeHandler.bind(this)}
+                          onClick={this.itemHandle.bind(this)}
+                        />
+                        {/* <div className="col-4">
+                            <button
+                              className="btn btn-default btn-small"
+                              style={{ marginTop: 21 }}
+                              onClick={this.favMedData.bind(this)}
+                            >
+                              Show Favourite
+                            </button>
+                          </div> */}
+                        <AlagehAutoComplete
+                          div={{ className: "col-6  form-group" }}
+                          label={{ forceLabel: "Frequency" }}
+                          selector={{
+                            sort: "off",
+                            name: "frequency",
+                            className: "select-fld",
+                            value: this.state.frequency,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: PRESCRIPTION_FREQ_PERIOD,
+                            },
+                            onChange: this.texthandle,
+                            autoComplete: "off",
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col-6  form-group" }}
+                          label={{ forceLabel: "Freq. Type" }}
+                          selector={{
+                            sort: "off",
+                            name: "frequency_type",
+                            className: "select-fld",
+                            value: this.state.frequency_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: PRESCRIPTION_FREQ_TIME,
+                            },
+                            onChange: this.texthandle,
+                            autoComplete: "off",
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col-6  form-group" }}
+                          label={{ forceLabel: "Consume" }}
+                          selector={{
+                            sort: "off",
+                            name: "frequency_time",
+                            className: "select-fld",
+                            value: this.state.frequency_time,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: PRESCRIPTION_FREQ_DURATION,
+                            },
+                            onChange: this.texthandle,
+                            autoComplete: "off",
+                          }}
+                        />{" "}
+                        <AlagehAutoComplete
+                          div={{ className: "col-6  form-group" }}
+                          label={{ forceLabel: "Route" }}
+                          selector={{
+                            sort: "off",
+                            name: "frequency_route",
+                            className: "select-fld",
+                            value: this.state.frequency_route,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: PRESCRIPTION_FREQ_ROUTE,
+                            },
+                            onChange: this.texthandle,
+                            autoComplete: "off",
+                          }}
+                        />{" "}
+                        <AlagehFormGroup
+                          div={{ className: "col-3  form-group" }}
+                          label={{
+                            forceLabel: "Dosage",
+                          }}
+                          textBox={{
+                            number: true,
+                            className: "txt-fld",
+                            name: "dosage",
+                            value: this.state.dosage,
+                            events: {
+                              onChange: this.numberhandle,
+                            },
+                            others: {
+                              min: 1,
+                              onFocus: (e) => {
+                                e.target.oldvalue = e.target.value;
+                              },
+                            },
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-4  form-group" }}
+                          label={{
+                            forceLabel: "Units",
+                          }}
+                          textBox={{
+                            // number: text,
+                            className: "txt-fld",
+                            name: "med_units",
+                            value: this.state.med_units,
+                            events: {
+                              onChange: this.texthandle,
+                            },
+                            others: {
+                              maxLength: 10,
+                              onFocus: (e) => {
+                                e.target.oldvalue = e.target.value;
+                              },
+                            },
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-5  form-group" }}
+                          label={{
+                            forceLabel: "Duration (Days)",
+                          }}
+                          textBox={{
+                            number: { allowNegative: false },
+                            className: "txt-fld",
+                            name: "no_of_days",
+                            value: this.state.no_of_days,
+                            events: {
+                              onChange: this.numberhandle,
+                            },
+                            others: {
+                              onFocus: (e) => {
+                                e.target.oldvalue = e.target.value;
+                              },
+                            },
+                          }}
+                        />
+                        <AlgaehDateHandler
+                          div={{ className: "col-4 form-group" }}
+                          label={{ forceLabel: "Start Date" }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "start_date",
+                          }}
+                          minDate={new Date()}
+                          events={{
+                            onChange: this.datehandle,
+                          }}
+                          value={this.state.start_date}
+                        />
+                        {/* <div className="col">
+                          <label>Is Chronic Medication</label>
+                          <div className="customCheckbox">
+                            <label className="checkbox block">
+                              <input
+                                type="checkbox"
+                                name="chronic_inactive"
+                                value={this.state.chronic_inactive}
+                                checked={this.state.chronic_inactive === "Y"}
+                                // disabled={this.state.disableEdit}
+                                onChange={(e) => {
+                                  e.target.checked
+                                    ? this.setState({
+                                        chronic_inactive: "Y",
+                                      })
+                                    : this.setState({
+                                        chronic_inactive: "N",
+                                      });
+                                }}
+                              />
+                              <span>Yes</span>
+                            </label>
+                          </div>
+                        </div>
+                        <div className="col">
+                          <label>Add to Favourite</label>
+                          <div className="customCheckbox">
+                            <label className="checkbox block">
+                              <input
+                                type="checkbox"
+                                name="isFavMedcine"
+                                value={this.state.isFavMedcine}
+                                checked={this.state.isFavMedcine === "Y"}
+                                // disabled={this.state.disableEdit}
+                                onChange={(e) => {
+                                  e.target.checked
+                                    ? this.setState({
+                                        isFavMedcine: "Y",
+                                      })
+                                    : this.setState({
+                                        isFavMedcine: "N",
+                                      });
+                                }}
+                              />
+                              <span>Yes</span>
+                            </label>
+                          </div>
+                        </div> */}
+                        <div className="col-12">
+                          <label className="style_Label ">Instruction</label>
+                          <textarea
+                            name="instructions"
+                            className="txt-fld"
+                            rows="4"
+                            onChange={this.onInstructionsTextHandler.bind(this)}
+                            value={this.state.instructions}
+                          />
+                        </div>{" "}
+                        <div
+                          className="col-12"
+                          style={{ paddingTop: 9, textAlign: "right" }}
+                        >
+                          <span style={{ float: "left" }}>
+                            Pharmacy Stock: <b>{this.state.total_quantity}</b>
+                          </span>
+                          <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={this.updatePrescription.bind(this)}
+                            // disabled={this.state.addItemEnable}
+                          >
+                            Update
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </AlgaehModal>
                   <div className="col-5" style={{ paddingLeft: 0 }}>
                     <div className="portlet portlet-bordered margin-bottom-15">
                       <div className="portlet-title">
@@ -958,6 +1636,14 @@ class BasicSubjective extends Component {
                                                 context
                                               )}
                                               className="fas fa-trash"
+                                            />
+                                            <i
+                                              onClick={this.onEditRow.bind(
+                                                this,
+                                                medicine,
+                                                context
+                                              )}
+                                              className="fas fa-pen"
                                             />
                                           </div>
                                         </li>
@@ -1087,6 +1773,7 @@ class BasicSubjective extends Component {
               </div>
             </div>
           </div>
+          // </div>
         )}
       </MyContext.Consumer>
     );

@@ -29,7 +29,7 @@ import {
   textEventhandle,
   generateReceiptEntryReport,
   getPOOptions,
-  RevertReceiptEntry
+  RevertReceiptEntry,
 } from "./ReceiptEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
@@ -262,8 +262,8 @@ class ReceiptEntry extends Component {
                     ) : this.state.posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                          <span className="badge badge-success">Posted</span>
-                        )}
+                      <span className="badge badge-success">Posted</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
@@ -276,7 +276,6 @@ class ReceiptEntry extends Component {
                     }}
                   />
                   <h6>{this.state.created_name}</h6>
-
                 </div>
               ) : null}
             </div>
@@ -284,17 +283,17 @@ class ReceiptEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt Entry Report",
-                    events: {
-                      onClick: () => {
-                        generateReceiptEntryReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Receipt Entry Report",
+                      events: {
+                        onClick: () => {
+                          generateReceiptEntryReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -377,28 +376,28 @@ class ReceiptEntry extends Component {
                     </div>
                   </div>
                 ) : (
-                    <div className="col-6">
-                      <div className="row">
-                        <div className="col">
-                          <AlgaehLabel label={{ forceLabel: "Branch" }} />
-                          <h6>
-                            {this.state.hospital_name
-                              ? this.state.hospital_name
-                              : "------"}
-                          </h6>
-                        </div>
+                  <div className="col-6">
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                        <h6>
+                          {this.state.hospital_name
+                            ? this.state.hospital_name
+                            : "------"}
+                        </h6>
+                      </div>
 
-                        <div className="col">
-                          <AlgaehLabel label={{ forceLabel: "Project" }} />
-                          <h6>
-                            {this.state.project_desc
-                              ? this.state.project_desc
-                              : "------"}
-                          </h6>
-                        </div>
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Project" }} />
+                        <h6>
+                          {this.state.project_desc
+                            ? this.state.project_desc
+                            : "------"}
+                        </h6>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Vendor" }} />
@@ -572,19 +571,24 @@ class ReceiptEntry extends Component {
             </div>
           </div>
 
-          {this.state.is_revert === "Y" ?
+          {this.state.is_revert === "Y" ? (
             <div className="alert alert-danger">
               <div className="row">
-                <div className="col"> <p>
-                  Reason:<b>{this.state.revert_reason}</b>
-                </p>
+                <div className="col">
+                  {" "}
+                  <p>
+                    Reason:<b>{this.state.revert_reason}</b>
+                  </p>
                 </div>
-                <div className="col-4"> <p>
-                  Reverted By:<b>{this.state.reverted_name}</b>
-                </p></div>
-
+                <div className="col-4">
+                  {" "}
+                  <p>
+                    Reverted By:<b>{this.state.reverted_name}</b>
+                  </p>
+                </div>
               </div>
-            </div> : null}
+            </div>
+          ) : null}
 
           <MyContext.Provider
             value={{
@@ -600,8 +604,8 @@ class ReceiptEntry extends Component {
                 <ReceiptServiceList ReceiptEntryInp={this.state} />
               </div>
             ) : (
-                <ReceiptItemList ReceiptEntryInp={this.state} />
-              )}
+              <ReceiptItemList ReceiptEntryInp={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="col-12">
@@ -685,10 +689,10 @@ class ReceiptEntry extends Component {
                                     </li>
                                   ))
                                 ) : (
-                                    <div className="col-12 noAttachment" key={1}>
-                                      <p>No Attachments Available</p>
-                                    </div>
-                                  )}
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
                               </ul>
                             </div>
                           </div>
@@ -773,8 +777,6 @@ class ReceiptEntry extends Component {
                       >
                         Revert Receipt
                       </button>
-
-
                     </div>
                   </div>
                 </div>
@@ -800,20 +802,20 @@ class ReceiptEntry extends Component {
                     />
                   </button>
                 ) : (
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={SaveReceiptEnrty.bind(this, this)}
-                      disabled={this.state.saveEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Save",
-                          returnText: true,
-                        }}
-                      />
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveReceiptEnrty.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Save",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                )}
 
                 <button
                   type="button"
