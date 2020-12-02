@@ -1,7 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     // const utilities = new algaehUtilities();
     try {
       const _ = options.loadash;
@@ -9,7 +9,7 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       let params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -44,16 +44,16 @@ const executePDF = function executePDFMethod(options) {
 				PL.location_description as pharmacy_location,IM.item_description,IM.item_code,IL.batchno
 				from hims_m_item_location IL inner join  hims_d_item_master IM on IL.item_id=IM.hims_d_item_master_id
 				inner join hims_d_pharmacy_location PL on IL.pharmacy_location_id=PL.hims_d_pharmacy_location_id
-				where IL.record_status='A' and PL.hospital_id=? ${str};`,
+				where IL.record_status='A' and PL.hospital_id=? ${str}  order by date(expirydt) ASC;`,
           values: [input.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(results => {
+        .then((results) => {
           options.mysql.releaseConnection();
           // utilities.logger().log("result: ", results);
           resolve({ details: results });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {
