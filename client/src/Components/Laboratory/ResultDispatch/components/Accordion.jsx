@@ -13,10 +13,10 @@ export default memo(function ({ details }) {
   function changeSelectStatus(event) {
     const checkState = event.target.checked;
 
-    const test = list
-      .filter((item) => {
-        return item.checked === undefined || item.checked === false;
-      })
+    const test = listOfDetails
+      // .filter((item) => {
+      //   return item.checked === undefined || item.checked === false;
+      // })
       .map((item) => {
         setEnablePrintButton(item.status === "V" && checkState ? false : true);
         setSelectAll(item.status === "V" && checkState ? checkState : false);
@@ -29,8 +29,7 @@ export default memo(function ({ details }) {
 
   function showReport() {
     let sentItems = [];
-
-    const records = list
+    const records = listOfDetails
       .filter((f) => f.checked === true)
       .map((m, index) => {
         if (index === 0) {
@@ -43,8 +42,6 @@ export default memo(function ({ details }) {
         return m.hims_f_lab_order_id;
       });
     sentItems.push({ name: "lab_order_ids", value: records });
-    console.log("sentItems", sentItems);
-
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -55,22 +52,9 @@ export default memo(function ({ details }) {
       others: { responseType: "blob" },
       data: {
         report: {
-          reportName: "labMerge", //"hematologyTestReport",
+          reportName: "labMerge",
           reportParams: sentItems,
-          // reportParams: [
-          //   { name: "hims_d_patient_id", value: data.patient_id },
-          //   {
-          //     name: "visit_id",
-          //     value: data.visit_id,
-          //   },
-          //   {
-          //     name: "hims_f_lab_order_id",
-          //     value: data.hims_f_lab_order_id,
-          //   },
-          // ],
-
           outputFileType: "PDF",
-          // multiMerdgeReport: sentItems.length,
         },
       },
       onSuccess: (res) => {
@@ -180,19 +164,11 @@ function CheckBoxCheck({ item, setSelectAll, items, setEnablePrintButton }) {
     const tarCheck = event.target.checked;
     item.checked = tarCheck;
     setCheckState(tarCheck);
-
-    // const hasUncheck = items.filter((item) => {
-    //   return item.checked || item.checked === false;
-    // });
     const checked = items.filter((item) => {
       return item.checked || item.checked === true;
     });
     checked.length < items.length ? setSelectAll(false) : setSelectAll(true);
-    // if (hasUncheck.length <= items.length) {
-    //   setSelectAll(false);
-    // } else {
-    //   setSelectAll(true);
-    // }
+
     if (checked.length > 0) {
       setEnablePrintButton(false);
     } else {

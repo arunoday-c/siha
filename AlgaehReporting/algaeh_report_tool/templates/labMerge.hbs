@@ -9,11 +9,13 @@
                 <b>{{investigation_name}}</b>
             </td>
         </tr>
-           {{!-- <tr>
-                <td colspan="4" class="tableSubHdg2" >{{analyte_report_group_desc}}</td>
-               
-            </tr> --}}
         {{#each details}}
+         {{#if order 1 }}
+            <tr>
+                <td colspan="4" class="tableSubHdg2 txtFld" >{{analyte_report_group_desc}}</td>
+            </tr>
+         {{/if}}
+        {{#each groupDetails}}
         <tr>
             <td width="40%" class="txtFld">{{analyte_name}}</td>
             <td  width="20%" class="numberFld">{{result}} <sup>{{critical_type}}</sup></td>
@@ -21,6 +23,8 @@
             <td  width="20%" class="numberFld"> {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
             {{normal_high}}{{/if}}</td>
         </tr>
+        {{/each}}
+        
         {{/each}}
         </tbody>
     </table>

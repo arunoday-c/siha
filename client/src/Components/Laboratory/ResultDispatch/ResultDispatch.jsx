@@ -1,8 +1,9 @@
 import React, { memo, useState, useEffect } from "react";
+
 import { AlgaehLabel, Spin } from "algaeh-react-components";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import Accordion from "./components/Accordion";
-// import {useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { loadPatientRecords } from "./api";
 export default memo(function () {
@@ -12,11 +13,34 @@ export default memo(function () {
   const [primaryId, setPrimaryId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
+  const history = useHistory();
+  const location = useLocation();
   useEffect(() => {
-    if (patientId !== 0) {
-      funLoadPatientRecords();
-    }
+    // if (patientId !== 0) {
+    //   funLoadPatientRecords();
+    // }
+    updateValues();
+  }, []);
+  useEffect(() => {
+    funLoadPatientRecords();
   }, [patientId]);
+
+  function updateValues() {
+    const params = new URLSearchParams(location?.search);
+    if (params?.get("patient_code")) {
+      setPatientCode(params?.get("patient_code"));
+    }
+    if (params?.get("patientId")) {
+      setPatientId(params?.get("patientId"));
+    }
+    if (params?.get("full_name")) {
+      setPatientName(params?.get("full_name"));
+    }
+    if (params?.get("primary_id_no")) {
+      setPrimaryId(params?.get("primary_id_no"));
+    }
+  }
+
   function showPatientFinder() {
     AlgaehSearch({
       searchGrid: {
@@ -28,6 +52,10 @@ export default memo(function () {
         callBack(text);
       },
       onRowSelect: (row) => {
+        history.push(
+          `${location.pathname}?patient_code=${row.patient_code}&patientId=${row.hims_d_patient_id}&full_name=${row.full_name}&primary_id_no=${row.primary_id_no}`
+        );
+
         setPatientId(row.hims_d_patient_id);
         setPatientCode(row.patient_code);
         setPatientName(row.full_name);
@@ -41,7 +69,7 @@ export default memo(function () {
     setIsLoading(false);
     setData(records);
   }
-  console.log("data", data);
+
   return (
     <div className="hptl-phase1-result-entry-form">
       <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
