@@ -1458,12 +1458,12 @@ export default {
     let input = req.body;
     let strQry = "";
     if (input.dates_equal === false) {
-      let to_date = moment(input.last_salary_process_date, "YYYY-MM-DD")
-        .add(-1, "days")
-        .format("YYYY-MM-DD");
+      // let to_date = moment(input.last_salary_process_date, "YYYY-MM-DD")
+      //   .add(-1, "days")
+      //   .format("YYYY-MM-DD");
       strQry += mysql.format(
-        `UPDATE hims_f_leave_application SET early_rejoin = ?,employee_joined='Y', to_date = ? where hims_f_leave_application_id =? ; `,
-        [input.early_rejoin, to_date, input.hims_f_leave_application_id]
+        `UPDATE hims_f_leave_application SET early_rejoin = ?, employee_joined='Y', to_date = ? where hims_f_leave_application_id =? ; `,
+        [input.early_rejoin, input.to_date, input.hims_f_leave_application_id]
       );
     }
     _mysql

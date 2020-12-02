@@ -105,6 +105,7 @@ export default class RejoinAnnualLeave extends Component {
         let inputObj = {
           hims_d_employee_id: row.hims_d_employee_id,
           last_salary_process_date: row.last_salary_process_date,
+          to_date: row.to_date,
           dates_equal: dates_equal,
           early_rejoin:
             new Date(row.last_salary_process_date) <
