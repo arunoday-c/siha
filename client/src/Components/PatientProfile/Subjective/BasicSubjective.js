@@ -584,7 +584,10 @@ class BasicSubjective extends Component {
       no_of_days: row.no_of_days,
       start_date: row.start_date,
       instructions: row.instructions,
-      generic_name_item_description: row.item_description,
+      generic_name_item_description: row.item_description.replace(
+        /\w+/g,
+        _.capitalize
+      ),
       generic_name: row.generic_name,
       item_description: row.item_description,
       item_id: row.item_id,
@@ -661,25 +664,53 @@ class BasicSubjective extends Component {
       insured: this.state.insured,
       hims_f_prescription_detail_id: this.state.hims_f_prescription_detail_id,
     };
-    algaehApiCall({
-      uri: "/orderMedication/updatePatientPrescription",
-      method: "PUT",
-      data: { medicationobj },
-      onSuccess: (response) => {
-        swalMessage({
-          title: "Prescription Updated Successful ...",
-          type: "success",
-        });
-        this.setState({ editPrescriptionModal: false });
-        this.getPatientMedications();
-      },
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
+
+    let Validation =
+      this.state.item_id &&
+      this.state.generic_id &&
+      this.state.dosage &&
+      this.state.med_units &&
+      this.state.frequency &&
+      this.state.no_of_days &&
+      this.state.frequency_type &&
+      this.state.frequency_time &&
+      this.state.frequency_route &&
+      this.state.start_date &&
+      this.state.uom_id &&
+      this.state.service_id &&
+      this.state.item_category_id &&
+      this.state.item_group_id &&
+      this.state.instructions &&
+      this.state.generic_name_item_description
+        ? true
+        : false;
+    if (Validation === true) {
+      algaehApiCall({
+        uri: "/orderMedication/updatePatientPrescription",
+        method: "PUT",
+        data: { medicationobj },
+        onSuccess: (response) => {
+          swalMessage({
+            title: "Prescription Updated Successful ...",
+            type: "success",
+          });
+          this.setState({ editPrescriptionModal: false });
+          this.getPatientMedications();
+        },
+        onFailure: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    } else {
+      swalMessage({
+        title: "Please Fill The Mandatory Fields",
+        type: "error",
+      });
+      return;
+    }
   }
   componentDidMount() {
     this.getPatientMedications();
@@ -1279,10 +1310,11 @@ class BasicSubjective extends Component {
                       <div className="row medicationSearchCntr">
                         <AlgaehAutoSearch
                           div={{
-                            className: "col-8 form-group medicationSearchFld",
+                            className: "col-8 mandatory form-group",
                           }}
                           label={{
                             forceLabel: "Generic Name / Item Name",
+                            isImp: true,
                           }}
                           title="Search by generic name / item name"
                           name="generic_name_item_description"
@@ -1341,8 +1373,8 @@ class BasicSubjective extends Component {
                             </button>
                           </div> */}
                         <AlagehAutoComplete
-                          div={{ className: "col-6  form-group" }}
-                          label={{ forceLabel: "Frequency" }}
+                          div={{ className: "col-6  mandatory form-group" }}
+                          label={{ forceLabel: "Frequency", isImp: true }}
                           selector={{
                             sort: "off",
                             name: "frequency",
@@ -1358,8 +1390,8 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-6  form-group" }}
-                          label={{ forceLabel: "Freq. Type" }}
+                          div={{ className: "col-6  mandatory form-group" }}
+                          label={{ forceLabel: "Freq. Type", isImp: true }}
                           selector={{
                             sort: "off",
                             name: "frequency_type",
@@ -1375,8 +1407,8 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-6  form-group" }}
-                          label={{ forceLabel: "Consume" }}
+                          div={{ className: "col-6 mandatory form-group" }}
+                          label={{ forceLabel: "Consume", isImp: true }}
                           selector={{
                             sort: "off",
                             name: "frequency_time",
@@ -1392,8 +1424,8 @@ class BasicSubjective extends Component {
                           }}
                         />{" "}
                         <AlagehAutoComplete
-                          div={{ className: "col-6  form-group" }}
-                          label={{ forceLabel: "Route" }}
+                          div={{ className: "col-6 mandatory form-group" }}
+                          label={{ forceLabel: "Route", isImp: true }}
                           selector={{
                             sort: "off",
                             name: "frequency_route",
@@ -1409,9 +1441,10 @@ class BasicSubjective extends Component {
                           }}
                         />{" "}
                         <AlagehFormGroup
-                          div={{ className: "col-3  form-group" }}
+                          div={{ className: "col-3  mandatory form-group" }}
                           label={{
                             forceLabel: "Dosage",
+                            isImp: true,
                           }}
                           textBox={{
                             number: true,
@@ -1430,9 +1463,10 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-4  form-group" }}
+                          div={{ className: "col-4 mandatory form-group" }}
                           label={{
                             forceLabel: "Units",
+                            isImp: true,
                           }}
                           textBox={{
                             // number: text,
@@ -1451,9 +1485,10 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-5  form-group" }}
+                          div={{ className: "col-5  mandatory form-group" }}
                           label={{
                             forceLabel: "Duration (Days)",
+                            isImp: true,
                           }}
                           textBox={{
                             number: { allowNegative: false },
@@ -1471,8 +1506,8 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlgaehDateHandler
-                          div={{ className: "col-4 form-group" }}
-                          label={{ forceLabel: "Start Date" }}
+                          div={{ className: "col-4 mandatory form-group" }}
+                          label={{ forceLabel: "Start Date", isImp: true }}
                           textBox={{
                             className: "txt-fld",
                             name: "start_date",

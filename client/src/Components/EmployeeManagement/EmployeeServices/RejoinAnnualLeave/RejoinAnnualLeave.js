@@ -104,7 +104,9 @@ export default class RejoinAnnualLeave extends Component {
       if (willProceed.value) {
         let inputObj = {
           hims_d_employee_id: row.hims_d_employee_id,
-          last_salary_process_date: row.last_salary_process_date,
+          last_salary_process_date: moment(row.to_date, "YYYY-MM-DD")
+            .add(-1, "days")
+            .format("YYYY-MM-DD"),
           to_date: row.to_date,
           dates_equal: dates_equal,
           early_rejoin:
