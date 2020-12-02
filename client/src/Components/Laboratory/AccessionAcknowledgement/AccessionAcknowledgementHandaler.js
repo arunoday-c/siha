@@ -4,6 +4,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 // import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -125,44 +126,55 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
           return;
         }
       }
+      swal({
+        title: "Are you sure you want to Proceed?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No",
+      }).then((willProceed) => {
+        if (willProceed.value) {
+          let inputobj = {
+            test_id: row.hims_d_investigation_test_id,
+            hims_d_lab_sample_id: row.hims_d_lab_sample_id,
+            order_id: row.hims_f_lab_order_id,
+            sample_id: row.sample_id,
+            patient_id: row.patient_id,
+            visit_id: row.visit_id,
+            date_of_birth: row.date_of_birth,
+            gender: row.gender,
+            remarks: $this.state.remarks,
+            status: AccRej,
+          };
 
-      let inputobj = {
-        test_id: row.hims_d_investigation_test_id,
-        hims_d_lab_sample_id: row.hims_d_lab_sample_id,
-        order_id: row.hims_f_lab_order_id,
-        sample_id: row.sample_id,
-        patient_id: row.patient_id,
-        visit_id: row.visit_id,
-        date_of_birth: row.date_of_birth,
-        gender: row.gender,
-        remarks: $this.state.remarks,
-        status: AccRej,
-      };
-
-      algaehApiCall({
-        uri: "/laboratory/updateLabSampleStatus",
-        module: "laboratory",
-        data: inputobj,
-        method: "PUT",
-        onSuccess: (response) => {
-          if (response.data.success === true) {
-            getSampleCollectionDetails($this);
-            $this.setState({
-              remarks: "",
-              reject_popup: false,
-            });
-            swalMessage({
-              title: "Record Updated",
-              type: "success",
-            });
-          }
-        },
-        onFailure: (error) => {
-          swalMessage({
-            title: error.message,
-            type: "error",
+          algaehApiCall({
+            uri: "/laboratory/updateLabSampleStatus",
+            module: "laboratory",
+            data: inputobj,
+            method: "PUT",
+            onSuccess: (response) => {
+              if (response.data.success === true) {
+                getSampleCollectionDetails($this);
+                $this.setState({
+                  remarks: "",
+                  reject_popup: false,
+                });
+                swalMessage({
+                  title: "Record Updated",
+                  type: "success",
+                });
+              }
+            },
+            onFailure: (error) => {
+              swalMessage({
+                title: error.message,
+                type: "error",
+              });
+            },
           });
-        },
+        }
       });
     } else {
       swalMessage({
