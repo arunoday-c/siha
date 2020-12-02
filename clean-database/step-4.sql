@@ -767,6 +767,30 @@ ALTER TABLE `hims_f_chronic` ADD COLUMN `chronic_category` ENUM('D', 'M') NULL D
 ADD COLUMN `item_id` INT NULL DEFAULT NULL AFTER `icd_code_id`;
 ALTER TABLE `hims_f_chronic` ADD COLUMN `medication_category` ENUM('I', 'E') NULL DEFAULT NULL COMMENT 'I=Internal/E=External' AFTER `item_id`;
 
+
+-- ******** Package and ordering and normal billing of lab and radiology cancellation issue sloved
+ALTER TABLE `hims_f_lab_order` 
+ADD COLUMN `ordered_package_id` INT NULL AFTER `ordered_services_id`;
+
+ALTER TABLE `hims_f_lab_order` 
+ADD COLUMN `billing_header_id` INT NULL AFTER `ordered_package_id`;
+
+ALTER TABLE `hims_f_rad_order` 
+ADD COLUMN `ordered_package_id` INT NULL AFTER `ordered_services_id`,
+ADD COLUMN `billing_header_id` INT NULL AFTER `ordered_package_id`;
+
+ALTER TABLE `hims_f_billing_details` 
+DROP FOREIGN KEY `hims_f_billng_details_fk7`,
+DROP FOREIGN KEY `hims_f_billng_details_fk6`;
+ALTER TABLE `hims_f_billing_details` 
+DROP INDEX `hims_f_billng_details_fk7_idx` ,
+DROP INDEX `hims_f_billng_details_fk6_idx` ;
+;
+
+-- ******** Added New Result Dispatch Screen
+INSERT INTO `algaeh_d_app_screens` (`algaeh_app_screens_id`, `screen_code`, `screen_name`, `page_to_redirect`, `module_id`, `other_language`, `created_date`, `updated_date`, `record_status`) VALUES ('181', 'LB0004', 'Result Dispatch', 'ResultDispatch', '6', 'نتيجة الإرسال', '2020-11-11 14:42:06', '2020-11-11 14:42:06', 'A');
+
+
 -- =================================  Start Nov 12 2020 =======================================
 -- ******** Added Blood Group Field
 ALTER TABLE `hims_f_patient` 
