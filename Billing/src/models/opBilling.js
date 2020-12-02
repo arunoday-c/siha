@@ -257,8 +257,7 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select *,service_id as services_id, now() as created_date, package_header_id as ordered_package_id \
-                  from hims_f_package_detail where package_header_id in (?)",
+                  "select D.*,service_id as services_id, now() as created_date, package_header_id as ordered_package_id, hims_d_investigation_test_id as test_id from hims_f_package_detail D left join hims_d_investigation_test IT on D.service_id=IT.services_id where package_header_id in (?)",
                 values: [package_header_id],
                 printQuery: true,
               })
