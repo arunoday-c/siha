@@ -60,14 +60,11 @@
                 <td> <span>{{pat_Encounter.other_signs}}</span></td>
             </tr>
 
-
-
-
             
         </table>
     </section>
 
-    <section>
+    {{!-- <section>
         <h3>VITALS DETAILS:-</h3>
         <table class="tableForLabel" cell-padding="0">
             <tr>
@@ -83,6 +80,92 @@
                 <td> <span>{{pat_details.patient_code}}</span></td>
             </tr>
         </table>
+    </section> --}}
+    <section>
+        <h3>Diagnosis:-</h3>
+       <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th >SL No.</th>
+                        <th>ICD Code</th>
+                        <th>Diagnosis Type</th>
+                        <th>Diagnosis Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each pat_icd }}
+                    <tr>
+                        <td width="20px">{{inc @index}}</td>
+                        <td>{{daignosis_code}}</td>
+                        <td>{{diagnosis_type}}</td>
+                        <td  class="txtFld">{{daignosis_description}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+    </section>
+        
+
+    <section>
+        <h3>MEDICATION:-</h3>
+       <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th  style="width: 40px;">SL No.</th>
+                        <th>Item Name</th>
+                        <th>Start Date</th>
+                        <th>Instructions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each medication }}
+                    <tr>
+                        <td width="20px">{{inc @index}}</td>
+                        <td class="txtFld">{{item_description}}</td>
+                        <td>{{start_date}}</td>
+                        <td class="txtFld">{{instructions}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+    </section>
+     <section   style="width:45%;float:left">
+        <h3>Lab Order:-</h3>
+       <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">SL No.</th>
+                        <th>Service Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each lab }}
+                    <tr>
+                        <td  style="width: 40px;">{{inc @index}}</td>
+                        <td class="txtFld">{{service_name}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+    </section>
+     <section   style="width:45%;float:right">
+        <h3>Radiology Order:-</h3>
+       <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th  style="width: 40px;">SL No.</th>
+                        <th>Service Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each rad }}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td class="txtFld">{{service_name}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
     </section>
         
     </div>

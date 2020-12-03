@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
           ICD.icd_description as daignosis_description  ,diagnosis_type, final_daignosis,
           PD.created_date as diagnosis_date  from hims_f_patient_diagnosis PD,hims_d_icd ICD
           where PD.record_status='A' and   ICD.record_status='A'
-          and PD.daignosis_id=ICD.hims_d_icd_id and patient_id=? and episode_id=1914;
+          and PD.daignosis_id=ICD.hims_d_icd_id and patient_id=? and episode_id=?;
           -- Vitals
           select hims_f_patient_vitals_id, PV.patient_id, visit_id, PV.visit_date, visit_time,
           case_type, vital_id,PH.vitals_name,vital_short_name,PH.uom, vital_value, vital_value_one,
@@ -92,8 +92,10 @@ const executePDF = function executePDFMethod(options) {
           let chief_details = result[1];
           let pat_Encounter = result[2];
           let pat_icd = result[3];
-          // let med_details = result[3];
-          // let lab_details = result[4];
+          let vital_details = result[4];
+          let medication = result[5];
+          let lab = result[6];
+          let rad = result[7];
           // let rad_details = result[5];
 
           const records = {
@@ -101,13 +103,13 @@ const executePDF = function executePDFMethod(options) {
             chief_details: _.head(chief_details),
             pat_Encounter: _.head(pat_Encounter),
             pat_icd,
-            // icd_details: icd_details,
-            // med_details: med_details,
-            // lab_details: lab_details,
-            // rad_details: rad_details,
+            medication,
+            lab,
+            rad,
           };
 
           resolve(records);
+          console.log(records);
         })
         .catch((error) => {
           options.mysql.releaseConnection();
