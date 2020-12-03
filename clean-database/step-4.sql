@@ -965,3 +965,55 @@ INSERT INTO `algaeh_d_app_component` (`algaeh_d_app_component_id`, `screen_id`, 
 ALTER TABLE `hims_f_employee_monthly_leave` 
 CHANGE COLUMN `close_balance` `close_balance` DECIMAL(10,2) NULL DEFAULT '0.00' ;
 
+-- ******** Adjustment Finace
+CREATE TABLE `finance_adjust_voucher_details` (
+  `finance_adjust_voucher_details_id` int NOT NULL AUTO_INCREMENT,
+  `finance_voucher_id` int DEFAULT NULL,
+  `payment_date` date NOT NULL,
+  `month` tinyint unsigned DEFAULT NULL,
+  `year` smallint unsigned DEFAULT NULL,
+  `head_id` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `child_id` int unsigned NOT NULL,
+  `debit_amount` decimal(15,4) NOT NULL,
+  `payment_type` enum('DR','CR') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'DR=DEBIT,CR=CREDIT',
+  `narration` text,
+  `credit_amount` decimal(15,4) NOT NULL,
+  `hospital_id` int unsigned DEFAULT NULL,
+  `pl_entry` enum('Y','N') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N',
+  `is_opening_bal` enum('Y','N') CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT 'N',
+  `is_new_entry` enum('Y','N') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'N',
+  `project_id` int DEFAULT NULL,
+  `sub_department_id` int DEFAULT NULL,
+  `doctor_id` int unsigned DEFAULT NULL,
+  `is_deleted` enum('Y','N') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'N',
+  `entered_by` int DEFAULT NULL,
+  `entered_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `auth1` enum('Y','N') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N',
+  `auth1_by` int DEFAULT NULL,
+  `auth1_date` datetime DEFAULT NULL,
+  `auth2` enum('Y','N') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N',
+  `auth2_by` int DEFAULT NULL,
+  `auth2_date` datetime DEFAULT NULL,
+  `auth_status` enum('A','P','R') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'P' COMMENT 'A=AUTHORIZED,\\nP=PENDING,\\nR=REJECTED',
+  `rejected_by` int DEFAULT NULL,
+  `rejected_date` datetime DEFAULT NULL,
+  `rejected_reason` varchar(75) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  PRIMARY KEY (`finance_adjust_voucher_details_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- =================================  Start Nov 30 2020 =======================================
+
+-- ******** Algaeh Master Screen Added in Security
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('63', 'ALG_RPT_MST', 'Report Master', '2020-11-30 11:53:46', '2020-11-30 11:53:46', 'I');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('63', 'ALG_MODLES', 'Modules', '2020-11-30 12:01:03', '2020-11-30 12:01:03', 'I');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('63', 'ALG_SCREEN', 'Screens', '2020-11-30 12:01:16', '2020-11-30 12:01:16', 'I');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('63', 'ALG_COMPO', 'Components', '2020-11-30 12:01:31', '2020-11-30 12:01:31', 'I');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('63', 'ALG_SCR_ELE', 'Screen Elements', '2020-11-30 12:01:46', '2020-11-30 12:01:46', 'I');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('63', 'ALG_FORM', 'Formula Master', '2020-11-30 12:03:32', '2020-11-30 12:03:32', 'I');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('63', 'ALG_LAB_CONF', 'Lab Configuration', '2020-11-30 12:59:03', '2020-11-30 12:59:03', 'I');
+
+-- =================================  Start Dec 02 2020 =======================================
+-- ******** Algaeh Master Screen Added in Security
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `created_by`, `updated_by`, `update_datetime`) VALUES ('patSummaryReport', 'Patient Summary Report', 'reportHeader', 'A', '2019-05-24 23:46:22', '3', '3', '2019-05-24 23:46:22');
+
+
