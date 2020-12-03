@@ -11,7 +11,7 @@
     "@toast-ui/react-image-editor": "^1.0.0",
     "aescrypt": "^1.0.0",
     "agentkeepalive": "^4.0.0",
-    "algaeh-react-components": "^3.7.4",
+    "algaeh-react-components": "^3.7.5",
     "axios": "^0.18.0",
     "axios-cancel": "^0.2.2",
     "chart.js": "^2.7.2",
