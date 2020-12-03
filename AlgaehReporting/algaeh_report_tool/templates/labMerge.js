@@ -53,9 +53,10 @@ const executePDF = function executePDFMethod(options) {
           let records = _.chain(result[1])
             .groupBy((g) => g.hims_f_lab_order_id)
             .map((details) => {
-              const { investigation_name } = _.head(details);
+              const { investigation_name, service_name } = _.head(details);
               return {
                 investigation_name,
+                service_name,
                 details: _.chain(details)
                   .groupBy((gt) => gt.analyte_report_group)
                   .map((dtl, gkey) => {
