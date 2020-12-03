@@ -6,7 +6,7 @@ export default function EditorEvents() {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       $this.setState({
-        [name]: value
+        [name]: value,
       });
     },
 
@@ -16,38 +16,38 @@ export default function EditorEvents() {
         case "regular_dental_trt":
           value = $this.state.regular_dental_trt === "Y" ? "N" : "Y";
           $this.setState({
-            regular_dental_trt: value
+            regular_dental_trt: value,
           });
           break;
         case "dental_cleaning":
           value = $this.state.dental_cleaning === "Y" ? "N" : "Y";
           $this.setState({
-            dental_cleaning: value
+            dental_cleaning: value,
           });
           break;
         case "RTA":
           value = $this.state.RTA === "Y" ? "N" : "Y";
           $this.setState({
-            RTA: value
+            RTA: value,
           });
           break;
 
         case "work_related":
           value = $this.state.work_related === "Y" ? "N" : "Y";
           $this.setState({
-            work_related: value
+            work_related: value,
           });
           break;
 
         case "patient_marital_status":
           $this.setState({
-            patient_marital_status: value
+            patient_marital_status: value,
           });
           break;
 
         case "new_visit_patient":
           $this.setState({
-            new_visit_patient: value
+            new_visit_patient: value,
           });
           break;
         default:
@@ -60,19 +60,19 @@ export default function EditorEvents() {
       switch (e.target.name) {
         case "patient_complaint_type":
           $this.setState({
-            patient_complaint_type: value
+            patient_complaint_type: value,
           });
           break;
 
         case "patient_marital_status":
           $this.setState({
-            patient_marital_status: value
+            patient_marital_status: value,
           });
           break;
 
         case "patient_emergency_case":
           $this.setState({
-            patient_emergency_case: value
+            patient_emergency_case: value,
           });
           break;
         default:
@@ -84,107 +84,107 @@ export default function EditorEvents() {
       switch (e.target.name) {
         case "patient_marital_status":
           $this.setState({
-            patient_marital_status: e.target.value
+            patient_marital_status: e.target.value,
           });
           break;
         case "multi_coated":
           $this.setState({
-            multi_coated: !$this.state.multi_coated
+            multi_coated: !$this.state.multi_coated,
           });
           break;
         case "varilux":
           $this.setState({
-            varilux: !$this.state.varilux
+            varilux: !$this.state.varilux,
           });
           break;
 
         case "light":
           $this.setState({
-            light: !$this.state.light
+            light: !$this.state.light,
           });
           break;
 
         case "aspheric":
           $this.setState({
-            aspheric: !$this.state.aspheric
+            aspheric: !$this.state.aspheric,
           });
           break;
 
         case "bifocal":
           $this.setState({
-            bifocal: !$this.state.bifocal
+            bifocal: !$this.state.bifocal,
           });
           break;
 
         case "medium":
           $this.setState({
-            medium: !$this.state.medium
+            medium: !$this.state.medium,
           });
           break;
 
         case "lenticular":
           $this.setState({
-            lenticular: !$this.state.lenticular
+            lenticular: !$this.state.lenticular,
           });
           break;
 
         case "single_vision":
           $this.setState({
-            single_vision: !$this.state.single_vision
+            single_vision: !$this.state.single_vision,
           });
           break;
         case "dark":
           $this.setState({
-            dark: !$this.state.dark
+            dark: !$this.state.dark,
           });
           break;
         case "safety_thickness":
           $this.setState({
-            safety_thickness: !$this.state.safety_thickness
+            safety_thickness: !$this.state.safety_thickness,
           });
           break;
         case "anti_reflecting_coating":
           $this.setState({
-            anti_reflecting_coating: !$this.state.anti_reflecting_coating
+            anti_reflecting_coating: !$this.state.anti_reflecting_coating,
           });
           break;
         case "photosensitive":
           $this.setState({
-            photosensitive: !$this.state.photosensitive
+            photosensitive: !$this.state.photosensitive,
           });
           break;
         case "high_index":
           $this.setState({
-            high_index: !$this.state.high_index
+            high_index: !$this.state.high_index,
           });
           break;
         case "colored":
           $this.setState({
-            colored: !$this.state.colored
+            colored: !$this.state.colored,
           });
           break;
 
         case "anti_scratch":
           $this.setState({
-            anti_scratch: !$this.state.anti_scratch
+            anti_scratch: !$this.state.anti_scratch,
           });
           break;
 
         case "contact_lense_type":
           $this.setState({
-            contact_lense_type: e.target.value
+            contact_lense_type: e.target.value,
           });
           break;
 
         case "resgular_lense_type":
           $this.setState({
-            resgular_lense_type: e.target.value
+            resgular_lense_type: e.target.value,
           });
           break;
 
         case "frames":
           $this.setState({
-            frames: e.target.value
+            frames: e.target.value,
           });
           break;
 
@@ -244,21 +244,21 @@ export default function EditorEvents() {
         high_index: $this.state.high_index === true ? "Y" : "N",
         colored: $this.state.colored === true ? "Y" : "N",
         anti_scratch: $this.state.anti_scratch === true ? "Y" : "N",
-        contact_lense_type: $this.state.contact_lense_type
+        contact_lense_type: $this.state.contact_lense_type,
       };
 
       algaehApiCall({
         uri: "/ocaf/updateOcafDetails",
         data: inputObj,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             algaehApiCall({
               uri: "/report",
               method: "GET",
               module: "reports",
               headers: {
-                Accept: "blob"
+                Accept: "blob",
               },
               others: { responseType: "blob" },
               data: {
@@ -267,15 +267,15 @@ export default function EditorEvents() {
                   reportParams: [
                     {
                       name: "hims_d_patient_id",
-                      value: $this.state.patient_id
+                      value: $this.state.patient_id,
                     },
                     { name: "visit_id", value: $this.state.visit_id },
-                    { name: "visit_date", value: null }
+                    { name: "visit_date", value: null },
                   ],
-                  outputFileType: "PDF" //"EXCEL", //"PDF",
-                }
+                  outputFileType: "PDF", //"EXCEL", //"PDF",
+                },
               },
-              onSuccess: res => {
+              onSuccess: (res) => {
                 let reader = new FileReader();
                 reader.onloadend = () => {
                   let myWindow = window.open(
@@ -284,23 +284,23 @@ export default function EditorEvents() {
                   );
                   myWindow.document.write(
                     "<embed src= '" +
-                    reader.result +
-                    "' width='100%' height='100%' />"
+                      reader.result +
+                      "' width='100%' height='100%' />"
                   );
                   myWindow.document.title = "Algaeh OCAF 2.0";
                 };
 
                 reader.readAsDataURL(res.data);
-              }
+              },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     },
 
@@ -309,14 +309,14 @@ export default function EditorEvents() {
         uri: "/dcaf/updateDcafDetails",
         data: $this.state,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             algaehApiCall({
               uri: "/report",
               method: "GET",
               module: "reports",
               headers: {
-                Accept: "blob"
+                Accept: "blob",
               },
               others: { responseType: "blob" },
               data: {
@@ -325,16 +325,15 @@ export default function EditorEvents() {
                   reportParams: [
                     {
                       name: "hims_d_patient_id",
-                      value: $this.state.patient_id
+                      value: $this.state.patient_id,
                     },
                     { name: "visit_id", value: $this.state.visit_id },
-                    { name: "visit_date", value: null }
+                    { name: "visit_date", value: null },
                   ],
-                  outputFileType: "PDF"
-                }
+                  outputFileType: "PDF",
+                },
               },
-              onSuccess: res => {
-
+              onSuccess: (res) => {
                 // let reader = new FileReader();
                 // reader.onloadend = () => {
                 // let myWindow = window.open(
@@ -361,22 +360,22 @@ export default function EditorEvents() {
                 const urlBlob = URL.createObjectURL(res.data);
                 const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Algaeh DCAF 2.0`;
                 window.open(origin);
-                //   $this.setState({
-                //     loading: false
-                //   });
+                $this.setState({
+                  loading: false,
+                });
                 // };
 
                 //   reader.readAsDataURL(res.data);
-              }
+              },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     },
 
@@ -385,14 +384,14 @@ export default function EditorEvents() {
         uri: "/ucaf/updateUcafDetails",
         data: $this.state,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             algaehApiCall({
               uri: "/report",
               method: "GET",
               module: "reports",
               headers: {
-                Accept: "blob"
+                Accept: "blob",
               },
               others: { responseType: "blob" },
               data: {
@@ -401,15 +400,15 @@ export default function EditorEvents() {
                   reportParams: [
                     {
                       name: "hims_d_patient_id",
-                      value: $this.state.patient_id
+                      value: $this.state.patient_id,
                     },
                     { name: "visit_id", value: $this.state.visit_id },
-                    { name: "visit_date", value: null }
+                    { name: "visit_date", value: null },
                   ],
-                  outputFileType: "PDF" //"EXCEL", //"PDF",
-                }
+                  outputFileType: "PDF", //"EXCEL", //"PDF",
+                },
               },
-              onSuccess: res => {
+              onSuccess: (res) => {
                 // let reader = new FileReader();
                 // reader.onloadend = () => {
                 //   let myWindow = window.open(
@@ -428,17 +427,17 @@ export default function EditorEvents() {
                 const urlBlob = URL.createObjectURL(res.data);
                 const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Algaeh UCAF 2.0`;
                 window.open(origin);
-              }
+              },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   };
 }
