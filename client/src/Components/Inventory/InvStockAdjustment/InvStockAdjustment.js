@@ -52,7 +52,8 @@ class InvStockAdjustment extends Component {
             location_selected: false,
             saveEnable: true,
             location_name: null,
-            dataExists: false
+            dataExists: false,
+            remaining_qty: 0
         };
     }
     componentDidMount() {
@@ -344,38 +345,74 @@ class InvStockAdjustment extends Component {
                                                 }
                                             }}
                                         />
+
+
+                                        {/*
+                                            //   "name": "Increase Amount",
+                                            //   "value": "IA"
+                                            // },
+                                            // {
+                                            //   "name": "Decrease Amount",
+                                            //   "value": "DA"
+                                            // },
+                                            // {
+                                            //   "name": "Both Increase",
+                                            //   "value": "BI"
+                                            // },
+                                            // {
+                                            //   "name": "Both Decrease",
+                                            //   "value": "BD"
+                                             */}
+                                        {
+                                            this.state.adjustment_type === "IQ" ||
+                                                this.state.adjustment_type === "DQ" ||
+                                                this.state.adjustment_type === "BI" ||
+                                                this.state.adjustment_type === "BD" ?
+
+                                                <AlagehFormGroup
+                                                    div={{ className: "col-6 form-group mandatory" }}
+                                                    label={{
+                                                        forceLabel: "Adjust Qty", isImp: this.state.adjustment_type === "IQ" ||
+                                                            this.state.adjustment_type === "DQ" ||
+                                                            this.state.adjustment_type === "BI" ||
+                                                            this.state.adjustment_type === "BD" ? true : false
+                                                    }}
+                                                    textBox={{
+                                                        number: {
+                                                            allowNegative: false,
+                                                            thousandSeparator: ","
+                                                        },
+                                                        className: "txt-fld",
+                                                        name: "adjust_qty",
+                                                        value: this.state.adjust_qty,
+                                                        dontAllowKeys: ["-", "e"],
+                                                        events: {
+                                                            onChange: adjustQtyHandaler.bind(this, this)
+                                                        },
+                                                        others: {
+                                                            disabled: this.state.dataExists
+                                                        }
+                                                    }}
+                                                />
+                                                : null
+                                        }
                                         {this.state.adjustment_type === "IQ" ||
                                             this.state.adjustment_type === "DQ" ||
                                             this.state.adjustment_type === "BI" ||
                                             this.state.adjustment_type === "BD" ?
 
-                                            <AlagehFormGroup
-                                                div={{ className: "col-6 form-group mandatory" }}
-                                                label={{
-                                                    forceLabel: "Adjust Qty", isImp: this.state.adjustment_type === "IQ" ||
-                                                        this.state.adjustment_type === "DQ" ||
-                                                        this.state.adjustment_type === "BI" ||
-                                                        this.state.adjustment_type === "BD" ? true : false
-                                                }}
-                                                textBox={{
-                                                    number: {
-                                                        allowNegative: false,
-                                                        thousandSeparator: ","
-                                                    },
-                                                    className: "txt-fld",
-                                                    name: "adjust_qty",
-                                                    value: this.state.adjust_qty,
-                                                    dontAllowKeys: ["-", "e"],
-                                                    events: {
-                                                        onChange: adjustQtyHandaler.bind(this, this)
-                                                    },
-                                                    others: {
-                                                        disabled: this.state.dataExists
-                                                    }
-                                                }}
-                                            />
-                                            : null}
 
+                                            <div className="col-4">
+                                                <AlgaehLabel
+                                                    label={{
+                                                        forceLabel: "Remaining Qty"
+                                                    }}
+                                                />
+                                                <h6>
+                                                    {this.state.remaining_qty}
+                                                </h6>
+                                            </div>
+                                            : null}
                                         {this.state.adjustment_type === "IA" ||
                                             this.state.adjustment_type === "DA" ||
                                             this.state.adjustment_type === "BI" ||
@@ -532,12 +569,16 @@ class InvStockAdjustment extends Component {
                                                                 },
                                                             },
                                                             {
-                                                                fieldName: "sales_price",
+                                                                fieldName: "remaining_qty",
                                                                 label: (
                                                                     <AlgaehLabel
-                                                                        label={{ forceLabel: "Adjust Amount" }}
+                                                                        label={{ forceLabel: "Remianing Qty" }}
                                                                     />
-                                                                )
+                                                                ),
+                                                                displayTemplate: (row) => {
+                                                                    return parseFloat(row.remaining_qty);
+                                                                },
+
                                                             },
                                                             {
                                                                 fieldName: "reason",
@@ -647,3 +688,13 @@ export default withRouter(
         mapDispatchToProps
     )(InvStockAdjustment)
 );
+
+
+// {
+//     fieldName: "sales_price",
+//     label: (
+//         <AlgaehLabel
+//             label={{ forceLabel: "Adjust Amount" }}
+//         />
+//     )
+// },

@@ -53,10 +53,11 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select SD.*, IM.item_description, IU.uom_description from \
-                                    hims_f_pharmacy_stock_adjust_detail SD, hims_d_item_master IM ,\
-                                    hims_d_pharmacy_uom IU where SD.pharmacy_stock_adjust_header_id=? and \
-                                    SD.item_id = IM.hims_d_item_master_id and SD.uom_id = IU.hims_d_pharmacy_uom_id",
+                  "select SD.*, IM.item_description, IU.uom_description, \
+                  CASE WHEN SD.adjustment_type='DQ' THEN (qtyhand - quantity) else (quantity + qtyhand) END  as remaining_qty\
+                  from hims_f_pharmacy_stock_adjust_detail SD, hims_d_item_master IM ,\
+                  hims_d_pharmacy_uom IU where SD.pharmacy_stock_adjust_header_id=? and \
+                  SD.item_id = IM.hims_d_item_master_id and SD.uom_id = IU.hims_d_pharmacy_uom_id",
                 // "select * from hims_f_pharmacy_stock_detail where pharmacy_stock_header_id=? and record_status='A'",
                 values: [
                   headerResult[0].hims_f_pharmacy_stock_adjust_header_id,
