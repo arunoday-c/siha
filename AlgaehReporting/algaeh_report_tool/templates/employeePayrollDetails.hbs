@@ -16,9 +16,6 @@
                         <th>Emp. Code</th>
                         <th>Emp. Name</th>
                         <th>Desgnation</th>
-
-                        {{!-- <th>Dep.</th> --}}
-                        {{!-- <th>Working Days</th> --}}
                         {{#hasElement earning_component}}
                         {{#each earning_component}}
                         <th>{{short_desc}}</th>
@@ -36,8 +33,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="numberFld numberFldTotalBottom">
-                        <td class="numberFld" colspan="2"></td>
+                    {{!-- <tr class="numberFld numberFldTotalBottom">
+                        <td  colspan="4">dfgdfg</td>
                         <td colspan={{span_earning}}></td>
                         <td class="numberFld">{{sum_earnings}}</td>
                         <td colspan={{span_deduction}}></td>
@@ -45,7 +42,7 @@
                         <td class="numberFld"></td>
                         <td class="numberFld">{{sum_net_salary}}</td>
                         <td colspan="3"></td>
-                    </tr>
+                    </tr> --}}
                     {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -62,9 +59,7 @@
                         <td class="numberFld">NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
-
                         <td class="numberFld numberFldTotal">{{total_earnings}}</td>
-
                         {{#hasElement ../deduction_component}}
                         {{#hasElement employee_deduction}}
                         {{#each ../deduction_component}}
@@ -75,8 +70,6 @@
                         <td class="numberFld">NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
-
-
                         <td class="numberFld numberFldTotal">{{total_deductions}}</td>
                         <td class="numberFld numberFldTotal">{{net_salary}}</td>
 
