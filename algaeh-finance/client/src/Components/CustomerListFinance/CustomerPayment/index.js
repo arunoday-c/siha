@@ -23,6 +23,7 @@ export default memo(function (props) {
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
   const [selectAmount, setSelectedAmount] = useState(0);
+  const [childName, setChildName] = useState("");
   const [info, setInfo] = useState({
     over_due: "0.00",
     total_receivable: "0.00",
@@ -34,7 +35,12 @@ export default memo(function (props) {
   useEffect(() => {
     if (location.state) {
       setLoading(true);
-      const { finance_account_child_id, is_opening_bal } = location.state.data;
+      const {
+        finance_account_child_id,
+        is_opening_bal,
+        child_name,
+      } = location.state.data;
+      setChildName(child_name);
       getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
         .then((res) => {
           if (res.data.success) {
@@ -126,10 +132,12 @@ export default memo(function (props) {
         title: "Are you sure do you want to process ?",
         content: (
           <span>
-            Total amount <b>
+            Total amount{" "}
+            <b>
               {getAmountFormart(totalAmount, {
                 appendSymbol: false,
-              })} </b>
+              })}{" "}
+            </b>
             {/* for the <b>{narration}</b> */}
           </span>
         ),
@@ -204,7 +212,7 @@ export default memo(function (props) {
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">
-                      Customer Payment Details
+                      Customer Payment Details - {childName}
                     </h3>
                   </div>
                   <div className="actions"></div>
