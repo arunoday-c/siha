@@ -2118,7 +2118,7 @@ export default {
           H.narration,voucher_no,payment_mode, ref_no, H.cheque_date,   VD.auth_status ,U.username as entered_by from finance_voucher_header H\
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
-          where posted_from='V'   ${strQry};`,
+          where posted_from='V'  and VD.payment_type='CR'  ${strQry};`,
           printQuery: true,
         })
         .then((result) => {
