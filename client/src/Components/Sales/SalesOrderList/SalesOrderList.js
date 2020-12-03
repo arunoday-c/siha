@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+
 
 import "./SalesOrderList.scss";
 import "./../../../styles/site.scss";
@@ -15,14 +14,20 @@ import {
 } from "./SalesOrderListEvent";
 
 import {
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
-import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import {
+  AlgaehTable,
+  persistStorageOnRemove,
+  persistStageOnGet,
+  persistStateOnBack
+} from "algaeh-react-components";
+
 
 class SalesOrderList extends Component {
   constructor(props) {
@@ -32,7 +37,9 @@ class SalesOrderList extends Component {
     this.state = {
       to_date: new Date(),
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
-      status: "1"
+      status: "1",
+      persistence: null,
+      order_list: []
     };
   }
 
@@ -62,37 +69,39 @@ class SalesOrderList extends Component {
     //     () => getSalesOrderList(this)
     //   );
     // }
-    const params = new URLSearchParams(this.props.location?.search);
-    if (params?.get("status")) {
-      this.setState({
-        status: params?.get("status")
-      });
-    }
-    if (params?.get("from_date")) {
-      this.setState({
-        // from_date: params?.get("from_date"),
-        from_date: moment(params?.get("from_date"))._d,
-      });
-    }
-    if (params?.get("to_date")) {
-      this.setState(
-        {
-          to_date: moment(params?.get("to_date"))._d,
-        },
-        () => getSalesOrderList(this)
-      );
-    } else {
-      getSalesOrderList(this)
-    }
 
-    this.props.getHospitalDetails({
-      uri: "/organization/getOrganization",
-      method: "GET",
-      redux: {
-        type: "HOSPITAL_DETAILS_GET_DATA",
-        mappingName: "hospitaldetails",
-      },
-    });
+    (async () => {
+      const records = await persistStageOnGet();
+
+      if (records) {
+        this.setState({ ...records });
+        persistStorageOnRemove();
+      } else {
+        const params = new URLSearchParams(this.props.location?.search);
+        if (params?.get("status")) {
+          this.setState({
+            status: params?.get("status")
+          });
+        }
+        if (params?.get("from_date")) {
+          this.setState({
+            // from_date: params?.get("from_date"),
+            from_date: moment(params?.get("from_date"))._d,
+          });
+        }
+        if (params?.get("to_date")) {
+          this.setState(
+            {
+              to_date: moment(params?.get("to_date"))._d,
+            },
+            () => getSalesOrderList(this)
+          );
+        } else {
+          getSalesOrderList(this)
+        }
+      }
+    })();
+
 
     // this.props.getCustomerMaster({
     //   uri: "/customer/getCustomerMaster",
@@ -196,7 +205,7 @@ class SalesOrderList extends Component {
             <div className="col-lg-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-body" id="SalesOrderListCntr">
-                  <AlgaehDataGrid
+                  <AlgaehTable
                     id="SalesOrderList_grid"
                     columns={[
                       {
@@ -208,6 +217,7 @@ class SalesOrderList extends Component {
                               <i
                                 className="fas fa-eye"
                                 onClick={() => {
+                                  persistStateOnBack(this.state, true);
                                   this.props.history.push(
                                     `/SalesOrder?sales_order_number=${row.sales_order_number}`
                                   );
@@ -241,7 +251,8 @@ class SalesOrderList extends Component {
                           ) : (
                               <span className="badge badge-danger">No</span>
                             );
-                        }
+                        },
+                        filterable: true,
                       },
                       {
                         fieldName: "sales_order_number",
@@ -253,7 +264,8 @@ class SalesOrderList extends Component {
                           maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
-                        }
+                        },
+                        filterable: true,
                       },
                       {
                         fieldName: "sales_order_date",
@@ -271,8 +283,7 @@ class SalesOrderList extends Component {
                         disabled: true,
                         others: {
                           maxWidth: 150,
-                          resizable: false,
-                          filterable: false
+                          resizable: false
                         }
                       },
                       {
@@ -292,8 +303,7 @@ class SalesOrderList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" },
-                          filterable: false
+                          style: { textAlign: "center" }
                         }
                       },
                       {
@@ -304,6 +314,7 @@ class SalesOrderList extends Component {
                           />
                         ),
                         disabled: true,
+                        filterable: true,
                         others: {
                           resizable: false,
                           style: { textAlign: "center" }
@@ -317,6 +328,7 @@ class SalesOrderList extends Component {
                           />
                         ),
                         disabled: true,
+                        filterable: true,
                         others: {
                           maxWidth: 150,
                           resizable: false,
@@ -339,8 +351,7 @@ class SalesOrderList extends Component {
                         disabled: true,
                         others: {
                           maxWidth: 150,
-                          resizable: false,
-                          filterable: false
+                          resizable: false
                         }
                       },
                       {
@@ -350,6 +361,7 @@ class SalesOrderList extends Component {
                             label={{ forceLabel: "Invoice Reverted" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: row => {
                           return row.is_revert === "Y" ? (
                             <span className="badge badge-success">Yes</span>
@@ -365,6 +377,7 @@ class SalesOrderList extends Component {
                             label={{ forceLabel: "Order Reject" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: row => {
                           return row.cancelled === "Y" ? (
                             <span className="badge badge-success">Yes</span>
@@ -395,8 +408,7 @@ class SalesOrderList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" },
-                          filterable: false
+                          style: { textAlign: "center" }
                         }
                       },
                       {
@@ -405,6 +417,7 @@ class SalesOrderList extends Component {
                           <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
                         ),
                         disabled: true,
+                        filterable: true,
                         others: {
                           maxWidth: 150,
                           resizable: false,
@@ -414,13 +427,18 @@ class SalesOrderList extends Component {
 
 
                     ]}
-                    keyId="sales_order_number"
-                    filter={true}
-                    dataSource={{
-                      data: this.state.order_list
-                    }}
-                    noDataText="No data available"
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    data={this.state.order_list}
+                    // height="80vh"
+                    pagination={true}
+                    isFilterable={true}
+                    persistence={this.state.persistence}
+                  // keyId="sales_order_number"
+                  // filter={true}
+                  // dataSource={{
+                  //   data: this.state.order_list
+                  // }}
+                  // noDataText="No data available"
+                  // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>
@@ -432,21 +450,4 @@ class SalesOrderList extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    hospitaldetails: state.hospitaldetails
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getHospitalDetails: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(SalesOrderList)
-);
+export default withRouter(SalesOrderList);

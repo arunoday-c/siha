@@ -1,4 +1,10 @@
 const executePDF = function executePDFMethod(options) {
+  const analytePairs = {
+    P: "Physical Appearance",
+    M: "Microscopic Examination",
+    D: "Differential Leukocyte Count",
+    C: "Chemical Examination",
+  };
   return new Promise((resolve, reject) => {
     try {
       const _ = options.loadash;
@@ -7,6 +13,7 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
+      // CASE WHEN LM.analyte_report_group = 'P' THEN 'Physical Appearance' WHEN LM.analyte_report_group = 'M' THEN 'Microscopic Examination' WHEN LM.analyte_report_group = 'D' THEN 'Differential Leukocyte Count'  WHEN LM.analyte_report_group = 'C' THEN 'Chemical Examination' ELSE '--' END AS analyte_report_group_desc,
       options.mysql
         .executeQuery({
           query: `select P.patient_code,trim(E.full_name) as doctor_name,
@@ -19,7 +26,7 @@ const executePDF = function executePDFMethod(options) {
              left join hims_d_insurance_provider IP on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id    
              where  V.hims_f_patient_visit_id=?;  
              select LO.hims_f_lab_order_id, MS.hims_d_lab_specimen_id,LA.reference_range_required, 
-             LM.analyte_report_group, CASE WHEN LM.analyte_report_group = 'P' THEN 'Physical Appearance' WHEN LM.analyte_report_group = 'M' THEN 'Microscopic Examination' WHEN LM.analyte_report_group = 'D' THEN 'Differential Leukocyte Count'  WHEN LM.analyte_report_group = 'C' THEN 'Chemical Examination' ELSE '--' END AS analyte_report_group_desc,
+             LM.analyte_report_group,
              MS.description as investigation_name,LA.description as analyte_name,
              LO.ordered_date,LO.entered_date,LO.validated_date, 
              LO.critical_status,LO.comments,OA.result,OA.result_unit,TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)) as normal_low,
@@ -49,10 +56,21 @@ const executePDF = function executePDFMethod(options) {
               const { investigation_name } = _.head(details);
               return {
                 investigation_name,
-                details,
+                details: _.chain(details)
+                  .groupBy((gt) => gt.analyte_report_group)
+                  .map((dtl, gkey) => {
+                    return {
+                      analyte_report_group_desc: analytePairs[gkey],
+                      order: gkey === "N" ? 0 : 1,
+                      groupDetails: dtl,
+                    };
+                  })
+                  .orderBy((o) => o.order)
+                  .value(),
               };
             })
             .value();
+
           //ToDO need to remove only for testing
           // records = records.concat(records);
           //ToDO need to remove only for testing

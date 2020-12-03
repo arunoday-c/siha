@@ -109,10 +109,10 @@ class SalesQuotation extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HRMS" ||
-      userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -163,6 +163,10 @@ class SalesQuotation extends Component {
       this.props.sales_quotation_number.length !== 0
     ) {
       getCtrlCode(this, this.props.sales_quotation_number);
+    }
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("sales_quotation_number")) {
+      getCtrlCode(this, queryParams.get("sales_quotation_number"));
     }
   }
 
@@ -237,8 +241,8 @@ class SalesQuotation extends Component {
                   <h6>
                     {this.state.sales_quotation_date
                       ? moment(this.state.sales_quotation_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -262,8 +266,8 @@ class SalesQuotation extends Component {
                           Quotation Cancelled
                         </span>
                       ) : (
-                        <span className="badge badge-success">Closed</span>
-                      )}
+                              <span className="badge badge-success">Closed</span>
+                            )}
                     </h6>
                   </div>
                 ) : null}
@@ -282,17 +286,17 @@ class SalesQuotation extends Component {
             printArea={
               this.state.sales_quotation_number !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Quotation",
-                        events: {
-                          onClick: () => {
-                            generateSalesQuotation(this, this.state);
-                          },
+                  menuitems: [
+                    {
+                      label: "Print Quotation",
+                      events: {
+                        onClick: () => {
+                          generateSalesQuotation(this, this.state);
                         },
                       },
-                    ],
-                  }
+                    },
+                  ],
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -381,25 +385,25 @@ class SalesQuotation extends Component {
                     </h6>
                   </div>
                 ) : (
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Name of Sales Person",
-                      isImp: false,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "sales_man",
-                      value: this.state.sales_man,
-                      events: {
-                        onChange: changeTexts.bind(this, this),
-                      },
-                      others: {
-                        disabled: this.state.dataExists,
-                      },
-                    }}
-                  />
-                )}
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Name of Sales Person",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "sales_man",
+                        value: this.state.sales_man,
+                        events: {
+                          onChange: changeTexts.bind(this, this),
+                        },
+                        others: {
+                          disabled: this.state.dataExists,
+                        },
+                      }}
+                    />
+                  )}
                 <AlgaehDateHandler
                   div={{ className: "col mandatory" }}
                   label={{ forceLabel: "quote validity", isImp: true }}
@@ -560,12 +564,12 @@ class SalesQuotation extends Component {
                       </div>
                     </div>
                   ) : (
-                    <div className="row">
-                      <div className="col-12">
-                        <SalesListItems SALESIOputs={this.state} />
+                      <div className="row">
+                        <div className="col-12">
+                          <SalesListItems SALESIOputs={this.state} />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </MyContext.Provider>
               </div>
 
@@ -635,24 +639,24 @@ class SalesQuotation extends Component {
                       <ol className="ViewTC">
                         {this.state.comment_list.length > 0
                           ? this.state.comment_list.map((row, index) => {
-                              return (
-                                <React.Fragment key={index}>
-                                  <li key={index}>
-                                    <span>{row}</span>
-                                    {this.state.dataExists ? null : (
-                                      <i
-                                        className="fas fa-times"
-                                        onClick={deleteComment.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      ></i>
-                                    )}
-                                  </li>
-                                </React.Fragment>
-                              );
-                            })
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <span>{row}</span>
+                                  {this.state.dataExists ? null : (
+                                    <i
+                                      className="fas fa-times"
+                                      onClick={deleteComment.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    ></i>
+                                  )}
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
                           : null}
                       </ol>
                     </div>

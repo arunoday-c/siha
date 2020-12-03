@@ -432,7 +432,7 @@ const SalesInvoice = React.lazy(() =>
 );
 const SalesQuotationList = React.lazy(() =>
   retry(() =>
-    import("./Components/Sales/SalesQuotationList/SalesQuotationSwitch")
+    import("./Components/Sales/SalesQuotationList/SalesQuotationList")
   )
 );
 const SalesOrderList = React.lazy(() =>
@@ -1521,12 +1521,12 @@ function Routes() {
             );
           })
         ) : (
-          <div className="loader-container">
-            <div className="algaeh-progress float shadow">
-              <div className="progress__item">loading</div>
+            <div className="loader-container">
+              <div className="algaeh-progress float shadow">
+                <div className="progress__item">loading</div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </Switch>
     </BrowserRouter>
   );

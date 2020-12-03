@@ -428,6 +428,17 @@ export default function Pharmacy({
             initialLoad: true,
             isImp: false,
             label: "Location",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
