@@ -134,6 +134,7 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
+    debugger
     if (row.cpt_code) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
@@ -178,6 +179,8 @@ class HospitalServiceSetup extends Component {
       });
     } else {
       row.addNew = false;
+      row.cpt_code_data = null;
+      row.cpt_code = null;
       this.setState({
         isOpen: !this.state.isOpen,
         servicePop: row,
@@ -388,10 +391,10 @@ class HospitalServiceSetup extends Component {
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
-                                (f) =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                              (f) =>
+                                f.hims_d_service_type_id ===
+                                row.service_type_id
+                            );
 
                         return (
                           <span>

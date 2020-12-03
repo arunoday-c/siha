@@ -115,8 +115,7 @@ let getPatientDCAF = (req, res, next) => {
                 where OS.billed='N' and V.patient_id = ? and (date(V.visit_date) = date(?) or visit_id=?)  ;\
                 DELETE from hims_f_dcaf_insurance_details where hims_f_dcaf_header_id=?;\
                 DELETE from hims_f_dcaf_medication where hims_f_dcaf_header_id=?;\
-                DELETE from hims_f_dcaf_services where hims_f_dcaf_header_id=?;\
-                DELETE from hims_f_dcaf_header where hims_f_dcaf_header_id=?;",
+                DELETE from hims_f_dcaf_services where hims_f_dcaf_header_id=?;",
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -146,14 +145,13 @@ let getPatientDCAF = (req, res, next) => {
                 _input.visit_id,
                 hims_f_dcaf_header_id,
                 hims_f_dcaf_header_id,
-                hims_f_dcaf_header_id,
                 hims_f_dcaf_header_id
               ],
               printQuery: true
             })
             .then(outputResult => {
-              console.log("outputResult", outputResult[4])
-              console.log("outputResult", outputResult[8])
+              // console.log("outputResult", outputResult[4])
+              // console.log("outputResult", outputResult[8])
               const _fields =
                 outputResult[0].length > 0 ? { ...outputResult[0][0] } : {};
 
@@ -221,19 +219,41 @@ let getPatientDCAF = (req, res, next) => {
               _fields["patient_other_conditions"] =
                 outputResult[7][0]["other_signs"];
 
-              _mysql
-                .executeQueryWithTransaction({
-                  query:
-                    "insert into hims_f_dcaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
-                `new_visit_patient`,`sub_department_name`,`patient_code`,`eligible_reference_number`,\
-                `patient_full_name`,`patient_duration_of_illness`,\
-                `patient_chief_comp_main_symptoms`,`patient_significant_signs`,`patient_other_conditions`,\
-                `patient_diagnosys`,`regular_dental_trt`,`dental_cleaning`,\
-                `RTA`,`work_related`,\
-                `patient_gender`,`age_in_years`) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
-                ",
-                  values: [
+              let strHeaderQry = ""
+              if (hims_f_dcaf_header_id > 0) {
+                strHeaderQry = _mysql.mysqlQueryFormat(
+                  "update hims_f_dcaf_header set `eligible_reference_number`=?,\
+                    `patient_duration_of_illness`=?,\
+                    `patient_chief_comp_main_symptoms`=?,`patient_significant_signs`=?,`patient_other_conditions`=?,\
+                    `patient_diagnosys`=?,`regular_dental_trt`=?,`dental_cleaning`=?,\
+                    `RTA`=?,`work_related`=? where hims_f_dcaf_header_id",
+                  [
+                    _fields.eligible_reference_number,
+                    _fields.patient_duration_of_illness,
+                    _fields.patient_chief_comp_main_symptoms,
+                    _fields.patient_significant_signs,
+                    _fields.patient_other_conditions,
+                    _fields.patient_diagnosys,
+
+                    _fields.regular_dental_trt,
+                    _fields.dental_cleaning,
+                    _fields.patient_rta,
+                    _fields.patient_work_related,
+                    hims_f_dcaf_header_id
+                  ]
+                );
+              } else {
+
+                strHeaderQry = _mysql.mysqlQueryFormat(
+                  "insert into hims_f_dcaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
+                    `new_visit_patient`,`sub_department_name`,`patient_code`,`eligible_reference_number`,\
+                    `patient_full_name`,`patient_duration_of_illness`,\
+                    `patient_chief_comp_main_symptoms`,`patient_significant_signs`,`patient_other_conditions`,\
+                    `patient_diagnosys`,`regular_dental_trt`,`dental_cleaning`,\
+                    `RTA`,`work_related`,\
+                    `patient_gender`,`age_in_years`) \
+                    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                  [
                     _fields.patient_id,
                     _fields.visit_id,
                     _fields.visit_date,
@@ -258,18 +278,29 @@ let getPatientDCAF = (req, res, next) => {
 
                     _fields.patient_gender,
                     _fields.age_in_years
-                  ],
+                  ]
+                );
+              }
+              _mysql
+                .executeQueryWithTransaction({
+                  query: strHeaderQry,
                   printQuery: true
                 })
                 .then(headerResult => {
-                  req["hims_f_dcaf_header_id"] = headerResult["insertId"];
+
+                  if (hims_f_dcaf_header_id > 0) {
+
+                    req["hims_f_dcaf_header_id"] = hims_f_dcaf_header_id;
+                  } else {
+                    req["hims_f_dcaf_header_id"] = headerResult["insertId"]
+                  }
 
                   _mysql
                     .executeQuery({
                       query: "INSERT INTO hims_f_dcaf_services (??) values ?",
                       values: dcaf_service,
                       extraValues: {
-                        hims_f_dcaf_header_id: headerResult["insertId"]
+                        hims_f_dcaf_header_id: req["hims_f_dcaf_header_id"]
                       },
                       bulkInsertOrUpdate: true,
                       printQuery: true
@@ -282,7 +313,7 @@ let getPatientDCAF = (req, res, next) => {
                               "INSERT INTO hims_f_dcaf_medication (??) values ?",
                             values: outputResult[5],
                             extraValues: {
-                              hims_f_dcaf_header_id: headerResult["insertId"]
+                              hims_f_dcaf_header_id: req["hims_f_dcaf_header_id"]
                             },
                             bulkInsertOrUpdate: true
                           }
@@ -298,7 +329,7 @@ let getPatientDCAF = (req, res, next) => {
                                 "INSERT INTO hims_f_dcaf_insurance_details (??) values ?",
                               values: outputResult[6],
                               extraValues: {
-                                hims_f_dcaf_header_id: headerResult["insertId"]
+                                hims_f_dcaf_header_id: req["hims_f_dcaf_header_id"]
                               },
                               bulkInsertOrUpdate: true
                             })
