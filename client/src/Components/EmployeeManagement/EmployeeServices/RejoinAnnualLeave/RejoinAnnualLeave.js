@@ -102,6 +102,7 @@ export default class RejoinAnnualLeave extends Component {
       ).isSame(row.to_date, "DD-MM-YYYY");
 
       if (willProceed.value) {
+        debugger;
         let inputObj = {
           hims_d_employee_id: row.hims_d_employee_id,
           last_salary_process_date: moment(row.to_date, "YYYY-MM-DD")
@@ -110,10 +111,7 @@ export default class RejoinAnnualLeave extends Component {
           to_date: row.to_date,
           dates_equal: dates_equal,
           early_rejoin:
-            new Date(row.last_salary_process_date) <
-            new Date(row.actual_to_date)
-              ? "Y"
-              : "N",
+            new Date(row.to_date) < new Date(row.actual_to_date) ? "Y" : "N",
           hims_f_leave_application_id: row.hims_f_leave_application_id,
         };
         algaehApiCall({
