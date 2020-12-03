@@ -60,8 +60,17 @@ const adjustQtyHandaler = ($this, e) => {
     }
   }
 
+  let remaining_qty = 0
+
+  if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD") {
+    remaining_qty = value === "" ? 0 : parseFloat($this.state.qtyhand) - parseFloat(value)
+  } else if ($this.state.adjustment_type === "BI" || $this.state.adjustment_type === "IQ") {
+    remaining_qty = value === "" ? 0 : parseFloat($this.state.qtyhand) + parseFloat(value)
+  }
+
   $this.setState({
-    [name]: value
+    [name]: value,
+    remaining_qty: remaining_qty
   });
 };
 
@@ -316,7 +325,7 @@ const itemchangeText = ($this, e, ctrl) => {
               item_group_id: e.group_id,
               Batch_Items: data.locationResult,
               addItemButton: false,
-              item_description: e.item_description              
+              item_description: e.item_description
             });
           } else {
             swalMessage({
@@ -424,7 +433,8 @@ const AddItemtoList = ($this) => {
         barcode: $this.state.barcode,
         unit_cost: $this.state.unit_cost,
         extended_cost: 0,
-        description: $this.state.description
+        description: $this.state.description,
+        remaining_qty: $this.state.remaining_qty
       }
       pharmacy_stock_detail.push(InsertObj)
 
@@ -442,12 +452,13 @@ const AddItemtoList = ($this) => {
         uom_description: null,
         item_description: "",
         adjustment_type: null,
-        reason: null,        
+        reason: null,
         sales_uom: null,
         qtyhand: 0,
         sales_price: 0,
         saveEnable: false,
-        description: null
+        description: null,
+        remaining_qty: 0
       })
     }
   });

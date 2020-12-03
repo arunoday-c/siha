@@ -14,7 +14,8 @@ const texthandle = ($this, e) => {
       [name]: value,
       description: e.selected.name,
       adjust_qty: 0,
-      adjust_amount: 0
+      adjust_amount: 0,
+      remaining_qty: 0
     });
   } else {
     $this.setState({
@@ -60,8 +61,17 @@ const adjustQtyHandaler = ($this, e) => {
     }
   }
 
+  let remaining_qty = 0
+
+  if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD") {
+    remaining_qty = value === "" ? 0 : parseFloat($this.state.qtyhand) - parseFloat(value)
+  } else if ($this.state.adjustment_type === "BI" || $this.state.adjustment_type === "IQ") {
+    remaining_qty = value === "" ? 0 : parseFloat($this.state.qtyhand) + parseFloat(value)
+  }
+
   $this.setState({
-    [name]: value
+    [name]: value,
+    remaining_qty: remaining_qty
   });
 };
 
@@ -369,7 +379,8 @@ const AddItemtoList = ($this) => {
         barcode: $this.state.barcode,
         unit_cost: $this.state.unit_cost,
         extended_cost: 0,
-        description: $this.state.description
+        description: $this.state.description,
+        remaining_qty: $this.state.remaining_qty
       }
       inventory_stock_detail.push(InsertObj)
       $this.setState({
@@ -391,7 +402,8 @@ const AddItemtoList = ($this) => {
         qtyhand: 0,
         sales_price: 0,
         saveEnable: false,
-        description: null
+        description: null,
+        remaining_qty: 0
       })
     }
   });
