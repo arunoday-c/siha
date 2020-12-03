@@ -13,11 +13,19 @@
                 <table class="tableNoBorder">
                     <tr>
                         <td  class="txtFld">
-                            <p>Receive From:</p>
-                            <p><b>{{resultHeader.customer_code}} - {{resultHeader.customer_name}}</b></p>
+                            <p><b>Receive From:</b></p>
+                            <p>{{resultHeader.customer_code}} - {{resultHeader.customer_name}}</p>
                             <p>Mob: {{resultHeader.contact_number}}</p>
                             <p>Address: {{resultHeader.address}}</p>
                             <p>Vat No.: {{resultHeader.vat_number}}</p>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td  class="txtFld">
+                            <br/><p><b>Payment To:</b></p>
+                            <p>{{resultHeader.child_name}}</p>
+                            <p>{{resultHeader.arabic_child_name}}</p>
+                           
                         </td>
                     </tr>
                 </table>
@@ -46,7 +54,7 @@
                         <th>Net Total</th>
                         <th>Discount</th>
                         <th>Tax</th>
-                        <th>Net Payable</th>
+                        <th>Net Received</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,7 +77,7 @@
                 <tr class="footerTotalUp">
                     <td class="txtFld" width="60%" rowspan="3"><b>Memo:</b>
                     <p>{{resultHeader.narration}}</p></td>
-                    <td class="numberFld">Total Net Payable: </td>
+                    <td class="numberFld">Total Net Received: </td>
                      <td class="numberFld">{{numberFormating totalNetPayable currencyHeader}}</td>
                 </tr>
             </table>
