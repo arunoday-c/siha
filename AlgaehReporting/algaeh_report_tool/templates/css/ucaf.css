@@ -78,6 +78,9 @@ table {
 .dcaf_Dental_chart {
   height: 250px;
   width: auto;
+  float: right;
+  margin-top: -30px;
+  margin-right: 10px;
 }
 .IDImgSection {
   margin: 0;
@@ -96,4 +99,60 @@ table {
 .IDTextSection tr td {
   padding: 5px;
   line-height: 30px;
+}
+.outerCntr {
+  width: calc(100% - 44px);
+  margin: 0 22px;
+}
+.borderBox {
+  margin: 0 0 10px;
+  padding: 0 10px 5px;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+.borderBox h4 {
+  margin: 10px 0;
+  padding: 0;
+}
+.borderBox table {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.borderBox table tbody td {
+  margin: 0;
+  padding: 0;
+  line-height: 20px;
+  text-align: left;
+}
+.topSectionLeft {
+  width: 56%;
+  float: left;
+}
+.topSectionRight {
+  width: 36%;
+  float: right;
+}
+
+.secondSection {
+  width: 98.5%;
+  float: left;
+}
+
+.secondSectionInner {
+  width: 98.5%;
+  float: left;
+}
+
+.secondSectionLeft {
+  width: 56%;
+  float: left;
+}
+
+.secondSectionRight {
+  width: 36%;
+  float: right;
 }
