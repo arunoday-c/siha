@@ -169,7 +169,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "SalesReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS *,date(sales_return_date) as sales_return_date from hims_f_pharmcy_sales_return_header where hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmcy_sales_return_header where hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharmcy_sales_return_header_id desc",
       },
