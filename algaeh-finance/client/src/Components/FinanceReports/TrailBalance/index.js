@@ -70,49 +70,56 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   //     .catch((e) => setLoading(false));
   // }
   function renderReport() {
+    function filterBuilder(existing, updated) {
+      const newFilter = existing.concat(updated);
+      return newFilter;
+    }
     // if (data) {
     if (type === "table") {
       return (
         <>
-          <div className="row inner-top-search">
+          <div className="row inner-top-search trialBalance">
             <Filter
               filters={[
-                [
-                  {
-                    className: "col-2 form-group",
-                    type: "AC",
-                    data: "ACCOUNTS",
-                    initalStates: "1",
-                  },
-                  {
-                    className: "col-2 form-group",
-                    type: "AC",
-                    data: "LEVELS",
-                    initalStates: "2",
-                  },
-                  {
-                    className: "col-12 form-group",
-                    type: "DH|RANGE",
-                    data: "YEAR",
-                    title: "RANGE",
-                    maxDate: moment(),
-                    initalStates: [moment().startOf("month"), moment()],
-                    onChange: (selected, val, cb) => {
-                      if (filter.length > 0) {
-                        const frdt = selected[0].clone();
-                        const tdt = selected[1].clone();
-                        const previousfrom = frdt.subtract(1, "years");
-                        const previousto = tdt.subtract(1, "years");
-                        cb({
-                          PREVIOUSRANGE: [previousfrom, previousto],
-                          RANGE: selected,
-                        });
-                      } else {
-                        cb({ RANGE: selected });
-                      }
+                filterBuilder(
+                  [
+                    {
+                      className: "col-2 form-group",
+                      type: "AC",
+                      data: "ACCOUNTS",
+                      initalStates: "1",
                     },
-                  },
-                ],
+                    {
+                      className: "col-2 form-group",
+                      type: "AC",
+                      data: "LEVELS",
+                      initalStates: "2",
+                    },
+                    {
+                      className: "col-4 form-group",
+                      type: "DH|RANGE",
+                      data: "YEAR",
+                      title: "RANGE",
+                      maxDate: moment(),
+                      initalStates: [moment().startOf("month"), moment()],
+                      onChange: (selected, val, cb) => {
+                        if (filter.length > 0) {
+                          const frdt = selected[0].clone();
+                          const tdt = selected[1].clone();
+                          const previousfrom = frdt.subtract(1, "years");
+                          const previousto = tdt.subtract(1, "years");
+                          cb({
+                            PREVIOUSRANGE: [previousfrom, previousto],
+                            RANGE: selected,
+                          });
+                        } else {
+                          cb({ RANGE: selected });
+                        }
+                      },
+                    },
+                  ],
+                  []
+                ),
               ]}
               callBack={(inputs, cb) => {
                 const { ACCOUNTS, LEVELS, RANGE } = inputs;

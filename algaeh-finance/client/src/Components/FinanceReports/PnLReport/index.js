@@ -458,10 +458,10 @@ export default function PnLReport({
           </p>
         </div>
       ) : (
-          <>
-            <Content />
-          </>
-        )}
+        <>
+          <Content />
+        </>
+      )}
     </>
   );
 }
