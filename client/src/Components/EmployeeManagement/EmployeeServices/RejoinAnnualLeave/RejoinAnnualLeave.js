@@ -146,14 +146,23 @@ export default class RejoinAnnualLeave extends Component {
   }
 
   gridOndateHandler(row, e) {
-    let employee_data = this.state.employee_data;
-    let _index = employee_data.indexOf(row);
+    let inRange = moment(e).isAfter(moment(row["expectedDate"]).format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "Rejoin Date cannot be gretsre than Expected Rejoin Date.",
+        type: "warning",
+      });
 
-    row["to_date"] = moment(e)._d;
-    employee_data[_index] = row;
-    this.setState({
-      employee_data: employee_data,
-    });
+    } else {
+      let employee_data = this.state.employee_data;
+      let _index = employee_data.indexOf(row);
+
+      row["to_date"] = moment(e)._d;
+      employee_data[_index] = row;
+      this.setState({
+        employee_data: employee_data,
+      });
+    }
   }
 
   generateRejoinReport() {
@@ -338,8 +347,8 @@ export default class RejoinAnnualLeave extends Component {
                             {row.employee_joined === "Y" ? (
                               <span className="badge badge-success">Yes</span>
                             ) : (
-                              <span className="badge badge-warning">No</span>
-                            )}
+                                <span className="badge badge-warning">No</span>
+                              )}
                           </span>
                         );
                       },
@@ -360,8 +369,8 @@ export default class RejoinAnnualLeave extends Component {
                             {row.early_rejoin === "Y" ? (
                               <span className="badge badge-success">Yes</span>
                             ) : (
-                              <span className="badge badge-warning">No</span>
-                            )}
+                                <span className="badge badge-warning">No</span>
+                              )}
                           </span>
                         );
                       },

@@ -13,6 +13,8 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState([]);
+  const [selectedDates, setSelectedDates] = useState([]);
+
   // const createPrintObject = useRef(undefined);
 
   // useEffect(() => {
@@ -43,14 +45,13 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   // }, [type, dates]);
 
   async function getData(ACCOUNTS, drillDownLevel, dates) {
-    debugger
     const input = {
       hospital_id: finOptions.default_branch_id,
       cost_center_id: finOptions.default_cost_center_id,
       from_date: dates[0],
       to_date: dates[1],
       ACCOUNTS,
-      drillDownLevel
+      drillDownLevel,
     };
     if (type === "tree") {
       input.old = "Y";
@@ -58,7 +59,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
     const result = await newAlgaehApi({
       module: "finance",
       data: { ...input },
-      uri: "/financeReports/getTrialBalance"
+      uri: "/financeReports/getTrialBalance",
     });
     setData(result.data.result);
   }
@@ -81,13 +82,13 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                     className: "col-2 form-group",
                     type: "AC",
                     data: "ACCOUNTS",
-                    initalStates: "1"
+                    initalStates: "1",
                   },
                   {
                     className: "col-2 form-group",
                     type: "AC",
                     data: "LEVELS",
-                    initalStates: "2"
+                    initalStates: "2",
                   },
                   {
                     className: "col-12 form-group",
@@ -111,18 +112,18 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                       }
                     },
                   },
-                ]
+                ],
               ]}
               callBack={(inputs, cb) => {
                 const { ACCOUNTS, LEVELS, RANGE } = inputs;
-
+                setSelectedDates(RANGE);
                 setLoading(true);
                 getData(ACCOUNTS, LEVELS, RANGE)
                   .then(() => {
                     setLoading(false);
                     cb();
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     setLoading(false);
                     cb();
                   });
@@ -132,7 +133,8 @@ export default function TrailBalance({ layout, dates, finOptions }) {
           <TrailTable
             data={data}
             layout={layout}
-          // createPrintObject={createPrintObject}
+            dates={selectedDates}
+            // createPrintObject={createPrintObject}
           />
         </>
       );
