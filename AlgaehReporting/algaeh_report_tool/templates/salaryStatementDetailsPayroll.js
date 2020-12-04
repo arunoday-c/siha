@@ -96,6 +96,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
           let sum_deductions = 0;
           let sum_contributions = 0;
           let sum_net_salary = 0;
+          let sum_advance = 0;
 
           if (salary.length > 0) {
             //--------first part------
@@ -149,7 +150,12 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                   group by  employee_id WITH ROLLUP; \
                    select  employee_id,sum(amount) as amount  from hims_f_miscellaneous_earning_deduction\
                   where year=? and  month=?  and  category='D' and employee_id in(?)\
-                  group by  employee_id WITH ROLLUP; ",
+                  group by  employee_id WITH ROLLUP; \
+                  select salary_header_id, SD.amount as advance_amount from hims_f_salary_deductions SD \
+                  inner join hims_d_earning_deduction ED on deductions_id=hims_d_earning_deduction_id and component_category='A' \
+                where salary_header_id in ( " +
+                  salary_header_ids +
+                  ");",
                 values: [
                   input.year,
                   input.month,
@@ -162,7 +168,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                   input.month,
                   employee_ids,
                 ],
-                printQuery: false,
+                printQuery: true,
               })
               .then((results) => {
                 //ST print inputs in report
@@ -189,6 +195,8 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                 let gratuity = results[3];
                 let accrual = results[4];
                 let contributions = results[5];
+                const advance_details = results[8];
+                // console.log("result 8", results[8]);
 
                 let sum_basic = 0;
                 let sum_employe_plus_emplyr = 0;
@@ -198,6 +206,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
 
                 let sum_misle_earnings = results[6].pop();
                 let sum_misle_deductions = results[7].pop();
+
                 for (let i = 0; i < salary.length; i++) {
                   //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
                   let ot_hours = 0;
@@ -230,7 +239,17 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                     ot_hours + "." + (parseInt(ot_min) % parseInt(60));
                   //EN-complete OVER-Time  calculation
 
-                  const earning_obj = earnings.filter(
+                  const adv_obj = advance_details.filter(
+                    (item) =>
+                      item.salary_header_id == salary[i]["hims_f_salary_id"]
+                  );
+                  console.log("adv_obj====", adv_obj);
+
+                  sum_advance = _.sumBy(advance_details, (s) =>
+                    parseFloat(s.advance_amount)
+                  );
+
+                  earning_obj = earnings.filter(
                     (item) =>
                       item.salary_header_id == salary[i]["hims_f_salary_id"]
                   );
@@ -380,6 +399,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
                     employee_contributions: employee_contributions,
+                    adv_amt: adv_obj.length > 0 ? adv_obj[0].advance_amount : 0,
                     employe_plus_employr: employe_plus_employr.toFixed(
                       decimal_places
                     ),
@@ -399,6 +419,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                   sum_basic: sum_basic,
                   sum_earnings: sum_earnings.toFixed(decimal_places),
                   sum_deductions: sum_deductions.toFixed(decimal_places),
+                  sum_advance: sum_advance.toFixed(decimal_places),
                   sum_contributions: sum_contributions.toFixed(decimal_places),
                   sum_net_salary: sum_net_salary.toFixed(decimal_places),
                   sum_employe_plus_emplyr: sum_employe_plus_emplyr,
