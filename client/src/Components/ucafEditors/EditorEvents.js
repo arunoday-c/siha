@@ -334,31 +334,8 @@ export default function EditorEvents() {
                 },
               },
               onSuccess: (res) => {
-                // let reader = new FileReader();
-                // reader.onloadend = () => {
-                // let myWindow = window.open(
-                //   "{{ product.metafields.google.custom_label_0 }}",
-                //   "_blank"
-                // );
-                // myWindow.document.write(
-                //   "<embed src= '" + reader.result + "' width='100%' height='100%' />"
-                // );
-                // myWindow.document.title = "Algaeh DCAF 2.0";
-                // let myWindow = window.open(
-                //   "",
-                //   "",
-                //   "width=800,height=500,left=200,top=200"
-                // );
-
-                // myWindow.document.write(
-                //   "<iframe src= '" +
-                //     reader.result +
-                //     "' width='100%' height='100%' />"
-                // );
-                // myWindow.document.title = "Algaeh DCAF 2.0";
-                // myWindow.document.body.style.overflow = "hidden";
                 const urlBlob = URL.createObjectURL(res.data);
-                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Algaeh DCAF 2.0`;
+                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=DCAF 2.0`;
                 window.open(origin);
                 $this.setState({
                   loading: false,

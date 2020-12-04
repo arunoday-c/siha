@@ -1,6 +1,7 @@
 
 {{{importStyle 'css/ucaf.css'}}}
 <body class="print-body">
+    <h1 style="text-align: center;font-size:30px;margin-top:15px"><b>DCAF 2.0</b></h1>
     <section class="outerCntr">
         <section class="topSection">
             <section class="borderBox topSectionLeft">
@@ -8,38 +9,36 @@
                 <table>
                   <tbody>
                     <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td  width="175px">Provider Name</td>
+                        <td>: {{header.provider_name}}</td>
                     </tr>
                       <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Insurance Company Name</td>
+                        <td>: {{insurance.0.primary_insurance_company_name}}</td>
                     </tr>
                       <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>TPA Company Name</td>
+                        <td>: {{insurance.0.primary_tpa_insurance_company_name}}</td>
                     </tr>
                       <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Patient File Number</td>
+                        <td>: {{header.patient_code}}</td>
                     </tr>
                       <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Date of visit</td>
+                        <td>: {{header.visit_date}}</td>
                     </tr>
                       <tr>
                         <td colspan="2">
-                             <span>
-                                 Plan Type ( {{#if header.patient_marital_status "Plan Type"}}
-                                <span>&#10004;</span>
-                                {{/if}})
-                            </span>
-                              <span>New Visit ( {{#if header.new_visit_patient "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</span>
-                                   <span>Follow Up ( {{#if header.new_visit_patient "N"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</span>
+                        <span>
+                            Plan Type ({{#if header.patient_marital_status "Plan Type"}}{{/if}})
+                        </span> | 
+                        <span>
+                            New Visit ({{#if header.new_visit_patient "Y"}}<span>&#10004;</span>{{/if}})
+                        </span> | 
+                        <span>
+                            Follow Up ({{#if header.new_visit_patient "N"}}<span>&#10004;</span>{{/if}})
+                        </span>
                         </td>
                     </tr>
                   </tbody>
@@ -51,46 +50,47 @@
                   <tbody>
                     <tr>
                         <td width="100%">
-                            <img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/>
+                            <p class="insImg" ><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/></p>
                         </td>
                     </tr>
                   </tbody>
                 </table>
         </section>
+        </section>
           <section class="secondSection">
             <section class="borderBox secondSectionInner">
                
-            <h4>To be completed by the Dentist:</h6>
+            <h4>To be completed by the Dentist:</h4>
             <section class=" secondSectionLeft">
             <table>
                 <tbody>
                     <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td width="175px">Duration of Illness</td>
+                        <td>: {{header.patient_duration_of_illness}} (Days)</td>
                     </tr>
                      <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Chief Complaint & Main Symptoms</td>
+                        <td>: {{header.patient_chief_comp_main_symptoms}}</td>
                     </tr>
                      <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Signifcant Signs</td>
+                        <td>: {{header.patient_significant_signs}}</td>
                     </tr>
                      <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Diagnoses (ICD10)</td>
+                        <td>: {{header.patient_diagnosys}}</td>
                     </tr>
                      <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Primary</td>
+                        <td>: {{header.primary}}</td>
                     </tr>
                      <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Secondary</td>
+                        <td>: {{header.secondary}}</td>
                     </tr>
                      <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>Other Conditions</td>
+                        <td>: {{header.patient_other_conditions}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -99,29 +99,151 @@
             <table>
                 <tbody>
                     <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                         <td  width="175px">Treatment Type</td>
+                        <td>
+                            <span>
+                                : Regular ( {{#if header.regular_dental_trt "Y"}} <span>&#10004;</span>{{/if}})
+                            </span>
+                             <span>Dental Cleaning ( {{#if header.dental_cleaning "Y"}} <span>&#10004;</span>{{/if}})
+                            </span>
+                        </td>
+                         {{!-- <td colspan="2">
+                             <span>
+                                 Regular Dental Treatment ( {{#if header.regular_dental_trt "Y"}}
+                                <span>&#10004;</span>
+                                {{/if}})
+                            </span>
+                              <span>Dental Cleaning ( {{#if header.dental_cleaning "Y"}}
+                                        <span>&#10004;</span>
+                                        {{/if}} )</span>
+                        </td> --}}
                     </tr>
                      <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td  width="175px">Trauma Treatment Specify</td>
+                        <td>
+                            <span>
+                                : RTA ( {{#if header.RTA "Y"}} <span>&#10004;</span>{{/if}})
+                            </span>
+                             <span>Work Related ( {{#if header.work_related "Y"}} <span>&#10004;</span>{{/if}})
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Other</td>
+                        <td>: {{header.others}}</td>
+                    </tr>  
+                     <tr>
+                        <td>How</td>
+                        <td>: {{header.how}}</td>
                     </tr>
                      <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
+                        <td>When</td>
+                        <td>: {{header.when}}</td>
                     </tr>
-                     <tr>
-                        <td>Provider Name:</td>
-                        <td>{{header.provider_name}}</td>
-                    </tr>
-                </tbody>
+                    <tr>
+                        <td>Where</td>
+                        <td>: {{header.where}}</td>
+                    </tr>               
+                    </tbody>
             </table>
             </section>
 
             <section class=" secondSectionRight">
                 <img class="dcaf_Dental_chart" src="{{imageSource 'images/dcaf_Dental_chart.png'}}" />
             </section>
+
+               
+            <section class=" secondSectionBottom">
+                <h4>Specify the recommended procedures using the tooth number as shown on the teeth map above:</h4>
+            
+                <table class="tableBrdr">
+                    <thead>
+                        <tr>
+                            <th><b>Code</b></th>
+                            <th><b>Dental Service</b></th>
+                            <th><b>Tooth No.</b></th>
+                            <th><b>Cost</b></th>
+                        </tr>
+                    </thead>
+                     <tbody>
+                    {{#each services }}
+                        <tr>
+                            <td style="width: 100px;">{{service_code}}</td>
+                            <td class="txtFld">{{service_name}}</td>
+                            <td style="width:50px;">{{teeth_number}}</td>
+                            <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
+                        </tr>
+                    {{/each}}
+                     <tr>
+                            <td colspan="2"></td>
+                            <td><b>Total</b></td>
+                            <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
-           
+              <section class=" secondSectionBottom">
+                <h4>Providers Approval/Coding Staff must review/code the recommended service(s) and allocate cost and complete the following:</h4>
+                <p style="margin-top:20px">
+                    <span>Completed/Coded By: <span>.......................................................................................</span></span>
+
+                    <span>Signature: <span>.........................................................</span></span>
+
+                    <span>Date: <span>......./......./.......</span></span>
+                    {{!-- {{updated_date}} --}}
+                </p>
+                <table class="tableBrdr">
+                    <thead>
+                        <tr>
+                            <th><b>Medication Name (Generic Name)</b></th>
+                            <th><b>Type</b></th>
+                            <th><b>Quantity</b></th>
+                        </tr>
+                    </thead>
+                     <tbody>
+                    {{#each medication }}
+                        <tr>
+                            <td class="txtFld" >{{generic_name}}</td>
+                            <td style="width: 100px;">{{type}}</td>
+                            <td style="width: 80px;">{{quantity}}</td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </section>
+            </section>
+    </section>
+
+        <section class="borderBox footerSection">
+         <section class="footerSectionLeft">
+             <p style="line-height: 20px;">I hereby certify that ALL information mentioned are correct and that the medical services shown on this form were medically indicated and necessary for the management of this case.</p>
+           <p style="margin-top:20px; text-align:center;">
+                    <span style="width: 80px;display:inline-block;">Dentist</span>
+                    <span style="width: 80px;display:inline-block;">Signature</span>
+                    <span style="width: 80px;display:inline-block;">Stamp</span>
+                    <span style="width: 80px;display:inline-block;">Date</span>
+            </p>
+            <p style="margin-top:20px; text-align:center;">
+                    <span style="width: 80px;display:inline-block;">{{header.provider_name}}</span>
+                    <span style="width: 80px;display:inline-block;">.........</span>
+                    <span style="width: 80px;display:inline-block;">.........</span>
+                    <span style="width: 80px;display:inline-block;">..../..../....</span>
+            </p>
+         </section>
+         <section class="footerSectionRight">
+               <p style="line-height: 20px;">I hereby certify that ALL statements and information provided
+concerning patient identifcation and the present illness or injury
+are TRUE.</p>
+           <p style="margin-top:20px; text-align:center;">
+                    <span >Name and relationship (if guardian): </span>
+                   <span>................................................</span>
+            </p>
+            <p style="margin-top:20px; text-align:center;">
+                    <span>Signature: <span>.....................................................</span></span>
+
+                    <span>Date: <span>......./......./.......</span></span>
+            </p>
+         </section>
+        </section>
     </section>
 </body>
