@@ -33,6 +33,7 @@
                         <th>{{short_desc}}</th>
                         {{/each }}
                         {{/hasElement}}
+                        <th>Adv. Deduction</th>
                         <th>Total Misc. Deduction</th>
                         <th>Net Deduction </th>
                         <th>Loan EMI</th>
@@ -64,6 +65,7 @@
                         <td class="numberFld">{{sum_misl_earn}}</td>
                         <td class="numberFld">{{sum_earnings}}</td>
                         <td colspan={{span_deduction}}></td>
+                        <td class="numberFld">{{sum_advance}}</td>
                         <td class="numberFld">{{sum_misl_deduct}}</td>
                         <td class="numberFld">{{sum_deductions}}</td>
                         <td class="numberFld"></td>
@@ -108,7 +110,7 @@
                         <td class="numberFld">NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
-
+                        <td class="numberFld">{{adv_amt}}</td>
                         <td class="numberFld">{{emp_misl_dedc}} </td>
                         <td class="numberFld numberFldTotal">{{total_deductions}}</td>
                         <td class="numberFld">{{loan_due_amount}} </td>

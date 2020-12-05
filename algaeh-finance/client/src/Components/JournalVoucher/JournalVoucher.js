@@ -127,9 +127,9 @@ export default function JournalVoucher() {
                 displayTemplate: (row) => {
                   const valueRow =
                     options["default_branch_id"] !== undefined &&
-                      options["default_branch_id"] !== "" &&
-                      options["default_cost_center_id"] !== undefined &&
-                      options["default_cost_center_id"] !== ""
+                    options["default_branch_id"] !== "" &&
+                    options["default_cost_center_id"] !== undefined &&
+                    options["default_cost_center_id"] !== ""
                       ? `${options["default_branch_id"]}-${options["default_cost_center_id"]}`
                       : "";
                   return (
@@ -253,20 +253,15 @@ export default function JournalVoucher() {
 
       setDisableFiled(true);
       if (type === "Adjust") {
-
         const credit_data = _.filter(data, (f) => {
-          return (
-            f.payment_type === "CR"
-          )
+          return f.payment_type === "CR";
         });
         const debit_data = _.filter(data, (f) => {
-          return (
-            f.payment_type === "DR"
-          )
+          return f.payment_type === "DR";
         });
         setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
         setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
-        setJournerList(data)
+        setJournerList(data);
         setFinanceVoucherHeaderID(location.state.finance_voucher_header_id);
         setVoucherType(data[0].voucher_type);
         setVoucherDate(moment(data[0].payment_date)._d);
@@ -274,7 +269,6 @@ export default function JournalVoucher() {
 
         // setPayment(state => ({ ...state, ...data }));
       } else {
-        debugger
         setPayment((state) => ({ ...state, payment_mode: "CASH" }));
         if (type === "duplicate") {
           const { Details, voucher_type, amount } = data;
@@ -282,8 +276,8 @@ export default function JournalVoucher() {
             voucher_type === "sales"
               ? "receipt"
               : voucher_type === "purchase"
-                ? "payment"
-                : voucher_type;
+              ? "payment"
+              : voucher_type;
           setVoucherType(currentVoucher);
           const records = Details.map((single, index) => ({
             slno: index + 1,
@@ -298,19 +292,14 @@ export default function JournalVoucher() {
             setMerdgeRecords(merdge);
           }
           const credit_data = _.filter(records, (f) => {
-            return (
-              f.payment_type === "CR"
-            )
+            return f.payment_type === "CR";
           });
           const debit_data = _.filter(records, (f) => {
-            return (
-              f.payment_type === "DR"
-            )
+            return f.payment_type === "DR";
           });
           setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
           setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
           setJournerList(records);
-
         } else {
           const {
             voucher_type,
@@ -324,10 +313,15 @@ export default function JournalVoucher() {
             voucher_type === "sales"
               ? "receipt"
               : voucher_type === "purchase"
-                ? "payment"
-                : null;
+              ? "payment"
+              : null;
           if (merdge !== undefined) {
-            setDisableAmount(true);
+            if (Array.isArray(merdge) && merdge.length === 1) {
+              setDisableAmount(false);
+            } else {
+              setDisableAmount(true);
+            }
+
             setMerdgeRecords(merdge);
           }
           setVoucherType(currentVoucher);
@@ -335,7 +329,6 @@ export default function JournalVoucher() {
           getCashAccount()
             .then((res) => {
               if (res.data.success) {
-                debugger
                 const [defaultAC] = res.data.result;
                 setJournerList((state) => {
                   const first = state[0];
@@ -359,20 +352,19 @@ export default function JournalVoucher() {
                     second.disabled = disabled;
                   }
                   const credit_data = _.filter(state, (f) => {
-                    return (
-                      f.payment_type === "CR"
-                    )
+                    return f.payment_type === "CR";
                   });
                   const debit_data = _.filter(state, (f) => {
-                    return (
-                      f.payment_type === "DR"
-                    )
+                    return f.payment_type === "DR";
                   });
-                  setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
-                  setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
+                  setTotalCredit(
+                    _.sumBy(credit_data, (s) => parseFloat(s.amount))
+                  );
+                  setTotalDebit(
+                    _.sumBy(debit_data, (s) => parseFloat(s.amount))
+                  );
                   return [first, second];
                 });
-
               }
             })
             .catch((e) => console.log(e));
@@ -528,7 +520,7 @@ export default function JournalVoucher() {
           type: "info",
           display: `Please select proper amount / account ${
             finOptions.cost_center_required === "Y" ? "/ cost center" : ""
-            }`, //"Please select an Account and enter proper amount",
+          }`, //"Please select an Account and enter proper amount",
         });
         setLoading(false);
         return;
@@ -547,13 +539,13 @@ export default function JournalVoucher() {
       voucher_type: voucherType,
       invoice_no:
         voucherType === "payment" ||
-          voucherType === "receipt" ||
-          voucherType === "credit_note" ||
-          voucherType === "debit_note"
+        voucherType === "receipt" ||
+        voucherType === "credit_note" ||
+        voucherType === "debit_note"
           ? selInvoice
           : voucherType === "purchase" || voucherType === "sales"
-            ? invoiceNo
-            : null,
+          ? invoiceNo
+          : null,
       // voucher_no: `${voucher_no}`,
       hospital_id: hospital_id,
       cost_center_id: cost_center_id,
@@ -638,20 +630,20 @@ export default function JournalVoucher() {
             voucherType === "journal"
               ? "JVReport_journal"
               : voucherType === "contra"
-                ? "JVReport_contra"
-                : voucherType === "receipt"
-                  ? "JVReport_receipt"
-                  : voucherType === "payment"
-                    ? "JVReport_payment"
-                    : voucherType === "sales"
-                      ? "JVReport_sales"
-                      : voucherType === "purchase"
-                        ? "JVReport_purchase"
-                        : voucherType === "credit_note"
-                          ? "JVReport_creditNote"
-                          : voucherType === "debit_note"
-                            ? "JVReport_debitNote"
-                            : "JVReport_expense",
+              ? "JVReport_contra"
+              : voucherType === "receipt"
+              ? "JVReport_receipt"
+              : voucherType === "payment"
+              ? "JVReport_payment"
+              : voucherType === "sales"
+              ? "JVReport_sales"
+              : voucherType === "purchase"
+              ? "JVReport_purchase"
+              : voucherType === "credit_note"
+              ? "JVReport_creditNote"
+              : voucherType === "debit_note"
+              ? "JVReport_debitNote"
+              : "JVReport_expense",
           reportParams: [
             {
               name: "voucher_header_id",
@@ -730,8 +722,8 @@ export default function JournalVoucher() {
       ? record.paytypedisable
         ? { disabled: record.paytypedisable }
         : record.disabled
-          ? { disabled: record.disabled }
-          : {}
+        ? { disabled: record.disabled }
+        : {}
       : {};
 
     return (
@@ -751,14 +743,10 @@ export default function JournalVoucher() {
           onChange: (selected) => {
             record["payment_type"] = selected.value;
             const credit_data = _.filter(journerList, (f) => {
-              return (
-                f.payment_type === "CR"
-              )
+              return f.payment_type === "CR";
             });
             const debit_data = _.filter(journerList, (f) => {
-              return (
-                f.payment_type === "DR"
-              )
+              return f.payment_type === "DR";
             });
             setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
             setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
@@ -766,14 +754,10 @@ export default function JournalVoucher() {
           onClear: () => {
             record["payment_type"] = undefined;
             const credit_data = _.filter(journerList, (f) => {
-              return (
-                f.payment_type === "CR"
-              )
+              return f.payment_type === "CR";
             });
             const debit_data = _.filter(journerList, (f) => {
-              return (
-                f.payment_type === "DR"
-              )
+              return f.payment_type === "DR";
             });
             setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
             setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
@@ -800,14 +784,10 @@ export default function JournalVoucher() {
           onChange: (e) => {
             records["amount"] = e.target.value === "" ? "" : e.target.value;
             const credit_data = _.filter(journerList, (f) => {
-              return (
-                f.payment_type === "CR"
-              )
+              return f.payment_type === "CR";
             });
             const debit_data = _.filter(journerList, (f) => {
-              return (
-                f.payment_type === "DR"
-              )
+              return f.payment_type === "DR";
             });
             setTotalCredit(_.sumBy(credit_data, (s) => parseFloat(s.amount)));
             setTotalDebit(_.sumBy(debit_data, (s) => parseFloat(s.amount)));
@@ -983,31 +963,31 @@ export default function JournalVoucher() {
             voucherType === "receipt" ||
             voucherType === "credit_note" ||
             voucherType === "debit_note" ? (
-                <AlgaehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{
-                    forceLabel: "Select Invoice No.",
-                    isImp: true,
-                  }}
-                  selector={{
-                    value: selInvoice,
-                    dataSource: {
-                      data: invoiceData,
-                      valueField: "invoice_no",
-                      textField: "invoice_no",
-                    },
-                    onChange: (selected) => {
-                      setSelInvoice(selected.invoice_no);
-                    },
-                    onClear: () => {
-                      setSelInvoice("");
-                    },
-                    others: {
-                      disabled: disableFiled,
-                    },
-                  }}
-                />
-              ) : null}
+            <AlgaehAutoComplete
+              div={{ className: "col-2" }}
+              label={{
+                forceLabel: "Select Invoice No.",
+                isImp: true,
+              }}
+              selector={{
+                value: selInvoice,
+                dataSource: {
+                  data: invoiceData,
+                  valueField: "invoice_no",
+                  textField: "invoice_no",
+                },
+                onChange: (selected) => {
+                  setSelInvoice(selected.invoice_no);
+                },
+                onClear: () => {
+                  setSelInvoice("");
+                },
+                others: {
+                  disabled: disableFiled,
+                },
+              }}
+            />
+          ) : null}
           {}
 
           {/* <PaymentComponent
@@ -1069,14 +1049,22 @@ export default function JournalVoucher() {
                 </div>
                 <div className="actions">
                   <span>
-                    Total Credit:<b>{getAmountFormart(total_credit, {
-                    appendSymbol: false,
-                  })}</b> |
+                    Total Credit:
+                    <b>
+                      {getAmountFormart(total_credit, {
+                        appendSymbol: false,
+                      })}
+                    </b>{" "}
+                    |
                   </span>
                   <span>
-                    Total Debit:<b>{getAmountFormart(total_debit, {
-                    appendSymbol: false,
-                  })}</b> |
+                    Total Debit:
+                    <b>
+                      {getAmountFormart(total_debit, {
+                        appendSymbol: false,
+                      })}
+                    </b>{" "}
+                    |
                   </span>
                   <button
                     className="btn btn-default"

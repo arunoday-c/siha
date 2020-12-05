@@ -53,10 +53,11 @@ export default {
                         _mysql
                             .executeQuery({
                                 query:
-                                    "select SD.*, IM.item_description, IU.uom_description from \
-                                    hims_f_inventory_stock_adjust_detail SD, hims_d_item_master IM ,\
+                                    "select SD.*, IM.item_description, IU.uom_description, \
+                                    CASE WHEN SD.adjustment_type='DQ' THEN (qtyhand - quantity) else (quantity + qtyhand) END  as remaining_qty\
+                                    from hims_f_inventory_stock_adjust_detail SD, hims_d_inventory_item_master IM ,\
                                     hims_d_inventory_uom IU where SD.inventory_stock_adjust_header_id=? and \
-                                    SD.item_id = IM.hims_d_item_master_id and SD.uom_id = IU.hims_d_inventory_uom_id",
+                                    SD.item_id = IM.hims_d_inventory_item_master_id and SD.uom_id = IU.hims_d_inventory_uom_id",
                                 values: [headerResult[0].hims_f_inventory_stock_adjust_header_id],
                                 printQuery: true
                             })

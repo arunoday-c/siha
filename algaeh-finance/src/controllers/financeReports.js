@@ -11,9 +11,10 @@ const {
   getAccountReceivableAging,
   getAccountPayableAging,
   getProfitAndLossCostCenterWise,
-  getProfitAndLossMonthWise
+  getProfitAndLossMonthWise,
 } = financeReports;
 import { generateExcel } from "../excels/index";
+import { generationLedger } from "../models/drillDown";
 export default () => {
   const api = Router();
 
@@ -26,7 +27,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -38,21 +39,21 @@ export default () => {
             {
               header: "Account Name",
               key: "title",
-              width: accountNameWidth
+              width: accountNameWidth,
             },
             {
               header: "Arabic Name",
               key: "arabic_name",
-              width: accountNameArabicWidth
+              width: accountNameArabicWidth,
             },
             {
               header: "Amount",
               key: "subtitle",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
-            }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
+            },
           ];
           next();
         } else {
@@ -60,7 +61,7 @@ export default () => {
             .status(utlities.AlgaehUtilities().httpStatus().ok)
             .json({
               success: true,
-              result: req.records
+              result: req.records,
             })
             .end();
         }
@@ -78,7 +79,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -90,21 +91,21 @@ export default () => {
             {
               header: "Account Name",
               key: "title",
-              width: accountNameWidth
+              width: accountNameWidth,
             },
             {
               header: "Arabic Name",
               key: "arabic_name",
-              width: accountNameArabicWidth
+              width: accountNameArabicWidth,
             },
             {
               header: "Amount",
               key: "subtitle",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
-            }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
+            },
           ];
           next();
         } else {
@@ -112,7 +113,7 @@ export default () => {
             .status(utlities.AlgaehUtilities().httpStatus().ok)
             .json({
               success: true,
-              result: req.records
+              result: req.records,
             })
             .end();
         }
@@ -129,7 +130,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -140,47 +141,47 @@ export default () => {
           req.columns = [
             {
               key: "title",
-              width: accountNameWidth
+              width: accountNameWidth,
             },
             {
               key: "tr_debit_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               key: "tr_credit_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
-            }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
+            },
           ];
           req.noPlotCloumn = true;
-          req.excelHeader = worksheet => {
+          req.excelHeader = (worksheet) => {
             worksheet.columns = [
               { header: "Particulars", width: accountNameWidth },
-              { header: "Closing Balance", width: amountWidth + amountWidth }
+              { header: "Closing Balance", width: amountWidth + amountWidth },
             ];
             const lastRow = worksheet.rowCount;
             let row = worksheet.getRow(lastRow);
             const fonts = {
               name: "Arial",
               size: 9,
-              bold: true
+              bold: true,
             };
             const fill = {
               type: "pattern",
               pattern: "solid",
-              fgColor: { argb: "FFFFFF00" }
+              fgColor: { argb: "FFFFFF00" },
             };
             const alignment = { vertical: "middle", horizontal: "center" };
             const border = {
               right: { style: "thin", color: { argb: "00000000" } },
               top: { style: "thin", color: { argb: "00000000" } },
               left: { style: "thin", color: { argb: "00000000" } },
-              bottom: { style: "thin", color: { argb: "00000000" } }
+              bottom: { style: "thin", color: { argb: "00000000" } },
             };
             row.font = fonts;
             row.eachCell((cell, index) => {
@@ -209,7 +210,7 @@ export default () => {
             .status(utlities.AlgaehUtilities().httpStatus().ok)
             .json({
               success: true,
-              result: req.records
+              result: req.records,
             })
             .end();
         }
@@ -227,7 +228,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -249,58 +250,58 @@ export default () => {
                 font: {
                   name: "Arial",
                   size: 9,
-                  bold: true
-                }
-              }
+                  bold: true,
+                },
+              },
             },
             {
               header: "Current",
               key: "todays_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "1 - 30",
               key: "thirty_days_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "31 - 60",
               key: "sixty_days_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "61 - 90",
               key: "ninety_days_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "91 and over",
               key: "above_ninety_days_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "Total",
               key: "balance",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
-            }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
+            },
           ];
           next();
         } else {
@@ -308,7 +309,7 @@ export default () => {
             .status(utlities.AlgaehUtilities().httpStatus().ok)
             .json({
               success: true,
-              result: req.records
+              result: req.records,
             })
             .end();
         }
@@ -326,7 +327,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -345,58 +346,58 @@ export default () => {
                 font: {
                   name: "Arial",
                   size: 9,
-                  bold: true
-                }
-              }
+                  bold: true,
+                },
+              },
             },
             {
               header: "Current",
               key: "todays_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "1 - 30",
               key: "thirty_days_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "31 - 60",
               key: "sixty_days_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "61 - 90",
               key: "ninety_days_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "91 and over",
               key: "above_ninety_days_amount",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             },
             {
               header: "Total",
               key: "balance",
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
-            }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
+            },
           ];
           next();
         } else {
@@ -404,7 +405,7 @@ export default () => {
             .status(utlities.AlgaehUtilities().httpStatus().ok)
             .json({
               success: true,
-              result: req.records
+              result: req.records,
             })
             .end();
         }
@@ -421,7 +422,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -431,20 +432,20 @@ export default () => {
           req.sheetName = "Profit and Loss Cost Center Wise";
           const { cost_centers, income, expense } = req.records;
 
-          req.columns = cost_centers.map(item => {
+          req.columns = cost_centers.map((item) => {
             return {
               header: item.cost_center,
               key: item.cost_center_id,
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             };
           });
           req.columns.unshift({
             header: "Ledger Name",
             key: "label",
-            width: accountNameWidth
+            width: accountNameWidth,
           });
           req.records = { income, expense };
           next();
@@ -453,7 +454,7 @@ export default () => {
             .status(utlities.AlgaehUtilities().httpStatus().ok)
             .json({
               success: true,
-              result: req.records
+              result: req.records,
             })
             .end();
         }
@@ -471,7 +472,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -481,20 +482,20 @@ export default () => {
           req.sheetName = "Profit and Loss By Year";
           const { months, income, expense } = req.records;
 
-          req.columns = months.map(item => {
+          req.columns = months.map((item) => {
             return {
               header: item.month_name,
               key: item.month_no,
               width: amountWidth,
               others: {
-                alignment: { vertical: "middle", horizontal: "right" }
-              }
+                alignment: { vertical: "middle", horizontal: "right" },
+              },
             };
           });
           req.columns.unshift({
             header: "Ledger Name",
             key: "label",
-            width: accountNameWidth
+            width: accountNameWidth,
           });
           req.records = { income, expense };
           next();
@@ -503,7 +504,7 @@ export default () => {
             .status(utlities.AlgaehUtilities().httpStatus().ok)
             .json({
               success: true,
-              result: req.records
+              result: req.records,
             })
             .end();
         }
@@ -511,5 +512,11 @@ export default () => {
     },
     generateExcel
   );
+  api.get("/generationLedger", generationLedger, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json(req.records)
+      .end();
+  });
   return api;
 };

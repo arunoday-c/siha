@@ -131,7 +131,7 @@ export default {
                 criedt_qry,
               values: [
                 sales_return_number,
-                today,
+                new Date(),
                 input.from_pos_id,
                 input.patient_id,
                 input.visit_id,
@@ -365,32 +365,32 @@ export default {
               get_item_detail.return_quantity === null
                 ? newDtls[i].return_quantity
                 : parseFloat(get_item_detail.return_quantity) +
-                  parseFloat(newDtls[i].return_quantity);
+                parseFloat(newDtls[i].return_quantity);
             let return_extended_cost =
               get_item_detail.return_extended_cost === null
                 ? newDtls[i].return_extended_cost
                 : parseFloat(get_item_detail.return_extended_cost) +
-                  parseFloat(newDtls[i].return_extended_cost);
+                parseFloat(newDtls[i].return_extended_cost);
             let return_discount_amt =
               get_item_detail.return_discount_amt === null
                 ? newDtls[i].return_discount_amt
                 : parseFloat(get_item_detail.return_discount_amt) +
-                  parseFloat(newDtls[i].return_discount_amt);
+                parseFloat(newDtls[i].return_discount_amt);
             let return_net_extended_cost =
               get_item_detail.return_net_extended_cost === null
                 ? newDtls[i].return_net_extended_cost
                 : parseFloat(get_item_detail.return_net_extended_cost) +
-                  parseFloat(newDtls[i].return_net_extended_cost);
+                parseFloat(newDtls[i].return_net_extended_cost);
             let return_pat_responsibility =
               get_item_detail.return_pat_responsibility === null
                 ? newDtls[i].return_pat_responsibility
                 : parseFloat(get_item_detail.return_pat_responsibility) +
-                  parseFloat(newDtls[i].return_pat_responsibility);
+                parseFloat(newDtls[i].return_pat_responsibility);
             let return_company_responsibility =
               get_item_detail.return_company_responsibility === null
                 ? newDtls[i].return_company_responsibility
                 : parseFloat(get_item_detail.return_company_responsibility) +
-                  parseFloat(newDtls[i].return_company_responsibility);
+                parseFloat(newDtls[i].return_company_responsibility);
 
             updateString += mysql.format(
               "UPDATE hims_f_pharmacy_pos_detail SET `return_quantity`=?,`return_extended_cost` = ?,\
@@ -705,11 +705,11 @@ export default {
                         parseFloat(
                           inputParam.pharmacy_stock_detail[i].quantity
                         ) *
-                          parseFloat(
-                            inputParam.pharmacy_stock_detail[i]
-                              .conversion_factor
-                          ) *
-                          parseFloat(item_avg_cost.waited_avg_cost),
+                        parseFloat(
+                          inputParam.pharmacy_stock_detail[i]
+                            .conversion_factor
+                        ) *
+                        parseFloat(item_avg_cost.waited_avg_cost),
                         decimal_places
                       );
 

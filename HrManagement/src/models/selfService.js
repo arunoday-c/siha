@@ -443,14 +443,15 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "SELECT E.hims_d_employee_id, E.employee_code,LA.employee_joined,LA.early_rejoin, E.full_name,LA.actual_to_date,DATE_ADD(LA.actual_to_date, INTERVAL 1 DAY) as expectedDate, E.last_salary_process_date, \
-                SD.sub_department_name, D.department_name, EG.group_description, LA.from_date, \
-                LA.to_date, LA.hims_f_leave_application_id FROM hims_d_employee E \
-                inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
-                inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
-                inner join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id \
-                left join hims_f_leave_application LA on E.hims_d_employee_id = LA.employee_id \
-                where E.record_status = 'A'  and LA.status='APR' and LA.processed='Y' and E.hospital_id=? ;",
+              "SELECT E.hims_d_employee_id, E.employee_code,LA.employee_joined,LA.early_rejoin, E.full_name,LA.actual_to_date,\
+            DATE_ADD(LA.actual_to_date, INTERVAL 1 DAY) as expectedDate, E.last_salary_process_date,LA.from_date,LA.to_date, \
+            SD.sub_department_name, D.department_name, EG.group_description,  \
+            LA.hims_f_leave_application_id FROM hims_d_employee E \
+            inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
+            inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
+            inner join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id \
+            left join hims_f_leave_application LA on E.hims_d_employee_id = LA.employee_id \
+            where E.record_status = 'A'  and LA.status='APR' and LA.processed='Y' and E.hospital_id=? order by LA.to_date desc;",
             printQuery: true,
             values: [req.query.hospital_id],
           })

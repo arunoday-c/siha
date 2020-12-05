@@ -31,11 +31,11 @@ const executePDF = function executePDFMethod(options) {
           arabic_sub_department_name,IP.insurance_provider_name,IP.arabic_provider_name,E.license_number, \
           H.patient_tax, H.company_tax, coalesce(H.patient_tax,0) + coalesce(H.company_tax,0) as net_tax, \
           H.patient_payable, coalesce(H.patient_payable,0)+0 as due_amout,H.net_total \
-  from hims_f_patient P \
-  inner join  hims_f_pharmcy_sales_return_header H on P.hims_d_patient_id = H.patient_id \
-  inner join hims_f_patient_visit V on V.hims_f_patient_visit_id = H.visit_id \
-  inner join hims_d_employee E on E.hims_d_employee_id = V.doctor_id \
-  inner join hims_d_sub_department SD on SD.hims_d_sub_department_id = V.sub_department_id \
+  from hims_f_pharmcy_sales_return_header H \
+  left join hims_f_patient P on P.hims_d_patient_id = H.patient_id \
+  left join hims_f_patient_visit V on V.hims_f_patient_visit_id = H.visit_id \
+  left join hims_d_employee E on E.hims_d_employee_id = V.doctor_id \
+  left join hims_d_sub_department SD on SD.hims_d_sub_department_id = V.sub_department_id \
   left join hims_d_insurance_provider IP on IP.hims_d_insurance_provider_id = H.insurance_provider_id \
   left join hims_d_nationality as N on N.hims_d_nationality_id = P.nationality_id \
   where H.hims_f_pharmcy_sales_return_header_id=?;\
@@ -59,7 +59,6 @@ const executePDF = function executePDFMethod(options) {
         .then((output) => {
           const header = output[0].length > 0 ? output[0] : [{}];
           const detail = output[1];
-          let otherObj = {};
           const result = {
             header: { ...header[0], ...options.mainData[0] },
             detail: detail,

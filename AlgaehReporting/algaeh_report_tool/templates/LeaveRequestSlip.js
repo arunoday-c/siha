@@ -29,7 +29,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `SELECT H.hospital_name,E.full_name,E.date_of_joining, E.employee_code,L.leave_description,LA.leave_application_code,
-          SD.sub_department_name, D.designation,LA.from_date,LA.to_date, LA.application_date,
+          SD.sub_department_name, D.designation,LA.from_date,LA.actual_to_date,LA.to_date, LA.application_date,
           CASE WHEN LA.status ='PEN' THEN 'Pending' WHEN LA.status ='APR' THEN 'Approved' else 'Processed' END as approval_status,LA.total_applied_days,LA.total_approved_days, US.user_display_name,LB.close_balance,
           CASE WHEN LA.leave_type='U' THEN 'Unpaid' else 'Paid' END as leave_type
           FROM hims_f_leave_application LA

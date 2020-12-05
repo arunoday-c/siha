@@ -10,6 +10,7 @@ import _ from "lodash";
 //   PRESCRIPTION_FREQ_DURATION,
 //   PRESCRIPTION_FREQ_ROUTE,
 // } from "../../../../utils/GlobalVariables.json";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
@@ -128,6 +129,7 @@ const SaveMedication = ($this, context, e) => {
       isFavMedicationsItems: isFavMedications,
     };
 
+    AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/orderMedication/addPatientPrescription",
       data: inputObj,
@@ -156,8 +158,11 @@ const SaveMedication = ($this, context, e) => {
             }
           );
         }
+        AlgaehLoader({ show: false });
       },
-      onFailure: (error) => {},
+      onFailure: (error) => {
+        AlgaehLoader({ show: false });
+      },
     });
   } else {
     swalMessage({
@@ -465,26 +470,38 @@ const AddItems = ($this) => {
 
   let validate =
     $this.state.item_id !== null &&
-    $this.state.generic_id !== null &&
-    $this.state.dosage !== null &&
-    $this.state.med_units !== null &&
-    $this.state.frequency !== null &&
-    $this.state.no_of_days !== null &&
-    $this.state.frequency_type !== null &&
-    $this.state.frequency_time !== null &&
-    $this.state.frequency_route !== null &&
-    $this.state.uom_id !== null &&
-    $this.state.service_id !== null &&
-    $this.state.item_category_id !== null &&
-    $this.state.item_group_id !== null
+      $this.state.generic_id !== null &&
+      $this.state.dosage !== null &&
+      $this.state.med_units !== null &&
+      $this.state.frequency !== null &&
+      $this.state.no_of_days !== null &&
+      $this.state.frequency_type !== null &&
+      $this.state.frequency_time !== null &&
+      $this.state.frequency_route !== null &&
+      $this.state.uom_id !== null &&
+      $this.state.service_id !== null &&
+      $this.state.item_category_id !== null &&
+      $this.state.item_group_id !== null
       ? true
       : false;
 
+  let item_exists = $this.state.medicationitems.find(
+    (f) => f.item_id === $this.state.item_id
+  )
   if ($this.state.updateButton && validate) {
     deleteItems($this, $this.state.rowDetails);
     AddItemsOrUpdate($this);
   } else if (!$this.state.updateButton && validate) {
-    AddItemsOrUpdate($this);
+
+    if (item_exists === undefined) {
+      AddItemsOrUpdate($this);
+    } else {
+      swalMessage({
+        title: "Selected Item Already Exists.",
+        type: "error",
+      });
+    }
+
   } else {
     swalMessage({
       title: "Please enter all detils of prescription",

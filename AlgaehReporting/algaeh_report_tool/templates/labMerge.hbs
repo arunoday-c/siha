@@ -4,16 +4,21 @@
 {{#each records}}
     <table class="tableForDataNoBorder" cell-padding="0">
         <tbody>
-        <tr class="tableSubHdg2" style="background-color:rgb(250, 250, 250);">
-            <td colspan="4" class="txtFld">
-                <b>{{investigation_name}}</b>
+        <tr class="tableSubHdg2" >
+            <td colspan="3" class="txtFld">
+                <b>{{service_name}}</b>
+            </td>
+             <td colspan="" class="numberFld">
+              ({{investigation_name}})
             </td>
         </tr>
-           {{!-- <tr>
-                <td colspan="4" class="tableSubHdg2" >{{analyte_report_group_desc}}</td>
-               
-            </tr> --}}
         {{#each details}}
+         {{#if order 1 }}
+            <tr>
+                <td colspan="4" class="tableSubHdg2 txtFld" style="background-color:rgb(255, 255, 255);"><i>{{analyte_report_group_desc}}</i></td>
+            </tr>
+         {{/if}}
+        {{#each groupDetails}}
         <tr>
             <td width="40%" class="txtFld">{{analyte_name}}</td>
             <td  width="20%" class="numberFld">{{result}} <sup>{{critical_type}}</sup></td>
@@ -21,6 +26,8 @@
             <td  width="20%" class="numberFld"> {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
             {{normal_high}}{{/if}}</td>
         </tr>
+        {{/each}}
+        
         {{/each}}
         </tbody>
     </table>
