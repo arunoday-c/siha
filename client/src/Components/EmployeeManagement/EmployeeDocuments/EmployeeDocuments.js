@@ -22,6 +22,7 @@ import {
   Upload,
   // Spin,
 } from "algaeh-react-components";
+import { Tooltip } from "antd";
 // import { newAlgaehApi } from "../../../hooks";
 import eventLogic from "./eventsLogic/employeeDocumentLogic";
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -799,26 +800,39 @@ class EmployeeDocuments extends Component {
                           //   Download
                           // </button>
                           <span>
-                            <i
-                              className="fas fa-download"
-                              onClick={() => this.downloadSelectedFile(row)}
-                            ></i>
-                            <i
-                              className="fas fa-eye"
-                              onClick={() =>
-                                this.downloadSelectedFile(row, true)
-                              }
-                            ></i>
+                            <Tooltip title="Download Document">
+                              <i
+                                className="fas fa-download"
+                                onClick={() => this.downloadSelectedFile(row)}
+                              ></i>
+                            </Tooltip>
+                            <Tooltip title="Preview Document">
+                              <i
+                                className="fas fa-eye"
+                                onClick={() =>
+                                  this.downloadSelectedFile(row, true)
+                                }
+                              ></i>
+                            </Tooltip>
                           </span>
                         ),
                         editorTemplate: (row) => (
-                          <button
-                            onClick={() => {
-                              this.downloadSelectedFile(row);
-                            }}
-                          >
-                            Download
-                          </button>
+                          <span>
+                            <Tooltip title="Download Document">
+                              <i
+                                className="fas fa-download"
+                                onClick={() => this.downloadSelectedFile(row)}
+                              ></i>
+                            </Tooltip>
+                            <Tooltip title="Preview Document">
+                              <i
+                                className="fas fa-eye"
+                                onClick={() =>
+                                  this.downloadSelectedFile(row, true)
+                                }
+                              ></i>
+                            </Tooltip>
+                          </span>
                         ),
                         others: {
                           maxWidth: 150,
