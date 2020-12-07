@@ -14,13 +14,23 @@ import {
   swalMessage,
   cancelRequest,
 } from "../../../utils/algaehApiCall";
+import {
+  // AlgaehModal,
+  // MainContext,
+  //   AlgaehLabel,
+  // Modal,
+  Upload,
+  // Spin,
+} from "algaeh-react-components";
+import { Tooltip } from "antd";
+// import { newAlgaehApi } from "../../../hooks";
 import eventLogic from "./eventsLogic/employeeDocumentLogic";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
-
-const AlgaehFileUploader = React.memo(
-  React.lazy(() => import("../../Wrapper/algaehFileUpload"))
-);
+const { Dragger } = Upload;
+// const AlgaehFileUploader = React.memo(
+//   React.lazy(() => import("../../Wrapper/algaehFileUpload"))
+// );
 
 class EmployeeDocuments extends Component {
   constructor(props) {
@@ -35,14 +45,15 @@ class EmployeeDocuments extends Component {
       selected_id: undefined,
       document_type_list: [],
       hospital_id: null,
+      fileList: [],
     };
     this.getHospitals();
     this.getEmployees();
   }
-  afterPassPortSave(rawData) {
-    let details = this.state.document_grid;
+  afterPassPortSave(fileName, uniqueID, file) {
+    // let details = this.state.document_grid;
     const _type = this.state.document_type;
-    const _unique = rawData.uniqueID.split("_");
+    const _unique = uniqueID.split("_");
     let _document_id = undefined;
     let _document_type_name = undefined;
     if (_unique.length > 2) {
@@ -52,28 +63,56 @@ class EmployeeDocuments extends Component {
       _document_type_name = _unique[_unique.length - 1];
     }
     eventLogic()
-      .saveDocument({
+      .saveDocumentDetails({
         document_id: _document_id,
         document_type: _type,
         employee_id: this.state.employee_id,
-        document_name: rawData.fileName,
+        document_name: fileName,
         dependent_id: this.state.selected_id,
-        download_uniq_id: rawData.uniqueID,
+        download_uniq_id: uniqueID,
         document_type_name: _document_type_name,
+        file: file,
       })
       .then((result) => {
-        details.push({
-          document_name: rawData.fileName,
-          document_type_name: _document_type_name,
-          download_doc: rawData.uniqueID,
-        });
-        this.setState({
-          document_grid: details,
-        });
-        swalMessage({
-          title: "Successfully done",
-          type: "success",
-        });
+        eventLogic()
+          .saveDocument(file, result.insertId + uniqueID, result.insertId)
+          .then((result) => {
+            eventLogic()
+              .getSaveDocument({
+                document_type: this.state.document_type,
+                employee_id: this.state.employee_id,
+                dependent_id: this.state.selected_id,
+              })
+              .then((result) => {
+                swalMessage({
+                  title: "Successfully done",
+                  type: "success",
+                });
+                this.setState({
+                  document_grid: result,
+                });
+              })
+              .catch((error) => {
+                swalMessage({
+                  title: error.message,
+                  type: "error",
+                });
+              });
+          })
+          .catch((error) => {
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          });
+        // details.push({
+        //   document_name: fileName,
+        //   document_type_name: _document_type_name,
+        //   download_doc: uniqueID,
+        // });
+        // this.setState({
+        //   document_grid: details,
+        // });
       })
       .catch((error) => {
         swalMessage({
@@ -82,6 +121,7 @@ class EmployeeDocuments extends Component {
         });
       });
   }
+
   onChangeDocTypeHandler(e) {
     this.setState({
       employee_name: null,
@@ -162,36 +202,91 @@ class EmployeeDocuments extends Component {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
-        eventLogic()
-          .deleteSavedDocument({
-            hims_f_employee_documents_id: data.hims_f_employee_documents_id,
-            dependent_id: data.dependent_id,
-          })
-          .then(
-            eventLogic()
-              .deleteDocument({
-                unique: data.download_uniq_id,
+        //     eventLogic()
+        //       .deleteSavedDocument({
+        //         hims_f_employee_documents_id: data.hims_f_employee_documents_id,
+        //         dependent_id: data.dependent_id,
+        //       })
+        //       .then(
+        //         eventLogic()
+        //           .deleteDocument({
+        //             unique: data.download_uniq_id,
 
-                fileType:
-                  data.document_type === "C"
-                    ? "CompanyDocuments"
-                    : "EmployeeDocuments",
-              })
+        //             fileType:
+        //               data.document_type === "C"
+        //                 ? "CompanyDocuments"
+        //                 : "EmployeeDocuments",
+        //           })
+        //           .then(
+        //             swalMessage({
+        //               title: "Successfully Deleted",
+        //               type: "success",
+        //             }),
+        //             eventLogic()
+        //               .getSaveDocument({
+        //                 document_type: this.state.document_type,
+        //                 employee_id: this.state.employee_id,
+        //                 dependent_id: this.state.selected_id,
+        //               })
+        //               .then((result) => {
+        //                 this.setState({
+        //                   document_grid: result,
+        //                 });
+        //               })
+        //               .catch((error) => {
+        //                 swalMessage({
+        //                   title: error.message,
+        //                   type: "error",
+        //                 });
+        //               })
+        //           )
+        //           .catch((error) => {
+        //             swalMessage({
+        //               title: error.message,
+        //               type: "error",
+        //             });
+        //           })
+        //       )
+        //       .catch((error) => {
+        //         swalMessage({
+        //           title: error.message,
+        //           type: "error",
+        //         });
+        //       });
+        //   }
+        // });
+
+        eventLogic()
+          .getSelectedDocument(data)
+          .then((result) => {
+            eventLogic()
+              .onDelete(result)
               .then(
                 swalMessage({
                   title: "Successfully Deleted",
                   type: "success",
                 }),
+
                 eventLogic()
-                  .getSaveDocument({
-                    document_type: this.state.document_type,
-                    employee_id: this.state.employee_id,
-                    dependent_id: this.state.selected_id,
-                  })
+                  .deleteSavedDocument(data)
                   .then((result) => {
-                    this.setState({
-                      document_grid: result,
-                    });
+                    eventLogic()
+                      .getSaveDocument({
+                        document_type: this.state.document_type,
+                        employee_id: this.state.employee_id,
+                        dependent_id: this.state.selected_id,
+                      })
+                      .then((result) => {
+                        this.setState({
+                          document_grid: result,
+                        });
+                      })
+                      .catch((error) => {
+                        swalMessage({
+                          title: error.message,
+                          type: "error",
+                        });
+                      });
                   })
                   .catch((error) => {
                     swalMessage({
@@ -205,8 +300,8 @@ class EmployeeDocuments extends Component {
                   title: error.message,
                   type: "error",
                 });
-              })
-          )
+              });
+          })
           .catch((error) => {
             swalMessage({
               title: error.message,
@@ -236,7 +331,7 @@ class EmployeeDocuments extends Component {
             .getSaveDocument({
               document_type: this.state.document_type,
               employee_id: this.state.employee_id,
-              // dependent_id: item.hims_d_employee_dependents_id,
+              dependent_id: this.state.selected_id,
             })
             .then((result) => {
               this.setState({
@@ -362,6 +457,7 @@ class EmployeeDocuments extends Component {
         this.setState({
           document_for_list: result,
         });
+        return;
       })
       .catch((error) => {
         swalMessage({
@@ -443,41 +539,55 @@ class EmployeeDocuments extends Component {
       hospital_id: userToken.hims_d_hospital_id,
     });
   }
-  downloadSelectedFile(row) {
-    const { download_uniq_id, document_name } = row;
-    //for preview
-    // const { hostname, port, protocol } = window.location;
-    // const _port = port === "" ? "/documentManagement" : `:3006`;
-    // const fileType = "Employees";
-    // const url = `${protocol}//${hostname}${_port}/api/v1/Document/get?fileType=${fileType}&destinationName=${download_uniq_id}`;
-    //--end
-    algaehApiCall({
-      uri: "/Document/get",
-      method: "GET",
-      module: "documentManagement",
-      fileType: "Employees",
-      headers: {
-        Accept: "blob",
-      },
-      data: {
-        fileType: "Employees",
-        destinationName: download_uniq_id,
-      },
-      others: { responseType: "blob" },
-      onSuccess: (response) => {
-        const { data } = response;
-        const url = URL.createObjectURL(data);
-        let a = document.createElement("a");
-        a.href = url;
-        const cleanFileName = document_name.split(".");
-        a.download = `${cleanFileName[0]}.${data.type}`;
-        a.click();
-      },
-      onCatch: (error) => {
-        console.error(error);
-      },
-    });
+  downloadSelectedFile(row, isPreview) {
+    eventLogic()
+      .getSelectedDocument(row)
+      .then((result) => {
+        eventLogic().downloadDoc(result, isPreview);
+      })
+      .catch((error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      });
   }
+
+  // downloadSelectedFile(row) {
+  //   const { download_uniq_id, document_name } = row;
+  //   //for preview
+  //   // const { hostname, port, protocol } = window.location;
+  //   // const _port = port === "" ? "/documentManagement" : `:3006`;
+  //   // const fileType = "Employees";
+  //   // const url = `${protocol}//${hostname}${_port}/api/v1/Document/get?fileType=${fileType}&destinationName=${download_uniq_id}`;
+  //   //--end
+  //   algaehApiCall({
+  //     uri: "/Document/get",
+  //     method: "GET",
+  //     module: "documentManagement",
+  //     fileType: "Employees",
+  //     headers: {
+  //       Accept: "blob",
+  //     },
+  //     data: {
+  //       fileType: "Employees",
+  //       destinationName: download_uniq_id,
+  //     },
+  //     others: { responseType: "blob" },
+  //     onSuccess: (response) => {
+  //       const { data } = response;
+  //       const url = URL.createObjectURL(data);
+  //       let a = document.createElement("a");
+  //       a.href = url;
+  //       const cleanFileName = document_name.split(".");
+  //       a.download = `${cleanFileName[0]}.${data.type}`;
+  //       a.click();
+  //     },
+  //     onCatch: (error) => {
+  //       console.error(error);
+  //     },
+  //   });
+  // }
 
   render() {
     return (
@@ -682,22 +792,47 @@ class EmployeeDocuments extends Component {
                           />
                         ),
                         displayTemplate: (row) => (
-                          <button
-                            onClick={() => {
-                              this.downloadSelectedFile(row);
-                            }}
-                          >
-                            Download
-                          </button>
+                          // <button
+                          //   onClick={() => {
+                          //
+                          //   }}
+                          // >
+                          //   Download
+                          // </button>
+                          <span>
+                            <Tooltip title="Download Document">
+                              <i
+                                className="fas fa-download"
+                                onClick={() => this.downloadSelectedFile(row)}
+                              ></i>
+                            </Tooltip>
+                            <Tooltip title="Preview Document">
+                              <i
+                                className="fas fa-eye"
+                                onClick={() =>
+                                  this.downloadSelectedFile(row, true)
+                                }
+                              ></i>
+                            </Tooltip>
+                          </span>
                         ),
                         editorTemplate: (row) => (
-                          <button
-                            onClick={() => {
-                              this.downloadSelectedFile(row);
-                            }}
-                          >
-                            Download
-                          </button>
+                          <span>
+                            <Tooltip title="Download Document">
+                              <i
+                                className="fas fa-download"
+                                onClick={() => this.downloadSelectedFile(row)}
+                              ></i>
+                            </Tooltip>
+                            <Tooltip title="Preview Document">
+                              <i
+                                className="fas fa-eye"
+                                onClick={() =>
+                                  this.downloadSelectedFile(row, true)
+                                }
+                              ></i>
+                            </Tooltip>
+                          </span>
                         ),
                         others: {
                           maxWidth: 150,
@@ -724,7 +859,7 @@ class EmployeeDocuments extends Component {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-body documentMasterCntr">
               <div className="row">
-                {this.state.selected_id !== undefined
+                {/* {this.state.selected_id !== undefined
                   ? this.state.document_type_list.map((item, index) => (
                       <div className="col" key={index}>
                         <AlgaehFileUploader
@@ -770,6 +905,47 @@ class EmployeeDocuments extends Component {
                             this.onSaved();
                           }}
                         />
+                      </div>
+                    ))
+                  : null} */}
+                {this.state.selected_id !== undefined
+                  ? this.state.document_type_list.map((item, index) => (
+                      <div className="col" key={index}>
+                        {" "}
+                        <Dragger
+                          accept=".jpg,.png,.pdf"
+                          name={item.hims_d_document_type_id}
+                          beforeUpload={(file) => {
+                            this.afterPassPortSave(
+                              file.name,
+                              (this.state.selected_id === null
+                                ? "Me"
+                                : this.state.selected_id) +
+                                "_" +
+                                this.state.document_type +
+                                (this.state.employee_id !== undefined
+                                  ? "_" + this.state.employee_id
+                                  : "") +
+                                "_" +
+                                item.hims_d_document_type_id +
+                                "_" +
+                                item.document_description,
+                              [file]
+                            );
+                            return false;
+                          }}
+                          multiple={false}
+                          // disabled={this.state.dataExists && !this.state.editMode}
+                          fileList={this.state.fileList}
+                        >
+                          <p className="upload-drag-icon">
+                            {item.document_description}{" "}
+                            <i className="fas fa-file-upload"></i>
+                          </p>
+                          <p className="ant-upload-text">
+                            Click or Drag a file to upload
+                          </p>
+                        </Dragger>
                       </div>
                     ))
                   : null}

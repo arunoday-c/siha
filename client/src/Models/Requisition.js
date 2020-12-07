@@ -70,7 +70,9 @@ export default {
       transaction_qty: null,
       requisition_auth_level: null,
       item_description: "",
+      bothExisits: true
     };
+
     return output;
   },
 };

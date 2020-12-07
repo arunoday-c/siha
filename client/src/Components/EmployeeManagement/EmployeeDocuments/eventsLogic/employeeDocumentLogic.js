@@ -1,5 +1,6 @@
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import _ from "lodash";
+import { newAlgaehApi } from "../../../../hooks";
 
 export default function eventsLogEmployeeDocument() {
   return {
@@ -111,17 +112,18 @@ export default function eventsLogEmployeeDocument() {
         });
       });
     },
-    saveDocument: (data) => {
+    saveDocumentDetails: (dataFile) => {
       return new Promise((resolve, reject) => {
         algaehApiCall({
           uri: "/documents/save",
           module: "hrManagement",
           method: "POST",
-          data: data,
+          data: dataFile,
           cancelRequestId: "save",
           onSuccess: (response) => {
             if (response.data.success) {
               let data = response.data.records;
+
               resolve(data);
             } else {
               resolve([]);
@@ -133,6 +135,150 @@ export default function eventsLogEmployeeDocument() {
         });
       });
     },
+    getSelectedDocument(row) {
+      return new Promise((resolve, reject) => {
+        let contract_no =
+          row.hims_f_employee_documents_id + row.download_uniq_id;
+        newAlgaehApi({
+          uri: "/getContractDoc",
+          module: "documentManagement",
+          method: "GET",
+          data: {
+            contract_no: contract_no,
+          },
+        })
+          .then((res) => {
+            if (res.data.success) {
+              let data = res.data.data[0];
+              resolve(data);
+            }
+          })
+          .catch((e) => {
+            reject(e);
+            swalMessage({
+              title: e.message,
+              type: "error",
+            });
+          });
+      });
+    },
+    saveDocument: (files = [], contract_no, contract_id) => {
+      return new Promise((resolve, reject) => {
+        const formData = new FormData();
+
+        formData.append("contract_no", contract_no);
+        formData.append("contract_id", contract_id);
+        files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+        formData.append("newFileName", "abcd");
+        newAlgaehApi({
+          uri: "/saveContractDoc",
+          data: formData,
+          extraHeaders: { "Content-Type": "multipart/form-data" },
+          method: "POST",
+          module: "documentManagement",
+        })
+          .then((res) => {
+            if (res.data.success) {
+              resolve([]);
+            } else {
+              resolve([]);
+            }
+          })
+          .catch((error) => reject(error));
+      });
+    },
+    downloadDoc: (doc, isPreview) => {
+      if (doc.fromPath === true) {
+        newAlgaehApi({
+          uri: "/getContractDoc",
+          module: "documentManagement",
+          method: "GET",
+          extraHeaders: {
+            Accept: "blon",
+          },
+          others: {
+            responseType: "blob",
+          },
+          data: {
+            contract_no: doc.contract_no,
+            filename: doc.filename,
+            download: true,
+          },
+        })
+          .then((resp) => {
+            const urlBlob = URL.createObjectURL(resp.data);
+            if (isPreview) {
+              window.open(urlBlob);
+            } else {
+              const link = document.createElement("a");
+              link.download = doc.filename;
+              link.href = urlBlob;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+        const link = document.createElement("a");
+        if (!isPreview) {
+          link.download = doc.filename;
+          link.href = fileUrl;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          fetch(fileUrl)
+            .then((res) => res.blob())
+            .then((fblob) => {
+              const newUrl = URL.createObjectURL(fblob);
+              window.open(newUrl);
+            });
+        }
+      }
+    },
+
+    // deleteDoc : (doc) => {
+    //   confirm({
+    //     title: `Are you sure you want to delete this file?`,
+    //     content: `${doc.filename}`,
+    //     icon: "",
+    //     okText: "Yes",
+    //     okType: "danger",
+    //     cancelText: "No",
+    //     onOk() {
+    //       onDelete(doc);
+    //     },
+    //     onCancel() {
+    //       console.log("Cancel");
+    //     },
+    //   });
+    // },
+
+    onDelete: (doc) => {
+      return new Promise((resolve, reject) => {
+        newAlgaehApi({
+          uri: "/deleteContractDoc",
+          method: "DELETE",
+          module: "documentManagement",
+          data: { id: doc._id },
+        })
+          .then((res) => {
+            if (res.data.success) {
+              resolve(res);
+            }
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+
     getSaveDocument: (data) => {
       return new Promise((resolve, reject) => {
         algaehApiCall({

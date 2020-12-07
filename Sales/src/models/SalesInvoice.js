@@ -402,9 +402,10 @@ export function postSalesInvoice(req, res, next) {
         _mysql
             .executeQueryWithTransaction({
                 query:
-                    "UPDATE `hims_f_sales_invoice_header` SET `is_posted`=?, `posted_date`=?, `posted_by`=? \
+                    "UPDATE `hims_f_sales_invoice_header` SET invoice_date=?, `is_posted`=?, `posted_date`=?, `posted_by`=? \
           WHERE `hims_f_sales_invoice_header_id`=?",
                 values: [
+                    inputParam.invoice_date,
                     inputParam.posted,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,

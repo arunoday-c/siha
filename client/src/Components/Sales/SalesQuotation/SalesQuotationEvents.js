@@ -341,6 +341,10 @@ const getCtrlCode = ($this, docNumber) => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
+        const queryParams = new URLSearchParams($this.props.location.search);
+        if (queryParams.get("sales_quotation_number")) {
+          data.sales_quotation_edit = true;
+        }
 
         data.comment_list =
           data.terms_conditions !== null

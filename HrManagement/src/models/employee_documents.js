@@ -80,6 +80,7 @@ export default {
   saveDocument: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.body;
+
     try {
       _mysql
         .executeQuery({
@@ -119,31 +120,28 @@ export default {
   deleteDocument: (req, res, next) => {
     const _mysql = new algaehMysql();
 
-    return new Promise((resolve, reject) => {
-      try {
-        let input = { ...req.body };
+    try {
+      let input = { ...req.body };
 
-        _mysql
-          .executeQuery({
-            query:
-              "DELETE FROM hims_f_employee_documents  WHERE hims_f_employee_documents_id=?",
-            values: [input.hims_f_employee_documents_id],
-          })
-          .then((result) => {
-            resolve();
-          })
-          .catch((e) => {
-            next(e);
-            reject(e);
-          });
-      } catch (e) {
-        reject(e);
-        next(e);
-      }
-    }).catch((e) => {
+      _mysql
+        .executeQuery({
+          query:
+            "DELETE FROM hims_f_employee_documents  WHERE hims_f_employee_documents_id=?",
+          values: [input.hims_f_employee_documents_id],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
       _mysql.releaseConnection();
       next(e);
-    });
+    }
   },
   updateDocument: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -181,10 +179,23 @@ export default {
     const input = req.query;
 
     let appendString = "";
-    if (input.dependent_id == "null" || !input.dependent_id) {
-      appendString = " and dependent_id is null";
-    } else {
+    if (input.employee_id == "null" || !input.employee_id) {
       appendString = " and dependent_id ='" + input.dependent_id + "'";
+    } else if (
+      input.dependent_id == "null" ||
+      (!input.dependent_id && input.employee_id)
+    ) {
+      appendString =
+        " and dependent_id is null   and employee_id ='" +
+        input.employee_id +
+        "'";
+    } else {
+      appendString =
+        " and employee_id ='" +
+        input.employee_id +
+        "' and dependent_id ='" +
+        input.dependent_id +
+        "'";
     }
     try {
       _mysql
@@ -192,9 +203,9 @@ export default {
           query:
             "select hims_f_employee_documents_id,document_type,\
           document_type_name,document_name,download_uniq_id from hims_f_employee_documents \
-          where document_type=? and employee_id=? " +
+          where document_type=?  " +
             appendString,
-          values: [input.document_type, input.employee_id],
+          values: [input.document_type],
           printQuery: true,
         })
         .then((result) => {
