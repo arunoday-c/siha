@@ -1,401 +1,281 @@
-<!doctype html>
-<html lang="en">
 
-<head>
-    {{{importStyle 'css/ucaf.css'}}}
-</head>
+{{{importStyle 'css/ucaf.css'}}}
+<body class="print-body">
+    <h1 style="text-align: center;font-size:30px;"><b>UCAF 2.0</b></h1>
+    <section class="outerCntr">
+        <section class="topSection">
+            <section class="borderBox topSectionLeft">
+                <h4>To be completed & ID verifed by the reception/nurse:</h4>
+                <table>
+                  <tbody>
+                    <tr>
+                        <td  width="175px">Provider Name</td>
+                        <td>: {{header.provider_name}}</td>
+                    </tr>
+                      <tr>
+                        <td>Insurance Company Name</td>
+                        <td>: {{insurance.0.primary_insurance_company_name}}</td>
+                    </tr>
+                      <tr>
+                        <td>TPA Company Name</td>
+                        <td>: {{insurance.0.primary_tpa_insurance_company_name}}</td>
+                    </tr>
+                      <tr>
+                        <td>Patient File Number</td>
+                        <td>: {{header.patient_code}}</td>
+                    </tr>
+                      <tr>
+                        <td>Department</td>
+                        <td>: {{header.sub_department_name}}</td>
+                    </tr>
+                      <tr>
+                        <td>Date of visit</td>
+                        <td>: {{header.visit_date}}</td>
+                    </tr>
+                      <tr>
+                        <td colspan="2">
+                        <span>
+                            Single ({{#if header.patient_marital_status "Single"}}<span>&#10004;</span>{{/if}})
+                        </span> | 
+                        <span>
+                            Married ({{#if header.patient_marital_status "Married"}}<span>&#10004;</span>{{/if}})
+                        </span> | 
+                        <span>
+                            Plan Type ({{#if header.patient_marital_status "Plan Type"}}<span>&#10004;</span>{{/if}})
+                        </span>
+                        </td>
+                    </tr>
+                      <tr>
+                        <td colspan="2">
+                        <span>
+                            New Visit ({{#if header.new_visit_patient "Y"}}<span>&#10004;</span>{{/if}})
+                        </span> | 
+                        <span>
+                            Follow Up ({{#if header.new_visit_patient "N"}}<span>&#10004;</span>{{/if}})
+                        </span>
+                          <span>
+                            Refill ({{#if header.patient_refill "Y"}}<span>&#10004;</span>{{/if}})
+                        </span>
+                          <span>
+                            Walk-In ({{#if header.patient_walkin "Y"}}<span>&#10004;</span>{{/if}})
+                        </span>
+                          <span>
+                            Referral({{#if header.patient_referal "Y"}}<span>&#10004;</span>{{/if}})
+                        </span>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </section>
+            <section class="borderBox topSectionRight">
+                <h4>Print/fll in clear letters or emboss card:</h4>
+                <table>
+                  <tbody>
+                    <tr>
+                        <td width="100%">
+                            <p class="insImg" style="height: 158px;" ><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/></p>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+        </section>
+        </section>
+          <section class="secondSection">
+            <section class="borderBox secondSectionInner">
+               
+            <h4>To be completed by the Attending Physician: Please Tick (✔):</h4>
+            <section>
+            <table>
+                <tbody>
 
-<body>
-
-    <div class="report-container">
-        <table class="mainTable">
-            {{!-- <thead>
-                <tr>
-                    <th colspan="2">
-                        <h1>UCAF 2.0</h1>
-                    </th>
-                </tr>
-            </thead> --}}
-            <tbody>
-                <tr>
-                    <td class="patientDetails">
-                        <table class="innerTable">
-                            <tbody>
-                                <tr>
-                                    <td colspan="5"><b>To be completed & ID Verified by the reception/nurse:</b></td>
-                                </tr>
-                                <tr>
-                                
-                                    <td colspan="5">Provider Name:
-                                     <span>{{header.provider_name}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">Insurance Company Name:
-                                        <span>{{firstElement insurance 0 "primary_insurance_company_name"}}</span></td>
-                                    <td colspan="2">TPA Company Name:
-                                        <span>{{firstElement insurance 0 "primary_tpa_insurance_company_name"}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">Patient File Number: <span>{{header.patient_code}}</span></td>
-                                    <td colspan="2">Dept: <span>{{header.sub_department_name}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="1">Single ( {{#if header.patient_marital_status "Single" }}
+                    <tr>
+                    <td colspan="2">
+                        <span>Inpatient ( {{#if header.case_type "IP"}}
                                         <span>&#10004;</span>
                                         {{/if}}
-                                        ) </td>
-                                    <td colspan="2">Married ( {{#if header.patient_marital_status "Married"}}
+                                        )</span> | 
+                        <span>Outpatient ( {{#if header.case_type "OP"}}
                                         <span>&#10004;</span>
                                         {{/if}}
-                                        )</td>
-                                    <td colspan="2">Plan Type ( {{#if header.patient_marital_status "Plan Type"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        )</td>
-                                </tr>
-
-
-                                <tr>
-                                    <td>New Visit ( {{#if header.new_visit_patient "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td>Follow Up ( {{#if header.new_visit_patient "N"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td>Refill ( )</td>
-                                    <td>Walk In ( )</td>
-                                    <td>Referal ( )</td>
-
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                    <td class="insuranceDetails">
-
-                        <table class="innerTable">
-                            <tbody>
-                                <tr>
-                                    <td><b>Print/Fill in clear letters or Emboss Card:</b></td>
-                                </tr>
-                                <tr><td>
-                                    <table class="IDImgSection"><tr><td><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"></td></tr></table>
-                                    <!-- <table class="IDTextSection">
-                                    <tr>
-                                        <td colspan="3">Insured Name:
-                                            <span>{{firstElement insurance 0 "primary_insurance_company_name"}}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="">ID.Card No.: <span>{{firstElement insurance 0 "primary_card_number"}}</span></td>
-                                        <td colspan="">Sex: <span>{{firstElement insurance 0 "sex"}}</span></td>
-                                        <td colspan="">Age: <span>{{firstElement insurance 0 "age"}}Y</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Policy Holder: <span>{{firstElement insurance 0 "policyholder"}}</span></td>
-                                        <td colspan="1">Policy Number: <span>{{firstElement insurance 0 "primary_policy_num"}}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">Expiry Date: <span>{{firstElement insurance 0 "primary_effective_end_date"}}</span>
-                                        </td>
-                                        <td colspan="1">Class: <span>{{firstElement insurance 0 "class"}}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3">Approval: <span>{{firstElement insurance 0 "approval"}}</span></td>
-
-                                    </tr>
-                                  </table> -->
-                                </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-
-        </table>
-
-        <table class="mainTable">
-            <tbody>
-
-                <tr>
-                    <td colspan="2" class="otherDetails">
-                        <table class="innerTable">
-                            <tbody>
-                                <tr>
-                                    <td colspan="7"><b>To be completed by the Attending Physician: Please Tick (✔)</b>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Inpatient ( {{#if header.case_type "IP"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        )
-                                    </td>
-                                    <td>Outpatient ( {{#if header.case_type "OP"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        )</td>
-                                    <td colspan="2">Emergency Case ( {{#if header.patient_emergency_case ""}}
-                                        <span></span>
+                                        )</span> | 
+                        <span style="border-radius: 10px; border:1px solid #000;display:inline-block; text-align:right; float:right; padding:1px 5px;">
+                            <span>Emergency Case ( {{#if header.patient_emergency_case null}}<span></span>
                                         {{else}}
                                         <span>&#10004;</span>
                                         {{/if}}
-                                        )</td>
-                                    <td colspan="3">Emergency Care Level 1( {{#if header.patient_emergency_case "L1"}}
+                                        )</span> | Emergency Care Level 1({{#if header.patient_emergency_case "L1"}}
                                         <span>&#10004;</span>
                                         {{/if}}
-                                        ) | 2( {{#if header.patient_emergency_case "L2"}}
+                                        )         |            2( {{#if header.patient_emergency_case "L2"}}
                                         <span>&#10004;</span>
-                                        {{/if}} ) | 3( {{#if header.patient_emergency_case "L2"}}
+                                        {{/if}} )         |            3({{#if header.patient_emergency_case "L3"}}
                                         <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                </tr>
-                                <tr>
-                                    <td>BP:
-                                        <span>{{header.patient_bp_sys}}</span>/<span>{{header.patient_bp_dia}}</span>
-                                    </td>
-                                    <td>Pulse: <span>{{header.patient_pulse}}</span> bpm</td>
-                                    <td>Temp: <span>{{header.patient_temp}}</span> °C</td>
-                                    <td>Weight: <span>{{header.patient_temp}}</span> Kg</td>
-                                    <td>Height: <span>{{header.patient_temp}}</span> cm</td>
-                                    <td>RR: <span>{{header.patient_temp}}</span></td>
-                                    <td>Duration Of Illness:
-                                        <span>{{header.patient_duration_of_illness}} (days)</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">Chief Complaint and Main Symptoms:
-                                        <span>{{header.patient_chief_comp_main_symptoms}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">Significant Signs:
-                                        <span>{{header.patient_significant_signs}}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">Other Conditions:
-                                        <span>{{header.patient_other_conditions}}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">Diagnosis: <span>{{header.patient_diagnosys}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Principal Code: <span>{{header.patient_principal_code_1}}</span></td>
-
-                                    <td>2nd Code: <span>{{header.patient_principal_code_2}}</span></td>
-
-                                    <td>3rd Code:<span>{{header.patient_principal_code_3}}</span></td>
-
-                                    <td colspan="4">4th Code: <span>{{header.patient_principal_code_4}}</span></td>
-
-                                </tr>
-                                <tr>
-                                    <td colspan="7">
-                                        <hr style="width:100%" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">Please tick (&#10004;) where appropriate</td>
-                                </tr>
-                                <tr>
-                                    <td>Chronic ( {{#if header.patient_chronic "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        )</td>
-                                    <td>Congenital ( {{#if header.patient_congenetal "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td>RTA ( {{#if header.patient_rta "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td>Work Related ( {{#if header.patient_work_related "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td>Vaccination ( {{#if header.patient_vaccination "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td colspan="2">Check-Up ( {{#if header.patient_check_up "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                </tr>
-                                <tr>
-                                    <td>Psychiatric ( {{#if header.patient_psychiatric "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td>Infertility ( {{#if header.patient_infertility "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td>Pregnancy ( {{#if header.patient_pregnancy "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                    <td colspan="4">Indicate LMP ( {{#if header.patient_indicated_LMP "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">Suggestive line (s) of management: Kindly, enumerate the recommended
-                                        investigation, and /
-                                        orprocedures For outpatient approval only:</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">
-                                        <table class="servicetable">
-                                            <thead>
-                                                <tr>
-                                                    <th>Code</th>
-                                                    <th>Description/Service</th>
-                                                    <th>Type</th>
-                                                    <th>Quantity</th>
-                                                    <th>Cost</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {{#each services }}
-                                                <tr>
-                                                    <td>{{service_code}}</td>
-                                                    <td>{{service_name}}</td>
-                                                    <td>{{service_type}}</td>
-                                                    <td>{{service_quantity}}</td>
-                                                    <td>{{service_net_amout}}</td>
-                                                </tr>
-                                                {{/each}}
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">Provider's Approval/Coding Staff must review/code the recommended
-                                        service(s) and allocate
-                                        cost and
-                                        complete the following:</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Completed/Coded By</td>
-                                    <td>.........................</td>
-                                    <td>Signature</td>
-                                    <td>.........................</td>
-                                    <td>Date</td>
-                                    <td>.........................</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">
-                                        <table class="servicetable">
-                                            <thead>
-                                                <tr>
-                                                    <th>Medication Name (Generic Name)</th>
-                                                    <th>Type</th>
-                                                    <th>Quantity</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {{#each medication}}
-                                                <tr>
-                                                    <td>{{generic_name}}</td>
-                                                    <td>{{type}}</td>
-                                                    <td>{{quantity}}</td>
-                                                </tr>
-                                                {{/each}}
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">Is Case Management From ( CMFI.0 ) Included</td>
-                                    <td colspan="4">Yes ( {{#if header.patient_cmfi "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} ) | No ( {{#if header.patient_cmfi "N"}}
-                                        <span>&#10004;</span>
-                                        {{/if}} )</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">Please Specify Possible line of Management When Applicable:</td>
-                                    <td colspan="4">
-                                        {{header.patient_cmfi_comments}}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4">Estimated Length of Stay:
-                                        <b>{{header.patient_estimated_length_of_stay}} Days</b></td>
-                                    <td colspan="3">Expected Date of Admission:
-                                        <b>{{header.patient_expected_date_of_addmission}}</b></td>
-                                </tr>
-
-                            </tbody>
-                        </table>
+                                        {{/if}} )</span>
                     </td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="mainTable">
-            <tbody>
-                <tr>
-                    <td>
-                        <table class="innerTable">
-
-                            <tbody>
-
-                                <tr>
-                                    <td>I hereby certify that ALL information mentioned are correct and that
-                                        the medical services
-                                        shown on
-                                        this form were medically indicated and necessary for the management of this
-                                        case.</td>
-                                    <td>I hereby certify that all statements and information provided
-                                        concerning patient
-                                        Identification and the
-                                        present illness or injury are TRUE.
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>{{header.provider_name}}</td>
-                                    <td>{{header.name_relation_guardian}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Signature and Stamp</td>
-                                    <td>Name and Relationship(if Guardian) Signature :</td>
-                                </tr>
-                                <tr>
-                                    <td>{{header.physican_capture_date}}</td>
-                                    <td>{{header.relation_guardian_date}}</td>
-                                </tr>
-
-                        </table>
-                        <table class="innerTable">
-                            <tbody>
-                                <tr>
-                                    <td>For Insurance Company Use Only:</td>
-                                    <td>Approved: ( {{#if header.insurance_company_use_only_approved "Y"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        )</td>
-                                    <td>Not Approved: ( {{#if header.insurance_company_use_only_not_approved "Y"}}
-                                        <span>&#10004;</span> {{/if}} )</td>
-                                    <td>Approval No: {{header.insurance_company_use_only_approval_no }}</td>
-                                    <td colspan="2">Approval validity:
-                                        {{header.insurance_company_use_only_approval_validity_days}} Days</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="6">Comments (include approved days/services if different from the
-                                        requested):</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="6">{{header.insurance_company_use_only_comments}} </td>
-                                </tr>
-                                <tr>
-                                    <td>Approved/Disapproved By:</td>
-                                    <td>{{header.insurance_company_use_only_approved_by}}</td>
-                                    <td>Signature:</td>
-                                    <td>..........................................................</td>
-                                    <td>Date</td>
-                                    <td>{{header.insurance_company_use_only_approved_date}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    </tr>
+                    <tr>
+                    <td colspan="2">
+                        <span>BP:<b>{{header.patient_bp_sys}}</b>/<b>{{header.patient_bp_dia}}</b></span> | 
+                        <span>Pulse: <b>{{header.patient_pulse}}</b> bpm</span> | 
+                        <span>Temp: <b>{{header.patient_temp}}</b> °C</span> | 
+                        <span>Weight: <b>{{header.patient_temp}}</b> Kg</span> | 
+                        <span>Height: <b>{{header.patient_temp}}</b> cm</span> | 
+                        <span>RR: <b>{{header.patient_temp}}</b></span> | 
                     </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                    </tr>
+                    
+                    <tr>
+                        <td width="175px">Duration of Illness</td>
+                        <td>: {{header.patient_duration_of_illness}} (Days)</td>
+                    </tr>
+                     <tr>
+                        <td>Chief Complaint & Main Symptoms</td>
+                        <td>: {{header.patient_chief_comp_main_symptoms}}</td>
+                    </tr>
+                     <tr>
+                        <td>Signifcant Signs</td>
+                        <td>: {{header.patient_significant_signs}}</td>
+                    </tr>
 
+                     <tr>
+                        <td>Other Conditions</td>
+                        <td>: {{header.patient_other_conditions}}</td>
+                    </tr>
+                     <tr>
+                        <td>Diagnoses (ICD10)</td>
+                        <td>: {{header.patient_diagnosys}}</td>
+                    </tr>
+                     <tr>
+                        <td colspan="2">
+                            <span>Principal Code: <b>{{header.patient_principal_code_1}}</b></span>  |  
+                            <span>2nd Code: <b>{{header.patient_principal_code_2}}</b></span>  |  
+                            <span>3rd Code: <b>{{header.patient_principal_code_3}}</b></span>  |  
+                            <span>4th Code: <b>{{header.patient_principal_code_4}}</b></span>  |  
+                        <td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr/>
+            <h4>Please tick (&#10004;) where appropriate:</h4>
+            <table>
+                <tbody>
+                    <tr>
+                        <td colspan="2">
+                        <span>Chronic ({{#if header.patient_complaint_type "CHRONIC"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>Congenital ({{#if header.patient_complaint_type "CONGENTIAL"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>RTA ( {{#if header.patient_complaint_type "RTA"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>Work Related ({{#if header.patient_complaint_type "WORKRELATED"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>Vaccination ({{#if header.patient_complaint_type "VACCINATION"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>Check-Up ({{#if header.patient_complaint_type "CHECKUP"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>Psychiatric ({{#if header.patient_complaint_type "PSYCHIATRIC"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>Infertility ({{#if header.patient_complaint_type "INFERTILITY"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>Pregnancy ({{#if header.patient_complaint_type "PREGNANCY"}}<span>&#10004;</span>{{/if}})</span>
+                        <span>Indicate LMP <span><b>{{header.patient_indicated_LMP}}</b></span></span>  
+                        </td>
+                    </tr>          
+                </tbody>
+            </table>
+            </section>
+            <section class=" secondSectionBottom">
+                 <p style="line-height: 20px;">Suggestive line (s) of management: Kindly, enumerate the recommended  or procedures <b>For outpatient approval only:</b></p>
+                <table class="tableBrdr">
+                    <thead>
+                        <tr>
+                            <th><b>Code</b></th>
+                            <th><b>Dental Service</b></th>
+                            <th><b>Tooth No.</b></th>
+                            <th><b>Cost</b></th>
+                        </tr>
+                    </thead>
+                     <tbody>
+                    {{#each services }}
+                        <tr>
+                            <td style="width: 100px;">{{service_code}}</td>
+                            <td class="txtFld">{{service_name}}</td>
+                            <td style="width:50px;">{{teeth_number}}</td>
+                            <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
+                        </tr>
+                    {{/each}}
+                     <tr>
+                            <td colspan="2"></td>
+                            <td><b>Total</b></td>
+                            <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+              <section class=" secondSectionBottom">
+                <p style="line-height: 20px; page-break-after: auto;">Providers Approval/Coding Staff must review/code the recommended service(s) and allocate cost and complete the following:</p>
+                <p style="margin-top:20px">
+                    <span>Completed/Coded By: <span>.......................................................................................</span></span>
+                    <span>Signature: <span>.........................................................</span></span>
+                    <span>Date: <span>......./......./.......</span></span>
+                </p>
+                <table class="tableBrdr">
+                    <thead>
+                        <tr>
+                            <th><b>Medication Name (Generic Name)</b></th>
+                            <th><b>Type</b></th>
+                            <th><b>Quantity</b></th>
+                        </tr>
+                    </thead>
+                     <tbody>
+                    {{#each medication }}
+                        <tr>
+                            <td class="txtFld" >{{generic_name}}</td>
+                            <td style="width: 100px;">{{type}}</td>
+                            <td style="width: 80px;">{{quantity}}</td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+                  <p style="margin-top:20px">
+                    <span>In Case management form (CMF 1.0): <b>Yes (......)</b>    <b>No (......)</b></span>
+                    {{!-- {{updated_date}} --}}
+                </p>
+
+                 <p >
+                    <span>Please specify possible line of management when applicable: .....................................................................................................................................</span>
+                    {{!-- {{updated_date}} --}}
+                </p>
+
+   <p style="width: 100%;"><span><b>Estimated length of stay:</b> <span>...................</span>days                                          </span>
+
+                    <span style="text-align: right;float:right;">Expected date of admission: <span>........../........../..........</span></span></p>
+            </section>
+            </section>
+    </section>
+
+        <section class="borderBox footerSection">
+         <section class="footerSectionLeft">
+             <p style="line-height: 20px;">I hereby certify that ALL information mentioned are correct and that the medical services shown on this form were medically indicated and necessary for the management of this case.</p>
+           <p style="margin-top:20px; text-align:center;">
+                    <span style="width: 80px;display:inline-block;">Physician</span>
+                    <span style="width: 80px;display:inline-block;">Signature</span>
+                    <span style="width: 80px;display:inline-block;">Stamp</span>
+                    <span style="width: 80px;display:inline-block;">Date</span>
+            </p>
+            <p style="margin-top:20px; text-align:center;">
+                    <span style="width: 80px;display:inline-block;">{{header.provider_name}}</span>
+                    <span style="width: 80px;display:inline-block;">.........</span>
+                    <span style="width: 80px;display:inline-block;">.........</span>
+                    <span style="width: 80px;display:inline-block;">..../..../....</span>
+            </p>
+         </section>
+         <section class="footerSectionRight">
+               <p style="line-height: 20px;">I hereby certify that ALL statements and information provided
+concerning patient identifcation and the present illness or injury
+are TRUE.</p>
+           <p style="margin-top:20px; text-align:center;">
+                    <span >Name and relationship (if guardian): </span>
+                   <span>................................................</span>
+            </p>
+            <p style="margin-top:20px; text-align:center;">
+                    <span>Signature: <span>.....................................................</span></span>
+
+                    <span>Date: <span>......./......./.......</span></span>
+            </p>
+         </section>
+        </section>
+    </section>
 </body>
-
-</html>

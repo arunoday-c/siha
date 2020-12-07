@@ -362,6 +362,7 @@ export default function EditorEvents() {
         data: $this.state,
         method: "PUT",
         onSuccess: (response) => {
+          debugger;
           if (response.data.success) {
             algaehApiCall({
               uri: "/report",
@@ -386,23 +387,8 @@ export default function EditorEvents() {
                 },
               },
               onSuccess: (res) => {
-                // let reader = new FileReader();
-                // reader.onloadend = () => {
-                //   let myWindow = window.open(
-                //     "{{ product.metafields.google.custom_label_0 }}",
-                //     "_blank"
-                //   );
-                //   myWindow.document.write(
-                //     "<embed src= '" +
-                //       reader.result +
-                //       "' width='100%' height='100%' />"
-                //   );
-                //   myWindow.document.title = "Algaeh UCAF 2.0";
-                // };
-
-                // reader.readAsDataURL(res.data);
                 const urlBlob = URL.createObjectURL(res.data);
-                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Algaeh UCAF 2.0`;
+                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=UCAF 2.0`;
                 window.open(origin);
               },
             });

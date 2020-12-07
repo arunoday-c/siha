@@ -7,7 +7,7 @@ import {
   AlgaehLabel,
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-import ButtonType from "../Wrapper/algaehButton";
+// import ButtonType from "../Wrapper/algaehButton";
 import Swal from "sweetalert2";
 import moment from "moment";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
@@ -850,14 +850,13 @@ export default class DcafEditor extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-lg-12">
-                  <ButtonType
-                    onClick={this.onClickReloadData.bind(this, this)}
+                  {/* <ButtonType
                     classname="btn-primary"
                     label={{
                       forceLabel: "Reload data",
                       returnText: true,
                     }}
-                  />
+                  /> */}
                   <button
                     type="button"
                     className={
@@ -873,15 +872,19 @@ export default class DcafEditor extends Component {
                     ) : null}
                     Save & Print
                   </button>
-                  {/* <button
+
+                  <button
                     type="button"
                     className="btn btn-default"
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
+                    onClick={this.onClickReloadData.bind(this, this)}
                   >
-                    Cancel
-                  </button> */}
+                    {/* {this.state.loading ? (
+                      <span className="showBtnLoader">
+                        <i className="fas fa-spinner fa-spin" />
+                      </span>
+                    ) : null} */}
+                    Reload Data
+                  </button>
                 </div>
               </div>
             </div>
