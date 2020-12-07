@@ -55,11 +55,12 @@ export default function TrailBalaceReport({
             filterable: true,
             freezable: true,
           },
+          { fieldName: "arabic_name", label: "Arabic Name" },
           {
             fieldName: "op_amount",
             label: "Opening Balance",
             displayTemplate: (row) => {
-              const opamt = String(row["op_amount"]).replace(/[^0-9\.]+/g, "");
+              const opamt = String(row["op_amount"]).replace(/[^0-9]+/g, "");
 
               if (!isNaN(opamt)) {
                 return (
@@ -93,14 +94,16 @@ export default function TrailBalaceReport({
             fieldName: "cb_amount",
             label: "Closing Balance",
             displayTemplate: (row) => {
-              const opamt = String(row["cb_amount"]).replace(/[^0-9\.]+/g, "");
+              const opamt = String(row["cb_amount"]).replace(/[^0-9]+/g, "");
 
-              if (!isNaN(opamt)) {
+              if (!isNaN(opamt) && row.leafnode === "Y") {
                 return (
                   <a
                     className="underLine"
+                    href="void(0);"
                     onClick={(e) => {
                       e.preventDefault();
+                      console.log("row", row);
                       OpenDrillDown(row);
                     }}
                   >
@@ -112,16 +115,7 @@ export default function TrailBalaceReport({
                   </a>
                 );
               }
-              return (
-                <a
-                  onClick={(e) => {
-                    e.preventDefault();
-                    OpenDrillDown(row);
-                  }}
-                >
-                  {row["cb_amount"]}
-                </a>
-              );
+              return row["cb_amount"];
             },
           },
         ]}

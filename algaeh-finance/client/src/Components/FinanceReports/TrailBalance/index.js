@@ -12,7 +12,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   const [type] = useState("table");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState([]);
+  const [filter] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
 
   // const createPrintObject = useRef(undefined);

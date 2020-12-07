@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AlgaehModal, AlgaehMessagePop } from "algaeh-react-components";
-import moment from "moment";
 import Template from "../template";
-import { loadData } from "./api";
+import { loadData, generateReport } from "./api";
 export default function ({ visible, onClose, template, row, dates }) {
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -24,7 +23,6 @@ export default function ({ visible, onClose, template, row, dates }) {
               from_date: fromDate,
               to_date: toDate,
             });
-
             setData(result);
           }
         }
@@ -32,13 +30,14 @@ export default function ({ visible, onClose, template, row, dates }) {
         AlgaehMessagePop({ type: "error", message: e.message });
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
   return (
     <AlgaehModal footer={null} visible={visible} onCancel={onClose}>
       {typeof template === "function" ? (
-        template(data)
+        template(data, generateReport)
       ) : (
-        <Template data={data} />
+        <Template data={data} generateReport={generateReport} />
       )}
     </AlgaehModal>
   );

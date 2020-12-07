@@ -298,18 +298,18 @@ export default {
                       .then((expense) => {
                         const total_debit_amount = parseFloat(
                           parseFloat(asset.tr_debit_amount) +
-                          parseFloat(newCapital.tr_debit_amount) +
-                          parseFloat(income.tr_debit_amount) +
-                          parseFloat(liability.tr_debit_amount) +
-                          parseFloat(expense.tr_debit_amount)
+                            parseFloat(newCapital.tr_debit_amount) +
+                            parseFloat(income.tr_debit_amount) +
+                            parseFloat(liability.tr_debit_amount) +
+                            parseFloat(expense.tr_debit_amount)
                         ).toFixed(decimal_places);
 
                         const total_credit_amount = parseFloat(
                           parseFloat(asset.tr_credit_amount) +
-                          parseFloat(newCapital.tr_credit_amount) +
-                          parseFloat(income.tr_credit_amount) +
-                          parseFloat(liability.tr_credit_amount) +
-                          parseFloat(expense.tr_credit_amount)
+                            parseFloat(newCapital.tr_credit_amount) +
+                            parseFloat(income.tr_credit_amount) +
+                            parseFloat(liability.tr_credit_amount) +
+                            parseFloat(expense.tr_credit_amount)
                         ).toFixed(decimal_places);
 
                         newCapital.children = [{ ...newCapital }];
@@ -373,17 +373,17 @@ export default {
                         .then((expense) => {
                           const total_debit_amount = parseFloat(
                             parseFloat(asset.total_debit_amount) +
-                            parseFloat(capital.total_debit_amount) +
-                            parseFloat(income.total_debit_amount) +
-                            parseFloat(liability.total_debit_amount) +
-                            parseFloat(expense.total_debit_amount)
+                              parseFloat(capital.total_debit_amount) +
+                              parseFloat(income.total_debit_amount) +
+                              parseFloat(liability.total_debit_amount) +
+                              parseFloat(expense.total_debit_amount)
                           ).toFixed(decimal_places);
                           const total_credit_amount = parseFloat(
                             parseFloat(asset.total_credit_amount) +
-                            parseFloat(capital.total_credit_amount) +
-                            parseFloat(income.total_credit_amount) +
-                            parseFloat(liability.total_credit_amount) +
-                            parseFloat(expense.total_credit_amount)
+                              parseFloat(capital.total_credit_amount) +
+                              parseFloat(income.total_credit_amount) +
+                              parseFloat(liability.total_credit_amount) +
+                              parseFloat(expense.total_credit_amount)
                           ).toFixed(decimal_places);
                           // newCapital.children = [{ ...newCapital }];
                           req.records = {
@@ -1396,11 +1396,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-            parseFloat(item["total_debit_amount"])
+              parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-            parseFloat(item["total_credit_amount"])
+              parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;
@@ -2228,11 +2228,11 @@ function calcAmountForProfitAndLoss(account_heads, levels, decimal_places) {
 
         item["cred_minus_deb"] = parseFloat(
           parseFloat(item["total_credit_amount"]) -
-          parseFloat(item["total_debit_amount"])
+            parseFloat(item["total_debit_amount"])
         ).toFixed(decimal_places);
         item["deb_minus_cred"] = parseFloat(
           parseFloat(item["total_debit_amount"]) -
-          parseFloat(item["total_credit_amount"])
+            parseFloat(item["total_credit_amount"])
         ).toFixed(decimal_places);
 
         return item;
@@ -2723,8 +2723,8 @@ function createHierarchyTransactionTB(
       typeof drillDownLevel === "string" && drillDownLevel !== undefined
         ? parseInt(drillDownLevel, 10)
         : typeof drillDownLevel === "number"
-          ? drillDownLevel
-          : 999;
+        ? drillDownLevel
+        : 999;
     // find the top level nodes and hash the children based on parent_acc_id
     for (let i = 0, len = arry.length; i < len; ++i) {
       if (_drillDownLevel !== 999) {

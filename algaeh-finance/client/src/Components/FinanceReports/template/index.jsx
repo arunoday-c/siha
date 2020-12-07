@@ -1,16 +1,26 @@
-import React from "react";
-export default function ({ data }) {
+import React, { useState } from "react";
+import { Spin } from "algaeh-react-components";
+export default function ({ data, generateReport }) {
   const {
     account_name,
     ledger_code,
     opening_balance,
     details,
-    total_debit,
-    total_credit,
     closing_balance,
   } = data;
+  const [loading, setLoading] = useState(false);
+  async function onGeneratingReport(input) {
+    const { voucher_no, voucher_type, finance_voucher_header_id } = input;
+    setLoading(true);
+    await generateReport({
+      voucher_no,
+      voucher_type,
+      finance_voucher_header_id,
+    });
+    setLoading(false);
+  }
   return (
-    <>
+    <Spin spinning={loading}>
       <h4 style={{ marginTop: "25px" }}>
         {account_name} / {ledger_code}
       </h4>
@@ -26,10 +36,10 @@ export default function ({ data }) {
         </thead>
         <tbody>
           <tr>
-            <td colspan="3" className="numberFld">
+            <td colSpan="3" className="numberFld">
               Opening Balance
             </td>
-            <td colspan="2" className="numberFld">
+            <td colSpan="2" className="numberFld">
               <b>{opening_balance}</b>
             </td>
           </tr>
@@ -38,34 +48,36 @@ export default function ({ data }) {
               <tr key={index}>
                 <td>{item.payment_date}</td>
                 <td>{item.voucher_type}</td>
-                <td>{item.voucher_no}</td>
+                <td>
+                  {item.voucher_no ? (
+                    <a
+                      href="void(0);"
+                      className="underLine"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onGeneratingReport(item);
+                      }}
+                    >
+                      {item.voucher_no}
+                    </a>
+                  ) : (
+                    ""
+                  )}
+                </td>
                 <td className="numberFld">{item.debit_amount}</td>
                 <td className="numberFld">{item.credit_amount}</td>
               </tr>
             ))}
           <tr>
-            <td colspan="3" className="numberFld">
+            <td colSpan="3" className="numberFld">
               Closing Balance
             </td>
-            <td colspan="2" className="numberFld">
+            <td colSpan="2" className="numberFld">
               <b>{closing_balance}</b>
             </td>
           </tr>
         </tbody>
-        {/* <tfoot>
-        <tr>
-          <td colspan="3"></td>
-          <td>{total_debit}</td>
-          <td>{total_credit}</td>
-        </tr>
-        <tr>
-          <td colspan="4">Closing Balance</td>
-          <td>
-            <b>{closing_balance}</b>
-          </td>
-        </tr>
-      </tfoot> */}
       </table>
-    </>
+    </Spin>
   );
 }
