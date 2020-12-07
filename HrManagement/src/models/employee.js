@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => { },
+          printQuery: (query) => {},
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -1643,7 +1643,8 @@ export default {
               LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
               LS.utilized_airticket_amount, E.hims_d_employee_id as employee_id from hims_d_employee E \
               left join hims_f_employee_leave_salary_header LS on E.hims_d_employee_id=LS.employee_id \
-              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.employee_status='A' "+ strQry +
+              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.employee_status='A' " +
+              strQry +
               " order by cast(E.employee_code as unsigned)",
             printQuery: true,
           })
@@ -1741,7 +1742,8 @@ export default {
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
           GP.hims_f_gratuity_provision_id, GP.acc_gratuity, E.hims_d_employee_id as employee_id from hims_d_employee E \
           left join hims_f_gratuity_provision GP  on E.hims_d_employee_id = GP.employee_id \
-          where E.record_status = 'A' and E.employee_status='A' and E.gratuity_applicable='Y'"+ strQry +
+          where E.record_status = 'A' and E.employee_status='A' and E.gratuity_applicable='Y'" +
+          strQry +
           " order by cast(E.employee_code as unsigned)",
         printQuery: true,
       })
@@ -1900,10 +1902,20 @@ export default {
   downloadEmployeeMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
 
-    if (req.query.hospital_id > 0) {
+    if (req.query.hospital_id != null) {
+      const strHosQuery =
+        req.query.hospital_id > 0
+          ? `select hospital_name FROM hims_d_hospital where hims_d_hospital_id=${req.query.hospital_id} limit 1;`
+          : "select 'All' as hospital_name where 1=1;";
+
+      const strQry =
+        req.query.hospital_id > 0
+          ? "E.hospital_id=" + req.query.hospital_id
+          : "E.hospital_id > 0";
+
       _mysql
         .executeQuery({
-          query: `select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=? limit 1;\
+          query: `${strHosQuery} 
             select  E.employee_code,E.full_name as name,E.sex as gender ,
             coalesce(E.date_of_joining,'-') as  date_of_joining,
             coalesce(concat(RP.employee_code,' / ', left(RP.full_name,12)),'-') as reporting_to,
@@ -1932,9 +1944,9 @@ export default {
             left join hims_d_city C on E.permanent_city_id=C.hims_d_city_id 
             left join hims_d_state S on E.permanent_state_id=S.hims_d_state_id
             left join hims_d_country CO  on E.permanent_country_id=CO.hims_d_country_id  
-            where E.hospital_id=? and E.record_status='A' order by cast( E.employee_code as unsigned); `,
-          values: [req.query.hospital_id, req.query.hospital_id],
-          printQuery: false,
+            where ${strQry}  and E.hims_d_employee_id > 1 order by cast( E.employee_code as unsigned); `,
+          values: [req.query.hospital_id],
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
