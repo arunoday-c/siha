@@ -683,7 +683,7 @@ class SalesQuotation extends Component {
                           }}
                         />
 
-                        {this.props.requisition_auth ? (
+                        {this.state.sales_quotation_edit ? (
                           <AlagehFormGroup
                             div={{ className: "col-12  form-group" }}
                             label={{
@@ -789,14 +789,14 @@ class SalesQuotation extends Component {
                     type="button"
                     className="btn btn-default"
                     onClick={ClearData.bind(this, this)}
-                    disabled={this.props.requisition_auth ? true : false}
+                    disabled={this.state.sales_quotation_edit ? true : false}
                   >
                     <AlgaehLabel
                       label={{ forceLabel: "Clear", returnText: true }}
                     />
                   </button>
 
-                  {this.props.requisition_auth ? (
+                  {this.state.sales_quotation_edit ? (
                     <button
                       type="button"
                       className="btn btn-default"
@@ -813,7 +813,7 @@ class SalesQuotation extends Component {
                     </button>
                   ) : null}
 
-                  {this.props.requisition_auth ? (
+                  {this.state.sales_quotation_edit ? (
                     <button
                       type="button"
                       className="btn btn-default"
