@@ -106,9 +106,10 @@ const getCtrlCode = ($this, docNumber) => {
       onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
-
+          debugger
           data.saveEnable = true;
           data.dataExitst = true;
+          data.dateEditable = true;
 
 
           if (data.is_cancelled === "Y") {
@@ -124,6 +125,7 @@ const getCtrlCode = ($this, docNumber) => {
               data.postEnable = false;
               data.dataRevert = false;
               data.cancelEnable = false;
+              data.dateEditable = false
             }
           }
 
@@ -196,6 +198,7 @@ const PostSalesInvoice = ($this) => {
     .add($this.state.payment_terms, "days")
     .format("YYYY-MM-DD");
 
+  Inputobj.invoice_date = moment(Inputobj.invoice_date).format("YYYY-MM-DD HH:mm:ss");
   algaehApiCall({
     uri: "/SalesInvoice/postSalesInvoice",
     module: "sales",
@@ -447,8 +450,10 @@ const CancelSalesInvoice = $this => {
 }
 
 const datehandle = ($this, ctrl, e) => {
+  debugger
+  let date = moment(ctrl)
   $this.setState({
-    [e]: moment(ctrl)._d,
+    [e]: date
   });
 };
 
