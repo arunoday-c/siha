@@ -39,19 +39,27 @@ const executePDF = function executePDFMethod(options) {
       } else if (input.is_local === "N") {
         is_local = " and H.default_nationality<>E.nationality ";
       }
+
+      if (input.hospital_id > 0) {
+        str += ` and E.hospital_id= ${input.hospital_id} `;
+      }
+      if (input.employee_group_id > 0) {
+        str += ` and E.employee_group_id= ${input.employee_group_id} `;
+      }
+
       if (input.sub_department_id > 0) {
-        str += ` and E.sub_department_id= ${input.sub_department_id}`;
+        str += ` and E.sub_department_id= ${input.sub_department_id} `;
       }
 
       if (input.department_id > 0) {
-        str += ` and SD.department_id=${input.department_id}`;
+        str += ` and SD.department_id=${input.department_id} `;
       }
 
       options.mysql
         .executeQuery({
           query: `select hims_d_earning_deduction_id,earning_deduction_description,short_desc,component_category, print_order_by, 
           nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;
-          select E.hims_d_employee_id,E.employee_code,E.full_name,E.employee_designation_id,E.sub_department_id,E.date_of_joining,
+          select H.hims_d_hospital_id,H.hospital_name,E.hims_d_employee_id,E.employee_code,E.full_name,E.employee_designation_id,E.identity_no,EDoc.identity_document_name,Edoc.arabic_identity_document_name,EG.group_description,E.sub_department_id,E.date_of_joining,
           E.nationality,E.mode_of_payment,E.hospital_id,E.employee_group_id,D.designation,EG.group_description,
           N.nationality,E.net_salary,E.total_earnings,E.total_deductions
           from hims_d_employee E
@@ -60,8 +68,9 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id 
           left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id
           left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
-          where  E.hospital_id=? and E.employee_status='A' and E.employee_group_id=?  ${is_local} ${str}`,
-          values: [input.hospital_id, input.employee_group_id],
+          left join hims_d_identity_document EDoc on EDoc.hims_d_identity_document_id = E.identity_type_id 
+          where E.employee_status='A' ${is_local} ${str} and E.record_status<>'I'  order by H.hims_d_hospital_id ASC;`,
+          // values: [input.hospital_id, input.employee_group_id],
           printQuery: true,
         })
         .then((result) => {
@@ -108,8 +117,7 @@ const executePDF = function executePDFMethod(options) {
 
             options.mysql
               .executeQuery({
-                query:
-                  `select employee_id, hims_d_employee_earnings_id,earnings_id,amount 
+                query: `select employee_id, hims_d_employee_earnings_id,earnings_id,amount 
                   from hims_d_employee_earnings SE 
                   inner join hims_d_earning_deduction ED on SE.earnings_id=ED.hims_d_earning_deduction_id and ED.print_report='Y'
                   where employee_id in (${employee_ids});
@@ -148,11 +156,9 @@ const executePDF = function executePDFMethod(options) {
                 let contributions = results[2];
                 let basic_id = results[3][0]["basic_earning_component"];
 
-
                 let sum_basic = 0;
                 let sum_employe_plus_emplyr = 0;
                 for (let i = 0; i < salary.length; i++) {
-
                   const earning_obj = earnings.filter(
                     (item) =>
                       item.employee_id == salary[i]["hims_d_employee_id"]
@@ -168,7 +174,7 @@ const executePDF = function executePDFMethod(options) {
                     } else {
                       return {
                         earnings_id: m.hims_d_earning_deduction_id,
-                        amount: "-"
+                        amount: "-",
                       };
                     }
                   });
@@ -177,7 +183,6 @@ const executePDF = function executePDFMethod(options) {
                     (item) =>
                       item.employee_id == salary[i]["hims_d_employee_id"]
                   );
-
 
                   const employee_deduction = deduction_component.map((m) => {
                     const obj = deduction_obj.find((f) => {
@@ -189,7 +194,7 @@ const executePDF = function executePDFMethod(options) {
                     } else {
                       return {
                         deductions_id: m.hims_d_earning_deduction_id,
-                        amount: "-"
+                        amount: "-",
                       };
                     }
                   });
@@ -212,7 +217,7 @@ const executePDF = function executePDFMethod(options) {
                       } else {
                         return {
                           contributions_id: m.hims_d_earning_deduction_id,
-                          amount: "-"
+                          amount: "-",
                         };
                       }
                     }
@@ -254,7 +259,7 @@ const executePDF = function executePDFMethod(options) {
                     employee_contributions: employee_contributions,
                     employe_plus_employr: employe_plus_employr.toFixed(
                       decimal_places
-                    )
+                    ),
                   });
                 }
                 // console.log("outputArray: ", outputArray);
@@ -273,7 +278,7 @@ const executePDF = function executePDFMethod(options) {
                   sum_employe_plus_emplyr: sum_employe_plus_emplyr,
                   span_earning: earning_component.length,
                   span_deduction: deduction_component.length,
-                  span_contribution: contributions_component.length
+                  span_contribution: contributions_component.length,
                 };
                 utilities.logger().log("outputArray: ", outputArray);
                 resolve(result);
