@@ -520,7 +520,7 @@ export default {
             _strQry +
             " order by hims_d_item_master_id desc;",
           values: intValues,
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -1353,10 +1353,10 @@ export default {
             "select algaeh_d_app_user_id,employee_id,E.full_name,E.employee_code,SD.sub_department_name\
             from algaeh_d_app_user U  inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-            where E.record_status='A' and E.hospital_id=? and SD.department_type='PH'\
+            where E.record_status='A' and E.hospital_id=? \
             and U.user_type in ('C','O');",
           values: [req.query.hospital_id],
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();

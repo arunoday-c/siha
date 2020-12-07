@@ -132,7 +132,17 @@ export default function Pharmacy({
             name: "cashier_id",
 
             label: "User/Employee",
-
+            link: {
+              uri: "/pharmacy/getPharmacyUsers",
+              module: "pharmacy",
+              method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
             dataSource: {
               textField: "full_name",
               valueField: "algaeh_d_app_user_id",
@@ -591,6 +601,17 @@ export default function Pharmacy({
             initialLoad: true,
             isImp: true,
             label: "Location",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -746,6 +767,17 @@ export default function Pharmacy({
             initialLoad: true,
             isImp: false,
             label: "Location",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -883,6 +915,17 @@ export default function Pharmacy({
             initialLoad: true,
             isImp: true,
             label: "Location",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -985,6 +1028,17 @@ export default function Pharmacy({
             initialLoad: true,
             isImp: false,
             label: "Location",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -1230,6 +1284,17 @@ export default function Pharmacy({
             initialLoad: true,
             isImp: true,
             label: "From Location ",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
