@@ -6,10 +6,11 @@ import Enumerable from "linq";
 import RequisitionIOputs from "../../../Models/Requisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
-const changeTexts = ($this, ctrl, e) => {
+const requisitionEvent = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
   $this.setState({ [name]: value });
 };
 
@@ -228,7 +229,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       $this.setState({
         [name]: value,
         [type]: e.selected.location_type,
-        requistion_type: "MR",
+        // requistion_type: "MR",
 
         addItemButton: true,
         item_category_id: null,
@@ -271,11 +272,11 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 };
 
 export {
-  changeTexts,
   getCtrlCode,
   ClearData,
   SaveRequisitionEntry,
   AuthorizeRequisitionEntry,
   LocationchangeTexts,
   generateMaterialReqPhar,
+  requisitionEvent
 };

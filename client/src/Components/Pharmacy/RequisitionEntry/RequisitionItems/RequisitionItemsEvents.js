@@ -35,16 +35,25 @@ const numberchangeTexts = ($this, context, e) => {
 
 const itemchangeText = ($this, context, e) => {
   let name = e.item_description;
-  if (
-    $this.state.from_location_id === null ||
-    $this.state.to_location_id === null
-  ) {
-    swalMessage({
-      title: "Please select From and To Location.",
-      type: "warning",
-    });
-    $this.setState({ item_id: null });
-    return;
+  if ($this.state.requistion_type === "PR") {
+    if ($this.state.from_location_id === null) {
+      swalMessage({
+        title: "Please select From and To Location.",
+        type: "warning",
+      });
+      return;
+    }
+  } else {
+    if (
+      $this.state.from_location_id === null ||
+      $this.state.to_location_id === null
+    ) {
+      swalMessage({
+        title: "Please select From and To Location.",
+        type: "warning",
+      });
+      return;
+    }
   }
   if ($this.state.requistion_type === "PR") {
     // let value = e.value || e.target.value;
@@ -71,27 +80,26 @@ const itemchangeText = ($this, context, e) => {
           });
           $this.setState({
             [name]: value,
-            item_description: e.selected.item_description,
-
-            item_category_id: e.selected.category_id,
-            item_uom: e.selected.sales_uom_id,
+            item_description: e.item_description,
+            item_uom: e.purchase_uom_id,
+            item_category_id: e.category_id,
             item_id: e.hims_d_item_master_id,
-            item_group_id: e.selected.group_id,
+            item_group_id: e.group_id,
             quantity: 1,
             addItemButton: false,
 
-            ItemUOM: data,
+            ItemUOM: data
           });
 
           if (context !== undefined) {
             context.updateState({
               [name]: value,
-              item_description: e.selected.item_description,
+              item_description: e.item_description,
+              item_uom: e.purchase_uom_id,
+              item_category_id: e.category_id,
 
-              item_category_id: e.selected.category_id,
-              item_uom: e.selected.sales_uom_id,
               item_id: e.hims_d_item_master_id,
-              item_group_id: e.selected.group_id,
+              item_group_id: e.group_id,
               quantity: 1,
               addItemButton: false,
 
@@ -187,17 +195,28 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  if (
-    $this.state.from_location_id === null ||
-    $this.state.to_location_id === null
-  ) {
-    swalMessage({
-      title: "Please select From and To Location.",
-      type: "warning",
-    });
 
-    return;
+  if ($this.state.requistion_type === "PR") {
+    if ($this.state.from_location_id === null) {
+      swalMessage({
+        title: "Please select From and To Location.",
+        type: "warning",
+      });
+      return;
+    }
+  } else {
+    if (
+      $this.state.from_location_id === null ||
+      $this.state.to_location_id === null
+    ) {
+      swalMessage({
+        title: "Please select From and To Location.",
+        type: "warning",
+      });
+      return;
+    }
   }
+
   if ($this.state.item_id === null) {
     swalMessage({
       title: "Select Item.",
@@ -281,8 +300,8 @@ const deleteRequisitionDetail = ($this, context, row) => {
     $this.props.requisition_auth === true
       ? true
       : pharmacy_stock_detail.length > 0
-      ? false
-      : true;
+        ? false
+        : true;
   let authBtnEnable = pharmacy_stock_detail.length > 0 ? false : true;
   $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 

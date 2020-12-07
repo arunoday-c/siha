@@ -881,11 +881,8 @@ export default {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
-                query: `select MD.*,l.*, MD.hims_f_pharmacy_material_detail_id,MD.pharmacy_header_id,MD.completed,MD.item_category_id
-                  ,MD.item_group_id,MD.item_id,MD.from_qtyhand,MD.to_qtyhand,
-                  MD.quantity_required,MD.quantity_authorized,MD.item_uom,MD.quantity_recieved,
-                  MD.quantity_outstanding,MD.po_created_date,MD.po_created,MD.po_created_quantity,
-                  MD.po_outstanding_quantity,MD.po_completed,IM.item_description,IC.category_desc,IG.group_description,UOM.uom_description from hims_f_pharmacy_material_detail as MD
+                query: `select MD.*,l.*, IM.item_description,IC.category_desc,IG.group_description,
+                  UOM.uom_description as purchase_uom_desc from hims_f_pharmacy_material_detail as MD
                   left outer join hims_d_item_master l on l.hims_d_item_master_id =MD.item_id
                   inner join hims_d_item_master IM ON MD.item_id=IM.hims_d_item_master_id 
                   inner join hims_d_item_category IC ON MD.item_category_id=IC.hims_d_item_category_id 

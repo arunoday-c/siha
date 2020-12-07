@@ -7,7 +7,7 @@ import moment from "moment";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
-  // changeTexts,
+  requisitionEvent,
   getCtrlCode,
   ClearData,
   SaveRequisitionEntry,
@@ -19,13 +19,14 @@ import "./RequisitionEntry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-// import GlobalVariables from "../../../utils/GlobalVariables.json";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 import RequisitionItems from "./RequisitionItems/RequisitionItems";
 import MyContext from "../../../utils/MyContext";
 import RequisitionIOputs from "../../../Models/Requisition";
 import Options from "../../../Options.json";
-import _ from "lodash";
+// import _ from "lodash";
 import { MainContext } from "algaeh-react-components";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 class RequisitionEntry extends Component {
   constructor(props) {
@@ -102,11 +103,43 @@ class RequisitionEntry extends Component {
       },
     });
 
+    // if (
+    //   this.props.material_requisition_number !== undefined &&
+    //   this.props.material_requisition_number.length !== 0
+    // ) {
+    //   getCtrlCode(this, this.props.material_requisition_number);
+    // }
     if (
       this.props.material_requisition_number !== undefined &&
       this.props.material_requisition_number.length !== 0
     ) {
       getCtrlCode(this, this.props.material_requisition_number);
+    } else {
+      let bothExisits = true,
+        requistion_type = "";
+      RawSecurityComponent({ componentCode: "MET_REQ_PHARMACY" }).then(
+        (result) => {
+          if (result === "show") {
+            bothExisits = false;
+            requistion_type = "MR";
+          }
+        }
+      );
+
+      RawSecurityComponent({ componentCode: "PUR_REQ_PHARMACY" }).then(
+        (result) => {
+          if (result === "show") {
+            requistion_type = "PR";
+            bothExisits = bothExisits === false ? false : true;
+          } else {
+            bothExisits = true;
+          }
+          this.setState({
+            requistion_type: requistion_type,
+            bothExisits: bothExisits,
+          });
+        }
+      );
     }
     this.getPharmacyOptions();
   }
@@ -115,9 +148,9 @@ class RequisitionEntry extends Component {
     ClearData(this, this);
   }
   render() {
-    const userwiselocations = _.filter(this.props.userwiselocations, (f) => {
-      return f.location_type !== "WH";
-    });
+    // const userwiselocations = _.filter(this.props.userwiselocations, (f) => {
+    //   return f.location_type !== "WH";
+    // });
 
     return (
       <React.Fragment>
@@ -176,8 +209,8 @@ class RequisitionEntry extends Component {
                   <h6>
                     {this.state.requistion_date
                       ? moment(this.state.requistion_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -190,17 +223,17 @@ class RequisitionEntry extends Component {
                     />
                     <h6>
                       {this.state.authorize1 === "Y" &&
-                      this.state.authorie2 === "Y" ? (
-                        <span className="badge badge-success">Authorized</span>
-                      ) : this.state.authorize1 === "Y" &&
-                        this.state.authorie2 === "N" ? (
-                        <span className="badge badge-danger">Pending</span>
-                      ) : this.state.authorize1 === "N" &&
-                        this.state.authorize2 === "N" ? (
-                        <span className="badge badge-danger">Pending</span>
-                      ) : (
-                        "-------"
-                      )}
+                        this.state.authorie2 === "Y" ? (
+                          <span className="badge badge-success">Authorized</span>
+                        ) : this.state.authorize1 === "Y" &&
+                          this.state.authorie2 === "N" ? (
+                            <span className="badge badge-danger">Pending</span>
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Pending</span>
+                            ) : (
+                              "-------"
+                            )}
                     </h6>
                   </div>
                 ) : null}
@@ -209,17 +242,17 @@ class RequisitionEntry extends Component {
             printArea={
               this.state.material_requisition_number !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            generateMaterialReqPhar(this.state);
-                          },
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateMaterialReqPhar(this.state);
                         },
                       },
-                    ],
-                  }
+                    },
+                  ],
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -229,117 +262,128 @@ class RequisitionEntry extends Component {
             className="row  inner-top-search"
             style={{ marginTop: 76, paddingBottom: 10 }}
           >
-            {/* <AlagehAutoComplete
-              div={{ className: "col-3" }}
-              label={{ forceLabel: "Requisition Type" }}
-              selector={{
-                name: "requistion_type",
-                className: "select-fld",
-                value: this.state.requistion_type,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
-                },
-                others: {
-                  disabled: true
-                  // this.state.from_location_type === "MS" ? false : true
-                },
+            <div className="col-lg-8">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-4" }}
+                  label={{ forceLabel: "Requesting From" }}
+                  selector={{
+                    name: "from_location_id",
+                    className: "select-fld",
+                    value: this.state.from_location_id,
+                    dataSource: {
+                      textField: "location_description",
+                      valueField: "hims_d_pharmacy_location_id",
+                      data: this.props.userwiselocations,
+                    },
+                    others: {
+                      disabled: this.state.addedItem,
+                    },
+                    onChange: LocationchangeTexts.bind(this, this, "From"),
+                    onClear: () => {
+                      this.setState({
+                        from_location_id: null,
+                        from_location_type: null,
+                      });
+                    },
+                  }}
+                />
 
-                onChange: changeTexts.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    requistion_type: null
-                  });
-                }
-              }}
-            /> */}
-            <AlagehAutoComplete
-              div={{ className: "col-3" }}
-              label={{ forceLabel: "Requesting From" }}
-              selector={{
-                name: "from_location_id",
-                className: "select-fld",
-                value: this.state.from_location_id,
-                dataSource: {
-                  textField: "location_description",
-                  valueField: "hims_d_pharmacy_location_id",
-                  data: userwiselocations,
-                },
-                others: {
-                  disabled: this.state.addedItem,
-                },
-                onChange: LocationchangeTexts.bind(this, this, "From"),
-                onClear: () => {
-                  this.setState({
-                    from_location_id: null,
-                    from_location_type: null,
-                  });
-                },
-              }}
-            />
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Location Type",
+                    }}
+                  />
+                  <h6>
+                    {this.state.from_location_type
+                      ? this.state.from_location_type === "WH"
+                        ? "Warehouse"
+                        : this.state.from_location_type === "MS"
+                          ? "Main Store"
+                          : "Sub Store"
+                      : "----------"}
+                  </h6>
+                </div>
 
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Location Type",
-                }}
-              />
-              <h6>
-                {this.state.from_location_type
-                  ? this.state.from_location_type === "WH"
-                    ? "Warehouse"
-                    : this.state.from_location_type === "MS"
-                    ? "Main Store"
-                    : "Sub Store"
-                  : "----------"}
-              </h6>
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-4" }}
+                  label={{ forceLabel: "Requisition Type" }}
+                  selector={{
+                    name: "requistion_type",
+                    className: "select-fld",
+                    value: this.state.requistion_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
+                    },
+                    others: {
+                      disabled: this.state.bothExisits
+                    },
+
+                    onChange: requisitionEvent.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        requistion_type: null
+                      });
+                    }
+                  }}
+                />
+              </div>
             </div>
 
-            <AlagehAutoComplete
-              div={{ className: "col-3" }}
-              label={{ forceLabel: "Requesting To" }}
-              selector={{
-                name: "to_location_id",
-                className: "select-fld",
-                value: this.state.to_location_id,
-                dataSource: {
-                  textField: "location_description",
-                  valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.reqlocations,
-                },
-                others: {
-                  disabled:
-                    this.state.requistion_type === "PR"
-                      ? true
-                      : this.state.addedItem,
-                },
-                onChange: LocationchangeTexts.bind(this, this, "To"),
-                onClear: () => {
-                  this.setState({
-                    to_location_id: null,
-                    to_location_type: null,
-                  });
-                },
-              }}
-            />
 
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Location Type",
-                }}
-              />
-              <h6>
-                {this.state.to_location_type
-                  ? this.state.to_location_type === "WH"
-                    ? "Warehouse"
-                    : this.state.to_location_type === "MS"
-                    ? "Main Store"
-                    : "Sub Store"
-                  : "----------"}
-              </h6>
-            </div>
+            {this.state.requistion_type === "MR" ? (
+              <div className="col-lg-4">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-6" }}
+                    label={{ forceLabel: "Requesting To" }}
+                    selector={{
+                      name: "to_location_id",
+                      className: "select-fld",
+                      value: this.state.to_location_id,
+                      dataSource: {
+                        textField: "location_description",
+                        valueField: "hims_d_pharmacy_location_id",
+                        data: this.props.reqlocations,
+                      },
+                      others: {
+                        disabled:
+                          this.state.requistion_type === "PR"
+                            ? true
+                            : this.state.addedItem,
+                      },
+                      onChange: LocationchangeTexts.bind(this, this, "To"),
+                      onClear: () => {
+                        this.setState({
+                          to_location_id: null,
+                          to_location_type: null,
+                        });
+                      },
+                    }}
+                  />
+
+                  <div className="col-lg-6">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "To Location Type",
+                      }}
+                    />
+                    <h6>
+                      {this.state.to_location_type
+                        ? this.state.to_location_type === "WH"
+                          ? "Warehouse"
+                          : this.state.to_location_type === "MS"
+                            ? "Main Store"
+                            : "Sub Store"
+                        : "----------"}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </div>
 
           <div className="hptl-phase1-requisition-form">
@@ -391,8 +435,8 @@ class RequisitionEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" &&
                             this.state.authorie2 === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizeRequisitionEntry.bind(
                         this,
@@ -408,8 +452,8 @@ class RequisitionEntry extends Component {
                             this.state.authorize1 === "N"
                               ? "Authorize 1"
                               : this.state.requisition_auth_level === "2"
-                              ? "Authorize 2"
-                              : "Authorize 1",
+                                ? "Authorize 2"
+                                : "Authorize 1",
                           returnText: true,
                         }}
                       />
