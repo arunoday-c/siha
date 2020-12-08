@@ -396,11 +396,11 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "expiry_status",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Expiry Status",
             dataSource: {
               textField: "name",
@@ -410,10 +410,10 @@ export default function Pharmacy({
           },
 
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "date",
             name: "from_date",
-            isImp: true,
+            isImp: false,
             others: {
               maxDate: new Date(),
               minDate: null,
@@ -421,12 +421,12 @@ export default function Pharmacy({
           },
 
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "date",
             name: "to_date",
-            isImp: true,
+            isImp: false,
             others: {
-              maxDate: new Date(),
+              maxDate: null,
               minDate: null,
             },
           },
@@ -454,84 +454,91 @@ export default function Pharmacy({
               valueField: "hims_d_pharmacy_location_id",
               data: [],
             },
-          },
-
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
-            name: "group_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Group",
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_item_group_id",
-              data: [],
-            },
-            link: {
-              uri: "/pharmacy/getItemGroup",
-              module: "pharmacy",
-            },
             events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getItemCategory",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hims_d_item_category_id: currentEvent.value },
-
-                  onSuccess: (result) => {
-                    reportState.setState({
-                      category_id_list: result.data.records,
-                    });
-                  },
-                });
-              },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  category_id_list: [],
                 });
               },
             },
           },
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
-            name: "category_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Category",
-            dataSource: {
-              textField: "category_desc",
-              valueField: "hims_d_item_category_id",
-              data: [],
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getItemMaster",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { category_id: currentEvent.value },
 
-                  onSuccess: (result) => {
-                    reportState.setState({
-                      item_id_list: result.data.records,
-                    });
-                  },
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  item_id_list: [],
-                });
-              },
-            },
-          },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "group_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Group",
+          //   dataSource: {
+          //     textField: "group_description",
+          //     valueField: "hims_d_item_group_id",
+          //     data: [],
+          //   },
+          //   link: {
+          //     uri: "/pharmacy/getItemGroup",
+          //     module: "pharmacy",
+          //   },
+          //   events: {
+          //     onChange: (reportState, currentEvent) => {
+          //       //provider_id_list CONTROL NAME AND APPEND BY _LIST
+          //       algaehApiCall({
+          //         uri: "/pharmacy/getItemCategory",
+          //         module: "pharmacy",
+          //         method: "GET",
+          //         data: { hims_d_item_category_id: currentEvent.value },
+
+          //         onSuccess: (result) => {
+          //           reportState.setState({
+          //             category_id_list: result.data.records,
+          //           });
+          //         },
+          //       });
+          //     },
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //         category_id_list: [],
+          //       });
+          //     },
+          //   },
+          // },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "category_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Category",
+          //   dataSource: {
+          //     textField: "category_desc",
+          //     valueField: "hims_d_item_category_id",
+          //     data: [],
+          //   },
+          //   events: {
+          //     onChange: (reportState, currentEvent) => {
+          //       //provider_id_list CONTROL NAME AND APPEND BY _LIST
+          //       algaehApiCall({
+          //         uri: "/pharmacy/getItemMaster",
+          //         module: "pharmacy",
+          //         method: "GET",
+          //         data: { category_id: currentEvent.value },
+
+          //         onSuccess: (result) => {
+          //           reportState.setState({
+          //             item_id_list: result.data.records,
+          //           });
+          //         },
+          //       });
+          //     },
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //         item_id_list: [],
+          //       });
+          //     },
+          //   },
+          // },
 
           {
             className: "col-3 form-group",
@@ -540,10 +547,22 @@ export default function Pharmacy({
             initialLoad: true,
             isImp: false,
             label: "Item",
+
+            link: {
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy",
+            },
             dataSource: {
               textField: "item_description",
               valueField: "hims_d_item_master_id",
-              data: [],
+              data: undefined,
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
             },
           },
         ],
@@ -631,7 +650,7 @@ export default function Pharmacy({
             name: "stockUsed",
 
             isImp: true,
-            label: "Show for Last (month's)",
+            label: "Show for last",
 
             dataSource: {
               textField: "stockUsed",
