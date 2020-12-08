@@ -215,8 +215,9 @@ export function PatientRegistration() {
     savedPatient,
     clearState,
     setServiceInfo,
+    cardData,
   } = useContext(FrontdeskContext);
-
+  console.log(cardData, "cardData");
   const [currentCountry] = countries?.filter(
     (item) => item.hims_d_country_id === userToken?.default_country
   );

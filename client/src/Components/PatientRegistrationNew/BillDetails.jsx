@@ -133,6 +133,7 @@ export function BillDetails({
     disabled: globalDisable,
     savedPatient,
     consultationInfo,
+    setCardDataGlobal: setCardDataGlobal,
   } = useContext(FrontdeskContext);
   // const disabled = !!bill_number && !!receipt_number;
   const { fieldNameFn } = useLangFieldName();
@@ -1121,8 +1122,19 @@ export function BillDetails({
                     disabled={!enableCard}
                     onChangeCard={(e) => {
                       setCardData(e);
+                      setCardDataGlobal({
+                        card_name: e?.card_name,
+                        // card_number: "",
+                        hims_d_bank_card_id: e?.hims_d_bank_card_id,
+                      });
                     }}
                     onChangeNumber={(e) => {
+                      setCardDataGlobal({
+                        card_number: e,
+                        card_name: cardData?.card_name,
+                        // card_number: "",
+                        hims_d_bank_card_id: cardData?.hims_d_bank_card_id,
+                      });
                       setCardData((s) => ({
                         ...s,
                         card_number: e,
