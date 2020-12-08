@@ -1,6 +1,9 @@
 import path from "path";
 import fs from "fs-extra";
 import contract from "../Model/contractDocs";
+import EmployeeDocModel from "../Model/employeeDoc";
+// import PatientDocModel from "./patientDoc";
+// import CompanyDocModel from "./company";
 // import formidable from "formidable";
 const folder = process.env.UPLOADFOLDER || process.cwd();
 export function uploadFile(req, res, next) {
@@ -23,15 +26,47 @@ export function uploadFile(req, res, next) {
       const fStream = fs.createWriteStream(path.join(uploadPath, filename));
       file.pipe(fStream);
       // On finish of the upload
+      // const _headerFile = JSON.parse(req.headers["x-file-details"]);
       fStream.on("close", () => {
-        fieldObject["file"] = fieldName;
-        fieldObject["filename"] = filename;
-        fieldObject["document"] = path.join(uploadPath, filename);
-        fieldObject["filetype"] = mimetype;
-        fieldObject["fromPath"] = true;
+        // fieldObject["file"] = fieldName;
+        // fieldObject["filename"] = filename;
+        // fieldObject["document"] = path.join(uploadPath, filename);
+        // fieldObject["filetype"] = mimetype;
+        // fieldObject["fromPath"] = true;
+        const forModule = fieldObject["forModule"];
+        let contractDoc = undefined;
+        let dataToSave = fieldObject;
+
+        switch (forModule) {
+          case "EmployeeDocModel":
+            contractDoc = EmployeeDocModel;
+
+            dataToSave = {
+              pageName: fieldObject["pageName"],
+              clientID: req.headers["x-client-ip"],
+              destinationName: fieldObject["destinationName"],
+              fromPath: true,
+              fileExtention: mimetype,
+              filename: filename,
+              updatedDate: new Date(),
+            };
+
+            break;
+          default:
+            contractDoc = contract;
+            dataToSave = {
+              file: fieldName,
+              filename: filename,
+              document: path.join(uploadPath, filename),
+              filetype: mimetype,
+              fromPath: true,
+              ...fieldObject,
+            };
+        }
+
         // console.log("Before saving", fieldObject, fieldName);
         // console.log(`Upload of '${filename}' finished`, fieldObject);
-        contract.insertMany([fieldObject]);
+        contractDoc.insertMany([dataToSave]);
         res.status(200).json({
           success: true,
         });
@@ -44,10 +79,29 @@ export function uploadFile(req, res, next) {
 
 export function getUploadedFile(req, res, next) {
   try {
-    const { contract_no, filename, download } = req.query;
+    const input = req.query;
+
+    let contractDoc;
+    let filter = {};
+    let _mimeType = "filetype";
+    const { download } = input;
+
+    switch (input.forModule) {
+      case "EmployeeDocModel":
+        contractDoc = EmployeeDocModel;
+        const { destinationName } = input;
+        filter = { destinationName };
+        _mimeType = "fileExtention";
+        break;
+
+      default:
+        contractDoc = contract;
+        const { contract_no, filename } = input;
+        filter = { contract_no, filename };
+    }
 
     if (download) {
-      contract.find({ contract_no, filename }, (err, docs) => {
+      contractDoc.find(filter, (err, docs) => {
         if (err) {
           res.status(400).json({ error: err.message });
         } else {
@@ -59,7 +113,7 @@ export function getUploadedFile(req, res, next) {
             const readStream = fs.createReadStream(
               `${path.resolve(uploadPath, fileN)}`
             );
-            const mimetype = docs[0]["filetype"];
+            const mimetype = docs[0][_mimeType];
             res.setHeader(
               "Content-disposition",
               "attachment; filename='" +
@@ -82,7 +136,8 @@ export function getUploadedFile(req, res, next) {
         }
       });
     } else {
-      contract.find({ contract_no }, (err, docs) => {
+      const { contract_no } = input;
+      contractDoc.find({ contract_no }, (err, docs) => {
         if (err) {
           res.status(400).json({ error: err.message });
         } else {

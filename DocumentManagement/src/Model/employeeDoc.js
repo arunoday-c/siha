@@ -8,6 +8,8 @@ let employeeSchema = new Schema(
     destinationName: Object || String,
     fileExtention: String,
     updatedDate: Date,
+    fromPath: Boolean,
+    filename: String,
   },
   { autoCreate: true }
 );

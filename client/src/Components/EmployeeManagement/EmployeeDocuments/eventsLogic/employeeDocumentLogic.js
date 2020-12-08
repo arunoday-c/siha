@@ -1,4 +1,8 @@
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie,
+} from "../../../../utils/algaehApiCall";
 import _ from "lodash";
 import { newAlgaehApi } from "../../../../hooks";
 
@@ -137,14 +141,16 @@ export default function eventsLogEmployeeDocument() {
     },
     getSelectedDocument(row) {
       return new Promise((resolve, reject) => {
-        let contract_no =
-          row.hims_f_employee_documents_id + row.download_uniq_id;
+        // let contract_no =
+        //   row.hims_f_employee_documents_id + row.download_uniq_id;
         newAlgaehApi({
           uri: "/getContractDoc",
           module: "documentManagement",
           method: "GET",
           data: {
-            contract_no: contract_no,
+            contract_no: row.contract_no,
+            row: row,
+            // employeeDoc: true,
           },
         })
           .then((res) => {
@@ -162,16 +168,17 @@ export default function eventsLogEmployeeDocument() {
           });
       });
     },
-    saveDocument: (files = [], contract_no, contract_id) => {
+    saveDocument: (files = [], destinationName, contract_id) => {
       return new Promise((resolve, reject) => {
         const formData = new FormData();
 
-        formData.append("contract_no", contract_no);
-        formData.append("contract_id", contract_id);
+        formData.append("destinationName", destinationName);
+        // formData.append("contract_id", contract_id);
         files.forEach((file, index) => {
           formData.append(`file_${index}`, file, file.name);
         });
-        formData.append("newFileName", "abcd");
+        formData.append("forModule", "EmployeeDocModel");
+        formData.append("pageName", getCookie("ScreenName"));
         newAlgaehApi({
           uri: "/saveContractDoc",
           data: formData,
@@ -190,57 +197,57 @@ export default function eventsLogEmployeeDocument() {
       });
     },
     downloadDoc: (doc, isPreview) => {
-      if (doc.fromPath === true) {
-        newAlgaehApi({
-          uri: "/getContractDoc",
-          module: "documentManagement",
-          method: "GET",
-          extraHeaders: {
-            Accept: "blon",
-          },
-          others: {
-            responseType: "blob",
-          },
-          data: {
-            contract_no: doc.contract_no,
-            filename: doc.filename,
-            download: true,
-          },
+      // if (doc.fromPath === true) {
+      newAlgaehApi({
+        uri: "/getContractDoc",
+        module: "documentManagement",
+        method: "GET",
+        extraHeaders: {
+          Accept: "blob",
+        },
+        others: {
+          responseType: "blob",
+        },
+        data: {
+          destinationName: doc.download_uniq_id,
+          forModule: "EmployeeDocModel",
+          download: true,
+        },
+      })
+        .then((resp) => {
+          const urlBlob = URL.createObjectURL(resp.data);
+          if (isPreview) {
+            window.open(urlBlob);
+          } else {
+            const link = document.createElement("a");
+            link.download = doc.filename;
+            link.href = urlBlob;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
         })
-          .then((resp) => {
-            const urlBlob = URL.createObjectURL(resp.data);
-            if (isPreview) {
-              window.open(urlBlob);
-            } else {
-              const link = document.createElement("a");
-              link.download = doc.filename;
-              link.href = urlBlob;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-        const link = document.createElement("a");
-        if (!isPreview) {
-          link.download = doc.filename;
-          link.href = fileUrl;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          fetch(fileUrl)
-            .then((res) => res.blob())
-            .then((fblob) => {
-              const newUrl = URL.createObjectURL(fblob);
-              window.open(newUrl);
-            });
-        }
-      }
+        .catch((error) => {
+          console.log(error);
+        });
+      // } else {
+      //   const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+      //   const link = document.createElement("a");
+      //   if (!isPreview) {
+      //     link.download = doc.filename;
+      //     link.href = fileUrl;
+      //     document.body.appendChild(link);
+      //     link.click();
+      //     document.body.removeChild(link);
+      //   } else {
+      //     fetch(fileUrl)
+      //       .then((res) => res.blob())
+      //       .then((fblob) => {
+      //         const newUrl = URL.createObjectURL(fblob);
+      //         window.open(newUrl);
+      //       });
+      //   }
+      // }
     },
 
     // deleteDoc : (doc) => {

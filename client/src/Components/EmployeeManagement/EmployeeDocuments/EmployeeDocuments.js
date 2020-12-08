@@ -75,7 +75,7 @@ class EmployeeDocuments extends Component {
       })
       .then((result) => {
         eventLogic()
-          .saveDocument(file, result.insertId + uniqueID, result.insertId)
+          .saveDocument(file, uniqueID, result.insertId)
           .then((result) => {
             eventLogic()
               .getSaveDocument({
@@ -540,17 +540,7 @@ class EmployeeDocuments extends Component {
     });
   }
   downloadSelectedFile(row, isPreview) {
-    eventLogic()
-      .getSelectedDocument(row)
-      .then((result) => {
-        eventLogic().downloadDoc(result, isPreview);
-      })
-      .catch((error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      });
+    eventLogic().downloadDoc(row, isPreview);
   }
 
   // downloadSelectedFile(row) {
