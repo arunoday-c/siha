@@ -104,11 +104,6 @@
       "name": "Card",
       "arabic_name": "بطاقة",
       "value": "CD"
-    },
-    {
-      "name": "Cheque",
-      "arabic_name": "التحقق من",
-      "value": "CH"
     }
   ],
   "FORMAT_CARDTYPE": [
