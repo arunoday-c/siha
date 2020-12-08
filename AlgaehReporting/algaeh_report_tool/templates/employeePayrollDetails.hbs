@@ -13,9 +13,13 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
+                        <th>Branch</th>
                         <th>Emp. Code</th>
                         <th>Emp. Name</th>
                         <th>Desgnation</th>
+                        <th>Primary ID Type</th>
+                        <th>Primary ID No.</th>
+                        <th>Emp. Group</th>
                         {{#hasElement earning_component}}
                         {{#each earning_component}}
                         <th>{{short_desc}}</th>
@@ -46,9 +50,13 @@
                     {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
+                        <td>{{hims_d_hospital_id}}-{{hospital_name}}</td>
                         <td>{{employee_code}}</td>
                         <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{full_name}}</span></td>
                         <td><span class="textTruncate" style="width: 80px;">{{designation}}</span></td>
+                        <td><span class="textTruncate" style="width: 80px;">{{identity_document_name}}</span></td>
+                        <td><span class="textTruncate" style="width: 80px;">{{identity_no}}</span></td>
+                        <td><span class="textTruncate" style="width: 80px;">{{group_description}}</span></td>
                         {{#hasElement ../earning_component}}
                         {{#hasElement employee_earning}}
                         {{#each ../earning_component}}

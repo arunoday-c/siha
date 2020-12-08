@@ -262,12 +262,11 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "PhrPOEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistion_date,\
-            FPL.location_description as from_location, \
-            TPL.location_description as to_location from hims_f_pharamcy_material_header RH, \
-            hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
-            where FPL.hims_d_pharmacy_location_id = RH.from_location_id and \
-            RH.to_location_id = TPL.hims_d_pharmacy_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y' \
-            and RH.is_completed = 'N' and RH.cancelled='N' ",
+            FPL.location_description as 'FPL.location_description', \
+            TPL.location_description as 'TPL.location_description' from hims_f_pharamcy_material_header RH \
+            inner join hims_d_pharmacy_location FPL on FPL.hims_d_pharmacy_location_id = RH.from_location_id  \
+            left join hims_d_pharmacy_location TPL on RH.to_location_id = TPL.hims_d_pharmacy_location_id \
+            where  RH.authorize1 = 'Y' and RH.authorie2 = 'Y' and RH.is_completed = 'N' and RH.cancelled='N' ",
         orderBy: "hims_f_pharamcy_material_header_id desc",
       },
       {
@@ -1023,7 +1022,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "SalesInvoice",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS  IH.*,  CASE IH.sales_invoice_mode WHEN 'I' then 'Items' else 'Services' \
+          "select SQL_CALC_FOUND_ROWS  IH.*,  date(IH.invoice_date) as invoice_date, CASE IH.sales_invoice_mode WHEN 'I' then 'Items' else 'Services' \
           end as sales_invoice_mode, C.customer_name, SO.sales_order_number from hims_f_sales_invoice_header IH \
           inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
           inner join  hims_f_sales_order SO on IH.sales_order_id = SO.hims_f_sales_order_id  \

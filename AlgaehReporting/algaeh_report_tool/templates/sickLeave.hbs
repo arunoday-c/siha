@@ -21,14 +21,13 @@
 
                 <tr>
                     <td><label class="textEnLft">This is to certify that Mr./Ms.</label>:<span
-                            class="valueText">{{header.patient_full_name}}</span></span><label class="textArRht">
-                            هذا للاعتقاد بأن السيد / السيدة</label></td>
+                            class="valueText">{{header.patient_full_name}}</span></span><label class="textArRht">هذا للتأكيد بأن السيد /السيدة </label></td>
                 </tr>
                 <tr>
                     <td>
                         <label class="textEnLft">MR No</label>:
                         <span class="valueText">{{header.patient_code}}</span>
-                        <label class="textArRht">رقم هوية المريض</label>
+                        <label class="textArRht">رقم الملف</label>
                     </td>
                 <tr>
                     <td>
@@ -48,33 +47,33 @@
                 <tbody>
 
                     <tr>
-                         <td><label class="">Consult Date and Time</label>:</td>
+                         <td><label class="">Consultation Date and Time</label>:</td>
                         <td><span class="valueTextSick">{{dateTime header.visit_date "date"}}</span></td>
-                        <td style="text-align:right"><label class="">استشر التاريخ والوقت</label></td>
+                        <td style="text-align:right"><label class="">تاريخ ووقت الاستشارة</label></td>
                         <td colspan="4"></td>
                     </tr>
                     
                     <tr>
                          <td><label class="">Fit for Duty</label>:</td>
                         <td><span class="valueTextSick">{{header.patient_fit}}</span></td>
-                        <td style="text-align:right"><label class="">يصلح لواجب</label></td>
+                        <td style="text-align:right"><label class="">قادر على العمل</label></td>
                                 
                                 <td ><label class=""></label></td>
                                 <td ><label class="">Unfit for duty</label>:</td>
                         <td><span class="valueTextSick">{{header.patient_unfit}}</span></td>
-                        <td style="text-align:right"><label class="">غير صالح للخدمة</label></td>
+                        <td style="text-align:right"><label class="">غير قادر على العمل</label></td>
                     </tr>
 
                     <tr>
                                 
                         <td><label class="">Reported Sick</label>:</td>
                         <td><span class="valueTextSick">{{header.reported_sick}}</span></td>
-                        <td style="text-align:right"><label class="">أبلغ عن مرض</label></td>
+                        <td style="text-align:right"><label class="">حضر مريضا</label></td>
                                 
                                 <td ><label class=""></label></td>
                                 <td ><label class="">Advice Light Duty</label>:</td>
                         <td><span class="valueTextSick">{{header.advice_light_duty}}</span></td>
-                        <td style="text-align:right"><label class="">نصيحة واجب خفيف</label></td>
+                        <td style="text-align:right"><label class="">يوصى بدوام خفيف</label></td>
                     </tr>
 
                     <tr>
@@ -87,7 +86,7 @@
                                 <td ><label class=""></label></td>
                                 <td ><label class="">The patient needs the employee's care</label>:</td>
                         <td><span class="valueTextSick">{{header.pat_need_emp_care}}</span></td>
-                        <td style="text-align:right"><label class="">يحتاج المريض إلى رعاية الموظف</label></td>
+                        <td style="text-align:right"><label class="">المريض بحاجة الى اهتمام الموظفين</label></td>
                     </tr>
                     </tbody>
                     </table>

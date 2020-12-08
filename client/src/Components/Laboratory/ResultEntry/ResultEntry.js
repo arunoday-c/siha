@@ -31,6 +31,7 @@ import {
 } from "./ResultEntryEvents";
 import { ResultInput } from "./ResultInput";
 import AlgaehReport from "../../Wrapper/printReports";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class ResultEntry extends Component {
   constructor(props) {
@@ -43,11 +44,10 @@ class ResultEntry extends Component {
       test_comments_id: null,
       comment_list: [],
       selcted_comments: "",
-      ordered_by_name:"",
-      entered_by_name:"",
-      confirm_by_name:"",
-      validate_by_name:"",
-      
+      ordered_by_name: "",
+      entered_by_name: "",
+      confirm_by_name: "",
+      validate_by_name: "",
     };
   }
 
@@ -209,7 +209,11 @@ class ResultEntry extends Component {
 
                       <h6>
                         {this.state.full_name ? this.state.full_name : "------"}
-                      <small  style={{display:"block",fontStyle:"italic"}}>{this.state.patient_code}</small>
+                        <small
+                          style={{ display: "block", fontStyle: "italic" }}
+                        >
+                          {this.state.patient_code}
+                        </small>
                       </h6>
                     </div>
                     <div className="col">
@@ -223,7 +227,7 @@ class ResultEntry extends Component {
                         {this.state.service_name
                           ? this.state.service_name
                           : "------"}
-                           {/* <small style={{display:"table",fontStyle:"italic"}}
+                        {/* <small style={{display:"table",fontStyle:"italic"}}
                           className={`badge ${
                             isCritical ? "badge-danger" : "badge-primary"
                           }`}
@@ -240,20 +244,28 @@ class ResultEntry extends Component {
                           forceLabel: "Ordered By",
                         }}
                       />
-<h6>
+                      <h6>
                         {this.state.ordered_by_name
                           ? this.state.ordered_by_name
                           : "------"}
 
-{this.state.ordered_by_name ? 
-                        <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.ordered_date).format(Options.dateFormat)}
-                        </small>
-                        : <small  style={{display:"block",fontStyle:"italic"}}>-------</small>}
-
-
-                          
+                        {this.state.ordered_by_name ? (
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            On{" "}
+                            {moment(this.state.ordered_date).format(
+                              Options.dateFormat
+                            )}
+                          </small>
+                        ) : (
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
-
                     </div>
                     <div className="col">
                       <AlgaehLabel
@@ -267,16 +279,26 @@ class ResultEntry extends Component {
                           ? this.state.entered_by_name
                           : "------"}
 
-                        {this.state.entered_by_name ? 
-                        <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.entered_date).format(Options.dateFormat)}
-                        </small>
-                        : <small  style={{display:"block",fontStyle:"italic"}}>-------</small>}
-
+                        {this.state.entered_by_name ? (
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            On{" "}
+                            {moment(this.state.entered_date).format(
+                              Options.dateFormat
+                            )}
+                          </small>
+                        ) : (
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
 
-
-<div className="col">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Confirmed By",
@@ -287,16 +309,27 @@ class ResultEntry extends Component {
                         {this.state.confirm_by_name
                           ? this.state.confirm_by_name
                           : "------"}
-                          
-                          {this.state.confirm_by_name ? 
-                          <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.confirmed_date).format(Options.dateFormat)}
+
+                        {this.state.confirm_by_name ? (
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            On{" "}
+                            {moment(this.state.confirmed_date).format(
+                              Options.dateFormat
+                            )}
                           </small>
-                          : <small  style={{display:"block",fontStyle:"italic"}}>-------</small>}
+                        ) : (
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
 
-
-<div className="col">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Validtaed By",
@@ -304,16 +337,26 @@ class ResultEntry extends Component {
                       />
 
                       <h6>
-                        { this.state.validate_by_name
+                        {this.state.validate_by_name
                           ? this.state.validate_by_name
                           : "------"}
 
-                          
-                        {this.state.validate_by_name ? 
-                        <small  style={{display:"block",fontStyle:"italic"}}>On {moment(this.state.entered_date).format(Options.dateFormat)}
-                        </small>
-                        :  <small  style={{display:"block",fontStyle:"italic"}}>-------</small>}
-                      
+                        {this.state.validate_by_name ? (
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            On{" "}
+                            {moment(this.state.entered_date).format(
+                              Options.dateFormat
+                            )}
+                          </small>
+                        ) : (
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
                     {/* <div className="col">
@@ -334,7 +377,6 @@ class ResultEntry extends Component {
                         </small>
                       </h6>
                     </div> */}
-
                   </div>
                 </div>
                 <hr />
@@ -896,14 +938,15 @@ class ResultEntry extends Component {
 
           <div className="popupFooter">
             <div className="col-lg-12">
-              <button
-                className="btn btn-primary"
-                onClick={generateLabResultReport.bind(this, this.state)}
-                disabled={this.state.status === "V" ? false : true}
-              >
-                Print
-              </button>
-
+              <AlgaehSecurityElement elementCode="PRI_LAB_RES">
+                <button
+                  className="btn btn-primary"
+                  onClick={generateLabResultReport.bind(this, this.state)}
+                  disabled={this.state.status === "V" ? false : true}
+                >
+                  Print
+                </button>
+              </AlgaehSecurityElement>
               {/* <button
                 className="btn btn-primary"
                 onClick={this.showReport.bind(
@@ -917,51 +960,60 @@ class ResultEntry extends Component {
                 Print
               </button> */}
 
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onReRun.bind(this, this)}
-                disabled={
-                  this.state.entered_by !== null
-                    ? this.state.run_type === 3
+              <AlgaehSecurityElement elementCode="RE_RUN_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={onReRun.bind(this, this)}
+                  disabled={
+                    this.state.entered_by !== null
+                      ? this.state.run_type === 3
+                        ? true
+                        : false
+                      : true
+                  }
+                >
+                  Re-Run
+                </button>
+              </AlgaehSecurityElement>
+
+              <AlgaehSecurityElement elementCode="VAL_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={onvalidate.bind(this, this)}
+                  disabled={this.state.status === "V" ? true : false}
+                >
+                  Validate All
+                </button>
+              </AlgaehSecurityElement>
+
+              <AlgaehSecurityElement elementCode="CONF_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={onconfirm.bind(this, this)}
+                  disabled={
+                    this.state.status === "C"
+                      ? true
+                      : this.state.status === "V"
                       ? true
                       : false
-                    : true
-                }
-              >
-                Re-Run
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onvalidate.bind(this, this)}
-                disabled={this.state.status === "V" ? true : false}
-              >
-                Validate All
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onconfirm.bind(this, this)}
-                disabled={
-                  this.state.status === "C"
-                    ? true
-                    : this.state.status === "V"
-                    ? true
-                    : false
-                }
-              >
-                Confirm All
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={resultEntryUpdate.bind(this, this)}
-                disabled={this.state.status === "V" ? true : false}
-              >
-                Save
-              </button>
+                  }
+                >
+                  Confirm All
+                </button>
+              </AlgaehSecurityElement>
+              <AlgaehSecurityElement elementCode="SAVE_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={resultEntryUpdate.bind(this, this)}
+                  disabled={this.state.status === "V" ? true : false}
+                >
+                  Save
+                </button>
+              </AlgaehSecurityElement>
               <button
                 type="button"
                 className="btn btn-default"

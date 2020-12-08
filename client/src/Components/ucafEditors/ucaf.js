@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../Wrapper/algaehWrapper";
 // import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
@@ -21,7 +21,7 @@ export default class UcafEditor extends Component {
       insurance_holder: "",
       insurance_approved: "",
       ucaf_data: undefined,
-      showImgArea: true
+      showImgArea: true,
     };
   }
 
@@ -229,7 +229,7 @@ export default class UcafEditor extends Component {
                                 serviceParameters={{
                                   uniqueID:
                                     this.state.primary_card_number + "_front",
-                                  fileType: "Patients"
+                                  fileType: "Patients",
                                 }}
                               />
                             </div>
@@ -241,7 +241,7 @@ export default class UcafEditor extends Component {
                                 div={{ className: "col-6 form-group" }}
                                 label={{
                                   forceLabel: "Insured Name",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
@@ -249,15 +249,15 @@ export default class UcafEditor extends Component {
                                   value: this.state.patient_full_name,
                                   events: {},
                                   option: {
-                                    type: "text"
-                                  }
+                                    type: "text",
+                                  },
                                 }}
                               />
                               <AlagehFormGroup
                                 div={{ className: "col-6 form-group" }}
                                 label={{
                                   forceLabel: "ID. Card No.",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
@@ -265,15 +265,15 @@ export default class UcafEditor extends Component {
                                   value: this.state.primary_card_number,
                                   events: {},
                                   option: {
-                                    type: "text"
-                                  }
+                                    type: "text",
+                                  },
                                 }}
                               />
                               <AlagehFormGroup
                                 div={{ className: "col-4 form-group" }}
                                 label={{
                                   forceLabel: "Sex",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
@@ -281,15 +281,15 @@ export default class UcafEditor extends Component {
                                   value: this.state.patient_gender,
                                   events: {},
                                   option: {
-                                    type: "text"
-                                  }
+                                    type: "text",
+                                  },
                                 }}
                               />
                               <AlagehFormGroup
                                 div={{ className: "col-4 form-group" }}
                                 label={{
                                   forceLabel: "Age",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
@@ -297,15 +297,15 @@ export default class UcafEditor extends Component {
                                   value: this.state.age_in_years,
                                   events: {},
                                   option: {
-                                    type: "text"
-                                  }
+                                    type: "text",
+                                  },
                                 }}
                               />
                               <AlagehFormGroup
                                 div={{ className: "col-4 form-group" }}
                                 label={{
                                   forceLabel: "Class",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
@@ -313,15 +313,15 @@ export default class UcafEditor extends Component {
                                   value: this.state.class,
                                   events: {},
                                   option: {
-                                    type: "text"
-                                  }
+                                    type: "text",
+                                  },
                                 }}
                               />
                               <AlagehFormGroup
                                 div={{ className: "col-6 form-group" }}
                                 label={{
                                   forceLabel: "Policy Holder",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
@@ -334,15 +334,15 @@ export default class UcafEditor extends Component {
                                       : this.state.insurance_holder,
                                   events: {},
                                   option: {
-                                    type: "text"
-                                  }
+                                    type: "text",
+                                  },
                                 }}
                               />
                               <AlagehFormGroup
                                 div={{ className: "col-6 form-group" }}
                                 label={{
                                   forceLabel: "Policy No.",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
@@ -350,19 +350,19 @@ export default class UcafEditor extends Component {
                                   value: this.state.primary_policy_num,
                                   events: {},
                                   option: {
-                                    type: "text"
-                                  }
+                                    type: "text",
+                                  },
                                 }}
                               />
                               <AlgaehDateHandler
                                 div={{ className: "col-6" }}
                                 label={{
                                   forceLabel: "Expiry Date",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
-                                  name: ""
+                                  name: "",
                                 }}
                                 value={this.state.primary_effective_end_date}
                                 maxDate={new Date()}
@@ -372,7 +372,7 @@ export default class UcafEditor extends Component {
                                 div={{ className: "col-6 form-group" }}
                                 label={{
                                   forceLabel: "Approval",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   className: "txt-fld",
@@ -380,8 +380,8 @@ export default class UcafEditor extends Component {
                                   value: this.state.insurance_approved,
                                   events: {},
                                   option: {
-                                    type: "text"
-                                  }
+                                    type: "text",
+                                  },
                                 }}
                               />
                             </div>
@@ -426,7 +426,7 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_emergency_case"
-                              value="null"
+                              value=""
                               checked={
                                 this.state.patient_emergency_case !== null
                                   ? true
@@ -483,7 +483,7 @@ export default class UcafEditor extends Component {
                           div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "BP",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -493,263 +493,263 @@ export default class UcafEditor extends Component {
                               "/" +
                               this.state.patient_bp_dia,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Pulse (bpm)",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_pulse",
                             value: this.state.patient_pulse,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Temp (C)",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_temp",
                             value: this.state.patient_temp,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Weight (kg)",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_weight",
                             value: this.state.patient_weight,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Height (cm)",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_height",
                             value: this.state.patient_height,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "R.R",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_respiratory_rate",
                             value: this.state.patient_respiratory_rate,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Duration of Illness (Days)",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_duration_of_illness",
                             value: this.state.patient_duration_of_illness,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-12 form-group" }}
                           label={{
                             forceLabel: "Chief Complaints & Main Symptoms",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_chief_comp_main_symptoms",
                             value: this.state.patient_chief_comp_main_symptoms,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-12 form-group" }}
                           label={{
                             forceLabel: "Significant Signs",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_significant_signs",
                             value: this.state.patient_significant_signs,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-12 form-group" }}
                           label={{
                             forceLabel: "Other Conditions",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_other_conditions",
                             value: this.state.patient_other_conditions,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-12 form-group" }}
                           label={{
                             forceLabel: "Diagnosis",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_diagnosys",
                             value: this.state.patient_diagnosys,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Principal Code 1",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_1",
                             value: this.state.patient_principal_code_1,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Principal Code 2",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_2",
                             value: this.state.patient_principal_code_2,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Principal Code 3",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_3",
                             value: this.state.patient_principal_code_3,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Principal Code 4",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_4",
                             value: this.state.patient_principal_code_4,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />
                       </div>
@@ -903,14 +903,14 @@ export default class UcafEditor extends Component {
                           div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Indicate LMP",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "patient_indicated_LMP",
                             value: this.state.patient_indicated_LMP,
                             events: {
-                              onChange: this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this),
                             },
                             others: {
                               type: "number",
@@ -918,15 +918,15 @@ export default class UcafEditor extends Component {
                                 this.state.patient_complaint_type ===
                                 "PREGNANCY"
                                   ? false
-                                  : true
-                            }
+                                  : true,
+                            },
                           }}
                         />
 
                         <div className="col-12 margin-top-15">
                           <h5 style={{ margin: 0 }}>
                             Suggestive line(s) of management: Kindly, enumerate
-                            the recommended investigation, and/or procedures
+                            the recommended investigation, and/or procedures{" "}
                             <b>For outpatient approvals only:</b>
                           </h5>
                         </div>
@@ -939,23 +939,23 @@ export default class UcafEditor extends Component {
                                 fieldName: "service_code",
                                 label: (
                                   <AlgaehLabel label={{ forceLabel: "Code" }} />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "service_name",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Description/Service"
+                                      forceLabel: "Description/Service",
                                     }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "service_type",
                                 label: (
                                   <AlgaehLabel label={{ forceLabel: "Type" }} />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "service_quantity",
@@ -963,18 +963,18 @@ export default class UcafEditor extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Quantity" }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "service_net_amout",
                                 label: (
                                   <AlgaehLabel label={{ forceLabel: "Cost" }} />
-                                )
-                              }
+                                ),
+                              },
                             ]}
                             keyId="hims_f_ucaf_header_id"
                             dataSource={{
-                              data: this.state.ucaf_services
+                              data: this.state.ucaf_services,
                             }}
                             paging={{ page: 0, rowsPerPage: 10 }}
                           />
@@ -998,16 +998,16 @@ export default class UcafEditor extends Component {
                                   <AlgaehLabel
                                     label={{
                                       forceLabel:
-                                        "Medication Name (Generic Name)"
+                                        "Medication Name (Generic Name)",
                                     }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "type",
                                 label: (
                                   <AlgaehLabel label={{ forceLabel: "Type" }} />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "quantity",
@@ -1015,12 +1015,12 @@ export default class UcafEditor extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Quantity" }}
                                   />
-                                )
-                              }
+                                ),
+                              },
                             ]}
                             keyId="hims_f_ucaf_medication_id"
                             dataSource={{
-                              data: this.state.ucaf_medication
+                              data: this.state.ucaf_medication,
                             }}
                             paging={{ page: 0, rowsPerPage: 10 }}
                           />

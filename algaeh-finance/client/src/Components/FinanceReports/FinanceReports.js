@@ -118,14 +118,14 @@ export default function FinanceReports() {
         });
       });
   }
-  function getReportName() {
-    const reportT = ReportsMenu.find((f) => f.key === selected);
-    if (reportT !== undefined) {
-      return reportT.title;
-    } else {
-      return "";
-    }
-  }
+  // function getReportName() {
+  //   const reportT = ReportsMenu.find((f) => f.key === selected);
+  //   if (reportT !== undefined) {
+  //     return reportT.title;
+  //   } else {
+  //     return "";
+  //   }
+  // }
   if (finOptions && dates) {
     return (
       <div className="row">

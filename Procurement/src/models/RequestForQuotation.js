@@ -204,8 +204,8 @@ export default {
                     IU.uom_description, phar_item_id as item_id FROM hims_f_procurement_vendor_quotation_header H \
                     inner join hims_f_procurement_vendor_quotation_detail D on D.vendor_quotation_header_id = H.hims_f_procurement_vendor_quotation_header_id\
                     inner join hims_d_vendor V on V.hims_d_vendor_id = H.vendor_id   \
-                    inner join hims_d_item_master IM on D.inv_item_id = IM.hims_d_item_master_id \
-                    inner join hims_d_pharmacy_uom IU on D.inventory_uom_id = IU.hims_d_pharmacy_uom_id \
+                    inner join hims_d_item_master IM on D.phar_item_id = IM.hims_d_item_master_id \
+                    inner join hims_d_pharmacy_uom IU on D.pharmacy_uom_id = IU.hims_d_pharmacy_uom_id \
                     where H.req_quotation_header_id=? ;",
           [req.query.hims_f_procurement_req_quotation_header_id]
         );

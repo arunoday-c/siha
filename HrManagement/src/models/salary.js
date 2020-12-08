@@ -251,10 +251,10 @@ export default {
               from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'A';\
             select hims_d_hrms_options_id,basic_earning_component,standard_working_hours,standard_break_hours,salary_calendar,\
-            attendance_type,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
+            attendance_type,salary_calendar_fixed_days, ot_calculation, working_hour_from from hims_d_hrms_options;\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
             select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
-              OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate  \
+              OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate, E.standard_work_hours  \
               from hims_d_overtime_group OT, hims_d_employee E where E.overtime_group_id=OT.hims_d_overtime_group_id and E.hims_d_employee_id in (?); \
               delete from hims_f_salary_contributions where salary_header_id in (?);\
               delete from hims_f_salary_loans where salary_header_id in (?);\
@@ -3379,9 +3379,10 @@ function getOtManagement(options) {
             empResult["ot_holiday_hours"] ? empResult["ot_holiday_hours"] : 0
           );
 
-        let Noof_Working_Hours =
+        let Noof_Working_Hours = hrms_option[0].working_hour_from === "E" ? over_time["standard_work_hours"] :
           parseFloat(hrms_option[0].standard_working_hours) -
           parseFloat(hrms_option[0].standard_break_hours);
+
         if (_earnings.length == 0) {
           resolve({ current_ot_amt_array, final_earning_amount });
         }

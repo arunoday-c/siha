@@ -1,7 +1,75 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
+
     <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Batch No.</th>
+                        <th>Qty Sold</th>
+                        <th>Return Qty</th>
+                        <th>Expiry Date</th>
+                        <th>Patient Responsibility</th>
+                        <th>Patient Tax</th>
+                        {{!-- <th>Patient Payable</th> --}}
+                        <th>Company Responsibility</th>
+                        <th>Company Tax</th>
+                        {{!-- <th>Company Payable</th> --}}
+                        <th>Net Payable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each detail}}
+                    <tr>
+                        <td colspan="13" class="tableSubHdg">{{sales_return_number}} - {{sales_return_date}}</td>
+                    </tr>
+                    {{#each detailList}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{item_code}}</td>
+                        <td>{{item_description}}</td>
+                        <td>{{batchno}}</td>
+                        <td>{{quantity}}</td>
+                        <td>{{return_quantity}}</td>
+                        <td>{{expiry_date}}</td>
+                        <td class="numberFld">{{PD_patient_responsibility}}</td>
+                        <td class="numberFld">{{PD_patient_tax}}</td>
+                        {{!-- <td class="numberFld">{{PD_patient_payable}}</td> --}}
+                        <td class="numberFld">{{PD_company_responsibility}}</td>
+                        <td class="numberFld">{{PD_company_tax}}</td>
+                        {{!-- <td class="numberFld">{{PD_company_payable}}</td> --}}
+                        <td class="numberFld">{{PD_net_payable}}</td>
+                    </tr>
+                    {{/each }}
+                    <tr class="footerTotalDown">
+                        <td colspan="10" class="numberFld"> <span style="float: left;">Cashier:{{cashier_name}}</span>Total Amount</td>
+                        <td class="numberFld">{{net_amount}}</td>
+                    </tr>
+                    {{/each }}
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="11"></td>
+                        <td class="numberFld">{{net_total}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+
+
+
+
+
+
+
+    {{!-- <div class="print-body">
 
         <section>
             <table class="tableForData" cell-padding="0">
@@ -38,6 +106,5 @@
 
             </table>
         </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
+    </div> --}}
 </body>
