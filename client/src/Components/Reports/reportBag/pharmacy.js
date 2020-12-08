@@ -115,20 +115,6 @@ export default function Pharmacy({
           {
             className: "col-3 form-group",
             type: "dropdown",
-            name: "pay_type",
-            initialLoad: true,
-            isImp: false,
-            label: "Receipt Type",
-            link: {},
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: FORMAT_PAYTYPE,
-            },
-          },
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
             name: "cashier_id",
 
             label: "User/Employee",
@@ -149,6 +135,20 @@ export default function Pharmacy({
               data: [],
             },
           },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "pay_type",
+            initialLoad: true,
+            isImp: false,
+            label: "Receipt Type",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_PAYTYPE,
+            },
+          },
         ],
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
@@ -158,26 +158,6 @@ export default function Pharmacy({
         // template_name: "salesInvoiceListPharmacy",
         requireIframe: true,
         reportParameters: [
-          {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
           {
             className: "col-3 form-group mandatory",
             type: "dropdown",
@@ -212,6 +192,26 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
             },
           },
         ],
@@ -225,26 +225,6 @@ export default function Pharmacy({
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -277,6 +257,26 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
             },
           },
         ],
@@ -290,27 +290,6 @@ export default function Pharmacy({
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-
-          {
-            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -343,6 +322,26 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
             },
           },
         ],
@@ -644,6 +643,32 @@ export default function Pharmacy({
               },
             },
           },
+
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy",
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined,
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
           {
             className: "col-3 form-group mandatory",
             type: "dropdown",
@@ -675,32 +700,6 @@ export default function Pharmacy({
                     .format("YYYY-MM-DD"),
                 },
               ],
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
-          },
-
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
-            name: "item_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Item",
-
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy",
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined,
             },
             events: {
               onClear: (reportState, currentName) => {
@@ -759,28 +758,6 @@ export default function Pharmacy({
           },
           {
             className: "col-3 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            label: "From Date",
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            label: "To Date",
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -801,6 +778,28 @@ export default function Pharmacy({
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
               data: [],
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            label: "From Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            label: "To Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null,
             },
           },
           {
@@ -908,27 +907,6 @@ export default function Pharmacy({
 
           {
             className: "col-3 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-
-          {
-            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -952,6 +930,26 @@ export default function Pharmacy({
             },
           },
 
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
           {
             className: "col-3 form-group mandatory",
             type: "dropdown",
@@ -981,26 +979,6 @@ export default function Pharmacy({
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1064,14 +1042,6 @@ export default function Pharmacy({
               data: [],
             },
           },
-        ],
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "GP Statement - Date Wise",
-        reportName: "gpDatewisePharmacy",
-        requireIframe: true,
-        reportParameters: [
           {
             className: "col-3 form-group mandatory",
             type: "date",
@@ -1092,6 +1062,14 @@ export default function Pharmacy({
               minDate: null,
             },
           },
+        ],
+        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "GP Statement - Date Wise",
+        reportName: "gpDatewisePharmacy",
+        requireIframe: true,
+        reportParameters: [
           {
             className: "col-3 form-group",
             type: "dropdown",
@@ -1144,6 +1122,26 @@ export default function Pharmacy({
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
               data: [],
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
             },
           },
         ],
@@ -1276,27 +1274,6 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 mandatory  form-group",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-
-          {
-            className: "col-3 mandatory  form-group",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
             className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
@@ -1318,6 +1295,27 @@ export default function Pharmacy({
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
               data: [],
+            },
+          },
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
             },
           },
         ],
