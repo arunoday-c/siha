@@ -35,7 +35,7 @@
                             التأمين</label></td>
                     <td><label class="textEnLft">Policy/ Class</label>:<span
                             class="valueText">{{header.primary_policy_num}} / {{header.card_class}}</span><label
-                            class="textArRht">بوليصة/قاعة</label></td>
+                            class="textArRht">بوليصة / درجة التأمين</label></td>
                 </tr>
                 <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
@@ -48,10 +48,17 @@
                     </td>
                 </tr>
    <tr>
-                    <td><label class="textEnLft">Chief Complaint</label>:<span
+                    <td colspan="2"><label class="textEnLft">Chief Complaint</label>:<span
                             class="valueText">{{header.comment}}</span><label class="textArRht">الشكوى الرئيسية</label></td>
-                    <td><label class="textEnLft">ICD Code</label>:<span
+                    
+                </tr>
+
+   <tr>
+                     <td><label class="textEnLft">ICD Code</label>:<span
                             class="valueText">{{header.icd_code}}</span><label class="textArRht">ICD Code</label>
+                    </td>
+                    <td><label class="textEnLft">Diagnosis</label>:<span
+                            class="valueText">{{header.icd_description}}</span><label class="textArRht">التشخيص</label>
                     </td>
                 </tr>
             </table>
@@ -62,24 +69,17 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                    <tr>
-                        <th>SFAD Code<p>كود SFAD</p>
-                        </th>
-                        <th>Item Name<p>وصف السلعة</p>
-                        </th>
-                        <th>From Date<p>من التاريخ</p>
-                        </th>
-                        <th>Dosage<p>المجموع الصافي</p>
-                        </th>
-                        <th>Duration<p>المبلغ الإجمالي</p>
-                        </th>
-                        <th>Instruction<p>خصم</p>
-                        </th>
-                    </tr>
+                <tr>
+                    <th>SFAD Code<p>كود SFAD</p></th>
+                    <th>Item Name<p>اسم الدواء العلمي</p></th>
+                    <th>From Date<p>من التاريخ</p></th>
+                    <th>Dosage<p>الجرعة</p></th>
+                    <th>Duration<p>مدة العلاج</p></th>
+                    <th>Instruction<p>التعليمات</p></th>
+                </tr>
                 </thead>
                 <tbody>
                     {{#each detail}}
-
                     <tr>
                         <td class="txtFld" style="width: 60px;">{{sfda_code}}</td>
                         <td class="txtFld">{{item_description}}</td>
@@ -89,7 +89,6 @@
                         <td class="txtFld">{{instructions}}</td>
                     </tr>
                     {{/each}}
-
                 </tbody>
             </table>
         </section>
