@@ -15,7 +15,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          select PH.hims_f_pharmacy_pos_header_id,PH.pos_number, PH.pos_date,
+          select PH.hims_f_pharmacy_pos_header_id,PH.pos_number, PH.pos_date, EM.full_name as cashier_name,
           CASE WHEN PH.pos_customer_type='OP' THEN P.full_name else PH.patient_name END as patient_full_name,
           PH.patient_tax,PH.patient_payable,PH.company_tax,PH.company_payable,PH.net_amount,
           PD.item_id,ITM.item_code,ITM.item_description, PD.quantity,PD.expiry_date,PD.qtyhand,PD.quantity,PD.batchno,PD.insurance_yesno,
@@ -26,6 +26,8 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_pharmacy_pos_header PH on PD.pharmacy_pos_header_id = PH.hims_f_pharmacy_pos_header_id
           left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id
           inner join hims_d_item_master ITM on ITM.hims_d_item_master_id = PD.item_id
+          inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id = PH.created_by
+          inner join hims_d_employee EM on EM.hims_d_employee_id = USR.employee_id
           where PD.pharmacy_pos_header_id = PH.hims_f_pharmacy_pos_header_id and 
           PH.record_status ='A' and PH.location_id=? and PH.hospital_id=? and PH.cancelled='N' 
           and PH.posted='Y' and date(PH.pos_date) between date(?) and date(?);
@@ -47,10 +49,13 @@ const executePDF = function executePDFMethod(options) {
               //   .value()
               //   .toFixed(decimal_places);
 
-              const { pos_number, pos_date, net_amount } = _.head(dtl);
+              const { pos_number, pos_date, cashier_name, net_amount } = _.head(
+                dtl
+              );
               return {
                 service_type: key,
                 detailList: dtl,
+                cashier_name,
                 pos_number,
                 pos_date,
                 net_amount,

@@ -15,7 +15,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          select SRH.hims_f_pharmcy_sales_return_header_id,SRH.sales_return_number,SRH.sales_return_date,SRH.net_amount,
+          select SRH.hims_f_pharmcy_sales_return_header_id,SRH.sales_return_number,SRH.sales_return_date,SRH.net_amount, EM.full_name as cashier_name,
           PD.item_id,ITM.item_code,ITM.item_description, PD.expiry_date,PD.return_quantity,PD.quantity,PD.batchno,PD.insurance_yesno,
           PD.patient_responsibility as PD_patient_responsibility,PD.patient_tax as PD_patient_tax,PD.patient_payable as PD_patient_payable,
           PD.company_responsibility as PD_company_responsibility,PD.company_tax as PD_company_tax,PD.company_payable as PD_company_payable,
@@ -24,6 +24,8 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_pharmcy_sales_return_header SRH on PD.sales_return_header_id = SRH.hims_f_pharmcy_sales_return_header_id
           left join hims_f_patient P on SRH.patient_id = P.hims_d_patient_id
           inner join hims_d_item_master ITM on ITM.hims_d_item_master_id = PD.item_id
+          inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id = SRH.created_by
+          inner join hims_d_employee EM on EM.hims_d_employee_id = USR.employee_id
           where SRH.record_status='A' and SRH.location_id=? and SRH.hospital_id=? 
           and SRH.posted='Y' and date(SRH.sales_return_date) between date(?) and  date(?);
           `,
@@ -42,6 +44,7 @@ const executePDF = function executePDFMethod(options) {
               const {
                 sales_return_number,
                 sales_return_date,
+                cashier_name,
                 net_amount,
               } = _.head(dtl);
               return {
@@ -49,6 +52,7 @@ const executePDF = function executePDFMethod(options) {
                 detailList: dtl,
                 sales_return_number,
                 sales_return_date,
+                cashier_name,
                 net_amount,
               };
             })
@@ -58,7 +62,6 @@ const executePDF = function executePDFMethod(options) {
             _.sumBy(result, (s) => parseFloat(s.net_amount)),
             options.args.crypto
           );
-          console.log("result=======", result);
           resolve({ detail: result, net_total: net_total });
         })
         .catch((error) => {

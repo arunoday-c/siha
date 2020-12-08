@@ -27,7 +27,7 @@
                 <tbody>
                     {{#each detail}}
                     <tr>
-                        <td colspan="12" class="tableSubHdg">{{pos_number}} - {{pos_date}}</td>
+                        <td colspan="12" class="tableSubHdg">{{pos_number}} | {{pos_date}}</td>
                     </tr>
                     {{#each detailList}}
                     <tr>
@@ -47,7 +47,7 @@
                     </tr>
                     {{/each }}
                     <tr class="footerTotalDown">
-                        <td colspan="10" class="numberFld">Total Amount</td>
+                        <td colspan="10" class="numberFld"> <span style="float: left;">Cashier:{{cashier_name}}</span>Total Amount</td>
                         <td class="numberFld">{{net_amount}}</td>
                     </tr>
                     {{/each }}
