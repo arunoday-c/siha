@@ -3,12 +3,11 @@ const executePDF = function executePDFMethod(options) {
     try {
       const decimal_places = options.args.crypto.decimal_places;
       if (options.result.length > 0) {
-
         resolve({
           sub_total: parseFloat(options.result[0]["sub_total"]).toFixed(
             decimal_places
           ),
-          discount_amount: parseFloat(options.result[0]["discount_amount"]).toFixed(
+          discount_amount: parseFloat(options.result[0]["h_discount_amount"]).toFixed(
             decimal_places
           ),
           net_total: parseFloat(options.result[0]["net_total"]).toFixed(
