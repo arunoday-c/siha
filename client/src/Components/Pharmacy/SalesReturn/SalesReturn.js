@@ -88,6 +88,10 @@ class SalesReturn extends Component {
       });
     }
     getCashiersAndShiftMAP(this, this);
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("sales_return_number")) {
+      getCtrlCode(this, queryParams.get("sales_return_number"))
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -167,8 +171,8 @@ class SalesReturn extends Component {
                   <h6>
                     {this.state.sales_return_date
                       ? moment(this.state.sales_return_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -177,25 +181,25 @@ class SalesReturn extends Component {
             printArea={
               this.state.sales_return_number !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            generateReceipt(this, this);
-                          },
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
                         },
                       },
-                      // {
-                      //   label: "Print Receipt Small",
-                      //   events: {
-                      //     onClick: () => {
-                      //       generateReceiptSmall(this, this);
-                      //     },
-                      //   },
-                      // },
-                    ],
-                  }
+                    },
+                    // {
+                    //   label: "Print Receipt Small",
+                    //   events: {
+                    //     onClick: () => {
+                    //       generateReceiptSmall(this, this);
+                    //     },
+                    //   },
+                    // },
+                  ],
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -269,8 +273,8 @@ class SalesReturn extends Component {
                 {this.state.mode_of_pay === "1"
                   ? "Self"
                   : this.state.mode_of_pay === "2"
-                  ? "Insurance"
-                  : "-----------"}
+                    ? "Insurance"
+                    : "-----------"}
               </h6>
             </div>
           </div>

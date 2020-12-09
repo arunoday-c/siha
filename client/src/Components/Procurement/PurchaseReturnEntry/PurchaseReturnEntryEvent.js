@@ -1,7 +1,6 @@
 import {
   swalMessage,
-  algaehApiCall,
-  getCookie
+  algaehApiCall
 } from "../../../utils/algaehApiCall";
 import moment from "moment";
 // import Enumerable from "linq";

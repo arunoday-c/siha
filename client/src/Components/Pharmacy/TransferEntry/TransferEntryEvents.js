@@ -5,8 +5,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import TransferIOputs from "../../../Models/TransferEntry";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie,
+  swalMessage
 } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 import moment from "moment";

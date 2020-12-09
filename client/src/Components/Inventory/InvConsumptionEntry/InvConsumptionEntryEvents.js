@@ -2,8 +2,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ConsumptionIOputs from "../../../Models/InventoryConsumption";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie
+  swalMessage
 } from "../../../utils/algaehApiCall";
 
 export default function ConsumptionItemsEvents() {

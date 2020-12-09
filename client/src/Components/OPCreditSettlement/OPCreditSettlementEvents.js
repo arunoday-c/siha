@@ -2,8 +2,7 @@ import extend from "extend";
 import SettlementIOputs from "../../Models/OPCreditSettlement";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie,
+  swalMessage
 } from "../../utils/algaehApiCall";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import FrontDesk from "../../Search/FrontDesk.json";

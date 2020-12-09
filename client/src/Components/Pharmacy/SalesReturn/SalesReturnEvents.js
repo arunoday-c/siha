@@ -5,8 +5,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import SalesReturnputs from "../../../Models/SalesReturn";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie,
+  swalMessage
 } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 
