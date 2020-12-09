@@ -176,6 +176,7 @@ export function VisitDetails({
                                 disableHeader: true,
                                 treeDefaultExpandAll: true,
                                 onChange: (selected) => {
+                                  debugger
                                   if (selected) {
                                     setServiceInfo(selected);
                                   } else {
@@ -217,12 +218,12 @@ export function VisitDetails({
                                       type="checkbox"
                                       name="existing_plan"
                                       value="Y"
-                                      // checked={this.state.checked_existing_plan}
-                                      // onChange={radioChange.bind(
-                                      //   this,
-                                      //   this,
-                                      //   context
-                                      // )}
+                                    // checked={this.state.checked_existing_plan}
+                                    // onChange={radioChange.bind(
+                                    //   this,
+                                    //   this,
+                                    //   context
+                                    // )}
                                     />
                                     <span>{fieldNameFn("Yes", "نعم")}</span>
                                   </label>
@@ -275,12 +276,12 @@ export function VisitDetails({
                                       type="checkbox"
                                       name="eligible"
                                       value="Y"
-                                      //   checked={this.state.checked_eligible}
-                                      //   onChange={radioChange.bind(
-                                      //     this,
-                                      //     this,
-                                      //     context
-                                      //   )}
+                                    //   checked={this.state.checked_eligible}
+                                    //   onChange={radioChange.bind(
+                                    //     this,
+                                    //     this,
+                                    //     context
+                                    //   )}
                                     />
                                     <span>{fieldNameFn("Yes", "نعم")}</span>
                                   </label>

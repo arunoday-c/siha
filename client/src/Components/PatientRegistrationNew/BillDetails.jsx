@@ -33,6 +33,7 @@ const getBillDetails = async (
     consultation,
     promo_code,
     discount_amout,
+    sub_department_id
   }
 ) => {
   let zeroBill = false,
@@ -65,6 +66,7 @@ const getBillDetails = async (
           default_nationality == nationality_id ? local_vat_applicable : "Y",
         promo_code: promo_code || null,
         discount_amout: discount_amout,
+        sub_department_id
         // discount_percentage: discount_percentage,
       },
     ],
@@ -183,6 +185,7 @@ export function BillDetails({
         consultation: consultationInfo?.consultation,
         promo_code: promoCode,
         discount_amout: discount_amout,
+        sub_department_id
         // discount_percentage: discount_percentage,
       },
     ],
@@ -575,10 +578,10 @@ export function BillDetails({
                           Discount Applied Successfully.
                         </span>
                       ) : (
-                        <span class="badge badge-danger animated flash slow infinite">
-                          Discount not yet applied
-                        </span>
-                      )}
+                          <span class="badge badge-danger animated flash slow infinite">
+                            Discount not yet applied
+                          </span>
+                        )}
                     </p>
                   ) : null}
                 </div>
