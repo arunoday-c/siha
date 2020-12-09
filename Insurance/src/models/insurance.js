@@ -1005,30 +1005,27 @@ export default {
     try {
       let input = req.query;
 
-      let val_inputs = [];
+      console.log("input === ", input)
 
       let qryStr = "";
       if (input.insurance_id > 0) {
-        qryStr += " and insurance_id=? ";
-        val_inputs.push(input.insurance_id);
+        qryStr += ` and insurance_id=${input.insurance_id}`;
       }
 
       if (input.services_id > 0) {
-        qryStr += " and services_id=? ";
-        val_inputs.push(input.services_id);
+        qryStr += ` and services_id=${input.services_id}`;
       }
 
       if (input.service_type_id > 0) {
         qryStr += ` and service_type_id=${input.service_type_id} `;
       }
 
+      console.log("qryStr === ", qryStr)
       _mysql
         .executeQuery({
           query:
             "select * from hims_d_services_insurance where record_status='A'" +
             qryStr,
-          values: [val_inputs],
-
           printQuery: true,
         })
         .then((result) => {

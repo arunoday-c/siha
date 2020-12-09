@@ -2467,7 +2467,7 @@ export default {
             if (input[0].sub_department_id != null) {
               strQuery += `select department_type from hims_d_sub_department where hims_d_sub_department_id=${input[0].sub_department_id}`
             } else {
-              strQuery = `select 1=1`
+              strQuery += `select 1=1`
             }
           } else if (promo_code != null) {
             strQuery = `select S.hims_d_services_id, PD.avail_type, offer_value, valid_to_from, valid_to_date, offer_code from hims_d_promotion P 

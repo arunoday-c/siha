@@ -1021,6 +1021,17 @@ export default {
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
           ) {
+            console.log("inputParam.receiptdetails", inputParam.receiptdetails)
+            let bank_card_id = inputParam.receiptdetails.find(f =>
+              f.pay_type == "CD"
+            )
+
+            console.log("bank_card_id === ", bank_card_id)
+            let strQuery = "select 1=1"
+            if (bank_card_id !== undefined) {
+              strQuery = "select * from hims_d_bank_card where hims_d_bank_card_id=" + bank_card_id.bank_card_id
+            }
+
             _mysql
               .executeQuery({
                 query:
@@ -1030,7 +1041,7 @@ export default {
                   SELECT location_description, head_id, child_id, hospital_id FROM hims_d_pharmacy_location \
                   where hims_d_pharmacy_location_id=?;\
                   SELECT hims_d_sub_department_id from hims_d_sub_department where department_type='PH';\
-                  SELECT cost_center_type, cost_center_required from finance_options limit 1;",
+                  SELECT cost_center_type, cost_center_required from finance_options limit 1;" + strQuery,
                 values: [_all_service_id, _all_item_id, inputParam.location_id],
                 printQuery: true,
               })
@@ -1053,10 +1064,18 @@ export default {
                 const pos_criedt_settl_acc = result[0].find(
                   (f) => f.account === "PHAR_REC"
                 );
+                const pos_ctrl_acc = result[0].find(
+                  (f) => f.account === "POS_CTRL"
+                );
+
+                const input_tax_acc = result[0].find((f) => {
+                  return f.account == "INPUT_TAX";
+                });
 
                 const income_acc = result[1];
                 const item_waited_avg_cost = result[2];
                 const location_acc = result[3];
+                const card_data = result[6];
 
                 let sub_department_id = null;
                 if (inputParam.pos_customer_type === "OP") {
@@ -1169,6 +1188,24 @@ export default {
                       });
                     }
 
+                    console.log("inputParam", inputParam.insured);
+                    console.log("inputParam", inputParam.company_payble);
+                    if (
+                      inputParam.insured == "Y" &&
+                      parseFloat(inputParam.company_payble) > 0
+                    ) {
+                      console.log("Insurance")
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: pos_ctrl_acc.head_id,
+                        child_id: pos_ctrl_acc.child_id,
+                        debit_amount: inputParam.company_payble,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id,
+                      });
+                    }
+
                     for (let i = 0; i < inputParam.receiptdetails.length; i++) {
                       if (inputParam.receiptdetails[i].pay_type === "CA") {
                         //POS Cash in Hand
@@ -1184,27 +1221,55 @@ export default {
                       }
                       if (inputParam.receiptdetails[i].pay_type === "CD") {
                         //POS Card
+
+                        console.log("service_charge", card_data)
+                        let service_charge = (parseFloat(inputParam.receiptdetails[i].amount) * parseFloat(card_data[0].service_charge)) / 100
+                        let vat_charge = (parseFloat(service_charge) * parseFloat(card_data[0].vat_percentage)) / 100
+
+                        console.log("service_charge", service_charge)
+                        console.log("vat_charge", vat_charge)
+                        const final_amount = parseFloat(inputParam.receiptdetails[i].amount) - parseFloat(service_charge) - parseFloat(vat_charge)
                         insertSubDetail.push({
                           payment_date: new Date(),
                           head_id: card_settlement_acc.head_id,
                           child_id: card_settlement_acc.child_id,
-                          debit_amount: inputParam.receiptdetails[i].amount,
+                          debit_amount: final_amount,
                           payment_type: "DR",
                           credit_amount: 0,
                           hospital_id: req.userIdentity.hospital_id,
                         });
-                      }
-                      if (inputParam.receiptdetails[i].pay_type === "CH") {
-                        //POS Cheque To be done
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: cash_in_acc.head_id,
-                          child_id: cash_in_acc.child_id,
-                          debit_amount: inputParam.receiptdetails[i].amount,
-                          payment_type: "DR",
-                          credit_amount: 0,
-                          hospital_id: req.userIdentity.hospital_id,
-                        });
+                        if (service_charge > 0) {
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: card_data[0].head_id,
+                            child_id: card_data[0].child_id,
+                            debit_amount: service_charge,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: req.userIdentity.hospital_id,
+                          });
+                        }
+                        if (vat_charge > 0) {
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: input_tax_acc.head_id,
+                            child_id: input_tax_acc.child_id,
+                            debit_amount: vat_charge,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: req.userIdentity.hospital_id,
+                          });
+                        }
+
+                        // insertSubDetail.push({
+                        //   payment_date: new Date(),
+                        //   head_id: card_settlement_acc.head_id,
+                        //   child_id: card_settlement_acc.child_id,
+                        //   debit_amount: inputParam.receiptdetails[i].amount,
+                        //   payment_type: "DR",
+                        //   credit_amount: 0,
+                        //   hospital_id: req.userIdentity.hospital_id,
+                        // });
                       }
                     }
 

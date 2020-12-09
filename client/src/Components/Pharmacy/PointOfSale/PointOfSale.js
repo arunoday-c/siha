@@ -658,6 +658,7 @@ function mapStateToProps(state) {
     posentry: state.posentry,
     existinsurance: state.existinsurance,
     nationalities: state.nationalities,
+    hospitalservices: state.hospitalservices
   };
 }
 
