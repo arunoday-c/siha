@@ -15,20 +15,6 @@ const executePDF = function executePDFMethod(options) {
       });
       console.log(params);
 
-      //  utilities.logger().log("input: ", input);
-
-      // let strQuery = "";
-
-      // if (input.department_id > 0) {
-      //   strQuery += ` and SD.department_id=${input.department_id}`;
-      // }
-      // if (input.analyte_report_group > 0) {
-      //   strQuery += ` and E.analyte_report_group=${input.analyte_report_group}`;
-      // }
-      // if (input.employee_group_id > 0) {
-      //   strQuery += ` and E.employee_group_id=${input.employee_group_id}`;
-      // }
-
       options.mysql
         .executeQuery({
           query: `
@@ -80,7 +66,6 @@ const executePDF = function executePDFMethod(options) {
               .value();
             //utilities.logger().log("specimenWise:", specimenWise);
             const outputArray = [];
-
             for (let i = 0; i < specimenWise.length; i++) {
               const groupWise = _.chain(specimenWise[i])
                 .groupBy((g) => g.analyte_report_group)
@@ -112,16 +97,17 @@ const executePDF = function executePDFMethod(options) {
               // no_employees: result.length,
               result: outputArray,
             });
+            console.log(result);
           } else {
             resolve({
               header: header,
               // no_employees: result.length,
               result: result,
             });
+            console.log(result);
           }
         })
         .catch((e) => {
-          console.log("e:", e);
           options.mysql.releaseConnection();
           reject(e);
         });
