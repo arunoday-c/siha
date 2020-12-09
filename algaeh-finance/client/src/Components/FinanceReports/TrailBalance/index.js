@@ -14,7 +14,9 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   const [loading, setLoading] = useState(false);
   const [filter] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
-
+  const [arabic, setArabic] = useState(false);
+  const [nonZero, setNonZero] = useState(false);
+  const [showLedgerCode, setLedgerCode] = useState(false);
   // const createPrintObject = useRef(undefined);
 
   // useEffect(() => {
@@ -44,12 +46,13 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [type, dates]);
 
-  async function getData(ACCOUNTS, drillDownLevel, dates) {
+  async function getData(ACCOUNTS, drillDownLevel, dates, non_zero) {
     const input = {
       hospital_id: finOptions.default_branch_id,
       cost_center_id: finOptions.default_cost_center_id,
-      from_date: dates[0],
-      to_date: dates[1],
+      from_date: moment(dates[0]).format("YYYY-MM-DD"),
+      to_date: moment(dates[1]).format("YYYY-MM-DD"),
+      non_zero,
       ACCOUNTS,
       drillDownLevel,
     };
@@ -95,6 +98,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                       data: "LEVELS",
                       initalStates: "2",
                     },
+
                     {
                       className: "col-4 form-group",
                       type: "DH|RANGE",
@@ -117,15 +121,41 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                         }
                       },
                     },
+                    {
+                      className: "col formgroup finCusCheckBox",
+                      type: "CH",
+                      data: "Arabic",
+                    },
+                    {
+                      className: "col formgroup finCusCheckBox",
+                      type: "CH",
+                      data: "Non Zero amount",
+                    },
+                    {
+                      className: "col formgroup finCusCheckBox",
+                      type: "CH",
+                      data: "Show Ledger Code",
+                    },
                   ],
                   []
                 ),
               ]}
               callBack={(inputs, cb) => {
-                const { ACCOUNTS, LEVELS, RANGE } = inputs;
+                const {
+                  ACCOUNTS,
+                  LEVELS,
+                  RANGE,
+                  NONZEROAMOUNT,
+                  ARABIC,
+                  SHOWLEDGERCODE,
+                } = inputs;
+                console.log("inputs", inputs);
                 setSelectedDates(RANGE);
                 setLoading(true);
-                getData(ACCOUNTS, LEVELS, RANGE)
+                setNonZero(NONZEROAMOUNT === "Y" ? true : false);
+                setArabic(ARABIC === "Y" ? true : false);
+                setLedgerCode(SHOWLEDGERCODE === "Y" ? true : false);
+                getData(ACCOUNTS, LEVELS, RANGE, NONZEROAMOUNT)
                   .then(() => {
                     setLoading(false);
                     cb();
@@ -141,6 +171,8 @@ export default function TrailBalance({ layout, dates, finOptions }) {
             data={data}
             layout={layout}
             dates={selectedDates}
+            showArabic={arabic}
+            showLedgerCode={showLedgerCode}
             // createPrintObject={createPrintObject}
           />
         </>

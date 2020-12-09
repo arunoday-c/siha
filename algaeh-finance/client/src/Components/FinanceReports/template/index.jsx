@@ -12,6 +12,7 @@ export default function ({ data, generateReport }) {
   async function onGeneratingReport(input) {
     const { voucher_no, voucher_type, finance_voucher_header_id } = input;
     setLoading(true);
+
     await generateReport({
       voucher_no,
       voucher_type,

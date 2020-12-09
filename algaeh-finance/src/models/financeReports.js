@@ -352,6 +352,7 @@ export default {
     let option = {
       from_date: moment(req.query.from_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
       to_date: moment(req.query.to_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
+      non_zero: req.query.non_zero,
     };
     const level = req.query.ACCOUNTS;
     const drillDownLevel = req.query.drillDownLevel;
@@ -421,15 +422,15 @@ export default {
       option["_mysql"] = _mysql;
 
       if (level === "ALL") {
-        getTrialBalanceFunc(decimal_places, 1, option)
+        getTrialBalanceFunc(decimal_places, 1, option, next)
           .then((asset) => {
-            getTrialBalanceFunc(decimal_places, 2, option)
+            getTrialBalanceFunc(decimal_places, 2, option, next)
               .then((liability) => {
-                getTrialBalanceFunc(decimal_places, 3, option)
+                getTrialBalanceFunc(decimal_places, 3, option, next)
                   .then((capital) => {
-                    getTrialBalanceFunc(decimal_places, 4, option)
+                    getTrialBalanceFunc(decimal_places, 4, option, next)
                       .then((income) => {
-                        getTrialBalanceFunc(decimal_places, 5, option)
+                        getTrialBalanceFunc(decimal_places, 5, option, next)
                           .then((expense) => {
                             _mysql.releaseConnection();
 
@@ -465,9 +466,10 @@ export default {
           });
       } else {
         const levelInteger = parseInt(level, 10);
-        getTrialBalanceFunc(decimal_places, levelInteger, option)
+        getTrialBalanceFunc(decimal_places, levelInteger, option, next)
           .then((accountResult) => {
             _mysql.releaseConnection();
+
             let objToplot = {};
             switch (level) {
               case "1":
@@ -1346,65 +1348,69 @@ function getAccountHeadsForReport(
 
 //created by :IRFAN to calculate the amount of account heads
 function calcAmount(account_heads, levels, decimal_places) {
-  try {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
+    try {
       const max_account_level = parseInt(levels[0]["account_level"]);
 
       let levels_group = _.chain(account_heads)
         .groupBy((g) => g.account_level)
         .value();
+      if (levels_group[max_account_level]) {
+        levels_group[max_account_level].map((m) => {
+          m["total_debit_amount"] = m["debit_amount"];
+          m["total_credit_amount"] = m["credit_amount"];
 
-      levels_group[max_account_level].map((m) => {
-        m["total_debit_amount"] = m["debit_amount"];
-        m["total_credit_amount"] = m["credit_amount"];
-
-        m["cred_minus_deb"] = parseFloat(
-          parseFloat(m["credit_amount"]) - parseFloat(m["debit_amount"])
-        ).toFixed(decimal_places);
-        m["deb_minus_cred"] = parseFloat(
-          parseFloat(m["debit_amount"]) - parseFloat(m["credit_amount"])
-        ).toFixed(decimal_places);
-        return m;
-      });
+          m["cred_minus_deb"] = parseFloat(
+            parseFloat(m["credit_amount"]) - parseFloat(m["debit_amount"])
+          ).toFixed(decimal_places);
+          m["deb_minus_cred"] = parseFloat(
+            parseFloat(m["debit_amount"]) - parseFloat(m["credit_amount"])
+          ).toFixed(decimal_places);
+          return m;
+        });
+      }
 
       for (let i = max_account_level - 1; i >= 0; i--) {
         // for (let k = 0; k < levels_group[i].length; k++) {
-        levels_group[i].map((item) => {
-          let immediate_childs = levels_group[i + 1].filter((child) => {
-            if (item.finance_account_head_id == child.parent_acc_id) {
-              return item;
-            }
+        if (levels_group[i]) {
+          levels_group[i].map((item) => {
+            let immediate_childs = levels_group[i + 1].filter((child) => {
+              if (item.finance_account_head_id == child.parent_acc_id) {
+                return item;
+              }
+            });
+
+            const total_debit_amount = _.chain(immediate_childs)
+              .sumBy((s) => parseFloat(s.total_debit_amount))
+              .value()
+              .toFixed(decimal_places);
+
+            const total_credit_amount = _.chain(immediate_childs)
+              .sumBy((s) => parseFloat(s.total_credit_amount))
+              .value()
+              .toFixed(decimal_places);
+
+            item["total_debit_amount"] = parseFloat(
+              parseFloat(item["debit_amount"]) + parseFloat(total_debit_amount)
+            ).toFixed(decimal_places);
+
+            item["total_credit_amount"] = parseFloat(
+              parseFloat(item["credit_amount"]) +
+                parseFloat(total_credit_amount)
+            ).toFixed(decimal_places);
+
+            item["cred_minus_deb"] = parseFloat(
+              parseFloat(item["total_credit_amount"]) -
+                parseFloat(item["total_debit_amount"])
+            ).toFixed(decimal_places);
+            item["deb_minus_cred"] = parseFloat(
+              parseFloat(item["total_debit_amount"]) -
+                parseFloat(item["total_credit_amount"])
+            ).toFixed(decimal_places);
+
+            return item;
           });
-
-          const total_debit_amount = _.chain(immediate_childs)
-            .sumBy((s) => parseFloat(s.total_debit_amount))
-            .value()
-            .toFixed(decimal_places);
-
-          const total_credit_amount = _.chain(immediate_childs)
-            .sumBy((s) => parseFloat(s.total_credit_amount))
-            .value()
-            .toFixed(decimal_places);
-
-          item["total_debit_amount"] = parseFloat(
-            parseFloat(item["debit_amount"]) + parseFloat(total_debit_amount)
-          ).toFixed(decimal_places);
-
-          item["total_credit_amount"] = parseFloat(
-            parseFloat(item["credit_amount"]) + parseFloat(total_credit_amount)
-          ).toFixed(decimal_places);
-
-          item["cred_minus_deb"] = parseFloat(
-            parseFloat(item["total_credit_amount"]) -
-              parseFloat(item["total_debit_amount"])
-          ).toFixed(decimal_places);
-          item["deb_minus_cred"] = parseFloat(
-            parseFloat(item["total_debit_amount"]) -
-              parseFloat(item["total_credit_amount"])
-          ).toFixed(decimal_places);
-
-          return item;
-        });
+        }
         // }
       }
       const final_res = [];
@@ -1412,14 +1418,16 @@ function calcAmount(account_heads, levels, decimal_places) {
       let len = Object.keys(levels_group).length;
 
       for (let i = 0; i < len; i++) {
-        final_res.push(...levels_group[i]);
+        if (levels_group[i]) {
+          final_res.push(...levels_group[i]);
+        }
       }
       resolve(final_res);
-    });
-  } catch (e) {
-    console.log("am55:", e);
-    reject(e);
-  }
+    } catch (e) {
+      console.log("am55:", e);
+      reject(e);
+    }
+  });
 }
 //created by :IRFAN to calculate the amount of account heads
 function calcAmountForTrialBalance(
@@ -2543,11 +2551,16 @@ function getLedgersForProfitAndLossMonthWise(
 }
 
 //created by irfan:
-function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
+function getTrialBalanceFunc(
+  decimal_places,
+  finance_account_head_id,
+  options,
+  next
+) {
   //const utilities = new algaehUtilities();
 
   const _mysql = options._mysql;
-
+  const non_zero = options.non_zero;
   return new Promise((resolve, reject) => {
     if (finance_account_head_id > 0 && finance_account_head_id < 6) {
       const default_total = parseFloat(0).toFixed(decimal_places);
@@ -2562,12 +2575,17 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
         qryStr = " and  VD.child_id <> 1 ";
         str = " and  finance_account_child_id <> 1 ";
       }
+      //VD.payment_date < ?
+      const nonZeroQuery = non_zero
+        ? " and (debit_amount !=0 or credit_amount !=0) "
+        : "";
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,
            account_parent,account_level, parent_acc_id,root_id,
           finance_account_child_id,concat(child_name,' / ',coalesce(ledger_code,'')) as child_name,head_id, 
-          coalesce(H.arabic_account_name,'') as arabic_account_name, coalesce(C.arabic_child_name,'') as arabic_child_name
+          coalesce(H.arabic_account_name,'') as arabic_account_name, coalesce(C.arabic_child_name,'') as arabic_child_name,
+          H.group_code as header_ledger_code,C.ledger_code as child_ledger_code
           from finance_account_head H left join finance_account_child C on C.head_id=H.finance_account_head_id ${str} where root_id=?  ; 
 
           select C.head_id,finance_account_child_id as child_id
@@ -2577,13 +2595,13 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
-          and VD.payment_date < ? where H.root_id=? group by C.finance_account_child_id;
+          and date(VD.payment_date) between date(?) and date(?)  where H.root_id=?  group by C.finance_account_child_id;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and VD.payment_date < ? where H.root_id=? group by H.finance_account_head_id   ; 
+          and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by H.finance_account_head_id   ; 
 
           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -2592,13 +2610,13 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
-          and VD.payment_date between ? and ? where H.root_id=? group by C.finance_account_child_id;
+          and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and  VD.payment_date between ? and ? where H.root_id=? group by H.finance_account_head_id   ; 
+          and  date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by H.finance_account_head_id   ; 
 
           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -2607,21 +2625,23 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
-          and VD.payment_date <= ? where H.root_id=? group by C.finance_account_child_id;
+          and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and VD.payment_date <= ? where H.root_id=? group by H.finance_account_head_id   ;
+          and date(VD.payment_date) between date(?) and date(?)  where H.root_id=?  group by H.finance_account_head_id   ;
 
           select max(account_level) as account_level from finance_account_head where root_id=?;  `,
 
           values: [
             finance_account_head_id,
             options.from_date,
+            options.to_date,
             finance_account_head_id,
             options.from_date,
+            options.to_date,
             finance_account_head_id,
             options.from_date,
             options.to_date,
@@ -2629,8 +2649,10 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
             options.from_date,
             options.to_date,
             finance_account_head_id,
+            options.from_date,
             options.to_date,
             finance_account_head_id,
+            options.from_date,
             options.to_date,
             finance_account_head_id,
             finance_account_head_id,
@@ -2667,7 +2689,8 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
                         trans_symbol,
                         default_total,
                         decimal_places,
-                        options.drillDownLevel
+                        options.drillDownLevel,
+                        non_zero
                       );
                       resolve(outputArray[0]);
                     })
@@ -2711,14 +2734,14 @@ function createHierarchyTransactionTB(
   trans_symbol,
   default_total,
   decimal_places,
-  drillDownLevel
+  drillDownLevel,
+  nonZeroQuery
 ) {
   try {
     // const onlyChilds = [];
     //const utilities = new algaehUtilities();
     let roots = [],
       children = {};
-
     const _drillDownLevel =
       typeof drillDownLevel === "string" && drillDownLevel !== undefined
         ? parseInt(drillDownLevel, 10)
@@ -2873,19 +2896,42 @@ function createHierarchyTransactionTB(
         ///END calculating transaction amount between  from_date  and to_date-----
 
         //END---calulating Amount
-        child.push({
-          finance_account_child_id: item["finance_account_child_id"],
-
-          tr_debit_amount: tr_debit_amount,
-          tr_credit_amount: tr_credit_amount,
-          cb_amount: cb_amount,
-          op_amount: op_amount,
-          title: item.child_name,
-          label: item.child_name,
-          head_id: item["head_id"],
-          arabic_name: item.arabic_child_name,
-          leafnode: "Y",
-        });
+        if (nonZeroQuery === "Y") {
+          if (
+            parseFloat(cb_amount) !== 0 ||
+            parseFloat(op_amount) !== 0 ||
+            parseFloat(tr_credit_amount) !== 0 ||
+            parseFloat(tr_debit_amount)
+          ) {
+            child.push({
+              finance_account_child_id: item["finance_account_child_id"],
+              tr_debit_amount: tr_debit_amount,
+              tr_credit_amount: tr_credit_amount,
+              cb_amount: cb_amount,
+              op_amount: op_amount,
+              title: item.child_name,
+              label: item.child_name,
+              ledger_code: item.child_ledger_code,
+              head_id: item["head_id"],
+              arabic_name: item.arabic_child_name,
+              leafnode: "Y",
+            });
+          }
+        } else {
+          child.push({
+            finance_account_child_id: item["finance_account_child_id"],
+            ledger_code: item.child_ledger_code,
+            tr_debit_amount: tr_debit_amount,
+            tr_credit_amount: tr_credit_amount,
+            cb_amount: cb_amount,
+            op_amount: op_amount,
+            title: item.child_name,
+            label: item.child_name,
+            head_id: item["head_id"],
+            arabic_name: item.arabic_child_name,
+            leafnode: "Y",
+          });
+        }
 
         //if children array doesnt contain this non-leaf node then push
         const data = target.find((val) => {
@@ -3015,20 +3061,42 @@ function createHierarchyTransactionTB(
             tr_credit_amount = TR_BALANCE.total_credit_amount;
           }
           ///END calculating transaction amount between  from_date  and to_date-----
+          if (nonZeroQuery === "Y") {
+            if (
+              parseFloat(cb_amount) !== 0 ||
+              parseFloat(op_amount) !== 0 ||
+              parseFloat(tr_credit_amount) !== 0 ||
+              parseFloat(tr_debit_amount)
+            ) {
+              target.push({
+                ...item,
 
-          target.push({
-            ...item,
+                tr_debit_amount: tr_debit_amount,
+                tr_credit_amount: tr_credit_amount,
+                cb_amount: cb_amount,
+                op_amount: op_amount,
+                title: item.account_name,
+                label: item.account_name,
+                arabic_name: item.arabic_account_name,
+                ledger_code: item.header_ledger_code,
+                leafnode: "N",
+              });
+            }
+          } else {
+            target.push({
+              ...item,
+              ledger_code: item.header_ledger_code,
+              tr_debit_amount: tr_debit_amount,
+              tr_credit_amount: tr_credit_amount,
+              cb_amount: cb_amount,
+              op_amount: op_amount,
+              title: item.account_name,
+              label: item.account_name,
+              arabic_name: item.arabic_account_name,
 
-            tr_debit_amount: tr_debit_amount,
-            tr_credit_amount: tr_credit_amount,
-            cb_amount: cb_amount,
-            op_amount: op_amount,
-            title: item.account_name,
-            label: item.account_name,
-            arabic_name: item.arabic_account_name,
-
-            leafnode: "N",
-          });
+              leafnode: "N",
+            });
+          }
         }
       } else {
         //ST calculating opening balance of from date-----
@@ -3145,20 +3213,42 @@ function createHierarchyTransactionTB(
           tr_credit_amount = TR_BALANCE.total_credit_amount;
         }
         ///END calculating transaction amount between  from_date  and to_date-----
+        if (nonZeroQuery === "Y") {
+          if (
+            parseFloat(cb_amount) !== 0 ||
+            parseFloat(op_amount) !== 0 ||
+            parseFloat(tr_credit_amount) !== 0 ||
+            parseFloat(tr_debit_amount)
+          ) {
+            target.push({
+              ...item,
+              ledger_code: item.header_ledger_code,
+              tr_debit_amount: tr_debit_amount,
+              tr_credit_amount: tr_credit_amount,
+              cb_amount: cb_amount,
+              op_amount: op_amount,
+              title: item.account_name,
+              label: item.account_name,
+              arabic_name: item.arabic_account_name,
 
-        target.push({
-          ...item,
+              leafnode: "N",
+            });
+          }
+        } else {
+          target.push({
+            ...item,
+            ledger_code: item.header_ledger_code,
+            tr_debit_amount: tr_debit_amount,
+            tr_credit_amount: tr_credit_amount,
+            cb_amount: cb_amount,
+            op_amount: op_amount,
+            title: item.account_name,
+            label: item.account_name,
+            arabic_name: item.arabic_account_name,
 
-          tr_debit_amount: tr_debit_amount,
-          tr_credit_amount: tr_credit_amount,
-          cb_amount: cb_amount,
-          op_amount: op_amount,
-          title: item.account_name,
-          label: item.account_name,
-          arabic_name: item.arabic_account_name,
-
-          leafnode: "N",
-        });
+            leafnode: "N",
+          });
+        }
       }
     }
 

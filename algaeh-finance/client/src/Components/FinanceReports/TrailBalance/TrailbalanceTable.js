@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PrintLayout from "../printlayout";
 import DrillDown from "../drillDown";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
@@ -8,11 +8,167 @@ export default function TrailBalaceReport({
   nonZero = true,
   layout,
   dates,
+  showArabic,
+  showLedgerCode,
   // createPrintObject,
 }) {
   const { asset, expense, liability, capital, income } = data;
   const [showDrillDown, setShowDrillDown] = useState(false);
   const [row, setRow] = useState(undefined);
+  const [columns, setColumns] = useState([]);
+  useEffect(() => {
+    if (showLedgerCode) {
+      setColumns([
+        {
+          fieldName: "ledger_code",
+          label: "Ledger Code",
+          filterable: true,
+          freezable: true,
+        },
+        {
+          fieldName: showArabic ? "arabic_name" : "label",
+          label: "Paticulars",
+          filterable: true,
+          freezable: true,
+        },
+
+        {
+          fieldName: "op_amount",
+          label: "Opening Balance",
+          displayTemplate: (row) => {
+            const opamt = String(row["op_amount"]).replace(/[^0-9./]+/g, "");
+
+            if (!isNaN(opamt)) {
+              return (
+                getAmountFormart(parseFloat(opamt), { appendSymbol: false }) +
+                " " +
+                String(row["op_amount"]).replace(/[^a-zA-Z]+/g, "")
+              );
+            }
+            return row["op_amount"];
+          },
+        },
+        {
+          fieldName: "tr_debit_amount",
+          label: "Transactions Debit",
+          displayTemplate: (row) => {
+            return getAmountFormart(row["tr_debit_amount"], {
+              appendSymbol: false,
+            });
+          },
+        },
+        {
+          fieldName: "tr_credit_amount",
+          label: "Transaction Credit",
+          displayTemplate: (row) => {
+            return getAmountFormart(row["tr_credit_amount"], {
+              appendSymbol: false,
+            });
+          },
+        },
+        {
+          fieldName: "cb_amount",
+          label: "Closing Balance",
+          displayTemplate: (row) => {
+            const opamt = String(row["cb_amount"]).replace(/[^0-9./]+/g, "");
+
+            if (!isNaN(opamt) && row.leafnode === "Y") {
+              return (
+                <a
+                  className="underLine"
+                  href="void(0);"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log("row", row);
+                    OpenDrillDown(row);
+                  }}
+                >
+                  {getAmountFormart(parseFloat(opamt), {
+                    appendSymbol: false,
+                  }) +
+                    " " +
+                    String(row["cb_amount"]).replace(/[^a-zA-Z]+/g, "")}
+                </a>
+              );
+            }
+            return row["cb_amount"];
+          },
+        },
+      ]);
+    } else {
+      setColumns([
+        {
+          fieldName: showArabic ? "arabic_name" : "label",
+          label: "Paticulars",
+          filterable: true,
+          freezable: true,
+        },
+
+        {
+          fieldName: "op_amount",
+          label: "Opening Balance",
+          displayTemplate: (row) => {
+            const opamt = String(row["op_amount"]).replace(/[^0-9./]+/g, "");
+
+            if (!isNaN(opamt)) {
+              return (
+                getAmountFormart(parseFloat(opamt), { appendSymbol: false }) +
+                " " +
+                String(row["op_amount"]).replace(/[^a-zA-Z]+/g, "")
+              );
+            }
+            return row["op_amount"];
+          },
+        },
+        {
+          fieldName: "tr_debit_amount",
+          label: "Transactions Debit",
+          displayTemplate: (row) => {
+            return getAmountFormart(row["tr_debit_amount"], {
+              appendSymbol: false,
+            });
+          },
+        },
+        {
+          fieldName: "tr_credit_amount",
+          label: "Transaction Credit",
+          displayTemplate: (row) => {
+            return getAmountFormart(row["tr_credit_amount"], {
+              appendSymbol: false,
+            });
+          },
+        },
+        {
+          fieldName: "cb_amount",
+          label: "Closing Balance",
+          displayTemplate: (row) => {
+            const opamt = String(row["cb_amount"]).replace(/[^0-9./]+/g, "");
+
+            if (!isNaN(opamt) && row.leafnode === "Y") {
+              return (
+                <a
+                  className="underLine"
+                  href="void(0);"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log("row", row);
+                    OpenDrillDown(row);
+                  }}
+                >
+                  {getAmountFormart(parseFloat(opamt), {
+                    appendSymbol: false,
+                  }) +
+                    " " +
+                    String(row["cb_amount"]).replace(/[^a-zA-Z]+/g, "")}
+                </a>
+              );
+            }
+            return row["cb_amount"];
+          },
+        },
+      ]);
+    }
+  }, [showLedgerCode, showArabic]);
   let accounts = [];
   if (asset) {
     accounts.push(asset);
@@ -36,7 +192,9 @@ export default function TrailBalaceReport({
   function OnCloseDrillDown() {
     setShowDrillDown(false);
   }
-
+  const _ledger = showLedgerCode
+    ? { fieldName: "ledger_code", label: "Ledger Code" }
+    : null;
   return (
     <>
       <DrillDown
@@ -48,77 +206,8 @@ export default function TrailBalaceReport({
 
       <PrintLayout
         title="Trail Balance"
-        columns={[
-          {
-            fieldName: "label",
-            label: "Paticulars",
-            filterable: true,
-            freezable: true,
-          },
-          { fieldName: "arabic_name", label: "Arabic Name" },
-          {
-            fieldName: "op_amount",
-            label: "Opening Balance",
-            displayTemplate: (row) => {
-              const opamt = String(row["op_amount"]).replace(/[^0-9]+/g, "");
-
-              if (!isNaN(opamt)) {
-                return (
-                  getAmountFormart(parseFloat(opamt), { appendSymbol: false }) +
-                  " " +
-                  String(row["op_amount"]).replace(/[^a-zA-Z]+/g, "")
-                );
-              }
-              return row["op_amount"];
-            },
-          },
-          {
-            fieldName: "tr_debit_amount",
-            label: "Transactions Debit",
-            displayTemplate: (row) => {
-              return getAmountFormart(row["tr_debit_amount"], {
-                appendSymbol: false,
-              });
-            },
-          },
-          {
-            fieldName: "tr_credit_amount",
-            label: "Transaction Credit",
-            displayTemplate: (row) => {
-              return getAmountFormart(row["tr_credit_amount"], {
-                appendSymbol: false,
-              });
-            },
-          },
-          {
-            fieldName: "cb_amount",
-            label: "Closing Balance",
-            displayTemplate: (row) => {
-              const opamt = String(row["cb_amount"]).replace(/[^0-9]+/g, "");
-
-              if (!isNaN(opamt) && row.leafnode === "Y") {
-                return (
-                  <a
-                    className="underLine"
-                    href="void(0);"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      console.log("row", row);
-                      OpenDrillDown(row);
-                    }}
-                  >
-                    {getAmountFormart(parseFloat(opamt), {
-                      appendSymbol: false,
-                    }) +
-                      " " +
-                      String(row["cb_amount"]).replace(/[^a-zA-Z]+/g, "")}
-                  </a>
-                );
-              }
-              return row["cb_amount"];
-            },
-          },
-        ]}
+        showArabic={showArabic}
+        columns={columns}
         data={accounts || []}
         layout={layout}
       />
