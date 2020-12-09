@@ -2444,6 +2444,7 @@ export default {
               return item.primary_network_id;
             });
 
+
             strQuery = `select hims_d_insurance_network_office_id,price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,\
                  copay_percent_dental, copay_optical, copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
                deductible_trt, deductible_medicine,deductable_type from hims_d_insurance_network_office where hospital_id=${req.userIdentity.hospital_id}\
@@ -2460,8 +2461,14 @@ export default {
                inner join hims_d_insurance_network NET on NET.hims_d_insurance_network_id=SIN.network_id\
                inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
                where SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
-               AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';
-               select department_type from hims_d_sub_department where hims_d_sub_department_id=${input[0].sub_department_id}`;
+               AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
+
+            console.log("input[0].sub_department_id", input[0].sub_department_id)
+            if (input[0].sub_department_id != null) {
+              strQuery += `select department_type from hims_d_sub_department where hims_d_sub_department_id=${input[0].sub_department_id}`
+            } else {
+              strQuery = `select 1=1`
+            }
           } else if (promo_code != null) {
             strQuery = `select S.hims_d_services_id, PD.avail_type, offer_value, valid_to_from, valid_to_date, offer_code from hims_d_promotion P 
             inner join hims_d_promotion_detail PD on P.hims_d_promo_id=PD.hims_d_promo_id
@@ -2486,7 +2493,7 @@ export default {
               const allPolicy = strQuery == "" ? [] : result[1];
               const allCompany_price = strQuery == "" ? [] : result[2];
               const allPolicy_price = strQuery == "" ? [] : result[3];
-              const sub_dept_details = strQuery == "" ? [] : result[4][0];
+              const sub_dept_details = strQuery == "" ? [] : result[4];
               const promo_data = promo_code == null ? [] : result[1];
               let apr_amount_bulk = 0;
               // let total_approal_amount = 0;
@@ -2788,10 +2795,10 @@ export default {
                     ) {
                       copay_percentage = policydtls.copay_consultation;
 
-                      if (sub_dept_details.department_type == "D") {
+                      if (sub_dept_details[0].department_type == "D") {
                         copay_percentage = policydtls.copay_percent_dental
                       }
-                      if (sub_dept_details.department_type == "O") {
+                      if (sub_dept_details[0].department_type == "O") {
                         copay_percentage = policydtls.copay_optical
                       }
 
