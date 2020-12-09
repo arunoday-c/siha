@@ -418,7 +418,7 @@ class RegistrationPatient extends Component {
                   delete patientdata.cities;
                   delete patientdata.doctors;
 
-                  patientdata.ScreenCode = getCookie("ScreenCode");
+                  patientdata.ScreenCode = "BL0001";
 
                   if ($this.state.hims_d_patient_id === null) {
                     algaehApiCall({
@@ -816,8 +816,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -830,28 +830,28 @@ class RegistrationPatient extends Component {
           }}
           printArea={
             this.state.patient_code !== null &&
-            this.state.patient_code !== undefined &&
-            this.state.patient_code !== ""
+              this.state.patient_code !== undefined &&
+              this.state.patient_code !== ""
               ? {
-                  menuitems: [
-                    {
-                      label: "ID Card",
-                      events: {
-                        onClick: () => {
-                          generateIdCard(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "ID Card",
+                    events: {
+                      onClick: () => {
+                        generateIdCard(this, this);
                       },
                     },
-                    {
-                      label: "Advance/Refund Receipt",
-                      events: {
-                        onClick: () => {
-                          showAdvanceRefundList(this, this);
-                        },
+                  },
+                  {
+                    label: "Advance/Refund Receipt",
+                    events: {
+                      onClick: () => {
+                        showAdvanceRefundList(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}

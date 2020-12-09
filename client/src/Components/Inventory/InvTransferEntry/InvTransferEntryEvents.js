@@ -181,7 +181,7 @@ const SaveTransferEntry = $this => {
   ).format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
-  InputObj.ScreenCode = getCookie("ScreenCode");
+  InputObj.ScreenCode = "INV0006";
   for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
 
 
@@ -592,7 +592,7 @@ const AcknowledgeTransferEntry = $this => {
       InputObj.inventory_stock_detail[i].ack_quantity;
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode");
+  InputObj.ScreenCode = "INV0006";
   const settings = { header: undefined, footer: undefined };
   // algaehApiCall({
   //   uri: "/inventorytransferEntry/addtransferEntry",

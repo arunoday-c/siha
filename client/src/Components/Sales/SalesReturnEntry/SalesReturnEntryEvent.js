@@ -332,7 +332,7 @@ const PostSalesReturnEntry = $this => {
     InputObj.sales_return_detail[i].operation = "+";
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode");
+  InputObj.ScreenCode = "SAL008";
 
   algaehApiCall({
     uri: "/SalesReturnEntry/postSalesReturnEntry",

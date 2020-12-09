@@ -211,7 +211,7 @@ const SaveSalesReturn = ($this) => {
       inputObj.pharmacy_stock_detail[i].operation = "+";
     }
 
-    inputObj.ScreenCode = getCookie("ScreenCode");
+    inputObj.ScreenCode = "PH0003";
     algaehApiCall({
       uri: "/salesReturn/addsalesReturn",
       module: "pharmacy",

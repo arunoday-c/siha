@@ -338,7 +338,7 @@ const SavePosCreidt = $this => {
 
         Inputobj.criedtdetails = listOfinclude;
         Inputobj.reciept_amount = Inputobj.receipt_amount;
-        Inputobj.ScreenCode = getCookie("ScreenCode");
+        Inputobj.ScreenCode = "PH0010";
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/POSCreditSettlement/addPOSCreidtSettlement",

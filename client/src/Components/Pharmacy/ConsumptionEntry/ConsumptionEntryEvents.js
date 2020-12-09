@@ -41,7 +41,7 @@ export default function ConsumptionItemsEvents() {
 
     SaveConsumptionEntry: $this => {
       AlgaehLoader({ show: true });
-      $this.state.ScreenCode = getCookie("ScreenCode")
+      $this.state.ScreenCode = "PH0011"
 
       algaehApiCall({
         uri: "/consumptionEntry/addconsumptionEntry",

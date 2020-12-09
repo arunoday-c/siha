@@ -695,7 +695,7 @@ const PostPosEntry = ($this) => {
             posdata = $this.state;
           }
 
-          posdata.ScreenCode = getCookie("ScreenCode");
+          posdata.ScreenCode = "PH0002";
           const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
           const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
           delete posdata.patInsuranceFrontImg;

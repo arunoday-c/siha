@@ -315,7 +315,7 @@ const SaveOPCreidt = ($this) => {
           .toArray();
 
         Inputobj.criedtdetails = listOfinclude;
-        Inputobj.ScreenCode = getCookie("ScreenCode");
+        Inputobj.ScreenCode = "BL0004";
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/opCreditSettlement/addCreidtSettlement",
