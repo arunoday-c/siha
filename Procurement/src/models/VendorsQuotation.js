@@ -29,7 +29,7 @@ export default {
               );
             } else if (headerResult[0].quotation_for === "PHR") {
               strQuery = mysql.format(
-                "select VQD.*, IM.item_description, IU.uom_description as purchase_uom_desc from hims_f_procurement_vendor_quotation_detail VQD,hims_d_pharmacy_item_master IM, hims_d_pharmacy_uom IU  where IM.hims_d_pharmacy_item_master_id=VQD.phr_item_id and IU.hims_d_pharmacy_uom_id=VQD.pharmacy_uom_id and vendor_quotation_header_id=?",
+                "select VQD.*, IM.item_description, IU.uom_description as purchase_uom_desc from hims_f_procurement_vendor_quotation_detail VQD,hims_d_item_master IM, hims_d_pharmacy_uom IU  where IM.hims_d_item_master_id=VQD.phar_item_id and IU.hims_d_pharmacy_uom_id=VQD.pharmacy_uom_id and vendor_quotation_header_id=?",
                 [headerResult[0].hims_f_procurement_vendor_quotation_header_id]
               );
             }
