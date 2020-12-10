@@ -1,5 +1,7 @@
 import path from "path";
+import stream from "stream";
 import fs from "fs-extra";
+import mime from "mime-types";
 import contract from "../Model/contractDocs";
 import EmployeeDocModel from "../Model/employeeDoc";
 // import PatientDocModel from "./patientDoc";
@@ -85,7 +87,7 @@ export function getUploadedFile(req, res, next) {
     let filter = {};
     let _mimeType = "filetype";
     const { download } = input;
-
+    console.log("input", input);
     switch (input.forModule) {
       case "EmployeeDocModel":
         contractDoc = EmployeeDocModel;
@@ -105,31 +107,56 @@ export function getUploadedFile(req, res, next) {
         if (err) {
           res.status(400).json({ error: err.message });
         } else {
-          console.log("docs", docs);
-          const uploadExists = folder.toUpperCase().includes("UPLOAD");
-          const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
-          const fileN = docs.length === 0 ? "" : docs[0].filename;
-          if (fileN !== "") {
-            const readStream = fs.createReadStream(
-              `${path.resolve(uploadPath, fileN)}`
+          if (Array.isArray(docs) && docs.length === 0) {
+            res.status(400).json({ error: "no record found", filter: filter });
+            return;
+          }
+
+          const { fromPath } = docs;
+          if (fromPath) {
+            const uploadExists = folder.toUpperCase().includes("UPLOAD");
+            const uploadPath = path.resolve(
+              folder,
+              uploadExists ? "" : "UPLOAD"
             );
-            const mimetype = docs[0][_mimeType];
-            res.setHeader(
-              "Content-disposition",
-              "attachment; filename='" +
-                fileN.replace(/\,/g, "_").replace(/\;/g, "_") +
-                "'"
-            );
-            res.setHeader("Content-type", mimetype);
-            readStream.on("open", function () {
-              readStream.pipe(res);
-            });
-            readStream.on("error", function (err) {
-              console.log("error", err);
-              res.end(err);
-            });
+            const fileN = docs.length === 0 ? "" : docs[0].filename;
+            if (fileN !== "") {
+              const readStream = fs.createReadStream(
+                `${path.resolve(uploadPath, fileN)}`
+              );
+              const mimetype = docs[0][_mimeType];
+              res.setHeader(
+                "Content-disposition",
+                "attachment; filename='" +
+                  fileN.replace(/\,/g, "_").replace(/\;/g, "_") +
+                  "'"
+              );
+              res.setHeader("Content-type", mimetype);
+              readStream.on("open", function () {
+                readStream.pipe(res);
+              });
+              readStream.on("error", function (err) {
+                console.log("error", err);
+                res.end(err);
+              });
+            } else {
+              res.end(new Error("No file exists"));
+            }
           } else {
-            res.end(new Error("No file exists"));
+            const _fileMime = mime.lookup(docs[0].fileExtention);
+            if (docs[0].image) {
+              res.setHeader(
+                "Content-disposition",
+                `attachment; filename='${docs[0]["destinationName"]
+                  .replace(/\,/g, "_")
+                  .replace(/\;/g, "_")}.${docs[0].fileExtention}'`
+              );
+              res.setHeader("content-type", _fileMime);
+              res.status(200);
+              let bufferStream = new stream.PassThrough();
+              bufferStream.end(docs[0].image, "base64");
+              bufferStream.pipe(res);
+            }
           }
 
           // res.status(200).json({ success: true, data: docs });
