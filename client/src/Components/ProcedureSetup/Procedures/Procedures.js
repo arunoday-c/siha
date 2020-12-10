@@ -43,6 +43,8 @@ class Procedures extends PureComponent {
       s_service: null,
       qty: 1,
       hsopital_id: null,
+      head_id: null,
+      child_id: null
     };
   }
 
@@ -52,6 +54,17 @@ class Procedures extends PureComponent {
     this.setState({
       hsopital_id: userToken.hims_d_hospital_id,
     });
+
+    const FIN_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
+        ? true
+        : false;
+
+    if (FIN_Active === true) {
+      this.getFinanceAccountsMaping();
+    }
 
     if (
       this.props.displayservices === undefined ||
@@ -120,6 +133,9 @@ class Procedures extends PureComponent {
 
   itemchangeText(e) {
     ProceduresEvent().itemchangeText(this, e);
+  }
+  getFinanceAccountsMaping() {
+    ProceduresEvent().getFinanceAccountsMaping(this);
   }
   checkHandle(e) {
     ProceduresEvent().checkHandle(this, e);

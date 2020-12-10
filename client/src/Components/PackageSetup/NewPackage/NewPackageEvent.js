@@ -694,5 +694,23 @@ export default function NewPackageEvent() {
         });
       }
     },
+    getFinanceAccountsMaping: ($this, e) => {
+      algaehApiCall({
+        uri: "/finance/getFinanceAccountsMaping",
+        data: { accounts: ["DEF_INCOME_PACK"] },
+        module: "finance",
+        method: "GET",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            if (response.data.result.length > 0) {
+              $this.setState({
+                head_id: response.data.result[0].head_id,
+                child_id: response.data.result[0].child_id,
+              });
+            }
+          }
+        },
+      });
+    }
   };
 }
