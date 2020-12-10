@@ -758,3 +758,27 @@ body {
   padding: 0;
   list-style: none;
 }
+.generalConsent {
+  margin: 0 0 0 15px;
+  padding: 0;
+}
+.generalConsent li {
+  margin: 0;
+  padding: 0;
+  line-height: 18px;
+  list-style: square;
+}
+
+.generalConsentAra {
+  margin: 0 15px 0 0;
+  padding: 0;
+  text-align: right;
+  direction: rtl;
+}
+.generalConsentAra li {
+  margin: 0;
+  padding: 0;
+  line-height: 24px;
+  list-style: square;
+  font-size: 12px;
+}

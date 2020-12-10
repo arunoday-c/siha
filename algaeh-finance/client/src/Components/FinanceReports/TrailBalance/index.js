@@ -100,7 +100,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                     },
 
                     {
-                      className: "col-4 form-group",
+                      className: "col-3 form-group",
                       type: "DH|RANGE",
                       data: "YEAR",
                       title: "RANGE",
@@ -122,19 +122,25 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                       },
                     },
                     {
-                      className: "col formgroup finCusCheckBox",
-                      type: "CH",
-                      data: "Arabic",
-                    },
-                    {
-                      className: "col formgroup finCusCheckBox",
+                      className: "col-2 formgroup finCusCheckBox",
                       type: "CH",
                       data: "Non Zero amount",
+                      checkText: "Yes",
+                      labelText: "Hide Zero Account",
                     },
                     {
-                      className: "col formgroup finCusCheckBox",
+                      className: "col-2 formgroup finCusCheckBox",
                       type: "CH",
                       data: "Show Ledger Code",
+                      checkText: "Yes",
+                      labelText: "Show Ledger Code",
+                    },
+                    {
+                      className: "col-2 formgroup finCusCheckBox",
+                      type: "CH",
+                      data: "Arabic",
+                      checkText: "Yes",
+                      labelText: "Show Account Name in Arabic",
                     },
                   ],
                   []
