@@ -14,6 +14,7 @@ export default function ({
   renderBeforeTable,
   renderAfterTable,
   excelBodyRender,
+  showArabic,
 }) {
   const isExpand = layout === undefined ? true : layout.expand;
   const createPrintObject = useRef(undefined);
@@ -95,6 +96,7 @@ export default function ({
             <>
               {renderBeforeTable}
               <AlgaehTable
+                direction={showArabic ? "rtl" : "ltr"}
                 className="financeReportStyle"
                 columns={columns}
                 data={columns.length === 0 ? [] : data}

@@ -49,11 +49,13 @@ const executePDF = function executePDFMethod(options) {
         })
         .then((result) => {
           options.mysql.releaseConnection();
+          let testRequestName = "";
           const headRecord = _.head(result[0]);
           let records = _.chain(result[1])
             .groupBy((g) => g.hims_f_lab_order_id)
             .map((details) => {
               const { investigation_name, service_name } = _.head(details);
+              testRequestName += `${service_name},`;
               return {
                 investigation_name,
                 service_name,
@@ -77,7 +79,7 @@ const executePDF = function executePDFMethod(options) {
           //ToDO need to remove only for testing
           //records = records.concat(records);
 
-          resolve({ headRecord, records });
+          resolve({ headRecord: { ...headRecord, testRequestName }, records });
         });
     } catch (e) {
       options.mysql.releaseConnection();

@@ -1,7 +1,6 @@
 import {
   swalMessage,
-  algaehApiCall,
-  getCookie
+  algaehApiCall
 } from "../../../utils/algaehApiCall";
 import moment from "moment";
 // import Enumerable from "linq";
@@ -559,7 +558,7 @@ const PostPOReturnEntry = $this => {
     InputObj.po_return_entry_detail = InputObj.inventory_stock_detail;
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode");
+  InputObj.ScreenCode = "PR0006";
 
   algaehApiCall({
     uri: "/PurchaseReturnEntry/postPurchaseOrderEntry",

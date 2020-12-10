@@ -383,7 +383,18 @@ class DayEndProcess extends Component {
       this.props.history.push(
         `/PurchaseReturnEntry?purchase_return_number=${row.document_number}`
       );
+    } else if (row.from_screen === "PH0002") {
+      //Point of Sales
+      this.props.history.push(
+        `/PointOfSale?pos_number=${row.document_number}`
+      );
+    } else if (row.from_screen === "PH0003") {
+      //Point of Sales Return
+      this.props.history.push(
+        `/SalesReturn?sales_return_number=${row.document_number}`
+      );
     }
+
 
     // persistStateOnBack(this.state, () => {
     //   if (

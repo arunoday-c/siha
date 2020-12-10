@@ -60,10 +60,14 @@
                         <td style="vertical-align: top" style="height: 60px;">
                             <p><b>Patient Code</b>: {{patient_code}}</p>
                             <p><b>Patient Name & Age</b>:  {{patient_name}} {{age_in_years}} YRS / {{age_in_months}} MTH / {{age_in_days}} DYS</p>
-                            <p><b>Refer By</b>: </p>   <p><b>Test Requested</b>: </p> <p><b>ID No.</b>: </p>
+                            <p><b>Refer By</b>: {{doctor_name}} </p>   <p><b>Test Requested</b>: Mentioned Below </p> <p><b>ID No.</b>: {{primary_id_no}}</p>
                         </td>
                         <td width="30%" style="vertical-align: top">
                             <p><b>Sample Collected:</b></p>
+                            <p>{{organization_name}}</p>
+                            <p>{{address1}}</p>
+                            <p>Tel: <span>{{phone1}}</span></p>
+                            <p>Vat No: <span>{{tax_number}}</span></p>
                         </td>
                     </tr>
                 </table>
@@ -76,7 +80,7 @@
         <td width="40%" class="txtFld">Analyte</td>
         <td width="20%" class="numberFld">Result</td>
         <td width="20%" class="numberFld">Unit</td>
-        <td width="20%" class="numberFld">Normal Range</td></tr>
+        <td width="20%" class="numberFld">Reference Range</td></tr>
     </tr>
                 </table>
             </td>

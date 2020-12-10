@@ -2430,7 +2430,7 @@ export default {
 
           let strQuery = "";
 
-          console.log("input.promo_code", promo_code);
+          // console.log("input.promo_code", req.body);
           if (is_insurance.length > 0) {
             const network_office_ids = is_insurance.map((item) => {
               return item.primary_network_office_id;
@@ -2444,8 +2444,9 @@ export default {
               return item.primary_network_id;
             });
 
+
             strQuery = `select hims_d_insurance_network_office_id,price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,\
-                 copay_percent_dental,copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
+                 copay_percent_dental, copay_optical, copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
                deductible_trt, deductible_medicine,deductable_type from hims_d_insurance_network_office where hospital_id=${req.userIdentity.hospital_id}\
                and hims_d_insurance_network_office_id in (${network_office_ids});\
                select SI.insurance_id ,SI.services_id,IP.company_service_price_type,copay_status,copay_amt,deductable_status,\
@@ -2461,6 +2462,13 @@ export default {
                inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
                where SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
+
+            console.log("input[0].sub_department_id", input[0].sub_department_id)
+            if (input[0].sub_department_id != null) {
+              strQuery += `select department_type from hims_d_sub_department where hims_d_sub_department_id=${input[0].sub_department_id}`
+            } else {
+              strQuery += `select 1=1`
+            }
           } else if (promo_code != null) {
             strQuery = `select S.hims_d_services_id, PD.avail_type, offer_value, valid_to_from, valid_to_date, offer_code from hims_d_promotion P 
             inner join hims_d_promotion_detail PD on P.hims_d_promo_id=PD.hims_d_promo_id
@@ -2485,6 +2493,7 @@ export default {
               const allPolicy = strQuery == "" ? [] : result[1];
               const allCompany_price = strQuery == "" ? [] : result[2];
               const allPolicy_price = strQuery == "" ? [] : result[3];
+              const sub_dept_details = strQuery == "" ? [] : result[4];
               const promo_data = promo_code == null ? [] : result[1];
               let apr_amount_bulk = 0;
               // let total_approal_amount = 0;
@@ -2515,7 +2524,7 @@ export default {
                       );
 
                       if (today_date <= to && today_date >= from) {
-                        console.log("2");
+                        // console.log("2");
                         servicesDetails.discount_amout =
                           promotion_dis.avail_type === "A"
                             ? promotion_dis.offer_value
@@ -2780,14 +2789,18 @@ export default {
                     copay_percentage =
                       (parseFloat(copay_amount) / parseFloat(net_amout)) * 100;
                   } else {
-                    // utilities
-                    //   .logger()
-                    //   .log("service_type_id: ", records.service_type_id);
                     if (
                       appsettings.hims_d_service_type.service_type_id
                         .Consultation == records.service_type_id
                     ) {
                       copay_percentage = policydtls.copay_consultation;
+
+                      if (sub_dept_details[0].department_type == "D") {
+                        copay_percentage = policydtls.copay_percent_dental
+                      }
+                      if (sub_dept_details[0].department_type == "O") {
+                        copay_percentage = policydtls.copay_optical
+                      }
 
                       deductable_percentage = policydtls.deductible;
                     } else if (
@@ -3743,6 +3756,17 @@ export default {
               });
             }
 
+            console.log("inputParam.receiptdetails", inputParam.receiptdetails)
+            let bank_card_id = inputParam.receiptdetails.find(f =>
+              f.pay_type == "CD"
+            )
+
+            console.log("bank_card_id === ", bank_card_id)
+            let strQuery = "select 1=1"
+            if (bank_card_id !== undefined) {
+              strQuery = "select * from hims_d_bank_card where hims_d_bank_card_id=" + bank_card_id.bank_card_id
+            }
+
             // let strqry = "";
 
             // let sub_insurance_id;
@@ -3761,15 +3785,16 @@ export default {
               .executeQuery({
                 query:
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
-            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL');\
+            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL', 'INPUT_TAX');\
             SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
-            select cost_center_type, cost_center_required from finance_options limit 1;",
+            select cost_center_type, cost_center_required from finance_options limit 1;"+ strQuery,
                 values: [servicesIds],
                 printQuery: true,
               })
               .then((Result) => {
                 const controls = Result[0];
                 const serviceData = Result[1];
+                const card_data = Result[3];
                 // const insurance_data = Result[3];
 
                 const OP_DEP = controls.find((f) => {
@@ -3790,6 +3815,10 @@ export default {
                 });
                 const OP_CTRL = controls.find((f) => {
                   return f.account == "OP_CTRL";
+                });
+
+                const INPUT_TAX = controls.find((f) => {
+                  return f.account == "INPUT_TAX";
                 });
 
                 let voucher_type = "";
@@ -3820,15 +3849,41 @@ export default {
                     if (m.pay_type == "CD") {
                       narration = narration + ",Received By CARD:" + m.amount;
 
+                      let service_charge = (parseFloat(m.amount) * parseFloat(card_data[0].service_charge)) / 100
+                      let vat_charge = (parseFloat(service_charge) * parseFloat(card_data[0].vat_percentage)) / 100
+
+                      const final_amount = parseFloat(m.amount) - parseFloat(service_charge) - parseFloat(vat_charge)
                       EntriesArray.push({
                         payment_date: new Date(),
                         head_id: CARD_SETTL.head_id,
                         child_id: CARD_SETTL.child_id,
-                        debit_amount: m.amount,
+                        debit_amount: final_amount,
                         payment_type: "DR",
                         credit_amount: 0,
                         hospital_id: req.userIdentity.hospital_id,
                       });
+                      if (service_charge > 0) {
+                        EntriesArray.push({
+                          payment_date: new Date(),
+                          head_id: card_data[0].head_id,
+                          child_id: card_data[0].child_id,
+                          debit_amount: service_charge,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
+                      if (vat_charge > 0) {
+                        EntriesArray.push({
+                          payment_date: new Date(),
+                          head_id: INPUT_TAX.head_id,
+                          child_id: INPUT_TAX.child_id,
+                          debit_amount: vat_charge,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
                     } else {
                       narration = narration + ",Received By CASH:" + m.amount;
                       EntriesArray.push({
@@ -3954,21 +4009,58 @@ export default {
                     if (m.pay_type == "CD") {
                       narration = narration + ",Received By CARD:" + m.amount;
 
+                      let service_charge = (parseFloat(m.amount) * parseFloat(card_data[0].service_charge)) / 100
+                      let vat_charge = (parseFloat(service_charge) * parseFloat(card_data[0].vat_percentage)) / 100
+
+                      console.log("service_charge", service_charge)
+                      console.log("vat_charge", vat_charge)
+                      const final_amount = parseFloat(m.amount) - parseFloat(service_charge) - parseFloat(vat_charge)
                       EntriesArray.push({
                         payment_date: new Date(),
                         head_id: CARD_SETTL.head_id,
                         child_id: CARD_SETTL.child_id,
-                        debit_amount: m.amount,
+                        debit_amount: final_amount,
                         payment_type: "DR",
                         credit_amount: 0,
                         hospital_id: req.userIdentity.hospital_id,
                       });
+                      if (service_charge > 0) {
+                        EntriesArray.push({
+                          payment_date: new Date(),
+                          head_id: card_data[0].head_id,
+                          child_id: card_data[0].child_id,
+                          debit_amount: service_charge,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
+                      if (vat_charge > 0) {
+                        EntriesArray.push({
+                          payment_date: new Date(),
+                          head_id: INPUT_TAX.head_id,
+                          child_id: INPUT_TAX.child_id,
+                          debit_amount: vat_charge,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
+                      // EntriesArray.push({
+                      //   payment_date: new Date(),
+                      //   head_id: CARD_SETTL.head_id,
+                      //   child_id: CARD_SETTL.child_id,
+                      //   debit_amount: m.amount,
+                      //   payment_type: "DR",
+                      //   credit_amount: 0,
+                      //   hospital_id: req.userIdentity.hospital_id,
+                      // });
                     } else {
                       narration = narration + ",Received By CASH:" + m.amount;
                       EntriesArray.push({
                         payment_date: new Date(),
-                        head_id: CIH_OP.head_id,
-                        child_id: CIH_OP.child_id,
+                        head_id: INPUT_TAX.head_id,
+                        child_id: INPUT_TAX.child_id,
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,

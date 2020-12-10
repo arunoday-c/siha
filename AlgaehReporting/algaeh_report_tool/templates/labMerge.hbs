@@ -5,29 +5,37 @@
     <table class="tableForDataNoBorder" cell-padding="0">
         <tbody>
         <tr class="tableSubHdg2" >
-            <td colspan="3" class="txtFld">
-                <b>{{service_name}}</b>
+            <td colspan="4" class="txtFld">
+                <b>{{service_name}}</b> - ({{investigation_name}})
             </td>
-             <td colspan="" class="numberFld">
-              ({{investigation_name}})
-            </td>
+           
         </tr>
         {{#each details}}
          {{#if order 1 }}
-            <tr>
+            <tr style="page-break-after: auto;">
                 <td colspan="4" class="tableSubHdg2 txtFld" style="background-color:rgb(255, 255, 255);"><i>{{analyte_report_group_desc}}</i></td>
             </tr>
          {{/if}}
         {{#each groupDetails}}
-        <tr>
+       <tr>
+            {{!-- <td>{{inc @index}}</td> --}}
             <td width="40%" class="txtFld">{{analyte_name}}</td>
-            <td  width="20%" class="numberFld">{{result}} <sup>{{critical_type}}</sup></td>
-            <td  width="20%" class="numberFld">{{result_unit}}</td>
-            <td  width="20%" class="numberFld"> {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
-            {{normal_high}}{{/if}}</td>
+            <td width="20%" class="numberFld" data-value="{{critical_type}}">{{result}} <sup>{{critical_type}}</sup></td>
+            <td width="20%" class="numberFld">{{#if reference_range_required "Y"}} {{result_unit}} {{else}} -- {{/if}}</td>
+            <td width="20%" class="numberFld">
+                {{#if reference_range_required "Y"}} 
+                    {{#if analyte_type "T"}} 
+                        <ul class="rangeUl"> 
+                        {{#each (commentBreakUp text_value commentBreakUp)}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                        </ul>
+                    {{else}}
+                    {{normal_low }} - {{normal_high}}{{/if}}
+                {{else}} -- {{/if}}
+            </td>
         </tr>
         {{/each}}
-        
         {{/each}}
         </tbody>
     </table>

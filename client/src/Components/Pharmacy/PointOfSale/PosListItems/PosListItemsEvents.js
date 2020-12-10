@@ -250,6 +250,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
         },
         onSuccess: (response) => {
           if (response.data.success) {
+            debugger
             let data = response.data.records;
             if (data.locationResult.length > 0) {
               getUnitCost($this, context, e.service_id, e.sale_price);
@@ -440,9 +441,11 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
     //   });
     // }
   } else {
+    debugger
     $this.props.getInsuranceServicesCost({
       uri: "/insurance/getPriceList",
       method: "GET",
+      module: "insurance",
       data: {
         services_id: serviceid,
         insurance_id: $this.state.insurance_provider_id,
@@ -452,6 +455,7 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
         mappingName: "hospitalservices",
       },
       afterSuccess: (data) => {
+        debugger
         if (data.length > 0) {
           $this.setState({
             unit_cost: data[0].gross_amt,
@@ -1536,7 +1540,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
     e.selected.non_prec_Item === true
       ? parseFloat(e.selected.qtyhand)
       : parseFloat(e.selected.qtyhand) /
-        parseFloat(e.selected.conversion_factor);
+      parseFloat(e.selected.conversion_factor);
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
   row["unit_cost"] = e.selected.sale_price;

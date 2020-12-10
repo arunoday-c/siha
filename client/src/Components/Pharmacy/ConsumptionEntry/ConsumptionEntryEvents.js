@@ -1,6 +1,6 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ConsumptionIOputs from "../../../Models/ConsumptionEntry";
-import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 export default function ConsumptionItemsEvents() {
   return {
@@ -41,7 +41,7 @@ export default function ConsumptionItemsEvents() {
 
     SaveConsumptionEntry: $this => {
       AlgaehLoader({ show: true });
-      $this.state.ScreenCode = getCookie("ScreenCode")
+      $this.state.ScreenCode = "PH0011"
 
       algaehApiCall({
         uri: "/consumptionEntry/addconsumptionEntry",

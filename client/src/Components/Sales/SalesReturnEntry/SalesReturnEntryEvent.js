@@ -1,7 +1,6 @@
 import {
   swalMessage,
-  algaehApiCall,
-  getCookie
+  algaehApiCall
 } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -332,7 +331,7 @@ const PostSalesReturnEntry = $this => {
     InputObj.sales_return_detail[i].operation = "+";
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode");
+  InputObj.ScreenCode = "SAL008";
 
   algaehApiCall({
     uri: "/SalesReturnEntry/postSalesReturnEntry",

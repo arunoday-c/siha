@@ -2,8 +2,7 @@ import extend from "extend";
 import SettlementIOputs from "../../Models/OPCreditSettlement";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie,
+  swalMessage
 } from "../../utils/algaehApiCall";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import FrontDesk from "../../Search/FrontDesk.json";
@@ -315,7 +314,7 @@ const SaveOPCreidt = ($this) => {
           .toArray();
 
         Inputobj.criedtdetails = listOfinclude;
-        Inputobj.ScreenCode = getCookie("ScreenCode");
+        Inputobj.ScreenCode = "BL0004";
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/opCreditSettlement/addCreidtSettlement",

@@ -5,8 +5,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import SalesReturnputs from "../../../Models/SalesReturn";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie,
+  swalMessage
 } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 
@@ -211,7 +210,7 @@ const SaveSalesReturn = ($this) => {
       inputObj.pharmacy_stock_detail[i].operation = "+";
     }
 
-    inputObj.ScreenCode = getCookie("ScreenCode");
+    inputObj.ScreenCode = "PH0003";
     algaehApiCall({
       uri: "/salesReturn/addsalesReturn",
       module: "pharmacy",

@@ -2,8 +2,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ConsumptionIOputs from "../../../Models/InventoryConsumption";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie
+  swalMessage
 } from "../../../utils/algaehApiCall";
 
 export default function ConsumptionItemsEvents() {
@@ -46,7 +45,7 @@ export default function ConsumptionItemsEvents() {
 
     SaveConsumptionEntry: $this => {
       AlgaehLoader({ show: true });
-      $this.state.ScreenCode = getCookie("ScreenCode");
+      $this.state.ScreenCode = "INV0007";
       algaehApiCall({
         uri: "/inventoryconsumption/addInventoryConsumption",
         module: "inventory",
@@ -107,7 +106,7 @@ export default function ConsumptionItemsEvents() {
         },
         onSuccess: res => {
           const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${consumption_number}-Consumption Receipt - Inventory`
+          const reportName = `${consumption_number}-Consumption Receipt - Inventory`
           const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
           window.open(origin);
           // window.document.title = "Consumption Receipt - Inventory";

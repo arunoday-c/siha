@@ -5,8 +5,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import TransferIOputs from "../../../Models/TransferEntry";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie,
+  swalMessage
 } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 import moment from "moment";
@@ -212,12 +211,12 @@ const AcknowledgeTransferEntry = ($this) => {
       InputObj.pharmacy_stock_detail[i].expiry_date === null
         ? null
         : moment(
-            InputObj.pharmacy_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD");
+          InputObj.pharmacy_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD");
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode");
+  InputObj.ScreenCode = "PH0009";
 
   algaehApiCall({
     uri: "/transferEntry/updatetransferEntry",
@@ -299,9 +298,9 @@ const SaveTransferEntry = ($this) => {
       InputObj.pharmacy_stock_detail[i].expiry_date === null
         ? null
         : moment(
-            InputObj.pharmacy_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD");
+          InputObj.pharmacy_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;
