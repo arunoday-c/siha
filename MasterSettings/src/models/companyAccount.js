@@ -20,15 +20,15 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ]
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -45,16 +45,16 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select  hims_d_company_account_id,employer_cr_no,payer_cr_no,bank_id,CA.bank_short_name,account_number, \
+            "select  hims_d_company_account_id,B.masked_bank_account,employer_cr_no,payer_cr_no,bank_id,CA.bank_short_name,account_number, \
             B.bank_name from hims_d_company_account CA, hims_d_bank B where CA.record_status='A' and \
-            B.hims_d_bank_id = CA.bank_id order by hims_d_company_account_id desc "
+            B.hims_d_bank_id = CA.bank_id order by hims_d_company_account_id desc ",
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -83,15 +83,15 @@ export default {
             input.account_number,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_company_account_id
-          ]
+            input.hims_d_company_account_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -109,14 +109,14 @@ export default {
           query:
             "UPDATE hims_d_company_account SET  record_status='I' WHERE hims_d_company_account_id=?",
           values: [inputParam.hims_d_company_account_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -124,5 +124,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

@@ -160,10 +160,12 @@ const bankEventhandle = ($this, e) => {
   $this.setState({
     [name]: value,
     employee_bank_ifsc_code: e.selected.bank_code,
+    masked_bank_account: e.selected.masked_bank_account,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: value,
     employee_bank_ifsc_code: e.selected.bank_code,
+    masked_bank_account: e.selected.masked_bank_account,
   });
 };
 

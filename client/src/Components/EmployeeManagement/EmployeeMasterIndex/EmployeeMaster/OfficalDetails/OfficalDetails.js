@@ -23,7 +23,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getCookie } from "../../../../../utils/algaehApiCall";
-
+import MaskedInput from "react-maskedinput";
 class OfficalDetails extends Component {
   constructor(props) {
     super(props);
@@ -863,6 +863,7 @@ class OfficalDetails extends Component {
                 <h5>
                   <span>Employee Bank Details</span>
                 </h5>
+
                 <div className="row paddin-bottom-5">
                   <AlagehAutoComplete
                     div={{ className: "col mandatory form-group" }}
@@ -908,26 +909,46 @@ class OfficalDetails extends Component {
                     }}
                   />
 
-                  <AlagehFormGroup
-                    div={{ className: "col-12 mandatory form-group" }}
-                    label={{
-                      forceLabel: "Account No.",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      value: this.state.employee_account_number,
-                      className: "txt-fld",
-                      name: "employee_account_number",
+                  {this.state.masked_bank_account ? (
+                    <div className="col no-padding-left-right mandatory cardMaskFld">
+                      <AlgaehLabel
+                        label={{ fieldName: "Account No.", isImp: false }}
+                      />
+                      <MaskedInput
+                        mask={this.state.masked_bank_account}
+                        className="txt-fld"
+                        placeholder={"eg: " + this.state.masked_bank_account}
+                        name="employee_account_number"
+                        value={this.state.employee_account_number}
+                        guide={false}
+                        id="my-input-id"
+                        onBlur={() => {}}
+                        onChange={texthandle.bind(this, this)}
+                        // disabled={isLoading || disabled}
+                      />
+                    </div>
+                  ) : (
+                    <AlagehFormGroup
+                      div={{ className: "col-12 mandatory form-group" }}
+                      label={{
+                        forceLabel: "Account No.",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        value: this.state.employee_account_number,
+                        className: "txt-fld",
+                        name: "employee_account_number",
 
-                      events: {
-                        onChange: texthandle.bind(this, this),
-                      },
-                      others: {
-                        type: "text",
-                        maxLength: 24,
-                      },
-                    }}
-                  />
+                        events: {
+                          onChange: texthandle.bind(this, this),
+                        },
+                        others: {
+                          type: "text",
+                          maxLength: 24,
+                        },
+                      }}
+                    />
+                  )}
                 </div>
                 <h5>
                   <span>Company Bank Details</span>

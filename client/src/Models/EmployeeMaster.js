@@ -44,6 +44,7 @@ export default {
       employee_bank_name: null,
       employee_bank_ifsc_code: null,
       employee_account_number: null,
+      masked_bank_account: "",
       employee_bank_id: null,
       company_bank_id: null,
       mode_of_payment: null,
@@ -107,8 +108,8 @@ export default {
       identity_type_id: null,
       identity_no: null,
 
-      service_dis_percentage: 100
+      service_dis_percentage: 100,
     };
     return output;
-  }
+  },
 };

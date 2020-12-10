@@ -75,6 +75,10 @@ export default function EditorEvents() {
             patient_emergency_case: value,
           });
           break;
+        case "patient_emergency_type":
+          $this.setState({
+            patient_emergency_type: e.target.checked ? "Y" : "N",
+          });
         default:
           break;
       }
@@ -362,7 +366,6 @@ export default function EditorEvents() {
         data: $this.state,
         method: "PUT",
         onSuccess: (response) => {
-          debugger;
           if (response.data.success) {
             algaehApiCall({
               uri: "/report",

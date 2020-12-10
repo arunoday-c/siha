@@ -20,16 +20,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -47,9 +47,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
         })
-        .then(result => {
+        .then((result) => {
           if (
             result[0]["product_type"] == "HIMS_ERP" ||
             result[0]["product_type"] == "FINANCE_ERP"
@@ -68,20 +68,21 @@ export default {
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ],
-                printQuery: false
+                printQuery: false,
               })
-              .then(childRes => {
+              .then((childRes) => {
                 _mysql
                   .executeQuery({
                     query:
-                      "INSERT INTO hims_d_bank (bank_name, bank_code, bank_short_name, address1, contact_person,\
+                      "INSERT INTO hims_d_bank (bank_name, bank_code,masked_bank_account, bank_short_name, address1, contact_person,\
                        contact_number, created_date, created_by, updated_date, updated_by,head_id,child_id)\
-                         values(?,?,?,?,?,?,?,?,?,?,?,?)",
+                         values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       input.bank_name,
                       input.bank_code,
+                      input.masked_bank_account,
                       input.bank_short_name,
                       input.address1,
                       input.contact_person,
@@ -91,24 +92,24 @@ export default {
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                       head_id,
-                      childRes.insertId
+                      childRes.insertId,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(Result => {
+                  .then((Result) => {
                     _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = Result;
                       next();
                     });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -117,11 +118,12 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "INSERT INTO hims_d_bank (bank_name, bank_code, bank_short_name, address1, contact_person, contact_number, created_date, created_by, updated_date, updated_by)\
+                  "INSERT INTO hims_d_bank (bank_name, bank_code,masked_bank_account, bank_short_name, address1, contact_person, contact_number, created_date, created_by, updated_date, updated_by)\
                values(?,?,?,?,?,?,?,?,?,?)",
                 values: [
                   input.bank_name,
                   input.bank_code,
+                  input.masked_bank_account,
                   input.bank_short_name,
                   input.address1,
                   input.contact_person,
@@ -129,22 +131,22 @@ export default {
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 _mysql.releaseConnection();
                 req.records = result;
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -162,26 +164,27 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "update  hims_d_bank  set bank_name=?,bank_code=?,bank_short_name=?,address1=?,contact_person=?,contact_number=?,\
+            "update  hims_d_bank  set bank_name=?,bank_code=?,masked_bank_account=?,bank_short_name=?,address1=?,contact_person=?,contact_number=?,\
             updated_date=?,updated_by=? where hims_d_bank_id=?",
           values: [
             input.bank_name,
             input.bank_code,
+            input.masked_bank_account,
             input.bank_short_name,
             input.address1,
             input.contact_person,
             input.contact_number,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_bank_id
-          ]
+            input.hims_d_bank_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -202,18 +205,18 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select   hims_d_bank_id, bank_name, bank_code, bank_short_name,\
+            "select   hims_d_bank_id, bank_name, bank_code,masked_bank_account, bank_short_name,\
            address1, contact_person, contact_number, active_status from\
             hims_d_bank where record_status='A'" +
             strQuery +
-            "order by hims_d_bank_id desc "
+            "order by hims_d_bank_id desc ",
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -232,14 +235,14 @@ export default {
           query:
             "UPDATE hims_d_bank SET  record_status='I' WHERE hims_d_bank_id=?",
           values: [inputParam.hims_d_bank_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -254,14 +257,14 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: "select * from hims_d_bank_card ;"
+          query: "select * from hims_d_bank_card ;",
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -280,34 +283,34 @@ export default {
             "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
                 (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');",
           values: [req.userIdentity.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(appResult => {
+        .then((appResult) => {
           if (appResult.length > 0) {
             _mysql
               .executeQueryWithTransaction({
                 query:
                   "INSERT INTO `finance_account_child` (child_name)  VALUE(?)",
                 values: [req.body.card_name],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 if (result.insertId > 0) {
                   _mysql
                     .executeQuery({
                       query:
                         "INSERT INTO `hims_d_bank_card` (card_name,head_id,child_id)  VALUE(?,?,?)",
                       values: [req.body.card_name, 29, result.insertId],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(detail => {
+                    .then((detail) => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         req.records = detail;
                         next();
                       });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.rollBackTransaction(() => {
                         next(e);
                       });
@@ -315,7 +318,7 @@ export default {
                 } else {
                   req.records = {
                     invalid_input: true,
-                    message: "Please provide valid input"
+                    message: "Please provide valid input",
                   };
 
                   _mysql.rollBackTransaction(() => {
@@ -323,7 +326,7 @@ export default {
                   });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -333,20 +336,20 @@ export default {
               .executeQuery({
                 query: "INSERT INTO `hims_d_bank_card` (card_name)  VALUE(?)",
                 values: [input.card_name],
-                printQuery: true
+                printQuery: true,
               })
-              .then(detail => {
+              .then((detail) => {
                 _mysql.releaseConnection();
                 req.records = detail;
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -354,5 +357,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

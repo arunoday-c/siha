@@ -425,10 +425,10 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_emergency_case"
-                              value=""
+                              name="patient_emergency_type"
+                              value={this.state.patient_emergency_type}
                               checked={
-                                this.state.patient_emergency_case !== null
+                                this.state.patient_emergency_type === "Y"
                                   ? true
                                   : false
                               }
@@ -489,9 +489,13 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_bp_sys_dya",
                             value:
-                              this.state.patient_bp_sys +
+                              (this.state.patient_bp_sys
+                                ? this.state.patient_bp_sys
+                                : "--") +
                               "/" +
-                              this.state.patient_bp_dia,
+                              (this.state.patient_bp_dia
+                                ? this.state.patient_bp_dia
+                                : "--"),
                             events: {
                               onChange: this.ChangeEventHandler.bind(this),
                             },
@@ -926,7 +930,7 @@ export default class UcafEditor extends Component {
                         <div className="col-12 margin-top-15">
                           <h5 style={{ margin: 0 }}>
                             Suggestive line(s) of management: Kindly, enumerate
-                            the recommended investigation, and/or procedures{" "}
+                            the recommended investigation, and/or procedures
                             <b>For outpatient approvals only:</b>
                           </h5>
                         </div>

@@ -14,7 +14,7 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: `SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans as total_loan_amount,
+          query: `SELECT hims_f_final_settlement_header_id,total_amount,total_earnings, forfiet,remarks,total_deductions,total_loans as total_loan_amount,
               total_salary,
               -- case  total_leave_encash when 0 or total_leave_encash is null then 
               if(final_settlement_status = 'PEN' or final_settlement_status is null ,
@@ -22,7 +22,7 @@ export default {
           total_leave_encash) as total_leave_encash_amount,
                 CASE final_settlement_status when 'PEN' then (select  COALESCE(payable_amount,0)  from hims_f_end_of_service where employee_id=?) 
               else total_eos end  as gratuity_amount,
-              forfiet,remarks,final_settlement_status,final_settlement_number,COALESCE(end_of_service_id,(select hims_f_end_of_service_id 
+             final_settlement_status,final_settlement_number,COALESCE(end_of_service_id,(select hims_f_end_of_service_id 
               from hims_f_end_of_service where employee_id=?)) as end_of_service_id, 
               COALESCE(leave_encashment_id,(select hims_f_leave_encash_header_id from hims_f_leave_encash_header where employee_id=?
               and authorized = 'APR' and posted = 'N')) as hims_f_leave_encash_header_id FROM hims_f_final_settlement_header where employee_id=?; 
@@ -115,8 +115,8 @@ export default {
                     const _total_loan_amount =
                       _loanList.length > 0
                         ? _.chain(_loanList).sumBy((s) =>
-                          parseFloat(s.pending_loan)
-                        )
+                            parseFloat(s.pending_loan)
+                          )
                         : 0;
                     let _gratuity = 0;
                     let _hims_f_end_of_service_id = null;
@@ -185,10 +185,10 @@ export default {
                     _header[0]["final_settlement_status"] === "PEN"
                       ? "Pending"
                       : _header[0]["final_settlement_status"] === "AUT"
-                        ? "Authorize"
-                        : _header[0]["final_settlement_status"] === "SET"
-                          ? "Settled"
-                          : "",
+                      ? "Authorize"
+                      : _header[0]["final_settlement_status"] === "SET"
+                      ? "Settled"
+                      : "",
                   // flag: "Settled",
                   remarks: _header[0]["remarks"],
                   data: {
@@ -206,7 +206,7 @@ export default {
                   //   : true,
                   disableSave:
                     _header[0]["final_settlement_status"] === "SET" ||
-                      _header[0]["final_settlement_status"] === "AUT"
+                    _header[0]["final_settlement_status"] === "AUT"
                       ? true
                       : false,
                   loans: details[0],
@@ -400,6 +400,7 @@ export default {
   },
   finalSettlemntAdd: (req, res, next) => {
     const _input = req.body;
+
     const _mysql = new algaehMysql();
     const { algaeh_d_app_user_id, hospital_id } = req.userIdentity;
     const utlities = new algaehUtilities();
@@ -413,7 +414,7 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query: `update hims_f_final_settlement_header set total_amount=?,total_earnings=?,
-      total_deductions=?,total_loans=?,total_salary=?,remarks=?,updated_by=?,updated_date=?,
+      total_deductions=?,total_loans=?,total_salary=?,forfiet=?,remarks=?,updated_by=?,updated_date=?,
       final_settlement_status=?,posted=?,posted_date=?,posted_by=?,employee_status=?
       where hims_f_final_settlement_header_id=?;`,
           values: [
@@ -422,6 +423,7 @@ export default {
             _input.total_deductions,
             _input.total_loans,
             _input.total_salary,
+            _input.forfiet,
             _input.remarks,
             algaeh_d_app_user_id,
             new Date(),
@@ -583,6 +585,7 @@ export default {
   },
   finalSettlementSave: (req, res, next) => {
     const _input = req.body;
+
     const { algaeh_d_app_user_id, hospital_id } = req.userIdentity;
     const _mysql = new algaehMysql();
     try {
@@ -730,7 +733,7 @@ export default {
         _mysql
           .executeQueryWithTransaction({
             query: `update hims_f_final_settlement_header set total_amount=?,total_earnings=?,
-          total_deductions=?,total_loans=?,total_salary=?,remarks=?,updated_by=?,updated_date=?,
+          total_deductions=?,total_loans=?,total_salary=?,forfiet=?,remarks=?,updated_by=?,updated_date=?,
           end_of_service_id=?,total_eos=?,leave_encashment_id=?,total_leave_encash=?,salary_id=?,
           employee_status=?
           where hims_f_final_settlement_header_id=?;`,
@@ -740,7 +743,9 @@ export default {
               _input.total_deductions,
               _input.total_loans,
               _input.total_salary,
+              _input.forfiet,
               _input.remarks,
+
               algaeh_d_app_user_id,
               new Date(),
               _input.end_of_service_id,
@@ -962,9 +967,9 @@ export default {
                           final_settlement_data[0].final_settlement_number,
                           inputParam.ScreenCode,
                           "Final Settlement Process for " +
-                          final_settlement_data[0].employee_code +
-                          "/" +
-                          final_settlement_data[0].full_name,
+                            final_settlement_data[0].employee_code +
+                            "/" +
+                            final_settlement_data[0].full_name,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                         ],
