@@ -392,6 +392,13 @@ class InvItemMomentEnquiry extends Component {
                         return parseFloat(row.transaction_qty);
                       },
                     },
+                    {
+                      fieldName: "qtyhand",
+                      label: <AlgaehLabel label={{ forceLabel: "After Transation Quantity" }} />,
+                      displayTemplate: (row) => {
+                        return parseFloat(row.qtyhand);
+                      },
+                    }
                     // {
                     //   fieldName: "average_cost",
                     //   label: (
