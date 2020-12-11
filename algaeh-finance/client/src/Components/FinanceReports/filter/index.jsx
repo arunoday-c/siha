@@ -3,7 +3,7 @@ import {
   AlgaehDateHandler,
   AlgaehAutoComplete,
   AlgaehButton,
-  Checkbox,
+  // Checkbox,
 } from "algaeh-react-components";
 // import moment from "moment";
 import details from "./data";
@@ -69,6 +69,8 @@ export default memo(function (props) {
                 dependent,
                 isImp,
                 onClear,
+                checkText,
+                labelText,
               } = filter;
 
               if (component !== undefined) {
@@ -196,19 +198,47 @@ export default memo(function (props) {
                   );
                 case "CH":
                   return (
-                    <Checkbox
+                    // <Checkbox
+                    //   className={className === undefined ? "col" : className}
+                    //   key={index}
+                    //   checked={inputs[int] === "Y" ? true : false}
+                    //   onChange={(e) => {
+                    //     const checked = e.target.checked ? "Y" : "N";
+                    //     updateInput({ [int]: checked });
+                    //     if (typeof onChange === "function")
+                    //       onChange(checked, inputs);
+                    //   }}
+                    // >
+                    //   {name}
+                    // </Checkbox>
+
+                    <div
                       className={className === undefined ? "col" : className}
                       key={index}
-                      checked={inputs[int] === "Y" ? true : false}
-                      onChange={(e) => {
-                        const checked = e.target.checked ? "Y" : "N";
-                        updateInput({ [int]: checked });
-                        if (typeof onChange === "function")
-                          onChange(checked, inputs);
-                      }}
                     >
-                      {name}
-                    </Checkbox>
+                      <label>
+                        {labelText
+                          ? labelText
+                          : title === undefined
+                          ? data
+                          : title}
+                      </label>
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            checked={inputs[int] === "Y" ? true : false}
+                            onChange={(e) => {
+                              const checked = e.target.checked ? "Y" : "N";
+                              updateInput({ [int]: checked });
+                              if (typeof onChange === "function")
+                                onChange(checked, inputs);
+                            }}
+                          />
+                          <span> {checkText ? checkText : name}</span>
+                        </label>
+                      </div>
+                    </div>
                   );
                 default:
                   return null;

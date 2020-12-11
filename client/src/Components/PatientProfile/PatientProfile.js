@@ -135,7 +135,7 @@ class PatientProfile extends Component {
   }
 
   printGeneralConsentForm() {
-    const { current_patient, visit_id, episode_id } = Window.global;
+    const { current_patient } = Window.global;
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -152,14 +152,14 @@ class PatientProfile extends Component {
               name: "patient_id",
               value: current_patient,
             },
-            {
-              name: "visit_id",
-              value: visit_id,
-            },
-            {
-              name: "episode_id",
-              value: episode_id,
-            },
+            // {
+            //   name: "visit_id",
+            //   value: visit_id,
+            // },
+            // {
+            //   name: "episode_id",
+            //   value: episode_id,
+            // },
           ],
           outputFileType: "PDF",
         },

@@ -49,16 +49,14 @@ const executePDF = function executePDFMethod(options) {
               //   .value()
               //   .toFixed(decimal_places);
 
-              const { pos_number, pos_date, cashier_name, net_amount } = _.head(
-                dtl
-              );
+              const { pos_number, pos_date, cashier_name } = _.head(dtl);
               return {
                 service_type: key,
                 detailList: dtl,
                 cashier_name,
                 pos_number,
                 pos_date,
-                net_amount,
+                net_amount: _.sumBy(dtl, (s) => parseFloat(s.PD_net_payable)),
                 // sum_amount: sum_amount,
               };
             })
