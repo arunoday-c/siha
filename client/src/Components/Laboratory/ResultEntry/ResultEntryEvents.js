@@ -427,9 +427,9 @@ function checkRange(row) {
 
   if (!result) {
     return null;
-  } else if (result <= normal_low) {
+  } else if (result < normal_low) {
     return "L";
-  } else if (result >= normal_high) {
+  } else if (result > normal_high) {
     return "H";
   } else {
     return "N";
