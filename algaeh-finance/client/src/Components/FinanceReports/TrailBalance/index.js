@@ -15,7 +15,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   const [filter] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [arabic, setArabic] = useState(false);
-  const [nonZero, setNonZero] = useState(false);
+  // const [nonZero, setNonZero] = useState(false);
   const [showLedgerCode, setLedgerCode] = useState(false);
   // const createPrintObject = useRef(undefined);
 
@@ -155,10 +155,10 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                   ARABIC,
                   SHOWLEDGERCODE,
                 } = inputs;
-                console.log("inputs", inputs);
+
                 setSelectedDates(RANGE);
                 setLoading(true);
-                setNonZero(NONZEROAMOUNT === "Y" ? true : false);
+                // setNonZero(NONZEROAMOUNT === "Y" ? true : false);
                 setArabic(ARABIC === "Y" ? true : false);
                 setLedgerCode(SHOWLEDGERCODE === "Y" ? true : false);
                 getData(ACCOUNTS, LEVELS, RANGE, NONZEROAMOUNT)
@@ -179,6 +179,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
             dates={selectedDates}
             showArabic={arabic}
             showLedgerCode={showLedgerCode}
+            // nonZero={nonZero}
             // createPrintObject={createPrintObject}
           />
         </>

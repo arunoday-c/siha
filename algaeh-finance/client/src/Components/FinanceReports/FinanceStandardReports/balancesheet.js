@@ -31,6 +31,9 @@ export default function BalanceSheet({
   const [BasedOn, setBasedOn] = useState("by_year");
   const [tableProps, setTableProps] = useState({});
   const [levels, setLevels] = useState("2");
+  const [showArabic, setArabic] = useState(false);
+  const [showLedgerCode, setShowLedgerCode] = useState(false);
+  const [nonZero, setNonZero] = useState(false);
   useEffect(() => {
     const { filterKey } = selectedFilter;
     if (filterKey !== undefined) {
@@ -312,6 +315,7 @@ export default function BalanceSheet({
         excel,
         display_column_by,
         levels,
+        nonZero: nonZero ? "Y" : "N",
       },
       extraHeaders,
       options: others,
@@ -359,6 +363,7 @@ export default function BalanceSheet({
       label: "Ledger Name",
       freezable: true,
     });
+
     setColumns(cols);
     let details = [];
     //for Income
@@ -414,7 +419,6 @@ export default function BalanceSheet({
   function forBalanceSheet(records) {
     const { columns, asset, liabilities } = records;
     let cols = [];
-    console.log("columns", columns);
     cols = columns.map((item) => {
       return {
         fieldName: item.column_id,
@@ -425,10 +429,19 @@ export default function BalanceSheet({
       };
     });
     cols.unshift({
-      fieldName: "label",
+      fieldName: showArabic ? "arabic_name" : "label",
       label: "Ledger Name",
       freezable: true,
     });
+
+    if (showLedgerCode) {
+      cols.unshift({
+        fieldName: "ledger_code",
+        label: "Ledger Code",
+        freezable: true,
+      });
+    }
+
     setColumns(cols);
     let details = [];
     //For asset
@@ -448,9 +461,42 @@ export default function BalanceSheet({
     <>
       <div className="row inner-top-search">
         <Filter
-          filters={[firstLevel, filterBuilder([], filter)]}
+          filters={[
+            firstLevel,
+            filterBuilder(filter, [
+              {
+                className: "col-2 formgroup finCusCheckBox",
+                type: "CH",
+                data: "Non Zero amount",
+                checkText: "Yes",
+                labelText: "Hide Zero Account",
+              },
+              {
+                className: "col-2 formgroup finCusCheckBox",
+                type: "CH",
+                data: "Show Ledger Code",
+                checkText: "Yes",
+                labelText: "Show Ledger Code",
+              },
+              {
+                className: "col-2 formgroup finCusCheckBox",
+                type: "CH",
+                data: "Arabic",
+                checkText: "Yes",
+                labelText: "Show Account Name in Arabic",
+              },
+            ]),
+          ]}
           callBack={(inputs, cb) => {
-            const { PREVIOUSRANGE, RANGE, BASEDON, LEVELS } = inputs;
+            const {
+              PREVIOUSRANGE,
+              RANGE,
+              BASEDON,
+              LEVELS,
+              NONZEROAMOUNT,
+              ARABIC,
+              SHOWLEDGERCODE,
+            } = inputs;
             setRangeDate(RANGE);
             setPrevDateRange(PREVIOUSRANGE);
             setChangeInPercentage(inputs["CHANGEIN%"]);
@@ -458,7 +504,9 @@ export default function BalanceSheet({
             setBasedOn(BASEDON);
             setStopLoading(cb);
             setLevels(LEVELS);
-
+            setArabic(ARABIC === "Y" ? true : false);
+            setShowLedgerCode(SHOWLEDGERCODE === "Y" ? true : false);
+            setNonZero(NONZEROAMOUNT === "Y" ? true : false);
             setPreview((result) => {
               return result === undefined ? false : !result;
             });
@@ -468,6 +516,7 @@ export default function BalanceSheet({
       </div>
 
       <ReportLayout
+        showArabic={showArabic}
         title={`${type === "pandl" ? "Profit and Loss" : "Balance Sheet"}  ${
           reportType === "comparison" ? "Comparison" : ""
         }`}

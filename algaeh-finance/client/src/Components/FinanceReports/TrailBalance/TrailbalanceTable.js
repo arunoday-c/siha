@@ -192,9 +192,7 @@ export default function TrailBalaceReport({
   function OnCloseDrillDown() {
     setShowDrillDown(false);
   }
-  const _ledger = showLedgerCode
-    ? { fieldName: "ledger_code", label: "Ledger Code" }
-    : null;
+
   return (
     <>
       <DrillDown
