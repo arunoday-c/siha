@@ -588,6 +588,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 parseFloat(sales_conversion_factor.conversion_factor);
               data.locationResult[i].qtyhand = qtyhand_batch;
             }
+            debugger
 
             $this.setState({
               [name]: value,
@@ -614,7 +615,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               conversion_factor: sales_conversion_factor.conversion_factor,
               sales_qtyhand: sales_qtyhand,
               sales_price: e.sale_price,
-              unit_cost: e.avgcost,
+              unit_cost: data.locationResult[0].avgcost
             });
 
             if (context !== undefined) {
@@ -643,7 +644,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 conversion_factor: sales_conversion_factor.conversion_factor,
                 sales_qtyhand: sales_qtyhand,
                 sales_price: e.sale_price,
-                unit_cost: e.avgcost,
+                unit_cost: data.locationResult[0].avgcost
               });
             }
           } else {

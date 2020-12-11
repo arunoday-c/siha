@@ -211,8 +211,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.itemlist === undefined
       ? []
       : $this.props.itemlist.filter(
-          (f) => f.hims_d_item_master_id === row.item_id
-        );
+        (f) => f.hims_d_item_master_id === row.item_id
+      );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -522,7 +522,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               conversion_factor: sales_conversion_factor.conversion_factor,
               sales_qtyhand: sales_qtyhand,
               sales_price: e.sale_price,
-              unit_cost: e.avgcost,
+              unit_cost: data.locationResult[0].avgcost
             });
 
             if (context !== undefined) {
@@ -551,7 +551,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 conversion_factor: sales_conversion_factor.conversion_factor,
                 sales_qtyhand: sales_qtyhand,
                 sales_price: e.sale_price,
-                unit_cost: e.avgcost,
+                unit_cost: data.locationResult[0].avgcost
               });
             }
           } else {

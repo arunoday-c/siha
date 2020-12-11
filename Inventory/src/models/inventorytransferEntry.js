@@ -945,6 +945,7 @@ export default {
               })
               .then((result_data) => {
                 const headerResult = result_data[0];
+                console.log("headerResult", headerResult)
                 const sub_department_id =
                   result_data[1].length > 0
                     ? result_data[1][0].hims_d_sub_department_id
@@ -1080,7 +1081,7 @@ export default {
                           project_id: project_id,
                           sub_department_id: sub_department_id,
                         },
-                        printQuery: false,
+                        printQuery: true,
                       })
                       .then((subResult) => {
                         next();
