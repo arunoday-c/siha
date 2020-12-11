@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import { Input, Tooltip } from "antd";
 import "./BankMaster.scss";
 import {
   AlagehAutoComplete,
@@ -32,6 +32,7 @@ class BankMaster extends Component {
       card_name: "",
       card_list: [],
       HIMS_Active: false,
+      masked_bank_account: "",
     };
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.getBankMaster();
@@ -107,6 +108,22 @@ class BankMaster extends Component {
       },
     });
   }
+  ToolTipText() {
+    return (
+      <ul style={{ listStyle: "none" }}>
+        <li>1 - is For the numbers</li>
+        <li>a - is For the letters</li>
+        <li>A - is For the letters, forced to upper case when entered</li>
+        <li>* - is For the alphanumericals</li>
+        <li>
+          #- is For the alphanumericals, forced to upper case when entered
+        </li>
+      </ul>
+    );
+  }
+  changeTexts(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
   addBank(e) {
     e.preventDefault();
 
@@ -160,6 +177,7 @@ class BankMaster extends Component {
         address1: data.address1,
         contact_person: data.contact_person,
         contact_number: data.contact_number,
+        masked_bank_account: data.masked_bank_account,
       },
       method: "PUT",
       onSuccess: (response) => {
@@ -381,7 +399,24 @@ class BankMaster extends Component {
                     },
                   }}
                 />
+                <div className="col-6 form-group">
+                  <label className="styleLabel">Bank Account Format</label>
+                  <div className="ui input txt-fld">
+                    <Input
+                      placeholder="##-####-####"
+                      // className="col-3  form-group"
 
+                      name="masked_bank_account"
+                      value={this.state.masked_bank_account}
+                      onChange={this.changeTexts.bind(this)}
+                      suffix={
+                        <Tooltip title={this.ToolTipText}>
+                          <i className="fas fa-info-circle"></i>
+                        </Tooltip>
+                      }
+                    />
+                  </div>
+                </div>
                 <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                   <div className="col">
                     <button
@@ -564,6 +599,35 @@ class BankMaster extends Component {
                                     ),
                                   },
                                 }}
+                              />
+                            );
+                          },
+                        },
+                        {
+                          fieldName: "masked_bank_account",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Bank Account Format" }}
+                            />
+                          ),
+
+                          editorTemplate: (row) => {
+                            return (
+                              <Input
+                                placeholder="##-####-####"
+                                // className="col-3  form-group"
+
+                                name="masked_bank_account"
+                                value={row.masked_bank_account}
+                                onChange={this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                )}
+                                suffix={
+                                  <Tooltip title={this.ToolTipText}>
+                                    <i className="fas fa-info-circle"></i>
+                                  </Tooltip>
+                                }
                               />
                             );
                           },

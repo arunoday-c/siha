@@ -20,7 +20,7 @@ let getPatientUCAF = (req, res, next) => {
           _input.visit_date,
           _input.visit_id,
         ],
-        // printQuery: true
+        printQuery: true,
       })
       .then((result) => {
         const _isInsured = result[1][0]["insured"];
@@ -153,7 +153,7 @@ let getPatientUCAF = (req, res, next) => {
               printQuery: true,
             })
             .then((outputResult) => {
-              const ucaf_service = outputResult[4].concat(outputResult[8])
+              const ucaf_service = outputResult[4].concat(outputResult[8]);
               // let errorString =
               //   outputResult[4].length == 0 ? "Services not yet added \n" : "";
               // errorString +=
@@ -447,7 +447,7 @@ const updateUcafDetails = (req, res, next) => {
           `patient_chief_comp_main_symptoms`=?,`patient_significant_signs`=?,`patient_other_conditions`=?,\
           `patient_diagnosys`=?,`patient_principal_code_1`=?,`patient_principal_code_2`=?,\
           `patient_principal_code_3`=?,`patient_principal_code_4`=?,`patient_complaint_type`=?,\
-          `patient_indicated_LMP`=?,`updated_date`=?,`updated_by`=?\
+          `patient_indicated_LMP`=?,`patient_emergency_type`=?,`updated_date`=?,`updated_by`=?\
           WHERE  `hims_f_ucaf_header_id`=?;",
         values: [
           input.patient_marital_status,
@@ -470,6 +470,7 @@ const updateUcafDetails = (req, res, next) => {
           input.patient_principal_code_4,
           input.patient_complaint_type,
           input.patient_indicated_LMP,
+          input.patient_emergency_type,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.hims_f_ucaf_header_id,

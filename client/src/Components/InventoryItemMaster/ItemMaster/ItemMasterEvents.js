@@ -112,6 +112,7 @@ const InsertUpdateItems = $this => {
       const err = Validations($this);
 
       if (!err) {
+        debugger
         AlgaehLoader({ show: true });
         if ($this.state.hims_d_inventory_item_master_id === null) {
           $this.state.service_code = $this.state.item_code;

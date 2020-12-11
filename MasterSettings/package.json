@@ -14,7 +14,7 @@
     "run-prod": "cross-env PORT=3003 NODE_ENV=production pm2 start  -i 1 build/app.js --name 'master_settings'",
     "run-docker": "cross-env PORT=3003 NODE_ENV=production node build/app.js",
     "start": "run-s build run-prod",
-    "run-dev": "cross-env PORT=3003 NODE_ENV=development nodemon --exec  'node build/app.js'"
+    "run-dev": "cross-env PORT=3003 NODE_ENV=development nodemon --exec  'node --inspect=localhost:2003 build/app.js'"
   },
   "dependencies": {
     "aes-js": "^3.1.2",

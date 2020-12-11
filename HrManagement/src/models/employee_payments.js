@@ -214,7 +214,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select FS.hims_f_final_settlement_header_id, FS.final_settlement_number as request_number, FS.employee_id, \
+            "select FS.hims_f_final_settlement_header_id,FS.forfiet,FS.remarks, FS.final_settlement_number as request_number, FS.employee_id, \
           FS.total_amount as payment_amount, emp.employee_code,emp.full_name from hims_f_final_settlement_header FS, \
           hims_d_employee emp where FS.final_settlement_status = 'AUT' and FS.employee_id = emp.hims_d_employee_id" +
             _stringData,

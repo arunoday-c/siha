@@ -541,6 +541,16 @@ class EmployeePayment extends Component {
                             onChange: texthandle.bind(this, this),
                           }}
                         />
+                        {this.state.remarks !== "" ? (
+                          <div className="col-4">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Remarks",
+                              }}
+                            />
+                            <h6>{this.state.remarks}</h6>
+                          </div>
+                        ) : null}
                         {this.state.payment_mode === "CH" ? (
                           <>
                             <AlagehAutoComplete

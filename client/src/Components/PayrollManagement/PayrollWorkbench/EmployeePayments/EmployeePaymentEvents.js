@@ -373,8 +373,9 @@ const getPaymentDetails = ($this, row) => {
     $this.setState({
       employee_id: row.employee_id,
       payment_type: row.payment_type,
-      payment_amount: row.payment_amount,
+      payment_amount: row.forfiet === "Y" ? 0 : row.payment_amount,
       request_number: row.request_number,
+      remarks: row.remarks,
       full_name: row.full_name,
       employee_final_settlement_id: row.hims_f_final_settlement_header_id,
       payment_mode: null,

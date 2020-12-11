@@ -43,6 +43,7 @@ class FinalSettlement extends Component {
       isEnable: true,
       flag: undefined,
       hospital_id: null,
+      forfeitChecked: false,
     };
     this.getEarningsDeductions();
     this.getHospitals();
@@ -134,6 +135,10 @@ class FinalSettlement extends Component {
               //   gratuity_amount: datas.gratuity_amount,
               // };
             }
+
+            this.setState({
+              forfeitChecked: datas.forfiet === "Y" ? true : false,
+            });
             this.setState(
               {
                 ...dtl,
@@ -300,6 +305,13 @@ class FinalSettlement extends Component {
     });
   }
   saveFinalSettlement(e) {
+    if (this.state.forfeitChecked && this.state.remarks === "") {
+      swalMessage({
+        title: "Please Enter Remarks",
+        type: "error",
+      });
+      return;
+    }
     AlgaehLoader({ show: true });
     const url = e
       ? "/finalsettlement/finalSettlementSave"
@@ -324,7 +336,7 @@ class FinalSettlement extends Component {
       hims_f_leave_encash_header_id: data.hims_f_leave_encash_header_id,
       total_leave_encash_amount: data.total_leave_encash_amount,
       employee_status: data.employee_status,
-      forfiet: this.state.forfiet ? "Y" : "N",
+      forfiet: this.state.forfeitChecked ? "Y" : "N",
       remarks: this.state.remarks,
       posted: null,
       cancelled: null,
@@ -387,6 +399,7 @@ class FinalSettlement extends Component {
         isEnable: true,
         flag: undefined,
         remarks: "",
+        forfeitChecked: false,
       },
       () => {
         if (typeof callBack === "function") callBack();
@@ -1366,14 +1379,9 @@ class FinalSettlement extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="forfiet"
-                              checked={
-                                FsData.forfiet !== undefined
-                                  ? FsData.forfiet === "Y"
-                                    ? true
-                                    : false
-                                  : false
-                              }
+                              name="forfeitChecked"
+                              // value={this.state.forfiet}
+                              checked={this.state.forfeitChecked}
                               onChange={this.changeChecks.bind(this)}
                             />
                             <span>Forfeit Final Settlement</span>

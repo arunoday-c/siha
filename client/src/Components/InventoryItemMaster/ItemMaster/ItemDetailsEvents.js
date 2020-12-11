@@ -1,4 +1,4 @@
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -406,6 +406,26 @@ const numberEventHandaler = ($this, ctrl, e) => {
   });
 };
 
+const getFinanceAccountsMaping = ($this) => {
+  algaehApiCall({
+    uri: "/finance/getFinanceAccountsMaping",
+    data: { accounts: ["DEF_INCOME_INVITM"] },
+    module: "finance",
+    method: "GET",
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        debugger
+        if (response.data.result.length > 0) {
+          $this.setState({
+            head_id: response.data.result[0].head_id,
+            child_id: response.data.result[0].child_id,
+          });
+        }
+      }
+    },
+  });
+}
+
 export {
   texthandle,
   radioChange,
@@ -420,5 +440,6 @@ export {
   stockingtexthandle,
   stockonchangegridcol,
   additionaleInfo,
-  numberEventHandaler
+  numberEventHandaler,
+  getFinanceAccountsMaping
 };
