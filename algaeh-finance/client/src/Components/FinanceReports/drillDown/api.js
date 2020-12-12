@@ -1,5 +1,5 @@
+import { swalMessage } from "../../../utils/algaehApiCall";
 import newAlgaehApi from "../../../hooks/newAlgaehApi";
-
 export async function loadData(input) {
   try {
     const result = await newAlgaehApi({
@@ -22,11 +22,21 @@ const filterData = [
   { type: "credit_note", report: "JVReport_creditNote" },
   { type: "sales", report: "JVReport_sales" },
   { type: "debit_note", report: "JVReport_debitNote" },
+  { type: "expense_voucher", report: "JVReport_expense" },
 ];
+//SalesInvoiceService
 const reportTypes = {
+  //Need clarifications for  item and service
   sales: {
     reportName: "SalesInvoiceEntry",
     reportParams: [{ name: "invoice_number", value: "voucher_no" }],
+  },
+  BL0001: {
+    reportName: "cashReceipt",
+    reportParams: [{ name: "hims_f_billing_header_id", value: "voucher_no" }],
+  },
+  BL0002: {
+    same: "BL0001",
   },
   common: {
     reportParams: [
@@ -48,11 +58,23 @@ const reportTypes = {
 
 export async function generateReport(input) {
   try {
-    const { voucher_type, voucher_no } = input;
+    debugger;
+    const { voucher_no, from_screen, voucher_type, day_end_header_id } = input;
     let _voucherType = "JVReport_expense";
     let _reportParameter = [];
-    const hasReportType = reportTypes[voucher_type];
-    if (hasReportType) {
+    let hasReportType = reportTypes[from_screen];
+    if (hasReportType && day_end_header_id) {
+      const _fromScreen = hasReportType["same"];
+      if (_fromScreen) {
+        hasReportType = reportTypes[_fromScreen];
+        if (!hasReportType) {
+          swalMessage({
+            type: "error",
+            title: "There is no report linked to this report",
+          });
+          return;
+        }
+      }
       _voucherType = hasReportType["reportName"];
       _reportParameter = hasReportType["reportParams"].map((item) => {
         return {
@@ -70,6 +92,12 @@ export async function generateReport(input) {
       const _type = filterData.find((f) => f.type === voucher_type);
       if (_type) {
         _voucherType = _type.report;
+      } else {
+        swalMessage({
+          type: "error",
+          title: "There is no report linked to this report",
+        });
+        return;
       }
     }
 

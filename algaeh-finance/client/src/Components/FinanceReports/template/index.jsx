@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Spin } from "algaeh-react-components";
+import _ from "lodash";
 export default function ({ data, generateReport }) {
   const {
     account_name,
@@ -10,15 +11,27 @@ export default function ({ data, generateReport }) {
   } = data;
   const [loading, setLoading] = useState(false);
   async function onGeneratingReport(input) {
-    const { voucher_no, voucher_type, finance_voucher_header_id } = input;
-    setLoading(true);
+    try {
+      const {
+        voucher_no,
+        voucher_type,
+        finance_voucher_header_id,
+        from_screen,
+        day_end_header_id,
+      } = input;
+      setLoading(true);
 
-    await generateReport({
-      voucher_no,
-      voucher_type,
-      finance_voucher_header_id,
-    });
-    setLoading(false);
+      await generateReport({
+        voucher_no,
+        voucher_type,
+        finance_voucher_header_id,
+        from_screen,
+        day_end_header_id,
+      });
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    }
   }
   return (
     <Spin spinning={loading}>
@@ -48,7 +61,7 @@ export default function ({ data, generateReport }) {
             details.map((item, index) => (
               <tr key={index}>
                 <td>{item.payment_date}</td>
-                <td>{item.voucher_type}</td>
+                <td>{_.startCase(item.voucher_type)}</td>
                 <td>
                   {item.voucher_no ? (
                     <a

@@ -9,15 +9,15 @@ export default {
     const _mysql = new algaehMysql();
     const decimal_places = req.userIdentity.decimal_places;
 
-    const { display_column_by, from_date, to_date } = req.query;
+    const { display_column_by, from_date, to_date, nonZero } = req.query;
     const drillDownLevel = req.query.levels ? parseInt(req.query.levels) : 999;
     _mysql
       .executeQuery({
         query: ` with recursive cte as (
-                select finance_account_head_id,account_code,account_name,       
+                select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,   
                 parent_acc_id from finance_account_head   where  account_code='1' 
                 union                 
-                select H.finance_account_head_id,H.account_code,H.account_name,       
+                select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,       
                 H.parent_acc_id from finance_account_head H  
                 inner join cte on H.parent_acc_id = cte.finance_account_head_id  
                 )select * from cte ;
@@ -25,10 +25,10 @@ export default {
                 where root_id=1;
 
                 with recursive cte as (
-                  select finance_account_head_id,account_code,account_name,       
+                  select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,       
                   parent_acc_id from finance_account_head   where  account_code='2' 
                   union                 
-                  select H.finance_account_head_id,H.account_code,H.account_name,       
+                  select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,       
                   H.parent_acc_id from finance_account_head H  
                   inner join cte on H.parent_acc_id = cte.finance_account_head_id  
                   )select * from cte ;
@@ -36,10 +36,10 @@ export default {
                   where root_id=2;
 
                   with recursive cte as (
-                    select finance_account_head_id,account_code,account_name,       
+                    select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,       
                     parent_acc_id from finance_account_head   where  account_code='3' 
                     union                 
-                    select H.finance_account_head_id,H.account_code,H.account_name,       
+                    select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,       
                     H.parent_acc_id from finance_account_head H  
                     inner join cte on H.parent_acc_id = cte.finance_account_head_id  
                     )select * from cte ;
@@ -47,15 +47,15 @@ export default {
                     where root_id=3; 
                     
                     
-                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,
+                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,H.arabic_account_name,C.arabic_child_name,H.group_code,C.ledger_code,
                     finance_account_child_id,  child_name,head_id from finance_account_head H left join 
                     finance_account_child C on C.head_id=H.finance_account_head_id where root_id=1 order by account_level,sort_order;   
 
-                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,
+                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,H.arabic_account_name,C.arabic_child_name,H.group_code,C.ledger_code,
                     finance_account_child_id,  child_name,head_id from finance_account_head H left join 
                     finance_account_child C on C.head_id=H.finance_account_head_id where root_id=2 order by account_level,sort_order; 
 
-                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,
+                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,H.arabic_account_name,C.arabic_child_name,H.group_code,C.ledger_code,
                     finance_account_child_id,  child_name,head_id from finance_account_head H left join 
                     finance_account_child C on C.head_id=H.finance_account_head_id where root_id=3 order by account_level,sort_order; 
                     SELECT cost_center_type,cost_center_required  FROM finance_options limit 1;`,
@@ -181,6 +181,7 @@ export default {
                 levels: asset_levels,
                 accounting_heads: asset_accounting_heads,
                 drillDownLevel,
+                nonZero,
               };
               generateBalanceSheet(data)
                 .then((assetResult) => {
@@ -404,6 +405,7 @@ export default {
             levels: asset_levels,
             accounting_heads: asset_accounting_heads,
             drillDownLevel,
+            nonZero,
           };
           generateBalanceSheet(data)
             .then((assetResult) => {
@@ -475,6 +477,7 @@ function generateBalanceSheet(options) {
         levels,
         accounting_heads,
         drillDownLevel,
+        nonZero,
       } = options;
 
       _mysql
@@ -505,7 +508,8 @@ function generateBalanceSheet(options) {
             headObj,
             trans_symbol,
             decimal_places,
-            drillDownLevel
+            drillDownLevel,
+            nonZero
           );
           resolve(outputArray[0]);
         })
@@ -603,7 +607,8 @@ function buildHierarchy(
   head_data,
   trans_symbol,
   decimal_places,
-  drillDownLevel
+  drillDownLevel,
+  nonZero
 ) {
   try {
     let roots = [],
@@ -659,17 +664,43 @@ function buildHierarchy(
           }
         }
 
+        if (nonZero === "Y") {
+          let nonExistingArray = [];
+          const ObjProceeding = Object.keys(columns_wise_amounts);
+          ObjProceeding.forEach((eItem) => {
+            const eValue = parseFloat(columns_wise_amounts[eItem]);
+            if (eValue === 0) {
+              nonExistingArray.push(eItem);
+            }
+          });
+          let notPush = nonExistingArray.length === ObjProceeding.length;
+
+          if (!notPush) {
+            child.push({
+              finance_account_child_id: item["finance_account_child_id"],
+              trans_symbol: trans_symbol,
+              ...columns_wise_amounts,
+              arabic_name: item.arabic_child_name,
+              label: item.child_name,
+              head_id: item["head_id"],
+              ledger_code: item.ledger_code,
+              leafnode: "Y",
+            });
+          }
+        } else {
+          child.push({
+            finance_account_child_id: item["finance_account_child_id"],
+            trans_symbol: trans_symbol,
+            ...columns_wise_amounts,
+            arabic_name: item.arabic_child_name,
+            label: item.child_name,
+            head_id: item["head_id"],
+            ledger_code: item.ledger_code,
+            leafnode: "Y",
+          });
+        }
+
         //END---calulating Amount
-        child.push({
-          finance_account_child_id: item["finance_account_child_id"],
-          trans_symbol: trans_symbol,
-          ...columns_wise_amounts,
-
-          label: item.child_name,
-          head_id: item["head_id"],
-
-          leafnode: "Y",
-        });
 
         //if children array doesnt contain this non-leaf node then push
         const data = target.find((val) => {
@@ -698,17 +729,43 @@ function buildHierarchy(
             }
           }
 
+          if (nonZero === "Y") {
+            let nonExistingArray = [];
+            const ObjProceeding = Object.keys(columns_wise_amounts);
+            ObjProceeding.forEach((eItem) => {
+              const eValue = parseFloat(columns_wise_amounts[eItem]);
+              if (eValue === 0) {
+                nonExistingArray.push(eItem);
+              }
+            });
+            let notPush = nonExistingArray.length === ObjProceeding.length;
+
+            if (!notPush) {
+              const { arabic_account_name, group_code, ...others } = item;
+              target.push({
+                ...others,
+                trans_symbol: trans_symbol,
+                ...columns_wise_amounts,
+                arabic_name: arabic_account_name,
+                label: item.account_name,
+                ledger_code: group_code,
+                leafnode: "N",
+              });
+            }
+          } else {
+            const { arabic_account_name, group_code, ...others } = item;
+            target.push({
+              ...others,
+              trans_symbol: trans_symbol,
+              ...columns_wise_amounts,
+              arabic_name: arabic_account_name,
+              label: item.account_name,
+              ledger_code: group_code,
+              leafnode: "N",
+            });
+          }
+
           //END---calulating Amount
-
-          target.push({
-            ...item,
-            trans_symbol: trans_symbol,
-            ...columns_wise_amounts,
-
-            label: item.account_name,
-
-            leafnode: "N",
-          });
         }
       } else {
         let columns_wise_amounts = {};
@@ -732,17 +789,43 @@ function buildHierarchy(
           }
         }
 
+        if (nonZero === "Y") {
+          let nonExistingArray = [];
+          const ObjProceeding = Object.keys(columns_wise_amounts);
+          ObjProceeding.forEach((eItem) => {
+            const eValue = parseFloat(columns_wise_amounts[eItem]);
+            if (eValue === 0) {
+              nonExistingArray.push(eItem);
+            }
+          });
+          let notPush = nonExistingArray.length === ObjProceeding.length;
+
+          if (!notPush) {
+            const { arabic_account_name, group_code, ...others } = item;
+            target.push({
+              ...others,
+              trans_symbol: trans_symbol,
+              ...columns_wise_amounts,
+              ledger_code: group_code,
+              label: item.account_name,
+              arabic_name: arabic_account_name,
+              leafnode: "N",
+            });
+          }
+        } else {
+          const { arabic_account_name, group_code, ...others } = item;
+          target.push({
+            ...others,
+            trans_symbol: trans_symbol,
+            ...columns_wise_amounts,
+            ledger_code: group_code,
+            label: item.account_name,
+            arabic_name: arabic_account_name,
+            leafnode: "N",
+          });
+        }
+
         //END---calulating Amount
-
-        target.push({
-          ...item,
-          trans_symbol: trans_symbol,
-          ...columns_wise_amounts,
-
-          label: item.account_name,
-
-          leafnode: "N",
-        });
       }
     }
 
