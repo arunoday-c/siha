@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
-// import ReactToPrint from "react-to-print";
-// import { PlotUI } from "./plotui";
-import { newAlgaehApi } from "../../../hooks";
-// import { handleFile } from "../FinanceReportEvents";
 import { AlgaehMessagePop } from "algaeh-react-components";
 import Filter from "../filter";
 import ReportLayout from "../printlayout";
+import DrillDown from "../drillDown";
+import moment from "moment";
+import { newAlgaehApi } from "../../../hooks";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 export default function BalanceSheet({
   style,
@@ -34,6 +32,8 @@ export default function BalanceSheet({
   const [showArabic, setArabic] = useState(false);
   const [showLedgerCode, setShowLedgerCode] = useState(false);
   const [nonZero, setNonZero] = useState(false);
+  const [showDrillDown, setShowDrillDown] = useState(false);
+  const [row, setRow] = useState(undefined);
   useEffect(() => {
     const { filterKey } = selectedFilter;
     if (filterKey !== undefined) {
@@ -424,7 +424,25 @@ export default function BalanceSheet({
         fieldName: item.column_id,
         label: item.label,
         displayTemplate: (row) => {
-          return getAmountFormart(row[item.column_id], { appendSymbol: false });
+          const rec = getAmountFormart(row[item.column_id], {
+            appendSymbol: false,
+          });
+          if (row.leafnode === "Y") {
+            return (
+              <a
+                className="underLine"
+                href="void(0);"
+                onClick={(e) => {
+                  e.preventDefault();
+                  OpenDrillDown(row);
+                }}
+              >
+                {rec}
+              </a>
+            );
+          } else {
+            return rec;
+          }
         },
       };
     });
@@ -456,9 +474,22 @@ export default function BalanceSheet({
     const newFilter = existing.concat(updated);
     return newFilter;
   }
-
+  function OnCloseDrillDown() {
+    setShowDrillDown(false);
+  }
+  function OpenDrillDown(rec) {
+    // if( "by_year")
+    setShowDrillDown(true);
+    setRow(rec);
+  }
   return (
     <>
+      <DrillDown
+        visible={showDrillDown}
+        onClose={OnCloseDrillDown}
+        row={row}
+        dates={dates}
+      />
       <div className="row inner-top-search">
         <Filter
           filters={[

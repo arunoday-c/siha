@@ -151,7 +151,6 @@ export default function TrailBalaceReport({
                   href="void(0);"
                   onClick={(e) => {
                     e.preventDefault();
-                    console.log("row", row);
                     OpenDrillDown(row);
                   }}
                 >
