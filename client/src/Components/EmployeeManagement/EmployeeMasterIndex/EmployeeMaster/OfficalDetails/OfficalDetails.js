@@ -43,6 +43,7 @@ class OfficalDetails extends Component {
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     InputOutput.HIMS_Active = this.props.EmpMasterIOputs.state.HIMS_Active;
     InputOutput.HRMS_Active = this.props.EmpMasterIOputs.state.HRMS_Active;
+
     this.setState({ ...this.state, ...InputOutput }, () => {
       if (
         this.props.eosReasons === undefined ||
@@ -84,6 +85,23 @@ class OfficalDetails extends Component {
             type: "BANK_GET_DATA",
             mappingName: "banks",
           },
+          afterSuccess: (data) => {
+            let employeeBankAccFormat = data.find((item) => {
+              return item.hims_d_bank_id === InputOutput.employee_bank_id;
+            });
+
+            this.setState({
+              masked_bank_account: employeeBankAccFormat.masked_bank_account,
+            });
+          },
+        });
+      } else {
+        let employeeBankAccFormat = this.props.banks.find((item) => {
+          return item.hims_d_bank_id === InputOutput.employee_bank_id;
+        });
+
+        this.setState({
+          masked_bank_account: employeeBankAccFormat?.masked_bank_account,
         });
       }
       if (
@@ -950,7 +968,7 @@ class OfficalDetails extends Component {
                     />
                   )}
                 </div>
-                <h5>
+                {/* <h5>
                   <span>Company Bank Details</span>
                 </h5>
                 <div className="row paddin-bottom-5">
@@ -1007,7 +1025,7 @@ class OfficalDetails extends Component {
                       },
                     }}
                   />
-                </div>
+                </div> */}
               </div>
             ) : null}
           </div>

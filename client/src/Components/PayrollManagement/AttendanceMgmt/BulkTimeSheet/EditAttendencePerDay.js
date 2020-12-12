@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import {
   AlgaehLabel,
-  AlagehAutoComplete,
+  // AlagehAutoComplete,
   AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import ButtonType from "../../../Wrapper/algaehButton";
@@ -13,10 +13,14 @@ export default function EditAttendencePerDay(props) {
   const { onClose, project_state } = props;
   const [projectId, setProjectId] = useState("");
   const [workingHours, setWorkingHours] = useState("");
+  const [searchprojects, setSearchProject] = useState("");
+  const [projectList, setProjectList] = useState([]);
+
   const [loadingProcess, setLoadingProcess] = useState(false);
 
   useEffect(() => {
     if (project_state.showPopup) {
+      setProjectList(project_state.projects);
       setProjectId(project_state.project_id || "");
       setWorkingHours(project_state.worked_hours || "");
     } else {
@@ -26,7 +30,6 @@ export default function EditAttendencePerDay(props) {
   }, [project_state]);
 
   function SaveAttendanceAndProject(options) {
-    debugger;
     const { projectId, workingHours } = options;
 
     algaehApiCall({
@@ -42,6 +45,7 @@ export default function EditAttendencePerDay(props) {
       onSuccess: (response) => {
         if (response.data.success) {
           setLoadingProcess(false);
+          setSearchProject("");
           if (response.data.result[0] === undefined) {
             const split_hr_min = workingHours.toString().split(".");
             let mins = "00";
@@ -66,7 +70,19 @@ export default function EditAttendencePerDay(props) {
       },
     });
   }
-
+  const SearchHandler = (e) => {
+    let ProjectSearch = e.target.value.toLowerCase(),
+      projects = project_state.projects.filter((el) => {
+        let searchValue = el.project_desc.toLowerCase();
+        return searchValue.indexOf(ProjectSearch) !== -1;
+      });
+    setSearchProject(e.target.value);
+    setProjectList(projects);
+  };
+  const projectHandler = (data, e) => {
+    setSearchProject(data.project_desc);
+    setProjectId(data.hims_d_project_id);
+  };
   return (
     <AlgaehModalPopUp
       class="editBulkCellPopup"
@@ -105,7 +121,65 @@ export default function EditAttendencePerDay(props) {
                   : "--------"}
               </h6>
             </div>
-            <AlagehAutoComplete
+            <div className="col-4">
+              <h6>Select Project</h6>
+              <div className="row">
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "searchProjects",
+                    value: searchprojects,
+                    events: {
+                      onChange: SearchHandler,
+                    },
+                    option: {
+                      type: "text",
+                    },
+                    others: {
+                      placeholder: "Search projects",
+                      tabIndex: "4",
+                    },
+                  }}
+                />
+              </div>
+
+              {/* <input
+                  type="text"
+                  autoComplete="off"
+                  name="searchprojects"
+                  className="rosterSrch"
+                  placeholder="Search projects"
+                  value={this.state.searchprojects}
+                  onChange={this.SearchHandler.bind(this)}
+                /> */}
+              <ul className="projectList">
+                {projectList.map((data, index) => {
+                  return (
+                    <li key={index}>
+                      <input
+                        id={data.project_id}
+                        name="hims_d_project_id"
+                        value={data}
+                        onChange={() => {
+                          projectHandler(data);
+                        }}
+                        type="radio"
+                      />
+                      <label
+                        htmlFor={data.project_id}
+                        style={{
+                          width: "80%",
+                        }}
+                      >
+                        <span>{data.project_desc}</span>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+            {/* <AlagehAutoComplete
               div={{ className: "col-7 form-group mandatory" }}
               label={{
                 forceLabel: "Assigned Project",
@@ -129,7 +203,7 @@ export default function EditAttendencePerDay(props) {
                   setWorkingHours("");
                 },
               }}
-            />
+            /> */}
 
             <AlagehFormGroup
               div={{ className: "col-5 form-group mandatory" }}

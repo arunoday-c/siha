@@ -78,6 +78,7 @@ class PersonalDetails extends Component {
         : false;
 
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+
     InputOutput.HIMS_Active = HIMS_Active;
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.titles === undefined || this.props.titles.length === 0) {
@@ -142,6 +143,27 @@ class PersonalDetails extends Component {
           type: "IDTYPE_GET_DATA",
           mappingName: "idtypes",
         },
+        afterSuccess: (data) => {
+          let maskedIdentity = data.find((item) => {
+            return (
+              item.hims_d_identity_document_id === InputOutput.identity_type_id
+            );
+          });
+
+          this.setState({
+            masked_identity: maskedIdentity.masked_identity,
+          });
+        },
+      });
+    } else {
+      let maskedIdentity = this.props.idtypes.find((item) => {
+        return (
+          item.hims_d_identity_document_id === InputOutput.identity_type_id
+        );
+      });
+
+      this.setState({
+        masked_identity: maskedIdentity?.masked_identity,
       });
     }
 

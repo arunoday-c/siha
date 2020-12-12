@@ -5,14 +5,14 @@ import Enumerable from "linq";
 import moment from "moment";
 import _ from "lodash";
 
-const Validations = $this => {
+const Validations = ($this) => {
   let isError = false;
 
   if ($this.state.personalDetails.date_of_joining === null) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Date of Joining. Cannot be blank."
+      title: "Date of Joining. Cannot be blank.",
     });
 
     return isError;
@@ -22,7 +22,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Religion. Cannot be blank."
+      title: "Religion. Cannot be blank.",
     });
 
     return isError;
@@ -34,7 +34,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Date of Leaving. Cannot be blank."
+      title: "Date of Leaving. Cannot be blank.",
     });
 
     return isError;
@@ -42,7 +42,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Appointment Type. Cannot be blank."
+      title: "Appointment Type. Cannot be blank.",
     });
 
     return isError;
@@ -50,7 +50,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Employee Type. Cannot be blank."
+      title: "Employee Type. Cannot be blank.",
     });
 
     return isError;
@@ -58,7 +58,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Employee Status. Cannot be blank."
+      title: "Employee Status. Cannot be blank.",
     });
 
     return isError;
@@ -66,7 +66,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Sub Department. Cannot be blank."
+      title: "Sub Department. Cannot be blank.",
     });
 
     return isError;
@@ -74,7 +74,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Branch. Cannot be blank."
+      title: "Branch. Cannot be blank.",
     });
 
     return isError;
@@ -82,7 +82,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Designation. Cannot be blank."
+      title: "Designation. Cannot be blank.",
     });
 
     return isError;
@@ -90,7 +90,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Reporting To. Cannot be blank."
+      title: "Reporting To. Cannot be blank.",
     });
 
     return isError;
@@ -104,7 +104,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Overtime Group. Cannot be blank."
+        title: "Overtime Group. Cannot be blank.",
       });
 
       return isError;
@@ -112,7 +112,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Employee Group. Cannot be blank."
+        title: "Employee Group. Cannot be blank.",
       });
 
       return isError;
@@ -120,7 +120,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Employee Bank. Cannot be blank."
+        title: "Employee Bank. Cannot be blank.",
       });
 
       return isError;
@@ -128,7 +128,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "SWIFT Code. Cannot be blank."
+        title: "SWIFT Code. Cannot be blank.",
       });
 
       return isError;
@@ -136,27 +136,27 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Account Number. Cannot be blank."
+        title: "Account Number. Cannot be blank.",
       });
-
-      return isError;
-    } else if ($this.state.personalDetails.company_bank_id === null) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Employeer Bank. Cannot be blank."
-      });
-
-      return isError;
-    } else if ($this.state.personalDetails.mode_of_payment === null) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Mode of Payment. Cannot be blank."
-      });
-
-      return isError;
     }
+    return isError;
+    // } else if ($this.state.personalDetails.company_bank_id === null) {
+    //   isError = true;
+    //   swalMessage({
+    //     type: "warning",
+    //     title: "Employeer Bank. Cannot be blank."
+    //   });
+
+    //   return isError;
+    // } else if ($this.state.personalDetails.mode_of_payment === null) {
+    //   isError = true;
+    //   swalMessage({
+    //     type: "warning",
+    //     title: "Mode of Payment. Cannot be blank."
+    //   });
+
+    //   return isError;
+    // }
   }
 
   // else if ($this.state.personalDetails.deptDetails !== 0) {
@@ -177,7 +177,7 @@ const Validations = $this => {
   return false;
 };
 
-const InsertUpdateEmployee = $this => {
+const InsertUpdateEmployee = ($this) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='empPersonal'",
@@ -238,7 +238,7 @@ const InsertUpdateEmployee = $this => {
         const activeDept = Enumerable.from(
           $this.state.personalDetails.deptDetails
         )
-          .where(w => w.dep_status === "A")
+          .where((w) => w.dep_status === "A")
           .toArray();
 
         if (activeDept.length !== 0) {
@@ -266,19 +266,19 @@ const InsertUpdateEmployee = $this => {
 
         const _payload = {
           hospital_id: $this.state.hospital_id,
-          ...inputObj
+          ...inputObj,
         };
 
         let _arrayImages = [];
         if (inputObj.hims_d_employee_id === null) {
           let employee_code_exists = _.find(
             $this.props.Employeedetails,
-            f => f.employee_code === inputObj.employee_code
+            (f) => f.employee_code === inputObj.employee_code
           );
           if (employee_code_exists !== undefined) {
             swalMessage({
               title: inputObj.employee_code + " Employee Code. Already Exists",
-              type: "warning"
+              type: "warning",
             });
             return;
           }
@@ -286,7 +286,7 @@ const InsertUpdateEmployee = $this => {
             uri: "/employee/addEmployeeMaster",
             module: "hrManagement",
             data: _payload,
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success === true) {
                 if (_employeeImage !== undefined) {
                   _arrayImages.push(
@@ -333,24 +333,24 @@ const InsertUpdateEmployee = $this => {
                       insertservTypeCommission: [],
                       insertserviceComm: [],
                       updateserviceComm: [],
-                      updateservTypeCommission: []
-                    }
+                      updateservTypeCommission: [],
+                    },
                   },
                   () => $this.props.onClose && $this.props.onClose(true)
                 );
 
                 swalMessage({
                   type: "success",
-                  title: "Saved Successfully."
+                  title: "Saved Successfully.",
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.response.data.message || error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         } else {
           algaehApiCall({
@@ -358,7 +358,7 @@ const InsertUpdateEmployee = $this => {
             module: "hrManagement",
             data: _payload,
             method: "PUT",
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success === true) {
                 if (_employeeImage !== undefined) {
                   _arrayImages.push(
@@ -403,27 +403,27 @@ const InsertUpdateEmployee = $this => {
                       insertservTypeCommission: [],
                       insertserviceComm: [],
                       updateserviceComm: [],
-                      updateservTypeCommission: []
-                    }
+                      updateservTypeCommission: [],
+                    },
                   },
                   () => $this.props.onClose && $this.props.onClose(true)
                 );
                 swalMessage({
                   type: "success",
-                  title: "Updated Successfully."
+                  title: "Updated Successfully.",
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.message || error.response.data.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
       }
-    }
+    },
   });
 };
 
@@ -433,7 +433,7 @@ const generateEmployeeContract = ($this, empEvent) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -442,13 +442,13 @@ const generateEmployeeContract = ($this, empEvent) => {
         reportParams: [
           {
             name: "hims_d_employee_id",
-            value: $this.state.personalDetails.hims_d_employee_id
-          }
+            value: $this.state.personalDetails.hims_d_employee_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -462,9 +462,8 @@ const generateEmployeeContract = ($this, empEvent) => {
       const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Employee Contract`;
       window.open(origin);
-    }
+    },
   });
 };
-
 
 export { InsertUpdateEmployee, generateEmployeeContract };
