@@ -1,6 +1,6 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
@@ -413,6 +413,27 @@ const numberEventHandaler = ($this, ctrl, e) => {
   });
 };
 
+
+const getFinanceAccountsMaping = ($this) => {
+  algaehApiCall({
+    uri: "/finance/getFinanceAccountsMaping",
+    data: { accounts: ["DEF_INCOME_PHAR"] },
+    module: "finance",
+    method: "GET",
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        debugger
+        if (response.data.result.length > 0) {
+          $this.setState({
+            head_id: response.data.result[0].head_id,
+            child_id: response.data.result[0].child_id,
+          });
+        }
+      }
+    },
+  });
+}
+
 export {
   texthandle,
   AddUom,
@@ -427,5 +448,6 @@ export {
   BatchExpRequired,
   CptCodesSearch,
   VatAppilicable,
-  numberEventHandaler
+  numberEventHandaler,
+  getFinanceAccountsMaping
 };

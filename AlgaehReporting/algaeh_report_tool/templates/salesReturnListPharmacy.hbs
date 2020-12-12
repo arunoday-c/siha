@@ -27,7 +27,7 @@
                 <tbody>
                     {{#each detail}}
                     <tr>
-                        <td colspan="13" class="tableSubHdg">{{sales_return_number}} - {{sales_return_date}}</td>
+                        <td colspan="13" class="tableSubHdg">{{sales_return_number}} - {{sales_return_date}}  <span style="float: right;">Cashier:{{cashier_name}}</span></td>
                     </tr>
                     {{#each detailList}}
                     <tr>
@@ -48,12 +48,12 @@
                     </tr>
                     {{/each }}
                     <tr class="footerTotalDown">
-                        <td colspan="10" class="numberFld"> <span style="float: left;">Cashier:{{cashier_name}}</span>Total Amount</td>
+                        <td colspan="11" class="numberFld">Total Amount</td>
                         <td class="numberFld">{{net_amount}}</td>
                     </tr>
                     {{/each }}
                     <tr class="numberFldTotalBottom">
-                        <td colspan="11"></td>
+                        <td colspan="11"  class="numberFld">Net Total</td>
                         <td class="numberFld">{{net_total}}</td>
 
                     </tr>

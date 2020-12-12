@@ -33,6 +33,7 @@ import {
   stockonchangegridcol,
   additionaleInfo,
   numberEventHandaler,
+  getFinanceAccountsMaping
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components";
@@ -45,12 +46,25 @@ class InvItemMaster extends Component {
       stocking_uom: null,
       conversion_factor: 0,
       convertEnable: false,
+      head_id: null,
+      child_id: null
     };
   }
 
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
+
+    const FIN_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
+        ? true
+        : false;
+
+    if (FIN_Active === true) {
+      getFinanceAccountsMaping(this);
+    }
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,

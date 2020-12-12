@@ -536,6 +536,10 @@ export default {
                   (f) => f.account === "PHAR_REC"
                 );
 
+                const pos_ctrl_acc = result[0].find(
+                  (f) => f.account === "POS_CTRL"
+                );
+
                 const income_acc = result[1];
                 const item_waited_avg_cost = result[2];
                 const location_acc = result[3];
@@ -645,6 +649,25 @@ export default {
                           parseFloat(inputParam.company_tax),
                         payment_type: "DR",
                         credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id,
+                      });
+                    }
+                    // console.log("inputParam.insured", inputParam.insured)
+                    // console.log("inputParam.company_payable", inputParam.company_payable)
+                    // consol
+
+                    if (
+                      inputParam.insurance_provider_id > 0 &&
+                      parseFloat(inputParam.company_payable) > 0
+                    ) {
+                      console.log("Insurance")
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: pos_ctrl_acc.head_id,
+                        child_id: pos_ctrl_acc.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: inputParam.company_payable,
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }

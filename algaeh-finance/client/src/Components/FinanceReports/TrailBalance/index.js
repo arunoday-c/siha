@@ -15,7 +15,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   const [filter] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [arabic, setArabic] = useState(false);
-  const [nonZero, setNonZero] = useState(false);
+  // const [nonZero, setNonZero] = useState(false);
   const [showLedgerCode, setLedgerCode] = useState(false);
   // const createPrintObject = useRef(undefined);
 
@@ -100,7 +100,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                     },
 
                     {
-                      className: "col-4 form-group",
+                      className: "col-3 form-group",
                       type: "DH|RANGE",
                       data: "YEAR",
                       title: "RANGE",
@@ -122,19 +122,25 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                       },
                     },
                     {
-                      className: "col formgroup finCusCheckBox",
-                      type: "CH",
-                      data: "Arabic",
-                    },
-                    {
-                      className: "col formgroup finCusCheckBox",
+                      className: "col-2 formgroup finCusCheckBox",
                       type: "CH",
                       data: "Non Zero amount",
+                      checkText: "Yes",
+                      labelText: "Hide Zero Account",
                     },
                     {
-                      className: "col formgroup finCusCheckBox",
+                      className: "col-2 formgroup finCusCheckBox",
                       type: "CH",
                       data: "Show Ledger Code",
+                      checkText: "Yes",
+                      labelText: "Show Ledger Code",
+                    },
+                    {
+                      className: "col-2 formgroup finCusCheckBox",
+                      type: "CH",
+                      data: "Arabic",
+                      checkText: "Yes",
+                      labelText: "Show Account Name in Arabic",
                     },
                   ],
                   []
@@ -149,10 +155,10 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                   ARABIC,
                   SHOWLEDGERCODE,
                 } = inputs;
-                console.log("inputs", inputs);
+
                 setSelectedDates(RANGE);
                 setLoading(true);
-                setNonZero(NONZEROAMOUNT === "Y" ? true : false);
+                // setNonZero(NONZEROAMOUNT === "Y" ? true : false);
                 setArabic(ARABIC === "Y" ? true : false);
                 setLedgerCode(SHOWLEDGERCODE === "Y" ? true : false);
                 getData(ACCOUNTS, LEVELS, RANGE, NONZEROAMOUNT)
@@ -173,6 +179,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
             dates={selectedDates}
             showArabic={arabic}
             showLedgerCode={showLedgerCode}
+            // nonZero={nonZero}
             // createPrintObject={createPrintObject}
           />
         </>

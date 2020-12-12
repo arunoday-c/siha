@@ -579,6 +579,29 @@ class EmployeeMasterIndex extends Component {
                         style: { textAlign: "center" },
                       },
                     },
+                    {
+                      fieldName: "createdUser",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Created By" }} />
+                      ),
+
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "updatedUser",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Updated By" }} />
+                      ),
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
                     // {
                     //   fieldName: "license_number",
                     //   label: (

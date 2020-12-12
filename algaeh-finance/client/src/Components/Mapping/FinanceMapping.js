@@ -16,16 +16,19 @@ export default function Mapping(props) {
     Promise.all([
       getHeaders({ finance_account_head_id: 1 }),
       getHeaders({ finance_account_head_id: 2 }),
+      getHeaders({ finance_account_head_id: 4 }),
       getHeaders({ finance_account_head_id: 5 }),
       getFinanceAccountsMaping(),
     ])
       .then((results) => {
+        debugger
         setAccountHeads({
           1: results[0][0].children,
           2: results[1][0].children,
-          5: results[2][0].children,
+          4: results[2][0].children,
+          5: results[3][0].children,
         });
-        setMappings(results[3]);
+        setMappings(results[4]);
       })
       .catch((error) => {
         AlgaehMessagePop({
@@ -95,6 +98,7 @@ export default function Mapping(props) {
                       data: [
                         ...accountHeads[1],
                         ...accountHeads[2],
+                        ...accountHeads[4],
                         ...accountHeads[5],
                       ],
                       textField: "label",

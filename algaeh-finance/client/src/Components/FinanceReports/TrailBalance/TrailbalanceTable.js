@@ -151,7 +151,6 @@ export default function TrailBalaceReport({
                   href="void(0);"
                   onClick={(e) => {
                     e.preventDefault();
-                    console.log("row", row);
                     OpenDrillDown(row);
                   }}
                 >
@@ -192,9 +191,7 @@ export default function TrailBalaceReport({
   function OnCloseDrillDown() {
     setShowDrillDown(false);
   }
-  const _ledger = showLedgerCode
-    ? { fieldName: "ledger_code", label: "Ledger Code" }
-    : null;
+
   return (
     <>
       <DrillDown

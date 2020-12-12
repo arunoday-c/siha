@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
-// import ReactToPrint from "react-to-print";
-// import { PlotUI } from "./plotui";
-import { newAlgaehApi } from "../../../hooks";
-// import { handleFile } from "../FinanceReportEvents";
 import { AlgaehMessagePop } from "algaeh-react-components";
 import Filter from "../filter";
 import ReportLayout from "../printlayout";
+import DrillDown from "../drillDown";
+import moment from "moment";
+import { newAlgaehApi } from "../../../hooks";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 export default function BalanceSheet({
   style,
@@ -14,7 +12,7 @@ export default function BalanceSheet({
   layout,
   dates,
   selectedFilter,
-  type
+  type,
 }) {
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
@@ -31,6 +29,11 @@ export default function BalanceSheet({
   const [BasedOn, setBasedOn] = useState("by_year");
   const [tableProps, setTableProps] = useState({});
   const [levels, setLevels] = useState("2");
+  const [showArabic, setArabic] = useState(false);
+  const [showLedgerCode, setShowLedgerCode] = useState(false);
+  const [nonZero, setNonZero] = useState(false);
+  const [showDrillDown, setShowDrillDown] = useState(false);
+  const [row, setRow] = useState(undefined);
   useEffect(() => {
     const { filterKey } = selectedFilter;
     if (filterKey !== undefined) {
@@ -42,7 +45,7 @@ export default function BalanceSheet({
             type: "AC",
             data: "PERIOD",
             initalStates: "TMTD",
-            dependent: ["Range"]
+            dependent: ["Range"],
           },
           {
             className: "col-3 form-group",
@@ -57,35 +60,39 @@ export default function BalanceSheet({
                 const previousto = tdt.subtract(1, "years");
                 cb({
                   PREVIOUSRANGE: [previousfrom, previousto],
-                  RANGE: selected
+                  RANGE: selected,
                 });
               } else {
                 cb({ RANGE: selected });
               }
-            }
+            },
           },
           {
             className: "col-3 form-group",
             type: "DH|RANGE",
             data: "PREVIOUS RANGE",
-            maxDate: moment()
+            maxDate: moment(),
           },
           {
-            className: "col formgroup finCusCheckBox",
+            className: "col-2 formgroup finCusCheckBox",
             type: "CH",
-            data: "Change in Amt."
+            data: "Change in Amt.",
+            checkText: "Yes",
+            labelText: "Change in Amt.",
           },
           {
-            className: "col formgroup finCusCheckBox",
+            className: "col-2 formgroup finCusCheckBox",
             type: "CH",
-            data: "Change in %"
+            data: "Change in %",
+            checkText: "Yes",
+            labelText: "Change in %",
           },
           {
             className: "col-2 form-group",
             type: "AC",
             data: "LEVELS",
-            initalStates: "2"
-          }
+            initalStates: "2",
+          },
         ];
         setFilter(newFilter);
         setFirstLevel([]);
@@ -95,22 +102,22 @@ export default function BalanceSheet({
           {
             className: "col-3 form-group",
             type: "DH|RANGE",
-            data: "RANGE"
-          }
+            data: "RANGE",
+          },
         ]);
         setFirstLevel([
           {
             className: "col-2 form-group",
             type: "AC",
             data: "BASEDON",
-            initalStates: "by_year"
+            initalStates: "by_year",
           },
           {
             className: "col-2 form-group",
             type: "AC",
             data: "LEVELS",
-            initalStates: "2"
-          }
+            initalStates: "2",
+          },
         ]);
         setReportType("balancesheet");
       }
@@ -119,26 +126,26 @@ export default function BalanceSheet({
         {
           className: "col-3 form-group",
           type: "DH|RANGE",
-          data: "RANGE"
-        }
+          data: "RANGE",
+        },
       ]);
       setFirstLevel([
         {
           className: "col-2 form-group",
           type: "AC",
           data: "BASEDON",
-          initalStates: "by_year"
+          initalStates: "by_year",
         },
         {
           className: "col-2 form-group",
           type: "AC",
           data: "LEVELS",
-          initalStates: "2"
-        }
+          initalStates: "2",
+        },
       ]);
     }
     setPreview(undefined);
-    setTriggerUpdate(result => {
+    setTriggerUpdate((result) => {
       return !result;
     });
   }, [selectedFilter]); // eslint-disable-line
@@ -161,7 +168,7 @@ export default function BalanceSheet({
     let others = {};
     if (excel === true) {
       extraHeaders = {
-        Accept: "blob"
+        Accept: "blob",
       };
       others = { responseType: "blob" };
     }
@@ -188,12 +195,12 @@ export default function BalanceSheet({
         prev_from_date,
         prev_to_date,
         excel,
-        levels
+        levels,
       },
       extraHeaders,
-      options: others
+      options: others,
     })
-      .then(response => {
+      .then((response) => {
         const { records } = response.data;
 
         if (type === "balance") {
@@ -203,29 +210,29 @@ export default function BalanceSheet({
         }
         if (typeof stopLoading === "function") stopLoading();
       })
-      .catch(error => {
+      .catch((error) => {
         if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
           title: "error",
-          display: error.message
+          display: error.message,
         });
       });
   }
   function forBalanceComparision(records) {
     const { columns: col, asset, liabilities } = records;
-    let cols = col.map(item => {
+    let cols = col.map((item) => {
       return {
         fieldName: item.column_id,
         label: item.label,
-        displayTemplate: row => {
+        displayTemplate: (row) => {
           return getAmountFormart(row[item.column_id], { appendSymbol: false });
-        }
+        },
       };
     });
     cols.unshift({
       fieldName: "label",
       label: "Ledger Name",
-      freezable: true
+      freezable: true,
     });
     let details = [];
     //For asset
@@ -238,21 +245,21 @@ export default function BalanceSheet({
   }
   function forPandLComparision(records) {
     const { columns, income, Direct_expense, Indirect_expense } = records;
-    let cols = columns.map(col => {
+    let cols = columns.map((col) => {
       const { column_id, label } = col;
       return {
         fieldName: column_id,
         label: label,
-        displayTemplate: row => {
+        displayTemplate: (row) => {
           return getAmountFormart(row[column_id], { appendSymbol: false });
-        }
+        },
       };
     });
 
     cols.unshift({
       fieldName: "label",
       label: "Ledger Name",
-      freezable: true
+      freezable: true,
       // filterable: true
     });
     setColumns(cols);
@@ -264,7 +271,7 @@ export default function BalanceSheet({
     //For Indirect Expense
     //For Indirect Expense
     if (Array.isArray(Indirect_expense)) {
-      Indirect_expense.forEach(item => {
+      Indirect_expense.forEach((item) => {
         createBox.push(item);
       });
     } else {
@@ -279,7 +286,7 @@ export default function BalanceSheet({
     let others = {};
     if (excel === true) {
       extraHeaders = {
-        Accept: "blob"
+        Accept: "blob",
       };
       others = { responseType: "blob" };
     }
@@ -307,12 +314,13 @@ export default function BalanceSheet({
         to_date: t_date,
         excel,
         display_column_by,
-        levels
+        levels,
+        nonZero: nonZero ? "Y" : "N",
       },
       extraHeaders,
-      options: others
+      options: others,
     })
-      .then(res => {
+      .then((res) => {
         const { records } = res.data;
         if (type === "balance") {
           forBalanceSheet(records);
@@ -322,11 +330,11 @@ export default function BalanceSheet({
 
         if (typeof stopLoading === "function") stopLoading();
       })
-      .catch(e => {
+      .catch((e) => {
         if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
           title: "error",
-          display: e.message
+          display: e.message,
         });
       });
   }
@@ -337,29 +345,30 @@ export default function BalanceSheet({
       Direct_expense,
       Indirect_expense,
       gross_profit,
-      net_profit
+      net_profit,
     } = records;
     let cols = [];
-    cols = columns.map(item => {
+    cols = columns.map((item) => {
       // const freezable = item.column_id === "total" ? { freezable: true } : {};
       return {
         fieldName: item.column_id,
         label: item.label,
-        displayTemplate: row => {
+        displayTemplate: (row) => {
           return getAmountFormart(row[item.column_id], { appendSymbol: false });
-        }
+        },
       };
     });
     cols.unshift({
       fieldName: "label",
       label: "Ledger Name",
-      freezable: true
+      freezable: true,
     });
+
     setColumns(cols);
     let details = [];
     //for Income
     if (Array.isArray(income)) {
-      income.forEach(item => {
+      income.forEach((item) => {
         details.push(item);
       });
     } else {
@@ -367,7 +376,7 @@ export default function BalanceSheet({
     }
     //for Indirect_expense
     if (Array.isArray(Indirect_expense)) {
-      Indirect_expense.forEach(item => {
+      Indirect_expense.forEach((item) => {
         details.push(item);
       });
     } else {
@@ -376,7 +385,7 @@ export default function BalanceSheet({
 
     //for gross_profit
     if (Array.isArray(gross_profit)) {
-      gross_profit.forEach(item => {
+      gross_profit.forEach((item) => {
         details.push(item);
       });
     } else {
@@ -385,7 +394,7 @@ export default function BalanceSheet({
 
     //for Direct_expense
     if (Array.isArray(Direct_expense)) {
-      Direct_expense.forEach(item => {
+      Direct_expense.forEach((item) => {
         details.push(item);
       });
     } else {
@@ -393,7 +402,7 @@ export default function BalanceSheet({
     }
 
     const generateFooter = {
-      aggregate: fieldName => {
+      aggregate: (fieldName) => {
         // console.log("fieldName", fieldName);
         // console.log("row", row);
         if (fieldName && fieldName !== "label") {
@@ -402,7 +411,7 @@ export default function BalanceSheet({
           return "Net Profit";
         }
       },
-      footer: true
+      footer: true,
     };
     setTableProps(generateFooter);
     setData(details);
@@ -410,21 +419,47 @@ export default function BalanceSheet({
   function forBalanceSheet(records) {
     const { columns, asset, liabilities } = records;
     let cols = [];
-    console.log("columns", columns);
-    cols = columns.map(item => {
+    cols = columns.map((item) => {
       return {
         fieldName: item.column_id,
         label: item.label,
-        displayTemplate: row => {
-          return getAmountFormart(row[item.column_id], { appendSymbol: false });
-        }
+        displayTemplate: (row) => {
+          const rec = getAmountFormart(row[item.column_id], {
+            appendSymbol: false,
+          });
+          if (row.leafnode === "Y") {
+            return (
+              <a
+                className="underLine"
+                href="void(0);"
+                onClick={(e) => {
+                  e.preventDefault();
+                  OpenDrillDown(row);
+                }}
+              >
+                {rec}
+              </a>
+            );
+          } else {
+            return rec;
+          }
+        },
       };
     });
     cols.unshift({
-      fieldName: "label",
+      fieldName: showArabic ? "arabic_name" : "label",
       label: "Ledger Name",
-      freezable: true
+      freezable: true,
     });
+
+    if (showLedgerCode) {
+      cols.unshift({
+        fieldName: "ledger_code",
+        label: "Ledger Code",
+        freezable: true,
+      });
+    }
+
     setColumns(cols);
     let details = [];
     //For asset
@@ -439,14 +474,60 @@ export default function BalanceSheet({
     const newFilter = existing.concat(updated);
     return newFilter;
   }
-
+  function OnCloseDrillDown() {
+    setShowDrillDown(false);
+  }
+  function OpenDrillDown(rec) {
+    // if( "by_year")
+    setShowDrillDown(true);
+    setRow(rec);
+  }
   return (
     <>
+      <DrillDown
+        visible={showDrillDown}
+        onClose={OnCloseDrillDown}
+        row={row}
+        dates={dates}
+      />
       <div className="row inner-top-search">
         <Filter
-          filters={[firstLevel, filterBuilder([], filter)]}
+          filters={[
+            firstLevel,
+            filterBuilder(filter, [
+              {
+                className: "col-2 formgroup finCusCheckBox",
+                type: "CH",
+                data: "Non Zero amount",
+                checkText: "Yes",
+                labelText: "Hide Zero Account",
+              },
+              {
+                className: "col-2 formgroup finCusCheckBox",
+                type: "CH",
+                data: "Show Ledger Code",
+                checkText: "Yes",
+                labelText: "Show Ledger Code",
+              },
+              {
+                className: "col-2 formgroup finCusCheckBox",
+                type: "CH",
+                data: "Arabic",
+                checkText: "Yes",
+                labelText: "Show Account Name in Arabic",
+              },
+            ]),
+          ]}
           callBack={(inputs, cb) => {
-            const { PREVIOUSRANGE, RANGE, BASEDON, LEVELS } = inputs;
+            const {
+              PREVIOUSRANGE,
+              RANGE,
+              BASEDON,
+              LEVELS,
+              NONZEROAMOUNT,
+              ARABIC,
+              SHOWLEDGERCODE,
+            } = inputs;
             setRangeDate(RANGE);
             setPrevDateRange(PREVIOUSRANGE);
             setChangeInPercentage(inputs["CHANGEIN%"]);
@@ -454,8 +535,10 @@ export default function BalanceSheet({
             setBasedOn(BASEDON);
             setStopLoading(cb);
             setLevels(LEVELS);
-
-            setPreview(result => {
+            setArabic(ARABIC === "Y" ? true : false);
+            setShowLedgerCode(SHOWLEDGERCODE === "Y" ? true : false);
+            setNonZero(NONZEROAMOUNT === "Y" ? true : false);
+            setPreview((result) => {
               return result === undefined ? false : !result;
             });
           }}
@@ -464,6 +547,7 @@ export default function BalanceSheet({
       </div>
 
       <ReportLayout
+        showArabic={showArabic}
         title={`${type === "pandl" ? "Profit and Loss" : "Balance Sheet"}  ${
           reportType === "comparison" ? "Comparison" : ""
         }`}

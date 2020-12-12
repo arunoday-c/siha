@@ -32,9 +32,8 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-
             inputParam.head_id,
-            inputParam.child_id,
+            inputParam.child_id
           ],
           printQuery: true,
         })
@@ -388,8 +387,8 @@ export default {
           "INSERT INTO `hims_d_services` (service_code,cpt_code,service_name,arabic_service_name,service_desc,\
             sub_department_id, hospital_id,service_type_id,procedure_type,standard_fee,followup_free_fee,\
             followup_paid_fee, discount,vat_applicable,vat_percent,service_status,effective_start_date, \
-            effectice_end_date,created_by,created_date,updated_by,updated_date ) \
-            values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            effectice_end_date,head_id, child_id,created_by,created_date,updated_by,updated_date ) \
+            values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.service_code,
           input.cpt_code,
@@ -409,6 +408,8 @@ export default {
           input.service_status,
           input.effective_start_date,
           input.effectice_end_date,
+          input.head_id,
+          input.child_id,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,

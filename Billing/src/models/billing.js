@@ -1113,6 +1113,7 @@ export default {
               printQuery: true,
             })
             .then((result) => {
+              console.log("result", result)
               let collected_cash = 0;
               let expected_card = 0;
 
@@ -1124,8 +1125,8 @@ export default {
                 .Where((w) => w.pay_type == "CD")
                 .Sum((s) => parseFloat(s.amount));
 
-              expected_card = parseFloat(result[0].expected_card) - expected_card;
-              collected_cash = parseFloat(result[0].collected_cash) - collected_cash;
+              expected_card = result[0].expected_card === null ? 0 : parseFloat(result[0].expected_card) - expected_card;
+              collected_cash = result[0].collected_cash === null ? 0 : parseFloat(result[0].collected_cash) - collected_cash;
 
               _mysql
                 .executeQueryWithTransaction({

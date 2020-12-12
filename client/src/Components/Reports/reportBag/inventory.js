@@ -626,6 +626,9 @@ export default function Inventory({
         subitem: "Purchase Report",
         reportName: "inventoryPurchaseReport",
         requireIframe: true,
+        // pageSize: "A3",
+        // componentCode: "RPT_HR_EMP_DEP",
+        // pageOrentation: "landscape",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
@@ -688,6 +691,140 @@ export default function Inventory({
               minDate: null,
             },
           },
+          // {
+          //   className: "col-3 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "location_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Purchase No",
+          //   dataSource: {
+          //     textField: "location_description",
+          //     valueField: "hims_d_inventory_location_id",
+          //     data: []
+          //   }
+          // }
+        ],
+      },
+      {
+        subitem: "Purchase report by item or supplier",
+        reportName: "inventoryPurchaseReportItemSupplier",
+        requireIframe: true,
+        // pageSize: "A3",
+        // componentCode: "RPT_HR_EMP_DEP",
+        // pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: false,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+            // value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/inventory/getItemMaster",
+              module: "inventory",
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_inventory_item_master_id",
+              data: undefined,
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "vendor_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Vendor Name",
+
+            link: {
+              uri: "/vendor/getVendorMaster",
+              module: "masterSettings",
+            },
+            dataSource: {
+              textField: "vendor_name",
+              valueField: "hims_d_vendor_id",
+              data: undefined,
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+          // {
+          //   className: "col-3  form-group",
+          //   type: "date",
+          //   name: "from_date",
+          //   isImp:false,
+          //   others: {
+          //     maxDate: new Date(),
+          //     minDate: null,
+          //   },
+          // },
+
+          // {
+          //   className: "col-3  form-group",
+          //   type: "date",
+          //   name: "to_date",
+          //   isImp: false,
+          //   others: {
+          //     maxDate: new Date(),
+          //     minDate: null,
+          //   },
+          // },
           // {
           //   className: "col-3 form-group mandatory",
           //   type: "dropdown",
