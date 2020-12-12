@@ -897,7 +897,8 @@ export function getSalesInvoiceList(req, res, next) {
         _mysql
             .executeQuery({
                 query:
-                    `SELECT IH.*,C.customer_name, SO.sales_order_number, SO.sales_order_date, SO.customer_po_no 
+                    `SELECT IH.*, CASE WHEN IH.reverted_by > 0 and IH.is_revert = 'N' THEN 'Y' ELSE 'N' END as correction, 
+                    C.customer_name, SO.sales_order_number, SO.sales_order_date, SO.customer_po_no 
                     FROM hims_f_sales_invoice_header IH 
                     inner join hims_d_customer C  on IH.customer_id = C.hims_d_customer_id 
                     inner join hims_f_sales_order SO on IH.sales_order_id = SO.hims_f_sales_order_id 
