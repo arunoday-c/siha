@@ -2,18 +2,23 @@ const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   const mysql = options.mysql;
   const parameters = options.args;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       let inputs = {};
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
       const internalParameters = parameters.reportParams;
       const headerID = _.find(
         internalParameters,
-        f => f.name == "hims_f_pharmacy_pos_header_id"
+        (f) => f.name == "hims_f_pharmacy_pos_header_id"
       );
       inputs["hims_f_pharmacy_pos_header_id"] = headerID["value"];
       const caseType = _.find(
         internalParameters,
-        f => f.name == "pos_customer_type"
+        (f) => f.name == "pos_customer_type"
       )["value"];
       let query =
         "select H.hims_f_pharmacy_pos_header_id,P.patient_code, H.pos_number, P.full_name as patient_full_name, 	date(V.visit_date) as visit_date, 	  \
@@ -22,11 +27,11 @@ const executePDF = function executePDFMethod(options) {
  E.arabic_name, 	trim(sub_department_name)as sub_department_name, 	H.card_number, 	V.age_in_years, 	P.gender, 	  \
  N.nationality, 	arabic_sub_department_name, 	IP.insurance_provider_name, 	IP.arabic_provider_name, 	   \
  E.license_number,H.patient_tax, H.company_tax, coalesce(H.patient_tax,0) + coalesce(H.company_tax,0) as net_tax, \
- H.patient_payable, coalesce(H.patient_payable,0)+0 as due_amout,H.net_total from 	hims_f_patient P inner join  hims_f_pharmacy_pos_header H on 	P.hims_d_patient_id = H.patient_id   \
+ H.patient_payable, coalesce(H.patient_payable,0)+0 as due_amout,H.net_total,ICD.icd_code,ICD.long_icd_description from 	hims_f_patient P inner join  hims_f_pharmacy_pos_header H on 	P.hims_d_patient_id = H.patient_id   \
  inner join hims_f_patient_visit V on 	V.hims_f_patient_visit_id = H.visit_id inner join hims_d_employee E on   \
  E.hims_d_employee_id = V.doctor_id inner join hims_d_sub_department SD on 	 SD.hims_d_sub_department_id = V.sub_department_id \
  inner join hims_d_insurance_provider IP on 	 IP.hims_d_insurance_provider_id = H.insurance_provider_id   inner join  \
- hims_d_nationality as N on 	 N.hims_d_nationality_id = P.nationality_id where H.hims_f_pharmacy_pos_header_id=?;   \
+ hims_d_nationality as N on 	 N.hims_d_nationality_id = P.nationality_id inner join hims_f_patient_diagnosis as DIA on DIA.episode_id = V.episode_id and diagnosis_type='P' inner join hims_d_icd ICD on ICD.hims_d_icd_id = DIA.daignosis_id where H.hims_f_pharmacy_pos_header_id=?;   \
  select 	item.sfda_code as registration_number, item.item_description, D.quantity, D.unit_cost as price, 	D.extended_cost as gross_amount, \
  coalesce(D.patient_responsibility,0) as patient_share,\
  coalesce(D.discount_amount, 	0)as discount_amount, 	coalesce(D.net_extended_cost, 	0)as net_amount, 	\
@@ -64,40 +69,63 @@ H.hims_f_pharmacy_pos_header_id=?;";
           query: query,
           values: [
             inputs["hims_f_pharmacy_pos_header_id"],
-            inputs["hims_f_pharmacy_pos_header_id"]
+            inputs["hims_f_pharmacy_pos_header_id"],
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(output => {
+        .then((output) => {
           const header = output[0].length > 0 ? output[0] : [{}];
           const detail = output[1];
           let otherObj = {};
           const result = {
             header: { ...header[0], ...options.mainData[0] },
             detail: detail,
-            total_quantity: _.sumBy(detail, s => parseFloat(s.quantity)),
-            total_price: _.sumBy(detail, s => parseFloat(s.price)),
-            total_gross_amount: _.sumBy(detail, s =>
+            total_quantity: _.sumBy(detail, (s) => parseFloat(s.quantity)),
+            total_price: _.sumBy(detail, (s) => parseFloat(s.price)),
+
+            total_gross_amount: _.sumBy(detail, (s) =>
               parseFloat(s.gross_amount)
             ),
-            total_discount_amount: _.sumBy(detail, s =>
+            total_discount_amount: _.sumBy(detail, (s) =>
               parseFloat(s.discount_amount)
             ),
-            total_patient_share: _.sumBy(detail, s =>
+            total_patient_share: _.sumBy(detail, (s) =>
               parseFloat(s.patient_share)
             ),
 
-            total_net_amount: _.sumBy(detail, s => parseFloat(s.net_amount)),
-            total_company_resp: _.sumBy(detail, s =>
+            total_net_amount: _.sumBy(detail, (s) => parseFloat(s.net_amount)),
+
+            total_company_resp: _.sumBy(detail, (s) =>
               parseFloat(s.company_resp)
             ),
-            total_company_tax: _.sumBy(detail, s => parseFloat(s.company_tax)),
-            total_net_claim: _.sumBy(detail, s => parseFloat(s.net_claim))
+            total_company_tax: _.sumBy(detail, (s) =>
+              parseFloat(s.company_tax)
+            ),
+            total_net_claim: _.sumBy(detail, (s) => parseFloat(s.net_claim)),
+            total_patient_tax: _.sumBy(detail, (s) =>
+              parseFloat(s.patient_tax)
+            ),
+            total_patient_payable: _.sumBy(detail, (s) =>
+              parseFloat(s.patient_payable)
+            ),
+
+            currency: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyheader: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           };
           mysql.releaseConnection();
           resolve(result);
         })
-        .catch(error => {
+        .catch((error) => {
           mysql.releaseConnection();
           reject(error);
         });

@@ -55,6 +55,11 @@
                             class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label>
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="2"><label class="textEnLft">Primary Diagnosis</label>:<span
+                            class="valueText">{{header.icd_code}} / {{header.long_icd_description}}</span><label class="textArRht">التشخيص الأولي</label></td>
+                  
+                </tr>
 
             </table>
 
@@ -109,47 +114,48 @@
             <table class="tableTotal">
                 <tr>
                     <td>Total Amount before VAT</td>
-                    <td>{{total_gross_amount}}</td>
+                    <td class="numberFld">{{numberFormating total_gross_amount currencyheader}}</td>
                     <td>الإجمالي قبل الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Discount</td>
-                    <td>{{total_discount_amount}}</td>
+                    <td class="numberFld">{{numberFormating total_discount_amount currencyheader}}</td>
                     <td>الخصم</td>
                 </tr>
                 <tr>
                     <td>VAT Amount</td>
-                    <td>{{header.net_tax}}</td>
+                    <td class="numberFld">{{numberFormating header.net_tax currencyheader}}</td>
                     <td>قيمة الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Client VAT Amount</td>
-                    <td>{{header.patient_tax}}</td>
+                    <td class="numberFld">{{numberFormating header.patient_tax currencyheader}}</td>
                     <td>الضريبة المضافة على العميل</td>
                 </tr>
                 <tr>
                     <td>Company VAT amount</td>
-                    <td>{{header.company_tax}}</td>
+                    <td class="numberFld">{{numberFormating header.company_tax currencyheader}}</td>
                     <td>الضريبة المضافة على الشركة</td>
                 </tr>
                 <tr>
                     <td>Net Total Including VAT</td>
-                    <td>{{header.net_total}}</td>
+                    <td class="numberFld">{{numberFormating header.net_total currencyheader}}</td>
                     <td>الإجمالي بعد الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Co Payment</td>
-                    <td>{{header.patient_payable}}</td>
+                    <td class="numberFld">{{numberFormating header.patient_payable currencyheader}}</td>
                     <td>نسبة التحمل</td>
                 </tr>
                 <tr>
                     <td>Paid Amount</td>
-                    <td>0.00</td>
+                     <td class="numberFld">{{numberFormating header.patient_payable currencyheader}}</td>
                     <td>المبلغ المدفوع</td>
                 </tr>
                 <tr>
                     <td>Due Amount</td>
-                    <td>{{header.due_amout}}</td>
+                    <td class="numberFld">0.00</td>
+                    {{!-- <td class="numberFld">{{numberFormating header.due_amout currencyheader}}</td> --}}
                     <td>المبلغ المتبقي</td>
                 </tr>
             </table>

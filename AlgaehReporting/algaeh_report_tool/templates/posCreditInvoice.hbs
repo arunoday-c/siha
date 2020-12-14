@@ -54,6 +54,10 @@
                     <td><label class="textEnLft">Department</label>:<span
                             class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label>
                     </td>
+                </tr>  <tr>
+                    <td colspan="2"><label class="textEnLft">Primary Diagnosis</label>:<span
+                            class="valueText">{{header.icd_code}} / {{header.long_icd_description}}</span><label class="textArRht">التشخيص الأولي</label></td>
+                  
                 </tr>
 
             </table>
@@ -80,7 +84,7 @@
                         </th>
                         <th>Patient Respo.<p>حصة المريض</p>
                         </th>
-                        <th>Company Respo.<p>حصة المريض</p>
+                        <th>Company Respo.<p>حصة الشركة</p>
                         </th>
                         <th>Vat Amt. <p>قيمة الضريبة</p>
                         </th>
@@ -113,49 +117,49 @@
             <table class="tableTotal">
                 <tr>
                     <td>Total Amount</td>
-                    <td>{{total_gross_amount}}</td>
+                     <td class="numberFld">{{numberFormating total_gross_amount currencyheader}}</td>
                     <td>الإجمالي قبل الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Discount</td>
-                    <td>{{total_discount_amount}}</td>
+                     <td class="numberFld">{{numberFormating total_discount_amount currencyheader}}</td>
                     <td>الخصم</td>
                 </tr>
 
                 <tr>
                     <td>After Discount before Vat</td>
-                    <td>{{total_net_amount}}</td>
+                     <td class="numberFld">{{numberFormating total_net_amount currencyheader}}</td>
                     <td>الخصم</td>
                 </tr>
                 <tr>
                     <td>Co Payment</td>
-                    <td>{{total_patient_share}}</td>
+                     <td class="numberFld">{{numberFormating total_patient_share currencyheader}}</td>
                     <td>نسبة التحمل</td>
                 </tr>
                 <tr>
                     <td>VAT Amount</td>
-                    <td>{{total_company_tax}}</td>
+                     <td class="numberFld">{{numberFormating total_company_tax currencyheader}}</td>
                     <td>قيمة الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Company VAT amount</td>
-                    <td>{{total_company_tax}}</td>
+                     <td class="numberFld">{{numberFormating total_company_tax currencyheader}}</td>
                     <td>الضريبة المضافة على الشركة</td>
                 </tr>
                 <tr>
                     <td>Net Total Including VAT</td>
-                    <td>{{total_net_claim}}</td>
+                     <td class="numberFld">{{numberFormating total_net_claim currencyheader}}</td>
                     <td>الإجمالي بعد الضريبة المضافة</td>
                 </tr>
 
                 <tr>
                     <td>Paid Amount</td>
-                    <td>0.00</td>
+                    <td class="numberFld">SAR 0.00</td>
                     <td>المبلغ المدفوع</td>
                 </tr>
                 <tr>
                     <td>Due Amount</td>
-                    <td>{{total_net_claim}}</td>
+                     <td class="numberFld">{{numberFormating total_net_claim currencyheader}}</td>
                     <td>المبلغ المتبقي</td>
                 </tr>
             </table>
