@@ -1285,8 +1285,8 @@ export default function Pharmacy({
             label: "Item",
 
             link: {
-              uri: "/inventory/getItemMaster",
-              module: "inventory",
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy",
             },
             dataSource: {
               textField: "item_description",
