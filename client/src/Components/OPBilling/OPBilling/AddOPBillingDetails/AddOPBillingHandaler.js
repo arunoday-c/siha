@@ -237,6 +237,7 @@ const ondiscountgridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   // let oldvalue = e.oldvalue || e.target.oldvalue;
+  debugger
   let billdetails = $this.state.billdetails;
   let _index = billdetails.indexOf(row);
   // if (value === undefined) {
@@ -440,6 +441,7 @@ const calculateAmount = ($this, context, row, e) => {
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
       secondary_network_office_id: $this.state.secondary_network_office_id,
+      test_id: row.test_id
     },
   ];
 
