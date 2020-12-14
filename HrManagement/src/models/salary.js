@@ -210,7 +210,10 @@ export default {
               inner join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id \
               inner join hims_d_earning_deduction ED on SC.contributions_id = ED.hims_d_earning_deduction_id \
               where employee_id in (?) and year=? and month=? and salary_type='LS' and ED.component_type='EEP' and amount>0;\
-              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N' and employee_id in (?);"
+              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N' and employee_id in (?);\
+              select hims_f_salary_loans_id, hims_f_salary_id, employee_id from hims_f_salary S \
+              inner join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id \
+              where employee_id in (?) and year=? and month=? ;"
             // select employee_id,actual_to_date,to_date, DATEDIFF(actual_to_date, to_date) AS early_join_days from hims_f_leave_application where  early_rejoin='Y' and employee_id in (?) and  date(to_date) BETWEEN date(?) and date(?);"
 
             // console.log("input.leave_salary ===========", input.leave_salary)
@@ -300,6 +303,9 @@ export default {
                   previous_month,
                   _myemp,
                   _myemp,
+                  input.year,
+                  input.month,
+                  _myemp,
                   month_start,
                   month_end
                 ],
@@ -311,34 +317,34 @@ export default {
                 // const previous_month_Salary = Salaryresults[20]
                 // console.log("previous_month_Salary ===========", previous_month_Salary)
                 // const early_join_employee = Salaryresults[21]
-                if (previous_month_Salary.length > 0) {
+                // if (previous_month_Salary.length > 0) {
 
-                  if (req.connection == null) {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = {
-                        invalid_input: true,
-                        message: "Previous month salary payment is pending for the assigned filter.",
-                      };
-                      next();
-                    });
-                  } else {
-                    req.flag = 1
-                    req.records = {
-                      message: "Previous month salary payment is pending for the assigned filter.",
-                    };
-                    next();
-                  }
-                  // _mysql.commitTransaction(() => {
-                  //   _mysql.releaseConnection();
-                  //   req.records = {
-                  //     invalid_input: true,
-                  //     message: "Previous month salary payment is pending for the assigned filter.",
-                  //   };
-                  //   next();
-                  // });
-                  return;
-                }
+                //   if (req.connection == null) {
+                //     _mysql.commitTransaction(() => {
+                //       _mysql.releaseConnection();
+                //       req.records = {
+                //         invalid_input: true,
+                //         message: "Previous month salary payment is pending for the assigned filter.",
+                //       };
+                //       next();
+                //     });
+                //   } else {
+                //     req.flag = 1
+                //     req.records = {
+                //       message: "Previous month salary payment is pending for the assigned filter.",
+                //     };
+                //     next();
+                //   }
+                //   // _mysql.commitTransaction(() => {
+                //   //   _mysql.releaseConnection();
+                //   //   req.records = {
+                //   //     invalid_input: true,
+                //   //     message: "Previous month salary payment is pending for the assigned filter.",
+                //   //   };
+                //   //   next();
+                //   // });
+                //   return;
+                // }
                 let _headerQuery = "";
 
                 // let basic_id = Salaryresults[8][0]["basic_earning_component"];
@@ -479,12 +485,20 @@ export default {
                                   f.employee_id == empResult[i]["employee_id"]
                                 );
                               });
+                              //Leave salary Loan Due Deduct
+                              const _LS_loan_deduct = _.filter(results[21], (f) => {
+                                return (
+                                  f.employee_id == empResult[i]["employee_id"]
+                                );
+                              });
+
                               getLoanDueandPayable({
                                 loan: _loan,
                                 loanPayable: _loanPayable,
                                 next: next,
                                 decimal_places: req.userIdentity.decimal_places,
                                 empResult: empResult[i],
+                                LS_loan_deduct: _LS_loan_deduct
                               }).then((loanOutput) => {
                                 total_loan_due_amount =
                                   loanOutput.total_loan_due_amount;
@@ -4272,11 +4286,20 @@ function getLoanDueandPayable(options) {
       const _loan = options.loan;
       const _loanPayable = options.loanPayable;
       const empResult = options.empResult;
+      const LS_loan_deduct = options.LS_loan_deduct
 
       let total_loan_due_amount = 0;
       let total_loan_payable_amount = 0;
       let current_loan_array = [];
 
+      if (LS_loan_deduct.length > 0) {
+        resolve({
+          total_loan_due_amount,
+          total_loan_payable_amount,
+          current_loan_array,
+        });
+        return
+      }
       // console.log("_loan", _loan)
       if (empResult.partial_attendance === "Y") {
         resolve({
