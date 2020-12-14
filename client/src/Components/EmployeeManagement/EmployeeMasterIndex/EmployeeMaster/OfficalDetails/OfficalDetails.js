@@ -24,6 +24,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getCookie } from "../../../../../utils/algaehApiCall";
 import MaskedInput from "react-maskedinput";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 class OfficalDetails extends Component {
   constructor(props) {
     super(props);
@@ -968,64 +969,68 @@ class OfficalDetails extends Component {
                     />
                   )}
                 </div>
-                {/* <h5>
-                  <span>Company Bank Details</span>
-                </h5>
-                <div className="row paddin-bottom-5">
-                  <AlagehAutoComplete
-                    div={{ className: "col mandatory form-group" }}
-                    label={{
-                      forceLabel: "Select Employeer Bank",
-                      isImp: true,
-                    }}
-                    selector={{
-                      name: "company_bank_id",
-                      className: "select-fld",
-                      value: this.state.company_bank_id,
-                      dataSource: {
-                        textField: "bank_name",
-                        valueField: "bank_id",
-                        data: this.props.companyaccount,
-                      },
-                      onChange: texthandle.bind(this, this),
-                      onClear: () => {
-                        this.setState({
-                          company_bank_id: null,
-                        });
-                        this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          company_bank_id: null,
-                        });
-                      },
-                    }}
-                  />
+                <AlgaehSecurityComponent componentCode="COM_BANK_DETLS">
+                  <>
+                    <h5>
+                      <span>Company Bank Details</span>
+                    </h5>
+                    <div className="row paddin-bottom-5">
+                      <AlagehAutoComplete
+                        div={{ className: "col mandatory form-group" }}
+                        label={{
+                          forceLabel: "Select Employeer Bank",
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "company_bank_id",
+                          className: "select-fld",
+                          value: this.state.company_bank_id,
+                          dataSource: {
+                            textField: "bank_name",
+                            valueField: "bank_id",
+                            data: this.props.companyaccount,
+                          },
+                          onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              company_bank_id: null,
+                            });
+                            this.props.EmpMasterIOputs.updateEmployeeTabs({
+                              company_bank_id: null,
+                            });
+                          },
+                        }}
+                      />
 
-                  <AlagehAutoComplete
-                    div={{ className: "col mandatory form-group" }}
-                    label={{
-                      forceLabel: "Mode of Payment",
-                      isImp: true,
-                    }}
-                    selector={{
-                      name: "mode_of_payment",
-                      className: "select-fld",
-                      value: this.state.mode_of_payment,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: variableJson.MODE_OF_PAYMENT,
-                      },
-                      onChange: texthandle.bind(this, this),
-                      onClear: () => {
-                        this.setState({
-                          mode_of_payment: null,
-                        });
-                        this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          mode_of_payment: null,
-                        });
-                      },
-                    }}
-                  />
-                </div> */}
+                      <AlagehAutoComplete
+                        div={{ className: "col mandatory form-group" }}
+                        label={{
+                          forceLabel: "Mode of Payment",
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "mode_of_payment",
+                          className: "select-fld",
+                          value: this.state.mode_of_payment,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: variableJson.MODE_OF_PAYMENT,
+                          },
+                          onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              mode_of_payment: null,
+                            });
+                            this.props.EmpMasterIOputs.updateEmployeeTabs({
+                              mode_of_payment: null,
+                            });
+                          },
+                        }}
+                      />
+                    </div>{" "}
+                  </>
+                </AlgaehSecurityComponent>
               </div>
             ) : null}
           </div>
