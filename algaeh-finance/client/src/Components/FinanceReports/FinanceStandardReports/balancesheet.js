@@ -197,6 +197,7 @@ export default function BalanceSheet({
         prev_to_date,
         excel,
         levels,
+        nonZero: nonZero ? "Y" : "N",
       },
       extraHeaders,
       options: others,
@@ -226,7 +227,28 @@ export default function BalanceSheet({
         fieldName: item.column_id,
         label: item.label,
         displayTemplate: (row) => {
-          return getAmountFormart(row[item.column_id], { appendSymbol: false });
+          const { startOff_date, cutOff_date } = item;
+          const rec = getAmountFormart(row[item.column_id], {
+            appendSymbol: false,
+          });
+          if (startOff_date && cutOff_date && row.leafnode === "Y") {
+            return (
+              <a
+                href="void(0);"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setChangedDateRange([
+                    moment(startOff_date),
+                    moment(cutOff_date),
+                  ]);
+                  OpenDrillDown(row);
+                }}
+              >
+                {rec}
+              </a>
+            );
+          }
+          return rec;
         },
       };
     });
@@ -235,6 +257,13 @@ export default function BalanceSheet({
       label: "Ledger Name",
       freezable: true,
     });
+    if (showLedgerCode) {
+      cols.unshift({
+        fieldName: "ledger_code",
+        label: "Ledger Code",
+        freezable: true,
+      });
+    }
     let details = [];
     //For asset
     details.push(asset);
@@ -258,7 +287,7 @@ export default function BalanceSheet({
     });
 
     cols.unshift({
-      fieldName: "label",
+      fieldName: showArabic ? "arabic_name" : "label",
       label: "Ledger Name",
       freezable: true,
       // filterable: true

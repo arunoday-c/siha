@@ -17,6 +17,7 @@ export default {
       to_date,
       prev_from_date,
       prev_to_date,
+      nonZero,
     } = req.query;
 
     _mysql
@@ -101,13 +102,14 @@ export default {
           columns.push({
             column_id: "1",
             label: "AS OF " + moment(to_date).format("MMM DD") + ", " + endYear,
-
+            startOff_date: from_date,
             cutOff_date: to_date,
           });
         } else {
           columns.push({
             column_id: "1",
             label: "AS OF " + moment(to_date).format("MMM DD") + ", " + endYear,
+            startOff_date: from_date,
             cutOff_date: to_date,
           });
         }
@@ -125,6 +127,7 @@ export default {
               moment(prev_to_date).format("MMM DD") +
               ", " +
               prev_endYear,
+            startOff_date: prev_from_date,
             cutOff_date: prev_to_date,
           });
         } else {
@@ -135,6 +138,7 @@ export default {
               moment(prev_to_date).format("MMM DD") +
               ", " +
               prev_endYear,
+            startOff_date: prev_from_date,
             cutOff_date: prev_to_date,
           });
         }
@@ -222,6 +226,7 @@ export default {
           levels: asset_levels,
           accounting_heads: asset_accounting_heads,
           default_total,
+          nonZero,
         };
         generateBalanceSheet(data)
           .then((assetResult) => {
@@ -292,6 +297,7 @@ function generateBalanceSheet(options) {
         levels,
         accounting_heads,
         default_total,
+        nonZero,
       } = options;
 
       _mysql
@@ -322,7 +328,8 @@ function generateBalanceSheet(options) {
             headObj,
             trans_symbol,
             default_total,
-            decimal_places
+            decimal_places,
+            nonZero
           );
           resolve(outputArray[0]);
         })
@@ -420,7 +427,8 @@ function buildHierarchy(
   head_data,
   trans_symbol,
   default_total,
-  decimal_places
+  decimal_places,
+  nonZero
 ) {
   try {
     let roots = [],
@@ -482,20 +490,46 @@ function buildHierarchy(
             100
           ).toFixed(decimal_places);
         }
+        if (nonZero === "Y") {
+          let nonExistingArray = [];
+          const ObjProceeding = Object.keys(columns_wise_amounts);
+          ObjProceeding.forEach((eItem) => {
+            const eValue = parseFloat(columns_wise_amounts[eItem]);
 
-        //END---calulating Amount
-        child.push({
-          finance_account_child_id: item["finance_account_child_id"],
-          trans_symbol: trans_symbol,
-          ...columns_wise_amounts,
-          arabic_name: item.arabic_child_name,
-          label: item.child_name,
-          head_id: item["head_id"],
-          ledger_code: item.ledger_code,
-          leafnode: "Y",
-          change: changed_amount,
-          percent: percent,
-        });
+            if (eValue === 0) {
+              nonExistingArray.push(eItem);
+            }
+          });
+          let notPush = nonExistingArray.length === ObjProceeding.length;
+          if (!notPush) {
+            child.push({
+              finance_account_child_id: item["finance_account_child_id"],
+              trans_symbol: trans_symbol,
+              ...columns_wise_amounts,
+              arabic_name: item.arabic_child_name,
+              label: item.child_name,
+              head_id: item["head_id"],
+              ledger_code: item.ledger_code,
+              leafnode: "Y",
+              change: changed_amount,
+              percent: percent,
+            });
+          }
+        } else {
+          //END---calulating Amount
+          child.push({
+            finance_account_child_id: item["finance_account_child_id"],
+            trans_symbol: trans_symbol,
+            ...columns_wise_amounts,
+            arabic_name: item.arabic_child_name,
+            label: item.child_name,
+            head_id: item["head_id"],
+            ledger_code: item.ledger_code,
+            leafnode: "Y",
+            change: changed_amount,
+            percent: percent,
+          });
+        }
 
         //if children array doesnt contain this non-leaf node then push
         const data = target.find((val) => {
@@ -539,18 +573,44 @@ function buildHierarchy(
               ) * 100
             ).toFixed(decimal_places);
           }
-          const { arabic_account_name, group_code, ...others } = item;
-          target.push({
-            ...others,
-            trans_symbol: trans_symbol,
-            ...columns_wise_amounts,
-            label: item.account_name,
-            leafnode: "N",
-            arabic_name: arabic_account_name,
-            ledger_code: group_code,
-            change: changed_amount,
-            percent: percent,
-          });
+          if (nonZero === "Y") {
+            let nonExistingArray = [];
+            const ObjProceeding = Object.keys(columns_wise_amounts);
+            ObjProceeding.forEach((eItem) => {
+              const eValue = parseFloat(columns_wise_amounts[eItem]);
+              if (eValue === 0) {
+                nonExistingArray.push(eItem);
+              }
+            });
+            let notPush = nonExistingArray.length === ObjProceeding.length;
+            if (!notPush) {
+              const { arabic_account_name, group_code, ...others } = item;
+              target.push({
+                ...others,
+                trans_symbol: trans_symbol,
+                ...columns_wise_amounts,
+                label: item.account_name,
+                leafnode: "N",
+                arabic_name: arabic_account_name,
+                ledger_code: group_code,
+                change: changed_amount,
+                percent: percent,
+              });
+            }
+          } else {
+            const { arabic_account_name, group_code, ...others } = item;
+            target.push({
+              ...others,
+              trans_symbol: trans_symbol,
+              ...columns_wise_amounts,
+              label: item.account_name,
+              leafnode: "N",
+              arabic_name: arabic_account_name,
+              ledger_code: group_code,
+              change: changed_amount,
+              percent: percent,
+            });
+          }
         }
       } else {
         let columns_wise_amounts = {};
@@ -588,18 +648,42 @@ function buildHierarchy(
             100
           ).toFixed(decimal_places);
         }
-        const { arabic_account_name, group_code, ...others } = item;
-        target.push({
-          ...others,
-          trans_symbol: trans_symbol,
-          ...columns_wise_amounts,
-          label: item.account_name,
-          leafnode: "N",
-          change: changed_amount,
-          arabic_name: arabic_account_name,
-          ledger_code: group_code,
-          percent: percent,
-        });
+        if (nonZero === "Y") {
+          let nonExistingArray = [];
+          const ObjProceeding = Object.keys(columns_wise_amounts);
+          ObjProceeding.forEach((eItem) => {
+            const eValue = parseFloat(columns_wise_amounts[eItem]);
+            if (eValue === 0) {
+              nonExistingArray.push(eItem);
+            }
+          });
+          let notPush = nonExistingArray.length === ObjProceeding.length;
+          const { arabic_account_name, group_code, ...others } = item;
+          target.push({
+            ...others,
+            trans_symbol: trans_symbol,
+            ...columns_wise_amounts,
+            label: item.account_name,
+            leafnode: "N",
+            change: changed_amount,
+            arabic_name: arabic_account_name,
+            ledger_code: group_code,
+            percent: percent,
+          });
+        } else {
+          const { arabic_account_name, group_code, ...others } = item;
+          target.push({
+            ...others,
+            trans_symbol: trans_symbol,
+            ...columns_wise_amounts,
+            label: item.account_name,
+            leafnode: "N",
+            change: changed_amount,
+            arabic_name: arabic_account_name,
+            ledger_code: group_code,
+            percent: percent,
+          });
+        }
       }
     }
 
