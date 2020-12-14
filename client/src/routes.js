@@ -247,6 +247,13 @@ const EmployeeMasterIndex = React.lazy(() =>
     )
   )
 );
+const EmployeeMasterIndexBeta = React.lazy(() =>
+  retry(() =>
+    import(
+      "./Components/EmployeeManagement/EmployeeMasterIndexBeta/EmployeeMasterIndexBeta"
+    )
+  )
+);
 const PhysicianScheduleSetup = React.lazy(() =>
   retry(() => import("./Components/PhysicianScheduleSetup/PhySchSetup"))
 );
@@ -1356,6 +1363,11 @@ const privateRoutes = [
     component: <EmployeeMasterIndex />,
   },
   {
+    path: "/EmployeeMasterIndexBeta",
+    isExactPath: true,
+    component: <EmployeeMasterIndexBeta />,
+  },
+  {
     path: "/VendorsQuotation",
     isExactPath: true,
     component: <VendorsQuotation />,
@@ -1521,12 +1533,12 @@ function Routes() {
             );
           })
         ) : (
-            <div className="loader-container">
-              <div className="algaeh-progress float shadow">
-                <div className="progress__item">loading</div>
-              </div>
+          <div className="loader-container">
+            <div className="algaeh-progress float shadow">
+              <div className="progress__item">loading</div>
             </div>
-          )}
+          </div>
+        )}
       </Switch>
     </BrowserRouter>
   );
