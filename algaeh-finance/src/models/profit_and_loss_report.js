@@ -11,7 +11,13 @@ export default {
 
     // const input = req.query;
 
-    const { display_column_by, from_date, to_date, levels } = req.query;
+    const {
+      display_column_by,
+      from_date,
+      to_date,
+      levels,
+      nonZero,
+    } = req.query;
 
     //  const default_total = parseFloat(0).toFixed(decimal_places);
     // let trans_symbol = "Cr.";
@@ -19,41 +25,41 @@ export default {
     _mysql
       .executeQuery({
         query: ` with recursive cte as (
-          select finance_account_head_id,account_code,account_name,
+          select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,
           parent_acc_id from finance_account_head   where root_id=4
-          union select H.finance_account_head_id,H.account_code,H.account_name,
+          union select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,
           H.parent_acc_id from finance_account_head H
           inner join cte on H.parent_acc_id = cte.finance_account_head_id
           )select * from cte ; with recursive cte as (
-          select finance_account_head_id,account_code,account_name,
+          select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,
           parent_acc_id from finance_account_head   where root_id=5 and  account_code='5.1'
-          union select H.finance_account_head_id,H.account_code,H.account_name,
+          union select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,
           H.parent_acc_id from finance_account_head H
           inner join cte on H.parent_acc_id = cte.finance_account_head_id
           )select * from cte ; with recursive cte as (
-        select finance_account_head_id,account_code,account_name,
+        select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,
         parent_acc_id from finance_account_head   where root_id=5 and  account_code<>'5.1'
-        union select H.finance_account_head_id,H.account_code,H.account_name,
+        union select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,
         H.parent_acc_id from finance_account_head H
         inner join cte on H.parent_acc_id = cte.finance_account_head_id  and H.account_code<>'5.1'
         )select * from cte ;  SELECT cost_center_type,cost_center_required,report_dill_down_level  FROM finance_options limit 1;
 
         `,
-        printQuery: false
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         //Income head ids
-        const income_head_ids = result[0].map(m => m.finance_account_head_id);
+        const income_head_ids = result[0].map((m) => m.finance_account_head_id);
         //direct expense or COGS
         const direct_expense_head_ids = result[1].map(
-          m => m.finance_account_head_id
+          (m) => m.finance_account_head_id
         );
         //indirect expense
         const indirect_expense_head_ids = result[2].map(
-          m => m.finance_account_head_id
+          (m) => m.finance_account_head_id
         );
 
-        const expens = result[2].find(f => f.account_code == 5);
+        const expens = result[2].find((f) => f.account_code == 5);
         direct_expense_head_ids.push(expens.finance_account_head_id);
 
         const finance_options = result[3][0];
@@ -63,17 +69,20 @@ export default {
         let dateEnd = moment(to_date);
 
         let income_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,H.is_cos_account,
+        C.arabic_child_name,H.group_code,C.ledger_code,H.arabic_account_name,
         finance_account_child_id, child_name,head_id from finance_account_head H left join finance_account_child C on
         C.head_id=H.finance_account_head_id where H.finance_account_head_id in (${income_head_ids}) order by account_level,sort_order;
         select max(account_level) as account_level from finance_account_head
         where  finance_account_head_id in (${income_head_ids});`;
         let direct_expense_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,H.is_cos_account,
+        C.arabic_child_name,H.group_code,C.ledger_code,H.arabic_account_name,
         finance_account_child_id, child_name,head_id from finance_account_head H left join finance_account_child C on
         C.head_id=H.finance_account_head_id where H.finance_account_head_id in (${direct_expense_head_ids}) order by account_level,sort_order;
         select max(account_level) as account_level from finance_account_head
         where  finance_account_head_id in (${direct_expense_head_ids});`;
 
         let indirect_expense_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,H.is_cos_account,
+        C.arabic_child_name,H.group_code,C.ledger_code,H.arabic_account_name,
         finance_account_child_id, child_name,head_id from finance_account_head H left join finance_account_child C on
         C.head_id=H.finance_account_head_id where H.finance_account_head_id in (${indirect_expense_head_ids}) order by account_level,sort_order;
         select max(account_level) as account_level from finance_account_head
@@ -109,9 +118,9 @@ export default {
           _mysql
             .executeQuery({
               query: costCenterQuery,
-              printQuery: false
+              printQuery: false,
             })
-            .then(costResult => {
+            .then((costResult) => {
               columns = costResult;
 
               let column_len = columns.length;
@@ -167,7 +176,7 @@ export default {
 
               columns.push({
                 column_id: "total",
-                label: "total"
+                label: "total",
               });
 
               income_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,H.is_cos_account,
@@ -227,24 +236,24 @@ export default {
                 decimal_places,
                 trans_symbol: "Cr",
                 qry: income_qry,
-                drillDownLevel
+                drillDownLevel,
               };
               generateProfitAndLoss(data)
-                .then(incomeOutputArray => {
+                .then((incomeOutputArray) => {
                   data["qry"] = direct_expense_qry;
                   data["trans_symbol"] = "Dr";
                   const incomeResult = incomeOutputArray["outputArray"];
                   const maxLevel =
                     incomeOutputArray["max_level"][0]["account_level"];
                   generateProfitAndLoss(data)
-                    .then(directArrayOutputArray => {
+                    .then((directArrayOutputArray) => {
                       data["qry"] = indirect_expense_qry;
                       const directResult =
                         directArrayOutputArray["outputArray"];
                       const maxLevel =
                         directArrayOutputArray["max_level"][0]["account_level"];
                       generateProfitAndLoss(data)
-                        .then(inDirectArrayOutputArray => {
+                        .then((inDirectArrayOutputArray) => {
                           _mysql.releaseConnection();
                           const indirectResult =
                             inDirectArrayOutputArray["outputArray"];
@@ -287,7 +296,7 @@ export default {
                           //------------------------------------------------------------------------
 
                           let cosResult = [
-                            { label: "Cost of Sales", total: 0, children: [] }
+                            { label: "Cost of Sales", total: 0, children: [] },
                           ];
 
                           let directExpeneseResult = [];
@@ -314,17 +323,17 @@ export default {
                           //   }
                           // });
 
-                          directResult.forEach(item => {
+                          directResult.forEach((item) => {
                             if (item.children) {
                               const allNonCOS = item.children.filter(
-                                f => f.is_cos_account !== "Y"
+                                (f) => f.is_cos_account !== "Y"
                               );
                               const allCOS = item.children.filter(
-                                f => f.is_cos_account === "Y"
+                                (f) => f.is_cos_account === "Y"
                               );
 
                               if (allCOS.length > 0) {
-                                const tot = _.sumBy(allCOS, s =>
+                                const tot = _.sumBy(allCOS, (s) =>
                                   parseFloat(s.total)
                                 );
                                 item["total"] = parseFloat(
@@ -344,7 +353,7 @@ export default {
                               if (allNonCOS.length > 0) {
                                 directExpeneseResult.push({
                                   ...item,
-                                  children: allNonCOS
+                                  children: allNonCOS,
                                 });
                               }
                             }
@@ -353,19 +362,19 @@ export default {
                             directExpeneseResult.push({
                               label: "Expence",
                               total: 0,
-                              children: []
+                              children: [],
                             });
                           }
-                          indirectResult.forEach(item => {
+                          indirectResult.forEach((item) => {
                             if (item.children) {
                               const allNonCOS = item.children.filter(
-                                f => f.is_cos_account !== "Y"
+                                (f) => f.is_cos_account !== "Y"
                               );
                               const allCOS = item.children.filter(
-                                f => f.is_cos_account === "Y"
+                                (f) => f.is_cos_account === "Y"
                               );
                               if (allCOS.length > 0) {
-                                const tot = _.sumBy(allCOS, s =>
+                                const tot = _.sumBy(allCOS, (s) =>
                                   parseFloat(s.total)
                                 );
                                 item["total"] = item["total"] - tot;
@@ -380,7 +389,9 @@ export default {
                               if (allNonCOS.length > 0) {
                                 directExpeneseResult[0]["total"] = parseFloat(
                                   parseFloat(directExpeneseResult[0]["total"]) +
-                                    _.sumBy(allNonCOS, s => parseFloat(s.total))
+                                    _.sumBy(allNonCOS, (s) =>
+                                      parseFloat(s.total)
+                                    )
                                 ).toFixed(decimal_places);
                                 for (let x = 0; x < allNonCOS.length; x++)
                                   directExpeneseResult[0]["children"].push(
@@ -393,7 +404,7 @@ export default {
                           let g_prop = {};
 
                           if (cosResult.length > 0) {
-                            Object.keys(gross_profit).forEach(item => {
+                            Object.keys(gross_profit).forEach((item) => {
                               g_prop[item] = parseFloat(
                                 parseFloat(incomeResult[0][item]) -
                                   parseFloat(
@@ -408,7 +419,7 @@ export default {
                             account_name: "Gross Profit",
                             label: "Gross Profit",
                             rowClass: "bordering",
-                            ...g_prop
+                            ...g_prop,
                           });
                           req.records = {
                             columns,
@@ -416,26 +427,26 @@ export default {
                             Direct_expense: directExpeneseResult,
                             Indirect_expense: cosResult,
                             gross_profit: g_propit,
-                            net_profit
+                            net_profit,
                           };
                           next();
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.releaseConnection();
                           next(e);
                         });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.releaseConnection();
                       next(e);
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.releaseConnection();
                   next(e);
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -452,7 +463,7 @@ export default {
                   endOfMonth: moment(dateStart)
                     .endOf("month")
                     .format("YYYY-MM-DD"),
-                  month_id: dateStart.format("YYYYMM")
+                  month_id: dateStart.format("YYYYMM"),
                 });
                 dateStart.add(1, "month");
               }
@@ -468,7 +479,7 @@ export default {
                         label: months_Array[i]["month_name"],
 
                         from_date_pl: months_Array[i]["startOfMonth"],
-                        to_date_pl: months_Array[i]["endOfMonth"]
+                        to_date_pl: months_Array[i]["endOfMonth"],
                       });
                     } else {
                       let f_str =
@@ -479,7 +490,7 @@ export default {
                         column_id: months_Array[i]["month_id"],
                         label: f_str + " " + months_Array[i]["month_name"],
                         from_date_pl: from_date,
-                        to_date_pl: months_Array[i]["endOfMonth"]
+                        to_date_pl: months_Array[i]["endOfMonth"],
                       });
                     }
                   } else if (i == months_len - 1) {
@@ -488,7 +499,7 @@ export default {
                         column_id: months_Array[i]["month_id"],
                         label: months_Array[i]["month_name"],
                         from_date_pl: months_Array[i]["startOfMonth"],
-                        to_date_pl: months_Array[i]["endOfMonth"]
+                        to_date_pl: months_Array[i]["endOfMonth"],
                       });
                     } else {
                       let t_str =
@@ -499,7 +510,7 @@ export default {
                         column_id: months_Array[i]["month_id"],
                         label: t_str + " " + months_Array[i]["month_name"],
                         from_date_pl: months_Array[i]["startOfMonth"],
-                        to_date_pl: to_date
+                        to_date_pl: to_date,
                       });
                     }
                   } else {
@@ -507,7 +518,7 @@ export default {
                       column_id: months_Array[i]["month_id"],
                       label: months_Array[i]["month_name"],
                       from_date_pl: months_Array[i]["startOfMonth"],
-                      to_date_pl: months_Array[i]["endOfMonth"]
+                      to_date_pl: months_Array[i]["endOfMonth"],
                     });
                   }
                 }
@@ -520,7 +531,7 @@ export default {
                   column_id: months_Array[0]["month_id"],
                   label: _str + " " + months_Array[0]["month_name"],
                   from_date_pl: from_date,
-                  to_date_pl: to_date
+                  to_date_pl: to_date,
                 });
               }
               break;
@@ -535,7 +546,7 @@ export default {
                   endOfYear: moment(dateStart)
                     .endOf("year")
                     .format("YYYY-MM-DD"),
-                  year_id: dateStart.format("YYYY")
+                  year_id: dateStart.format("YYYY"),
                 });
                 dateStart.add(1, "year");
               }
@@ -549,7 +560,7 @@ export default {
                         column_id: years_Array[i]["year_id"],
                         label: "Jan-Dec " + years_Array[i]["year_id"],
                         from_date_pl: years_Array[i]["startOfYear"],
-                        to_date_pl: years_Array[i]["endOfYear"]
+                        to_date_pl: years_Array[i]["endOfYear"],
                       });
                     } else {
                       let f_str =
@@ -563,7 +574,7 @@ export default {
                         column_id: years_Array[i]["year_id"],
                         label: f_str,
                         from_date_pl: from_date,
-                        to_date_pl: years_Array[i]["endOfYear"]
+                        to_date_pl: years_Array[i]["endOfYear"],
                       });
                     }
                   } else if (i == year_len - 1) {
@@ -572,7 +583,7 @@ export default {
                         column_id: years_Array[i]["year_id"],
                         label: "Jan-Dec " + years_Array[i]["year_id"],
                         from_date_pl: years_Array[i]["startOfYear"],
-                        to_date_pl: years_Array[i]["endOfYear"]
+                        to_date_pl: years_Array[i]["endOfYear"],
                       });
                     } else {
                       let t_str =
@@ -584,7 +595,7 @@ export default {
                         column_id: years_Array[i]["year_id"],
                         label: t_str,
                         from_date_pl: years_Array[i]["startOfYear"],
-                        to_date_pl: to_date
+                        to_date_pl: to_date,
                       });
                     }
                   } else {
@@ -592,7 +603,7 @@ export default {
                       column_id: years_Array[i]["year_id"],
                       label: "Jan-Dec " + years_Array[i]["year_id"],
                       from_date_pl: years_Array[i]["startOfYear"],
-                      to_date_pl: years_Array[i]["endOfYear"]
+                      to_date_pl: years_Array[i]["endOfYear"],
                     });
                   }
                 }
@@ -621,14 +632,14 @@ export default {
                   column_id: years_Array[0]["year_id"],
                   label: _str,
                   from_date_pl: from_date,
-                  to_date_pl: to_date
+                  to_date_pl: to_date,
                 });
               }
               break;
             default:
               columns.push({
                 column_id: "total",
-                label: "TOTAL"
+                label: "TOTAL",
               });
           }
 
@@ -735,7 +746,7 @@ export default {
 
             columns.push({
               column_id: "total",
-              label: "total"
+              label: "total",
             });
 
             income_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
@@ -796,25 +807,27 @@ export default {
             decimal_places,
             trans_symbol: "Cr",
             qry: income_qry,
-            drillDownLevel
+            drillDownLevel,
+            nonZero,
           };
           generateProfitAndLoss(data)
-            .then(incomeOutputArray => {
+            .then((incomeOutputArray) => {
               //  console.log("INCOME QRY FINISH SUCsESS");
               data["qry"] = direct_expense_qry;
               data["trans_symbol"] = "Dr";
+              console.log("incomeOutputArray", incomeOutputArray);
               const incomeResult = incomeOutputArray["outputArray"];
               const maxLevel =
                 incomeOutputArray["max_level"][0]["account_level"];
               generateProfitAndLoss(data)
-                .then(directArrayOutputArray => {
+                .then((directArrayOutputArray) => {
                   //console.log("DIRECT QRY FINISH SUCsESS");
                   data["qry"] = indirect_expense_qry;
                   const directResult = directArrayOutputArray["outputArray"];
                   const maxLevel =
                     directArrayOutputArray["max_level"][0]["account_level"];
                   generateProfitAndLoss(data)
-                    .then(inDirectArrayOutputArray => {
+                    .then((inDirectArrayOutputArray) => {
                       //console.log("INDIRECT QRY FINISH SUCsESS");
                       _mysql.releaseConnection();
                       const indirectResult =
@@ -833,21 +846,41 @@ export default {
                         let column_id = columns[0]["column_id"];
 
                         gross_profit[column_id] = (
-                          parseFloat(incomeResult[0][column_id]) -
-                          parseFloat(directResult[0][column_id])
+                          parseFloat(
+                            incomeResult.length === 0
+                              ? 0
+                              : incomeResult[0][column_id]
+                          ) -
+                          parseFloat(
+                            directResult.length === 0
+                              ? 0
+                              : directResult[0][column_id]
+                          )
                         ).toFixed(decimal_places);
 
                         net_profit[column_id] = (
                           parseFloat(gross_profit[column_id]) -
-                          parseFloat(indirectResult[0][column_id])
+                          parseFloat(
+                            indirectResult.length === 0
+                              ? 0
+                              : indirectResult[0][column_id]
+                          )
                         ).toFixed(decimal_places);
                       } else {
                         for (let i = 0; i <= column_len; i++) {
                           let column_id = columns[i]["column_id"];
 
                           gross_profit[column_id] = (
-                            parseFloat(incomeResult[0][column_id]) -
-                            parseFloat(directResult[0][column_id])
+                            parseFloat(
+                              incomeResult.length === 0
+                                ? 0
+                                : incomeResult[0][column_id]
+                            ) -
+                            parseFloat(
+                              directResult.length === 0
+                                ? 0
+                                : directResult[0][column_id]
+                            )
                           ).toFixed(decimal_places);
                         }
 
@@ -856,7 +889,11 @@ export default {
 
                           net_profit[column_id] = (
                             parseFloat(gross_profit[column_id]) -
-                            parseFloat(indirectResult[0][column_id])
+                            parseFloat(
+                              indirectResult.length === 0
+                                ? 0
+                                : indirectResult[0][column_id]
+                            )
                           ).toFixed(decimal_places);
                         }
                       }
@@ -872,21 +909,26 @@ export default {
                       //   ).toFixed(decimal_places);
                       //------------------------------------------------------------------------
                       let cosResult = [
-                        { label: "Cost of Sales", total: 0, children: [] }
+                        {
+                          label: "Cost of Sales",
+                          arabic_name: "تكلفة المبيعات",
+                          total: 0,
+                          children: [],
+                        },
                       ];
                       let directExpeneseResult = [];
 
-                      directResult.forEach(item => {
+                      directResult.forEach((item) => {
                         if (item.children) {
                           const allNonCOS = item.children.filter(
-                            f => f.is_cos_account !== "Y"
+                            (f) => f.is_cos_account !== "Y"
                           );
                           const allCOS = item.children.filter(
-                            f => f.is_cos_account === "Y"
+                            (f) => f.is_cos_account === "Y"
                           );
 
                           if (allCOS.length > 0) {
-                            const tot = _.sumBy(allCOS, s =>
+                            const tot = _.sumBy(allCOS, (s) =>
                               parseFloat(s.total)
                             );
                             item["total"] = parseFloat(
@@ -904,23 +946,23 @@ export default {
                           if (allNonCOS.length > 0) {
                             directExpeneseResult.push({
                               ...item,
-                              children: allNonCOS
+                              children: allNonCOS,
                             });
                           }
                         }
                       });
 
-                      indirectResult.forEach(item => {
+                      indirectResult.forEach((item) => {
                         if (item.children) {
                           const allNonCOS = item.children.filter(
-                            f => f.is_cos_account !== "Y"
+                            (f) => f.is_cos_account !== "Y"
                           );
                           const allCOS = item.children.filter(
-                            f => f.is_cos_account === "Y"
+                            (f) => f.is_cos_account === "Y"
                           );
 
                           if (allCOS.length > 0) {
-                            const tot = _.sumBy(allCOS, s =>
+                            const tot = _.sumBy(allCOS, (s) =>
                               parseFloat(s.total)
                             );
                             item["total"] = item["total"] - tot;
@@ -935,17 +977,17 @@ export default {
                             if (directExpeneseResult.length > 0) {
                               directExpeneseResult[0]["total"] = parseFloat(
                                 parseFloat(directExpeneseResult[0]["total"]) +
-                                  _.sumBy(allNonCOS, s => parseFloat(s.total))
+                                  _.sumBy(allNonCOS, (s) => parseFloat(s.total))
                               ).toFixed(decimal_places);
                             } else {
                               // directExpeneseResult = [];
                               const tot = parseFloat(
-                                _.sumBy(allNonCOS, s => parseFloat(s.total))
+                                _.sumBy(allNonCOS, (s) => parseFloat(s.total))
                               ).toFixed(decimal_places);
                               directExpeneseResult.push({
-                                label: "Expence",
+                                label: "Expense",
                                 total: tot,
-                                children: []
+                                children: [],
                               });
                             }
                             // directExpeneseResult[0]["total"] = parseFloat(
@@ -972,7 +1014,7 @@ export default {
                       let cosExpenseResult = [];
 
                       if (cosResult.length > 0) {
-                        Object.keys(gross_profit).forEach(item => {
+                        Object.keys(gross_profit).forEach((item) => {
                           g_prop[item] = parseFloat(
                             parseFloat(incomeResult[0][item]) -
                               parseFloat(
@@ -988,7 +1030,7 @@ export default {
                         label: "Gross Profit",
                         rowClass: "bordering",
 
-                        ...g_prop
+                        ...g_prop,
                       });
 
                       req.records = {
@@ -997,31 +1039,31 @@ export default {
                         Direct_expense: directExpeneseResult,
                         Indirect_expense: cosResult,
                         gross_profit: g_propit,
-                        net_profit
+                        net_profit,
                       };
                       next();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.releaseConnection();
                       next(e);
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.releaseConnection();
                   next(e);
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };
 
 //created by irfan:
@@ -1034,15 +1076,16 @@ function generateProfitAndLoss(options) {
         trans_symbol,
         decimal_places,
         qry,
-        drillDownLevel
+        drillDownLevel,
+        nonZero,
       } = options;
 
       _mysql
         .executeQuery({
           query: qry,
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           const headObj = {};
           const childObj = {};
 
@@ -1068,11 +1111,12 @@ function generateProfitAndLoss(options) {
             headObj,
             trans_symbol,
             decimal_places,
-            drillDownLevel
+            drillDownLevel,
+            nonZero
           );
           resolve({ outputArray, max_level: levels });
         })
-        .catch(e => {
+        .catch((e) => {
           console.log("e:", e);
           _mysql.releaseConnection();
           next(e);
@@ -1089,10 +1133,10 @@ function calcAmount(account_heads, levels, decimal_places) {
     const max_account_level = parseInt(levels[0]["account_level"]);
 
     let levels_group = _.chain(account_heads)
-      .groupBy(g => g.account_level)
+      .groupBy((g) => g.account_level)
       .value();
 
-    levels_group[max_account_level].map(m => {
+    levels_group[max_account_level].map((m) => {
       m["total_debit_amount"] = m["debit_amount"];
       m["total_credit_amount"] = m["credit_amount"];
 
@@ -1107,20 +1151,20 @@ function calcAmount(account_heads, levels, decimal_places) {
 
     for (let i = max_account_level - 1; i >= 0; i--) {
       // for (let k = 0; k < levels_group[i].length; k++) {
-      levels_group[i].map(item => {
-        let immediate_childs = levels_group[i + 1].filter(child => {
+      levels_group[i].map((item) => {
+        let immediate_childs = levels_group[i + 1].filter((child) => {
           if (item.finance_account_head_id == child.parent_acc_id) {
             return item;
           }
         });
 
         const total_debit_amount = _.chain(immediate_childs)
-          .sumBy(s => parseFloat(s.total_debit_amount))
+          .sumBy((s) => parseFloat(s.total_debit_amount))
           .value()
           .toFixed(decimal_places);
 
         const total_credit_amount = _.chain(immediate_childs)
-          .sumBy(s => parseFloat(s.total_credit_amount))
+          .sumBy((s) => parseFloat(s.total_credit_amount))
           .value()
           .toFixed(decimal_places);
 
@@ -1166,7 +1210,8 @@ function buildHierarchy(
   head_data,
   trans_symbol,
   decimal_places,
-  drillDownLevel
+  drillDownLevel,
+  nonZero
 ) {
   try {
     let roots = [],
@@ -1198,7 +1243,7 @@ function buildHierarchy(
 
         for (let child in child_data) {
           //ST---calulating Amount
-          const BALANCE = child_data[child].find(f => {
+          const BALANCE = child_data[child].find((f) => {
             return (
               item.finance_account_head_id == f.head_id &&
               item.finance_account_child_id == f.child_id
@@ -1224,20 +1269,43 @@ function buildHierarchy(
         }
 
         //END---calulating Amount
+        if (nonZero === "Y") {
+          let nonExistingArray = [];
+          const ObjProceeding = Object.keys(columns_wise_amounts);
+          ObjProceeding.forEach((eItem) => {
+            const eValue = parseFloat(columns_wise_amounts[eItem]);
+            if (eValue === 0) {
+              nonExistingArray.push(eItem);
+            }
+          });
+          let notPush = nonExistingArray.length === ObjProceeding.length;
+          if (!notPush) {
+            child.push({
+              finance_account_child_id: item["finance_account_child_id"],
+              trans_symbol: trans_symbol,
+              ...columns_wise_amounts,
+              arabic_name: item.arabic_child_name,
+              label: item.child_name,
+              head_id: item["head_id"],
 
-        child.push({
-          finance_account_child_id: item["finance_account_child_id"],
-          trans_symbol: trans_symbol,
-          ...columns_wise_amounts,
+              leafnode: "Y",
+            });
+          }
+        } else {
+          child.push({
+            finance_account_child_id: item["finance_account_child_id"],
+            trans_symbol: trans_symbol,
+            ...columns_wise_amounts,
+            arabic_name: item.arabic_child_name,
+            label: item.child_name,
+            head_id: item["head_id"],
 
-          label: item.child_name,
-          head_id: item["head_id"],
-
-          leafnode: "Y"
-        });
+            leafnode: "Y",
+          });
+        }
 
         //if children array doesnt contain this non-leaf node then push
-        const data = target.find(val => {
+        const data = target.find((val) => {
           return val.finance_account_head_id == item.finance_account_head_id;
         });
 
@@ -1245,7 +1313,7 @@ function buildHierarchy(
           let columns_wise_amounts = {};
           //ST---calulating Amount
           for (let head in head_data) {
-            const BALANCE = head_data[head].find(f => {
+            const BALANCE = head_data[head].find((f) => {
               return item.finance_account_head_id == f.finance_account_head_id;
             });
 
@@ -1264,22 +1332,46 @@ function buildHierarchy(
           }
 
           //END---calulating Amount
-
-          target.push({
-            ...item,
-            trans_symbol: trans_symbol,
-            ...columns_wise_amounts,
-
-            label: item.account_name,
-
-            leafnode: "N"
-          });
+          if (nonZero === "Y") {
+            let nonExistingArray = [];
+            const ObjProceeding = Object.keys(columns_wise_amounts);
+            ObjProceeding.forEach((eItem) => {
+              const eValue = parseFloat(columns_wise_amounts[eItem]);
+              if (eValue === 0) {
+                nonExistingArray.push(eItem);
+              }
+            });
+            let notPush = nonExistingArray.length === ObjProceeding.length;
+            if (!notPush) {
+              const { arabic_account_name, group_code, ...others } = item;
+              target.push({
+                ...others,
+                trans_symbol: trans_symbol,
+                ...columns_wise_amounts,
+                arabic_name: arabic_account_name,
+                label: item.account_name,
+                ledger_code: group_code,
+                leafnode: "N",
+              });
+            }
+          } else {
+            const { arabic_account_name, group_code, ...others } = item;
+            target.push({
+              ...others,
+              trans_symbol: trans_symbol,
+              ...columns_wise_amounts,
+              arabic_name: arabic_account_name,
+              label: item.account_name,
+              ledger_code: group_code,
+              leafnode: "N",
+            });
+          }
         }
       } else {
         let columns_wise_amounts = {};
         //ST---calulating Amount
         for (let head in head_data) {
-          const BALANCE = head_data[head].find(f => {
+          const BALANCE = head_data[head].find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
@@ -1298,16 +1390,40 @@ function buildHierarchy(
         }
 
         //END---calulating Amount
-
-        target.push({
-          ...item,
-          trans_symbol: trans_symbol,
-          ...columns_wise_amounts,
-
-          label: item.account_name,
-
-          leafnode: "N"
-        });
+        if (nonZero === "Y") {
+          let nonExistingArray = [];
+          const ObjProceeding = Object.keys(columns_wise_amounts);
+          ObjProceeding.forEach((eItem) => {
+            const eValue = parseFloat(columns_wise_amounts[eItem]);
+            if (eValue === 0) {
+              nonExistingArray.push(eItem);
+            }
+          });
+          let notPush = nonExistingArray.length === ObjProceeding.length;
+          if (!notPush) {
+            const { arabic_account_name, group_code, ...others } = item;
+            target.push({
+              ...others,
+              trans_symbol: trans_symbol,
+              ...columns_wise_amounts,
+              ledger_code: group_code,
+              label: item.account_name,
+              arabic_name: arabic_account_name,
+              leafnode: "N",
+            });
+          }
+        } else {
+          const { arabic_account_name, group_code, ...others } = item;
+          target.push({
+            ...others,
+            trans_symbol: trans_symbol,
+            ...columns_wise_amounts,
+            ledger_code: group_code,
+            label: item.account_name,
+            arabic_name: arabic_account_name,
+            leafnode: "N",
+          });
+        }
       }
     }
 
@@ -1315,12 +1431,12 @@ function buildHierarchy(
     // utilities.logger().log("children:", children);
 
     // function to recursively build the tree
-    let findChildren = function(parent) {
+    let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         let tempchilds = children[parent.finance_account_head_id];
 
         if (drillDownLevel !== 999) {
-          tempchilds = tempchilds.filter(f => f.leafnode !== "Y");
+          tempchilds = tempchilds.filter((f) => f.leafnode !== "Y");
         }
         if (tempchilds.length > 0) {
           parent.children = tempchilds;
