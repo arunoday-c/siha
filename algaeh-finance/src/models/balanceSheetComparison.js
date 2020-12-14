@@ -22,10 +22,10 @@ export default {
     _mysql
       .executeQuery({
         query: ` with recursive cte as (
-                select finance_account_head_id,account_code,account_name,       
+                select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,       
                 parent_acc_id from finance_account_head   where  account_code='1' 
                 union                 
-                select H.finance_account_head_id,H.account_code,H.account_name,       
+                select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,       
                 H.parent_acc_id from finance_account_head H  
                 inner join cte on H.parent_acc_id = cte.finance_account_head_id  
                 )select * from cte ;
@@ -33,10 +33,10 @@ export default {
                 where root_id=1;
 
                 with recursive cte as (
-                  select finance_account_head_id,account_code,account_name,       
+                  select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,       
                   parent_acc_id from finance_account_head   where  account_code='2' 
                   union                 
-                  select H.finance_account_head_id,H.account_code,H.account_name,       
+                  select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,       
                   H.parent_acc_id from finance_account_head H  
                   inner join cte on H.parent_acc_id = cte.finance_account_head_id  
                   )select * from cte ;
@@ -44,10 +44,10 @@ export default {
                   where root_id=2;
 
                   with recursive cte as (
-                    select finance_account_head_id,account_code,account_name,       
+                    select finance_account_head_id,account_code,account_name,arabic_account_name,group_code,       
                     parent_acc_id from finance_account_head   where  account_code='3' 
                     union                 
-                    select H.finance_account_head_id,H.account_code,H.account_name,       
+                    select H.finance_account_head_id,H.account_code,H.account_name,H.arabic_account_name,H.group_code,       
                     H.parent_acc_id from finance_account_head H  
                     inner join cte on H.parent_acc_id = cte.finance_account_head_id  
                     )select * from cte ;
@@ -55,15 +55,15 @@ export default {
                     where root_id=3; 
                     
                     
-                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,
+                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,H.arabic_account_name,C.arabic_child_name,H.group_code,C.ledger_code,
                     finance_account_child_id,  child_name,head_id from finance_account_head H left join 
                     finance_account_child C on C.head_id=H.finance_account_head_id where root_id=1 order by account_level,sort_order;   
 
-                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,
+                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,H.arabic_account_name,C.arabic_child_name,H.group_code,C.ledger_code,
                     finance_account_child_id,  child_name,head_id from finance_account_head H left join 
                     finance_account_child C on C.head_id=H.finance_account_head_id where root_id=2 order by account_level,sort_order; 
 
-                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,
+                    select finance_account_head_id,account_code, account_name,account_parent,account_level, sort_order,parent_acc_id,root_id,H.arabic_account_name,C.arabic_child_name,H.group_code,C.ledger_code,
                     finance_account_child_id,  child_name,head_id from finance_account_head H left join 
                     finance_account_child C on C.head_id=H.finance_account_head_id where root_id=3 order by account_level,sort_order; 
                     `,
@@ -488,10 +488,10 @@ function buildHierarchy(
           finance_account_child_id: item["finance_account_child_id"],
           trans_symbol: trans_symbol,
           ...columns_wise_amounts,
-
+          arabic_name: item.arabic_child_name,
           label: item.child_name,
           head_id: item["head_id"],
-
+          ledger_code: item.ledger_code,
           leafnode: "Y",
           change: changed_amount,
           percent: percent,
@@ -539,13 +539,15 @@ function buildHierarchy(
               ) * 100
             ).toFixed(decimal_places);
           }
-
+          const { arabic_account_name, group_code, ...others } = item;
           target.push({
-            ...item,
+            ...others,
             trans_symbol: trans_symbol,
             ...columns_wise_amounts,
             label: item.account_name,
             leafnode: "N",
+            arabic_name: arabic_account_name,
+            ledger_code: group_code,
             change: changed_amount,
             percent: percent,
           });
@@ -586,14 +588,16 @@ function buildHierarchy(
             100
           ).toFixed(decimal_places);
         }
-
+        const { arabic_account_name, group_code, ...others } = item;
         target.push({
-          ...item,
+          ...others,
           trans_symbol: trans_symbol,
           ...columns_wise_amounts,
           label: item.account_name,
           leafnode: "N",
           change: changed_amount,
+          arabic_name: arabic_account_name,
+          ledger_code: group_code,
           percent: percent,
         });
       }

@@ -198,15 +198,20 @@ export default {
                       generateBalanceSheet(data)
                         .then((capitalResult) => {
                           _mysql.releaseConnection();
-
-                          liablityRsult.children.push(capitalResult);
+                          liablityRsult.children.push(
+                            capitalResult ? capitalResult : []
+                          );
                           liablityRsult.label = "Liabilities and Equity";
 
                           for (let i = 0; i < column_len; i++) {
                             let column_id = columns[i]["column_id"];
                             liablityRsult[column_id] = parseFloat(
-                              parseFloat(liablityRsult[column_id]) +
-                                parseFloat(capitalResult[column_id])
+                              parseFloat(
+                                liablityRsult ? liablityRsult[column_id] : 0
+                              ) +
+                                parseFloat(
+                                  capitalResult ? capitalResult[column_id] : 0
+                                )
                             ).toFixed(decimal_places);
                           }
 
@@ -250,6 +255,7 @@ export default {
                     .endOf("month")
                     .format("YYYY-MM-DD"),
                   month_id: dateStart.format("YYYYMM"),
+                  dateStart,
                 });
                 dateStart.add(1, "month");
               }
@@ -492,7 +498,6 @@ function generateBalanceSheet(options) {
           let res = 0;
 
           const column_len = columns.length;
-
           for (let i = 0; i < column_len; i++) {
             let head_data = calcAmount(result[res], levels, decimal_places);
 

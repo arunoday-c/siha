@@ -34,6 +34,7 @@ export default function BalanceSheet({
   const [nonZero, setNonZero] = useState(false);
   const [showDrillDown, setShowDrillDown] = useState(false);
   const [row, setRow] = useState(undefined);
+  const [changedDateRange, setChangedDateRange] = useState([]);
   useEffect(() => {
     const { filterKey } = selectedFilter;
     if (filterKey !== undefined) {
@@ -230,7 +231,7 @@ export default function BalanceSheet({
       };
     });
     cols.unshift({
-      fieldName: "label",
+      fieldName: showArabic ? "arabic_name" : "label",
       label: "Ledger Name",
       freezable: true,
     });
@@ -434,6 +435,14 @@ export default function BalanceSheet({
                 href="void(0);"
                 onClick={(e) => {
                   e.preventDefault();
+                  if (BasedOn === "by_month") {
+                    const on_month_from = moment(
+                      `${item.column_id}01`,
+                      "YYYYMMDD"
+                    );
+                    const on_month_to = on_month_from.clone().endOf("month");
+                    setChangedDateRange([on_month_from, on_month_to]);
+                  }
                   OpenDrillDown(row);
                 }}
               >
@@ -478,7 +487,6 @@ export default function BalanceSheet({
     setShowDrillDown(false);
   }
   function OpenDrillDown(rec) {
-    // if( "by_year")
     setShowDrillDown(true);
     setRow(rec);
   }
@@ -488,7 +496,7 @@ export default function BalanceSheet({
         visible={showDrillDown}
         onClose={OnCloseDrillDown}
         row={row}
-        dates={dates}
+        dates={changedDateRange.length !== 0 ? changedDateRange : dates}
       />
       <div className="row inner-top-search">
         <Filter
@@ -533,6 +541,7 @@ export default function BalanceSheet({
             setChangeInPercentage(inputs["CHANGEIN%"]);
             setChangeInAccount(inputs["CHANGEINAMT."]);
             setBasedOn(BASEDON);
+            setChangedDateRange([]);
             setStopLoading(cb);
             setLevels(LEVELS);
             setArabic(ARABIC === "Y" ? true : false);
