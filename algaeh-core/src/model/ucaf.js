@@ -244,8 +244,8 @@ let getPatientUCAF = (req, res, next) => {
                 `patient_chief_comp_main_symptoms`,`patient_significant_signs`,`patient_other_conditions`,\
                 `patient_diagnosys`,`patient_principal_code_1`,`patient_principal_code_2`,\
                 `patient_principal_code_3`,`patient_principal_code_4`,`patient_complaint_type`,\
-                `patient_indicated_LMP`,`patient_gender`,`age_in_years`) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
+                `patient_indicated_LMP`,`patient_gender`,`age_in_years`,`created_by`,`hospital_id`) \
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
                 ",
                   values: [
                     _fields.patient_id,
@@ -281,6 +281,8 @@ let getPatientUCAF = (req, res, next) => {
                     _fields.patient_indicated_LMP,
                     _fields.patient_gender,
                     _fields.age_in_years,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    req.userIdentity.hospital_id,
                   ],
                   printQuery: true,
                 })
@@ -447,7 +449,7 @@ const updateUcafDetails = (req, res, next) => {
           `patient_chief_comp_main_symptoms`=?,`patient_significant_signs`=?,`patient_other_conditions`=?,\
           `patient_diagnosys`=?,`patient_principal_code_1`=?,`patient_principal_code_2`=?,\
           `patient_principal_code_3`=?,`patient_principal_code_4`=?,`patient_complaint_type`=?,\
-          `patient_indicated_LMP`=?,`patient_emergency_type`=?,`updated_date`=?,`updated_by`=?\
+          `patient_indicated_LMP`=?,`patient_emergency_type`=?,`updated_date`=?,`updated_by`=?,`hospital_id`=?\
           WHERE  `hims_f_ucaf_header_id`=?;",
         values: [
           input.patient_marital_status,
@@ -473,6 +475,7 @@ const updateUcafDetails = (req, res, next) => {
           input.patient_emergency_type,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.hospital_id,
           input.hims_f_ucaf_header_id,
         ],
         printQuery: true,
