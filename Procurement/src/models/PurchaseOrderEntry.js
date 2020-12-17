@@ -781,11 +781,14 @@ export default {
           when authorize1 = 'Y' and authorize2 = 'N'  then 'Final Autorization Pending'\
           when authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'  then 'Delivery Pending'\
           when is_completed='Y'  and receipt_generated ='N' then 'Delivery Completed' \
-          when is_completed='Y'  and receipt_generated ='Y' then 'PO Closed' end status \
+          when is_completed='Y'  and receipt_generated ='Y' then 'PO Closed' end status, \
+          CASE WHEN po_from='PHR' then PL.location_description ELSE IL.location_description END location_description \
           from  hims_f_procurement_po_header PO \
           inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
           inner join algaeh_d_app_user US on PO.created_by = US.algaeh_d_app_user_id \
           left join algaeh_d_app_user AE on PO.authorize_by_1 = AE.algaeh_d_app_user_id \
+          left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
+          left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id \
           where 1=1 ";
 
       if (req.query.from_date != null) {

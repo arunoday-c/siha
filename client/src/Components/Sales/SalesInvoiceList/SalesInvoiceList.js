@@ -46,7 +46,9 @@ class SalesInvoiceList extends Component {
       const records = await persistStageOnGet();
 
       if (records) {
-        this.setState({ ...records });
+        this.setState({ ...records }, () => {
+          getSalesInvoiceList(this)
+        });
         persistStorageOnRemove();
       } else {
         const params = new URLSearchParams(this.props.location?.search);
