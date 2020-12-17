@@ -22,29 +22,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-          [name]: value,
-          mode_of_pay: "1",
-          OTItemAddDis: false,
-        })
+            [name]: value,
+            mode_of_pay: "1",
+            OTItemAddDis: false,
+          })
         : $this.setState({
-          [name]: value,
-          mode_of_pay: "",
-          OTItemAddDis: false,
-        });
+            [name]: value,
+            mode_of_pay: "",
+            OTItemAddDis: false,
+          });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-          [name]: value,
-          insurance_yesno: "N",
-          insured: "N",
-        })
+            [name]: value,
+            insurance_yesno: "N",
+            insured: "N",
+          })
         : $this.setState({
-          [name]: value,
-          insurance_yesno: "Y",
-          insured: "Y",
-        });
+            [name]: value,
+            insurance_yesno: "Y",
+            insured: "Y",
+          });
       break;
 
     default:
@@ -103,16 +103,30 @@ const getPosEntry = ($this, pos_number) => {
 
         data.hims_d_insurance_network_office_id = data.network_office_id;
 
-        debugger
+        debugger;
         if (data.receiptdetails.length > 0) {
           for (let i = 0; i < data.receiptdetails.length; i++) {
-            data.Cashchecked = data.receiptdetails[i].pay_type === "CA" ? true : false
-            data.cash_amount = data.receiptdetails[i].pay_type === "CA" ? data.receiptdetails[i].amount : 0
+            data.Cashchecked =
+              data.receiptdetails[i].pay_type === "CA" ? true : false;
+            data.cash_amount =
+              data.receiptdetails[i].pay_type === "CA"
+                ? data.receiptdetails[i].amount
+                : 0;
 
-            data.Cardchecked = data.receiptdetails[i].pay_type === "CD" ? true : false
-            data.card_amount = data.receiptdetails[i].pay_type === "CD" ? data.receiptdetails[i].amount : 0
-            data.card_check_number = data.receiptdetails[i].pay_type === "CD" ? data.receiptdetails[i].card_check_number : null
-            data.selectedCard = data.receiptdetails[i].pay_type === "CD" ? { hims_d_bank_card_id: data.receiptdetails[i].bank_card_id } : null
+            data.Cardchecked =
+              data.receiptdetails[i].pay_type === "CD" ? true : false;
+            data.card_amount =
+              data.receiptdetails[i].pay_type === "CD"
+                ? data.receiptdetails[i].amount
+                : 0;
+            data.card_check_number =
+              data.receiptdetails[i].pay_type === "CD"
+                ? data.receiptdetails[i].card_check_number
+                : null;
+            data.selectedCard =
+              data.receiptdetails[i].pay_type === "CD"
+                ? { hims_d_bank_card_id: data.receiptdetails[i].bank_card_id }
+                : null;
             // if (data.receiptdetails[i].pay_type === "CA") {
             //   data.Cashchecked = true;
             //   data.cash_amount = data.receiptdetails[i].amount;
@@ -242,7 +256,7 @@ const ClearData = ($this, e) => {
   IOputs.advance = 0;
   IOputs.total_quantity = 0;
   IOputs.dataExitst = false;
-  IOputs.selectedCard = {}
+  IOputs.selectedCard = {};
 
   IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
   IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
@@ -343,7 +357,7 @@ const GenerateReciept = ($this, callBack) => {
         amount: $this.state.card_amount,
         updated_date: null,
         card_type: null,
-        bank_card_id: $this.state.selectedCard?.hims_d_bank_card_id
+        bank_card_id: $this.state.selectedCard?.hims_d_bank_card_id,
       });
     }
     if ($this.state.cheque_amount > 0 || $this.state.Checkchecked === true) {
@@ -897,7 +911,7 @@ const VisitSearch = ($this, e) => {
 };
 
 const getMedicationList = ($this) => {
-  let inputobj = { episode_id: $this.state.episode_id };
+  let inputobj = { visit_id: $this.state.visit_id };
 
   $this.props.getMedicationList({
     uri: "/pharmacyGlobal/getVisitPrescriptionDetails",
@@ -1374,15 +1388,14 @@ const processSelectedItems = ($this) => {
     //   strItemDescription += non_selected_Items[k].item_description;
     // }
     swal({
-      title: "For your information",
-      text:
-        "Items (" +
+      title: "FYI, No qty added",
+      html:
         non_selected_Items
           .map((item) => {
             return item.item_description;
           })
-          .join(", ") +
-        ") no quantity added. Do you wish to proceed without any quantity?",
+          .join("</br>") +
+        "</br></br> Do you wish to continue without any quantity? ",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",

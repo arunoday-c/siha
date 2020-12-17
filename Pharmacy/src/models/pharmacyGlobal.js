@@ -55,8 +55,8 @@ export default {
             D.dispense, D.frequency_type, D.frequency_time,D.frequency_route,D.start_date, D.item_status, \
             D.service_id, D.uom_id,D.item_category_id, D.item_group_id, D.pre_approval, D.insured\
             from hims_f_prescription H,hims_f_prescription_detail D  \
-            WHERE H.hims_f_prescription_id = D.prescription_id and episode_id=?",
-          values: [req.query.episode_id],
+            WHERE H.hims_f_prescription_id = D.prescription_id and H.visit_id=?",
+          values: [req.query.visit_id],
           printQuery: true,
         })
         .then((result) => {
