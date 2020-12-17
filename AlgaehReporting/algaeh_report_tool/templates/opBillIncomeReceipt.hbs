@@ -23,23 +23,29 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{receipt_number}}/{{bill_number}}</td>
+                        <td>{{receipt_number}} / {{bill_number}}</td>
                         <td>{{receipt_date}}</td>
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
 
                         <td>{{sub_department_name}}</td>
                         <td>{{doctor_name}}</td>
-                        <td class="numberFld">{{cash}}</td>
-                        <td class="numberFld">{{card}}</td>
-                        <td class="numberFld">{{total}}</td>
+                         <td class="numberFld">{{numberFormating cash ../currency}}</td>
+                         <td class="numberFld">{{numberFormating card ../currency}}</td>
+                         <td class="numberFld">{{numberFormating total ../currency}}</td>
 
                     </tr>
-                    {{/each }}<tr class="footerTotalDown">
-                        <td colspan="7" class="numberFld">Total</td>
-                        <td class="numberFld">{{total_cash}}</td>
-                        <td class="numberFld">{{total_card}}</td>
-                        <td class="numberFld">{{total_collection}}</td>
+                    {{/each }}
+                    <tr class="footerTotalDown">
+                        <td colspan="7" class="numberFld"></td>
+                         <td class="numberFld">{{numberFormating total_cash currencyheader}}</td>
+                         <td class="numberFld">{{numberFormating total_card currencyheader}}</td>
+                         <td class="numberFld">{{numberFormating total_collection currencyheader}}</td>
+
+
+                         {{!-- <td class="numberFld">{{total_cash}}</td>
+                          <td class="numberFld">{{total_card}}</td>
+                           <td class="numberFld">{{total_collection}}</td> --}}
                     </tr>
                 </tbody>
             </table>
