@@ -60,13 +60,13 @@ const executePDF = function executePDFMethod(options) {
           resolve({
             detail: result,
             net_total: net_total,
-            currency: {
+            decimalOnly: {
               decimal_places,
-              addSymbol: true,
+              addSymbol: false,
               symbol_position,
               currency_symbol,
             },
-            currencyheader: {
+            currencyOnly: {
               decimal_places,
               addSymbol: true,
               symbol_position,

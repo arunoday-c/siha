@@ -25,8 +25,8 @@
                         <th>Patient Name</th>
                         <th>Visit No.</th>
                         <th>Visit Date</th>
-                        <th>Patient Share</th>
-                        <th>Company Share</th>
+                        {{!-- <th>Patient Share</th>
+                        <th>Company Share</th> --}}
                         <th>Net Amount</th>
                     </tr>
 
@@ -43,8 +43,9 @@
 
                     {{#each detail}}
                     <tr>
-                        <td colspan="9" class="tableSubHdg">{{cashier_name}}</td>
-                        <td class="tableSubHdg numberFld"><b>{{cashier_total}}</b></td>
+                        <td colspan="7" class="tableSubHdg">{{cashier_name}}</td>
+
+                             <td class="tableSubHdg numberFld">{{numberFormating cashier_total ../currencyOnly}}</td>
                     </tr>
                     {{#each detailList}}
                     <tr>
@@ -57,16 +58,16 @@
                             class="txtFld">{{full_name}}</td>
                         <td>{{visit_code}}</td>
                         <td>{{visit_date}}</td>
-                        <td class="numberFld">{{numberFormating net_amount currency}}</td>
+                        <td class="numberFld">{{numberFormating net_amount ../../decimalOnly}}</td>
                     </tr>
                     {{/each }}{{/each }}
                     <tr class="numberFldTotalBottom">
-                        <td colspan="9"></td>
-                        <td class="numberFld">{{net_total}}</td>
+                        <td colspan="7"></td>
+                        <td class="numberFld">{{numberFormating net_total currencyOnly}}</td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="11" class="noResultTextReport">No Records Found</td>
+                        <td colspan="9" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
 
                 </tbody>
