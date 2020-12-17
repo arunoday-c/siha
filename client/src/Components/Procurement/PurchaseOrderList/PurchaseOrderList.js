@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+// import { connect } from "react-redux";
+// import { bindActionCreators } from "redux";
 // import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-import { setGlobal } from "../../../utils/GlobalFunctions";
+// import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./PurchaseOrderList.scss";
 import "./../../../styles/site.scss";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -15,8 +15,7 @@ import {
   poforhandle,
   datehandle,
   changeEventHandaler,
-  getPurchaseOrderList,
-  getData,
+  getPurchaseOrderList
 } from "./PurchaseOrderListEvent";
 
 import {
@@ -26,7 +25,7 @@ import {
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
-import { AlgaehActions } from "../../../actions/algaehActions";
+// import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   AlgaehTable,
   RawSecurityComponent,
@@ -57,9 +56,10 @@ class PurchaseOrderList extends Component {
   componentDidMount() {
     (async () => {
       const records = await persistStageOnGet();
-
       if (records) {
-        this.setState({ ...records });
+        this.setState({ ...records }, () => {
+          getPurchaseOrderList(this);
+        });
         persistStorageOnRemove();
       } else {
         const params = new URLSearchParams(this.props.location?.search);
@@ -88,7 +88,6 @@ class PurchaseOrderList extends Component {
               poSelected: JSON.parse(params?.get("poSelected"))
             },
             () => {
-              getData(this);
               getPurchaseOrderList(this);
             }
           );
@@ -122,7 +121,6 @@ class PurchaseOrderList extends Component {
                     bothExisits: bothExisits,
                   },
                   () => {
-                    getData(this);
                     getPurchaseOrderList(this);
                   }
                 );
@@ -135,7 +133,6 @@ class PurchaseOrderList extends Component {
                     status: bothExisits === false ? status : "0",
                   },
                   () => {
-                    getData(this);
                     getPurchaseOrderList(this);
                   }
                 );
@@ -312,15 +309,17 @@ class PurchaseOrderList extends Component {
                                 <i
                                   className="fa fa-exchange-alt"
                                   onClick={() => {
-                                    debugger
                                     persistStateOnBack(this.state, true);
-                                    setGlobal({
-                                      "RQ-STD": "DeliveryNoteEntry",
-                                      purchase_number: row.purchase_number,
-                                    });
-                                    document
-                                      .getElementById("rq-router")
-                                      .click();
+                                    this.props.history.push(
+                                      `/DeliveryNoteEntry?purchase_number=${row.purchase_number}`
+                                    );
+                                    // setGlobal({
+                                    //   "RQ-STD": "DeliveryNoteEntry",
+                                    //   purchase_number: row.purchase_number,
+                                    // });
+                                    // document
+                                    //   .getElementById("rq-router")
+                                    //   .click();
                                   }}
                                 />
                               ) : null}
@@ -434,50 +433,21 @@ class PurchaseOrderList extends Component {
                         filterable: true,
                         filterType: "date",
                         others: {
-                          maxWidth: 150,
+                          // maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" },
                           // filterable: false,
                         },
                       },
                       {
-                        fieldName: "location_id",
+                        fieldName: "location_description",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Location" }} />
                         ),
-
-                        displayTemplate: (row) => {
-                          let display;
-
-                          this.state.po_from === "PHR"
-                            ? (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  (f) =>
-                                    f.hims_d_pharmacy_location_id ===
-                                    row.pharmcy_location_id
-                                ))
-                            : (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  (f) =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.inventory_location_id
-                                ));
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].location_description
-                                : ""}
-                            </span>
-                          );
-                        },
                         disabled: true,
                         filterable: true,
                         others: {
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" },
                         },
@@ -542,23 +512,4 @@ class PurchaseOrderList extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    polocations: state.polocations,
-    // purchaseorderlist: state.purchaseorderlist,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getLocation: AlgaehActions,
-      // getPurchaseOrderList: AlgaehActions,
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderList)
-);
+export default withRouter(PurchaseOrderList);

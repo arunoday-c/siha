@@ -32,7 +32,7 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   }
 };
 
-const getPurchaseOrderList = $this => {
+const getPurchaseOrderList = ($this) => {
   let inpObj = { po_from: $this.state.po_from, status: $this.state.status };
 
   if ($this.state.from_date !== null) {
@@ -134,35 +134,10 @@ const poforhandle = ($this, e) => {
           status: "1"
         },
         () => {
-          getData($this);
           getPurchaseOrderList($this);
         }
       );
     }
-  }
-};
-
-const getData = $this => {
-  if ($this.state.po_from === "PHR") {
-    $this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "LOCATIONS_GET_DATA",
-        mappingName: "polocations"
-      }
-    });
-  } else if ($this.state.po_from === "INV") {
-    $this.props.getLocation({
-      uri: "/inventory/getInventoryLocation",
-      module: "inventory",
-      method: "GET",
-      redux: {
-        type: "LOCATIONS_GET_DATA",
-        mappingName: "polocations"
-      }
-    });
   }
 };
 
@@ -216,6 +191,5 @@ export {
   poforhandle,
   datehandle,
   changeEventHandaler,
-  getPurchaseOrderList,
-  getData
+  getPurchaseOrderList
 };
