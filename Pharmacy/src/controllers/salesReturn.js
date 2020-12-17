@@ -3,7 +3,10 @@ import utlities from "algaeh-utilities";
 import salesModels from "../models/salesReturn";
 import receiptModels from "algaeh-billing/src/models/receiptentry";
 import comModels from "../models/commonFunction";
+import billModels from "algaeh-billing/src/models/billing";
+
 const { addReceiptEntry, getReceiptEntry } = receiptModels;
+const { reVertCashHandover } = billModels;
 
 const {
   addsalesReturn,
@@ -42,6 +45,7 @@ export default () => {
     addsalesReturn,
     updatePOSDetail,
     generateAccountingEntry,
+    reVertCashHandover,
     updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
