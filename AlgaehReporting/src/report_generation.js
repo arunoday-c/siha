@@ -152,28 +152,27 @@ hbs.registerHelper("hasElement", function (conditional, options) {
   }
 });
 //created by irfan:
-hbs.registerHelper("dynamicSalary", function (
-  searchKey,
-  inputArray,
-  comp_type
-) {
-  if (comp_type == "E") {
-    const obj = inputArray.find((item) => {
-      return item.earnings_id == searchKey;
-    });
-    return obj ? obj.amount : "BBB";
-  } else if (comp_type == "D") {
-    const obj = inputArray.find((item) => {
-      return item.deductions_id == searchKey;
-    });
-    return obj ? obj.amount : "BBB";
-  } else if (comp_type == "C") {
-    const obj = inputArray.find((item) => {
-      return item.contributions_id == searchKey;
-    });
-    return obj ? obj.amount : "BBB";
+hbs.registerHelper(
+  "dynamicSalary",
+  function (searchKey, inputArray, comp_type) {
+    if (comp_type == "E") {
+      const obj = inputArray.find((item) => {
+        return item.earnings_id == searchKey;
+      });
+      return obj ? obj.amount : "BBB";
+    } else if (comp_type == "D") {
+      const obj = inputArray.find((item) => {
+        return item.deductions_id == searchKey;
+      });
+      return obj ? obj.amount : "BBB";
+    } else if (comp_type == "C") {
+      const obj = inputArray.find((item) => {
+        return item.contributions_id == searchKey;
+      });
+      return obj ? obj.amount : "BBB";
+    }
   }
-});
+);
 
 hbs.registerHelper("importStyle", function (styleSheetName) {
   const fullPath = path.join(
@@ -245,42 +244,38 @@ hbs.registerHelper("consoleLog", function (data) {
   }
 });
 
-hbs.registerHelper("imageUrl", function (
-  filename,
-  index,
-  name,
-  stringToappend,
-  filetype,
-  reqHeader
-) {
-  const host =
-    reqHeader === "none" ? "localhost" : reqHeader["host"].split(":")[0];
-  console.log(filename, name, filetype);
-  if (Array.isArray(filename)) {
-    if (filename.length > 0) {
-      stringToappend = stringToappend || "";
-      const imageLocation =
-        "http://" +
-        host +
-        ":3006/api/v1/Document/get?destinationName=" +
-        filename[index][name] +
-        stringToappend +
-        "&fileType=" +
-        filetype;
+hbs.registerHelper(
+  "imageUrl",
+  function (filename, index, name, stringToappend, filetype, reqHeader) {
+    const host =
+      reqHeader === "none" ? "localhost" : reqHeader["host"].split(":")[0];
+    console.log(filename, name, filetype);
+    if (Array.isArray(filename)) {
+      if (filename.length > 0) {
+        stringToappend = stringToappend || "";
+        const imageLocation =
+          "http://" +
+          host +
+          ":3006/api/v1/Document/get?destinationName=" +
+          filename[index][name] +
+          stringToappend +
+          "&fileType=" +
+          filetype;
 
-      return imageLocation;
+        return imageLocation;
+      } else {
+        return "";
+      }
     } else {
-      return "";
+      return (
+        "http://localhost:3006/api/v1/Document/get?destinationName=" +
+        filename +
+        "&fileType=" +
+        filetype
+      );
     }
-  } else {
-    return (
-      "http://localhost:3006/api/v1/Document/get?destinationName=" +
-      filename +
-      "&fileType=" +
-      filetype
-    );
   }
-});
+);
 
 hbs.registerHelper("logoUrl", function (logo_type, reqHead) {
   const image =
@@ -1263,15 +1258,22 @@ export default {
                       });
                       return;
                     }
+                    const showHeader =
+                      _inputParam.excelHeader !== undefined
+                        ? _inputParam.excelHeader
+                        : true;
                     var workbook = new Excel.Workbook();
                     workbook.creator = "Algaeh technologies private limited";
                     workbook.lastModifiedBy = _inputParam.reportName;
                     workbook.created = new Date();
                     workbook.modified = new Date();
 
-                    var worksheet = workbook.addWorksheet("Report", {
-                      properties: { tabColor: { argb: "FFC0000" } },
-                    });
+                    var worksheet = workbook.addWorksheet(
+                      _inputParam.excelTabName ?? "Report",
+                      {
+                        properties: { tabColor: { argb: "FFC0000" } },
+                      }
+                    );
                     const logoPath = path.join(
                       mainPath,
                       "images",
@@ -1293,8 +1295,10 @@ export default {
                       }
                       return letter;
                     }
-                    for (let i = 1; i <= 6; i++) {
-                      worksheet.addRow([]);
+                    if (showHeader) {
+                      for (let i = 1; i <= 6; i++) {
+                        worksheet.addRow([]);
+                      }
                     }
                     var tables = $("table").length;
 
@@ -1473,30 +1477,36 @@ export default {
                           });
                       });
                       const allColumns = worksheet.columns.length;
-                      const merge = `A1:${columnToLetter(allColumns)}5`;
-                      worksheet.mergeCells(merge);
-                      worksheet.addImage(companyLogo, "F1:I5");
-                      let filter = "";
 
-                      if (_inputParam.reportParams !== undefined) {
-                        for (
-                          let f = 0;
-                          f < _inputParam.reportParams.length;
-                          f++
-                        ) {
-                          const item = _inputParam.reportParams[f];
-                          // console.log("item.label ", item.label);
-                          if (item.label !== undefined)
-                            filter += `${item.label}:${item.labelValue} || `;
+                      if (showHeader) {
+                        const merge = `A1:${columnToLetter(allColumns)}5`;
+                        worksheet.mergeCells(merge);
+                        worksheet.addImage(companyLogo, "F1:I5");
+
+                        let filter = "";
+
+                        if (_inputParam.reportParams !== undefined) {
+                          for (
+                            let f = 0;
+                            f < _inputParam.reportParams.length;
+                            f++
+                          ) {
+                            const item = _inputParam.reportParams[f];
+                            // console.log("item.label ", item.label);
+                            if (item.label !== undefined)
+                              filter += `${item.label}:${item.labelValue} || `;
+                          }
                         }
+                        worksheet.getRow(6).getCell(1).value = filter;
+                        worksheet.mergeCells(
+                          `A6:${columnToLetter(allColumns)}6`
+                        );
+                        worksheet.getRow(6).font = { bold: true };
+                        worksheet.getRow(6).alignment = {
+                          vertical: "middle",
+                          horizontal: "center",
+                        };
                       }
-                      worksheet.getRow(6).getCell(1).value = filter;
-                      worksheet.mergeCells(`A6:${columnToLetter(allColumns)}6`);
-                      worksheet.getRow(6).font = { bold: true };
-                      worksheet.getRow(6).alignment = {
-                        vertical: "middle",
-                        horizontal: "center",
-                      };
                     }
 
                     _mysql.releaseConnection();
