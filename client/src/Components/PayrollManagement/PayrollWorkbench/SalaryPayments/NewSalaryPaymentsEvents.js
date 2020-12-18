@@ -306,7 +306,8 @@ const selectToGeneratePaySlip = ($this, row, e) => {
 
 const generateLoanReconilationReport = ($this) => {
   algaehApiCall({
-    uri: "/report",
+    // uri: "/report",
+    uri: "/excelReport",
     method: "GET",
     module: "reports",
     headers: {
@@ -364,8 +365,11 @@ const generateLoanReconilationReport = ($this) => {
 };
 
 const generateLeaveReconilationReport = ($this) => {
+  // console.log("abcd");
+
   algaehApiCall({
-    uri: "/report",
+    // uri: "/report",
+    uri: "/excelReport",
     method: "GET",
     module: "reports",
     headers: {
@@ -376,6 +380,11 @@ const generateLeaveReconilationReport = ($this) => {
       report: {
         reportName: "leave_gratuity_reconcil_Report",
         pageOrentation: "landscape",
+        excelTabName: `${$this.state.inputs.hospital_name} | ${moment(
+          $this.state.inputs.month,
+          "MM"
+        ).format("MMM")}-${$this.state.inputs.year}`,
+        excelHeader: false,
         reportParams: [
           {
             name: "hospital_id",
@@ -414,19 +423,18 @@ const generateLeaveReconilationReport = ($this) => {
       },
     },
     onSuccess: (res) => {
-      // let blob = new Blob([res.data], {
-      //   type: "application/octet-stream",
-      // });
-      // const fileName = `EmployeeMaster.xlsx`;
-      // var objectUrl = URL.createObjectURL(blob);
-      // var link = document.createElement("a");
-      // link.setAttribute("href", objectUrl);
-      // link.setAttribute("download", fileName);
-      // link.click();
-
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave and Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
-      window.open(origin);
+      const a = document.createElement("a");
+      a.href = urlBlob;
+      a.download = `Leave & Airfare Reconciliation Report ${moment(
+        $this.state.inputs.month,
+        "MM"
+      ).format("MMM")}-${$this.state.inputs.year}.${"xlsx"}`;
+      a.click();
+
+      // const urlBlob = URL.createObjectURL(res.data);
+      // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave and Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
+      // window.open(origin);
     },
   });
 };
@@ -482,19 +490,19 @@ const generateGratuityReconilationReport = ($this) => {
       },
     },
     onSuccess: (res) => {
-      // let blob = new Blob([res.data], {
-      //   type: "application/octet-stream",
-      // });
-      // const fileName = `EmployeeMaster.xlsx`;
-      // var objectUrl = URL.createObjectURL(blob);
-      // var link = document.createElement("a");
-      // link.setAttribute("href", objectUrl);
-      // link.setAttribute("download", fileName);
-      // link.click();
+      let blob = new Blob([res.data], {
+        type: "application/octet-stream",
+      });
+      const fileName = `EmployeeMaster.xlsx`;
+      var objectUrl = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.setAttribute("href", objectUrl);
+      link.setAttribute("download", fileName);
+      link.click();
 
-      const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Gratuity Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
-      window.open(origin);
+      // const urlBlob = URL.createObjectURL(res.data);
+      // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Gratuity Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
+      // window.open(origin);
     },
   });
 };
