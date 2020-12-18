@@ -7,7 +7,7 @@ import {
   AlgaehDateHandler,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -189,7 +189,7 @@ export default class AuditLog extends Component {
             value={this.state.to_date}
           />
 
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Levels",
@@ -215,7 +215,7 @@ export default class AuditLog extends Component {
                 });
               },
             }}
-          />
+          /> */}
 
           <div className="col globalSearchCntr form-group mandatory">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
@@ -256,7 +256,7 @@ export default class AuditLog extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-lg-12" id="auditLogGrid_Cntr">
-                    <AlgaehDataGrid
+                    {/* <AlgaehDataGrid
                       id="auditLogGrid"
                       columns={[
                         {
@@ -393,7 +393,7 @@ export default class AuditLog extends Component {
                       }}
                       dataSource={{ data: this.state.auditdata }}
                       paging={{ page: 0, rowsPerPage: 20 }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>

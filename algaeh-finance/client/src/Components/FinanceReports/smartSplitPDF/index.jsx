@@ -5,6 +5,7 @@ export default function SmartTable({
   control,
   columnsToRepeat,
   columnPerPage,
+  title,
 }) {
   const [loading, setLoading] = useState(false);
   // function convertPixelTomm(pageSizeinMM) {
@@ -12,9 +13,14 @@ export default function SmartTable({
   //   const cellMaxWidth = 180;
   //   const pixelToMM = Math.ceil(cellMaxWidth * onepx);
   // }
+
   function splitingTable() {
+    const getHeader = document
+      .getElementById("finance_report_header")
+      .cloneNode(true);
     const rootDiv = document.createElement("div");
     // rootDiv.setAttribute("class", "newStickyGrid");
+
     const contentElecment = document.createElement("div");
     // contentElecment.setAttribute("class", "table-scroll reportGridPlain");
 
@@ -84,7 +90,7 @@ export default function SmartTable({
           tbody.appendChild(tr);
         }
         tabtable.appendChild(tbody);
-
+        contentElecment.appendChild(getHeader);
         contentElecment.appendChild(tabtable);
 
         rootDiv.appendChild(contentElecment);
@@ -120,7 +126,7 @@ export default function SmartTable({
         setLoading(false);
       }}
       removeAfterPrint={true}
-      documentTitle={"Balance Sheet"}
+      documentTitle={title ? title : "Balance Sheet"}
       bodyClass="splitted-cols"
       pageStyle="@media print {
           html, body {
