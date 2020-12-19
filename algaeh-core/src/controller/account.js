@@ -27,6 +27,7 @@ import {
   getTables,
   generateTrigger,
   getMonitorList,
+  getAuditList,
 } from "../model/audit_tracking";
 import {
   hGetUser,
@@ -398,6 +399,11 @@ export default ({ config, db }) => {
       result: req.records,
     });
   });
-
+  api.get("/getAuditList", getAuditList, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      result: req.records,
+    });
+  });
   return api;
 };

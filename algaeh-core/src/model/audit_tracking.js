@@ -115,3 +115,54 @@ export function getMonitorList(req, res, next) {
     next(e);
   }
 }
+export function getAuditList(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { hims_d_hospital_id, from_date, to_date, employee_id } = req.query;
+    let str = "";
+    if (employee_id) {
+      str = ` and AU.employee_id='${employee_id}' `;
+    }
+    _mysql
+      .executeQuery({
+        query: `SELECT AL.user_id, AL.action,AL.table_name,AL.column_name,AL.table_frendly_name,
+          AL.old_row,AL.new_row,AL.date_time_stamp,AL.branch_id,
+          AU.user_display_name,AU.username,AU.locked,AU.user_type,AU.user_status
+           FROM algaeh_audit_log as AL left join  algaeh_d_app_user as AU 
+          on AU.algaeh_d_app_user_id=AL.user_id
+          where date(date_time_stamp) between date(?) and date(?) and AL.branch_id=? and AU.username <>'algaeh' ${str}
+           order by AL.date_time_stamp desc;`,
+        values: [from_date, to_date, hims_d_hospital_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        const records = _.chain(result)
+          .groupBy((g) => g.user_id)
+          .map((item) => {
+            const {
+              user_display_name,
+              user_type,
+              user_status,
+              username,
+            } = _.head(item);
+            return {
+              user_display_name,
+              user_type,
+              user_status,
+              username,
+              details: item,
+            };
+          });
+        req.records = records;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}

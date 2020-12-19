@@ -13,7 +13,8 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, Collapse, AlgaehTable } from "algaeh-react-components";
+const { Panel } = Collapse;
 export default class AuditLog extends Component {
   constructor(props) {
     super(props);
@@ -100,17 +101,18 @@ export default class AuditLog extends Component {
 
     AlgaehLoader({ show: true });
     algaehApiCall({
-      uri: "/getLogs",
-      module: "documentManagement",
+      uri: "/apiAuth/getAuditList", //"/getLogs",
+      // module: "documentManagement",
       data: input,
 
-      method: "POST",
+      method: "GET", //"POST",
 
       onSuccess: (response) => {
+        debugger;
         AlgaehLoader({ show: false });
-        const { success, records } = response.data;
+        const { success, result } = response.data;
         if (success === true) {
-          this.setState({ auditdata: records });
+          this.setState({ auditdata: result });
         }
       },
       onCatch: (error) => {
@@ -256,6 +258,80 @@ export default class AuditLog extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-lg-12" id="auditLogGrid_Cntr">
+                    <Collapse>
+                      {this.state.auditdata.map((item) => (
+                        <Panel
+                          header={`${item.user_display_name}(${item.username})`}
+                        >
+                          <AlgaehTable
+                            columns={[
+                              {
+                                fieldName: "date_time_stamp",
+                                label: "Date Time",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "table_name",
+                                label: "Schema",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "table_frendly_name",
+                                label: "Friendly Name",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "column_name",
+                                label: "Monitor Name",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "old_row",
+                                label: "Old Value",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "new_row",
+                                label: "New Value",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "user_type",
+                                label: "User Type",
+                                displayTemplate: (row) => {
+                                  return row.user_type === "AD"
+                                    ? "ADMIN"
+                                    : row.user_type === "D"
+                                    ? "Doctor"
+                                    : row.user_type === "C"
+                                    ? "Cashier"
+                                    : row.user_type === "L"
+                                    ? "Lab Technician"
+                                    : row.user_type === "O"
+                                    ? "Others"
+                                    : row.user_type === "HR"
+                                    ? "HR"
+                                    : row.user_type === "PM"
+                                    ? "Payroll Manager"
+                                    : "";
+                                },
+                              },
+                            ]}
+                            data={item.details}
+                            isFilterable={true}
+                          />
+                        </Panel>
+                      ))}
+                      {/* <Panel header="This is panel header 1" key="1">
+                        <p>12345</p>
+                      </Panel>
+                      <Panel header="This is panel header 2" key="2">
+                        <p>34566</p>
+                      </Panel>
+                      <Panel header="This is panel header 3" key="3">
+                        <p>6432</p>
+                      </Panel> */}
+                    </Collapse>
                     {/* <AlgaehDataGrid
                       id="auditLogGrid"
                       columns={[
