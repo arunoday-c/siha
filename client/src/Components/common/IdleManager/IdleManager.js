@@ -111,7 +111,7 @@ export function IdleManager() {
               <div className="row">
                 <div className="col-12" style={{ textAlign: "center" }}>
                   <i className="fas fa-hourglass-end"></i>
-                  <h3>Your session is Locked.</h3>
+                  <h3>Your session is locked.</h3>
                   <p>Please enter you password to unlock.</p>
                 </div>
                 <div className="col-lg-4 col-sm-12 " style={{ margin: "auto" }}>
