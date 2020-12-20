@@ -53,7 +53,7 @@ class OpeningBalance extends Component {
       gratuity_dynamic_date: [],
       leave_salary_columns: [],
       props_enable: false,
-      branches: []
+      branches: [],
     };
     all_functions.getLeaveMaster(this);
   }
@@ -289,7 +289,7 @@ class OpeningBalance extends Component {
               },
             }}
           />
-          <div className="col globalSearchCntr">
+          <div className="col-3 globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name
