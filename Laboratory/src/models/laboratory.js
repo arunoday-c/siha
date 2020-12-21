@@ -1242,7 +1242,7 @@ export default {
           "UPDATE `hims_f_ord_analytes` SET result=?,\
         `status`=?,`remarks`=?,`run1`=?,`run2`=?,`run3`=?,`critical_type`=?,\
         entered_by=?,entered_date=?,validate_by=?,validated_date=?,\
-        confirm_by=?,confirmed_date=?,amended=?,amended_date=?,\
+        confirm_by=?,confirmed_date=?,amended=?,amended_date=?,normal_low=?, normal_high=?,\
         updated_date=?,updated_by=? where order_id=? AND hims_f_ord_analytes_id=?;",
           [
             inputParam[i].result,
@@ -1270,6 +1270,8 @@ export default {
             inputParam[i].amended === "Y"
               ? moment().format("YYYY-MM-DD HH:mm")
               : null,
+            inputParam[i].normal_low,
+            inputParam[i].normal_high,
             moment().format("YYYY-MM-DD HH:mm"),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].order_id,
@@ -1534,7 +1536,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {
