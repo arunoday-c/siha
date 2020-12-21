@@ -56,12 +56,22 @@ export function generateTrigger(req, res, next) {
                     FOR EACH ROW BEGIN`;
             details.forEach((item) => {
               const { COLUMN_NAME } = item;
-              query = `${query} 
-                IF NEW.${COLUMN_NAME} <> OLD.${COLUMN_NAME}
-                  THEN
-                    INSERT INTO algaeh_audit_log(user_id,action,table_name,column_name,table_frendly_name,old_row,new_row,branch_id)
-                    VALUES(NEW.updated_by,'${trigger_action}','${table_name_key}','${COLUMN_NAME}','${friendly_name}',OLD.${COLUMN_NAME},NEW.${COLUMN_NAME},NEW.hospital_id);
-                  END IF;
+              if (
+                COLUMN_NAME === "created_by" ||
+                COLUMN_NAME === "created_date" ||
+                COLUMN_NAME === "updated_by" ||
+                COLUMN_NAME === "updated_date"
+              ) {
+                return;
+              }
+
+              query = `${query}
+              IF NEW.${COLUMN_NAME} <> OLD.${COLUMN_NAME}
+              THEN
+                INSERT INTO algaeh_audit_log(user_id,action,table_name,column_name,table_frendly_name,old_row,new_row,branch_id,old_update_by,old_update_date)
+                VALUES(NEW.updated_by,'${trigger_action}','${table_name_key}','${COLUMN_NAME}','${friendly_name}',OLD.${COLUMN_NAME},NEW.${COLUMN_NAME},NEW.hospital_id,OLD.updated_by,
+               OLD.updated_date);
+              END IF;
                 `;
             });
             query = `${query} 
@@ -73,7 +83,7 @@ export function generateTrigger(req, res, next) {
         _mysql
           .executeQuery({
             query,
-            printQuery: true,
+            printQuery: false,
           })
           .then((output) => {
             _mysql.releaseConnection();
