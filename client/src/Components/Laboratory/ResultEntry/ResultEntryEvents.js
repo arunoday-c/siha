@@ -47,6 +47,7 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, value, status) => {
+  debugger
   value[0].comments = $this.state.comment_list.join("<br/>");
   const critical_exit = _.filter(value, (f) => {
     return f.critical_status === "Y";
@@ -177,6 +178,12 @@ const getAnalytes = ($this) => {
         //     data[i].confirm = "Y";
         //   }
         // }
+
+
+        for (let i = 0; i < response.data.records.length; i++) {
+          debugger
+          response.data.records[i].text_value = response.data.records[i].text_value !== null ? response.data.records[i].text_value.split("<br/>") : [];
+        }
         $this.setState(
           {
             test_analytes: response.data.records,
@@ -543,6 +550,27 @@ const deleteComment = ($this, row) => {
   });
 };
 
+const ongridEditRanges = ($this, row, e) => {
+  const name = e.name || e.target.name;
+  const value = e.value || e.target.value;
+
+  let test_analytes = $this.state.test_analytes;
+  const _index = test_analytes.indexOf(row);
+
+  row[name] = value;
+  test_analytes[_index] = row;
+
+  $this.setState({
+    test_analytes: test_analytes
+  });
+}
+
+const eidtRanges = ($this) => {
+  $this.setState({
+    edit_range: !$this.state.edit_range
+  })
+}
+
 export {
   texthandle,
   onvalidate,
@@ -556,4 +584,6 @@ export {
   onchangeAmend,
   addComments,
   deleteComment,
+  ongridEditRanges,
+  eidtRanges
 };

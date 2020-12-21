@@ -4060,8 +4060,8 @@ export default {
                       narration = narration + ",Received By CASH:" + m.amount;
                       EntriesArray.push({
                         payment_date: new Date(),
-                        head_id: INPUT_TAX.head_id,
-                        child_id: INPUT_TAX.child_id,
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
