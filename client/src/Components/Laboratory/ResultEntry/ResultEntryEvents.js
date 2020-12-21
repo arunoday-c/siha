@@ -178,6 +178,12 @@ const getAnalytes = ($this) => {
         //     data[i].confirm = "Y";
         //   }
         // }
+
+
+        for (let i = 0; i < response.data.records.length; i++) {
+          debugger
+          response.data.records[i].text_value = response.data.records[i].text_value !== null ? response.data.records[i].text_value.split("<br/>") : [];
+        }
         $this.setState(
           {
             test_analytes: response.data.records,

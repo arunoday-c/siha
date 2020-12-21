@@ -720,6 +720,30 @@ class ResultEntry extends Component {
                             },
                           },
                           {
+                            fieldName: "text_value",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Text Value" }}
+                              />
+                            ),
+                            displayTemplate: (row) => {
+                              return (
+                                <ul>
+                                  {row.text_value.length > 0
+                                    ? row.text_value.map((row) => {
+                                      return <li>{row}</li>;
+                                    })
+                                    : "-"}
+                                </ul>
+                              );
+                            },
+                            others: {
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" },
+                            },
+                          },
+                          {
                             fieldName: "confirm",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Confirm" }} />
