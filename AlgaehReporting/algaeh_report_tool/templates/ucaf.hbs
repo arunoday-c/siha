@@ -73,7 +73,7 @@
                   <tbody>
                     <tr>
                         <td width="100%">
-                            <p class="insImg" style="height: 158px;" ><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/></p>
+                            <p class="insImg" style="height: 118px;" ><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/></p>
                         </td>
                     </tr>
                   </tbody>
@@ -177,13 +177,14 @@
             </table>
             </section>
             <section class=" secondSectionBottom">
-                 <p style="line-height: 20px;">Suggestive line (s) of management: Kindly, enumerate the recommended  or procedures <b>For outpatient approval only:</b></p>
+                 <p style="line-height: 10px;">Suggestive line (s) of management: Kindly, enumerate the recommended  or procedures <b>For outpatient approval only:</b></p>
                 <table class="tableBrdr">
                     <thead>
                         <tr>
                             <th><b>Code</b></th>
-                            <th><b>Dental Service</b></th>
-                            <th><b>Tooth No.</b></th>
+                            <th><b>Description/Service</b></th>
+                            <th><b>Type</b></th>
+                            <th><b>Quantity</b></th>
                             <th><b>Cost</b></th>
                         </tr>
                     </thead>
@@ -192,14 +193,14 @@
                         <tr>
                             <td style="width: 100px;">{{service_code}}</td>
                             <td class="txtFld">{{service_name}}</td>
-                            <td style="width:50px;">{{teeth_number}}</td>
+                            <td style="width: 100px;">{{service_type}}</td>
+                            <td class="numberFld"  style="width: 80px;">{{service_quantity}}</td>
                             <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
                         </tr>
                     {{/each}}
                      <tr>
-                            <td colspan="2"></td>
-                            <td><b>Total</b></td>
-                            <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
+                            <td colspan="4" class="numberFld"><b>Total</b></td>
+                            <td class="numberFld numberFldTotal" style="width: 80px;">{{sum_service_net_amout}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -235,7 +236,7 @@
                 </p>
 
                  <p >
-                    <span>Please specify possible line of management when applicable: .....................................................................................................................................</span>
+                    <span>Please specify possible line of management when applicable: ..................................................................................................................................................................</span>
                     {{!-- {{updated_date}} --}}
                 </p>
 
