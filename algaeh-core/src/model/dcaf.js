@@ -239,10 +239,7 @@ let getPatientDCAF = (req, res, next) => {
                     _fields.dental_cleaning,
                     _fields.patient_rta,
                     _fields.patient_work_related,
-<<<<<<< HEAD
                     req.userIdentity.hospital_id,
-=======
->>>>>>> 4ccccb95587deb2e805917c523100b9a791b85c1
                     hims_f_dcaf_header_id,
                   ]
                 );
@@ -476,10 +473,7 @@ const updateDcafDetails = (req, res, next) => {
           input.where,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-<<<<<<< HEAD
           req.userIdentity.hospital_id,
-=======
->>>>>>> 4ccccb95587deb2e805917c523100b9a791b85c1
           input.hims_f_dcaf_header_id,
         ],
         printQuery: true,
