@@ -467,7 +467,7 @@ export default {
             left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id " +
             strOrder +
             " left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id \
-            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0" +
+            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0 and item_status ='A' " +
             strAppend +
             strGroup +
             " order by date(expirydt)",

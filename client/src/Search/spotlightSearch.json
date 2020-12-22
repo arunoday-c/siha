@@ -1038,8 +1038,8 @@
         "label": "Batch No."
       },
       {
-        "fieldName": "barcode",
-        "label": "Bar Code"
+        "fieldName": "qtyhand",
+        "label": "Qty in Hand"
       }
     ],
     "Invitemmaster": [

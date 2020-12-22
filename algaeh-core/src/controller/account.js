@@ -23,7 +23,12 @@ const {
   createJWTToken,
 } = authmiddleware;
 const { encryption } = cryptography;
-
+import {
+  getTables,
+  generateTrigger,
+  getMonitorList,
+  getAuditList,
+} from "../model/audit_tracking";
 import {
   hGetUser,
   hSetUser,
@@ -375,6 +380,29 @@ export default ({ config, db }) => {
     res.status(httpStatus.ok).json({
       success: true,
       message: "Successfully Update",
+    });
+  });
+  api.get("/getTables", getTables, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      result: req.records,
+    });
+  });
+  api.get("/generateTrigger", generateTrigger, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+    });
+  });
+  api.get("/getMonitorList", getMonitorList, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      result: req.records,
+    });
+  });
+  api.get("/getAuditList", getAuditList, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      result: req.records,
     });
   });
   return api;

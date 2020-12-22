@@ -292,6 +292,13 @@ export default function BalanceSheet({
       freezable: true,
       // filterable: true
     });
+    if (showLedgerCode) {
+      cols.unshift({
+        fieldName: "ledger_code",
+        label: "Ledger Code",
+        freezable: true,
+      });
+    }
     setColumns(cols);
     let createBox = [];
     //For income
@@ -384,16 +391,47 @@ export default function BalanceSheet({
         fieldName: item.column_id,
         label: item.label,
         displayTemplate: (row) => {
-          return getAmountFormart(row[item.column_id], { appendSymbol: false });
+          const rec = getAmountFormart(row[item.column_id], {
+            appendSymbol: false,
+          });
+          if (row.leafnode === "Y") {
+            return (
+              <a
+                href="void(0);"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (BasedOn === "by_month") {
+                    const on_month_from = moment(
+                      `${item.column_id}01`,
+                      "YYYYMMDD"
+                    );
+                    const on_month_to = on_month_from.clone().endOf("month");
+                    setChangedDateRange([on_month_from, on_month_to]);
+                  }
+                  OpenDrillDown(row);
+                }}
+              >
+                {rec}
+              </a>
+            );
+          } else {
+            return rec;
+          }
         },
       };
     });
     cols.unshift({
-      fieldName: "label",
+      fieldName: showArabic ? "arabic_name" : "label",
       label: "Ledger Name",
       freezable: true,
     });
-
+    if (showLedgerCode) {
+      cols.unshift({
+        fieldName: "ledger_code",
+        label: "Ledger Code",
+        freezable: true,
+      });
+    }
     setColumns(cols);
     let details = [];
     //for Income

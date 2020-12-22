@@ -303,7 +303,7 @@ export default {
         .then((generatedNumbers) => {
           payment_application_code = generatedNumbers.EMPLOYEE_PAYMENT;
           _mysql
-            .executeQuery({
+            .executeQueryWithTransaction({
               query:
                 "INSERT INTO `hims_f_employee_payments` (payment_application_code,employee_id,employee_advance_id,\
             employee_loan_id,employee_leave_encash_id,employee_end_of_service_id,employee_final_settlement_id,\
@@ -346,10 +346,10 @@ export default {
                 isTransactionConnection: _mysql.isTransactionConnection,
                 pool: _mysql.pool,
               };
-              // utilities.logger().log("payment_type: ", inputParam.payment_type);
+              // console.log("payment_type: ", inputParam.payment_type);
               if (inputParam.payment_type == "AD") {
                 _mysql
-                  .executeQuery({
+                  .executeQueryWithTransaction({
                     query:
                       "UPDATE `hims_f_employee_advance` SET `advance_status`='PAI', `updated_date`=?, `updated_by`=? \
                       where hims_f_employee_advance_id=? ; select head_id, child_id from hims_d_earning_deduction where hims_d_earning_deduction_id=?",
@@ -377,7 +377,7 @@ export default {
                   });
               } else if (inputParam.payment_type == "LN") {
                 _mysql
-                  .executeQuery({
+                  .executeQueryWithTransaction({
                     query:
                       "UPDATE `hims_f_loan_application` SET `loan_authorized`='IS', `updated_date`=?, `updated_by`=? \
               where hims_f_loan_application_id=?",
@@ -402,7 +402,7 @@ export default {
                   });
               } else if (inputParam.payment_type == "EN") {
                 _mysql
-                  .executeQuery({
+                  .executeQueryWithTransaction({
                     query:
                       "UPDATE `hims_f_leave_encash_header` SET `authorized`='PRO',`payment_date`=?, `posted`='Y', posted_by=?, posted_date=? \
                           where hims_f_leave_encash_header_id=?",
@@ -436,7 +436,7 @@ export default {
                       );
                     }
                     _mysql
-                      .executeQuery({
+                      .executeQueryWithTransaction({
                         query: strAnual_Qry,
                         printQuery: true,
                       })
@@ -464,7 +464,7 @@ export default {
                                   .balance_leave_salary_amount
                               ) > 0
                                 ? leave_encash_header[0]
-                                    .balance_leave_salary_amount
+                                  .balance_leave_salary_amount
                                 : 0,
                               leave_encash_header[0]
                                 .hims_f_employee_leave_salary_header_id,
@@ -482,7 +482,7 @@ export default {
                           );
                         }
                         _mysql
-                          .executeQuery({
+                          .executeQueryWithTransaction({
                             query: strQuery,
                             printQuery: true,
                           })
@@ -542,7 +542,7 @@ export default {
                   });
               } else if (inputParam.payment_type == "GR") {
                 _mysql
-                  .executeQuery({
+                  .executeQueryWithTransaction({
                     query:
                       "UPDATE `hims_f_end_of_service` SET `settled`='Y', `updated_date`=?, `updated_by`=? \
                     where hims_f_end_of_service_id=?",
@@ -567,7 +567,7 @@ export default {
                   });
               } else if (inputParam.payment_type == "FS") {
                 _mysql
-                  .executeQuery({
+                  .executeQueryWithTransaction({
                     query: `UPDATE hims_f_final_settlement_header SET final_settlement_status='SET', updated_date=?, updated_by=? 
                     where hims_f_final_settlement_header_id=?;
                     UPDATE hims_f_end_of_service SET settled='Y',gratuity_status='PAI'
@@ -606,7 +606,7 @@ export default {
                   });
               } else if (inputParam.payment_type == "LS") {
                 _mysql
-                  .executeQuery({
+                  .executeQueryWithTransaction({
                     query:
                       "UPDATE `hims_f_leave_salary_header` SET `status`='PRO' \
                     where hims_f_leave_salary_header_id=?; select * from `hims_f_leave_salary_header` where \
@@ -683,7 +683,7 @@ export default {
 
                       // console.log("If cond")
                       _mysql
-                        .executeQuery({
+                        .executeQueryWithTransaction({
                           query:
                             "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, \
                         `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ?, `utilized_leave_days`=?, \
@@ -710,17 +710,33 @@ export default {
                           printQuery: true,
                         })
                         .then((LeaveSettleResult) => {
-                          let result = {
-                            payment_application_code: payment_application_code,
-                          };
-                          // _mysql.commitTransaction(() => {
-                          //   _mysql.releaseConnection();
-                          req.records = result;
-                          next();
+                          LoanDeductionLeaveSalary({
+                            req: req,
+                            salary_header_id: salary_header_id,
+                            _mysql: _mysql,
+                            next: next,
+                          })
+                            .then((loan_deduction) => {
+                              let result = {
+                                payment_application_code: payment_application_code,
+                              };
+                              // _mysql.commitTransaction(() => {
+                              //   _mysql.releaseConnection();
+                              req.records = result;
+                              next();
+                            })
+                            .catch((e) => {
+                              _mysql.rollBackTransaction(() => {
+                                next(e);
+                              });
+                            });
+
                           // });
                         })
                         .catch((error) => {
-                          next(error);
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
                         });
                     } else if (parseInt(start_year) != parseInt(end_year)) {
                       // console.log("else Con")
@@ -858,19 +874,40 @@ export default {
                         salary_header_id
                       );
                       _mysql
-                        .executeQuery({
+                        .executeQueryWithTransaction({
                           query: strQuery,
                           values: values,
                           printQuery: true,
                         })
                         .then((LeaveSettleResult) => {
-                          let result = {
-                            payment_application_code: payment_application_code,
-                          };
+
+                          LoanDeductionLeaveSalary({
+                            req: req,
+                            salary_header_id: salary_header_id,
+                            _mysql: _mysql,
+                            next: next,
+                          })
+                            .then((loan_deduction) => {
+                              let result = {
+                                payment_application_code: payment_application_code,
+                              };
+                              // _mysql.commitTransaction(() => {
+                              //   _mysql.releaseConnection();
+                              req.records = result;
+                              next();
+                            })
+                            .catch((e) => {
+                              _mysql.rollBackTransaction(() => {
+                                next(e);
+                              });
+                            });
+                          // let result = {
+                          //   payment_application_code: payment_application_code,
+                          // };
                           // _mysql.commitTransaction(() => {
                           //   _mysql.releaseConnection();
-                          req.records = result;
-                          next();
+                          // req.records = result;
+                          // next();
                           // });
                         })
                         .catch((error) => {
@@ -2089,3 +2126,133 @@ export default {
     }
   },
 };
+
+
+function LoanDeductionLeaveSalary(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      const salary_header_id = options.salary_header_id;
+      const req = options.req;
+      const _mysql = options._mysql;
+      let strQuery = ""
+
+      console.log("salary_header_id", salary_header_id)
+
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "select loan_application_id,loan_due_amount,balance_amount from hims_f_salary_loans where \
+              salary_header_id in (?)",
+          values: [salary_header_id],
+          printQuery: true,
+        })
+        .then((salary_loans) => {
+          console.log("salary_loans", salary_loans)
+          let loan_application_ids = _.map(salary_loans, (o) => {
+            return o.loan_application_id;
+          });
+
+          if (loan_application_ids.length > 0) {
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "select hims_f_loan_application_id, loan_skip_months, installment_amount, pending_loan, \
+                  pending_tenure from hims_f_loan_application  where hims_f_loan_application_id in (?)",
+                values: [loan_application_ids],
+                printQuery: true,
+              })
+              .then((loan_application) => {
+                // console.log("loan_application", loan_application)
+                for (let i = 0; i < loan_application.length; i++) {
+                  const no_of_loans = salary_loans.filter((f) => f.loan_application_id ===
+                    loan_application[i].hims_f_loan_application_id);
+
+
+                  // console
+                  let loan_skip_months =
+                    loan_application[i].loan_skip_months;
+                  let pending_loan =
+                    loan_application[i].pending_loan;
+                  let loan_closed = "N";
+
+
+
+                  let pending_tenure = 0;
+                  if (loan_skip_months > 0) {
+                    loan_skip_months--;
+                    pending_tenure =
+                      loan_application[i].pending_tenure * no_of_loans.length;
+                  } else {
+                    // console.log("pending_loan", pending_loan)
+                    // console.log("installment_amount", loan_application[i].installment_amount)
+                    // console.log("no_of_loans", no_of_loans.length)
+
+                    const ins_amount = parseFloat(loan_application[i].installment_amount) * parseFloat(no_of_loans.length)
+                    // console.log("ins_amount", ins_amount)
+                    pending_loan =
+                      parseFloat(pending_loan) - ins_amount;
+
+                    // console.log("pending_loan 2 ", pending_loan)
+
+                    if (loan_application[i].pending_tenure > 0) {
+                      pending_tenure =
+                        parseFloat(loan_application[i].pending_tenure) - (1 * parseFloat(no_of_loans.length));
+                    } else {
+                      pending_tenure =
+                        loan_application[i].pending_tenure;
+                    }
+                  }
+
+
+
+                  if (pending_loan == 0) {
+                    loan_closed = "Y";
+                  }
+
+                  strQuery += _mysql.mysqlQueryFormat(
+                    "UPDATE hims_f_loan_application SET pending_loan = ?, loan_closed=?, loan_skip_months=?, pending_tenure=?,\
+                    updated_date=?, updated_by=? where hims_f_loan_application_id =?",
+                    [
+                      pending_loan,
+                      loan_closed,
+                      loan_skip_months,
+                      pending_tenure,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      loan_application[i]
+                        .hims_f_loan_application_id
+                    ]
+                  );
+
+                  if (i === loan_application.length - 1) {
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query: strQuery,
+                        printQuery: true,
+                      })
+                      .then((update_loan_application) => {
+                        resolve()
+                      })
+                      .catch((e) => {
+                        next(e);
+                      });
+                  }
+                }
+              })
+              .catch((e) => {
+                reject(e);
+              });
+          } else {
+            resolve();
+          }
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch((e) => {
+    options.next(e);
+  });
+}

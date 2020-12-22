@@ -36,19 +36,34 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `SELECT LH.employee_id,EM.employee_code, EM.full_name,DS.designation, EM.date_of_joining,EE.amount as basic_salary, max(LD.year) as year, MONTHNAME(CONCAT('2011-',LD.month,'-01')) as deducting_month, 
-         LD.leave_salary_amount, 
-         LD.leave_days, 
-         LD.airticket_amount, LD.month
-         FROM hims_f_employee_leave_salary_header LH
-         inner join hims_f_employee_leave_salary_detail LD on LD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id
-         inner join hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
-         inner join hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
-         inner join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
-         where EM.employee_status <> 'I' and EM.hospital_id=?  and LD.year=?  and LD.month <= ? ${str}
-         group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id 
-         order by LH.employee_id,LD.month;`,
-          values: [input.hospital_id, input.year, parseInt(input.month)],
+          query: `
+          SELECT LH.employee_id,EM.employee_code, EM.full_name,DS.designation, 
+          EM.date_of_joining,EE.amount as basic_salary, max(LD.year) as year, 
+          MONTHNAME(CONCAT('2011-',LD.month,'-01')) as deducting_month, 
+          LD.leave_salary_amount, 
+          LD.leave_days, 
+          LD.airticket_amount,
+          LD.month,
+          LH.opening_leave_days,
+          LH.opening_leave_salary,
+          LH.opening_airticket
+          FROM hims_f_employee_leave_salary_header LH
+          inner join hims_f_employee_leave_salary_detail LD on LD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id
+          inner join hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
+          inner join hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
+          inner join hims_f_salary as SL on SL.employee_id = LH.employee_id and SL.year=? and SL.month=? and salary_paid='Y'
+          inner join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
+          where EM.employee_status <> 'I' and EM.hospital_id=?  and LD.year=?  and LD.month <= ? ${str}
+          group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id
+          -- ,LH.opening_leave_days,LH.opening_leave_salary,LH.opening_airticket
+          order by LH.employee_id,LD.month;`,
+          values: [
+            input.year,
+            parseInt(input.month),
+            input.hospital_id,
+            input.year,
+            parseInt(input.month),
+          ],
           printQuery: true,
         })
         .then((result) => {
@@ -57,24 +72,36 @@ const executePDF = function executePDFMethod(options) {
           const newResult = _.chain(result)
             .groupBy((g) => g.employee_id)
             .map((item) => {
+              const {
+                opening_leave_salary,
+                opening_airticket,
+                opening_leave_days,
+              } = _.head(item);
+
               const lastObject = _.maxBy(item, (m) => parseInt(m.month));
-              const total_leave_salary_amount = _.sumBy(item, (s) =>
-                parseFloat(s.leave_salary_amount)
-              );
-              const total_airticket_amount = _.sumBy(item, (s) =>
-                parseFloat(s.airticket_amount)
-              );
-              const total_leave_days = _.sumBy(item, (s) =>
-                parseFloat(s.leave_days)
-              );
+
+              const total_leave_salary_amount =
+                _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
+                parseFloat(opening_leave_salary);
+              const total_airticket_amount =
+                _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
+                parseFloat(opening_airticket);
+
+              const total_leave_days =
+                _.sumBy(item, (s) => parseFloat(s.leave_days)) +
+                parseFloat(opening_leave_days);
+
               const leavesalary_opening_balance =
                 total_leave_salary_amount -
                 parseFloat(lastObject.leave_salary_amount);
+
               const airefare_opening_balance =
                 total_airticket_amount -
                 parseFloat(lastObject.airticket_amount);
+
               const leavedays_opening_balance =
                 total_leave_days - parseFloat(lastObject.leave_days);
+
               return {
                 ...lastObject,
                 leavesalary_opening_balance,

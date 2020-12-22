@@ -55,8 +55,8 @@ export default {
             D.dispense, D.frequency_type, D.frequency_time,D.frequency_route,D.start_date, D.item_status, \
             D.service_id, D.uom_id,D.item_category_id, D.item_group_id, D.pre_approval, D.insured\
             from hims_f_prescription H,hims_f_prescription_detail D  \
-            WHERE H.hims_f_prescription_id = D.prescription_id and episode_id=?",
-          values: [req.query.episode_id],
+            WHERE H.hims_f_prescription_id = D.prescription_id and H.visit_id=?",
+          values: [req.query.visit_id],
           printQuery: true,
         })
         .then((result) => {
@@ -408,7 +408,7 @@ export default {
             CASE WHEN sum(qtyhand)<=coalesce(PLR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder from \
             hims_d_item_master IM left  join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
             left  join hims_d_phar_location_reorder PLR on PLR.item_id=IL.item_id and location_id=? \
-            where qtyhand>0" +
+            where qtyhand>0 and IM.item_status ='A' " +
             strAppend +
             "group by item_id order by date(expirydt)",
           values: intValues,
@@ -549,7 +549,7 @@ export default {
             expiry_date_filter = new Date(
               today_date.setFullYear(
                 today_date.getFullYear() +
-                  parseInt(result[0].notification_before)
+                parseInt(result[0].notification_before)
               )
             );
           }

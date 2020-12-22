@@ -28,6 +28,8 @@ import {
   generateLabResultReport,
   addComments,
   deleteComment,
+  ongridEditRanges,
+  eidtRanges
 } from "./ResultEntryEvents";
 import { ResultInput } from "./ResultInput";
 import AlgaehReport from "../../Wrapper/printReports";
@@ -48,6 +50,7 @@ class ResultEntry extends Component {
       entered_by_name: "",
       confirm_by_name: "",
       validate_by_name: "",
+      edit_range: false
     };
   }
 
@@ -98,12 +101,12 @@ class ResultEntry extends Component {
 
   UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.selectedPatient !== undefined && newProps.open === true) {
-      // newProps.selectedPatient.open = false;
       this.setState({ ...newProps.selectedPatient }, () => {
         getAnalytes(this);
       });
     }
   }
+
 
   selectCommentEvent(e) {
     let name = e.name || e.target.name;
@@ -160,6 +163,7 @@ class ResultEntry extends Component {
         comments_data: [],
         test_comments_id: null,
         comment_list: [],
+        edit_range: false
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -174,6 +178,7 @@ class ResultEntry extends Component {
   }
 
   render() {
+    debugger
     // let display =
     //   this.props.providers === undefined
     //     ? []
@@ -259,12 +264,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                          <small
-                            style={{ display: "block", fontStyle: "italic" }}
-                          >
-                            -------
-                          </small>
-                        )}
+                            <small
+                              style={{ display: "block", fontStyle: "italic" }}
+                            >
+                              -------
+                            </small>
+                          )}
                       </h6>
                     </div>
                     <div className="col">
@@ -289,12 +294,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                          <small
-                            style={{ display: "block", fontStyle: "italic" }}
-                          >
-                            -------
-                          </small>
-                        )}
+                            <small
+                              style={{ display: "block", fontStyle: "italic" }}
+                            >
+                              -------
+                            </small>
+                          )}
                       </h6>
                     </div>
 
@@ -320,12 +325,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                          <small
-                            style={{ display: "block", fontStyle: "italic" }}
-                          >
-                            -------
-                          </small>
-                        )}
+                            <small
+                              style={{ display: "block", fontStyle: "italic" }}
+                            >
+                              -------
+                            </small>
+                          )}
                       </h6>
                     </div>
 
@@ -351,12 +356,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                          <small
-                            style={{ display: "block", fontStyle: "italic" }}
-                          >
-                            -------
-                          </small>
-                        )}
+                            <small
+                              style={{ display: "block", fontStyle: "italic" }}
+                            >
+                              -------
+                            </small>
+                          )}
                       </h6>
                     </div>
                     {/* <div className="col">
@@ -407,10 +412,10 @@ class ResultEntry extends Component {
                                   Validated
                                 </span>
                               ) : (
-                                <span className="badge badge-light">
-                                  Result Not Entered
-                                </span>
-                              );
+                                      <span className="badge badge-light">
+                                        Result Not Entered
+                                      </span>
+                                    );
                             },
                             others: {
                               maxWidth: 150,
@@ -428,10 +433,10 @@ class ResultEntry extends Component {
                                 this.props.labanalytes === undefined
                                   ? []
                                   : this.props.labanalytes.filter(
-                                      (f) =>
-                                        f.hims_d_lab_analytes_id ===
-                                        row.analyte_id
-                                    );
+                                    (f) =>
+                                      f.hims_d_lab_analytes_id ===
+                                      row.analyte_id
+                                  );
 
                               return (
                                 <span>
@@ -458,8 +463,8 @@ class ResultEntry extends Component {
                               return row.analyte_type === "QU"
                                 ? "Quality"
                                 : row.analyte_type === "QN"
-                                ? "Quantity"
-                                : "Text";
+                                  ? "Quantity"
+                                  : "Text";
                             },
                             others: {
                               resizable: false,
@@ -521,16 +526,16 @@ class ResultEntry extends Component {
                                         }}
                                       />
                                     ) : (
-                                      <ResultInput
-                                        row={row}
-                                        onChange={(e) =>
-                                          onchangegridresult(this, row, e)
-                                        }
-                                      />
-                                    )
+                                        <ResultInput
+                                          row={row}
+                                          onChange={(e) =>
+                                            onchangegridresult(this, row, e)
+                                          }
+                                        />
+                                      )
                                   ) : (
-                                    row.result
-                                  )}
+                                      row.result
+                                    )}
                                 </span>
                               );
                             },
@@ -634,18 +639,18 @@ class ResultEntry extends Component {
                             displayTemplate: (row) => {
                               return !row.critical_type ? null : row.critical_type ===
                                 "N" ? (
-                                <span className="badge badge-success">
-                                  Normal
-                                </span>
-                              ) : row.critical_type === "L" ? (
-                                <span className="badge badge-warning">Low</span>
-                              ) : (
-                                row.critical_type === "H" && (
-                                  <span className="badge badge-warning">
-                                    High
+                                  <span className="badge badge-success">
+                                    Normal
                                   </span>
-                                )
-                              );
+                                ) : row.critical_type === "L" ? (
+                                  <span className="badge badge-warning">Low</span>
+                                ) : (
+                                    row.critical_type === "H" && (
+                                      <span className="badge badge-warning">
+                                        High
+                                      </span>
+                                    )
+                                  );
                             },
                           },
                           {
@@ -655,6 +660,26 @@ class ResultEntry extends Component {
                                 label={{ forceLabel: "Normal Low" }}
                               />
                             ),
+                            displayTemplate: (row) => {
+                              return (
+                                this.state.edit_range === false ? row.normal_low :
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: row.normal_low,
+                                      className: "txt-fld",
+                                      name: "normal_low",
+                                      events: {
+                                        onChange: ongridEditRanges.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }
+                                    }}
+                                  />
+                              );
+                            },
                             others: {
                               resizable: false,
                               filterable: false,
@@ -668,6 +693,50 @@ class ResultEntry extends Component {
                                 label={{ forceLabel: "Normal High" }}
                               />
                             ),
+                            displayTemplate: (row) => {
+                              return (
+                                this.state.edit_range === false ? row.normal_high :
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: row.normal_high,
+                                      className: "txt-fld",
+                                      name: "normal_high",
+                                      events: {
+                                        onChange: ongridEditRanges.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }
+                                    }}
+                                  />
+                              );
+                            },
+                            others: {
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" },
+                            },
+                          },
+                          {
+                            fieldName: "text_value",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Text Value" }}
+                              />
+                            ),
+                            displayTemplate: (row) => {
+                              return (
+                                <ul>
+                                  {row.text_value.length > 0
+                                    ? row.text_value.map((row) => {
+                                      return <li>{row}</li>;
+                                    })
+                                    : "-"}
+                                </ul>
+                              );
+                            },
                             others: {
                               resizable: false,
                               filterable: false,
@@ -704,8 +773,8 @@ class ResultEntry extends Component {
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                    "Yes"
-                                  )}
+                                        "Yes"
+                                      )}
                                 </span>
                               );
                             },
@@ -746,8 +815,8 @@ class ResultEntry extends Component {
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                    "Yes"
-                                  )}
+                                        "Yes"
+                                      )}
                                 </span>
                               );
                             },
@@ -789,8 +858,8 @@ class ResultEntry extends Component {
                                   ) : row.amended === "N" ? (
                                     "No"
                                   ) : (
-                                    "Yes"
-                                  )}
+                                        "Yes"
+                                      )}
                                 </span>
                               );
                             },
@@ -832,8 +901,8 @@ class ResultEntry extends Component {
                                   ) : row.remarks !== "null" ? (
                                     row.remarks
                                   ) : (
-                                    ""
-                                  )}
+                                        ""
+                                      )}
                                 </span>
                               );
                             },
@@ -909,22 +978,22 @@ class ResultEntry extends Component {
                           <ol>
                             {this.state.comment_list.length > 0
                               ? this.state.comment_list.map((row, index) => {
-                                  return (
-                                    <React.Fragment key={index}>
-                                      <li key={index}>
-                                        <span>{row}</span>
-                                        <i
-                                          className="fas fa-times"
-                                          onClick={deleteComment.bind(
-                                            this,
-                                            this,
-                                            row
-                                          )}
-                                        ></i>
-                                      </li>
-                                    </React.Fragment>
-                                  );
-                                })
+                                return (
+                                  <React.Fragment key={index}>
+                                    <li key={index}>
+                                      <span>{row}</span>
+                                      <i
+                                        className="fas fa-times"
+                                        onClick={deleteComment.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      ></i>
+                                    </li>
+                                  </React.Fragment>
+                                );
+                              })
                               : null}
                           </ol>
                         </div>
@@ -997,8 +1066,8 @@ class ResultEntry extends Component {
                     this.state.status === "C"
                       ? true
                       : this.state.status === "V"
-                      ? true
-                      : false
+                        ? true
+                        : false
                   }
                 >
                   Confirm All
@@ -1014,6 +1083,17 @@ class ResultEntry extends Component {
                   Save
                 </button>
               </AlgaehSecurityElement>
+
+              <AlgaehSecurityElement elementCode="EDIT_RANGE_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={eidtRanges.bind(this, this)}
+                >
+                  Edit Ranges
+                </button>
+              </AlgaehSecurityElement>
+
               <button
                 type="button"
                 className="btn btn-default"

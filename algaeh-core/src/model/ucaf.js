@@ -2,6 +2,7 @@
 
 import algaehMysql from "algaeh-mysql";
 import httpStatus from "../utils/httpStatus";
+import _ from "lodash";
 
 const keyPath = require("algaeh-keys/keys");
 
@@ -478,7 +479,7 @@ const updateUcafDetails = (req, res, next) => {
           req.userIdentity.hospital_id,
           input.hims_f_ucaf_header_id,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();

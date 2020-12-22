@@ -397,23 +397,26 @@ class PurchaseOrderEntry extends Component {
                           ) : this.state.receipt_generated === "Y" ? (
                             <span className="badge badge-success">PO Closed</span>
                           ) : this.state.authorize1 === "Y" &&
-                            this.state.authorize2 === "Y" ? (
-                                <span className="badge badge-success">Authorized</span>
+                            this.state.authorize2 === "Y" && this.state.is_completed === "N" ? (
+                                <span className="badge badge-success">Authorized / Delivery Pending</span>
                               ) : this.state.authorize1 === "Y" &&
-                                this.state.authorize2 === "N" ? (
-                                  <span className="badge badge-danger">
-                                    Posted/Pending For Authorize
-                                  </span>
-                                ) : this.state.authorize1 === "N" &&
+                                this.state.authorize2 === "Y" && this.state.is_completed === "Y" ? (
+                                  <span className="badge badge-success">Delivery Completed / Receipt Pending</span>
+                                ) : this.state.authorize1 === "Y" &&
                                   this.state.authorize2 === "N" ? (
                                     <span className="badge badge-danger">
                                       Posted/Pending For Authorize
                                     </span>
-                                  ) : (
-                                    <span className="badge badge-danger">
-                                      Posted/Pending For Authorize
-                                    </span>
-                                  )}
+                                  ) : this.state.authorize1 === "N" &&
+                                    this.state.authorize2 === "N" ? (
+                                      <span className="badge badge-danger">
+                                        Posted/Pending For Authorize
+                                      </span>
+                                    ) : (
+                                      <span className="badge badge-danger">
+                                        Posted/Pending For Authorize
+                                      </span>
+                                    )}
                   </h6>
                 </div>
               ) : this.state.dataExitst === false &&

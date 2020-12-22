@@ -7,7 +7,11 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
@@ -30,7 +34,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_employee EM on EM.hims_d_employee_id = USR.employee_id
           where PD.pharmacy_pos_header_id = PH.hims_f_pharmacy_pos_header_id and 
           PH.record_status ='A' and PH.location_id=? and PH.hospital_id=? and PH.cancelled='N' 
-          and PH.posted='Y' and date(PH.pos_date) between date(?) and date(?);
+          and PH.cancelled='N' and PH.posted='Y' and date(PH.pos_date) between date(?) and date(?);
           `,
           values: [
             input.location_id,
@@ -56,18 +60,62 @@ const executePDF = function executePDFMethod(options) {
                 cashier_name,
                 pos_number,
                 pos_date,
-                net_amount: _.sumBy(dtl, (s) => parseFloat(s.PD_net_payable)),
+                net_PD_patient_responsibility: _.sumBy(dtl, (s) =>
+                  parseFloat(s.PD_patient_responsibility)
+                ),
+                net_PD_patient_tax: _.sumBy(dtl, (s) =>
+                  parseFloat(s.PD_patient_tax)
+                ),
+                net_PD_company_responsibility: _.sumBy(dtl, (s) =>
+                  parseFloat(s.PD_company_responsibility)
+                ),
+                net_PD_company_tax: _.sumBy(dtl, (s) =>
+                  parseFloat(s.PD_company_tax)
+                ),
+                net_PD_net_payable: _.sumBy(dtl, (s) =>
+                  parseFloat(s.PD_net_payable)
+                ),
                 // sum_amount: sum_amount,
               };
             })
             .value();
 
-          const net_total = options.currencyFormat(
-            _.sumBy(result, (s) => parseFloat(s.net_amount)),
-            options.args.crypto
+          const final_net_PD_patient_responsibility = _.sumBy(result, (s) =>
+            parseFloat(s.net_PD_patient_responsibility)
+          );
+          const final_net_PD_patient_tax = _.sumBy(result, (s) =>
+            parseFloat(s.net_PD_patient_tax)
+          );
+          const final_net_PD_company_responsibility = _.sumBy(result, (s) =>
+            parseFloat(s.net_PD_company_responsibility)
+          );
+          const final_net_PD_company_tax = _.sumBy(result, (s) =>
+            parseFloat(s.net_PD_company_tax)
+          );
+          const final_net_PD_net_payable = _.sumBy(result, (s) =>
+            parseFloat(s.net_PD_net_payable)
           );
 
-          resolve({ detail: result, net_total: net_total });
+          resolve({
+            detail: result,
+            final_net_PD_patient_responsibility: final_net_PD_patient_responsibility,
+            final_net_PD_patient_tax: final_net_PD_patient_tax,
+            final_net_PD_company_responsibility: final_net_PD_company_responsibility,
+            final_net_PD_company_tax: final_net_PD_company_tax,
+            final_net_PD_net_payable: final_net_PD_net_payable,
+            decimalOnly: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyOnly: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
+          });
         })
         .catch((error) => {
           options.mysql.releaseConnection();

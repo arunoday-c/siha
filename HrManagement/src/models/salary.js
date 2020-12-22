@@ -26,8 +26,12 @@ export default {
           .endOf("month")
           .format("YYYY-MM-DD");
 
-        console.log("month_start", month_start)
-        console.log("month_end", month_end)
+        let leave_salary_month = input.month
+        let leave_salary_year = input.year
+
+
+        // console.log("month_start", month_start)
+        // console.log("month_end", month_end)
         let inputValues = [input.year, input.month];
         let _stringData = "";
 
@@ -86,10 +90,19 @@ export default {
           inputValues.push(input.hospital_id);
 
           if (input.leave_salary === "Y") {
+            leave_salary_month = previous_month;
+            leave_salary_year = previous_month_year;
             if (input.employee_id != null) {
               _stringData += " and E.hims_d_employee_id=?";
               inputValues.push(input.employee_id);
             }
+            strQuery =
+              "select E.hims_d_employee_id as employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
+              0 as unpaid_leave, S.hims_f_salary_id, 0 as pending_unpaid_leave from hims_d_employee E left join hims_f_salary as S on  \
+              E.hims_d_employee_id = S.employee_id and E.suspend_salary ='N' and S.`year`=? and S.`month` = ? \
+              where record_status='A'  and E.hospital_id=?" +
+              _stringData;
+
             strQuery =
               "select E.hims_d_employee_id as employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
               0 as unpaid_leave, S.hims_f_salary_id, 0 as pending_unpaid_leave from hims_d_employee E left join hims_f_salary as S on  \
@@ -202,7 +215,7 @@ export default {
               month_name +
               " > 0 and  employee_id in (?) and year=? ; select employee_id, year, month from hims_f_salary where employee_id in (?) and year=? and month=? and salary_type='LS'; ";
 
-            str_Query += "select hims_f_salary_id, employee_id, year, month from hims_f_salary S \
+            str_Query += `select hims_f_salary_id, employee_id, year, month from hims_f_salary S \
               inner join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id \
               inner join hims_d_earning_deduction ED on SD.deductions_id = ED.hims_d_earning_deduction_id \
               where employee_id in (?) and year=? and month=? and salary_type='LS' and ED.component_type='EEP' and amount>0;\
@@ -210,7 +223,10 @@ export default {
               inner join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id \
               inner join hims_d_earning_deduction ED on SC.contributions_id = ED.hims_d_earning_deduction_id \
               where employee_id in (?) and year=? and month=? and salary_type='LS' and ED.component_type='EEP' and amount>0;\
-              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N' and employee_id in (?);"
+              select hims_f_salary_id from hims_f_salary where year = ? and month=? and salary_paid = 'N' and employee_id in (?);\
+              select hims_f_salary_loans_id, SL.loan_due_amount, hims_f_salary_id, employee_id from hims_f_salary S \
+              inner join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id \
+              where employee_id in (${_myemp}) and year=${leave_salary_year} and month=${leave_salary_month} ; `
             // select employee_id,actual_to_date,to_date, DATEDIFF(actual_to_date, to_date) AS early_join_days from hims_f_leave_application where  early_rejoin='Y' and employee_id in (?) and  date(to_date) BETWEEN date(?) and date(?);"
 
             // console.log("input.leave_salary ===========", input.leave_salary)
@@ -479,12 +495,21 @@ export default {
                                   f.employee_id == empResult[i]["employee_id"]
                                 );
                               });
+                              //Leave salary Loan Due Deduct
+                              const _LS_loan_deduct = _.filter(results[21], (f) => {
+                                return (
+                                  f.employee_id == empResult[i]["employee_id"]
+                                );
+                              });
+
                               getLoanDueandPayable({
                                 loan: _loan,
                                 loanPayable: _loanPayable,
                                 next: next,
                                 decimal_places: req.userIdentity.decimal_places,
                                 empResult: empResult[i],
+                                LS_loan_deduct: _LS_loan_deduct,
+                                leave_salary: input.leave_salary
                               }).then((loanOutput) => {
                                 total_loan_due_amount =
                                   loanOutput.total_loan_due_amount;
@@ -1007,22 +1032,22 @@ export default {
 
       let _stringData =
         inputParam.employee_id != null
-          ? ` and S.employee_id= ${inputParam.employee_id}`
+          ? ` and S.employee_id = ${inputParam.employee_id} `
           : "";
 
       _stringData +=
         inputParam.sub_department_id != null
-          ? ` and emp.sub_department_id= ${inputParam.sub_department_id}`
+          ? ` and emp.sub_department_id = ${inputParam.sub_department_id} `
           : "";
 
       _stringData +=
         inputParam.department_id != null
-          ? ` and SD.department_id= ${inputParam.department_id}`
+          ? ` and SD.department_id = ${inputParam.department_id} `
           : "";
 
       _stringData +=
         inputParam.group_id != null
-          ? ` and emp.employee_group_id= ${inputParam.group_id}`
+          ? ` and emp.employee_group_id = ${inputParam.group_id} `
           : "";
 
       _stringData +=
@@ -1244,10 +1269,10 @@ export default {
           group by EE.employee_id; SELECT hims_d_leave_id, leave_accrual_calc FROM hims_d_leave where leave_category='A';";
       } else if (inputParam.annual_leave_calculation === "M") {
         let acc_str = `  case when E.date_of_joining between date('${month_start}') and date('${month_end}') 
-                  then round((monthly_accrual_days/30)*(datediff( '${month_end}' ,E.date_of_joining)+1 ),2) 
-                  when  E.exit_date between date('${month_start}') and date('${month_end}')
-                  then round((monthly_accrual_days/30)*(datediff( E.exit_date ,'${month_start}')+1 ),2)
-                  else monthly_accrual_days end `;
+                  then round((monthly_accrual_days / 30) * (datediff('${month_end}', E.date_of_joining) + 1), 2)
+when  E.exit_date between date('${month_start}') and date('${month_end}')
+then round((monthly_accrual_days / 30) * (datediff(E.exit_date, '${month_start}') + 1), 2)
+                  else monthly_accrual_days end`;
 
         strQuery =
           "select E.hims_d_employee_id as employee_id," +
@@ -1672,20 +1697,20 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select hims_d_earning_deduction_id,earning_deduction_description,component_category, print_order_by, \
-          nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
-          select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
-          E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-          S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions,\
-          S.total_contributions,S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours,H.hospital_name,SD.sub_department_name
-          from hims_d_employee E\
-          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-          inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  ${is_local}\
-          inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
-          inner join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
-          inner join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
-          inner join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=? `,
+          query: `select hims_d_earning_deduction_id, earning_deduction_description, component_category, print_order_by, \
+nationality_id from hims_d_earning_deduction where record_status = 'A' and print_report = 'Y' order by print_order_by; \
+select E.employee_code, E.full_name, E.employee_designation_id, S.employee_id, E.sub_department_id, E.date_of_joining, E.nationality, E.mode_of_payment, \
+E.hospital_id, E.employee_group_id, D.designation, EG.group_description, N.nationality, \
+S.hims_f_salary_id, S.salary_number, S.salary_date, S.present_days, S.net_salary, S.total_earnings, S.total_deductions, \
+S.total_contributions, S.ot_work_hours, S.ot_weekoff_hours, S.ot_holiday_hours, H.hospital_name, SD.sub_department_name
+from hims_d_employee E\
+inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id\
+inner join hims_d_hospital H  on E.hospital_id = H.hims_d_hospital_id  ${ is_local} \
+inner join hims_d_designation D on E.employee_designation_id = D.hims_d_designation_id\
+inner join hims_d_employee_group EG on E.employee_group_id = EG.hims_d_employee_group_id\
+inner join hims_d_nationality N on E.nationality = N.hims_d_nationality_id\
+inner join  hims_f_salary S on E.hims_d_employee_id = S.employee_id\
+where E.hospital_id =? and E.record_status = 'A' and E.employee_group_id =? and S.month =? and S.year =? `,
           values: [
             input.hospital_id,
             input.employee_group_id,
@@ -1982,55 +2007,55 @@ export default {
                   _mysql
                     .executeQueryWithTransaction({
                       query: `select hims_f_salary_id, hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
-                  salary_number as document_number, salary_date as transaction_date,
-                  S.net_salary as amount, 'journal' as voucher_type,S.hospital_id, 
-                  concat('Salary for Employee:', E.employee_code , '/' , E.full_name , ' in ' , year , '/' , month) as narration,
-                  E.sub_department_id from hims_f_salary S 
-                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
-                  where hims_f_salary_id in (?);
-                  select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, 
-                  CASE WHEN E.employee_category='A' THEN ED.head_id else ED.direct_head_id END as head_id,
-                  CASE WHEN E.employee_category='A' THEN ED.child_id else ED.direct_child_id END as child_id,
-                  'DR' as payment_type, 0 as credit_amount, S.hospital_id, E.sub_department_id from hims_f_salary S 
-                  left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
-                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
-                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
-                  where hims_f_salary_id in(?); 
-                  select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, \
-                  'CR' as payment_type, 0 as debit_amount ,S.hospital_id, E.sub_department_id from hims_f_salary S 
-                  left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id 
-                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
-                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
-                  where hims_f_salary_id in(?); 
-                  select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, \
-                  'DR' as payment_type,0 as credit_amount ,S.hospital_id, E.sub_department_id from hims_f_salary S 
-                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
-                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
-                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
-                  where hims_f_salary_id in(?);
-                  select hims_f_salary_id, curDate() payment_date, SC.amount as credit_amount, ED.li_head_id as  head_id, 
-                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount, S.hospital_id, E.sub_department_id from hims_f_salary S 
-                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
-                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
-                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
-                  where hims_f_salary_id in(?);
-                  select hims_f_salary_id, curDate() payment_date, SL.loan_due_amount as credit_amount, L.head_id, 
-                  L.child_id, 'CR' as payment_type, 0 as debit_amount,S.hospital_id,E.sub_department_id from hims_f_salary S 
-                  left join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id
-                  left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
-                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
-                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
-                  where hims_f_salary_id in(?);
-                  select employee_id, leave_salary, airfare_amount, E.hospital_id, E.sub_department_id from hims_f_leave_salary_accrual_detail D 
-                  inner join hims_d_employee E on E.hims_d_employee_id =D.employee_id 
-                  where year=? and month = ? and employee_id in (?);
-                  select employee_id, gratuity_amount, E.hospital_id, E.sub_department_id from hims_f_gratuity_provision G
-                  inner join hims_d_employee E on E.hims_d_employee_id =G.employee_id 
-                  where year=? and month = ? and employee_id in (?);
-                  select employee_id, head_id, child_id, E.hospital_id, approved_amount, E.sub_department_id from hims_f_loan_application LA
-                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
-                  inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id where loan_authorized='APR' 
-                  and loan_closed='N' and loan_dispatch_from='SAL' and employee_id in (?);`,
+  salary_number as document_number, salary_date as transaction_date,
+  S.net_salary as amount, 'journal' as voucher_type, S.hospital_id,
+  concat('Salary for Employee:', E.employee_code, '/', E.full_name, ' in ', year, '/', month) as narration,
+  E.sub_department_id from hims_f_salary S
+inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id
+where hims_f_salary_id in (?);
+select hims_f_salary_id, curDate() payment_date, SE.amount as debit_amount,
+  CASE WHEN E.employee_category = 'A' THEN ED.head_id else ED.direct_head_id END as head_id,
+    CASE WHEN E.employee_category = 'A' THEN ED.child_id else ED.direct_child_id END as child_id,
+      'DR' as payment_type, 0 as credit_amount, S.hospital_id, E.sub_department_id from hims_f_salary S
+left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
+inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
+inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id
+where hims_f_salary_id in (?);
+select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, \
+'CR' as payment_type, 0 as debit_amount, S.hospital_id, E.sub_department_id from hims_f_salary S
+left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id
+inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id
+where hims_f_salary_id in (?);
+select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, \
+'DR' as payment_type, 0 as credit_amount, S.hospital_id, E.sub_department_id from hims_f_salary S
+left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id
+inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id
+where hims_f_salary_id in (?);
+select hims_f_salary_id, curDate() payment_date, SC.amount as credit_amount, ED.li_head_id as head_id,
+  ED.li_child_id as child_id, 'CR' as payment_type, 0 as debit_amount, S.hospital_id, E.sub_department_id from hims_f_salary S
+left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id
+inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id
+where hims_f_salary_id in (?);
+select hims_f_salary_id, curDate() payment_date, SL.loan_due_amount as credit_amount, L.head_id,
+  L.child_id, 'CR' as payment_type, 0 as debit_amount, S.hospital_id, E.sub_department_id from hims_f_salary S
+left join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id
+left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
+inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id
+inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id
+where hims_f_salary_id in (?);
+select employee_id, leave_salary, airfare_amount, E.hospital_id, E.sub_department_id from hims_f_leave_salary_accrual_detail D
+inner join hims_d_employee E on E.hims_d_employee_id = D.employee_id
+where year =? and month = ? and employee_id in (?);
+select employee_id, gratuity_amount, E.hospital_id, E.sub_department_id from hims_f_gratuity_provision G
+inner join hims_d_employee E on E.hims_d_employee_id = G.employee_id
+where year =? and month = ? and employee_id in (?);
+select employee_id, head_id, child_id, E.hospital_id, approved_amount, E.sub_department_id from hims_f_loan_application LA
+inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id
+inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id where loan_authorized = 'APR'
+and loan_closed = 'N' and loan_dispatch_from = 'SAL' and employee_id in (?); `,
                       values: [
                         inputParam.salary_header_id,
                         inputParam.salary_header_id,
@@ -4272,11 +4297,23 @@ function getLoanDueandPayable(options) {
       const _loan = options.loan;
       const _loanPayable = options.loanPayable;
       const empResult = options.empResult;
+      const LS_loan_deduct = options.LS_loan_deduct
+      const leave_salary = options.leave_salary
 
+      // console.log("LS_loan_deduct", LS_loan_deduct)
+      const loan_due_amount = leave_salary == "Y" && LS_loan_deduct.length > 0 ? LS_loan_deduct[0].loan_due_amount : 0;
       let total_loan_due_amount = 0;
       let total_loan_payable_amount = 0;
       let current_loan_array = [];
 
+      if (leave_salary != "Y" && LS_loan_deduct.length > 0) {
+        resolve({
+          total_loan_due_amount,
+          total_loan_payable_amount,
+          current_loan_array,
+        });
+        return
+      }
       // console.log("_loan", _loan)
       if (empResult.partial_attendance === "Y") {
         resolve({
@@ -4309,7 +4346,7 @@ function getLoanDueandPayable(options) {
         return {
           loan_application_id: s.hims_f_loan_application_id,
           loan_due_amount: s.loan_skip_months > 0 ? 0 : s.installment_amount,
-          balance_amount: s.pending_loan,
+          balance_amount: s.pending_loan - loan_due_amount,
         };
       });
 
@@ -4458,20 +4495,20 @@ function UpdateProjectWisePayroll(options) {
         _mysql
 
           .executeQuery({
-            query: `Select hims_f_project_wise_payroll_id,employee_id, month, year,
-            coalesce(basic_hours+floor(basic_minutes/60)  +round((basic_minutes%60)/60,2),0) as basic_hours,
-            coalesce(ot_hours+floor(ot_minutes/60)  +round((ot_minutes%60)/60,2),0) as ot_hours,
-            coalesce(wot_hours+floor(wot_minutes/60)  +round((wot_minutes%60)/60,2),0) as wot_hours,
-            coalesce(hot_hours+floor(hot_minutes/60)  +round((hot_minutes%60)/60,2),0) as hot_hours,
-            coalesce(worked_hours+floor(worked_minutes/60) +round((worked_minutes%60)/60,2),0) as worked_hours
-            from hims_f_project_wise_payroll where year=? and month=? and  employee_id in (?);
-            Select hims_f_project_wise_payroll_id,employee_id, month, year,
-            coalesce(sum(basic_hours)+floor(sum(basic_minutes)/60)  +round((sum(basic_minutes)%60)/60,2),0) as basic_hours,
-            coalesce(sum(ot_hours)+floor(sum(ot_minutes)/60)  +round((sum(ot_minutes)%60)/60,2),0) as ot_hours,
-            coalesce(sum(wot_hours)+floor(sum(wot_minutes)/60)  +round((sum(wot_minutes)%60)/60,2),0) as wot_hours,
-            coalesce(sum(hot_hours)+floor(sum(hot_minutes)/60)  +round((sum(hot_minutes)%60)/60,2),0) as hot_hours,
-            coalesce(sum(worked_hours)+floor(sum(worked_minutes)/60) +round((sum(worked_minutes)%60)/60,2),0) as worked_hours
-            from hims_f_project_wise_payroll where year=? and month=? and  employee_id in (?) group by employee_id;`,
+            query: `Select hims_f_project_wise_payroll_id, employee_id, month, year,
+  coalesce(basic_hours + floor(basic_minutes / 60) + round((basic_minutes % 60) / 60, 2), 0) as basic_hours,
+  coalesce(ot_hours + floor(ot_minutes / 60) + round((ot_minutes % 60) / 60, 2), 0) as ot_hours,
+  coalesce(wot_hours + floor(wot_minutes / 60) + round((wot_minutes % 60) / 60, 2), 0) as wot_hours,
+  coalesce(hot_hours + floor(hot_minutes / 60) + round((hot_minutes % 60) / 60, 2), 0) as hot_hours,
+  coalesce(worked_hours + floor(worked_minutes / 60) + round((worked_minutes % 60) / 60, 2), 0) as worked_hours
+from hims_f_project_wise_payroll where year =? and month =? and  employee_id in (?);
+Select hims_f_project_wise_payroll_id, employee_id, month, year,
+  coalesce(sum(basic_hours) + floor(sum(basic_minutes) / 60) + round((sum(basic_minutes) % 60) / 60, 2), 0) as basic_hours,
+  coalesce(sum(ot_hours) + floor(sum(ot_minutes) / 60) + round((sum(ot_minutes) % 60) / 60, 2), 0) as ot_hours,
+  coalesce(sum(wot_hours) + floor(sum(wot_minutes) / 60) + round((sum(wot_minutes) % 60) / 60, 2), 0) as wot_hours,
+  coalesce(sum(hot_hours) + floor(sum(hot_minutes) / 60) + round((sum(hot_minutes) % 60) / 60, 2), 0) as hot_hours,
+  coalesce(sum(worked_hours) + floor(sum(worked_minutes) / 60) + round((sum(worked_minutes) % 60) / 60, 2), 0) as worked_hours
+from hims_f_project_wise_payroll where year =? and month =? and  employee_id in (?) group by employee_id; `,
             values: [
               inputParam.year,
               inputParam.month,
@@ -4547,8 +4584,8 @@ function UpdateProjectWisePayroll(options) {
                 hot_cost = utilities.decimalPoints(hot_cost, decimal_places);
                 cost = utilities.decimalPoints(cost, decimal_places);
 
-                strQry += ` UPDATE hims_f_project_wise_payroll set basic_cost=${basic_cost}, ot_cost=${ot_cost},
-                    wot_cost=${wot_cost}, hot_cost=${hot_cost},cost=${cost} where hims_f_project_wise_payroll_id=${project.hims_f_project_wise_payroll_id}; `;
+                strQry += ` UPDATE hims_f_project_wise_payroll set basic_cost = ${basic_cost}, ot_cost = ${ot_cost},
+wot_cost = ${ wot_cost}, hot_cost = ${hot_cost}, cost = ${cost} where hims_f_project_wise_payroll_id = ${project.hims_f_project_wise_payroll_id}; `;
               });
 
               _mysql

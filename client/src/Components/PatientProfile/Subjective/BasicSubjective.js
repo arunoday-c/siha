@@ -1704,7 +1704,7 @@ class BasicSubjective extends Component {
                           {
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Order Investigation",
+                                forceLabel: "Order Services",
                               }}
                             />
                           }

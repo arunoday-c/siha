@@ -1,15 +1,20 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 // const utilities = new algaehUtilities();
 const executePDF = function executePDFMethod(options) {
-  const _ = options.loadash;
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
+
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
-      params.forEach(para => {
+
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -28,7 +33,7 @@ const executePDF = function executePDFMethod(options) {
 
           qry = ` select A.receipt_number , A.bill_number,date_format(receipt_date,'%d-%m-%Y') as receipt_date ,patient_code,full_name ,sub_department_code,
           sub_department_name,employee_code,doctor_name,sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
-           from(select hims_f_billing_header_id,BH.patient_id,BH.visit_id ,
+           from (select hims_f_billing_header_id,BH.patient_id,BH.visit_id ,
           RH.hims_f_receipt_header_id, RH.receipt_number, BH.bill_number,
           date(RH.receipt_date)as receipt_date ,RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,
           case RD.pay_type when 'CA' then RD.amount else '0.00' end as cash,
@@ -66,32 +71,36 @@ const executePDF = function executePDFMethod(options) {
 
           break;
 
-        //     case "POS":
-        //       qry =
-        //         "select PH.receipt_header_id,PH.patient_id,PH.patient_name,PH.referal_doctor,visit_id,date(pos_date) as pos_date ,\
-        // RH.receipt_number,RH.pay_type, date(RH.receipt_date)as receipt_date, RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,\
-        // P.patient_code,P.full_name ,V.hims_f_patient_visit_id,SD.sub_department_code,\
-        // SD.sub_department_name,E.employee_code,E.full_name as doctor_name from \
-        // hims_f_pharmacy_pos_header PH inner join hims_f_receipt_header RH on PH.receipt_header_id=RH.hims_f_receipt_header_id\
-        // inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id \
-        // left join hims_f_patient P on PH.patient_id=P.hims_d_patient_id\
-        // left join hims_f_patient_visit V on PH.visit_id=V.hims_f_patient_visit_id\
-        // left join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id\
-        // left join hims_d_employee E on V.doctor_id=E.hims_d_employee_id\
-        // where date(pos_date) between date(?) and date(?) and RH.pay_type='R' and\
-        //  RH.record_status='A'  and RD.record_status='A'";
+        case "POS":
+          qry = `select receipt_header_id,pay_type,amount,patient_code,full_name ,date_format(receipt_date,'%d-%m-%Y') as receipt_date,receipt_number,pos_number as bill_number,
+            sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
+            from   (select PH.receipt_header_id,PH.patient_id,PH.patient_name,PH.referal_doctor,visit_id,date(pos_date) as pos_date ,
+                    RH.receipt_number,PH.pos_number, date(RH.receipt_date)as receipt_date, RD.hims_f_receipt_details_id,
+            RD.pay_type,RD.amount,
+            case RD.pay_type when 'CA' then RD.amount else '0.00' end as cash,
+            case RD.pay_type when 'CD' then RD.amount else '0.00' end as card,
+            case RD.pay_type when 'CH' then RD.amount else '0.00' end as cheque,
+            P.patient_code,P.full_name ,V.hims_f_patient_visit_id,SD.sub_department_code,        SD.sub_department_name,E.employee_code,E.full_name as doctor_name 
+            from hims_f_pharmacy_pos_header PH 
+            inner join hims_f_receipt_header RH on PH.receipt_header_id=RH.hims_f_receipt_header_id        
+            inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id         
+            left join hims_f_patient P on PH.patient_id=P.hims_d_patient_id        
+            left join hims_f_patient_visit V on PH.visit_id=V.hims_f_patient_visit_id        
+            left join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id        
+            left join hims_d_employee E on V.doctor_id=E.hims_d_employee_id        
+            where date(pos_date) between date(?) and date(?) and RH.pay_type='R' and         RH.record_status='A'  and RD.record_status='A')  as A group by receipt_header_id;`;
 
-        //       if (input.hospital_id > 0) {
-        //         str += ` and PH.hospital_id= ${input.hospital_id}`;
-        //       }
-        //       if (input.sub_department_id > 0) {
-        //         str += ` and V.sub_department_id= ${input.sub_department_id}`;
-        //       }
-        //       if (input.provider_id > 0) {
-        //         str += ` and V.doctor_id= ${input.provider_id}`;
-        //       }
+          // if (input.hospital_id > 0) {
+          //   str += ` and PH.hospital_id= ${input.hospital_id}`;
+          // }
+          // if (input.sub_department_id > 0) {
+          //   str += ` and V.sub_department_id= ${input.sub_department_id}`;
+          // }
+          // if (input.provider_id > 0) {
+          //   str += ` and V.doctor_id= ${input.provider_id}`;
+          // }
 
-        //       break;
+          break;
 
         case "OPC":
           qry = `select credit_number,receipt_number,date_format(receipt_date,'%d-%m-%Y') as receipt_date,pay_type,amount,patient_code ,full_name
@@ -108,53 +117,47 @@ const executePDF = function executePDFMethod(options) {
          and RD.record_status='A') as A group by hims_f_receipt_header_id`;
 
           break;
-        // case "POSC":
-        //   qry =
-        //     "select  PC.patient_id ,PC.reciept_header_id,\
-        //   RH.hims_f_receipt_header_id,RH.receipt_number,RH.pay_type, date(receipt_date)as receipt_date,\
-        //   RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,P.patient_code,P.full_name \
-        //   from hims_f_pos_credit_header PC inner join hims_f_receipt_header RH on PC.reciept_header_id=RH.hims_f_receipt_header_id\
-        //   inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id \
-        //   inner join hims_f_patient P on PC.patient_id=P.hims_d_patient_id where  RH.pay_type='R'and \
-        //   date(receipt_date) between date(?) and date(?) and RH.record_status='A'  and RD.record_status='A' ";
+        case "POSC":
+          qry =
+            "select  PC.patient_id ,PC.reciept_header_id,\
+          RH.hims_f_receipt_header_id,RH.receipt_number,RH.pay_type, date(receipt_date)as receipt_date,\
+          RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,P.patient_code,P.full_name \
+          from hims_f_pos_credit_header PC inner join hims_f_receipt_header RH on PC.reciept_header_id=RH.hims_f_receipt_header_id\
+          inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id \
+          inner join hims_f_patient P on PC.patient_id=P.hims_d_patient_id where  RH.pay_type='R'and \
+          date(receipt_date) between date(?) and date(?) and RH.record_status='A'  and RD.record_status='A' ";
 
-        //   if (input.hospital_id > 0) {
-        //     str += ` and PC.hospital_id= ${input.hospital_id}`;
-        //   }
-        //   break;
+          // if (input.hospital_id > 0) {
+          //   str += ` and PC.hospital_id= ${input.hospital_id}`;
+          // }
+          break;
       }
 
       options.mysql
         .executeQuery({
           query: qry,
           values: [input.from_date, input.to_date, input.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(results => {
+        .then((results) => {
           //  utilities.logger().log("result: ", results);
 
           const total_cash = _.chain(results)
-
-            .sumBy(s => parseFloat(s.cash))
-            .value()
-            .toFixed(decimal_places);
+            .sumBy((s) => parseFloat(s.cash))
+            .value();
 
           const total_card = _.chain(results)
-
-            .sumBy(s => parseFloat(s.card))
-            .value()
-            .toFixed(decimal_places);
+            .sumBy((s) => parseFloat(s.card))
+            .value();
 
           const total_check = _.chain(results)
+            .sumBy((s) => parseFloat(s.cheque))
+            .value();
 
-            .sumBy(s => parseFloat(s.cheque))
-            .value()
-            .toFixed(decimal_places);
-          const total_collection = parseFloat(
+          const total_collection =
             parseFloat(total_cash) +
             parseFloat(total_card) +
-            parseFloat(total_check)
-          ).toFixed(decimal_places);
+            parseFloat(total_check);
 
           // utilities.logger().log("result: ", {
           //   total_cash: total_cash,
@@ -168,10 +171,24 @@ const executePDF = function executePDFMethod(options) {
             total_cash: total_cash,
             total_card: total_card,
             total_check: total_check,
-            total_collection: total_collection
+            total_collection: total_collection,
+
+            currency: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+
+            currencyheader: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

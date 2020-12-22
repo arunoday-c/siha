@@ -8,14 +8,14 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   qtyonchangegridcol,
   processSelectedItems,
-  getMedicationAprovalList
+  getMedicationAprovalList,
 } from "./PointOfSaleEvents";
 import PreApprovalStatus from "./PosListItems/PreApprovalStatus/PreApprovalStatus";
 import "./PointOfSale.scss";
@@ -27,15 +27,15 @@ class PrescribedItemList extends Component {
       item_batches: [],
       viewPreapproval: false,
       selected_row: null,
-      stock_exists: false
+      stock_exists: false,
     };
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
         item_batches: [],
-        selected_row: null
+        selected_row: null,
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -50,7 +50,7 @@ class PrescribedItemList extends Component {
   CloseEditModel(e) {
     this.setState(
       {
-        viewPreapproval: !this.state.viewPreapproval
+        viewPreapproval: !this.state.viewPreapproval,
       },
       () => {
         if (e === "refresh") {
@@ -66,7 +66,7 @@ class PrescribedItemList extends Component {
         <div>
           <AlgaehModalPopUp
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title="Item List"
             openPopup={this.props.show}
@@ -83,54 +83,56 @@ class PrescribedItemList extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Selected" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.select_item === "N" ? (
                                   <span className="badge badge-danger">No</span>
                                 ) : (
-                                    <span className="badge badge-success">
-                                      Yes
-                                    </span>
-                                  )}
+                                  <span className="badge badge-success">
+                                    Yes
+                                  </span>
+                                )}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "stock_ava",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Stock Available" }} />
+                            <AlgaehLabel
+                              label={{ forceLabel: "Stock Available" }}
+                            />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.batches.length > 0 ? (
-                                  <span className="badge badge-success">Yes</span>
+                                  <span className="badge badge-success">
+                                    Yes
+                                  </span>
                                 ) : (
-                                    <span className="badge badge-danger">
-                                      No
-                                    </span>
-                                  )}
+                                  <span className="badge badge-danger">No</span>
+                                )}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "item_description",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                           ),
-                          className: row => {
+                          className: (row) => {
                             return "greenCell";
-                          }
+                          },
                         },
                         {
                           fieldName: "insurance_yesno",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Insured" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.insurance_yesno === "N"
@@ -139,7 +141,7 @@ class PrescribedItemList extends Component {
                               </span>
                             );
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "pre_approval",
@@ -148,33 +150,33 @@ class PrescribedItemList extends Component {
                               label={{ forceLabel: "Pre Approval" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.pre_approval === "N" ? (
                               <span>Not Required</span>
                             ) : (
-                                <span
-                                  className="pat-code"
-                                  onClick={getMedicationAprovalList.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )}
-                                >
-                                  Required
-                                </span>
-                              );
+                              <span
+                                className="pat-code"
+                                onClick={getMedicationAprovalList.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
+                              >
+                                Required
+                              </span>
+                            );
                           },
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       ]}
                       keyId="item_id"
                       dataSource={{
-                        data: this.state.prescribed_item_list
+                        data: this.state.prescribed_item_list,
                       }}
                       algaehSearch={true}
                       // isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
-                      onRowSelect={row => {
+                      onRowSelect={(row) => {
                         if (row.pre_approval === "N") {
                           let _index = this.state.prescribed_item_list.indexOf(
                             row
@@ -182,13 +184,14 @@ class PrescribedItemList extends Component {
 
                           this.setState({
                             item_batches: row.batches,
-                            stock_exists: row.batches.length === 0 ? true : false,
-                            selected_row: _index
+                            stock_exists:
+                              row.batches.length === 0 ? true : false,
+                            selected_row: _index,
                           });
                         } else {
                           this.setState({
                             item_batches: [],
-                            selected_row: null
+                            selected_row: null,
                           });
                         }
                       }}
@@ -196,122 +199,136 @@ class PrescribedItemList extends Component {
                   </div>
                   <div className="col-8" id="itemBatchsGrid_Cntr">
                     {this.state.stock_exists ? (
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{ forceLabel: "Stock Not Available" }}
-                        />
-                      </div>
-                    ) : null}
-                    <AlgaehDataGrid
-                      id="itemBatchsGrid"
-                      columns={[
-                        {
-                          fieldName: "item_description",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                          )
-                        },
-                        {
-                          fieldName: "sales_uom",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />
-                          ),
-                          displayTemplate: row => {
-
-                            let display =
-                              this.props.itemuom === undefined
-                                ? []
-                                : this.props.itemuom.filter(
-                                  f =>
-                                    f.hims_d_pharmacy_uom_id === row.sales_uom
-                                );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].uom_description
-                                  : ""}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "batchno",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                          )
-                        },
-                        {
-                          fieldName: "expiry_date",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Expiry Date" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "qtyhand",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Quantity in Hand" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "sale_price",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
-                          )
-                        },
-                        {
-                          fieldName: "quantity",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Qty Req." }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  number: {
-                                    allowNegative: false,
-                                    thousandSeparator: ","
-                                  },
-                                  value:
-                                    row.quantity !== ""
-                                      ? parseFloat(row.quantity)
-                                      : "",
-                                  className: "txt-fld",
-                                  name: "quantity",
-                                  dontAllowKeys: ["-", "e", "."],
-                                  events: {
-                                    onChange: qtyonchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    }
-                                  }
-                                }}
+                      <h1
+                        style={{
+                          textAlign: "center",
+                          border: "1px solid #ebebeb",
+                          padding: " 21vh 0",
+                          color: " #e0e0e0",
+                        }}
+                      >
+                        Stock not available for selected item.
+                      </h1>
+                    ) : (
+                      <AlgaehDataGrid
+                        id="itemBatchsGrid"
+                        columns={[
+                          {
+                            fieldName: "item_description",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Item Name" }}
                               />
-                            );
+                            ),
                           },
-                          others: {
-                            minWidth: 80
-                          }
-                        }
-                      ]}
-                      keyId="item_id"
-                      dataSource={{
-                        data: this.state.item_batches
-                      }}
-                      algaehSearch={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                    />
+                          {
+                            fieldName: "batchno",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Batch No." }}
+                              />
+                            ),
+                          },
+                          {
+                            fieldName: "expiry_date",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Expiry Date" }}
+                              />
+                            ),
+                          },
+                          {
+                            fieldName: "sales_uom",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Sales UOM" }}
+                              />
+                            ),
+                            displayTemplate: (row) => {
+                              let display =
+                                this.props.itemuom === undefined
+                                  ? []
+                                  : this.props.itemuom.filter(
+                                      (f) =>
+                                        f.hims_d_pharmacy_uom_id ===
+                                        row.sales_uom
+                                    );
+
+                              return (
+                                <span>
+                                  {display !== null && display.length !== 0
+                                    ? display[0].uom_description
+                                    : ""}
+                                </span>
+                              );
+                            },
+                          },
+                          {
+                            fieldName: "qtyhand",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Quantity in Hand" }}
+                              />
+                            ),
+                          },
+                          {
+                            fieldName: "sale_price",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Unit Cost" }}
+                              />
+                            ),
+                          },
+                          {
+                            fieldName: "quantity",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Qty Req." }} />
+                            ),
+                            displayTemplate: (row) => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    number: {
+                                      allowNegative: false,
+                                      thousandSeparator: ",",
+                                    },
+                                    value:
+                                      row.quantity !== ""
+                                        ? parseFloat(row.quantity)
+                                        : "",
+                                    className: "txt-fld",
+                                    name: "quantity",
+                                    dontAllowKeys: ["-", "e", "."],
+                                    events: {
+                                      onChange: qtyonchangegridcol.bind(
+                                        this,
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                    others: {
+                                      onFocus: (e) => {
+                                        e.target.oldvalue = e.target.value;
+                                      },
+                                    },
+                                  }}
+                                />
+                              );
+                            },
+                            others: {
+                              minWidth: 80,
+                            },
+                          },
+                        ]}
+                        keyId="item_id"
+                        dataSource={{
+                          data: this.state.item_batches,
+                        }}
+                        algaehSearch={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -326,12 +343,12 @@ class PrescribedItemList extends Component {
                       onClick={processSelectedItems.bind(this, this)}
                       type="button"
                       className="btn btn-primary"
-                    // disabled={this.state.button_enable}
+                      // disabled={this.state.button_enable}
                     >
                       Process
                     </button>
                     <button
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                       type="button"
@@ -365,14 +382,14 @@ class PrescribedItemList extends Component {
 
 function mapStateToProps(state) {
   return {
-    itemuom: state.itemuom
+    itemuom: state.itemuom,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );

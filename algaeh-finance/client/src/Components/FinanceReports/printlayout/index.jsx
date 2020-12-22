@@ -60,6 +60,7 @@ export default function ({
                 control={() => createPrintObject.current}
                 columnsToRepeat={[0]}
                 columnPerPage={7}
+                title={title}
               />
             </span>
             <span>

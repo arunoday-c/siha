@@ -17,17 +17,15 @@
                         <th>Expiry Date</th>
                         <th>Patient Responsibility</th>
                         <th>Patient Tax</th>
-                        {{!-- <th>Patient Payable</th> --}}
                         <th>Company Responsibility</th>
                         <th>Company Tax</th>
-                        {{!-- <th>Company Payable</th> --}}
                         <th>Net Payable</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each detail}}
                     <tr>
-                        <td colspan="12" class="tableSubHdg">{{pos_number}} | {{pos_date}}  <span style="float: right;">Cashier:{{cashier_name}}</span></td>
+                        <td colspan="11" class="tableSubHdg">{{cashier_name}} / {{pos_number}} / {{pos_date}}</td>
                     </tr>
                     {{#each detailList}}
                     <tr>
@@ -37,93 +35,48 @@
                         <td>{{batchno}}</td>
                         <td>{{quantity}}</td>
                         <td>{{expiry_date}}</td>
-                        <td class="numberFld">{{PD_patient_responsibility}}</td>
-                        <td class="numberFld">{{PD_patient_tax}}</td>
-                        {{!-- <td class="numberFld">{{PD_patient_payable}}</td> --}}
-                        <td class="numberFld">{{PD_company_responsibility}}</td>
-                        <td class="numberFld">{{PD_company_tax}}</td>
-                        {{!-- <td class="numberFld">{{PD_company_payable}}</td> --}}
-                        <td class="numberFld">{{PD_net_payable}}</td>
+
+                        <td class="numberFld">{{numberFormating PD_patient_responsibility ../../decimalOnly}}</td>
+
+                        <td class="numberFld">{{numberFormating PD_patient_tax ../../decimalOnly}}</td>
+
+                        <td class="numberFld">{{numberFormating PD_company_responsibility ../../decimalOnly}}</td>
+
+                        <td class="numberFld">{{numberFormating PD_company_tax ../../decimalOnly}}</td>
+
+                        <td class="numberFld">{{numberFormating PD_net_payable ../../decimalOnly}}</td>
+                       
                     </tr>
                     {{/each }}
                     <tr class="footerTotalDown">
-                        <td colspan="10" class="numberFld">Total Amount</td>
-                        <td class="numberFld">{{net_amount}}</td>
+                        <td colspan="6" class="numberFld"></td>
+                        {{!-- <td class="numberFld">{{net_amount}}</td> --}}
+                        <td class="numberFld">{{numberFormating net_PD_patient_responsibility ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_PD_patient_tax ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_PD_company_responsibility ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_PD_company_tax ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_PD_net_payable ../decimalOnly}}</td>
                     </tr>
                     {{/each }}
                     <tr class="numberFldTotalBottom">
-                        <td colspan="10">Net Total</td>
-                        <td class="numberFld">{{net_total}}</td>
+
+
+  <td colspan="6" class="numberFld"></td>
+                        {{!-- <td class="numberFld">{{net_amount}}</td> --}}
+                        <td class="numberFld">{{numberFormating final_net_PD_patient_responsibility currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating final_net_PD_patient_tax currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating final_net_PD_company_responsibility currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating final_net_PD_company_tax currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating final_net_PD_net_payable currencyOnly}}</td>
+
+
+
+                   
+
 
                     </tr>
                 </tbody>
-            </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
-</body>
-
-
-
-{{!-- <body>
-    <div class="print-body">
-
-        <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Invoice No.</th>
-                        <th>Invoice Date</th>
-                        <th>Invoice Amt.</th>
-                        <th>Patient Payable</th>
-                        <th>Patient Tax</th>
-                        <th>Company Payable</th>
-                        <th>Company Tax</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each details}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{pos_number}}</td>
-                        <td>{{pos_date}}</td>
-                        <td class="numberFld">{{net_amount}}</td>
-                        <td class="numberFld">{{patient_payable}}</td>
-                        <td class="numberFld">{{patient_tax}}</td>
-                        <td class="numberFld">{{company_payable}}</td>
-                        <td class="numberFld">{{company_tax}}</td>
-                    </tr>
-                    {{/each }}
-                </tbody>
-            </table>
-            <table class="tableTotal">
-                <tr class="bold">
-                    <td>Total Invoive Amt.</td>
-                    <td>{{total_net_amount}}</td>
-                    <td>المبلغ الإجمالي للفاتورة</td>
-                </tr>
-                <tr>
-                    <td>Total Patient Payable</td>
-                    <td>{{total_patient_payable}}</td>
-                    <td>المجموع المريض بسبب</td>
-                </tr>
-                <tr>
-                    <td>Total Patient Tax</td>
-                    <td>{{total_patient_tax}}</td>
-                    <td>الإجمالي ضريبة المريض</td>
-                </tr>
-                <tr>
-                    <td>Total Company Payable</td>
-                    <td>{{total_company_payable}}</td>
-                    <td>المجموع الشركة المستحقة الدفع</td>
-                </tr>
-                <tr>
-                    <td>Total Company Tax</td>
-                    <td>{{total_company_tax}}</td>
-                    <td>إجمالي ضريبة الشركة</td>
-                </tr>
             </table>
         </section>
     </div>
-</body> --}}
+</body>

@@ -1191,7 +1191,6 @@ export default {
                     console.log("inputParam", inputParam.insured);
                     console.log("inputParam", inputParam.company_payble);
                     if (
-                      inputParam.insured == "Y" &&
                       parseFloat(inputParam.company_payble) > 0
                     ) {
                       console.log("Insurance")

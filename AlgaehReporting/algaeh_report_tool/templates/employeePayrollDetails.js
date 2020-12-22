@@ -61,7 +61,9 @@ const executePDF = function executePDFMethod(options) {
           nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;
           select H.hims_d_hospital_id,H.hospital_name,E.hims_d_employee_id,E.employee_code,E.full_name,E.employee_designation_id,E.identity_no,EDoc.identity_document_name,Edoc.arabic_identity_document_name,EG.group_description,E.sub_department_id,E.date_of_joining,
           E.nationality,E.mode_of_payment,E.hospital_id,E.employee_group_id,D.designation,EG.group_description,
-          N.nationality,E.net_salary,E.total_earnings,E.total_deductions
+          N.nationality,E.net_salary,E.total_earnings,E.total_deductions,
+          CASE WHEN E.employee_type ='PE' THEN 'Permanent' WHEN E.employee_type ='CO' THEN 'Contact' WHEN E.employee_type ='PB' THEN 'Probation' WHEN E.employee_type ='LC' THEN 'Locum' else 'Visiting Consultant' END as employee_type,
+          CASE WHEN E.appointment_type ='A' THEN 'Agency' WHEN E.appointment_type ='CO' THEN 'Direct' else 'Referral' END as appointment_type
           from hims_d_employee E
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id

@@ -1,0 +1,80 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table> --}}
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        {{!-- <th>Service Name</th> --}}
+                        <th>POS No.</th>
+                        <th>POS Date.</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Visit No.</th>
+                        <th>Visit Date</th>
+                        {{!-- <th>Patient Share</th>
+                        <th>Company Share</th> --}}
+                        <th>Net Amount</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
+                    {{#hasElement detail}}
+
+
+                    {{#each detail}}
+                    <tr>
+                        <td colspan="7" class="tableSubHdg">{{cashier_name}}</td>
+
+                             <td class="tableSubHdg numberFld">{{numberFormating cashier_total ../currencyOnly}}</td>
+                    </tr>
+                    {{#each detailList}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{pos_number}}</td>
+                        <td>{{pos_date}}</td>
+                        {{!-- <td>{{service_name}}</td> --}}
+                        <td>{{patient_code}}</td>
+                        <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
+                            class="txtFld">{{full_name}}</td>
+                        <td>{{visit_code}}</td>
+                        <td>{{visit_date}}</td>
+                        <td class="numberFld">{{numberFormating net_amount ../../decimalOnly}}</td>
+                    </tr>
+                    {{/each }}{{/each }}
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="7"></td>
+                        <td class="numberFld">{{numberFormating net_total currencyOnly}}</td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="9" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+
+                </tbody>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>

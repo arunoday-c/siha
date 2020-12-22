@@ -83,7 +83,7 @@ class NurseWorkbench extends Component {
       patient_id: null,
       shift_id: null,
       searchText: "",
-      filterList: []
+      filterList: [],
     };
     this.getVitalsRef = undefined;
     this.baseState = this.state;
@@ -97,11 +97,11 @@ class NurseWorkbench extends Component {
         for (let i = 0; i < eArray.length; i++) {
           eArray[i].setAttribute("style", "");
         }
-        filterd = this.state.data.filter((f) =>
-          f.full_name.toLowerCase().includes(value.toLowerCase()) ||
-          f.patient_code.toLowerCase().includes(value.toLowerCase()) ||
-          f.primary_id_no.toLowerCase().includes(value.toLowerCase())
-
+        filterd = this.state.data.filter(
+          (f) =>
+            f.full_name.toLowerCase().includes(value.toLowerCase()) ||
+            f.patient_code.toLowerCase().includes(value.toLowerCase()) ||
+            f.primary_id_no.toLowerCase().includes(value.toLowerCase())
         );
       }
       this.setState({ searchText: value, filterList: filterd });
@@ -160,8 +160,8 @@ class NurseWorkbench extends Component {
         method: "GET",
         redux: {
           type: "SHIFT_GET_DATA",
-          mappingName: "shifts"
-        }
+          mappingName: "shifts",
+        },
       });
     }
   }
@@ -303,11 +303,11 @@ class NurseWorkbench extends Component {
 
     value.value === "PREGNANCY"
       ? this.setState({
-        isPregnancy: false,
-      })
+          isPregnancy: false,
+        })
       : this.setState({
-        isPregnancy: true,
-      });
+          isPregnancy: true,
+        });
   }
   dataLevelUpdate(e) {
     NursingWorkbenchHandler().dataLevelUpdate(this, e);
@@ -382,7 +382,7 @@ class NurseWorkbench extends Component {
               getPatientAllergies(this);
             }
           },
-          onFailure: (error) => { },
+          onFailure: (error) => {},
         });
       }
     });
@@ -828,12 +828,12 @@ class NurseWorkbench extends Component {
                 k === "F"
                   ? "Food"
                   : k === "A"
-                    ? "Airborne"
-                    : k === "AI"
-                      ? "Animal  &  Insect"
-                      : k === "C"
-                        ? "Chemical & Others"
-                        : "",
+                  ? "Airborne"
+                  : k === "AI"
+                  ? "Animal  &  Insect"
+                  : k === "C"
+                  ? "Chemical & Others"
+                  : "",
               allergyList: g.getSource(),
             };
           })
@@ -877,8 +877,8 @@ class NurseWorkbench extends Component {
                           ? " activeDate CurrentDate"
                           : " activeDate"
                         : _currDate === moment().format("YYYYMMDD")
-                          ? " CurrentDate"
-                          : ""
+                        ? " CurrentDate"
+                        : ""
                     }
                     onClick={this.onSelectedDateHandler.bind(this)}
                   >
@@ -901,10 +901,10 @@ class NurseWorkbench extends Component {
       localStorage.getItem("workbenchDateRange") !== null
         ? JSON.parse(localStorage.getItem("workbenchDateRange"))
         : {
-          fromDate: this.state.fromDate,
-          toDate: this.state.toDate,
-          activeDateHeader: this.state.fromDate,
-        };
+            fromDate: this.state.fromDate,
+            toDate: this.state.toDate,
+            activeDateHeader: this.state.fromDate,
+          };
 
     let inputObj = {
       fromDate: moment(dateRange.fromDate).format("YYYY-MM-DD"),
@@ -921,7 +921,6 @@ class NurseWorkbench extends Component {
     if (this.state.shift_id !== null) {
       inputObj.shift_id = this.state.shift_id;
     }
-
 
     algaehApiCall({
       uri: "/nurseWorkBench/getNurseMyDay",
@@ -1029,14 +1028,12 @@ class NurseWorkbench extends Component {
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
-        this.props.department_vitals.length === 0
+      this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
 
     const patientListArray =
-      this.state.searchText === ""
-        ? this.state.data
-        : this.state.filterList;
+      this.state.searchText === "" ? this.state.data : this.state.filterList;
     return (
       <div className="nurse_workbench">
         <div className="row">
@@ -1169,21 +1166,18 @@ class NurseWorkbench extends Component {
                   />
                 </div>
 
-
-
                 <div className="col-12">
                   <span className="countNo">
                     Total Patient:
-                    <b>
-                      {patientListArray.length}
-                    </b>
+                    <b>{patientListArray.length}</b>
                   </span>
                 </div>
               </div>
 
               <div className="portlet-body">
                 <div className="opPatientList">
-                  <ul className="opList"
+                  <ul
+                    className="opList"
                     ref={(c) => {
                       this.itemRef = c;
                     }}
@@ -1233,11 +1227,11 @@ class NurseWorkbench extends Component {
                         </li>
                       ))
                     ) : (
-                        <div className="col noPatientDiv">
-                          {/* <h4>Relax</h4> */}
-                          <p>No Patients Available</p>
-                        </div>
-                      )}
+                      <div className="col noPatientDiv">
+                        {/* <h4>Relax</h4> */}
+                        <p>No Patients Available</p>
+                      </div>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -1256,8 +1250,8 @@ class NurseWorkbench extends Component {
                           {this.state.patient_code !== undefined ? (
                             <span>{this.state.patient_code}</span>
                           ) : (
-                              "----------"
-                            )}
+                            "----------"
+                          )}
                         </h6>
                       </div>
 
@@ -1268,8 +1262,8 @@ class NurseWorkbench extends Component {
                           {this.state.patient_name !== undefined ? (
                             <span>{this.state.patient_name}</span>
                           ) : (
-                              "----------"
-                            )}
+                            "----------"
+                          )}
                         </h6>
                       </div>
 
@@ -1318,22 +1312,22 @@ class NurseWorkbench extends Component {
                             item.hims_d_vitals_header_id === 1
                               ? "col-3"
                               : item.hims_d_vitals_header_id >= 3
-                                ? "col-3 vitalTopFld15"
-                                : item.hims_d_vitals_header_id === 5 ||
-                                  item.hims_d_vitals_header_id === 6
-                                  ? "col-3 vitalTopFld20"
-                                  : "col-3";
+                              ? "col-3 vitalTopFld15"
+                              : item.hims_d_vitals_header_id === 5 ||
+                                item.hims_d_vitals_header_id === 6
+                              ? "col-3 vitalTopFld20"
+                              : "col-3";
                           const _name = String(item.vitals_name)
                             .replace(/" "/g, "_")
                             .toLowerCase();
                           const _disable = _name === "bmi" ? true : false;
                           const _dependent =
                             item.hims_d_vitals_header_id === 8 ||
-                              item.hims_d_vitals_header_id === 9
+                            item.hims_d_vitals_header_id === 9
                               ? { dependent: "bp_position" }
                               : item.hims_d_vitals_header_id === 4
-                                ? { dependent: "temperature_from" }
-                                : {};
+                              ? { dependent: "temperature_from" }
+                              : {};
                           return (
                             <React.Fragment key={index}>
                               {item.hims_d_vitals_header_id === 4 ? (
@@ -1388,8 +1382,8 @@ class NurseWorkbench extends Component {
                                     item.uom === "C"
                                       ? "°C"
                                       : item.uom === "F"
-                                        ? "°F"
-                                        : item.vital_short_name +
+                                      ? "°F"
+                                      : item.vital_short_name +
                                         " (" +
                                         String(item.uom).trim() +
                                         ")",
@@ -1848,8 +1842,8 @@ class NurseWorkbench extends Component {
                                   ) : data.onset === "O" ? (
                                     <span>Onset Date</span>
                                   ) : (
-                                              ""
-                                            );
+                                    ""
+                                  );
                                 },
                                 editorTemplate: (data) => {
                                   return (
@@ -1929,8 +1923,8 @@ class NurseWorkbench extends Component {
                                   ) : data.severity === "SE" ? (
                                     <span>Severe</span>
                                   ) : (
-                                          ""
-                                        );
+                                    ""
+                                  );
                                 },
                                 editorTemplate: (data) => {
                                   return (
@@ -1991,7 +1985,7 @@ class NurseWorkbench extends Component {
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
                               onDelete: this.deleteAllergy.bind(this),
-                              onEdit: (row) => { },
+                              onEdit: (row) => {},
                               onDone: this.updatePatientAllergy.bind(this),
                             }}
                           />
@@ -2048,7 +2042,7 @@ class NurseWorkbench extends Component {
                                 {
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Order Investigation",
+                                      forceLabel: "Order Services",
                                     }}
                                   />
                                 }
@@ -2146,15 +2140,15 @@ class NurseWorkbench extends Component {
                 </AlgaehSecurityComponent>
               </>
             ) : (
-                <div className="portlet portlet-bordered margin-bottom-15">
-                  <div className="portlet-body noPatientCntr">
-                    <p>
-                      <i className="fas fa-notes-medical"></i>
-                    </p>
-                    <p> Please select a patient to continue</p>
-                  </div>
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-body noPatientCntr">
+                  <p>
+                    <i className="fas fa-notes-medical"></i>
+                  </p>
+                  <p> Please select a patient to continue</p>
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
         <div className="hptl-phase1-footer">
@@ -2204,7 +2198,6 @@ function mapDispatchToProps(dispatch) {
       getPatientProfile: AlgaehActions,
       getLocation: AlgaehActions,
       getShifts: AlgaehActions,
-
     },
     dispatch
   );

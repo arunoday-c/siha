@@ -5,6 +5,7 @@ import Roles from "./Roles/Roles";
 import Groups from "./Groups/Groups";
 import ScreenAssignment from "./ScreenAssignment/ScreenAssignment";
 import AuditLog from "./AuditLog/AuditLog";
+import EnableAudit from "./EnableAudit";
 // import ComponentElementAssignment from "./ComponentElementAssignment/ComponentElementAssignment";
 // import ApiConfig from "./APIConfig";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -23,7 +24,7 @@ class AdminSetup extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
@@ -37,57 +38,68 @@ class AdminSetup extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Group"
+                    forceLabel: "Group",
                   }}
                 />
               ),
               children: <Groups />,
-              componentCode: "AD_USER_GROUP"
+              componentCode: "AD_USER_GROUP",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Roles"
+                    forceLabel: "Roles",
                   }}
                 />
               ),
               children: <Roles />,
-              componentCode: "AD_USER_ROLES"
+              componentCode: "AD_USER_ROLES",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Login Users"
+                    forceLabel: "Login Users",
                   }}
                 />
               ),
               children: <LoginUsers />,
-              componentCode: "AD_USER_LOGIN"
+              componentCode: "AD_USER_LOGIN",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Screen Assignment"
+                    forceLabel: "Screen Assignment",
                   }}
                 />
               ),
               children: <ScreenAssignment />,
-              componentCode: "AD_SCR_ASSI"
+              componentCode: "AD_SCR_ASSI",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Audit Log"
+                    forceLabel: "Enable Auditing",
+                  }}
+                />
+              ),
+              children: <EnableAudit />,
+              // componentCode: "AD_AUD_LOG"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Audit Log",
                   }}
                 />
               ),
               children: <AuditLog />,
-              componentCode: "AD_AUD_LOG"
-            }
+              componentCode: "AD_AUD_LOG",
+            },
           ]}
           renderClass="adminSettingsSection"
         />

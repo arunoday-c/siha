@@ -736,7 +736,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "invitemmaster",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id,IM.item_description,IM.category_id, IM.sales_uom_id,IM.service_id, \
+          "select SQL_CALC_FOUND_ROWS IM.item_code, IM.hims_d_inventory_item_master_id,IM.item_description,IM.category_id, IM.sales_uom_id,IM.service_id, \
           IM.group_id,IC.category_desc,IG.group_description, PU.uom_description, IL.inventory_location_id, \
           IL.batchno,IL.expirydt,IL.barcode,IL.qtyhand,IL.avgcost,IL.sales_uom,IL.grnno  from hims_d_inventory_item_master IM, \
           hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \
@@ -872,7 +872,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "procedureExistingItem",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id,IM.item_description,IM.category_id, IM.sales_uom_id, IM.service_id, P.qty, IM.group_id,IC.category_desc,IG.group_description, \
+          "select SQL_CALC_FOUND_ROWS IM.item_code, IM.hims_d_inventory_item_master_id,IM.item_description,IM.category_id, \
+          IM.sales_uom_id, IM.service_id, P.qty, IM.group_id,IC.category_desc,IG.group_description, \
           PU.uom_description, IL.inventory_location_id, IL.batchno, IL.expirydt, IL.barcode, IL.qtyhand, \
           IL.avgcost,IL.sales_uom,IL.grnno  from hims_d_procedure_detail P, hims_d_inventory_item_master IM, \
           hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \

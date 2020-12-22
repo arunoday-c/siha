@@ -28,6 +28,7 @@ export default function EmployeeFilter(props) {
     hims_d_employee_id: null,
     emp_name: null,
     inputChanged: false,
+    hospital_name: userToken.hospital_name,
   };
   const [inputs, setInputs] = useState({ ...baseInput });
 
@@ -136,11 +137,18 @@ export default function EmployeeFilter(props) {
   }
 
   function dropDownHandler(e) {
-    const { name, value } = e;
+    const { name, value, selected } = e;
+    const hosName =
+      name === "hims_d_hospital_id"
+        ? {
+            hospital_name: selected.hospital_name,
+          }
+        : {};
     setInputs((state) => ({
       ...state,
       [name]: value,
       inputChanged: true,
+      ...hosName,
     }));
   }
 
@@ -233,6 +241,7 @@ export default function EmployeeFilter(props) {
   }
 
   function loadFunc() {
+    console.log("inputs==", inputs);
     if (inputs.hospital_id) {
       props.loadFunc(inputs);
     } else {

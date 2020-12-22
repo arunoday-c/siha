@@ -70,6 +70,10 @@ class DeliveryNoteEntry extends Component {
       getCtrlCode(this, queryParams.get("delivery_note_number"));
     }
 
+    if (queryParams.get("purchase_number")) {
+      getPurchaseDetails(this, { purchase_number: queryParams.get("purchase_number") });
+    }
+
     if (
       this.props.purchase_number !== undefined &&
       this.props.purchase_number.length !== 0
@@ -156,17 +160,17 @@ class DeliveryNoteEntry extends Component {
           printArea={
             this.state.hims_f_inventory_consumption_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateDeliveryNoteReceipt(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateDeliveryNoteReceipt(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
