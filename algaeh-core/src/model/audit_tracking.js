@@ -30,7 +30,11 @@ export function generateTrigger(req, res, next) {
     const { trigger_action, table_name, friendly_name } = req.query;
     _mysql
       .executeQuery({
-        query: `select TABLE_NAME,COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME in (?) and TABLE_SCHEMA=?`,
+        query: `select C.TABLE_NAME,C.COLUMN_NAME,C.DATA_TYPE,C.COLUMN_COMMENT,CU.REFERENCED_TABLE_NAME,CU.REFERENCED_COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS as C left join INFORMATION_SCHEMA.KEY_COLUMN_USAGE  as CU
+      on C.COLUMN_NAME= CU.COLUMN_NAME and CU.TABLE_NAME = C.TABLE_NAME and CU.CONSTRAINT_SCHEMA=C.TABLE_SCHEMA
+      where
+      C.TABLE_NAME in (?)
+      and C.TABLE_SCHEMA=?;`,
         values: [table_name, keyPath.default.mysqlDb.database],
       })
       .then((result) => {
@@ -55,7 +59,13 @@ export function generateTrigger(req, res, next) {
                 CREATE TRIGGER ${table_name_key}_${triggerExtension} AFTER UPDATE ON ${table_name_key}
                     FOR EACH ROW BEGIN`;
             details.forEach((item) => {
-              const { COLUMN_NAME } = item;
+              const {
+                COLUMN_NAME,
+                DATA_TYPE,
+                COLUMN_COMMENT,
+                REFERENCED_TABLE_NAME,
+                REFERENCED_COLUMN_NAME,
+              } = item;
               if (
                 COLUMN_NAME === "created_by" ||
                 COLUMN_NAME === "created_date" ||
@@ -64,13 +74,50 @@ export function generateTrigger(req, res, next) {
               ) {
                 return;
               }
+              let dataValue = `${null},${null}`; //`OLD.${COLUMN_NAME},NEW.${COLUMN_NAME}`;
+              let refTable = null;
+              if (REFERENCED_TABLE_NAME) {
+                refTable = `'${REFERENCED_TABLE_NAME}'`;
+              }
+              const CMD_SPLIT = COLUMN_COMMENT.split("~");
+              if (DATA_TYPE === "enum" && COLUMN_COMMENT !== "") {
+                let _splitCommand;
+                if (CMD_SPLIT.length > 1) {
+                  _splitCommand = CMD_SPLIT[1]
+                    .replace(/\\n/g, "@%&")
+                    .replace(/[\{\}\[\]\\]/gi, "")
+                    .replace(/\@%&/gi, "\n");
+                } else {
+                  _splitCommand = CMD_SPLIT[0]
+                    .replace(/\\n/g, "@%&")
+                    .replace(/[\{\}\[\]\\]/gi, "")
+                    .replace(/\@%&/gi, "\n");
+                }
 
+                const arrayContent = _splitCommand.split(/[\n,]+/);
+                let case_statement = ``;
+                for (let i = 0; i < arrayContent.length; i++) {
+                  const _arr_context = arrayContent[i].split(/[=-]+/);
+                  case_statement += ` WHEN '${String(_arr_context[0])
+                    .trim()
+                    .replace(/[”“]/g, "")}' THEN '${String(_arr_context[1])
+                    .trim()
+                    .replace(/[”“]/g, "")}' `;
+                }
+                // case_statement +` END)`;
+                dataValue = `(CASE OLD.${COLUMN_NAME} ${case_statement} END),(CASE NEW.${COLUMN_NAME} ${case_statement} END)`;
+              }
+              let column_desc = COLUMN_NAME.replace(/\_/g, " ");
+              if (COLUMN_COMMENT !== "") {
+                column_desc = CMD_SPLIT[0];
+              }
               query = `${query}
               IF NEW.${COLUMN_NAME} <> OLD.${COLUMN_NAME}
               THEN
-                INSERT INTO algaeh_audit_log(user_id,action,table_name,column_name,table_frendly_name,old_row,new_row,branch_id,old_update_by,old_update_date)
+                INSERT INTO algaeh_audit_log(user_id,action,table_name,column_name,table_frendly_name,old_row,new_row,branch_id,
+                  old_update_by,old_update_date,old_row_desc,new_row_desc,reference_table,field_desc)
                 VALUES(NEW.updated_by,'${trigger_action}','${table_name_key}','${COLUMN_NAME}','${friendly_name}',OLD.${COLUMN_NAME},NEW.${COLUMN_NAME},NEW.hospital_id,OLD.updated_by,
-               OLD.updated_date);
+               OLD.updated_date,${dataValue},${refTable},'${column_desc}');
               END IF;
                 `;
             });
@@ -83,7 +130,7 @@ export function generateTrigger(req, res, next) {
         _mysql
           .executeQuery({
             query,
-            printQuery: false,
+            printQuery: true,
           })
           .then((output) => {
             _mysql.releaseConnection();
@@ -137,7 +184,10 @@ export function getAuditList(req, res, next) {
       .executeQuery({
         query: `SELECT AL.user_id, AL.action,AL.table_name,AL.column_name,AL.table_frendly_name,
           AL.old_row,AL.new_row,AL.date_time_stamp,AL.branch_id,
-          AU.user_display_name,AU.username,AU.locked,AU.user_type,AU.user_status
+          AU.user_display_name,AU.username,AU.locked,
+         case AU.user_type when 'SU' then 'SUPER USER' when 'AD' then 'ADMIN'
+        when 'D' then 'DOCTOR' when 'N' then 'NURSE' when 'C' then 'CASHIER' when 'L' then 'LAB TECHNICIAN' when 'HR'
+        then 'HR' when 'PM' then 'PAYROLL MANAGER' else 'OTHERS' end user_type ,AU.user_status
            FROM algaeh_audit_log as AL left join  algaeh_d_app_user as AU 
           on AU.algaeh_d_app_user_id=AL.user_id
           where date(date_time_stamp) between date(?) and date(?) and AL.branch_id=? and AU.username <>'algaeh' ${str}

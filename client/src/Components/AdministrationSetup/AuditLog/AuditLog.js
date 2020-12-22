@@ -298,23 +298,6 @@ export default class AuditLog extends Component {
                               {
                                 fieldName: "user_type",
                                 label: "User Type",
-                                displayTemplate: (row) => {
-                                  return row.user_type === "AD"
-                                    ? "ADMIN"
-                                    : row.user_type === "D"
-                                    ? "Doctor"
-                                    : row.user_type === "C"
-                                    ? "Cashier"
-                                    : row.user_type === "L"
-                                    ? "Lab Technician"
-                                    : row.user_type === "O"
-                                    ? "Others"
-                                    : row.user_type === "HR"
-                                    ? "HR"
-                                    : row.user_type === "PM"
-                                    ? "Payroll Manager"
-                                    : "";
-                                },
                               },
                             ]}
                             data={item.details}
