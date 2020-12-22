@@ -110,6 +110,35 @@ export default function OrderProcedureItemsEvent() {
                     title: "Saved successfully . .",
                     type: "success"
                   });
+                  $this.setState(
+                    {
+                      inventory_location_id: null,
+                      existing_new: "E",
+
+                      item_id: null,
+                      item_category_id: null,
+                      item_group_id: null,
+                      uom_id: null,
+                      batchno: null,
+                      expirydt: null,
+                      barcode: null,
+                      grn_no: null,
+                      qtyhand: null,
+                      unit_cost: null,
+
+                      Procedure_items: [],
+                      location_name: null,
+                      location_type: null,
+                      procedure_id: null,
+                      location_id: null,
+                      patient_id: null,
+                      episode_id: null,
+                      quantity: 0,
+                    },
+                    () => {
+                      $this.props.onClose && $this.props.onClose();
+                    }
+                  );
                 }
               },
               onFailure: err => {

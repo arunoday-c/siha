@@ -256,6 +256,19 @@ class OrderProcedureItems extends Component {
                           </h6>
                         </div>
 
+                        <div className="col-2">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Qty in Hand",
+                            }}
+                          />
+                          <h6>
+                            {this.state.qtyhand
+                              ? this.state.qtyhand
+                              : "--------"}
+                          </h6>
+                        </div>
+
                         <AlagehFormGroup
                           div={{ className: "col-2 form-group" }}
                           label={{
