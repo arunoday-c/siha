@@ -50,7 +50,7 @@
                   <tbody>
                     <tr>
                         <td width="100%">
-                            <p class="insImg" ><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/></p>
+                            <p class="insImg" style="height: 87px;" ><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/></p>
                         </td>
                     </tr>
                   </tbody>
@@ -137,18 +137,16 @@
                         <td>: {{header.how}}</td>
                     </tr>
                      <tr>
-                        <td>When</td>
-                        <td>: {{header.when}}</td>
+                        <td>When: {{header.when}}</td>
+                        <td>Where: {{header.where}}</td>
                     </tr>
-                    <tr>
-                        <td>Where</td>
-                        <td>: {{header.where}}</td>
-                    </tr>               
+                                
                     </tbody>
             </table>
             </section>
 
             <section class=" secondSectionRight">
+                <br/>
                 <img class="dcaf_Dental_chart" src="{{imageSource 'images/dcaf_Dental_chart.png'}}" />
             </section>
 
@@ -170,14 +168,14 @@
                         <tr>
                             <td style="width: 100px;">{{service_code}}</td>
                             <td class="txtFld">{{service_name}}</td>
-                            <td style="width:50px;">{{teeth_number}}</td>
+                            <td class="numberFld"  style="width:50px;">{{teeth_number}}</td>
                             <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
                         </tr>
                     {{/each}}
                      <tr>
-                            <td colspan="2"></td>
-                            <td><b>Total</b></td>
-                            <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
+                           
+                            <td  class="numberFld"  colspan="3"><b>Total</b></td>
+                            <td class="numberFld" style="width: 80px;">{{sum_service_net_amout}}</td>
                         </tr>
                     </tbody>
                 </table>
