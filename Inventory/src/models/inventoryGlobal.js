@@ -232,46 +232,6 @@ export default {
       next(e);
     }
   },
-  downloadInvStockDetails: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    try {
-      let intValues = [];
-      let strAppend = "";
-      if (req.query.item_id != null) {
-        strAppend += " and item_id=? ";
-        intValues.push(req.query.item_id);
-      }
-      if (req.query.inventory_location_id != null) {
-        strAppend += " and inventory_location_id=? ";
-        intValues.push(req.query.inventory_location_id);
-      }
-      _mysql
-        .executeQuery({
-          query:
-            `SELECT IM.item_description as Item, ILOC.location_description as Location, batchno as 'Batch Number', expirydt as 'Expiry Date',  qtyhand as 'Quantity' from 
-            hims_m_inventory_item_location IL,hims_d_inventory_item_master IM, hims_d_inventory_location ILOC 
-            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0 and 
-            item_id = IM.hims_d_inventory_item_master_id and inventory_location_id = ILOC.hims_d_inventory_location_id and
-            IL.record_status='A'` +
-            strAppend +
-            "order by date(expirydt)",
-          values: intValues,
-          printQuery: false,
-        })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch((error) => {
-          _mysql.releaseConnection();
-          next(error);
-        });
-    } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
-    }
-  },
 
   updateInventoryItemMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -494,6 +454,38 @@ export default {
       next(e);
     }
   },
+
+  getConsumptionSelectedMonth: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT sum(transaction_qty) as transaction_qty FROM hims_f_inventory_trans_history \
+            where date(transaction_date) between date(?) and date(?) and item_code_id=? and from_location_id=?;",
+          values: [
+            req.query.from_date,
+            req.query.to_date,
+            req.query.item_code_id,
+            req.query.from_location_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   downloadInvStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -515,6 +507,7 @@ export default {
             IM.item_description AS 'Item Name',
             ILOC.location_description as 'Location',
             COALESCE(ILR.reorder_qty, IM.reorder_qty, 0) AS 'Reorder Quantity',
+            vendor_batchno as 'Vendor Batch No',
             batchno AS 'Batch Number',
             expirydt AS 'Expiry Date',
             SUM(qtyhand) AS 'Quantity At Hand',
@@ -551,22 +544,31 @@ export default {
       next(e);
     }
   },
-
-  getConsumptionSelectedMonth: (req, res, next) => {
+  downloadInvStockDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      let intValues = [];
+      let strAppend = "";
+      if (req.query.item_id != null) {
+        strAppend += " and item_id=? ";
+        intValues.push(req.query.item_id);
+      }
+      if (req.query.inventory_location_id != null) {
+        strAppend += " and inventory_location_id=? ";
+        intValues.push(req.query.inventory_location_id);
+      }
       _mysql
         .executeQuery({
           query:
-            "SELECT sum(transaction_qty) as transaction_qty FROM hims_f_inventory_trans_history \
-            where date(transaction_date) between date(?) and date(?) and item_code_id=? and from_location_id=?;",
-          values: [
-            req.query.from_date,
-            req.query.to_date,
-            req.query.item_code_id,
-            req.query.from_location_id,
-          ],
-          printQuery: true,
+            `SELECT IM.item_description as Item, ILOC.location_description as Location, vendor_batchno as 'Vendor Batch No', batchno as 'Batch Number', expirydt as 'Expiry Date',  qtyhand as 'Quantity' from 
+            hims_m_inventory_item_location IL,hims_d_inventory_item_master IM, hims_d_inventory_location ILOC 
+            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0 and 
+            item_id = IM.hims_d_inventory_item_master_id and inventory_location_id = ILOC.hims_d_inventory_location_id and
+            IL.record_status='A'` +
+            strAppend +
+            "order by date(expirydt)",
+          values: intValues,
+          printQuery: false,
         })
         .then((result) => {
           _mysql.releaseConnection();

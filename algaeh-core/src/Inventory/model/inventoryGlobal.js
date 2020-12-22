@@ -37,7 +37,7 @@ let getUomLocationStock = (req, res, next) => {
           }
           req.records = {
             uomResult: result[0],
-            locationResult: result[1]
+            locationResult: result[1],
           };
           next();
         }
@@ -113,7 +113,7 @@ let getItemLocationStock = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
+        "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status,batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
         avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom \
         from hims_m_inventory_item_location where record_status='A'  and item_id=? and inventory_location_id=? \
         and qtyhand>0  order by expirydt",
@@ -189,7 +189,7 @@ let getUserLocationPermission = (req, res, next) => {
 let getItemandLocationStock = (req, res, next) => {
   let selectWhere = {
     item_id: "ALL",
-    inventory_location_id: "ALL"
+    inventory_location_id: "ALL",
   };
 
   try {
@@ -232,5 +232,5 @@ export default {
   getItemMoment,
   getItemLocationStock,
   getUserLocationPermission,
-  getItemandLocationStock
+  getItemandLocationStock,
 };
