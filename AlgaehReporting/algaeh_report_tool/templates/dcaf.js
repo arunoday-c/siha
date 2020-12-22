@@ -1,5 +1,11 @@
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
+  const {
+    decimal_places,
+    symbol_position,
+    currency_symbol,
+  } = options.args.crypto;
+
   return new Promise(function (resolve, reject) {
     try {
       resolve({
@@ -10,6 +16,18 @@ const executePDF = function executePDFMethod(options) {
         sum_service_net_amout: _.sumBy(options.result[3], (s) =>
           parseFloat(s.service_net_amout)
         ),
+        decimalOnly: {
+          decimal_places,
+          addSymbol: false,
+          symbol_position,
+          currency_symbol,
+        },
+        currencyOnly: {
+          decimal_places,
+          addSymbol: true,
+          symbol_position,
+          currency_symbol,
+        },
       });
     } catch (e) {
       reject(e);
