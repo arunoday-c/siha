@@ -57,6 +57,10 @@ const {
   UpdateOpeningBalanceLoan,
   updateMisEarnDedcToEmployees,
   downloadEmployeeMaster,
+  getEmployeePersonalDetails,
+  getEmployeesDetails,
+  getEmployeeOfficialDetails,
+  getAllEmployeesForDropDown,
 } = empModels;
 
 export default () => {
@@ -97,8 +101,44 @@ export default () => {
       records: req.records,
     });
   });
+  api.get(
+    "/getEmployeePersonalDetails",
+    getEmployeePersonalDetails,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/getEmployeeOfficialDetails",
+    getEmployeeOfficialDetails,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/getAllEmployeesForDropDown",
+    getAllEmployeesForDropDown,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.get("/get", getEmployee, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.get("/getEmployeesDetails", getEmployeesDetails, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

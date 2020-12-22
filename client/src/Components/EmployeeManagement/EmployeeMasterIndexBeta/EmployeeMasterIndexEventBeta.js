@@ -50,6 +50,7 @@ const getEmployeeDetails = ($this) => {
 };
 
 const EditEmployeeMaster = ($this, row) => {
+  debugger;
   row.deptDetails = [];
   row.contributioncomponents = [];
   row.deductioncomponents = [];

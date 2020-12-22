@@ -1,217 +1,260 @@
-import React, { Component } from "react";
+import React, { useState, useContext } from "react";
 import "./PersonalDetails.scss";
-import { AlgaehActions } from "../../../../../actions/algaehActions";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import {
-  texthandle,
-  countryStatehandle,
-  datehandle,
-  isDoctorChange,
-  sameAsPresent,
-} from "./PersonalDetailsEvents.js";
+import moment from "moment";
+// import { AlgaehActions } from "../../../../../actions/algaehActions";
+// import { withRouter } from "react-router-dom";
+// import { connect } from "react-redux";
+// import { bindActionCreators } from "redux";
+// import {
+//   texthandle,
+//   isDoctorChange,
+//   sameAsPresent,
+// } from "./PersonalDetailsEvents.js";
 // import MyContext from "../../../../../utils/MyContext.js";
-import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
-  AlgaehLabel,
-  AlagehAutoComplete,
-} from "../../../../Wrapper/algaehWrapper";
+// import {
+//   AlgaehDateHandler,
+//   // AlagehFormGroup,
+//   AlgaehLabel,
+// } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
-import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
-import { getCookie } from "../../../../../utils/algaehApiCall";
-import { MainContext } from "algaeh-react-components";
-import { algaehApiCall } from "../../../../../utils/algaehApiCall";
-import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
+// import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
+// import { getCookie } from "../../../../../utils/algaehApiCall";
+import {
+  MainContext,
+  AlgaehMessagePop,
+  // persistStorageOnRemove,
+  AlgaehAutoComplete,
+  AlgaehDateHandler,
+  AlgaehFormGroup,
+  AlgaehLabel,
+} from "algaeh-react-components";
+// import { algaehApiCall } from "../../../../../utils/algaehApiCall";
+// import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 import { RawSecurityElement } from "algaeh-react-components";
 import MaskedInput from "react-maskedinput";
+import { useForm, Controller } from "react-hook-form";
+import { newAlgaehApi } from "../../../../../hooks";
+import { useQuery } from "react-query";
 // import Enumerable from "linq";
+const initCall = async (key, { fields, tableName, keyFieldName }) => {
+  const result = await newAlgaehApi({
+    uri: "/init/",
+    method: "GET",
+    data: { fields: fields, tableName: tableName, keyFieldName: keyFieldName },
+  });
+  return result?.data?.records;
+};
+const getRelegion = async (key) => {
+  const result = await newAlgaehApi({
+    uri: "/masters/get/relegion",
+    method: "GET",
+  });
+  return result?.data?.records;
+};
+const getNationalities = async (key) => {
+  const result = await newAlgaehApi({
+    uri: "/masters/get/nationality",
+    method: "GET",
+  });
+  return result?.data?.records;
+};
+const getIDTypes = async (key) => {
+  const result = await newAlgaehApi({
+    uri: "/identity/get",
+    module: "masterSettings",
+    method: "GET",
+    data: { identity_status: "A" },
+  });
+  return result?.data?.records;
+};
+const getPersonalDetails = async (key, { employee_id }) => {
+  const result = await newAlgaehApi({
+    uri: "/employee/getEmployeePersonalDetails",
+    module: "hrManagement",
+    method: "GET",
+    data: { employee_id: employee_id },
+  });
+  return result?.data?.records;
+};
+export default function PersonalDetails({ EmpMasterIOputs }) {
+  const {
+    userToken,
 
-class PersonalDetails extends Component {
-  constructor(props) {
-    super(props);
+    countries = [],
+  } = useContext(MainContext);
 
-    this.state = {
-      samechecked: "N",
-      selectedLang: getCookie("Language"),
-      HIMS_Active: false,
-      FldEditable: true,
-      identity_no: "",
-      identity_card: "",
-      masked_identity: "",
-    };
-  }
+  const [samechecked, setsamechecked] = useState("N");
+  const [HIMS_Active, setHIMS_Active] = useState(false);
+  const [FldEditable, setFldEditable] = useState(true);
+  const [identity_no, setIdentity_no] = useState("");
+  const [isdoctor, setIsdoctor] = useState("");
+  const [masked_identity, setMasked_identity] = useState("");
+  const [presentCountry, setPresentCountry] = useState([]);
+  const [presentCities, setPresentCities] = useState([]);
+  const [permanentCountry, setPermanentCountry] = useState([]);
+  const [permanentCities, setPermanentCities] = useState([]);
+  console.log("FldEditable", FldEditable);
+  const { control, errors, reset, setValue, getValues } = useForm({
+    defaultValues: {},
+  });
+  const { data: presonalDetails } = useQuery(
+    ["personal-details", { employee_id: EmpMasterIOputs }],
+    getPersonalDetails,
+    {
+      onSuccess: (data) => {
+        RawSecurityElement({ elementCode: "FLD_EDT_PER" }).then((result) => {
+          if (result === "hide") {
+            setFldEditable(false);
+          }
+        });
+        const HIMS_Active =
+          userToken.product_type === "HIMS_ERP" ||
+          userToken.product_type === "HIMS_CLINICAL" ||
+          userToken.product_type === "NO_FINANCE"
+            ? true
+            : false;
+        setHIMS_Active(HIMS_Active);
+        const presentCountry = countries.filter((country) => {
+          return country.hims_d_country_id === data[0].present_country_id;
+        });
 
-  initCall() {
-    let that = this;
-    algaehApiCall({
-      uri: "/init/",
-      method: "GET",
-      data: {
+        setPresentCountry(presentCountry[0]);
+
+        const cities = presentCountry[0].states.filter((states) => {
+          return states.cities.length !== 0;
+        });
+        setPresentCities(cities[0].cities);
+        const permanentCountry = countries.filter((country) => {
+          return country.hims_d_country_id === data[0].permanent_country_id;
+        });
+
+        setPermanentCountry(permanentCountry[0]);
+
+        const permanentCities = permanentCountry[0].states.filter((states) => {
+          return states.cities.length !== 0;
+        });
+
+        setPermanentCities(permanentCities[0].cities);
+        const rest = {
+          ...data[0],
+          date_of_birth: moment(data[0].date_of_birth, "YYYY-MM-DD"),
+        };
+        reset(rest);
+        setIdentity_no(data[0].identity_no);
+        setIsdoctor(data[0].isdoctor);
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+      },
+    }
+  );
+  const { data: employee_code_placeHolder } = useQuery(
+    [
+      "employee_code",
+      {
         fields: "employee_code",
         tableName: "hims_d_employee",
         keyFieldName: "hims_d_employee_id",
       },
-      onSuccess: (response) => {
-        if (response.data.success === true) {
-          const placeHolder =
-            response.data.records.length > 0 ? response.data.records[0] : {};
-          that.setState({
-            employee_code_placeHolder: placeHolder.employee_code,
-          });
-        }
-      },
-    });
-  }
-  static contextType = MainContext;
-  componentDidMount() {
-    this.initCall();
-
-    AlgaehLoader({ show: true });
-    const userToken = this.context.userToken;
-    const HIMS_Active =
-      userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL" ||
-      userToken.product_type === "NO_FINANCE"
-        ? true
-        : false;
-
-    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-
-    InputOutput.HIMS_Active = HIMS_Active;
-    this.setState({ ...this.state, ...InputOutput });
-    if (this.props.titles === undefined || this.props.titles.length === 0) {
-      this.props.getTitles({
-        uri: "/masters/get/title",
-        method: "GET",
-        redux: {
-          type: "TITLE_GET_DATA",
-          mappingName: "titles",
-        },
-      });
-    }
-
-    if (
-      this.props.countries === undefined ||
-      this.props.countries.length === 0
-    ) {
-      this.props.getCountries({
-        uri: "/masters/get/countryStateCity",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "countries",
-        },
-      });
-    }
-
-    if (
-      this.props.relegions === undefined ||
-      this.props.relegions.length === 0
-    ) {
-      this.props.getRelegion({
-        uri: "/masters/get/relegion",
-        method: "GET",
-        redux: {
-          type: "RELGE_GET_DATA",
-          mappingName: "relegions",
-        },
-      });
-    }
-
-    if (
-      this.props.nationalities === undefined ||
-      this.props.nationalities.length === 0
-    ) {
-      this.props.getNationalities({
-        uri: "/masters/get/nationality",
-        method: "GET",
-        redux: {
-          type: "NAT_GET_DATA",
-          mappingName: "nationalities",
-        },
-      });
-    }
-    if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
-      this.props.getIDTypes({
-        uri: "/identity/get",
-        module: "masterSettings",
-        data: { identity_status: "A" },
-        method: "GET",
-        redux: {
-          type: "IDTYPE_GET_DATA",
-          mappingName: "idtypes",
-        },
-        afterSuccess: (data) => {
-          let maskedIdentity = data.find((item) => {
-            return (
-              item.hims_d_identity_document_id === InputOutput.identity_type_id
-            );
-          });
-
-          this.setState({
-            masked_identity: maskedIdentity.masked_identity,
-          });
-        },
-      });
-    } else {
-      let maskedIdentity = this.props.idtypes.find((item) => {
+    ],
+    initCall
+  );
+  const { data: relegions } = useQuery("employee-religion", getRelegion, {});
+  const { data: nationalities } = useQuery(
+    "employee_nationalities",
+    getNationalities
+  );
+  const { data: idtypes } = useQuery("employee_idtypes", getIDTypes, {
+    enabled: !!presonalDetails,
+    initialStale: true,
+    onSuccess: (data) => {
+      let maskedIdentity = data.find((item) => {
         return (
-          item.hims_d_identity_document_id === InputOutput.identity_type_id
+          item.hims_d_identity_document_id ===
+          presonalDetails[0].identity_type_id
         );
       });
 
-      this.setState({
-        masked_identity: maskedIdentity?.masked_identity,
+      setMasked_identity(maskedIdentity.masked_identity);
+    },
+    onError: (err) => {
+      AlgaehMessagePop({
+        display: err?.message,
+        type: "error",
       });
+    },
+  });
+
+  const sameAsPresent = (e, data) => {
+    const value = e.target.checked ? "Y" : "N";
+
+    if (value === "Y") {
+      setValue("permanent_address", data.present_address);
+      setValue("permanent_country_id", data.present_country_id);
+      setValue("permanent_state_id", data.present_state_id);
+      setValue("permanent_city_id", data.present_city_id);
+    } else {
+      setValue("permanent_address", presonalDetails[0].permanent_address);
+      setValue("permanent_country_id", presonalDetails[0].permanent_country_id);
+      setValue("permanent_state_id", presonalDetails[0].permanent_state_id);
+      setValue("permanent_city_id", presonalDetails[0].permanent_city_id);
     }
+    setsamechecked(value);
+  };
 
-    setTimeout(() => {
-      AlgaehLoader({ show: false });
-    }, 2000);
-
-    RawSecurityElement({ elementCode: "FLD_EDT_PER" }).then((result) => {
-      if (result === "hide") {
-        this.setState({ FldEditable: false });
-      }
-    });
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
-    // this.setState(, () => {});
-  }
-
-  imageDetails(type) {
-    this.setState({ [type]: this[type] });
-
-    this.props.EmpMasterIOputs.updateEmployeeTabs({
-      [type]: this[type],
-    });
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        {/* <MyContext.Consumer>
-          {context => ( */}
-        <div
-          className="hptl-phase1-add-employee-form popRightDiv"
-          data-validate="empPersonal"
-        >
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="row">
-                <div
-                  className="col-lg-10 col-md-10 col-sm-12primary-details"
-                  style={{ height: "70vh" }}
-                >
-                  <h5>
-                    <span>Basic Info.</span>
-                  </h5>
-                  <div className="row paddin-bottom-5">
-                    <AlagehFormGroup
+  return (
+    <>
+      <div
+        className="hptl-phase1-add-employee-form popRightDiv"
+        data-validate="empPersonal"
+      >
+        <div className="row">
+          <div className="col-lg-12">
+            <div className="row">
+              <div
+                className="col-lg-10 col-md-10 col-sm-12primary-details"
+                style={{ height: "70vh" }}
+              >
+                <h5>
+                  <span>Basic Info.</span>
+                </h5>
+                <div className="row paddin-bottom-5">
+                  <Controller
+                    name="employee_code"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{
+                          className: "col-lg-2 col-md-2 col-sm-12 mandatory",
+                        }}
+                        // error={errors}
+                        label={{
+                          forceLabel: "Emp. Code",
+                          isImp: true,
+                        }}
+                        P
+                        textBox={{
+                          name: "employee_code",
+                          type: "text",
+                          className: "form-control",
+                          ...props,
+                          others: {
+                            tabIndex: "1",
+                            placeholder: employee_code_placeHolder,
+                            // disabled:
+                            //   presonalDetails.hims_d_employee_id === null
+                            //     ? false
+                            //     : FldEditable,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                       div={{
                         className: "col-lg-2 col-md-2 col-sm-12 mandatory",
                       }}
@@ -236,9 +279,32 @@ class PersonalDetails extends Component {
                               : this.state.FldEditable,
                         },
                       }}
-                    />
-
-                    <AlagehFormGroup
+                    /> */}
+                  <Controller
+                    name="full_name"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{
+                          className: "col-lg-3 col-sm-12 mandatory",
+                        }}
+                        // error={errors}
+                        label={{
+                          forceLabel: "Full Name",
+                          isImp: true,
+                        }}
+                        P
+                        textBox={{
+                          name: "full_name",
+                          type: "text",
+                          className: "form-control",
+                          ...props,
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                       div={{ className: "col-lg-3 col-sm-12 mandatory" }}
                       label={{
                         fieldName: "full_name",
@@ -264,9 +330,32 @@ class PersonalDetails extends Component {
                       //     this.setState({ arabic_name: arabic });
                       //   },
                       // }}
-                    />
-
-                    <AlagehFormGroup
+                    /> */}
+                  <Controller
+                    name="arabic_name"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{
+                          className:
+                            "col-lg-3 col-sm-12 arabic-txt-fld mandatory",
+                        }}
+                        error={errors}
+                        label={{
+                          fieldName: "arabic_name",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          name: "arabic_name",
+                          type: "text",
+                          className: "form-control",
+                          ...props,
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                       div={{
                         className:
                           "col-lg-3 col-sm-12 arabic-txt-fld mandatory",
@@ -286,8 +375,46 @@ class PersonalDetails extends Component {
                           tabIndex: "3",
                         },
                       }}
-                    />
-                    <AlgaehDateHandler
+                    /> */}
+                  <Controller
+                    control={control}
+                    name="date_of_birth"
+                    rules={{ required: "Please Select DOB" }}
+                    render={({ onChange, value }) => (
+                      <AlgaehDateHandler
+                        div={{
+                          className: "col-lg-2 col-md-2 col-sm-12 mandatory",
+                          tabIndex: "4",
+                        }}
+                        error={errors}
+                        label={{
+                          fieldName: "date_of_birth",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_birth",
+                          value,
+                        }}
+                        // others={{ disabled }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: (mdate) => {
+                            if (mdate) {
+                              onChange(mdate._d);
+                            } else {
+                              onChange(undefined);
+                            }
+                          },
+                          onClear: () => {
+                            onChange(undefined);
+                          },
+                        }}
+                      />
+                    )}
+                  />
+
+                  {/* <AlgaehDateHandler
                       div={{
                         className: "col-lg-2 col-md-2 col-sm-12 mandatory",
                       }}
@@ -304,8 +431,39 @@ class PersonalDetails extends Component {
                         onChange: datehandle.bind(this, this),
                       }}
                       value={this.state.date_of_birth}
-                    />
-                    <AlagehAutoComplete
+                    /> */}
+                  <Controller
+                    control={control}
+                    name="sex"
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{
+                          className: "col-lg-2 col-md-2 col-sm-12 mandatory",
+                        }}
+                        label={{
+                          fieldName: "gender",
+                          isImp: false,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "sex",
+                          dataSource: {
+                            textField: "name",
+
+                            valueField: "value",
+                            data: variableJson.EMP_FORMAT_GENDER,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                       div={{
                         className: "col-lg-2 col-md-2 col-sm-12 mandatory",
                       }}
@@ -336,13 +494,44 @@ class PersonalDetails extends Component {
                           });
                         },
                       }}
-                    />
-                  </div>
-                  <h5>
-                    <span>Personal Info.</span>
-                  </h5>
-                  <div className="row paddin-bottom-5">
-                    <AlagehAutoComplete
+                    /> */}
+                </div>
+                <h5>
+                  <span>Personal Info.</span>
+                </h5>
+                <div className="row paddin-bottom-5">
+                  <Controller
+                    control={control}
+                    name="nationality"
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{
+                          className:
+                            "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
+                        }}
+                        label={{
+                          forceLabel: "Nationality",
+                          isImp: false,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "nationality",
+                          dataSource: {
+                            textField: "nationality",
+                            valueField: "hims_d_nationality_id",
+                            data: nationalities,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                       div={{
                         className:
                           "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
@@ -370,8 +559,39 @@ class PersonalDetails extends Component {
                           });
                         },
                       }}
-                    />
-                    <AlagehAutoComplete
+                    /> */}
+                  <Controller
+                    control={control}
+                    name="religion_id"
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{
+                          className:
+                            "col-lg-2 col-md-2 col-sm-12 mandatory form-group",
+                        }}
+                        label={{
+                          forceLabel: "Religion",
+                          isImp: false,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "religion_id",
+                          dataSource: {
+                            textField: "religion_name",
+                            valueField: "hims_d_religion_id",
+                            data: relegions,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                       div={{
                         className:
                           "col-lg-2 col-md-2 col-sm-12 mandatory form-group",
@@ -402,8 +622,36 @@ class PersonalDetails extends Component {
                           });
                         },
                       }}
-                    />
-                    <AlagehFormGroup
+                    /> */}
+                  <Controller
+                    name="primary_contact_no"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{
+                          className: "col-lg-2 col-md-2 col-sm-12",
+                        }}
+                        error={errors}
+                        label={{
+                          forceLabel: "Personal Contact No.",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          name: "primary_contact_no",
+                          type: "text",
+                          className: "form-control",
+                          ...props,
+                          others: {
+                            tabIndex: "7",
+                            placeholder: "(+968)123-456-78)",
+                            type: "number",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                       div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
                         forceLabel: "Personal Contact No.",
@@ -423,8 +671,37 @@ class PersonalDetails extends Component {
                           type: "number",
                         },
                       }}
-                    />
-                    <AlagehFormGroup
+                      
+                    /> */}
+                  <Controller
+                    name="secondary_contact_no"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{
+                          className: "col-lg-2 col-md-2 col-sm-12",
+                        }}
+                        error={errors}
+                        label={{
+                          forceLabel: "Work Contact No.",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          name: "secondary_contact_no",
+                          type: "text",
+                          className: "form-control",
+                          ...props,
+                          others: {
+                            tabIndex: "7",
+                            placeholder: "(+968)123-456-78",
+                            type: "number",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                       div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
                         forceLabel: "Work Contact No.",
@@ -444,9 +721,36 @@ class PersonalDetails extends Component {
                           type: "number",
                         },
                       }}
-                    />
-
-                    <AlagehAutoComplete
+                    /> */}
+                  <Controller
+                    control={control}
+                    name="identity_type_id"
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                        label={{
+                          forceLabel: "PRIMARY ID",
+                          isImp: false,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "identity_type_id",
+                          dataSource: {
+                            textField: "identity_document_name",
+                            valueField: "hims_d_identity_document_id",
+                            data: idtypes,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                       div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
                         forceLabel: "Primary ID",
@@ -468,44 +772,70 @@ class PersonalDetails extends Component {
                           });
                         },
                       }}
-                    />
-                    <div className="col-lg-2 col-md-2 col-sm-12 ">
-                      <label className="styleLabel"> ENTER ID NUMBER</label>
+                    /> */}
+                  <div className="col-lg-2 col-md-2 col-sm-12 ">
+                    <label className="styleLabel"> ENTER ID NUMBER</label>
 
-                      {this.state.masked_identity ? (
-                        <div className="ui input txt-fld">
-                          <MaskedInput
-                            mask={this.state.masked_identity}
-                            className="form-control"
-                            placeholder={"eg: " + this.state.masked_identity}
-                            name="identity_no"
-                            value={this.state.identity_no}
-                            guide={false}
-                            id="my-input-id"
-                            onBlur={() => {}}
-                            onChange={texthandle.bind(this, this)}
-                          />
-                        </div>
-                      ) : (
-                        <AlagehFormGroup
-                          // div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
-
-                          textBox={{
-                            className: "txt-fld",
-                            name: "identity_no",
-                            value: this.state.identity_no,
-                            events: {
-                              onChange: texthandle.bind(this, this),
-                            },
-                            others: {
-                              placeholder: "Enter ID Number",
-                            },
-                          }}
+                    {masked_identity ? (
+                      <div className="ui input txt-fld">
+                        <MaskedInput
+                          mask={masked_identity}
+                          className="form-control"
+                          placeholder={"eg: " + masked_identity}
+                          name="identity_no"
+                          value={identity_no}
+                          guide={false}
+                          id="my-input-id"
+                          onBlur={() => {}}
+                          // onChange={texthandle.bind(this, this)}
                         />
-                      )}
-                    </div>
+                      </div>
+                    ) : (
+                      <Controller
+                        name="identity_no"
+                        control={control}
+                        rules={{ required: "Required" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{
+                              className: "col-lg-2 col-md-2 col-sm-12",
+                            }}
+                            error={errors}
+                            label={{
+                              forceLabel: "",
+                              isImp: true,
+                            }}
+                            textBox={{
+                              name: "identity_no",
 
-                    {/* <AlagehFormGroup
+                              className: "txt-fld",
+                              ...props,
+                              others: {
+                                placeholder: "Enter ID Number",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      // <AlagehFormGroup
+                      //   // div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+
+                      //   textBox={{
+                      //     className: "txt-fld",
+                      //     name: "identity_no",
+                      //     value: identity_no,
+                      //     events: {
+                      //       // onChange: texthandle.bind(this, this),
+                      //     },
+                      //     others: {
+                      //       placeholder: "Enter ID Number",
+                      //     },
+                      //   }}
+                      // />
+                    )}
+                  </div>
+
+                  {/* <AlagehFormGroup
                       div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
                         forceLabel: "Number",
@@ -522,8 +852,35 @@ class PersonalDetails extends Component {
                         },
                       }}
                     /> */}
-
-                    <AlagehFormGroup
+                  <Controller
+                    name="email"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{
+                          className: "col-lg-3 col-sm-12",
+                        }}
+                        error={errors}
+                        label={{
+                          forceLabel: "Personal Email Id",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          name: "email",
+                          type: "text",
+                          className: "form-control",
+                          ...props,
+                          others: {
+                            tabIndex: "8",
+                            placeholder: "Enter Personal Email Address",
+                            type: "email",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                       div={{ className: "col-lg-3 col-sm-12  " }}
                       label={{
                         forceLabel: "Personal Email Id",
@@ -543,8 +900,36 @@ class PersonalDetails extends Component {
                           type: "email",
                         },
                       }}
-                    />
-                    <AlagehFormGroup
+                    /> */}
+                  <Controller
+                    name="work_email"
+                    control={control}
+                    rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{
+                          className: "col-lg-3 col-sm-12",
+                        }}
+                        error={errors}
+                        label={{
+                          forceLabel: "Personal Email Id",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          name: "work_email",
+                          type: "text",
+                          className: "form-control",
+                          ...props,
+                          others: {
+                            tabIndex: "8",
+                            placeholder: "Enter Work Email Address",
+                            type: "email",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                       div={{ className: "col-lg-3 col-sm-12  " }}
                       label={{
                         forceLabel: "Work Email Id",
@@ -564,8 +949,36 @@ class PersonalDetails extends Component {
                           type: "email",
                         },
                       }}
-                    />
-                    <AlagehAutoComplete
+                    /> */}
+                  <Controller
+                    control={control}
+                    name="blood_group"
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                        label={{
+                          fieldName: "blood_group",
+                          isImp: false,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "blood_group",
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: variableJson.FORMAT_BLOOD_GROUP,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                       div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
                         fieldName: "blood_group",
@@ -593,8 +1006,36 @@ class PersonalDetails extends Component {
                           });
                         },
                       }}
-                    />
-                    <AlagehAutoComplete
+                    /> */}
+                  <Controller
+                    control={control}
+                    name="marital_status"
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                        label={{
+                          forceLabel: "Marital Status",
+                          isImp: false,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "marital_status",
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: variableJson.FORMAT_MARTIALSTS_EMP,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                       div={{
                         className: "col-lg-2 col-md-2 col-sm-12",
                       }}
@@ -621,15 +1062,40 @@ class PersonalDetails extends Component {
                           });
                         },
                       }}
-                    />
-                  </div>
-                  <div className="row">
-                    <div className="col-lg-6 col-sm-12">
-                      <h5>
-                        <span>Present Address</span>
-                      </h5>
-                      <div className="row paddin-bottom-5">
-                        <AlagehFormGroup
+                    /> */}
+                </div>
+                <div className="row">
+                  <div className="col-lg-6 col-sm-12">
+                    <h5>
+                      <span>Present Address</span>
+                    </h5>
+                    <div className="row paddin-bottom-5">
+                      <Controller
+                        name="present_address"
+                        control={control}
+                        // rules={{ required: "Add Service Amount" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{ className: "col-2 mandatory form-group" }}
+                            error={errors}
+                            label={{
+                              fieldName: "address",
+                              isImp: true,
+                            }}
+                            textBox={{
+                              ...props,
+
+                              className: "txt-fld",
+
+                              name: "present_address",
+                              others: {
+                                tabIndex: "11",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      {/* <AlagehFormGroup
                           div={{ className: "col-lg-12 col-sm-12 form-group" }}
                           label={{
                             fieldName: "address",
@@ -645,8 +1111,45 @@ class PersonalDetails extends Component {
                               },
                             },
                           }}
-                        />
-                        <AlagehAutoComplete
+                        /> */}
+                      <Controller
+                        name="present_country_id"
+                        control={control}
+                        // rules={{ required: "Select Procedure" }}
+                        render={({ value, onChange }) => (
+                          <AlgaehAutoComplete
+                            div={{
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
+                            }}
+                            label={{
+                              fieldName: "country_id",
+                              // isImp: true,
+                            }}
+                            error={errors}
+                            selector={{
+                              name: "select_procedure",
+                              value,
+                              onChange: (_, selected) => {
+                                onChange(selected);
+                                setValue("present_state_id", undefined);
+                                setValue("present_city_id", undefined);
+                                setPresentCountry(_);
+                              },
+
+                              dataSource: {
+                                textField: "country_name",
+                                valueField: "hims_d_country_id",
+                                data: countries,
+                              },
+                              others: {
+                                tabIndex: "10",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      {/* <AlagehAutoComplete
                           div={{
                             className:
                               "col-lg-4 col-sm-12 form-group form-group",
@@ -677,9 +1180,45 @@ class PersonalDetails extends Component {
                               });
                             },
                           }}
-                        />
+                        /> */}
+                      <Controller
+                        name="present_state_id"
+                        control={control}
+                        // rules={{ required: "Select Procedure" }}
+                        render={({ value, onChange }) => (
+                          <AlgaehAutoComplete
+                            div={{
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
+                            }}
+                            label={{
+                              fieldName: "state_id",
+                              // isImp: true,
+                            }}
+                            error={errors}
+                            selector={{
+                              name: "present_state_id",
+                              className: "select-fld",
+                              // value: this.state.present_state_id,
+                              dataSource: {
+                                textField: "state_name",
+                                valueField: "hims_d_state_id",
+                                data: presentCountry.states,
+                              },
+                              value,
+                              onChange: (_, selected) => {
+                                onChange(selected);
+                                setPresentCities(_.cities);
+                              },
 
-                        <AlagehAutoComplete
+                              others: {
+                                tabIndex: "10",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      {/* <AlagehAutoComplete
                           div={{
                             className:
                               "col-lg-4 col-sm-12 form-group form-group",
@@ -711,8 +1250,46 @@ class PersonalDetails extends Component {
                               });
                             },
                           }}
-                        />
-                        <AlagehAutoComplete
+                        /> */}
+                      <Controller
+                        name="present_city_id"
+                        control={control}
+                        rules={{ required: "Select Procedure" }}
+                        render={({ value, onChange }) => (
+                          <AlgaehAutoComplete
+                            div={{
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
+                            }}
+                            label={{
+                              fieldName: "city_id",
+                              isImp: false,
+                            }}
+                            error={errors}
+                            selector={{
+                              name: "present_city_id",
+                              value,
+                              onChange: (_, selected) => {
+                                onChange(selected);
+
+                                setValue("service_amount", _.standard_fee);
+                              },
+
+                              dataSource: {
+                                textField: "city_name",
+                                valueField: "hims_d_city_id",
+                                data: presentCities,
+                              },
+                              others: {
+                                tabIndex: "12",
+                                // disabled: this.state.existingPatient,
+                              },
+                            }}
+                          />
+                        )}
+                      />
+
+                      {/* <AlagehAutoComplete
                           div={{
                             className:
                               "col-lg-4 col-sm-12 form-group form-group",
@@ -744,36 +1321,61 @@ class PersonalDetails extends Component {
                               });
                             },
                           }}
-                        />
-                      </div>
+                        /> */}
                     </div>
-                    <div className="col-lg-6 col-sm-12">
-                      <h5>
-                        <span>Permanent Address</span>
-                      </h5>
-                      <div className="row paddin-bottom-5">
-                        <div
-                          className="col-lg-4 col-sm-12 customCheckbox form-group"
-                          style={{ marginTop: 23, border: "none" }}
-                        >
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="samechecked"
-                              value={this.state.samechecked}
-                              checked={
-                                this.state.samechecked === "Y" ? true : false
-                              }
-                              onChange={sameAsPresent.bind(this, this)}
+                  </div>
+                  <div className="col-lg-6 col-sm-12">
+                    <h5>
+                      <span>Permanent Address</span>
+                    </h5>
+                    <div className="row paddin-bottom-5">
+                      <div
+                        className="col-lg-4 col-sm-12 customCheckbox form-group"
+                        style={{ marginTop: 23, border: "none" }}
+                      >
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="samechecked"
+                            value={samechecked}
+                            checked={samechecked === "Y" ? true : false}
+                            onChange={(e) => {
+                              sameAsPresent(e, getValues());
+                            }}
+                          />
+                          <span>
+                            <AlgaehLabel
+                              label={{ forceLabel: "Same as Present" }}
                             />
-                            <span>
-                              <AlgaehLabel
-                                label={{ forceLabel: "Same as Present" }}
-                              />
-                            </span>
-                          </label>
-                        </div>
-                        <AlagehFormGroup
+                          </span>
+                        </label>
+                      </div>
+                      <Controller
+                        name="permanent_address"
+                        control={control}
+                        // rules={{ required: "Add Service Amount" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{ className: "col-lg-8 col-sm-12 form-group" }}
+                            error={errors}
+                            label={{
+                              fieldName: "address",
+                              isImp: true,
+                            }}
+                            textBox={{
+                              ...props,
+
+                              className: "txt-fld",
+
+                              name: "permanent_address",
+                              others: {
+                                tabIndex: "11",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      {/* <AlagehFormGroup
                           div={{ className: "col-lg-8 col-sm-12 form-group" }}
                           label={{
                             fieldName: "address",
@@ -792,8 +1394,45 @@ class PersonalDetails extends Component {
                               },
                             },
                           }}
-                        />
-                        <AlagehAutoComplete
+                        /> */}
+                      <Controller
+                        name="permanent_country_id"
+                        control={control}
+                        rules={{ required: "Select Procedure" }}
+                        render={({ value, onChange }) => (
+                          <AlgaehAutoComplete
+                            div={{
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
+                            }}
+                            label={{
+                              fieldName: "country_id",
+                              // isImp: true,
+                            }}
+                            error={errors}
+                            selector={{
+                              name: "permanent_country_id",
+                              value,
+                              onChange: (_, selected) => {
+                                onChange(selected);
+                                setValue("permanent_state_id", undefined);
+                                setValue("permanent_city_id", undefined);
+                                setPermanentCountry(_);
+                              },
+
+                              dataSource: {
+                                textField: "country_name",
+                                valueField: "hims_d_country_id",
+                                data: countries,
+                              },
+                              others: {
+                                tabIndex: "10",
+                              },
+                            }}
+                          />
+                        )}
+                      />{" "}
+                      {/* <AlagehAutoComplete
                           div={{
                             className:
                               "col-lg-4 col-sm-12 form-group form-group",
@@ -827,9 +1466,46 @@ class PersonalDetails extends Component {
                               });
                             },
                           }}
-                        />
+                        /> */}
+                      <Controller
+                        name="permanent_state_id"
+                        control={control}
+                        rules={{ required: "Select Procedure" }}
+                        render={({ value, onChange }) => (
+                          <AlgaehAutoComplete
+                            div={{
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
+                            }}
+                            label={{
+                              fieldName: "state_id",
+                              isImp: false,
+                            }}
+                            error={errors}
+                            selector={{
+                              name: "permanent_state_id",
+                              value,
+                              onChange: (_, selected) => {
+                                onChange(selected);
+                                setPermanentCities(_.cities);
+                              },
 
-                        <AlagehAutoComplete
+                              dataSource: {
+                                textField: "state_name",
+                                valueField: "hims_d_state_id",
+                                data:
+                                  samechecked === "Y"
+                                    ? presentCountry.states
+                                    : permanentCountry.states,
+                              },
+                              others: {
+                                tabIndex: "11",
+                              },
+                            }}
+                          />
+                        )}
+                      />{" "}
+                      {/* <AlagehAutoComplete
                           div={{
                             className:
                               "col-lg-4 col-sm-12 form-group form-group",
@@ -866,8 +1542,46 @@ class PersonalDetails extends Component {
                               });
                             },
                           }}
-                        />
-                        <AlagehAutoComplete
+                        /> */}
+                      <Controller
+                        name="permanent_city_id"
+                        control={control}
+                        rules={{ required: "Select Procedure" }}
+                        render={({ value, onChange }) => (
+                          <AlgaehAutoComplete
+                            div={{
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
+                            }}
+                            label={{
+                              fieldName: "city_id",
+                              isImp: false,
+                            }}
+                            error={errors}
+                            selector={{
+                              name: "permanent_city_id",
+                              value,
+                              onChange: (_, selected) => {
+                                onChange(selected);
+                              },
+
+                              dataSource: {
+                                textField: "city_name",
+                                valueField: "hims_d_city_id",
+                                data:
+                                  samechecked === "Y"
+                                    ? presentCities
+                                    : permanentCities,
+                              },
+
+                              others: {
+                                tabIndex: "11",
+                              },
+                            }}
+                          />
+                        )}
+                      />{" "}
+                      {/* <AlagehAutoComplete
                           div={{
                             className:
                               "col-lg-4 col-sm-12 form-group form-group",
@@ -905,146 +1619,127 @@ class PersonalDetails extends Component {
                               });
                             },
                           }}
-                        />
-                      </div>
+                        /> */}
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="col-lg-2 col-sm-12 secondary-details">
-                  <h5>
-                    <span>Profile Image</span>
-                  </h5>
-                  <div className="row secondary-box-container">
-                    <div className="col">
-                      <div>
-                        <AlgaehFile
+              <div className="col-lg-2 col-sm-12 secondary-details">
+                <h5>
+                  <span>Profile Image</span>
+                </h5>
+                <div className="row secondary-box-container">
+                  <div className="col">
+                    <div>
+                      {/* <AlgaehFile
                           ref={(employeeImage) => {
                             this.employeeImage = employeeImage;
                           }}
                           name="employeeImage"
                           accept="image/*"
                           showActions={
-                            this.state.employee_status === "I"
+                            employee_status === "I"
                               ? false
-                              : this.state.employee_code === null ||
-                                this.state.employee_code === ""
+                              : employee_code === null ||
+                                employee_code === ""
                               ? false
                               : true
                           }
                           textAltMessage="Employee Image"
                           serviceParameters={{
-                            uniqueID: this.state.employee_code,
+                            uniqueID: employee_code,
                             fileType: "Employees",
-                            processDelay: this.imageDetails.bind(
-                              this,
-                              "employeeImage"
-                            ),
+                            processDelay:imageDetails( "employeeImage"),
                           }}
-                          renderPrevState={this.state.employeeImage}
+                          renderPrevState={employeeImage}
                           forceRefresh={this.state.forceRefresh}
-                        />
-                      </div>
+                        />*/}
                     </div>
                   </div>
-                  {this.state.HIMS_Active === true ? (
-                    <div>
-                      <h5 style={{ marginTop: 20 }}>
-                        <span>If its a Doctor</span>
-                      </h5>
-                      <div className="row secondary-box-container">
-                        <div
-                          className="col-lg-12 col-sm-12 customCheckbox"
-                          style={{ border: "none" }}
-                        >
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="isdoctor"
-                              value={this.state.isdoctor}
-                              checked={
-                                this.state.isdoctor === "Y" ? true : false
-                              }
-                              onChange={isDoctorChange.bind(this, this)}
-                            />
-                            <span>
-                              <AlgaehLabel
-                                label={{ forceLabel: "Healthcare Provider" }}
-                              />
-                            </span>
-                          </label>
-                        </div>
-
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-12 col-sm-12 mandatory" }}
-                          label={{
-                            fieldName: "license_number",
-                            isImp: this.state.isdoctor === "Y" ? true : false,
-                          }}
-                          textBox={{
-                            value: this.state.license_number,
-                            className: "txt-fld",
-                            name: "license_number",
-
-                            events: {
-                              onChange: texthandle.bind(this, this),
-                            },
-                            others: {
-                              disabled:
-                                this.state.isdoctor === "Y" ? false : true,
-                            },
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ) : null}
                 </div>
+                {HIMS_Active === true ? (
+                  <div>
+                    <h5 style={{ marginTop: 20 }}>
+                      <span>If its a Doctor</span>
+                    </h5>
+                    <div className="row secondary-box-container">
+                      <div
+                        className="col-lg-12 col-sm-12 customCheckbox"
+                        style={{ border: "none" }}
+                      >
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="isdoctor"
+                            value={isdoctor}
+                            checked={isdoctor === "Y" ? true : false}
+                            // onChange={isDoctorChange.bind(this, this)}
+                          />
+                          <span>
+                            <AlgaehLabel
+                              label={{ forceLabel: "Healthcare Provider" }}
+                            />
+                          </span>
+                        </label>
+                      </div>
+                      <Controller
+                        name="license_number"
+                        control={control}
+                        rules={{ required: "Add Service Amount" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{ className: "col-lg-12 col-sm-12 mandatory" }}
+                            error={errors}
+                            label={{
+                              fieldName: "license_number",
+                              isImp: isdoctor === "Y" ? true : false,
+                            }}
+                            textBox={{
+                              ...props,
+
+                              className: "txt-fld",
+
+                              name: "license_number",
+
+                              others: {
+                                disabled:
+                                  this.state.isdoctor === "Y" ? false : true,
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      {/* <AlagehFormGroup
+                        div={{ className: "col-lg-12 col-sm-12 mandatory" }}
+                        label={{
+                          fieldName: "license_number",
+                          isImp: isdoctor === "Y" ? true : false,
+                        }}
+                        textBox={{
+                          value: license_number,
+                          className: "txt-fld",
+                          name: "license_number",
+
+                          // events: {
+                          //   onChange: texthandle.bind(this, this),
+                          // },
+                          others: {
+                            disabled: isdoctor === "Y" ? false : true,
+                          },
+                        }}
+                      /> */}
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
-          {/* <div className="col">
+        </div>
+        {/* <div className="col">
                 <DeptUserDetails EmpMasterIOputs={this.state} />
               </div> */}
-        </div>
-        {/* )}
-        </MyContext.Consumer> */}
-      </React.Fragment>
-    );
-  }
-}
-
-function mapStateToProps(state) {
-  return {
-    idtypes: state.idtypes,
-    titles: state.titles,
-    cities: state.cities,
-    nationalities: state.nationalities,
-    countries: state.countries,
-    countrystates: state.countrystates,
-    present_countrystates: state.present_countrystates,
-    present_cities: state.present_cities,
-    relegions: state.relegions,
-    patients: state.patients,
-    services: state.services,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getIDTypes: AlgaehActions,
-      getTitles: AlgaehActions,
-      getCities: AlgaehActions,
-      getCountries: AlgaehActions,
-      getNationalities: AlgaehActions,
-      getStates: AlgaehActions,
-      getServices: AlgaehActions,
-      getRelegion: AlgaehActions,
-    },
-    dispatch
+      </div>
+    </>
   );
 }
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(PersonalDetails)
-);

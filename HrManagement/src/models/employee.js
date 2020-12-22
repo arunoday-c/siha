@@ -59,7 +59,7 @@ export default {
       try {
         const utilities = new algaehUtilities();
         let _strAppend = "";
-
+        debugger;
         if (req.query.isdoctor != null) {
           _strAppend += " and isdoctor='Y'";
         }
@@ -120,7 +120,8 @@ export default {
                 left join hims_d_department D on SD.department_id = D.hims_d_department_id \
                 left join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
                 left join hims_d_employee_group G on E.employee_group_id = G.hims_d_employee_group_id \
-                left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality \
+                left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id \
+                left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality \
                 left join algaeh_d_app_user USRC on USRC.algaeh_d_app_user_id = E.created_by \
                 left join algaeh_d_app_user USRU on USRU.algaeh_d_app_user_id = E.updated_by \
                 WHERE E.record_status = 'A'  " +
@@ -149,6 +150,179 @@ export default {
       _mysql.releaseConnection();
       next(e);
     });
+  },
+  getEmployeesDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    return new Promise((resolve, reject) => {
+      try {
+        const utilities = new algaehUtilities();
+        let _strAppend = "";
+        debugger;
+        if (req.query.isdoctor != null) {
+          _strAppend += " and isdoctor='Y'";
+        }
+        if (req.query.sub_department_id != null) {
+          _strAppend +=
+            " and sub_department_id='" + req.query.sub_department_id + "'";
+        }
+
+        if (req.query.department_id != null) {
+          _strAppend +=
+            " and SD.department_id='" + req.query.department_id + "'";
+        }
+
+        if (req.query.designation_id != null) {
+          _strAppend +=
+            " and E.employee_designation_id='" + req.query.designation_id + "'";
+        }
+
+        if (req.query.suspend_salary != null) {
+          _strAppend +=
+            " and E.suspend_salary='" + req.query.suspend_salary + "'";
+        }
+
+        if (req.query.department_type != null) {
+          _strAppend +=
+            " and SD.department_type='" + req.query.department_type + "'";
+        }
+
+        if (
+          req.query.hospital_requires === undefined ||
+          req.query.hospital_requires === true
+        ) {
+          if (req.query.select_all === "true") {
+            _strAppend +=
+              " and E.hospital_id in (" + req.query.hospital_id + ")";
+          } else if (req.query.hospital_id != null) {
+            _strAppend += " and E.hospital_id='" + req.query.hospital_id + "'";
+          } else {
+            _strAppend +=
+              " and E.hospital_id='" + req.userIdentity.hospital_id + "'";
+          }
+        }
+        const show_active =
+          req.query.show_all_status === "true"
+            ? ""
+            : "and E.employee_status='A' ";
+        const specificEmployee =
+          req.query.hims_d_employee_id !== undefined
+            ? " and hims_d_employee_id ='" + req.query.hims_d_employee_id + "'"
+            : "";
+
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT E.sub_department_id,E.religion_id,E.employee_status,E.employee_code,E.isdoctor,E.full_name,E.arabic_name,E.sex,E.identity_no,E.employee_group_id,E.employee_designation_id,E.nationality,E.created_by,E.updated_by,E.record_status,\
+               USRC.user_display_name as createdUser,USRU.user_display_name as updatedUser, hims_d_employee_id as employee_id, SD.sub_department_name, D.department_name,N.nationality as nationality_name,\
+                R.religion_name, DE.designation,employee_group_id, G.monthly_accrual_days  FROM hims_d_employee E \
+                left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
+                left join hims_d_department D on SD.department_id = D.hims_d_department_id \
+                left join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
+                left join hims_d_employee_group G on E.employee_group_id = G.hims_d_employee_group_id \
+                left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id \
+                left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality \
+                left join algaeh_d_app_user USRC on USRC.algaeh_d_app_user_id = E.created_by \
+                left join algaeh_d_app_user USRU on USRU.algaeh_d_app_user_id = E.updated_by \
+                WHERE E.record_status = 'A'  " +
+              specificEmployee +
+              " " +
+              show_active +
+              _strAppend,
+            // values: [req.userIdentity.hospital_id],
+            printQuery: true,
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch((e) => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
+  getEmployeePersonalDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const { employee_id } = req.query;
+    try {
+      _mysql
+        .executeQuery({
+          query: `
+          SELECT hims_d_employee_id,identity_no,license_number,date_of_birth,employee_code,identity_type_id,identity_no,email,blood_group,work_email,present_country_id,
+          present_state_id,present_city_id,permanent_address,permanent_country_id,permanent_state_id,permanent_city_id,
+          marital_status,present_address,primary_contact_no,secondary_contact_no,religion_id,employee_status,
+          employee_code,isdoctor,full_name,arabic_name,sex,employee_group_id,
+          nationality from hims_d_employee WHERE hims_d_employee_id =?;`,
+          values: [employee_id],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getEmployeeOfficialDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const { employee_id } = req.query;
+    debugger;
+    try {
+      _mysql
+        .executeQuery({
+          query: `
+          SELECT E.hims_d_employee_id,E.hospital_id,E.isDoctor,E.appointment_type,E.agency_id,E.title_id,E.employee_type,E.date_of_joining,
+          E.sub_department_id,E.reporting_to_id,E.employee_designation_id,SD.sub_department_name, D.department_name,E.service_dis_percentage,
+          E.employee_group_id,G.monthly_accrual_days,E.employee_category,E.overtime_group_id,E.isdoctor,E.services_id,E.date_of_resignation,
+          E.date_of_resignation,E.notice_period,E.accomodation_provided,E.employee_bank_id,E.employee_bank_ifsc_code,
+          E.employee_account_number,E.company_bank_id,E.mode_of_payment,E.employee_status FROM hims_d_employee E
+          left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id 
+          left join hims_d_department D on SD.department_id = D.hims_d_department_id 
+          left join hims_d_employee_group G on E.employee_group_id = G.hims_d_employee_group_id
+           WHERE hims_d_employee_id =?;`,
+          values: [employee_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getAllEmployeesForDropDown: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query: `
+          SELECT hims_d_employee_id,full_name
+          from hims_d_employee`,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   },
 
   addEmployeeMaster: (req, res, next) => {
