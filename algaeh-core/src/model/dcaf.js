@@ -16,11 +16,11 @@ let getPatientDCAF = (req, res, next) => {
           _input.patient_id,
           _input.visit_id,
           _input.visit_date,
-          _input.visit_id
-        ]
+          _input.visit_id,
+        ],
         // printQuery: true
       })
-      .then(result => {
+      .then((result) => {
         const _isInsured = result[1][0]["insured"];
         if (_isInsured == "N") {
           _mysql.releaseConnection();
@@ -145,17 +145,17 @@ let getPatientDCAF = (req, res, next) => {
                 _input.visit_id,
                 hims_f_dcaf_header_id,
                 hims_f_dcaf_header_id,
-                hims_f_dcaf_header_id
+                hims_f_dcaf_header_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(outputResult => {
+            .then((outputResult) => {
               // console.log("outputResult", outputResult[4])
               // console.log("outputResult", outputResult[8])
               const _fields =
                 outputResult[0].length > 0 ? { ...outputResult[0][0] } : {};
 
-              const dcaf_service = outputResult[4].concat(outputResult[8])
+              const dcaf_service = outputResult[4].concat(outputResult[8]);
 
               for (var i = 0; i < outputResult[1].length; i++) {
                 const _out = outputResult[1][i];
@@ -219,14 +219,14 @@ let getPatientDCAF = (req, res, next) => {
               _fields["patient_other_conditions"] =
                 outputResult[7][0]["other_signs"];
 
-              let strHeaderQry = ""
+              let strHeaderQry = "";
               if (hims_f_dcaf_header_id > 0) {
                 strHeaderQry = _mysql.mysqlQueryFormat(
                   "update hims_f_dcaf_header set `eligible_reference_number`=?,\
                     `patient_duration_of_illness`=?,\
                     `patient_chief_comp_main_symptoms`=?,`patient_significant_signs`=?,`patient_other_conditions`=?,\
                     `patient_diagnosys`=?,`regular_dental_trt`=?,`dental_cleaning`=?,\
-                    `RTA`=?,`work_related`=? where hims_f_dcaf_header_id",
+                    `RTA`=?,`work_related`=?,`hospital_id`=? where hims_f_dcaf_header_id",
                   [
                     _fields.eligible_reference_number,
                     _fields.patient_duration_of_illness,
@@ -239,11 +239,11 @@ let getPatientDCAF = (req, res, next) => {
                     _fields.dental_cleaning,
                     _fields.patient_rta,
                     _fields.patient_work_related,
-                    hims_f_dcaf_header_id
+                    req.userIdentity.hospital_id,
+                    hims_f_dcaf_header_id,
                   ]
                 );
               } else {
-
                 strHeaderQry = _mysql.mysqlQueryFormat(
                   "insert into hims_f_dcaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
                     `new_visit_patient`,`sub_department_name`,`patient_code`,`eligible_reference_number`,\
@@ -251,8 +251,8 @@ let getPatientDCAF = (req, res, next) => {
                     `patient_chief_comp_main_symptoms`,`patient_significant_signs`,`patient_other_conditions`,\
                     `patient_diagnosys`,`regular_dental_trt`,`dental_cleaning`,\
                     `RTA`,`work_related`,\
-                    `patient_gender`,`age_in_years`) \
-                    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                    `patient_gender`,`age_in_years`,`hospital_id`) \
+                    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                   [
                     _fields.patient_id,
                     _fields.visit_id,
@@ -277,22 +277,21 @@ let getPatientDCAF = (req, res, next) => {
                     _fields.patient_work_related,
 
                     _fields.patient_gender,
-                    _fields.age_in_years
+                    _fields.age_in_years,
+                    req.userIdentity.hospital_id,
                   ]
                 );
               }
               _mysql
                 .executeQueryWithTransaction({
                   query: strHeaderQry,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(headerResult => {
-
+                .then((headerResult) => {
                   if (hims_f_dcaf_header_id > 0) {
-
                     req["hims_f_dcaf_header_id"] = hims_f_dcaf_header_id;
                   } else {
-                    req["hims_f_dcaf_header_id"] = headerResult["insertId"]
+                    req["hims_f_dcaf_header_id"] = headerResult["insertId"];
                   }
 
                   _mysql
@@ -300,43 +299,45 @@ let getPatientDCAF = (req, res, next) => {
                       query: "INSERT INTO hims_f_dcaf_services (??) values ?",
                       values: dcaf_service,
                       extraValues: {
-                        hims_f_dcaf_header_id: req["hims_f_dcaf_header_id"]
+                        hims_f_dcaf_header_id: req["hims_f_dcaf_header_id"],
                       },
                       bulkInsertOrUpdate: true,
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(serviceResult => {
+                    .then((serviceResult) => {
                       const queryH =
                         outputResult[5].length > 0
                           ? {
-                            query:
-                              "INSERT INTO hims_f_dcaf_medication (??) values ?",
-                            values: outputResult[5],
-                            extraValues: {
-                              hims_f_dcaf_header_id: req["hims_f_dcaf_header_id"]
-                            },
-                            bulkInsertOrUpdate: true
-                          }
+                              query:
+                                "INSERT INTO hims_f_dcaf_medication (??) values ?",
+                              values: outputResult[5],
+                              extraValues: {
+                                hims_f_dcaf_header_id:
+                                  req["hims_f_dcaf_header_id"],
+                              },
+                              bulkInsertOrUpdate: true,
+                            }
                           : {
-                            query: "select 1"
-                          };
+                              query: "select 1",
+                            };
                       _mysql
                         .executeQuery(queryH)
-                        .then(medicationResult => {
+                        .then((medicationResult) => {
                           _mysql
                             .executeQuery({
                               query:
                                 "INSERT INTO hims_f_dcaf_insurance_details (??) values ?",
                               values: outputResult[6],
                               extraValues: {
-                                hims_f_dcaf_header_id: req["hims_f_dcaf_header_id"]
+                                hims_f_dcaf_header_id:
+                                  req["hims_f_dcaf_header_id"],
                               },
-                              bulkInsertOrUpdate: true
+                              bulkInsertOrUpdate: true,
                             })
-                            .then(insuranceResult => {
+                            .then((insuranceResult) => {
                               _getDcafDetails(_mysql, req)
-                                .then(allResult => {
-                                  _mysql.commitTransaction(error => {
+                                .then((allResult) => {
+                                  _mysql.commitTransaction((error) => {
                                     _mysql.releaseConnection();
                                     if (error) {
                                       _mysql.rollBackTransaction(() => {
@@ -348,36 +349,36 @@ let getPatientDCAF = (req, res, next) => {
                                   req.records = allResult;
                                   next();
                                 })
-                                .catch(error => {
+                                .catch((error) => {
                                   _mysql.releaseConnection();
                                   next(error);
                                 });
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
                             });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           _mysql.rollBackTransaction(() => {
                             next(error);
                           });
                         });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
@@ -385,18 +386,18 @@ let getPatientDCAF = (req, res, next) => {
         } else {
           req["hims_f_dcaf_header_id"] = result[0][0]["hims_f_dcaf_header_id"];
           _getDcafDetails(_mysql, req)
-            .then(allResult => {
+            .then((allResult) => {
               _mysql.releaseConnection();
 
               req.records = allResult;
               next();
             })
-            .catch(error => {
+            .catch((error) => {
               next(error);
             });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -419,19 +420,19 @@ const _getDcafDetails = (_mysql, req) => {
           req.hims_f_dcaf_header_id,
           req.hims_f_dcaf_header_id,
           req.hims_f_dcaf_header_id,
-          req.hims_f_dcaf_header_id
+          req.hims_f_dcaf_header_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         resolve({
           hims_f_dcaf_header: result[0],
           hims_f_dcaf_insurance_details: result[1],
           hims_f_dcaf_medication: result[2],
-          hims_f_dcaf_services: result[3]
+          hims_f_dcaf_services: result[3],
         });
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -451,7 +452,7 @@ const updateDcafDetails = (req, res, next) => {
           `patient_significant_signs`=?,`patient_diagnosys`=?,\
           `primary`=?,`secondary`=?,`patient_other_conditions`=?,`regular_dental_trt`=?,\
           `dental_cleaning`=?,`RTA`=?,`work_related`=?,`others`=?,\
-          `how`=?,`when`=?,`where`=?,`updated_date`=?,`updated_by`=?\
+          `how`=?,`when`=?,`where`=?,`updated_date`=?,`updated_by`=?,`hospital_id`=?\
             WHERE `hims_f_dcaf_header_id`=?;",
         values: [
           input.patient_marital_status,
@@ -472,16 +473,17 @@ const updateDcafDetails = (req, res, next) => {
           input.where,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_f_dcaf_header_id
+          req.userIdentity.hospital_id,
+          input.hims_f_dcaf_header_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -493,5 +495,5 @@ const updateDcafDetails = (req, res, next) => {
 
 export default {
   getPatientDCAF,
-  updateDcafDetails
+  updateDcafDetails,
 };
