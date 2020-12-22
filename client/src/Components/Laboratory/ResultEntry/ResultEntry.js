@@ -29,11 +29,14 @@ import {
   addComments,
   deleteComment,
   ongridEditRanges,
-  eidtRanges
+  eidtRanges,
 } from "./ResultEntryEvents";
 import { ResultInput } from "./ResultInput";
 import AlgaehReport from "../../Wrapper/printReports";
-import { AlgaehSecurityElement } from "algaeh-react-components";
+import {
+  // AlgaehSecurityElement,
+  AlgaehSecurityComponent,
+} from "algaeh-react-components";
 
 class ResultEntry extends Component {
   constructor(props) {
@@ -50,7 +53,7 @@ class ResultEntry extends Component {
       entered_by_name: "",
       confirm_by_name: "",
       validate_by_name: "",
-      edit_range: false
+      edit_range: false,
     };
   }
 
@@ -107,7 +110,6 @@ class ResultEntry extends Component {
     }
   }
 
-
   selectCommentEvent(e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -163,7 +165,7 @@ class ResultEntry extends Component {
         comments_data: [],
         test_comments_id: null,
         comment_list: [],
-        edit_range: false
+        edit_range: false,
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -178,7 +180,7 @@ class ResultEntry extends Component {
   }
 
   render() {
-    debugger
+    debugger;
     // let display =
     //   this.props.providers === undefined
     //     ? []
@@ -264,12 +266,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
                     <div className="col">
@@ -294,12 +296,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
 
@@ -325,12 +327,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
 
@@ -356,12 +358,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
                     {/* <div className="col">
@@ -412,10 +414,10 @@ class ResultEntry extends Component {
                                   Validated
                                 </span>
                               ) : (
-                                      <span className="badge badge-light">
-                                        Result Not Entered
-                                      </span>
-                                    );
+                                <span className="badge badge-light">
+                                  Result Not Entered
+                                </span>
+                              );
                             },
                             others: {
                               maxWidth: 150,
@@ -433,10 +435,10 @@ class ResultEntry extends Component {
                                 this.props.labanalytes === undefined
                                   ? []
                                   : this.props.labanalytes.filter(
-                                    (f) =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_lab_analytes_id ===
+                                        row.analyte_id
+                                    );
 
                               return (
                                 <span>
@@ -463,8 +465,8 @@ class ResultEntry extends Component {
                               return row.analyte_type === "QU"
                                 ? "Quality"
                                 : row.analyte_type === "QN"
-                                  ? "Quantity"
-                                  : "Text";
+                                ? "Quantity"
+                                : "Text";
                             },
                             others: {
                               resizable: false,
@@ -526,16 +528,16 @@ class ResultEntry extends Component {
                                         }}
                                       />
                                     ) : (
-                                        <ResultInput
-                                          row={row}
-                                          onChange={(e) =>
-                                            onchangegridresult(this, row, e)
-                                          }
-                                        />
-                                      )
+                                      <ResultInput
+                                        row={row}
+                                        onChange={(e) =>
+                                          onchangegridresult(this, row, e)
+                                        }
+                                      />
+                                    )
                                   ) : (
-                                      row.result
-                                    )}
+                                    row.result
+                                  )}
                                 </span>
                               );
                             },
@@ -639,18 +641,18 @@ class ResultEntry extends Component {
                             displayTemplate: (row) => {
                               return !row.critical_type ? null : row.critical_type ===
                                 "N" ? (
-                                  <span className="badge badge-success">
-                                    Normal
+                                <span className="badge badge-success">
+                                  Normal
+                                </span>
+                              ) : row.critical_type === "L" ? (
+                                <span className="badge badge-warning">Low</span>
+                              ) : (
+                                row.critical_type === "H" && (
+                                  <span className="badge badge-warning">
+                                    High
                                   </span>
-                                ) : row.critical_type === "L" ? (
-                                  <span className="badge badge-warning">Low</span>
-                                ) : (
-                                    row.critical_type === "H" && (
-                                      <span className="badge badge-warning">
-                                        High
-                                      </span>
-                                    )
-                                  );
+                                )
+                              );
                             },
                           },
                           {
@@ -661,23 +663,24 @@ class ResultEntry extends Component {
                               />
                             ),
                             displayTemplate: (row) => {
-                              return (
-                                this.state.edit_range === false ? row.normal_low :
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.normal_low,
-                                      className: "txt-fld",
-                                      name: "normal_low",
-                                      events: {
-                                        onChange: ongridEditRanges.bind(
-                                          this,
-                                          this,
-                                          row
-                                        ),
-                                      }
-                                    }}
-                                  />
+                              return this.state.edit_range === false ? (
+                                row.normal_low
+                              ) : (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.normal_low,
+                                    className: "txt-fld",
+                                    name: "normal_low",
+                                    events: {
+                                      onChange: ongridEditRanges.bind(
+                                        this,
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                  }}
+                                />
                               );
                             },
                             others: {
@@ -694,23 +697,24 @@ class ResultEntry extends Component {
                               />
                             ),
                             displayTemplate: (row) => {
-                              return (
-                                this.state.edit_range === false ? row.normal_high :
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.normal_high,
-                                      className: "txt-fld",
-                                      name: "normal_high",
-                                      events: {
-                                        onChange: ongridEditRanges.bind(
-                                          this,
-                                          this,
-                                          row
-                                        ),
-                                      }
-                                    }}
-                                  />
+                              return this.state.edit_range === false ? (
+                                row.normal_high
+                              ) : (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.normal_high,
+                                    className: "txt-fld",
+                                    name: "normal_high",
+                                    events: {
+                                      onChange: ongridEditRanges.bind(
+                                        this,
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                  }}
+                                />
                               );
                             },
                             others: {
@@ -731,8 +735,8 @@ class ResultEntry extends Component {
                                 <ul>
                                   {row.text_value.length > 0
                                     ? row.text_value.map((row) => {
-                                      return <li>{row}</li>;
-                                    })
+                                        return <li>{row}</li>;
+                                      })
                                     : "-"}
                                 </ul>
                               );
@@ -773,8 +777,8 @@ class ResultEntry extends Component {
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -815,8 +819,8 @@ class ResultEntry extends Component {
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -858,8 +862,8 @@ class ResultEntry extends Component {
                                   ) : row.amended === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -901,8 +905,8 @@ class ResultEntry extends Component {
                                   ) : row.remarks !== "null" ? (
                                     row.remarks
                                   ) : (
-                                        ""
-                                      )}
+                                    ""
+                                  )}
                                 </span>
                               );
                             },
@@ -978,22 +982,22 @@ class ResultEntry extends Component {
                           <ol>
                             {this.state.comment_list.length > 0
                               ? this.state.comment_list.map((row, index) => {
-                                return (
-                                  <React.Fragment key={index}>
-                                    <li key={index}>
-                                      <span>{row}</span>
-                                      <i
-                                        className="fas fa-times"
-                                        onClick={deleteComment.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      ></i>
-                                    </li>
-                                  </React.Fragment>
-                                );
-                              })
+                                  return (
+                                    <React.Fragment key={index}>
+                                      <li key={index}>
+                                        <span>{row}</span>
+                                        <i
+                                          className="fas fa-times"
+                                          onClick={deleteComment.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        ></i>
+                                      </li>
+                                    </React.Fragment>
+                                  );
+                                })
                               : null}
                           </ol>
                         </div>
@@ -1007,7 +1011,7 @@ class ResultEntry extends Component {
 
           <div className="popupFooter">
             <div className="col-lg-12">
-              <AlgaehSecurityElement elementCode="PRI_LAB_RES">
+              <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
                 <button
                   className="btn btn-primary"
                   onClick={generateLabResultReport.bind(this, this.state)}
@@ -1015,7 +1019,7 @@ class ResultEntry extends Component {
                 >
                   Print
                 </button>
-              </AlgaehSecurityElement>
+              </AlgaehSecurityComponent>
               {/* <button
                 className="btn btn-primary"
                 onClick={this.showReport.bind(
@@ -1029,7 +1033,7 @@ class ResultEntry extends Component {
                 Print
               </button> */}
 
-              <AlgaehSecurityElement elementCode="RE_RUN_LAB_RES">
+              <AlgaehSecurityComponent componentCode="RE_RUN_LAB_RES">
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -1044,9 +1048,9 @@ class ResultEntry extends Component {
                 >
                   Re-Run
                 </button>
-              </AlgaehSecurityElement>
+              </AlgaehSecurityComponent>
 
-              <AlgaehSecurityElement elementCode="VAL_LAB_RES">
+              <AlgaehSecurityComponent componentCode="VAL_LAB_RES">
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -1055,9 +1059,9 @@ class ResultEntry extends Component {
                 >
                   Validate All
                 </button>
-              </AlgaehSecurityElement>
+              </AlgaehSecurityComponent>
 
-              <AlgaehSecurityElement elementCode="CONF_LAB_RES">
+              <AlgaehSecurityComponent componentCode="CONF_LAB_RES">
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -1066,14 +1070,14 @@ class ResultEntry extends Component {
                     this.state.status === "C"
                       ? true
                       : this.state.status === "V"
-                        ? true
-                        : false
+                      ? true
+                      : false
                   }
                 >
                   Confirm All
                 </button>
-              </AlgaehSecurityElement>
-              <AlgaehSecurityElement elementCode="SAVE_LAB_RES">
+              </AlgaehSecurityComponent>
+              <AlgaehSecurityComponent componentCode="SAVE_LAB_RES">
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -1082,9 +1086,9 @@ class ResultEntry extends Component {
                 >
                   Save
                 </button>
-              </AlgaehSecurityElement>
+              </AlgaehSecurityComponent>
 
-              <AlgaehSecurityElement elementCode="EDIT_RANGE_LAB_RES">
+              <AlgaehSecurityComponent componentCode="EDIT_RANGE_LAB_RES">
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -1092,7 +1096,7 @@ class ResultEntry extends Component {
                 >
                   Edit Ranges
                 </button>
-              </AlgaehSecurityElement>
+              </AlgaehSecurityComponent>
 
               <button
                 type="button"
