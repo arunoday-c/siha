@@ -408,7 +408,7 @@ export default {
             CASE WHEN sum(qtyhand)<=coalesce(PLR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder from \
             hims_d_item_master IM left  join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
             left  join hims_d_phar_location_reorder PLR on PLR.item_id=IL.item_id and location_id=? \
-            where qtyhand>0" +
+            where qtyhand>0 and IM.item_status ='A' " +
             strAppend +
             "group by item_id order by date(expirydt)",
           values: intValues,
@@ -549,7 +549,7 @@ export default {
             expiry_date_filter = new Date(
               today_date.setFullYear(
                 today_date.getFullYear() +
-                  parseInt(result[0].notification_before)
+                parseInt(result[0].notification_before)
               )
             );
           }
