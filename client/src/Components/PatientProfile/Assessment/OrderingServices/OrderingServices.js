@@ -294,7 +294,7 @@ class OrderingServices extends PureComponent {
           events={{
             onClose: this.onClose.bind(this),
           }}
-          title="Order Investigation"
+          title="Order Services"
           openPopup={this.props.open}
         >
           <div className="popupInner">
@@ -455,7 +455,7 @@ class OrderingServices extends PureComponent {
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
-                        )
+                        ),
                       },
 
                       {
@@ -698,7 +698,7 @@ class OrderingServices extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Favourite Service" }}
                           />
-                        )
+                        ),
                       },
                     ]}
                     keyId="service_type_id"

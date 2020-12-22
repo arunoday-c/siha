@@ -753,7 +753,7 @@ class OrderedList extends PureComponent {
                   className="btn btn-primary"
                   onClick={this.ShowModel.bind(this)}
                 >
-                  Order Investigation
+                  Order Services
                 </button>
 
                 <div className="row">
