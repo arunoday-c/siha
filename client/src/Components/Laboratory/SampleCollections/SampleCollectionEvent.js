@@ -1,6 +1,7 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import Options from "../../../Options.json";
 import moment from "moment";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const CollectSample = ($this, context, row) => {
   if (row.container_id === null || row.container_id === undefined) {
@@ -32,6 +33,7 @@ const CollectSample = ($this, context, row) => {
     container_code: row.container_code
   };
 
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/laboratory/updateLabOrderServices",
     module: "laboratory",
@@ -62,8 +64,10 @@ const CollectSample = ($this, context, row) => {
           context.updateState({ test_details: test_details });
         }
       }
+      AlgaehLoader({ show: false });
     },
     onFailure: (error) => {
+      AlgaehLoader({ show: false });
       swalMessage({
         title: error.response.data.message || error.message,
         type: "error",
@@ -125,6 +129,7 @@ const printBarcode = ($this, row) => {
       container_code: row.container_code
     };
 
+    AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/laboratory/generateBarCode",
       module: "laboratory",
@@ -173,6 +178,7 @@ const printBarcode = ($this, row) => {
             },
           });
         }
+        AlgaehLoader({ show: false });
       },
       onFailure: (error) => {
         swalMessage({

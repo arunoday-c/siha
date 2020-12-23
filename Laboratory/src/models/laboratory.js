@@ -784,7 +784,7 @@ export default {
                 query +
                 ";update hims_f_lab_order set lab_id_number ='" +
                 labIdNumber +
-                "' where hims_f_lab_order_id=" +
+                "' ,barcode_gen = now() where hims_f_lab_order_id=" +
                 inputParam.hims_f_lab_order_id,
               values: condition,
               printQuery: true,

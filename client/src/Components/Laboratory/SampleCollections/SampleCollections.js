@@ -522,6 +522,29 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                               },
                               {
+                                fieldName: "barcode_gen",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Barcode Gen Date" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {moment(row.barcode_gen).isValid()
+                                        ? moment(row.barcode_gen).format(
+                                          "DD-MM-YYYY hh:mm"
+                                        )
+                                        : "------"}
+                                    </span>
+                                  );
+                                },
+                                others: {
+                                  resizable: false,
+                                  style: { textAlign: "center" },
+                                },
+                              },
+                              {
                                 fieldName: "remarks",
                                 label: (
                                   <AlgaehLabel
