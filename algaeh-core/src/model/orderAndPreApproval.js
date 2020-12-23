@@ -1885,7 +1885,7 @@ let addPackage = (req, res, next) => {
           _mysql
             .executeQuery({
               query: ` select hims_f_package_header_id,package_id from hims_f_package_header
-                       where patient_id= ? and visit_id=? and doctor_id=? and record_status='A' ; `,
+                       where patient_id= ? and visit_id=? and doctor_id=? and record_status='A' and billed='N' ; `,
               values: [patient_id, visit_id, doctor_id],
               printQuery: true,
             })
