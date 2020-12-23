@@ -215,9 +215,9 @@ export function PatientRegistration() {
     savedPatient,
     clearState,
     setServiceInfo,
-    cardData,
+    // cardData,
   } = useContext(FrontdeskContext);
-  console.log(cardData, "cardData");
+  // console.log(cardData, "cardData");
   const [currentCountry] = countries?.filter(
     (item) => item.hims_d_country_id === userToken?.default_country
   );
@@ -602,6 +602,7 @@ export function PatientRegistration() {
         receiptdetails,
       }).then(async (data) => {
         // console.log("In update", data);
+
         await uploadAfterSubmit({ ...data, ...input });
         if (sockets.connected) {
           sockets.emit("patient_checked", {

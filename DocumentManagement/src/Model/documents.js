@@ -14,9 +14,8 @@ export default (db) => {
         buffer += chunk.toString();
       });
       req.on("end", () => {
-        return;
+        // return;
         const _headerFile = JSON.parse(req.headers["x-file-details"]);
-
         // const _utf =
         //   _headerFile.needConvertion == true
         //     ? new Buffer.from(buffer, "base64")
@@ -61,6 +60,7 @@ export default (db) => {
                 success: true,
                 records: "Success",
               });
+              return;
             }
           );
         } else if (_headerFile.fileType == "Patients") {
@@ -102,6 +102,7 @@ export default (db) => {
                 success: true,
                 records: "Success",
               });
+              return;
             }
           );
         } else if (_headerFile.fileType == "Company") {
@@ -124,6 +125,7 @@ export default (db) => {
                   success: false,
                   records: error,
                 });
+                return;
               } else {
                 if (result == null) {
                   let _CompanyDocModel = new CompanyDocModel();
@@ -141,6 +143,7 @@ export default (db) => {
                 success: true,
                 records: "Success",
               });
+              return;
             }
           );
         } else if (_headerFile.fileType == "DepartmentImages") {
@@ -183,6 +186,7 @@ export default (db) => {
                 success: true,
                 records: "Success",
               });
+              return;
             }
           );
         }

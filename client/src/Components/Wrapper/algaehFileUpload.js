@@ -419,7 +419,7 @@ export default class AlgaehFileUploader extends Component {
         data: _splitter[1],
         module: "documentManagement",
         header: {
-          "content-type": "multipart/form-data", //"application/octet-stream",
+          // "content-type": "multipart/form-data", //"application/octet-stream",
           "x-file-details": JSON.stringify({
             pageName: _pageName,
             destinationName: uniqueID,
