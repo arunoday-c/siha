@@ -87,7 +87,7 @@ export function getUploadedFile(req, res, next) {
     let filter = {};
     let _mimeType = "filetype";
     const { download } = input;
-    console.log("input", input);
+    // console.log("input", input);
     switch (input.forModule) {
       case "EmployeeDocModel":
         contractDoc = EmployeeDocModel;
@@ -103,16 +103,20 @@ export function getUploadedFile(req, res, next) {
     }
 
     if (download) {
+      // console.log("filter", filter);
       contractDoc.find(filter, (err, docs) => {
         if (err) {
           res.status(400).json({ error: err.message });
+          return;
         } else {
           if (Array.isArray(docs) && docs.length === 0) {
             res.status(400).json({ error: "no record found", filter: filter });
             return;
           }
 
-          const { fromPath } = docs;
+          const { fromPath } = docs[0];
+          // console.log("-----fromPath", fromPath);
+          // console.log("docs", typeof docs, docs);
           if (fromPath) {
             const uploadExists = folder.toUpperCase().includes("UPLOAD");
             const uploadPath = path.resolve(
