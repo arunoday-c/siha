@@ -209,21 +209,28 @@ class SampleCollectionPatient extends PureComponent {
                                             row
                                           )}
                                         />
-                                      ) : (
-                                          <i
-                                            className="fas fa-barcode"
-                                            onClick={printBarcode.bind(
-                                              this,
-                                              this,
-                                              row
-                                            )}
-                                          />
+                                      ) : null}
+
+                                      <i
+                                        style={{
+                                          pointerEvents:
+                                            row.billed === "N" ? "none" : "",
+                                          opacity:
+                                            row.billed === "N" ? "0.1" : "",
+                                        }}
+                                        className="fas fa-barcode"
+                                        onClick={printBarcode.bind(
+                                          this,
+                                          this,
+                                          row
                                         )}
+                                      />
+
                                     </span>
                                   );
                                 },
                                 others: {
-                                  maxWidth: 70,
+                                  maxWidth: 100,
                                   resizable: false,
                                   style: { textAlign: "center" },
                                 },
