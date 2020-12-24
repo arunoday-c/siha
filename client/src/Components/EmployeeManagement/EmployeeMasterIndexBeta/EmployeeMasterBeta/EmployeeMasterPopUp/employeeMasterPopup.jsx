@@ -113,7 +113,9 @@ export default function EmployeeMasterPopup({
                   }}
                 />
               ),
-              children: <PayRollDetails />,
+              children: (
+                <PayRollDetails EmpMasterIOputs={employeeDetails.employee_id} />
+              ),
               componentCode: "EMP_TAB_PAY",
             },
             {
@@ -124,7 +126,9 @@ export default function EmployeeMasterPopup({
                   }}
                 />
               ),
-              children: <RulesDetails />,
+              children: (
+                <RulesDetails EmpMasterIOputs={employeeDetails.employee_id} />
+              ),
               componentCode: "EMP_TAB_RUL",
             },
             {
@@ -135,7 +139,11 @@ export default function EmployeeMasterPopup({
                   }}
                 />
               ),
-              children: <CommissionSetup />,
+              children: (
+                <CommissionSetup
+                  EmpMasterIOputs={employeeDetails.employee_id}
+                />
+              ),
               componentCode: "EMP_TAB_COMM",
             },
           ]}

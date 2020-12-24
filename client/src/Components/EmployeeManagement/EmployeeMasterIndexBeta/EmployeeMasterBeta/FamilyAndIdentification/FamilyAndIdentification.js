@@ -131,37 +131,24 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
 
   const AddEmpId = (e) => {
     debugger;
-    let idDetail = idDetails;
-    const {
-      identity_documents_id,
-      identity_number,
-      valid_upto,
-      issue_date,
-    } = getValues();
+    let idDetail = [...idDetails];
+    const { identity_documents_id, identity_number, valid_upto } = getValues();
     let hijriConverted = hijri(valid_upto).format("iD-iM-iYYYY");
 
     let inpObj = {
+      alert_date: null,
+      alert_required: "N",
       employee_id: EmpMasterIOputs ? EmpMasterIOputs : "",
-      identity_documents_id: identity_documents_id,
+      identity_documents_id: parseInt(identity_documents_id),
       identity_number: identity_number,
-      valid_upto: valid_upto,
+      valid_upto: moment(valid_upto).format("YYYY-MM-DD"),
       hijri_valid_upto: hijriConverted,
-      issue_date: issue_date,
-
-      // alert_required: alert_required,
-      // alert_date: alert_date,
+      issue_date: null,
     };
 
     idDetail.push(inpObj);
-    // insertIdDetails.push(inpObj);
-    setIdDetails((previousState) => {
-      debugger;
-      //idDetail
-      //console.log("previousState", previousState);
-      const drgf = [...previousState];
-      console.log("drgf", drgf);
-      return [];
-    });
+
+    setIdDetails(() => [...idDetail]);
     reset({});
   };
   const addDependentType = (e) => {
@@ -184,8 +171,9 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
 
     dependentDetail.push(inpObj);
 
-    // setDependentDetails(dependentDetail);
-    // reset({});
+    setDependentDetails([...dependentDetail]);
+
+    reset({});
   };
 
   const deleteIdentifications = (row) => {
@@ -199,20 +187,20 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
-        let idDetail = idDetails;
+        let idDetail = [...idDetails];
 
         if (row.hims_d_employee_identification_id !== undefined) {
           idDetail.splice(row.rowIdx, 1);
         } else {
           idDetail.splice(row.rowIdx, 1);
         }
-        setIdDetails(idDetail);
+        setIdDetails([...idDetail]);
       }
     });
   };
 
   const updateIdentifications = (row) => {
-    let idDetail = idDetails;
+    let idDetail = [...idDetails];
 
     if (row.hims_d_employee_identification_id !== undefined) {
       let hijriConverted = hijri(row.valid_upto).format("iD-iM-iYYYY");
@@ -975,7 +963,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                             : idtypes.filter(
                                 (f) =>
                                   f.hims_d_identity_document_id ===
-                                  row.dependent_identity_type
+                                  parseInt(row.dependent_identity_type)
                               );
 
                         return (
@@ -993,7 +981,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                             : idtypes.filter(
                                 (f) =>
                                   f.hims_d_identity_document_id ===
-                                  row.dependent_identity_type
+                                  parseInt(row.dependent_identity_type)
                               );
 
                         return (

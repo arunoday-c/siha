@@ -1372,6 +1372,28 @@ export default {
       next(e);
     });
   },
+  getEmployeePayrollDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const { employee_id } = req.query;
+    try {
+      _mysql
+        .executeQuery({
+          query: `
+          SELECT hims_d_employee_id,hospital_id,gross_salary,yearly_gross_salary,total_earnings,total_deductions,total_contributions,
+          net_salary,cost_to_company from hims_d_employee WHERE hims_d_employee_id =?;`,
+          values: [employee_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getFamilyIdentification: (req, res, next) => {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
