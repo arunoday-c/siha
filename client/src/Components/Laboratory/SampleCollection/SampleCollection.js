@@ -380,10 +380,10 @@ class SampleCollection extends Component {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                            <span className="badge badge-secondary">
-                              Routine
-                            </span>
-                          );
+                              <span className="badge badge-secondary">
+                                Routine
+                              </span>
+                            );
                         },
                         disabled: true,
                         others: {
@@ -446,10 +446,10 @@ class SampleCollection extends Component {
                               Confirmed
                             </span>
                           ) : (
-                            <span className="badge badge-success">
-                              Validated
-                            </span>
-                          );
+                                    <span className="badge badge-success">
+                                      Validated
+                                    </span>
+                                  );
                         },
                         disabled: true,
                         others: {

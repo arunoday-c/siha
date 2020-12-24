@@ -270,6 +270,9 @@ class InvItemMomentEnquiry extends Component {
                                                     ? "Sales Dispatch Note"
                                                     : "";
                       },
+                      others: {
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "transaction_date",
@@ -283,6 +286,9 @@ class InvItemMomentEnquiry extends Component {
                           <span>{dateFormater(row.transaction_date)}</span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "from_location_id",
@@ -305,6 +311,9 @@ class InvItemMomentEnquiry extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "item_code_id",
@@ -368,8 +377,17 @@ class InvItemMomentEnquiry extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
 
+                    {
+                      fieldName: "vendor_batchno",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Vendor Batch No." }} />
+                      ),
+                    },
                     {
                       fieldName: "batchno",
                       label: (
@@ -384,6 +402,9 @@ class InvItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "transaction_qty",
@@ -391,6 +412,9 @@ class InvItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return parseFloat(row.transaction_qty);
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "qtyhand",
@@ -398,6 +422,9 @@ class InvItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return parseFloat(row.qtyhand);
                       },
+                      others: {
+                        filterable: false,
+                      }
                     }
                     // {
                     //   fieldName: "average_cost",
@@ -419,6 +446,7 @@ class InvItemMomentEnquiry extends Component {
                   dataSource={{
                     data: this.state.Inventory_Itemmoment,
                   }}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>

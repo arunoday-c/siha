@@ -17,6 +17,7 @@ const {
   getLabOrderedComment,
   getAnalytesByTestID,
   getInvestigationResult,
+  generateBarCode
 } = labModels;
 
 export default () => {
@@ -55,6 +56,16 @@ export default () => {
   api.put(
     "/updateLabOrderServices",
     updateLabOrderServices,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.put(
+    "/generateBarCode",
+    generateBarCode,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
