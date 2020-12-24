@@ -51,12 +51,11 @@ export default function EmployeeMasterPopup({
 
   return (
     <AlgaehModal
-      // title={HeaderCaption}
+      title={HeaderCaption}
       visible={visible}
-      maskClosable={false}
+      maskClosable={true}
       onCancel={onClose}
       footer={null}
-      width={720}
       className={`row algaehNewModal EmployeeAddEditPopup`}
     >
       <div className="EmployeeMasterModal">
