@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-
 import "./SalesOrderList.scss";
 import "./../../../styles/site.scss";
 
@@ -10,14 +9,14 @@ import {
   getSalesOrderList,
   datehandle,
   changeEventHandaler,
-  dateFormaterTime
+  dateFormaterTime,
 } from "./SalesOrderListEvent";
 
 import {
   // AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -25,9 +24,8 @@ import {
   AlgaehTable,
   persistStorageOnRemove,
   persistStageOnGet,
-  persistStateOnBack
+  persistStateOnBack,
 } from "algaeh-react-components";
-
 
 class SalesOrderList extends Component {
   constructor(props) {
@@ -39,12 +37,11 @@ class SalesOrderList extends Component {
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
       status: "1",
       persistence: null,
-      order_list: []
+      order_list: [],
     };
   }
 
   componentDidMount() {
-
     //to load the same list when user come back from whatever screen they went.
     // if (this.props.backToAuth) {
     //   const { from_date, to_date, customer_id, status } = this.props.prev;
@@ -75,14 +72,14 @@ class SalesOrderList extends Component {
 
       if (records) {
         this.setState({ ...records }, () => {
-          getSalesOrderList(this)
+          getSalesOrderList(this);
         });
         persistStorageOnRemove();
       } else {
         const params = new URLSearchParams(this.props.location?.search);
         if (params?.get("status")) {
           this.setState({
-            status: params?.get("status")
+            status: params?.get("status"),
           });
         }
         if (params?.get("from_date")) {
@@ -99,11 +96,10 @@ class SalesOrderList extends Component {
             () => getSalesOrderList(this)
           );
         } else {
-          getSalesOrderList(this)
+          getSalesOrderList(this);
         }
       }
     })();
-
 
     // this.props.getCustomerMaster({
     //   uri: "/customer/getCustomerMaster",
@@ -138,7 +134,7 @@ class SalesOrderList extends Component {
                   label={{ forceLabel: "From Date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.from_date}
                 />
@@ -147,7 +143,7 @@ class SalesOrderList extends Component {
                   label={{ forceLabel: "To Date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.to_date}
                 />
@@ -186,17 +182,17 @@ class SalesOrderList extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.SALES_ORDER_STATUS
+                      data: GlobalVariables.SALES_ORDER_STATUS,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        status: null
+                        status: null,
                       });
                     },
                     others: {
-                      disabled: this.state.poSelected
-                    }
+                      disabled: this.state.poSelected,
+                    },
                   }}
                 />
               </div>
@@ -213,7 +209,7 @@ class SalesOrderList extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
@@ -237,22 +233,31 @@ class SalesOrderList extends Component {
                           maxWidth: 60,
                           resizable: false,
                           style: { textAlign: "center" },
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "is_posted",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Posted" }}
-                          />
-                        ),
-                        displayTemplate: row => {
+                        label: <AlgaehLabel label={{ forceLabel: "Posted" }} />,
+                        displayTemplate: (row) => {
                           return row.is_posted === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                              <span className="badge badge-danger">No</span>
-                            );
+                            <span className="badge badge-danger">No</span>
+                          );
+                        },
+                        filterable: true,
+                      },
+                      {
+                        fieldName: "created_by",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Order By." }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          maxWidth: 250,
+                          resizable: false,
+                          style: { textAlign: "left" },
                         },
                         filterable: true,
                       },
@@ -265,7 +270,7 @@ class SalesOrderList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
+                          style: { textAlign: "center" },
                         },
                         filterable: true,
                       },
@@ -274,7 +279,7 @@ class SalesOrderList extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Order Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {dateFormaterTime(this, row.sales_order_date)}
@@ -285,28 +290,30 @@ class SalesOrderList extends Component {
                         disabled: true,
                         others: {
                           maxWidth: 150,
-                          resizable: false
-                        }
+                          resizable: false,
+                        },
                       },
                       {
                         fieldName: "sales_order_mode",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sales Mode" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Sales Mode" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.sales_order_mode === "I" ? (
-                            <span className="badge badge-success">Item Order</span>
+                            <span className="badge badge-success">
+                              Item Order
+                            </span>
                           ) : (
-                              <span className="badge badge-success">Service Order</span>
-                            );
+                            <span className="badge badge-success">
+                              Service Order
+                            </span>
+                          );
                         },
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "customer_name",
@@ -319,8 +326,8 @@ class SalesOrderList extends Component {
                         filterable: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "left" },
+                        },
                       },
                       {
                         fieldName: "customer_po_no",
@@ -334,8 +341,8 @@ class SalesOrderList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "delivery_date",
@@ -344,7 +351,7 @@ class SalesOrderList extends Component {
                             label={{ forceLabel: "Delivery Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{dateFormater(this, row.delivery_date)}</span>
                           );
@@ -353,8 +360,8 @@ class SalesOrderList extends Component {
                         disabled: true,
                         others: {
                           maxWidth: 150,
-                          resizable: false
-                        }
+                          resizable: false,
+                        },
                       },
                       {
                         fieldName: "is_revert",
@@ -364,29 +371,27 @@ class SalesOrderList extends Component {
                           />
                         ),
                         filterable: true,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.is_revert === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                              <span className="badge badge-danger">No</span>
-                            );
-                        }
+                            <span className="badge badge-danger">No</span>
+                          );
+                        },
                       },
                       {
                         fieldName: "cancelled",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Order Reject" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Order Reject" }} />
                         ),
                         filterable: true,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.cancelled === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                              <span className="badge badge-danger">No</span>
-                            );
-                        }
+                            <span className="badge badge-danger">No</span>
+                          );
+                        },
                       },
 
                       {
@@ -396,22 +401,24 @@ class SalesOrderList extends Component {
                             label={{ forceLabel: "Invoice Generated" }}
                           />
                         ),
-                        displayTemplate: row => {
-                          return row.sales_order_mode === "I" ? row.invoice_generated === "Y" ? (
-                            <span className="badge badge-success">Yes</span>
-                          ) : (
-                              <span className="badge badge-danger">No</span>
-                            ) : row.closed === "Y" ? (
+                        displayTemplate: (row) => {
+                          return row.sales_order_mode === "I" ? (
+                            row.invoice_generated === "Y" ? (
                               <span className="badge badge-success">Yes</span>
                             ) : (
-                                <span className="badge badge-danger">No</span>
-                              );
+                              <span className="badge badge-danger">No</span>
+                            )
+                          ) : row.closed === "Y" ? (
+                            <span className="badge badge-success">Yes</span>
+                          ) : (
+                            <span className="badge badge-danger">No</span>
+                          );
                         },
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "invoice_number",
@@ -423,24 +430,22 @@ class SalesOrderList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
-
-
                     ]}
                     data={this.state.order_list}
                     // height="80vh"
                     pagination={true}
                     isFilterable={true}
                     persistence={this.state.persistence}
-                  // keyId="sales_order_number"
-                  // filter={true}
-                  // dataSource={{
-                  //   data: this.state.order_list
-                  // }}
-                  // noDataText="No data available"
-                  // paging={{ page: 0, rowsPerPage: 10 }}
+                    // keyId="sales_order_number"
+                    // filter={true}
+                    // dataSource={{
+                    //   data: this.state.order_list
+                    // }}
+                    // noDataText="No data available"
+                    // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>
