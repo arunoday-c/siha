@@ -763,7 +763,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         },
                       }}
                     /> */}
-                  <div className="col-lg-2 col-md-2 col-sm-12 ">
+                  <div className="col-lg-2 col-md-2 col-sm-12 mandatory">
                     {/* <label className="styleLabel"> ENTER ID NUMBER</label> */}
 
                     {masked_identity ? (
