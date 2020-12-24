@@ -47,7 +47,7 @@ class SalesInvoiceList extends Component {
 
       if (records) {
         this.setState({ ...records }, () => {
-          getSalesInvoiceList(this)
+          getSalesInvoiceList(this);
         });
         persistStorageOnRemove();
       } else {
@@ -155,8 +155,8 @@ class SalesInvoiceList extends Component {
                           return row.is_posted === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                              <span className="badge badge-danger">No</span>
-                            );
+                            <span className="badge badge-danger">No</span>
+                          );
                         },
                         others: {
                           maxWidth: 60,
@@ -183,8 +183,8 @@ class SalesInvoiceList extends Component {
                           return row.is_revert === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                              <span className="badge badge-danger">No</span>
-                            );
+                            <span className="badge badge-danger">No</span>
+                          );
                         },
                         others: {
                           maxWidth: 60,
@@ -213,8 +213,8 @@ class SalesInvoiceList extends Component {
                           return row.correction === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                              <span className="badge badge-danger">No</span>
-                            );
+                            <span className="badge badge-danger">No</span>
+                          );
                         },
                         others: {
                           maxWidth: 100,
@@ -265,6 +265,19 @@ class SalesInvoiceList extends Component {
                           maxWidth: 150,
                           resizable: false,
                         },
+                      },
+                      {
+                        fieldName: "created_by",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Order By." }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          maxWidth: 250,
+                          resizable: false,
+                          style: { textAlign: "left" },
+                        },
+                        filterable: true,
                       },
                       {
                         fieldName: "sales_order_number",
@@ -334,13 +347,13 @@ class SalesInvoiceList extends Component {
                     pagination={true}
                     isFilterable={true}
                     persistence={this.state.persistence}
-                  // keyId="invoice_number"
-                  // filter={true}
-                  // dataSource={{
-                  //     data: this.state.invoice_list,
-                  // }}
-                  // noDataText="No data available"
-                  // paging={{ page: 0, rowsPerPage: 10 }}
+                    // keyId="invoice_number"
+                    // filter={true}
+                    // dataSource={{
+                    //     data: this.state.invoice_list,
+                    // }}
+                    // noDataText="No data available"
+                    // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>
