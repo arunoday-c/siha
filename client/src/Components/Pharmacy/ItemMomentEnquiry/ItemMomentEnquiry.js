@@ -272,6 +272,9 @@ class ItemMomentEnquiry extends Component {
                                                 ? "Stock Adjustment"
                                                 : "";
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "transaction_date",
@@ -285,6 +288,9 @@ class ItemMomentEnquiry extends Component {
                           <span>{dateFormater(row.transaction_date)}</span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "from_location_id",
@@ -307,6 +313,9 @@ class ItemMomentEnquiry extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "item_code_id",
@@ -369,8 +378,16 @@ class ItemMomentEnquiry extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
-
+                    {
+                      fieldName: "vendor_batchno",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Vendor Batch No." }} />
+                      ),
+                    },
                     {
                       fieldName: "batchno",
                       label: (
@@ -385,6 +402,9 @@ class ItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "transaction_qty",
@@ -392,6 +412,9 @@ class ItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return parseFloat(row.transaction_qty);
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "qtyhand",
@@ -399,6 +422,9 @@ class ItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return parseFloat(row.qtyhand);
                       },
+                      others: {
+                        filterable: false,
+                      }
                     }
                     // {
                     //   fieldName: "average_cost",
@@ -417,6 +443,7 @@ class ItemMomentEnquiry extends Component {
                     // }
                   ]}
                   keyId="item_id"
+                  filter={true}
                   dataSource={{
                     data: this.state.itemmoment,
                   }}
