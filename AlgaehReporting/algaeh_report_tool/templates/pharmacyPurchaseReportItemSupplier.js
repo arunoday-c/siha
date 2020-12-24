@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
           query: `
           SELECT PHR.item_code,PHR.item_description,POH.delivery_note_number,
           POH.dn_date,POH.dn_from,POH.pharmcy_location_id,
-          POH.location_type,VN.vendor_code,VN.vendor_name,POH.vendor_id,
+          POH.location_type,VN.vendor_code,ITL.vendor_batchno,VN.vendor_name,POH.vendor_id,
           POH.purchase_order_id,POH.sub_total,POH.detail_discount,POH.net_total,
           POH.total_tax,POH.net_payable,POH.created_by,POH.hospital_id,
           POD.po_quantity,POD.dn_quantity,POD.free_qty,POD.unit_cost,POD.sales_price,
@@ -45,6 +45,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_procurement_dn_header POH on POH.hims_f_procurement_dn_header_id = POD.hims_f_procurement_dn_header_id
           inner join hims_d_vendor VN on VN.hims_d_vendor_id = POH.vendor_id
           inner join hims_d_item_master PHR on PHR.hims_d_item_master_id = POD.phar_item_id
+          left join hims_m_item_location ITL on ITL.item_id = POD.inv_item_id
           left join hims_f_procurement_po_header PO on PO.hims_f_procurement_po_header_id = POD.purchase_order_header_id
           where POH.cancelled = 'N' ${str} order by PO.po_date DESC;
           `,
