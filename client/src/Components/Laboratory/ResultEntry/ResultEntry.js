@@ -207,7 +207,7 @@ class ResultEntry extends Component {
               <div className="row">
                 <div className="col-12 topbarPatientDetails">
                   <div className="row">
-                    <div className="col">
+                    <div className="col-2">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Patient Name",
@@ -223,7 +223,7 @@ class ResultEntry extends Component {
                         </small>
                       </h6>
                     </div>
-                    <div className="col">
+                    <div className="col-2">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Test Name",
@@ -245,7 +245,7 @@ class ResultEntry extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-2">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Ordered By",
@@ -274,7 +274,7 @@ class ResultEntry extends Component {
                         )}
                       </h6>
                     </div>
-                    <div className="col">
+                    <div className="col-2">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Entered By",
@@ -305,7 +305,7 @@ class ResultEntry extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-2">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Confirmed By",
@@ -336,7 +336,7 @@ class ResultEntry extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-2">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Validtaed By",
