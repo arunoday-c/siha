@@ -228,7 +228,7 @@ export default function PayRollDetails({ EmpMasterIOputs }) {
       <div className="hptl-phase1-add-employee-form popRightDiv">
         <div className="row">
           <div className="col-12">
-            <div className="row" style={{ marginTop: 15 }}>
+            <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
@@ -547,6 +547,7 @@ export default function PayRollDetails({ EmpMasterIOputs }) {
                   keyId="hims_d_employee_earnings_id"
                   data={earningComponents ? earningComponents : []}
                   isEditable={true}
+                  pagination={true}
                   // paging={{ page: 0, rowsPerPage: 10 }}
                   events={
                     {
@@ -782,6 +783,7 @@ export default function PayRollDetails({ EmpMasterIOputs }) {
                   keyId=""
                   data={deductioncomponents ? deductioncomponents : []}
                   isEditable={true}
+                  pagination={true}
                   // paging={{ page: 0, rowsPerPage: 10 }}
                   // events={{
                   //   onDelete: deleteDeductionComponent.bind(this, this),
@@ -1022,6 +1024,7 @@ export default function PayRollDetails({ EmpMasterIOputs }) {
                   // keyId=""
                   data={contributioncomponents ? contributioncomponents : []}
                   isEditable={true}
+                  pagination={true}
                   // paging={{ page: 0, rowsPerPage: 10 }}
                   // events={{
                   //   onDelete: deleteContibuteComponent.bind(this, this),

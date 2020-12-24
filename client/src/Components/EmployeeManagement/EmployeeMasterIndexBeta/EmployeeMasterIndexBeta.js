@@ -304,7 +304,7 @@ export default function EmployeeMasterIndex() {
         </div>
         <div
           className="portlet portlet-bordered margin-bottom-15"
-          style={{ marginTop: 15 }}
+          style={{ marginTop: 10 }}
         >
           <div className="portlet-body">
             <Spin spinning={tableLoading}>

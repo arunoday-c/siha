@@ -15,17 +15,19 @@
   min-width: 97% !important;
   .ant-modal-body {
     min-height: 88vh !important;
+    overflow: hidden !important;
   }
   .ant-modal-body {
     .tabMaster {
       margin: 0 15px;
       overflow: auto;
-      width: calc(100vw - 44px);
+      // width: calc(100vw - 44px);
+      position: relative;
     }
     .popRightDiv {
-      margin-top: 35px;
+      margin-top: 5px;
       padding: 15px 15px 0 15px;
-      min-height: 80vh !important;
+      max-height: 83vh !important;
       overflow: auto;
     }
   }

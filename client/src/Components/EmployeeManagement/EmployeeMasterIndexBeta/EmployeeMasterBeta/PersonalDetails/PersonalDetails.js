@@ -505,10 +505,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     name="nationality"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
-                        div={{
-                          className:
-                            "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
-                        }}
+                        div={{ className: "col-lg-2 form-group" }}
                         label={{
                           forceLabel: "Nationality",
                           isImp: false,
@@ -565,10 +562,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     name="religion_id"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
-                        div={{
-                          className:
-                            "col-lg-2 col-md-2 col-sm-12 mandatory form-group",
-                        }}
+                        div={{ className: "col-lg-2 form-group" }}
                         label={{
                           forceLabel: "Religion",
                           isImp: false,
@@ -629,9 +623,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{
-                          className: "col-lg-2 col-md-2 col-sm-12",
-                        }}
+                        div={{ className: "col-lg-2 mandatory" }}
                         error={errors}
                         label={{
                           forceLabel: "Personal Contact No.",
@@ -679,9 +671,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{
-                          className: "col-lg-2 col-md-2 col-sm-12",
-                        }}
+                        div={{ className: "col-lg-2 mandatory" }}
                         error={errors}
                         label={{
                           forceLabel: "Work Contact No.",
@@ -727,7 +717,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     name="identity_type_id"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
-                        div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                        div={{ className: "col-lg-2 mandatory" }}
                         label={{
                           forceLabel: "PRIMARY ID",
                           isImp: false,
@@ -774,7 +764,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       }}
                     /> */}
                   <div className="col-lg-2 col-md-2 col-sm-12 ">
-                    <label className="styleLabel"> ENTER ID NUMBER</label>
+                    {/* <label className="styleLabel"> ENTER ID NUMBER</label> */}
 
                     {masked_identity ? (
                       <div className="ui input txt-fld">
@@ -797,12 +787,12 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         rules={{ required: "Required" }}
                         render={(props) => (
                           <AlgaehFormGroup
-                            div={{
-                              className: "col-lg-2 col-md-2 col-sm-12",
-                            }}
+                            // div={{
+                            //   className: "col-12",
+                            // }}
                             error={errors}
                             label={{
-                              forceLabel: "",
+                              forceLabel: "ENTER ID NUMBER",
                               isImp: true,
                             }}
                             textBox={{
@@ -859,11 +849,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
-                          className: "col-lg-3 col-sm-12",
+                          className: "col-3 mandatory",
                         }}
                         error={errors}
                         label={{
-                          forceLabel: "Personal Email Id",
+                          forceLabel: "Personal Email ID",
                           isImp: true,
                         }}
                         textBox={{
@@ -908,11 +898,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
-                          className: "col-lg-3 col-sm-12",
+                          className: "col-3 mandatory",
                         }}
                         error={errors}
                         label={{
-                          forceLabel: "Personal Email Id",
+                          forceLabel: "Work Email ID",
                           isImp: true,
                         }}
                         textBox={{
@@ -1076,11 +1066,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         // rules={{ required: "Add Service Amount" }}
                         render={(props) => (
                           <AlgaehFormGroup
-                            div={{ className: "col-2 mandatory form-group" }}
+                            div={{ className: "col-12 form-group" }}
                             error={errors}
                             label={{
                               fieldName: "address",
-                              isImp: true,
+                              isImp: false,
                             }}
                             textBox={{
                               ...props,
@@ -1119,12 +1109,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className:
-                                "col-lg-4 col-sm-12 form-group form-group",
+                              className: "col-lg-4 col-sm-12 form-group",
                             }}
                             label={{
                               fieldName: "country_id",
-                              // isImp: true,
+                              isImp: false,
                             }}
                             error={errors}
                             selector={{
@@ -1152,7 +1141,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                              "col-lg-4 col-sm-12 form-group",
                           }}
                           label={{
                             fieldName: "country_id",
@@ -1188,12 +1177,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className:
-                                "col-lg-4 col-sm-12 form-group form-group",
+                              className: "col-lg-4 col-sm-12 form-group",
                             }}
                             label={{
                               fieldName: "state_id",
-                              // isImp: true,
+                              isImp: false,
                             }}
                             error={errors}
                             selector={{
@@ -1221,7 +1209,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                              "col-lg-4 col-sm-12 form-group",
                           }}
                           label={{
                             fieldName: "state_id",
@@ -1254,12 +1242,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       <Controller
                         name="present_city_id"
                         control={control}
-                        rules={{ required: "Select Procedure" }}
+                        rules={{ required: "Select City" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className:
-                                "col-lg-4 col-sm-12 form-group form-group",
+                              className: "col-lg-4 col-sm-12 form-group",
                             }}
                             label={{
                               fieldName: "city_id",
@@ -1292,7 +1279,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                              "col-lg-4 col-sm-12 form-group",
                           }}
                           label={{
                             fieldName: "city_id",
@@ -1356,11 +1343,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         // rules={{ required: "Add Service Amount" }}
                         render={(props) => (
                           <AlgaehFormGroup
-                            div={{ className: "col-lg-8 col-sm-12 form-group" }}
+                            div={{ className: "col-lg-8 form-group" }}
                             error={errors}
                             label={{
                               fieldName: "address",
-                              isImp: true,
+                              isImp: false,
                             }}
                             textBox={{
                               ...props,
@@ -1402,8 +1389,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className:
-                                "col-lg-4 col-sm-12 form-group form-group",
+                              className: "col-lg-4 col-sm-12 form-group",
                             }}
                             label={{
                               fieldName: "country_id",
@@ -1435,7 +1421,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                              "col-lg-4 col-sm-12 form-group",
                           }}
                           label={{
                             fieldName: "country_id",
@@ -1474,8 +1460,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className:
-                                "col-lg-4 col-sm-12 form-group form-group",
+                              className: "col-lg-4 col-sm-12 form-group",
                             }}
                             label={{
                               fieldName: "state_id",
@@ -1508,7 +1493,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                              "col-lg-4 col-sm-12 form-group",
                           }}
                           label={{
                             fieldName: "state_id",
@@ -1550,8 +1535,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className:
-                                "col-lg-4 col-sm-12 form-group form-group",
+                              className: "col-lg-4 col-sm-12 form-group",
                             }}
                             label={{
                               fieldName: "city_id",
@@ -1584,7 +1568,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                              "col-lg-4 col-sm-12 form-group",
                           }}
                           label={{
                             fieldName: "city_id",
