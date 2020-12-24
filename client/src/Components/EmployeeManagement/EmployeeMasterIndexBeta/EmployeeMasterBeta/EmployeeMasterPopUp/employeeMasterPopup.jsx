@@ -82,21 +82,6 @@ export default function EmployeeMasterPopup({
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "FAMILY & IDENTIFICATION DETAILS",
-                  }}
-                />
-              ),
-              children: (
-                <FamilyAndIdentification
-                  EmpMasterIOputs={employeeDetails.employee_id}
-                />
-              ),
-              componentCode: "EMP_TAB_FAM",
-            },
-            {
-              title: (
-                <AlgaehLabel
-                  label={{
                     forceLabel: "Official Details",
                   }}
                 />
@@ -123,14 +108,16 @@ export default function EmployeeMasterPopup({
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Rules Details",
+                    forceLabel: "FAMILY & IDENTIFICATION DETAILS",
                   }}
                 />
               ),
               children: (
-                <RulesDetails EmpMasterIOputs={employeeDetails.employee_id} />
+                <FamilyAndIdentification
+                  EmpMasterIOputs={employeeDetails.employee_id}
+                />
               ),
-              componentCode: "EMP_TAB_RUL",
+              componentCode: "EMP_TAB_FAM",
             },
             {
               title: (
@@ -146,6 +133,19 @@ export default function EmployeeMasterPopup({
                 />
               ),
               componentCode: "EMP_TAB_COMM",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Rules Details",
+                  }}
+                />
+              ),
+              children: (
+                <RulesDetails EmpMasterIOputs={employeeDetails.employee_id} />
+              ),
+              componentCode: "EMP_TAB_RUL",
             },
           ]}
           // renderClass="PrepaymentCntr"
