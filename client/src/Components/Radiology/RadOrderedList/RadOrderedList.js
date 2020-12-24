@@ -114,14 +114,7 @@ class RadOrderedList extends Component {
               }}
               value={this.state.to_date}
             />
-            <div className="col" style={{ paddingTop: "19px" }}>
-              <button
-                className="btn btn-primary btn-sm"
-                type="button"
-                onClick={getRadTestList.bind(this, this)}
-              >
-                Load
-              </button>
+            <div className="col" style={{ paddingTop: "21px" }}>
               <button
                 className="btn btn-default btn-sm"
                 style={{ marginLeft: "10px" }}
@@ -129,6 +122,13 @@ class RadOrderedList extends Component {
                 onClick={Refresh.bind(this, this)}
               >
                 Clear
+              </button>
+              <button
+                className="btn btn-primary btn-sm"
+                type="button"
+                onClick={getRadTestList.bind(this, this)}
+              >
+                Load
               </button>
             </div>
           </div>
