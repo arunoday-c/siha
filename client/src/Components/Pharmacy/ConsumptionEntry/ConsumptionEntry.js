@@ -70,6 +70,10 @@ class ConsumptionEntry extends Component {
     ) {
       ConsumptionItemsEvents().getCtrlCode(this, this.props.consumption_number);
     }
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("transaction_id")) {
+      ConsumptionItemsEvents().getDrilDownData(this, queryParams.get("transaction_id"));
+    }
   }
 
   componentWillUnmount() {
@@ -147,8 +151,8 @@ class ConsumptionEntry extends Component {
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -194,8 +198,8 @@ class ConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>

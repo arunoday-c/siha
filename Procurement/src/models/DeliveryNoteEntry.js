@@ -866,19 +866,28 @@ export default {
   getDeliveryNoteEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      let strQty = "";
+      if (req.query.transfer_number != null) {
+        strQty += `  H.delivery_note_number= '${req.query.delivery_note_number}'`;
+      }
+
+      if (req.query.transaction_id != null) {
+        strQty += `  H.hims_f_procurement_dn_header_id= '${req.query.transaction_id}'`;
+      }
+
       _mysql
         .executeQuery({
           query:
-            "select DN.*, PH.purchase_number, CASE PH.po_from WHEN 'INV' then IL.location_description \
+            `select H.*, PH.purchase_number, CASE PH.po_from WHEN 'INV' then IL.location_description \
             else PL.location_description end as location_name, V.vendor_name, E.full_name\
-            from hims_f_procurement_dn_header DN \
-            inner join hims_f_procurement_po_header PH on DN.purchase_order_id=PH.hims_f_procurement_po_header_id  \
+            from hims_f_procurement_dn_header H \
+            inner join hims_f_procurement_po_header PH on H.purchase_order_id=PH.hims_f_procurement_po_header_id  \
             inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
-            inner join algaeh_d_app_user U on DN.created_by = U.algaeh_d_app_user_id \
+            inner join algaeh_d_app_user U on H.created_by = U.algaeh_d_app_user_id \
             inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
             left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
             left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id \
-            where DN.delivery_note_number=?; \
+            where ${strQty}; 
             select D.*,CASE H.dn_from WHEN 'INV' then II.item_description else PI.item_description end as \
             item_description,CASE H.dn_from WHEN 'INV' then IU.uom_description else PU.uom_description end as \
             uom_description  from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
@@ -887,11 +896,11 @@ export default {
             left join hims_d_inventory_item_master II on D.inv_item_id= II.hims_d_inventory_item_master_id\
             left join hims_d_pharmacy_uom PU on D.pharmacy_uom_id= PU.hims_d_pharmacy_uom_id\
             left join hims_d_inventory_uom IU on D.inventory_uom_id= IU.hims_d_inventory_uom_id\
-            where delivery_note_number=?;\
+            where ${strQty};
             select B.* from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
             on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id\
             inner join hims_f_procurement_dn_batches B on D.hims_f_procurement_dn_detail_id=B.hims_f_procurement_dn_detail_id\
-            where H.delivery_note_number=?;",
+            where ${strQty};`,
           values: [
             req.query.delivery_note_number,
             req.query.delivery_note_number,

@@ -16,7 +16,8 @@ import {
   generateMaterialTransInv,
   AcknowledgeTransferEntry,
   ReturnCheckboxEvent,
-  getInventoryOptions
+  getInventoryOptions,
+  getDrilDownData
 } from "./InvTransferEntryEvents";
 import "./InvTransferEntry.scss";
 import "../../../styles/site.scss";
@@ -27,8 +28,9 @@ import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
 // import AlgaehReport from "../../Wrapper/printReports";
-import _ from "lodash";
+// import _ from "lodash";
 import { MainContext } from "algaeh-react-components";
+
 
 class InvTransferEntry extends Component {
   constructor(props) {
@@ -148,6 +150,11 @@ class InvTransferEntry extends Component {
       getCtrlCode(this, queryParams.get("transfer_number"), locObj, "Auth");
     }
 
+
+    if (queryParams.get("transaction_id")) {
+      getDrilDownData(this, queryParams.get("transaction_id"));
+    }
+
     if (
       this.props.transfer_number !== undefined &&
       this.props.transfer_number.length !== 0
@@ -162,21 +169,21 @@ class InvTransferEntry extends Component {
   }
 
   render() {
-    let display =
-      this.props.inventorylocations === undefined
-        ? []
-        : this.props.inventorylocations.filter(
-          (f) => f.hims_d_inventory_location_id === this.state.to_location_id
-        );
+    // let display =
+    //   this.props.inventorylocations === undefined
+    //     ? []
+    //     : this.props.inventorylocations.filter(
+    //       (f) => f.hims_d_inventory_location_id === this.state.to_location_id
+    //     );
 
-    const from_location_name =
-      this.state.from_location_id !== null
-        ? _.filter(this.props.invuserwiselocations, (f) => {
-          return (
-            f.hims_d_inventory_location_id === this.state.from_location_id
-          );
-        })
-        : [];
+    // const from_location_name =
+    //   this.state.from_location_id !== null
+    //     ? _.filter(this.props.invuserwiselocations, (f) => {
+    //       return (
+    //         f.hims_d_inventory_location_id === this.state.from_location_id
+    //       );
+    //     })
+    //     : [];
 
     return (
       <React.Fragment>
@@ -277,12 +284,9 @@ class InvTransferEntry extends Component {
                     />
 
                     <h6>
-                      {this.state.from_location_id
-                        ? from_location_name !== null &&
-                          from_location_name.length !== 0
-                          ? from_location_name[0].location_description
-                          : ""
-                        : "To Location "}
+                      {this.state.from_location_description
+                        ? this.state.from_location_description
+                        : "From Location "}
                     </h6>
                   </div>
                 ) : (
@@ -313,34 +317,50 @@ class InvTransferEntry extends Component {
                             </label>
                           </div>
                         </div>
-                        <AlagehAutoComplete
-                          div={{ className: "col-7" }}
-                          label={{ forceLabel: "From Location" }}
-                          selector={{
-                            name: "from_location_id",
-                            className: "select-fld",
-                            value: this.state.from_location_id,
-                            dataSource: {
-                              textField: "location_description",
-                              valueField: "hims_d_inventory_location_id",
-                              data: this.props.invuserwiselocations,
-                            },
-                            onChange: LocationchangeTexts.bind(
-                              this,
-                              this,
-                              "From"
-                            ),
-                            others: {
-                              disabled: this.state.dataExists,
-                            },
-                            onClear: () => {
-                              this.setState({
-                                from_location_id: null,
-                                from_location_type: null,
-                              });
-                            },
-                          }}
-                        />
+                        {this.state.viewData === true ? (
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "From Location",
+                              }}
+                            />
+
+                            <h6>
+                              {this.state.from_location_description
+                                ? this.state.from_location_description
+                                : "From Location "}
+                            </h6>
+                          </div>
+                        ) : (
+                            <AlagehAutoComplete
+                              div={{ className: "col-7" }}
+                              label={{ forceLabel: "From Location" }}
+                              selector={{
+                                name: "from_location_id",
+                                className: "select-fld",
+                                value: this.state.from_location_id,
+                                dataSource: {
+                                  textField: "location_description",
+                                  valueField: "hims_d_inventory_location_id",
+                                  data: this.props.invuserwiselocations,
+                                },
+                                onChange: LocationchangeTexts.bind(
+                                  this,
+                                  this,
+                                  "From"
+                                ),
+                                others: {
+                                  disabled: this.state.dataExists,
+                                },
+                                onClear: () => {
+                                  this.setState({
+                                    from_location_id: null,
+                                    from_location_type: null,
+                                  });
+                                },
+                              }}
+                            />
+                          )}
                       </div>
                     </div>
                   )}
@@ -409,10 +429,8 @@ class InvTransferEntry extends Component {
                         />
 
                         <h6>
-                          {this.state.to_location_id
-                            ? display !== null && display.length !== 0
-                              ? display[0].location_description
-                              : ""
+                          {this.state.to_location_description
+                            ? this.state.to_location_description
                             : "To Location "}
                         </h6>
                       </div>

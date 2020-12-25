@@ -76,17 +76,23 @@ export default {
   gettransferEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let input = req.query;
-      // if (input.from_location_id > 0 && input.to_location_id > 0) {
+
+      // if (input.from_location_id > 0 && input.to_location_id > 0) {      
       let strQty = "";
       if (req.query.transfer_number != null) {
-        strQty = ` and transfer_number= '${req.query.transfer_number}'`;
+        strQty += ` and transfer_number= '${req.query.transfer_number}'`;
+      }
+
+      if (req.query.transaction_id != null) {
+        strQty += ` and hims_f_inventory_transfer_header_id= '${req.query.transaction_id}'`;
       }
 
       _mysql
         .executeQuery({
-          query: `SELECT * from  hims_f_inventory_transfer_header \
-          where 1=1 ${strQty};
+          query: `SELECT *, max(if(H.from_location_id=L.hims_d_inventory_location_id, L.location_description,'')) as from_location_description,
+          max(if(H.to_location_id=L.hims_d_inventory_location_id, L.location_description,'')) as to_location_description from  hims_f_inventory_transfer_header H 
+          inner join hims_d_inventory_location L on (H.from_location_id=L.hims_d_inventory_location_id or H.to_location_id=L.hims_d_inventory_location_id) 
+          where 1=1 ${strQty} group by hims_f_inventory_transfer_header_id;
           select D.*,IM.item_description, IU.uom_description from  hims_f_inventory_transfer_header H inner join \
           hims_f_inventory_transfer_detail D on H.hims_f_inventory_transfer_header_id = D.transfer_header_id \
           inner join hims_d_inventory_item_master IM on D.item_id=IM.hims_d_inventory_item_master_id \
@@ -97,14 +103,6 @@ export default {
           inner join hims_f_inventory_transfer_batches S on D.hims_f_inventory_transfer_detail_id=S.transfer_detail_id
           where 1=1 ${strQty};
            `,
-          values: [
-            input.from_location_id,
-            input.to_location_id,
-            input.from_location_id,
-            input.to_location_id,
-            input.from_location_id,
-            input.to_location_id,
-          ],
           printQuery: true,
         })
         .then((result) => {

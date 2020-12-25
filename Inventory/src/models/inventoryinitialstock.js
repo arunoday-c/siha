@@ -39,13 +39,21 @@ export default {
   getInventoryInitialStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      let strQty = "";
+      if (req.query.transfer_number != null) {
+        strQty += ` and document_number= '${req.query.document_number}'`;
+      }
+
+      if (req.query.transaction_id != null) {
+        strQty += ` and hims_f_inventory_stock_header_id= '${req.query.transaction_id}'`;
+      }
+
       _mysql
         .executeQuery({
           query:
             "SELECT hims_f_inventory_stock_header_id, document_number, docdate, year,\
           period, description, posted  from  hims_f_inventory_stock_header\
-          where record_status='A' AND document_number=?",
-          values: [req.query.document_number],
+          where record_status='A' " + strQty,
           printQuery: true
         })
         .then(headerResult => {

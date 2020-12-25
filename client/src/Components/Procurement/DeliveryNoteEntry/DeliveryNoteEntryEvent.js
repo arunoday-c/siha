@@ -653,6 +653,61 @@ const getCtrlCode = ($this, docNumber, row) => {
   });
 };
 
+const getDrilDownData = ($this, transaction_id) => {
+  AlgaehLoader({ show: true });
+
+
+  algaehApiCall({
+    uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
+    module: "procurement",
+    method: "GET",
+    data: { transaction_id: transaction_id },
+    onSuccess: (response) => {
+      if (response.data.success) {
+        let data = response.data.records;
+        let dn_entry_detail = [];
+
+        for (let i = 0; i < data.po_entry_detail.length; i++) {
+          if (dn_entry_detail.length === 0) {
+            dn_entry_detail = data.po_entry_detail[i].dn_entry_detail;
+          } else {
+            dn_entry_detail = dn_entry_detail.concat(
+              data.po_entry_detail[i].dn_entry_detail
+            );
+          }
+        }
+        data.dn_entry_detail = dn_entry_detail;
+
+        data.ClearDisable = true;
+        data.saveEnable = true;
+        data.dataExitst = true;
+        data.dataFinder = true;
+        data.cannotEdit = true;
+
+        data.addedItem = true;
+        data.itemEnter = true;
+        // if (row !== undefined) {
+        //   data.location_name = row.loc_description;
+        //   data.vendor_name = row.vendor_name;
+        // }
+        data.addItemButton = true;
+        data.printBarcode = false;
+        $this.setState(data, () => {
+          getData($this);
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
+
 const getData = ($this) => {
   if ($this.state.dn_from === "PHR") {
     $this.props.getItems({
@@ -821,4 +876,5 @@ export {
   getPurchaseDetails,
   generateDeliveryNoteReceipt,
   printBulkBarcode,
+  getDrilDownData
 };

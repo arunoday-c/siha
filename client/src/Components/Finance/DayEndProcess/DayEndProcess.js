@@ -107,7 +107,6 @@ class DayEndProcess extends Component {
 
   static contextType = MainContext;
   componentDidMount() {
-    debugger
     (async () => {
       const records = await persistStageOnGet();
 

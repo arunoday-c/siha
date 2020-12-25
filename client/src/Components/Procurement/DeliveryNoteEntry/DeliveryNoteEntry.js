@@ -16,6 +16,7 @@ import {
   getPurchaseDetails,
   generateDeliveryNoteReceipt,
   printBulkBarcode,
+  getDrilDownData
 } from "./DeliveryNoteEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import DNEntry from "../../../Models/DNEntry";
@@ -79,6 +80,10 @@ class DeliveryNoteEntry extends Component {
       this.props.purchase_number.length !== 0
     ) {
       getPurchaseDetails(this, { purchase_number: this.props.purchase_number });
+    }
+
+    if (queryParams.get("transaction_id")) {
+      getDrilDownData(this, queryParams.get("transaction_id"));
     }
   }
 

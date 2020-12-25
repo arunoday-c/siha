@@ -223,6 +223,42 @@ const dateFormater = (value) => {
   // "DD-MM-YYYY"
 };
 
+const getDrilDownData = ($this, transaction_id) => {
+  AlgaehLoader({ show: true });
+
+  algaehApiCall({
+    uri: "/inventoryinitialstock/getInventoryInitialStock",
+    module: "inventory",
+    method: "GET",
+    data: { transaction_id: transaction_id },
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        let data = response.data.records;
+        data.saveEnable = true;
+
+        if (data.posted === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
+        data.dataExitst = true;
+
+
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+
+};
+
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
@@ -558,4 +594,5 @@ export {
   updateInitialStock,
   onChamgeGridQuantity,
   EditGrid,
+  getDrilDownData
 };
