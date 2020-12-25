@@ -13,6 +13,7 @@ import {
   ViewInsurance,
   getCashiersAndShiftMAP,
   generateReceipt,
+  getDrilDownData
   // generateReceiptSmall,
 } from "./SalesReturnEvents";
 import "./SalesReturn.scss";
@@ -91,6 +92,9 @@ class SalesReturn extends Component {
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("sales_return_number")) {
       getCtrlCode(this, queryParams.get("sales_return_number"))
+    }
+    if (queryParams.get("transaction_id")) {
+      getDrilDownData(this, queryParams.get("transaction_id"));
     }
   }
 
@@ -211,7 +215,15 @@ class SalesReturn extends Component {
           >
             {/* Patient code */}
 
-            <div className="col-3 globalSearchCntr">
+            <div className="col-3 globalSearchCntr"
+              style={{
+                cursor: "pointer",
+                pointerEvents:
+                  this.state.trns_history === true
+                    ? "none"
+                    : "",
+              }}
+            >
               <AlgaehLabel label={{ forceLabel: "POS Number" }} />
               <h6 onClick={POSSearch.bind(this, this)}>
                 {this.state.pos_number ? this.state.pos_number : "POS Number"}
@@ -318,6 +330,7 @@ class SalesReturn extends Component {
                     type="button"
                     className="btn btn-default"
                     onClick={ClearData.bind(this, this)}
+                    disabled={this.state.clearData}
                   >
                     <AlgaehLabel
                       label={{ forceLabel: "Clear", returnText: true }}

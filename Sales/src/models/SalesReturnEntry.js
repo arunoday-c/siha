@@ -6,7 +6,14 @@ import moment from "moment";
 export function getSalesReturn(req, res, next) {
     const _mysql = new algaehMysql();
     try {
-        console.log("getSalesReturn: ")
+        let strQty = "";
+        if (req.query.sales_return_number != null) {
+            strQty += ` H.sales_return_number= '${req.query.sales_return_number}'`;
+        }
+
+        if (req.query.transaction_id != null) {
+            strQty += ` H.hims_f_sales_return_header_id= '${req.query.transaction_id}'`;
+        }
         _mysql
             .executeQuery({
                 query: "SELECT H.*, C.customer_name,HS.hospital_name, IH.invoice_number, P.project_desc as project_name, \
@@ -16,7 +23,7 @@ export function getSalesReturn(req, res, next) {
                 inner join  hims_d_inventory_location L on  L.hims_d_inventory_location_id = H.location_id \
                 inner join hims_d_project P  on P.hims_d_project_id = H.project_id  \
                 inner join  hims_d_hospital HS on  H.hospital_id = HS.hims_d_hospital_id \
-                where H.sales_return_number =?",
+                where " + strQty,
                 values: [req.query.sales_return_number],
                 printQuery: true
             })
