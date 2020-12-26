@@ -559,7 +559,7 @@ class RadScheduledList extends Component {
                         },
                         others: {
                           fixed: "left",
-                          maxWidth: 70,
+                          maxWidth: 90,
                           resizable: false,
                           filterable: false,
                         },
