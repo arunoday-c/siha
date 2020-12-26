@@ -357,9 +357,13 @@ const generateLoanReconilationReport = ($this) => {
     },
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Reconciliation Report - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
-      window.open(origin);
+      const a = document.createElement("a");
+      a.href = urlBlob;
+      a.download = `Loan Reconciliation Report ${moment(
+        $this.state.inputs.month,
+        "MM"
+      ).format("MMM")}-${$this.state.inputs.year}.${"xlsx"}`;
+      a.click();
     },
   });
 };
@@ -441,7 +445,8 @@ const generateLeaveReconilationReport = ($this) => {
 
 const generateGratuityReconilationReport = ($this) => {
   algaehApiCall({
-    uri: "/report",
+    // uri: "/report",
+    uri: "/excelReport",
     method: "GET",
     module: "reports",
     headers: {
@@ -489,19 +494,19 @@ const generateGratuityReconilationReport = ($this) => {
         outputFileType: "EXCEL", //"EXCEL", //"PDF",
       },
     },
+
     onSuccess: (res) => {
-      let blob = new Blob([res.data], {
-        type: "application/octet-stream",
-      });
-      const fileName = `EmployeeMaster.xlsx`;
-      var objectUrl = URL.createObjectURL(blob);
-      var link = document.createElement("a");
-      link.setAttribute("href", objectUrl);
-      link.setAttribute("download", fileName);
-      link.click();
+      const urlBlob = URL.createObjectURL(res.data);
+      const a = document.createElement("a");
+      a.href = urlBlob;
+      a.download = `Gratuity Reconciliation Report ${moment(
+        $this.state.inputs.month,
+        "MM"
+      ).format("MMM")}-${$this.state.inputs.year}.${"xlsx"}`;
+      a.click();
 
       // const urlBlob = URL.createObjectURL(res.data);
-      // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Gratuity Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
+      // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave and Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
       // window.open(origin);
     },
   });
