@@ -1,3 +1,4 @@
+/*eslint no-eval: 0*/
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -47,7 +48,7 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, value, status) => {
-  debugger
+  debugger;
   value[0].comments = $this.state.comment_list.join("<br/>");
   const critical_exit = _.filter(value, (f) => {
     return f.critical_status === "Y";
@@ -179,13 +180,21 @@ const getAnalytes = ($this) => {
         //   }
         // }
 
-
         for (let i = 0; i < response.data.records.length; i++) {
-          debugger
-          response.data.records[i].text_value = response.data.records[i].text_value !== null ? response.data.records[i].text_value.split("<br/>") : [];
+          debugger;
+          response.data.records[i].text_value =
+            response.data.records[i].text_value !== null
+              ? response.data.records[i].text_value.split("<br/>")
+              : [];
         }
+        const records_test_formula = _.filter(
+          response.data.records,
+          (f) => f.formula !== null
+        );
+
         $this.setState(
           {
+            records_test_formula,
             test_analytes: response.data.records,
             ordered_by_name: response.data.records[0].ordered_by_name,
             entered_by_name: response.data.records[0].entered_by_name,
@@ -405,19 +414,67 @@ const onchangegridresult = ($this, row, e) => {
   let value = e.value || e.target.value;
   let { test_analytes } = $this.state;
   // let critical_status = "N";
+  const records_test = $this.state.records_test_formula;
+  //"[345]/[890]/[590]*100".match(/\d+]/g)
   row[name] = value;
 
-  for (let l = 0; l < test_analytes.length; l++) {
-    if (
-      test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
-    ) {
-      row["critical_type"] = checkRange(row);
-      if (row["critical_type"] !== "N") {
-        row["critical_status"] = "Y";
+  const indexOfArray = test_analytes.findIndex(
+    (f) => f.hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+  );
+  row["critical_type"] = checkRange(row);
+  if (row["critical_type"] !== "N") {
+    row["critical_status"] = "Y";
+  }
+  test_analytes[indexOfArray] = row;
+
+  for (let i = 0; i < records_test.length; i++) {
+    const { formula, analyte_id } = records_test[i];
+    if (formula) {
+      let executableFormula = formula;
+      const _aFormula = formula.match(/\d+]/g);
+      for (let j = 0; j < _aFormula.length; j++) {
+        const formula_id = _aFormula[j].replace(/\]/g, "");
+        const _record = test_analytes.find(
+          (f) => String(f.analyte_id) === formula_id
+        );
+        if (_record) {
+          if (_record.result !== "") {
+            const formula_reg = new RegExp(`${formula_id}`, "g");
+            executableFormula = executableFormula
+              .replace(formula_reg, _record.result)
+              .replace(/\[/gi, "")
+              .replace(/\]/gi, "");
+          } else {
+            executableFormula = "";
+          }
+        }
       }
-      test_analytes[l] = row;
+      const otherValue = eval(executableFormula);
+      // console.log("otherValue", otherValue);
+      const analyte_index = test_analytes.findIndex(
+        (f) => f.analyte_id === analyte_id
+      );
+
+      test_analytes[analyte_index]["result"] = String(otherValue);
+      test_analytes[analyte_index]["critical_type"] = checkRange(
+        test_analytes[analyte_index]
+      );
     }
   }
+
+  // console.log("indexOfArray", indexOfArray);
+
+  // for (let l = 0; l < test_analytes.length; l++) {
+  //   if (
+  //     test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+  //   ) {
+  //     row["critical_type"] = checkRange(row);
+  //     if (row["critical_type"] !== "N") {
+  //       row["critical_status"] = "Y";
+  //     }
+  //     test_analytes[l] = row;
+  //   }
+  // }
   $this.setState({
     test_analytes,
   });
@@ -561,15 +618,15 @@ const ongridEditRanges = ($this, row, e) => {
   test_analytes[_index] = row;
 
   $this.setState({
-    test_analytes: test_analytes
+    test_analytes: test_analytes,
   });
-}
+};
 
 const eidtRanges = ($this) => {
   $this.setState({
-    edit_range: !$this.state.edit_range
-  })
-}
+    edit_range: !$this.state.edit_range,
+  });
+};
 
 export {
   texthandle,
@@ -585,5 +642,5 @@ export {
   addComments,
   deleteComment,
   ongridEditRanges,
-  eidtRanges
+  eidtRanges,
 };

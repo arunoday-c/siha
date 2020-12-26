@@ -54,6 +54,7 @@ class ResultEntry extends Component {
       confirm_by_name: "",
       validate_by_name: "",
       edit_range: false,
+      records_test_formula: [],
     };
   }
 
@@ -262,7 +263,7 @@ class ResultEntry extends Component {
                           >
                             On{" "}
                             {moment(this.state.ordered_date).format(
-                              Options.dateFormat
+                              `${Options.dateFormat} ${Options.timeFormat}`
                             )}
                           </small>
                         ) : (
@@ -292,7 +293,7 @@ class ResultEntry extends Component {
                           >
                             On{" "}
                             {moment(this.state.entered_date).format(
-                              Options.dateFormat
+                              `${Options.dateFormat} ${Options.timeFormat}`
                             )}
                           </small>
                         ) : (
@@ -323,7 +324,7 @@ class ResultEntry extends Component {
                           >
                             On{" "}
                             {moment(this.state.confirmed_date).format(
-                              Options.dateFormat
+                              `${Options.dateFormat} ${Options.timeFormat}`
                             )}
                           </small>
                         ) : (
@@ -354,7 +355,7 @@ class ResultEntry extends Component {
                           >
                             On{" "}
                             {moment(this.state.entered_date).format(
-                              Options.dateFormat
+                              `${Options.dateFormat} ${Options.timeFormat}`
                             )}
                           </small>
                         ) : (
@@ -426,28 +427,28 @@ class ResultEntry extends Component {
                             },
                           },
                           {
-                            fieldName: "analyte_id",
+                            fieldName: "description", //"analyte_id",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Analyte" }} />
                             ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.labanalytes === undefined
-                                  ? []
-                                  : this.props.labanalytes.filter(
-                                      (f) =>
-                                        f.hims_d_lab_analytes_id ===
-                                        row.analyte_id
-                                    );
+                            // displayTemplate: (row) => {
+                            //   let display =
+                            //     this.props.labanalytes === undefined
+                            //       ? []
+                            //       : this.props.labanalytes.filter(
+                            //           (f) =>
+                            //             f.hims_d_lab_analytes_id ===
+                            //             row.analyte_id
+                            //         );
 
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].description
-                                    : ""}
-                                </span>
-                              );
-                            },
+                            //   return (
+                            //     <span>
+                            //       {display !== null && display.length !== 0
+                            //         ? display[0].description
+                            //         : ""}
+                            //     </span>
+                            //   );
+                            // },
                             others: {
                               minWidth: 250,
                               resizable: false,

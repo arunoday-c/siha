@@ -9,14 +9,16 @@ export function AddAnalytes() {
     onSuccess: () => {
       const { state } = this.context;
       let analytes = state.analytes;
-      const analyte_exists = analytes.find(f => f.analyte_id === state.analyte_id)
+      const analyte_exists = analytes.find(
+        (f) => f.analyte_id === state.analyte_id
+      );
 
       if (analyte_exists !== undefined) {
         swalMessage({
           type: "warning",
           title: "Selected Analyte Already Exists in List",
         });
-        return
+        return;
       }
       let insert_analytes = state.insert_analytes;
 
@@ -87,6 +89,8 @@ export function updateAnalyteGroup(row, rowId) {
       data: {
         hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
         analyte_report_group: row.analyte_report_group,
+        original_formula: row.original_formula,
+        display_formula: row.display_formula,
       },
       method: "PUT",
       onSuccess: (response) => {

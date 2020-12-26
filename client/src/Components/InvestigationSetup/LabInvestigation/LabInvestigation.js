@@ -9,6 +9,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
+  // AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
 import {
   texthandle,
@@ -23,12 +24,18 @@ import variableJson from "../../../utils/GlobalVariables.json";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import MyContext from "../../../utils/MyContext.js";
+// import { AlgaehModal, AlgaehFormGroup } from "algaeh-react-components";
 // import { swalMessage } from "../../../utils/algaehApiCall";
-
+import Formula from "./Formula";
 class LabInvestigation extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      openFormula: false,
+      original_formula: "",
+      formula_description: "",
+      selectedRow: {},
+    };
   }
 
   static contextType = MyContext;
@@ -110,10 +117,30 @@ class LabInvestigation extends Component {
   updateLabInvestigation = updateLabInvestigation.bind(this);
   updateAnalyteGroup = updateAnalyteGroup.bind(this);
 
+  showFormulaPopup(row) {
+    this.setState({
+      openFormula: true,
+      selectedRow: row,
+    });
+  }
+  closeFormulaPopup() {
+    this.setState({
+      openFormula: false,
+      // original_formula: "",
+      // formula_description: "",
+    });
+  }
+
   render() {
     const { state } = this.context;
     return (
       <React.Fragment>
+        <Formula
+          openFormula={this.state.openFormula}
+          closeFormulaPopup={this.closeFormulaPopup.bind(this)}
+          selectedRow={this.state.selectedRow}
+          analytes={state.analytes}
+        />
         <div className="row">
           <div className="col-3">
             <div className="row">
@@ -260,49 +287,52 @@ class LabInvestigation extends Component {
                       id="analyte_grid"
                       columns={[
                         {
-                          fieldName: "analyte_id",
+                          fieldName: "analyte_description",
                           label: (
                             <AlgaehLabel label={{ fieldName: "analytes_id" }} />
                           ),
-                          displayTemplate: (row) => {
-                            let display =
-                              this.props.labanalytes === undefined
-                                ? []
-                                : this.props.labanalytes.filter(
-                                    (f) =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].description
-                                  : ""}
-                              </span>
-                            );
-                          },
                           editorTemplate: (row) => {
-                            let display =
-                              this.props.labanalytes === undefined
-                                ? []
-                                : this.props.labanalytes.filter(
-                                    (f) =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].description
-                                  : ""}
-                              </span>
-                            );
+                            return <span>{row.analyte_description}</span>;
                           },
+                          // displayTemplate: (row) => {
+                          //   let display =
+                          //     this.props.labanalytes === undefined
+                          //       ? []
+                          //       : this.props.labanalytes.filter(
+                          //           (f) =>
+                          //             f.hims_d_lab_analytes_id ===
+                          //             row.analyte_id
+                          //         );
+
+                          //   return (
+                          //     <span>
+                          //       {display !== null && display.length !== 0
+                          //         ? display[0].description
+                          //         : ""}
+                          //     </span>
+                          //   );
+                          // },
+                          // editorTemplate: (row) => {
+                          //   let display =
+                          //     this.props.labanalytes === undefined
+                          //       ? []
+                          //       : this.props.labanalytes.filter(
+                          //           (f) =>
+                          //             f.hims_d_lab_analytes_id ===
+                          //             row.analyte_id
+                          //         );
+
+                          //   return (
+                          //     <span>
+                          //       {display !== null && display.length !== 0
+                          //         ? display[0].description
+                          //         : ""}
+                          //     </span>
+                          //   );
+                          // },
                           others: {
                             minWidth: 200,
-                            style: { textAlign: "left" },
+                            // style: { textAlign: "left" },
                           },
                         },
                         {
@@ -353,8 +383,28 @@ class LabInvestigation extends Component {
                             );
                           },
                           others: {
-                            minWidth: 200,
+                            minWidth: 150,
                             style: { textAlign: "left" },
+                          },
+                        },
+                        {
+                          fieldName: "display_formula",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Formula" }} />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <div>
+                                <label>{row.display_formula}</label>
+                                <i
+                                  className="fas fa-pen"
+                                  onClick={this.showFormulaPopup.bind(
+                                    this,
+                                    row
+                                  )}
+                                />
+                              </div>
+                            );
                           },
                         },
                       ]}
