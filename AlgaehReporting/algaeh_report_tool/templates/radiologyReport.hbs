@@ -2,31 +2,41 @@
 <div class="print-body">
     <section>
 
-        <table class="tableForLabel" cell-padding="0">
+        <table class="tableNoBorder" cell-padding="0">
 
             <tr>
-                <td style="width:20%"><label>رقم الملف الطبي / Reg. Number</label></td>
-                <td> <span>{{firstElement result 0 "patient_code"}}</span></td>
-            </tr>
-            <tr>
-                <td style="width:20%"><label>اسم المريض / Patient Name</label></td>
-                <td><span>{{firstElement result 0 "patient_full_name"}}</span></td>
-
-            </tr>
-            <tr>
-                <td style="width:20%"><label>اسم الطبيب / Doctor</label></td>
-                <td> <span>{{firstElement result 0 "ordered_by"}}</span></td>
-
+                <td><label>رقم الملف الطبي / Reg. Number</label><p><b>{{firstElement result 0 "patient_code"}}</b></p></td>
+                <td><label>اسم المريض / Patient Name</label><p><b>{{firstElement result 0 "patient_full_name"}}</b></p></td>
+               <td><label>اسم الطبيب / Doctor</label><p><b>{{firstElement result 0 "refer_by"}}</b></p></td>
             </tr>
         </table>
+        <hr/>
+
+     <p style="text-align: center;"><b> {{firstElement result 0 "template_name"}}</b></p>
     </section>
-    <center> <strong> {{firstElement result 0 "template_name"}} </strong></center>
+   <section>
+  <table class="tableNoBorder" cell-padding="0">
+     <tr><td>{{{firstElement result 0 "result_html"}}}</td></tr>
+     </table>
+   <p> <label> Comments: </label> <span> <strong> {{firstElement result 0 "comments"}} </strong></p>
+   </section>
 
-    {{{firstElement result 0 "result_html"}}}
-    </br></br></br>
+    <table class="tableForLabel" cell-padding="0">
 
-    <label> Comments: </label> <span> <strong> {{firstElement result 0 "comments"}} </strong></span>
+            <tr>
+                <td><label>Performed by</label><p><b>{{firstElement result 0 "perform_by"}}</b></p></td>
+                <td><label>Report Prepared by</label><p><b>{{firstElement result 0 "scheduled_by"}}</b></p></td>
+               <td><label>Reviewed by</label><p><b>{{firstElement result 0 "attended_by"}}</b></p></td>
+            </tr>
+              <tr>
+                <td><label>Signed by</label><p><b>{{firstElement result 0 "validate_by"}}</b></p></td>
+                <td><label>Seal</label><p><b></b></p></td>
+               <td><label>Date</label><p><b>{{firstElement result 0 "validate_date_time"}}</b></p></td>
+            </tr>
+        </table>
+
+    {{!-- <label> Comments: </label> <span> <strong> {{firstElement result 0 "comments"}} </strong></span>
     </br></br>
     <footer><label> Validated By: </label> <span> <strong> {{firstElement result 0 "validate_by"}} </strong></span>
-    </footer>
+    </footer> --}}
 </div>
