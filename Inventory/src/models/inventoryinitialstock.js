@@ -13,18 +13,18 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["INV_STK_DOC"],
-          table_name: "hims_f_inventory_numgen"
+          table_name: "hims_f_inventory_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           req.body.document_number = generatedNumbers.INV_STK_DOC;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -39,16 +39,25 @@ export default {
   getInventoryInitialStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      let strQty = "";
+      //document_number
+      if (req.query.document_number != null) {
+        strQty += ` and document_number= '${req.query.document_number}'`;
+      }
+      if (req.query.transaction_id != null) {
+        strQty += ` and hims_f_inventory_stock_header_id= '${req.query.transaction_id}'`;
+      }
+
       _mysql
         .executeQuery({
           query:
             "SELECT hims_f_inventory_stock_header_id, document_number, docdate, year,\
           period, description, posted  from  hims_f_inventory_stock_header\
-          where record_status='A' AND document_number=?",
-          values: [req.query.document_number],
-          printQuery: true
+          where record_status='A' " +
+            strQty,
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -60,17 +69,17 @@ export default {
                 hims_f_inventory_stock_detail SD, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU where SD.inventory_stock_header_id=? and \
                 SD.record_status='A'  and SD.item_id = IM.hims_d_inventory_item_master_id and SD.uom_id = IU.hims_d_inventory_uom_id",
                 values: [headerResult[0].hims_f_inventory_stock_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(inventory_stock_detail => {
+              .then((inventory_stock_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ inventory_stock_detail }
+                  ...{ inventory_stock_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -80,7 +89,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -120,11 +129,11 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           req.body.transaction_id = headerResult.insertId;
           req.body.year = year;
           req.body.period = period;
@@ -147,7 +156,7 @@ export default {
             "unit_cost",
             "extended_cost",
             "comment",
-            "sales_price"
+            "sales_price",
           ];
 
           _mysql
@@ -160,30 +169,30 @@ export default {
                 created_by: req.userIdentity.algaeh_d_app_user_id,
                 created_date: new Date(),
                 updated_by: req.userIdentity.algaeh_d_app_user_id,
-                updated_date: new Date()
+                updated_date: new Date(),
               },
               bulkInsertOrUpdate: true,
-              printQuery: true
+              printQuery: true,
             })
-            .then(detailResult => {
+            .then((detailResult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = {
                   document_number: input.document_number,
                   hims_f_inventory_stock_header_id: headerResult.insertId,
                   year: year,
-                  period: period
+                  period: period,
                 };
                 next();
               });
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -196,7 +205,6 @@ export default {
   },
 
   updateInventoryInitialStock: (req, res, next) => {
-
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
@@ -212,12 +220,12 @@ export default {
             inputParam.posted,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_f_inventory_stock_header_id
+            inputParam.hims_f_inventory_stock_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
-          let UpdateQry = ""
+        .then((headerResult) => {
+          let UpdateQry = "";
           for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
             UpdateQry += mysql.format(
               "UPDATE `hims_f_inventory_stock_detail` SET barcode=?, batchno=? \
@@ -225,25 +233,26 @@ export default {
               [
                 inputParam.inventory_stock_detail[i].barcode,
                 inputParam.inventory_stock_detail[i].batchno,
-                inputParam.inventory_stock_detail[i].hims_f_inventory_stock_detail_id
+                inputParam.inventory_stock_detail[i]
+                  .hims_f_inventory_stock_detail_id,
               ]
             );
           }
           _mysql
             .executeQuery({
               query: UpdateQry,
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -253,5 +262,5 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };

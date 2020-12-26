@@ -11,18 +11,23 @@ import {
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
+// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   dateFormater,
   datehandle,
   ProcessItemMoment,
   dateValidate,
+  DrillDownScree
 } from "./InvItemMomentEnquiryEvents";
 import "./InvItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import {
+  // AlgaehTable,
+  Tooltip
+} from "algaeh-react-components";
 
 class InvItemMomentEnquiry extends Component {
   constructor(props) {
@@ -34,7 +39,7 @@ class InvItemMomentEnquiry extends Component {
       item_code_id: null,
       from_date: null,
       to_date: null,
-      barcode: null,
+      vendor_batchno: null,
       transaction_type: null,
     };
   }
@@ -78,7 +83,7 @@ class InvItemMomentEnquiry extends Component {
     return (
       <React.Fragment>
         <div>
-          <BreadCrumb
+          {/* <BreadCrumb
             title={
               <AlgaehLabel
                 label={{ forceLabel: "Item Moment Enquiry", align: "ltr" }}
@@ -104,7 +109,7 @@ class InvItemMomentEnquiry extends Component {
           //     )
           //   }
           // ]}
-          />
+          /> */}
 
           <div
             className="hptl-phase1-item-moment-enquiry-form"
@@ -112,7 +117,7 @@ class InvItemMomentEnquiry extends Component {
           >
             <div
               className="row inner-top-search"
-              style={{ marginTop: 76, paddingBottom: 10 }}
+              style={{ paddingBottom: 10 }}
             >
               <div className="col-lg-12">
                 <div className="row">
@@ -161,12 +166,12 @@ class InvItemMomentEnquiry extends Component {
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      forceLabel: "Item Barcode",
+                      forceLabel: "Vendor BatchNo.",
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "barcode",
-                      value: this.state.barcode,
+                      name: "vendor_batchno",
+                      value: this.state.vendor_batchno,
                       events: {
                         onChange: changeTexts.bind(this, this),
                       },
@@ -233,6 +238,33 @@ class InvItemMomentEnquiry extends Component {
                   id="initial_stock"
                   columns={[
                     {
+                      fieldName: "select_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Select" }} />
+                      ),
+                      displayTemplate: (row) => (
+                        <>
+
+                          <Tooltip title="DrillDown">
+                            <i
+                              className="fa fa-exchange-alt"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                DrillDownScree(row, this);
+                              }}
+                            ></i>
+                          </Tooltip>
+
+                        </>
+                      ),
+
+                      others: {
+                        width: 70,
+                        maxWidth: 200,
+                        filterable: false,
+                      },
+                    },
+                    {
                       fieldName: "transaction_type",
                       label: (
                         <AlgaehLabel
@@ -270,6 +302,9 @@ class InvItemMomentEnquiry extends Component {
                                                     ? "Sales Dispatch Note"
                                                     : "";
                       },
+                      others: {
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "transaction_date",
@@ -283,6 +318,9 @@ class InvItemMomentEnquiry extends Component {
                           <span>{dateFormater(row.transaction_date)}</span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "from_location_id",
@@ -305,6 +343,9 @@ class InvItemMomentEnquiry extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "item_code_id",
@@ -368,8 +409,17 @@ class InvItemMomentEnquiry extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
 
+                    {
+                      fieldName: "vendor_batchno",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Vendor Batch No." }} />
+                      ),
+                    },
                     {
                       fieldName: "batchno",
                       label: (
@@ -384,6 +434,9 @@ class InvItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "transaction_qty",
@@ -391,6 +444,9 @@ class InvItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return parseFloat(row.transaction_qty);
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "qtyhand",
@@ -398,6 +454,9 @@ class InvItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return parseFloat(row.qtyhand);
                       },
+                      others: {
+                        filterable: false,
+                      }
                     }
                     // {
                     //   fieldName: "average_cost",
@@ -419,6 +478,7 @@ class InvItemMomentEnquiry extends Component {
                   dataSource={{
                     data: this.state.Inventory_Itemmoment,
                   }}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>

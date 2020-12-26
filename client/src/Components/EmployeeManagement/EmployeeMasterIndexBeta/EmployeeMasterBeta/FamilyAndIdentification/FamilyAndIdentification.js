@@ -131,37 +131,24 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
 
   const AddEmpId = (e) => {
     debugger;
-    let idDetail = idDetails;
-    const {
-      identity_documents_id,
-      identity_number,
-      valid_upto,
-      issue_date,
-    } = getValues();
+    let idDetail = [...idDetails];
+    const { identity_documents_id, identity_number, valid_upto } = getValues();
     let hijriConverted = hijri(valid_upto).format("iD-iM-iYYYY");
 
     let inpObj = {
+      alert_date: null,
+      alert_required: "N",
       employee_id: EmpMasterIOputs ? EmpMasterIOputs : "",
-      identity_documents_id: identity_documents_id,
+      identity_documents_id: parseInt(identity_documents_id),
       identity_number: identity_number,
-      valid_upto: valid_upto,
+      valid_upto: moment(valid_upto).format("YYYY-MM-DD"),
       hijri_valid_upto: hijriConverted,
-      issue_date: issue_date,
-
-      // alert_required: alert_required,
-      // alert_date: alert_date,
+      issue_date: null,
     };
 
     idDetail.push(inpObj);
-    // insertIdDetails.push(inpObj);
-    setIdDetails((previousState) => {
-      debugger;
-      //idDetail
-      //console.log("previousState", previousState);
-      const drgf = [...previousState];
-      console.log("drgf", drgf);
-      return [];
-    });
+
+    setIdDetails(() => [...idDetail]);
     reset({});
   };
   const addDependentType = (e) => {
@@ -184,8 +171,9 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
 
     dependentDetail.push(inpObj);
 
-    // setDependentDetails(dependentDetail);
-    // reset({});
+    setDependentDetails([...dependentDetail]);
+
+    reset({});
   };
 
   const deleteIdentifications = (row) => {
@@ -199,20 +187,20 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
-        let idDetail = idDetails;
+        let idDetail = [...idDetails];
 
         if (row.hims_d_employee_identification_id !== undefined) {
           idDetail.splice(row.rowIdx, 1);
         } else {
           idDetail.splice(row.rowIdx, 1);
         }
-        setIdDetails(idDetail);
+        setIdDetails([...idDetail]);
       }
     });
   };
 
   const updateIdentifications = (row) => {
-    let idDetail = idDetails;
+    let idDetail = [...idDetails];
 
     if (row.hims_d_employee_identification_id !== undefined) {
       let hijriConverted = hijri(row.valid_upto).format("iD-iM-iYYYY");
@@ -331,7 +319,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                 name="identity_documents_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
-                    div={{ className: "col-3 mandatory form-group" }}
+                    div={{ className: "col mandatory" }}
                     label={{
                       forceLabel: "Id Type",
                       isImp: true,
@@ -386,7 +374,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                 rules={{ required: "Required" }}
                 render={(props) => (
                   <AlgaehFormGroup
-                    div={{ className: "col-3 mandatory" }}
+                    div={{ className: "col mandatory" }}
                     error={errors}
                     label={{
                       forceLabel: "Id Number",
@@ -465,7 +453,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                 render={({ onChange, value }) => (
                   <AlgaehDateHandler
                     div={{
-                      className: "col-lg-3 mandatory",
+                      className: "col mandatory",
                       tabIndex: "5",
                     }}
                     error={errors}
@@ -519,7 +507,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
           /> */}
               <AlgaehHijriDatePicker
                 div={{
-                  className: "col-lg-3 mandatory HijriCalendar",
+                  className: "col mandatory HijriCalendar",
                   tabIndex: "6",
                 }}
                 gregorianDate={valid_upto || null}
@@ -550,7 +538,10 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               onChange: hijriOnChange.bind(this, this),
             }}
           ></AlgaehHijriDatePicker> */}
-              <div className="col" style={{ textAlign: "right" }}>
+              <div
+                className="col-2"
+                style={{ textAlign: "right", marginTop: 21 }}
+              >
                 <button
                   type="button"
                   className="btn btn-default"
@@ -561,161 +552,161 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                   Add
                 </button>
               </div>
-              <div className="row">
-                <div className="col-lg-12 margin-top-15">
-                  {console.log("idDetails", idDetails)}
-                  <AlgaehDataGrid
-                    id="identity_documents_id"
-                    columns={[
-                      {
-                        fieldName: "identity_documents_id",
-                        label: "ID Type",
-                        displayTemplate: (row) => {
-                          let display =
-                            idtypes === undefined
-                              ? []
-                              : idtypes.filter(
-                                  (f) =>
-                                    f.hims_d_identity_document_id ===
-                                    row.identity_documents_id
-                                );
+            </div>
+            <div className="row">
+              <div className="col-lg-12 " id="employeeId_DetailsGrid_Cntr">
+                {console.log("idDetails", idDetails)}
+                <AlgaehDataGrid
+                  id="identity_documents_id"
+                  columns={[
+                    {
+                      fieldName: "identity_documents_id",
+                      label: "ID Type",
+                      displayTemplate: (row) => {
+                        let display =
+                          idtypes === undefined
+                            ? []
+                            : idtypes.filter(
+                                (f) =>
+                                  f.hims_d_identity_document_id ===
+                                  row.identity_documents_id
+                              );
 
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].identity_document_name
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          let display =
-                            idtypes === undefined
-                              ? []
-                              : idtypes.filter(
-                                  (f) =>
-                                    f.hims_d_identity_document_id ===
-                                    row.identity_documents_id
-                                );
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].identity_document_name
+                              : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: (row) => {
+                        let display =
+                          idtypes === undefined
+                            ? []
+                            : idtypes.filter(
+                                (f) =>
+                                  f.hims_d_identity_document_id ===
+                                  row.identity_documents_id
+                              );
 
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].identity_document_name
-                                : ""}
-                            </span>
-                          );
-                        },
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].identity_document_name
+                              : ""}
+                          </span>
+                        );
                       },
-                      {
-                        fieldName: "identity_number",
-                        label: "ID Number",
-                        editorTemplate: (row) => {
-                          return (
-                            <AlgaehFormGroup
-                              div={{}}
-                              textBox={{
-                                defaultValue: row.identity_number,
-                                className: "txt-fld",
-                                name: "identity_number",
-                              }}
-                              events={{
-                                onChange: (e) => {
-                                  console.log("Event reaised identity_number");
-                                  onchangegridcol(row);
-                                },
-                              }}
-                            />
-                          );
-                        },
+                    },
+                    {
+                      fieldName: "identity_number",
+                      label: "ID Number",
+                      editorTemplate: (row) => {
+                        return (
+                          <AlgaehFormGroup
+                            div={{}}
+                            textBox={{
+                              defaultValue: row.identity_number,
+                              className: "txt-fld",
+                              name: "identity_number",
+                            }}
+                            events={{
+                              onChange: (e) => {
+                                console.log("Event reaised identity_number");
+                                onchangegridcol(row);
+                              },
+                            }}
+                          />
+                        );
                       },
+                    },
 
-                      {
-                        fieldName: "hijri_valid_upto",
-                        label: "Hijri Valid Upto",
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {hijri(row.valid_upto).format("iD-iM-iYYYY")}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <AlgaehHijriDatePicker
-                              div={{
-                                className: "",
-                                // tabIndex: "6",
-                              }}
-                              // textBox={{
-                              //   className: "txt-fld ",
-                              //   // name: "valid_upto",
-                              // }}
-                              // label={{ forceLabel: "Hijiri Date" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "hijri_date",
-                              }}
-                              type="hijri"
-                              // minDate={new Date()}
-                              gregorianDate={row.valid_upto}
-                              updateInternally={true}
-                              // gregorianDate={this.state.valid_upto}
-                              events={{
-                                onChange: (e) => {
-                                  datehandlegrid(row, e);
-                                },
-                              }}
-                            ></AlgaehHijriDatePicker>
-                          );
-                        },
+                    {
+                      fieldName: "hijri_valid_upto",
+                      label: "Hijri Valid Upto",
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {hijri(row.valid_upto).format("iD-iM-iYYYY")}
+                          </span>
+                        );
                       },
-                      {
-                        fieldName: "valid_upto",
-                        label: "Valid Upto",
-                        displayTemplate: (row) => {
-                          return <span>{row.valid_upto}</span>;
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <AlgaehDateHandler
-                              label={{}}
-                              // div={{ className: "" }}
-                              textBox={{
-                                className: "form-control",
-                                name: "valid_upto",
-                                value: moment(row.valid_upto),
-                              }}
-                              // minDate={new Date()}
-                              events={{
-                                onChange: (e) => {
-                                  debugger;
-                                  datehandlegrid(row, e);
-                                },
-                              }}
-                              updateInternally={true}
+                      editorTemplate: (row) => {
+                        return (
+                          <AlgaehHijriDatePicker
+                            div={{
+                              className: "",
+                              // tabIndex: "6",
+                            }}
+                            // textBox={{
+                            //   className: "txt-fld ",
+                            //   // name: "valid_upto",
+                            // }}
+                            // label={{ forceLabel: "Hijiri Date" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "hijri_date",
+                            }}
+                            type="hijri"
+                            // minDate={new Date()}
+                            gregorianDate={row.valid_upto}
+                            updateInternally={true}
+                            // gregorianDate={this.state.valid_upto}
+                            events={{
+                              onChange: (e) => {
+                                datehandlegrid(row, e);
+                              },
+                            }}
+                          ></AlgaehHijriDatePicker>
+                        );
+                      },
+                    },
+                    {
+                      fieldName: "valid_upto",
+                      label: "Valid Upto",
+                      displayTemplate: (row) => {
+                        return <span>{row.valid_upto}</span>;
+                      },
+                      editorTemplate: (row) => {
+                        return (
+                          <AlgaehDateHandler
+                            label={{}}
+                            // div={{ className: "" }}
+                            textBox={{
+                              className: "form-control",
+                              name: "valid_upto",
+                              value: moment(row.valid_upto),
+                            }}
+                            // minDate={new Date()}
+                            events={{
+                              onChange: (e) => {
+                                debugger;
+                                datehandlegrid(row, e);
+                              },
+                            }}
+                            updateInternally={true}
 
-                              // others={{ defaultValue: moment(row.valid_upto) }}
-                            />
-                          );
-                        },
+                            // others={{ defaultValue: moment(row.valid_upto) }}
+                          />
+                        );
                       },
-                    ]}
-                    data={idDetails}
-                    pagination={true}
-                    isEditable={true}
-                    events={{
-                      onDelete: deleteIdentifications,
-                      // onEdit: (row) => {},
-                      onDone: updateIdentifications,
-                    }}
-                  />
-                </div>
+                    },
+                  ]}
+                  data={idDetails}
+                  pagination={true}
+                  isEditable={true}
+                  events={{
+                    onDelete: deleteIdentifications,
+                    // onEdit: (row) => {},
+                    onDone: updateIdentifications,
+                  }}
+                />
               </div>
             </div>
           </div>
 
-          <div className="col-lg-12" data-validate="dependentGrid">
+          <div className="col-lg-6" data-validate="dependentGrid">
             <h5>
               <span>Family Details</span>
             </h5>
@@ -725,7 +716,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                 name="dependent_type"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
-                    div={{ className: "col-3 mandatory  form-group" }}
+                    div={{ className: "col mandatory " }}
                     label={{
                       forceLabel: "Dependent Type",
                       isImp: true,
@@ -777,10 +768,10 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                 rules={{ required: "Required" }}
                 render={(props) => (
                   <AlgaehFormGroup
-                    div={{ className: "col-3 mandatory" }}
+                    div={{ className: "col mandatory" }}
                     error={errors}
                     label={{
-                      forceLabel: "Dependent Name",
+                      forceLabel: "Dependent",
                       isImp: true,
                     }}
                     textBox={{
@@ -812,10 +803,10 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                 name="dependent_identity_type"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
-                    div={{ className: "col-3 mandatory" }}
+                    div={{ className: "col" }}
                     label={{
                       forceLabel: "Id Type",
-                      isImp: true,
+                      isImp: false,
                     }}
                     selector={{
                       value,
@@ -864,11 +855,11 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                 rules={{ required: "Required" }}
                 render={(props) => (
                   <AlgaehFormGroup
-                    div={{ className: "col-3 mandatory" }}
+                    div={{ className: "col" }}
                     error={errors}
                     label={{
                       forceLabel: "Id Number",
-                      isImp: true,
+                      isImp: false,
                     }}
                     textBox={{
                       name: "dependent_identity_no",
@@ -895,7 +886,10 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               },
             }}
           /> */}
-              <div className="col" style={{ textAlign: "right" }}>
+              <div
+                className="col-2"
+                style={{ textAlign: "right", marginTop: 21 }}
+              >
                 <button
                   type="button"
                   className="btn btn-default"
@@ -906,12 +900,10 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                   Add
                 </button>
               </div>
-              <div
-                className="col-lg-12 margin-top-15"
-                id="employeeFamily_DetailsGrid_Cntr"
-              >
+            </div>
+            <div className="row">
+              <div className="col-lg-12" id="employeeFamily_DetailsGrid_Cntr">
                 <AlgaehDataGrid
-                  id="employeeFamily_DetailsGrid"
                   columns={[
                     {
                       //   textField: "name",
@@ -975,7 +967,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                             : idtypes.filter(
                                 (f) =>
                                   f.hims_d_identity_document_id ===
-                                  row.dependent_identity_type
+                                  parseInt(row.dependent_identity_type)
                               );
 
                         return (
@@ -993,7 +985,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                             : idtypes.filter(
                                 (f) =>
                                   f.hims_d_identity_document_id ===
-                                  row.dependent_identity_type
+                                  parseInt(row.dependent_identity_type)
                               );
 
                         return (
@@ -1027,6 +1019,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                   ]}
                   keyId="dependent_type"
                   data={dependentDetails}
+                  pagination={true}
                   isEditable={true}
                   events={{
                     onDelete: deleteDependencies,

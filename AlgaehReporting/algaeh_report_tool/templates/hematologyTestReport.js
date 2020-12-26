@@ -29,7 +29,7 @@ const executePDF = function executePDFMethod(options) {
           where P.hims_d_patient_id=? and V.hims_f_patient_visit_id=?;
           select MS.hims_d_lab_specimen_id, MS.description as investigation_name,LA.description as analyte_name,LA.reference_range_required,
           LM.analyte_report_group, CASE WHEN LM.analyte_report_group = 'P' THEN 'Physical Appearance' WHEN LM.analyte_report_group = 'M' THEN 'Microscopic Examination' WHEN LM.analyte_report_group = 'D' THEN 'Differential Leukocyte Count'  WHEN LM.analyte_report_group = 'C' THEN 'Chemical Examination' ELSE '' END AS analyte_report_group_desc,
-          LO.ordered_date,LO.entered_date,LO.validated_date, LO.critical_status,LO.comments,
+          LO.ordered_date,LS.collected_date,LO.entered_date,LO.validated_date, LO.critical_status,LO.comments,
           OA.result,OA.result_unit,TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)) as normal_low,
           TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_high)) as normal_high, OA.critical_low,OA.critical_high,
           S.service_name, E.full_name as validated_by,OA.critical_type, TC.category_name, OA.text_value, OA.analyte_type
@@ -56,7 +56,12 @@ const executePDF = function executePDFMethod(options) {
         })
         .then((res) => {
           options.mysql.releaseConnection();
-          const header = { ...options.result[0][0], ...options.result[1][0] };
+          const header = {
+            ...options.result[0][0],
+            ...options.result[1][0],
+            ..._.head(res[1]),
+          };
+          console.log("header---", header);
           const result = res[1];
 
           if (result.length > 0) {
@@ -104,7 +109,7 @@ const executePDF = function executePDFMethod(options) {
               // no_employees: result.length,
               result: result,
             });
-            console.log(result);
+            // console.log(result);
           }
         })
         .catch((e) => {

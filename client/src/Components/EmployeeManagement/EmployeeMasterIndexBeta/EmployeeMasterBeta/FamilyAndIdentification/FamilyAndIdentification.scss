@@ -1,6 +1,10 @@
-#employeeFamily_DetailsGrid,
-#employeeId_DetailsGrid {
-  .ReactTable {
-    max-height: 43vh !important;
+#employeeFamily_DetailsGrid_Cntr,
+#employeeId_DetailsGrid_Cntr {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 59vh !important;
+      max-height: 59vh !important;
+      overflow: auto !important;
+    }
   }
 }

@@ -124,7 +124,7 @@ class StockEnquiry extends Component {
                     className="btn btn-default"
                     // disabled={!this.state.location_id}
                     style={{ marginTop: 20, marginRight: 10 }}
-                    // onClick={() => downloadInvStockDetails(this)}
+                  // onClick={() => downloadInvStockDetails(this)}
                   >
                     Load
                   </button>
@@ -155,7 +155,7 @@ class StockEnquiry extends Component {
                     className="btn btn-default"
                     // disabled={!this.state.location_id}
                     style={{ marginTop: 20, marginRight: 10 }}
-                    // onClick={() => downloadInvStockDetails(this)}
+                  // onClick={() => downloadInvStockDetails(this)}
                   >
                     Load
                   </button>
@@ -192,10 +192,10 @@ class StockEnquiry extends Component {
                         this.props.locations === undefined
                           ? []
                           : this.props.locations.filter(
-                              (f) =>
-                                f.hims_d_pharmacy_location_id ===
-                                row.pharmacy_location_id
-                            );
+                            (f) =>
+                              f.hims_d_pharmacy_location_id ===
+                              row.pharmacy_location_id
+                          );
 
                       return (
                         <span>
@@ -210,10 +210,10 @@ class StockEnquiry extends Component {
                         this.props.locations === undefined
                           ? []
                           : this.props.locations.filter(
-                              (f) =>
-                                f.hims_d_pharmacy_location_id ===
-                                row.pharmacy_location_id
-                            );
+                            (f) =>
+                              f.hims_d_pharmacy_location_id ===
+                              row.pharmacy_location_id
+                          );
 
                       return (
                         <span>
@@ -252,9 +252,9 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                              (f) =>
-                                f.hims_d_pharmacy_uom_id === row.stocking_uom_id
-                            );
+                            (f) =>
+                              f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                          );
 
                       return (
                         <span>
@@ -269,9 +269,9 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                              (f) =>
-                                f.hims_d_pharmacy_uom_id === row.stocking_uom_id
-                            );
+                            (f) =>
+                              f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                          );
 
                       return (
                         <span>
@@ -291,8 +291,8 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                              (f) => f.hims_d_pharmacy_uom_id === row.sales_uom
-                            );
+                            (f) => f.hims_d_pharmacy_uom_id === row.sales_uom
+                          );
 
                       return (
                         <span>
@@ -307,8 +307,8 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                              (f) => f.hims_d_pharmacy_uom_id === row.sales_uom
-                            );
+                            (f) => f.hims_d_pharmacy_uom_id === row.sales_uom
+                          );
 
                       return (
                         <span>
@@ -331,8 +331,8 @@ class StockEnquiry extends Component {
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        parseFloat(row.qtyhand)
-                      );
+                          parseFloat(row.qtyhand)
+                        );
                     },
                     disabled: true,
                     others: { filterable: false },
@@ -345,21 +345,21 @@ class StockEnquiry extends Component {
                     disabled: true,
                     others: { filterable: false },
                   },
-                  {
-                    fieldName: "avgcost",
-                    label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
-                    displayTemplate: (row) => {
-                      return (
-                        <span>
-                          {GetAmountFormart(row.avgcost, {
-                            appendSymbol: false,
-                          })}
-                        </span>
-                      );
-                    },
-                    disabled: true,
-                    others: { filterable: false },
-                  },
+                  // {
+                  //   fieldName: "avgcost",
+                  //   label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
+                  //   displayTemplate: (row) => {
+                  //     return (
+                  //       <span>
+                  //         {GetAmountFormart(row.avgcost, {
+                  //           appendSymbol: false,
+                  //         })}
+                  //       </span>
+                  //     );
+                  //   },
+                  //   disabled: true,
+                  //   others: { filterable: false },
+                  // },
                   {
                     fieldName: "sale_price",
                     label: (
@@ -403,7 +403,7 @@ class StockEnquiry extends Component {
                 paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   // onDelete: deleteStock.bind(this, this),
-                  onEdit: (row) => {},
+                  onEdit: (row) => { },
                   onDone: updateStockDetils.bind(this, this),
                 }}
               />

@@ -44,8 +44,8 @@ const ProcessItemMoment = $this => {
   if ($this.state.item_code_id !== null) {
     inputObj.item_code_id = $this.state.item_code_id;
   }
-  if ($this.state.barcode !== null && $this.state.barcode !== "") {
-    inputObj.barcode = $this.state.barcode;
+  if ($this.state.vendor_batchno !== null && $this.state.vendor_batchno !== "") {
+    inputObj.vendor_batchno = $this.state.vendor_batchno;
   }
   if ($this.state.transaction_type !== null) {
     inputObj.transaction_type = $this.state.transaction_type;
@@ -147,10 +147,24 @@ const dateValidate = ($this, value, e) => {
   }
 };
 
+
+const DrillDownScree = (row, $this) => {
+
+  if (row.transaction_type === "ST") { $this.props.history.push(`/InvTransferEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "INT") { $this.props.history.push(`/InvInitialStock?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "CS") { $this.props.history.push(`/InvConsumptionEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "DNA") { $this.props.history.push(`/DeliveryNoteEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "ACK") { $this.props.history.push(`/InvTransferEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "PR") { $this.props.history.push(`/PurchaseReturnEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "AD") { $this.props.history.push(`/InvStockAdjustment?transaction_id=${row.transaction_id}`) }
+
+}
+
 export {
   changeTexts,
   dateFormater,
   datehandle,
   ProcessItemMoment,
-  dateValidate
+  dateValidate,
+  DrillDownScree
 };

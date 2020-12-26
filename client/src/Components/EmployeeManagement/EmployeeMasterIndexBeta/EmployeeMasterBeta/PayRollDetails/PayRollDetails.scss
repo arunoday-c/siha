@@ -1,7 +1,14 @@
 #EarningComponent_Cntr,
 #DeductionComponent_Cntr,
 #ContributionComponent_Cntr {
-  .ReactTable {
-    max-height: 45vh !important;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 54vh !important;
+      max-height: 54vh !important;
+      overflow: auto !important;
+    }
+  }
+  .pageLeft {
+    display: none;
   }
 }

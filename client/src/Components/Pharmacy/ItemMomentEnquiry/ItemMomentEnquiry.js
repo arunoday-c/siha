@@ -11,18 +11,24 @@ import {
   AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
 
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
+// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   dateFormater,
   datehandle,
   ProcessItemMoment,
   dateValidate,
+  DrillDownScree
 } from "./ItemMomentEnquiryEvents";
 import "./ItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+
+import {
+  // AlgaehTable,
+  Tooltip
+} from "algaeh-react-components";
 
 class ItemMomentEnquiry extends Component {
   constructor(props) {
@@ -34,12 +40,19 @@ class ItemMomentEnquiry extends Component {
       item_code_id: null,
       from_date: null,
       to_date: null,
-      barcode: null,
+      vendor_batchno: null,
       transaction_type: null,
     };
   }
 
   componentDidMount() {
+    // (async () => {
+    //   const records = await persistStageOnGet();
+
+    //   if (records) {
+    //     this.setState({ ...records });
+    //     persistStorageOnRemove();
+    // }
     this.props.getItems({
       uri: "/pharmacy/getItemMaster",
       data: { item_status: "A" },
@@ -72,13 +85,14 @@ class ItemMomentEnquiry extends Component {
         },
       });
     }
+    // })();
   }
 
   render() {
     return (
       <React.Fragment>
         <div>
-          <BreadCrumb
+          {/* <BreadCrumb
             title={
               <AlgaehLabel
                 label={{ forceLabel: "Item Movement Enquiry", align: "ltr" }}
@@ -107,12 +121,12 @@ class ItemMomentEnquiry extends Component {
           //     )
           //   }
           // ]}
-          />
+          /> */}
 
           <div className="hptl-phase1-item-moment-enquiry-form">
             <div
               className="row inner-top-search"
-              style={{ marginTop: 76, paddingBottom: 10 }}
+              style={{ paddingBottom: 10 }}
             >
               <div className="col-lg-12">
                 <div className="row">
@@ -160,12 +174,12 @@ class ItemMomentEnquiry extends Component {
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      forceLabel: "Item Barcode",
+                      forceLabel: "Vendor Batch No.",
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "barcode",
-                      value: this.state.barcode,
+                      name: "vendor_batchno",
+                      value: this.state.vendor_batchno,
                       events: {
                         onChange: changeTexts.bind(this, this),
                       },
@@ -235,9 +249,37 @@ class ItemMomentEnquiry extends Component {
             </div>
           </div> */}
               <div className="portlet-body" id="initialStock_Cntr">
-                <AlgaehDataGrid
+
+                {/* <AlgaehTable
                   id="initial_stock"
                   columns={[
+                    {
+                      fieldName: "select_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Select" }} />
+                      ),
+                      displayTemplate: (row) => (
+                        <>
+
+                          <Tooltip title="DrillDown">
+                            <i
+                              className="fa fa-exchange-alt"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                // this.DrillDownScree(row, this);
+                              }}
+                            ></i>
+                          </Tooltip>
+
+                        </>
+                      ),
+
+                      others: {
+                        width: 170,
+                        maxWidth: 200,
+                        filterable: false,
+                      },
+                    },
                     {
                       fieldName: "transaction_type",
                       label: (
@@ -272,6 +314,9 @@ class ItemMomentEnquiry extends Component {
                                                 ? "Stock Adjustment"
                                                 : "";
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "transaction_date",
@@ -285,6 +330,9 @@ class ItemMomentEnquiry extends Component {
                           <span>{dateFormater(row.transaction_date)}</span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "from_location_id",
@@ -307,6 +355,9 @@ class ItemMomentEnquiry extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "item_code_id",
@@ -369,8 +420,16 @@ class ItemMomentEnquiry extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
-
+                    {
+                      fieldName: "vendor_batchno",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Vendor Batch No." }} />
+                      ),
+                    },
                     {
                       fieldName: "batchno",
                       label: (
@@ -385,6 +444,9 @@ class ItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "transaction_qty",
@@ -392,6 +454,9 @@ class ItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return parseFloat(row.transaction_qty);
                       },
+                      others: {
+                        filterable: false,
+                      }
                     },
                     {
                       fieldName: "qtyhand",
@@ -399,6 +464,248 @@ class ItemMomentEnquiry extends Component {
                       displayTemplate: (row) => {
                         return parseFloat(row.qtyhand);
                       },
+                      others: {
+                        filterable: false,
+                      }
+                    }
+                    // {
+                    //   fieldName: "average_cost",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Average Cost" }} />
+                    //   ),
+                    //   displayTemplate: row => {
+                    //     return (
+                    //       <span>
+                    //         {getAmountFormart(row.average_cost, {
+                    //           appendSymbol: false
+                    //         })}
+                    //       </span>
+                    //     );
+                    //   }
+                    // }
+                  ]}
+                  data={this.state.itemmoment}
+                  pagination={true}
+                  isFilterable={true}
+                  persistence={this.state.persistence}
+                /> */}
+                <AlgaehDataGrid
+                  id="initial_stock"
+                  columns={[
+                    {
+                      fieldName: "select_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Select" }} />
+                      ),
+                      displayTemplate: (row) => (
+                        <>
+
+                          <Tooltip title="DrillDown">
+                            <i
+                              className="fa fa-exchange-alt"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                DrillDownScree(row, this);
+                              }}
+                            ></i>
+                          </Tooltip>
+
+                        </>
+                      ),
+
+                      others: {
+                        width: 70,
+                        maxWidth: 200,
+                        filterable: false,
+                      },
+                    },
+                    {
+                      fieldName: "transaction_type",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Transaction Type" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return row.transaction_type === "MR"
+                          ? "Material Requisition"
+                          : row.transaction_type === "ST"
+                            ? "Stock Transfer"
+                            : row.transaction_type === "POS"
+                              ? "Point of Sale"
+                              : row.transaction_type === "SRT"
+                                ? "Sales Return"
+                                : row.transaction_type === "INT"
+                                  ? "Opening Stock"
+                                  : row.transaction_type === "CS"
+                                    ? "Consumption"
+                                    : row.transaction_type === "REC"
+                                      ? "Receipt"
+                                      : row.transaction_type === "PO"
+                                        ? "Purchase Order"
+                                        : row.transaction_type === "DNA"
+                                          ? "Delivery Note"
+                                          : row.transaction_type === "ACK"
+                                            ? "Transfer Acknowledge"
+                                            : row.transaction_type === "PR"
+                                              ? "Purchase Return"
+                                              : row.transaction_type === "AD"
+                                                ? "Stock Adjustment"
+                                                : "";
+                      },
+                      others: {
+                        filterable: false,
+                      }
+                    },
+                    {
+                      fieldName: "transaction_date",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Transaction Date" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>{dateFormater(row.transaction_date)}</span>
+                        );
+                      },
+                      others: {
+                        filterable: false,
+                      }
+                    },
+                    {
+                      fieldName: "from_location_id",
+                      label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
+                      displayTemplate: (row) => {
+                        let display =
+                          this.props.locations === undefined
+                            ? []
+                            : this.props.locations.filter(
+                              (f) =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.from_location_id
+                            );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].location_description
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: {
+                        filterable: false,
+                      }
+                    },
+                    {
+                      fieldName: "item_code_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        let display =
+                          this.props.itemlist === undefined
+                            ? []
+                            : this.props.itemlist.filter(
+                              (f) =>
+                                f.hims_d_item_master_id === row.item_code_id
+                            );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].item_description
+                              : ""}
+                            {display !== null && display.length !== 0 ? (
+                              <i
+                                className={
+                                  row.operation === "+"
+                                    ? "fas fa-arrow-up green"
+                                    : row.operation === "-"
+                                      ? "fas fa-arrow-down red"
+                                      : ""
+                                }
+                              />
+                            ) : (
+                                ""
+                              )}
+                          </span>
+                        );
+                      },
+                    },
+                    {
+                      fieldName: "transaction_uom",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Unit of Measure" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        let display =
+                          this.props.itemuom === undefined
+                            ? []
+                            : this.props.itemuom.filter(
+                              (f) =>
+                                f.hims_d_pharmacy_uom_id ===
+                                row.transaction_uom
+                            );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].uom_description
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: {
+                        filterable: false,
+                      }
+                    },
+                    {
+                      fieldName: "vendor_batchno",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Vendor Batch No." }} />
+                      ),
+                    },
+                    {
+                      fieldName: "batchno",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                      ),
+                    },
+                    {
+                      fieldName: "expiry_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return <span>{dateFormater(row.expiry_date)}</span>;
+                      },
+                      others: {
+                        filterable: false,
+                      }
+                    },
+                    {
+                      fieldName: "transaction_qty",
+                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                      displayTemplate: (row) => {
+                        return parseFloat(row.transaction_qty);
+                      },
+                      others: {
+                        filterable: false,
+                      }
+                    },
+                    {
+                      fieldName: "qtyhand",
+                      label: <AlgaehLabel label={{ forceLabel: "After Transation Quantity" }} />,
+                      displayTemplate: (row) => {
+                        return parseFloat(row.qtyhand);
+                      },
+                      others: {
+                        filterable: false,
+                      }
                     }
                     // {
                     //   fieldName: "average_cost",
@@ -417,6 +724,7 @@ class ItemMomentEnquiry extends Component {
                     // }
                   ]}
                   keyId="item_id"
+                  filter={true}
                   dataSource={{
                     data: this.state.itemmoment,
                   }}

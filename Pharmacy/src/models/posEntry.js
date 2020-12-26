@@ -17,6 +17,10 @@ export default {
         _strAppend = "and pos_number=?";
         intValue.push(req.query.pos_number);
       }
+      if (req.query.transaction_id != null) {
+        _strAppend = "and hims_f_pharmacy_pos_header_id=?";
+        intValue.push(req.query.transaction_id);
+      }
       _mysql
         .executeQuery({
           query:

@@ -660,6 +660,159 @@ export default {
     }
   },
 
+  generateBarCode: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      let _date = new Date();
+      _date = moment(_date).format("YYYY-MM-DD");
+      return new Promise((resolve, reject) => {
+        let strQuery = "";
+        if (inputParam.hims_d_lab_sample_id === null) {
+          strQuery = mysql.format(
+            "SELECT hims_d_lab_container_id AS container_id, container_id AS container_code \
+            FROM hims_d_lab_container WHERE hims_d_lab_container_id=?; \
+            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
+            [inputParam.container_id, inputParam.hims_d_hospital_id]
+          );
+        } else {
+          strQuery = mysql.format(
+            "SELECT distinct LS.container_id, LC.container_id as container_code FROM hims_m_lab_specimen LS \
+          inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
+          inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
+          where IT.services_id=?;\
+          SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
+            [inputParam.service_id, inputParam.hims_d_hospital_id]
+          );
+        }
+
+        _mysql
+          .executeQueryWithTransaction({
+            query: strQuery,
+            printQuery: true,
+          })
+          .then((update_lab_sample) => {
+            inputParam.container_id = update_lab_sample[0][0].container_id;
+            inputParam.container_code = update_lab_sample[0][0].container_code;
+            inputParam.lab_location_code =
+              update_lab_sample[1][0].lab_location_code;
+            resolve(update_lab_sample);
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+              reject(e);
+            });
+          });
+      })
+        .then((result) => {
+          let _date = new Date();
+          _date = moment(_date).format("YYYY-MM-DD");
+          return new Promise((resolve, reject) => {
+            _mysql
+              .executeQuery({
+                query:
+                  "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
+                  where hospital_id =? and container_id=? and date =?",
+                values: [
+                  inputParam.hims_d_hospital_id,
+                  inputParam.container_id,
+                  _date,
+                ],
+                printQuery: true,
+              })
+              .then((container_mapping) => {
+                resolve(container_mapping);
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                  reject(e);
+                });
+              });
+          }).then((record) => {
+            let query = "";
+            let condition = [];
+            let padNum = "";
+            let _newNumber = 1;
+            if (record != null && record.length > 0) {
+              _newNumber = parseInt(record[0].number, 10);
+              _newNumber = _newNumber + 1;
+              padNum = pad(String(_newNumber), 3, "LEFT", "0");
+              condition.push(
+                _newNumber,
+                req.userIdentity.algaeh_d_app_user_id,
+                record[0].hims_m_hospital_container_mapping_id
+              );
+
+              condition.push;
+              query =
+                "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
+            where hims_m_hospital_container_mapping_id =?";
+            } else {
+              condition.push(
+                inputParam.hims_d_hospital_id,
+                inputParam.container_id,
+                _date,
+                1,
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.algaeh_d_app_user_id
+              );
+
+              query =
+                "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
+            `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?)";
+            }
+
+            padNum = pad(String(_newNumber), 3, "LEFT", "0");
+            const dayOfYear = moment().dayOfYear();
+            const labIdNumber =
+              inputParam.lab_location_code +
+              moment().format("YY") +
+              dayOfYear +
+              inputParam.container_code +
+              padNum;
+
+            _mysql
+              .executeQuery({
+                query:
+                  query +
+                  ";update hims_f_lab_order set lab_id_number ='" +
+                  labIdNumber +
+                  "' ,barcode_gen = now() where hims_f_lab_order_id=" +
+                  inputParam.hims_f_lab_order_id,
+                values: condition,
+                printQuery: true,
+              })
+              .then((result) => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    lab_id_number: labIdNumber,
+                  };
+                  next();
+                });
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          });
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      // _mysql.releaseConnection();
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
   updateLabOrderServices: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -671,10 +824,7 @@ export default {
         if (inputParam.hims_d_lab_sample_id === null) {
           strQuery = mysql.format(
             "insert into hims_f_lab_sample (`order_id`,`sample_id`, \
-            `container_id`,`collected`,`status`, `collected_by`, `collected_date`) values (?,?,?,?,?,?,?);\
-            SELECT hims_d_lab_container_id AS container_id, container_id AS container_code \
-            FROM hims_d_lab_container WHERE hims_d_lab_container_id=?; \
-            SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;\
+            `container_id`,`collected`,`status`, `collected_by`, `collected_date`) values (?,?,?,?,?,?,?); \
             INSERT IGNORE INTO `hims_m_lab_specimen` (test_id, specimen_id, container_id, container_code, created_by, created_date, \
               updated_by, updated_date) VALUE(?,?,?,?,?,?,?,?);",
             [
@@ -685,8 +835,6 @@ export default {
               inputParam.status,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              inputParam.container_id,
-              inputParam.hims_d_hospital_id,
               inputParam.test_id,
               inputParam.sample_id,
               inputParam.container_id,
@@ -700,12 +848,7 @@ export default {
         } else {
           strQuery = mysql.format(
             "UPDATE hims_f_lab_sample SET `container_id`=?, `sample_id`=?,`collected`=?,`status`=?, `collected_by`=?,\
-          `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
-          SELECT distinct LS.container_id, LC.container_id as container_code FROM hims_m_lab_specimen LS \
-          inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
-          inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
-          where IT.services_id=?;\
-          SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
+          `collected_date` =now() WHERE hims_d_lab_sample_id=?;",
             [
               inputParam.container_id,
               inputParam.sample_id,
@@ -713,8 +856,6 @@ export default {
               inputParam.status,
               req.userIdentity.algaeh_d_app_user_id,
               inputParam.hims_d_lab_sample_id,
-              inputParam.service_id,
-              inputParam.hims_d_hospital_id,
             ]
           );
         }
@@ -724,10 +865,10 @@ export default {
             printQuery: true,
           })
           .then((update_lab_sample) => {
-            inputParam.container_id = update_lab_sample[1][0].container_id;
-            inputParam.container_code = update_lab_sample[1][0].container_code;
-            inputParam.lab_location_code =
-              update_lab_sample[2][0].lab_location_code;
+            // inputParam.container_id = update_lab_sample[1][0].container_id;
+            // inputParam.container_code = update_lab_sample[1][0].container_code;
+            // inputParam.lab_location_code =
+            //   update_lab_sample[2][0].lab_location_code;
             resolve(update_lab_sample);
           })
           .catch((e) => {
@@ -739,103 +880,130 @@ export default {
       })
         .then((result) => {
           if (result != null) {
-            let _date = new Date();
-            _date = moment(_date).format("YYYY-MM-DD");
-            return new Promise((resolve, reject) => {
-              _mysql
-                .executeQuery({
-                  query:
-                    "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
-                  where hospital_id =? and container_id=? and date =?",
-                  values: [
-                    inputParam.hims_d_hospital_id,
-                    inputParam.container_id,
-                    _date,
-                  ],
-                  printQuery: true,
-                })
-                .then((container_mapping) => {
-                  resolve(container_mapping);
-                })
-                .catch((e) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                    reject(e);
-                  });
+            _mysql
+              .executeQuery({
+                query:
+                  "update hims_f_lab_order set status='CL', send_out_test='" +
+                  inputParam.send_out_test +
+                  "' where hims_f_lab_order_id=" +
+                  inputParam.hims_f_lab_order_id,
+                // values: condition,
+                printQuery: true,
+              })
+              .then((result) => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    collected: inputParam.collected,
+                    collected_by: req.userIdentity.algaeh_d_app_user_id,
+                    collected_date: new Date(),
+                  };
+                  next();
                 });
-            }).then((record) => {
-              let query = "";
-              let condition = [];
-              let padNum = "";
-              let _newNumber = 1;
-              if (record != null && record.length > 0) {
-                _newNumber = parseInt(record[0].number, 10);
-                _newNumber = _newNumber + 1;
-                padNum = pad(String(_newNumber), 3, "LEFT", "0");
-                condition.push(
-                  _newNumber,
-                  req.userIdentity.algaeh_d_app_user_id,
-                  record[0].hims_m_hospital_container_mapping_id
-                );
-
-                condition.push;
-                query =
-                  "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
-                  where hims_m_hospital_container_mapping_id =?";
-              } else {
-                condition.push(
-                  inputParam.hims_d_hospital_id,
-                  inputParam.container_id,
-                  _date,
-                  1,
-                  req.userIdentity.algaeh_d_app_user_id,
-                  req.userIdentity.algaeh_d_app_user_id
-                );
-
-                query =
-                  "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
-                  `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?)";
-              }
-
-              padNum = pad(String(_newNumber), 3, "LEFT", "0");
-              const dayOfYear = moment().dayOfYear();
-              const labIdNumber =
-                inputParam.lab_location_code +
-                moment().format("YY") +
-                dayOfYear +
-                inputParam.container_code +
-                padNum;
-
-              _mysql
-                .executeQuery({
-                  query:
-                    query +
-                    ";update hims_f_lab_order set lab_id_number ='" +
-                    labIdNumber +
-                    "',status='CL', send_out_test='" +
-                    inputParam.send_out_test +
-                    "' where hims_f_lab_order_id=" +
-                    inputParam.hims_f_lab_order_id,
-                  values: condition,
-                  printQuery: true,
-                })
-                .then((result) => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = {
-                      collected: inputParam.collected,
-                      collected_by: req.userIdentity.algaeh_d_app_user_id,
-                      collected_date: new Date(),
-                    };
-                    next();
-                  });
-                })
-                .catch((e) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
                 });
-            });
+              });
+
+            // let _date = new Date();
+            // _date = moment(_date).format("YYYY-MM-DD");
+            // return new Promise((resolve, reject) => {
+            //   _mysql
+            //     .executeQuery({
+            //       query:
+            //         "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
+            //       where hospital_id =? and container_id=? and date =?",
+            //       values: [
+            //         inputParam.hims_d_hospital_id,
+            //         inputParam.container_id,
+            //         _date,
+            //       ],
+            //       printQuery: true,
+            //     })
+            //     .then((container_mapping) => {
+            //       resolve(container_mapping);
+            //     })
+            //     .catch((e) => {
+            //       _mysql.rollBackTransaction(() => {
+            //         next(e);
+            //         reject(e);
+            //       });
+            //     });
+            // }).then((record) => {
+            //   let query = "";
+            //   let condition = [];
+            //   let padNum = "";
+            //   let _newNumber = 1;
+            //   if (record != null && record.length > 0) {
+            //     _newNumber = parseInt(record[0].number, 10);
+            //     _newNumber = _newNumber + 1;
+            //     padNum = pad(String(_newNumber), 3, "LEFT", "0");
+            //     condition.push(
+            //       _newNumber,
+            //       req.userIdentity.algaeh_d_app_user_id,
+            //       record[0].hims_m_hospital_container_mapping_id
+            //     );
+
+            //     condition.push;
+            //     query =
+            //       "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
+            //       where hims_m_hospital_container_mapping_id =?";
+            //   } else {
+            //     condition.push(
+            //       inputParam.hims_d_hospital_id,
+            //       inputParam.container_id,
+            //       _date,
+            //       1,
+            //       req.userIdentity.algaeh_d_app_user_id,
+            //       req.userIdentity.algaeh_d_app_user_id
+            //     );
+
+            //     query =
+            //       "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
+            //       `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?)";
+            //   }
+
+            //   padNum = pad(String(_newNumber), 3, "LEFT", "0");
+            //   const dayOfYear = moment().dayOfYear();
+            //   const labIdNumber =
+            //     inputParam.lab_location_code +
+            //     moment().format("YY") +
+            //     dayOfYear +
+            //     inputParam.container_code +
+            //     padNum;
+
+            //   _mysql
+            //     .executeQuery({
+            //       query:
+            //         query +
+            //         ";update hims_f_lab_order set lab_id_number ='" +
+            //         labIdNumber +
+            //         "',status='CL', send_out_test='" +
+            //         inputParam.send_out_test +
+            //         "' where hims_f_lab_order_id=" +
+            //         inputParam.hims_f_lab_order_id,
+            //       values: condition,
+            //       printQuery: true,
+            //     })
+            //     .then((result) => {
+            //       _mysql.commitTransaction(() => {
+            //         _mysql.releaseConnection();
+            //         req.records = {
+            //           collected: inputParam.collected,
+            //           collected_by: req.userIdentity.algaeh_d_app_user_id,
+            //           collected_date: new Date(),
+            //         };
+            //         next();
+            //       });
+            //     })
+            //     .catch((e) => {
+            //       _mysql.rollBackTransaction(() => {
+            //         next(e);
+            //       });
+            //     });
+            // });
           }
         })
         .catch((e) => {
@@ -857,7 +1025,7 @@ export default {
       _mysql
         .executeQuery({
           query: `SELECT 
-          max(if(CL.algaeh_d_app_user_id=LB.provider_id, EM.full_name,'' )) as ordered_by_name,
+          EMO.full_name as ordered_by_name,
           max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name,
           max(if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'')) as confirm_by_name,
           max(if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'')) as validate_by_name,
@@ -866,8 +1034,9 @@ export default {
           inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id
           inner join hims_f_lab_order LB on LB.hims_f_lab_order_id = LO.order_id
           inner join hims_m_lab_analyte as LM on LM.analyte_id = LA.hims_d_lab_analytes_id
-          left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LB.provider_id or CL.algaeh_d_app_user_id=LO.entered_by or CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)
+          left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)
           left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
+          left join hims_d_employee EMO on EMO.hims_d_employee_id=LB.provider_id
           where LO.record_status='A'  AND LO.order_id=? group by LO.analyte_id order by LO.hims_f_ord_analytes_id;`,
           //             SELECT if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' ) as entered_by_name,if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'') as confirm_by_name,
           // if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'') as validate_by_name,LO.*, LA.description from hims_f_ord_analytes LO

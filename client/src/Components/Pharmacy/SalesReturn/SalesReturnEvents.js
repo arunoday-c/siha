@@ -16,6 +16,46 @@ const changeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
+const getDrilDownData = ($this, transaction_id) => {
+  AlgaehLoader({ show: true });
+
+  algaehApiCall({
+    uri: "/salesReturn/getsalesReturn",
+    module: "pharmacy",
+    method: "GET",
+    data: { transaction_id: transaction_id },
+    onSuccess: (response) => {
+      if (response.data.success) {
+        let data = response.data.records;
+        data.saveEnable = true;
+        data.patient_payable_h = data.patient_payable;
+
+        data.clearData = true
+        data.postEnable = true;
+
+        if (data.receiptdetails.length !== 0) {
+          for (let i = 0; i < data.receiptdetails.length; i++) {
+            if (data.receiptdetails[i].pay_type === "CA") {
+              data.Cashchecked = true;
+              data.cash_amount = data.receiptdetails[i].amount;
+            }
+          }
+        }
+        data.trns_history = true
+
+        $this.setState(data);
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
@@ -498,4 +538,5 @@ export {
   getCashiersAndShiftMAP,
   generateReceipt,
   generateReceiptSmall,
+  getDrilDownData
 };

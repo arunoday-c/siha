@@ -1,4 +1,11 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
+<style>
+    td,span,label{
+        font-size: 12px;
+    }
+
+
+</style>
 <div class="print-body">
 <section>
 <table class="tableForLabel" cell-padding="0">
@@ -18,12 +25,12 @@
     </tr>
     <tr>
         <td><label>العمر / Age</label></td>
-        <td><span>{{header.age_in_years}} Years/ {{header.age_in_months}} Months/ {{header.age_in_days}}
-                Days</span></td>
+        <td><span>{{header.age_in_years}}Y/ {{header.age_in_months}}M/ {{header.age_in_days}}D</span></td>
 
 
             <td><label> اسم الطبيب المرجعي / Doctor Ordered by</label></td>
-        <td> <span>{{header.doctor_name}} - {{header.sub_department_name}}</span></td>
+        <td> <span>{{header.doctor_name}}</span></td>
+        {{!--  {{header.sub_department_name}} --}}
 
 
 
@@ -62,7 +69,6 @@
 </table>
 </section>
 <section>
-
 <table class="tableForDataNoBorder" cell-padding="0">
     <thead>
         <tr>

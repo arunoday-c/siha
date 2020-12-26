@@ -479,6 +479,55 @@ const EditGrid = ($this, cancelRow) => {
   });
 };
 
+const getDrilDownData = ($this, transaction_id) => {
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/initialstock/getPharmacyInitialStock",
+    module: "pharmacy",
+    method: "GET",
+    data: { transaction_id: transaction_id, },
+    onSuccess: response => {
+      if (response.data.success === true) {
+        let data = response.data.records;
+        data.saveEnable = true;
+
+        if (data.posted === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
+        data.dataExitst = true;
+
+        data.location_id = null;
+        data.item_category_id = null;
+        data.item_group_id = null;
+        data.item_id = null;
+        data.batchno = null;
+        data.vendor_batchno = null;
+        data.expiry_date = null;
+        data.quantity = 0;
+        data.unit_cost = 0;
+        data.uom_id = null;
+        data.sales_price = 0;
+        data.conversion_fact = null;
+        data.extended_cost = 0;
+        data.grn_number = null;
+        data.sales_uom = null;
+        data.purchase_uom_id = null;
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   changeTexts,
   itemchangeText,
@@ -497,5 +546,6 @@ export {
   dateValidate,
   updateInitialStock,
   onChamgeGridQuantity,
-  EditGrid
+  EditGrid,
+  getDrilDownData
 };

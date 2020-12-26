@@ -325,20 +325,20 @@ class InvStockEnquiry extends Component {
                     disabled: true,
                     others: { filterable: false },
                   },
-                  {
-                    fieldName: "avgcost",
-                    label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
-                    displayTemplate: (row) => {
-                      return (
-                        <span>
-                          {GetAmountFormart(row.avgcost, {
-                            appendSymbol: false,
-                          })}
-                        </span>
-                      );
-                    },
-                    disabled: true,
-                  },
+                  // {
+                  //   fieldName: "avgcost",
+                  //   label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
+                  //   displayTemplate: (row) => {
+                  //     return (
+                  //       <span>
+                  //         {GetAmountFormart(row.avgcost, {
+                  //           appendSymbol: false,
+                  //         })}
+                  //       </span>
+                  //     );
+                  //   },
+                  //   disabled: true,
+                  // },
                   {
                     fieldName: "sale_price",
                     label: (

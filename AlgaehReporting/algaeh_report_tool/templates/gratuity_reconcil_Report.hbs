@@ -29,17 +29,17 @@
                         <td>{{full_name}}</td>
                         <td>{{designation}}</td>
                         <td>{{date_of_joining}}</td>
-                        <td class="numberFld">{{numberFormating basic_salary ../decimalOnly}}</td>
-                        <td class="numberFld">{{numberFormating gratuity_opening_balance ../decimalOnly}}</td>
-                        <td class="numberFld">{{numberFormating gratuity_amount ../decimalOnly}}</td>
-                        <td class="numberFld">{{numberFormating acc_gratuity ../decimalOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating basic_salary ../decimalOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating gratuity_opening_balance ../decimalOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating gratuity_amount ../decimalOnly}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{numberFormating acc_gratuity ../decimalOnly}}</td>
                     </tr>
                     {{/each }}
    <tr class="numberFld numberFldTotalBottom">
                   <td colspan="6" class="txtFld"></td>
-                        <td class="numberFld"></td>
-                        <td class="numberFld">{{total_gratuity_amount}}</td>
-                        <td class="numberFld">{{total_acc_gratuity}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'></td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_gratuity_amount}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_acc_gratuity}}</td>
                     </tr>
                 </tbody>
             </table>

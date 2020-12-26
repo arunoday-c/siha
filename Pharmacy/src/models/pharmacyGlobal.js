@@ -101,8 +101,8 @@ export default {
         _strAppend += " and item_code_id='" + req.query.item_code_id + "'";
       }
 
-      if (req.query.barcode != null) {
-        _strAppend += " and barcode='" + req.query.barcode + "'";
+      if (req.query.vendor_batchno != null) {
+        _strAppend += " and vendor_batchno='" + req.query.vendor_batchno + "'";
       }
 
       if (req.query.transaction_type != null) {
@@ -551,7 +551,7 @@ export default {
             expiry_date_filter = new Date(
               today_date.setFullYear(
                 today_date.getFullYear() +
-                  parseInt(result[0].notification_before)
+                parseInt(result[0].notification_before)
               )
             );
           }

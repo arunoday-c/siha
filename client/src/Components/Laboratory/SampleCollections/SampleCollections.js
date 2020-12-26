@@ -209,21 +209,28 @@ class SampleCollectionPatient extends PureComponent {
                                             row
                                           )}
                                         />
-                                      ) : (
-                                          <i
-                                            className="fas fa-barcode"
-                                            onClick={printBarcode.bind(
-                                              this,
-                                              this,
-                                              row
-                                            )}
-                                          />
+                                      ) : null}
+
+                                      <i
+                                        style={{
+                                          pointerEvents:
+                                            row.billed === "N" ? "none" : "",
+                                          opacity:
+                                            row.billed === "N" ? "0.1" : "",
+                                        }}
+                                        className="fas fa-barcode"
+                                        onClick={printBarcode.bind(
+                                          this,
+                                          this,
+                                          row
                                         )}
+                                      />
+
                                     </span>
                                   );
                                 },
                                 others: {
-                                  maxWidth: 70,
+                                  maxWidth: 100,
                                   resizable: false,
                                   style: { textAlign: "center" },
                                 },
@@ -503,6 +510,29 @@ class SampleCollectionPatient extends PureComponent {
                                     <span>
                                       {moment(row.collected_date).isValid()
                                         ? moment(row.collected_date).format(
+                                          "DD-MM-YYYY hh:mm"
+                                        )
+                                        : "------"}
+                                    </span>
+                                  );
+                                },
+                                others: {
+                                  resizable: false,
+                                  style: { textAlign: "center" },
+                                },
+                              },
+                              {
+                                fieldName: "barcode_gen",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Barcode Gen Date" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {moment(row.barcode_gen).isValid()
+                                        ? moment(row.barcode_gen).format(
                                           "DD-MM-YYYY hh:mm"
                                         )
                                         : "------"}

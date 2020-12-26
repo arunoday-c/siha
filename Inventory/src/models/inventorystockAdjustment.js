@@ -39,12 +39,20 @@ export default {
     getStockAdjustment: (req, res, next) => {
         const _mysql = new algaehMysql();
         try {
+            let strQty = "";
+            if (req.query.transfer_number != null) {
+                strQty += ` and adjustment_number= '${req.query.adjustment_number}'`;
+            }
+
+            if (req.query.transaction_id != null) {
+                strQty += ` and hims_f_inventory_stock_adjust_header_id= '${req.query.transaction_id}'`;
+            }
+
             _mysql
                 .executeQuery({
                     query:
                         "SELECT AH.*, L.location_description as location_name from hims_f_inventory_stock_adjust_header AH, \
-                        hims_d_inventory_location L where L.hims_d_inventory_location_id = AH.location_id and \
-                        adjustment_number=?;",
+                        hims_d_inventory_location L where L.hims_d_inventory_location_id = AH.location_id " + strQty,
                     values: [req.query.adjustment_number],
                     printQuery: true
                 })

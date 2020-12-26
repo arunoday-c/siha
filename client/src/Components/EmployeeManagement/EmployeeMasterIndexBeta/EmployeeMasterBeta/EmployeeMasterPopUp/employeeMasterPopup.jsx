@@ -56,7 +56,7 @@ export default function EmployeeMasterPopup({
       maskClosable={true}
       onCancel={onClose}
       footer={null}
-      width={720}
+      className={`row algaehNewModal EmployeeAddEditPopup`}
     >
       <div className="EmployeeMasterModal">
         <AlgaehTabs
@@ -81,21 +81,6 @@ export default function EmployeeMasterPopup({
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "FAMILY & IDENTIFICATION DETAILS",
-                  }}
-                />
-              ),
-              children: (
-                <FamilyAndIdentification
-                  EmpMasterIOputs={employeeDetails.employee_id}
-                />
-              ),
-              componentCode: "EMP_TAB_FAM",
-            },
-            {
-              title: (
-                <AlgaehLabel
-                  label={{
                     forceLabel: "Official Details",
                   }}
                 />
@@ -113,19 +98,25 @@ export default function EmployeeMasterPopup({
                   }}
                 />
               ),
-              children: <PayRollDetails />,
+              children: (
+                <PayRollDetails EmpMasterIOputs={employeeDetails.employee_id} />
+              ),
               componentCode: "EMP_TAB_PAY",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Rules Details",
+                    forceLabel: "FAMILY & IDENTIFICATION DETAILS",
                   }}
                 />
               ),
-              children: <RulesDetails />,
-              componentCode: "EMP_TAB_RUL",
+              children: (
+                <FamilyAndIdentification
+                  EmpMasterIOputs={employeeDetails.employee_id}
+                />
+              ),
+              componentCode: "EMP_TAB_FAM",
             },
             {
               title: (
@@ -135,8 +126,25 @@ export default function EmployeeMasterPopup({
                   }}
                 />
               ),
-              children: <CommissionSetup />,
+              children: (
+                <CommissionSetup
+                  EmpMasterIOputs={employeeDetails.employee_id}
+                />
+              ),
               componentCode: "EMP_TAB_COMM",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Rules Details",
+                  }}
+                />
+              ),
+              children: (
+                <RulesDetails EmpMasterIOputs={employeeDetails.employee_id} />
+              ),
+              componentCode: "EMP_TAB_RUL",
             },
           ]}
           // renderClass="PrepaymentCntr"

@@ -7,13 +7,21 @@ export default {
   getconsumptionEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      let strQty = "";
+      if (req.query.transfer_number != null) {
+        strQty += ` consumption_number= '${req.query.adjustment_number}'`;
+      }
+
+      if (req.query.transaction_id != null) {
+        strQty += ` hims_f_pharmacy_consumption_header_id= '${req.query.transaction_id}'`;
+      }
+
       _mysql
         .executeQuery({
           query:
             "SELECT hims_f_pharmacy_consumption_header_id, consumption_number, consumption_date, year,\
           period, location_type,location_id  from  hims_f_pharmacy_consumption_header\
-          where consumption_number=?",
-          values: [req.query.consumption_number],
+          where "+ strQty,
           printQuery: true
         })
         .then(headerResult => {

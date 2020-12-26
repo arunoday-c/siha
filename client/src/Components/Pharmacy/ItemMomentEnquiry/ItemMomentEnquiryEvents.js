@@ -2,6 +2,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { persistStateOnBack } from "algaeh-react-components";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -22,6 +23,7 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const ProcessItemMoment = $this => {
+  persistStateOnBack($this.state, true);
   if ($this.state.from_date === null) {
     swalMessage({
       title: "Please Enter From Date",
@@ -43,8 +45,8 @@ const ProcessItemMoment = $this => {
   if ($this.state.item_code_id !== null) {
     inputObj.item_code_id = $this.state.item_code_id;
   }
-  if ($this.state.barcode !== null && $this.state.barcode !== "") {
-    inputObj.barcode = $this.state.barcode;
+  if ($this.state.vendor_batchno !== null && $this.state.vendor_batchno !== "") {
+    inputObj.vendor_batchno = $this.state.vendor_batchno;
   }
   if ($this.state.transaction_type !== null) {
     inputObj.transaction_type = $this.state.transaction_type;
@@ -77,6 +79,9 @@ const ProcessItemMoment = $this => {
           () => {
             AlgaehLoader({ show: false });
           }
+        );
+        return $this.props.history?.push(
+          `${$this.props.location?.pathname}?from_date=${$this.state.from_date}&to_date=${$this.state.to_date}&item_code_id=${$this.state.item_code_id}&vendor_batchno=${$this.state.vendor_batchno}&transaction_type=${this.state.transaction_type}&from_location_id=${this.state.from_location_id}`
         );
       }
     },
@@ -146,10 +151,25 @@ const dateValidate = ($this, value, e) => {
   }
 };
 
+const DrillDownScree = (row, $this) => {
+
+  if (row.transaction_type === "ST") { $this.props.history.push(`/TransferEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "POS") { $this.props.history.push(`/PointOfSale?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "SRT") { $this.props.history.push(`/SalesReturn?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "INT") { $this.props.history.push(`/InitialStock?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "CS") { $this.props.history.push(`/ConsumptionEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "DNA") { $this.props.history.push(`/DeliveryNoteEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "ACK") { $this.props.history.push(`/TransferEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "PR") { $this.props.history.push(`/PurchaseReturnEntry?transaction_id=${row.transaction_id}`) }
+  else if (row.transaction_type === "AD") { $this.props.history.push(`/StockAdjustment?transaction_id=${row.transaction_id}`) }
+
+}
+
 export {
   changeTexts,
   dateFormater,
   datehandle,
   ProcessItemMoment,
-  dateValidate
+  dateValidate,
+  DrillDownScree
 };

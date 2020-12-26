@@ -3,10 +3,13 @@
 <body style="width: 100%;">
   <div class="print-body" style="page-break-before: always; page-break-after: always;margin: 0;">
     <div class="barcodeLine">
-      <small class="small-top-left">{{header.service_name}}</small>
-      <img src={{barcode "code128" header.lab_id_number false }} />
-      <small class="small-left"><b>{{header.patient_code}}</b></small>
-      <small class="small-right">{{header.age_in_years}}Y {{header.age_in_months}}M {{header.age_in_days}}D /
+      {{!-- <small class="small-top-left">{{header.lab_id_number}}</small> --}}
+       <small class="specimenPatName"><b>{{header.full_name}}</b></small>
+       <small class="specimenTstName"><b>{{header.patient_code}}</b></small>
+      {{!-- <small class="small-right">{{header.description}}</div> --}}
+      <img class="specimenBarcode" src={{barcode "code128" header.lab_id_number false }} />
+      <small class="small-left"><b>{{header.barcode_gen}}</b></small>
+      <small class="small-right">{{header.date_of_birth}} /
         {{header.gender}}</small>
     </div>
   </div>
