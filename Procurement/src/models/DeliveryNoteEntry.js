@@ -867,7 +867,7 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let strQty = "";
-      if (req.query.transfer_number != null) {
+      if (req.query.delivery_note_number != null) {
         strQty += `  H.delivery_note_number= '${req.query.delivery_note_number}'`;
       }
 
