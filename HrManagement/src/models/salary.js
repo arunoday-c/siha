@@ -75,7 +75,7 @@ export default {
             from hims_f_attendance_monthly as A \
             inner join  hims_d_employee as E on  E.hims_d_employee_id = A.employee_id and \
             A.hospital_id = E.hospital_id and E.suspend_salary ='N' \
-            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` and (S.salary_type='NS' OR S.salary_type='FS')\
+            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
             and S.employee_id = A.employee_id \
             left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
             and  AL.year=? and AL.month=? and AL.cancelled='N' \
@@ -86,6 +86,8 @@ export default {
             " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y' or date(E.last_salary_process_date ) <= date('" +
             month_end +
             "')) and (S.salary_processed is null or  S.salary_processed='N');";
+
+          // hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` 
         } else {
           inputValues.push(input.hospital_id);
 
@@ -123,10 +125,12 @@ export default {
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
             from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
             on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
-            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` and S.salary_type='LS' \
+            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
             and S.employee_id = A.employee_id   where A.`year`=? and A.`month`=? and A.hospital_id=?" +
               _stringData +
               " and  (S.salary_processed is null or  S.salary_processed='N');";
+
+            // left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` and S.salary_type='LS' 
           }
         }
 
@@ -137,8 +141,8 @@ export default {
             values: inputValues,
             printQuery: true,
           })
-          .then((empResult) => {
-            if (empResult.length == 0) {
+          .then((employee_data) => {
+            if (employee_data.length == 0) {
               if (req.connection == null) {
                 req.connection = {
                   connection: _mysql.connection,
@@ -147,7 +151,7 @@ export default {
                 };
                 req.query.project_employee_id = [];
                 // _mysql.releaseConnection();
-                req.records = empResult;
+                req.records = employee_data;
                 next();
               } else {
                 resolve();
@@ -157,10 +161,24 @@ export default {
 
             let _salaryHeader_id = [];
             let _myemp = [];
+            let empResult = []
+            const dateWiseGroup = _.chain(employee_data)
+              .groupBy((g) => g.employee_id)
+              .value();
+
+            for (let i in dateWiseGroup) {
+              // dateWiseGroup[i][0]["transaction_date"] = i;
+              empResult.push(...dateWiseGroup[i]);
+            }
+
+            // console.log("empResult --- ", empResult)
             empResult.map((o) => {
               _salaryHeader_id.push(o.hims_f_salary_id);
               _myemp.push(o.employee_id);
             });
+
+            // console.log("_salaryHeader_id --- ", _salaryHeader_id)
+            // console.log("_myemp --- ", _myemp)
 
             if (_myemp.length == 0) {
               // _mysql.releaseConnection();
