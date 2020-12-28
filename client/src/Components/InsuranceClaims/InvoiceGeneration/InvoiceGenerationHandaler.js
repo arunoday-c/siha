@@ -5,70 +5,71 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
-  $this.ClearData(() => {
-    let input =
-      $this.state.select_invoice === "CH"
-        ? "pv.insured = 'N' and pv.invoice_generated='N'"
-        : "pv.insured = 'Y' and pv.invoice_generated='N'";
-    AlgaehSearch({
-      searchGrid: {
-        columns: spotlightSearch.VisitDetails.VisitList,
-      },
-      searchName: "invoice_visit",
-      uri: "/gloabelSearch/get",
-      inputs: input,
-      onContainsChange: (text, serchBy, callBack) => {
-        callBack(text);
-      },
-      onRowSelect: (row) => {
-        $this.setState(
-          {
-            visit_code: row.visit_code,
-            patient_code: row.patient_code,
-            full_name: row.full_name,
-            patient_id: row.patient_id,
-            visit_id: row.hims_f_patient_visit_id,
-            invoice_date: row.visit_date,
-          },
-          () => {
-            if ($this.state.select_invoice === "CD") {
-              algaehApiCall({
-                uri: "/patientRegistration/getPatientInsurance",
-                module: "frontDesk",
-                method: "GET",
-                data: {
-                  patient_id: $this.state.patient_id,
-                  patient_visit_id: $this.state.visit_id,
-                },
-                onSuccess: (response) => {
-                  if (response.data.success) {
-                    response.data.records[0].sub_insurance_id =
-                      response.data.records[0].sub_insurance_provider_id;
+  // $this.ClearData(() => {
+  debugger
+  let input =
+    $this.state.select_invoice === "CH"
+      ? "pv.insured = 'N' and pv.invoice_generated='N'"
+      : "pv.insured = 'Y' and pv.invoice_generated='N'";
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.VisitDetails.VisitList,
+    },
+    searchName: "invoice_visit",
+    uri: "/gloabelSearch/get",
+    inputs: input,
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: (row) => {
+      $this.setState(
+        {
+          visit_code: row.visit_code,
+          patient_code: row.patient_code,
+          full_name: row.full_name,
+          patient_id: row.patient_id,
+          visit_id: row.hims_f_patient_visit_id,
+          invoice_date: row.visit_date,
+        },
+        () => {
+          if ($this.state.select_invoice === "CD") {
+            algaehApiCall({
+              uri: "/patientRegistration/getPatientInsurance",
+              module: "frontDesk",
+              method: "GET",
+              data: {
+                patient_id: $this.state.patient_id,
+                patient_visit_id: $this.state.visit_id,
+              },
+              onSuccess: (response) => {
+                if (response.data.success) {
+                  response.data.records[0].sub_insurance_id =
+                    response.data.records[0].sub_insurance_provider_id;
 
-                    response.data.records[0].network_office_id =
-                      response.data.records[0].hims_d_insurance_network_office_id;
+                  response.data.records[0].network_office_id =
+                    response.data.records[0].hims_d_insurance_network_office_id;
 
-                    $this.setState({ ...response.data.records[0] });
-                  }
-                  AlgaehLoader({ show: false });
-                },
-                onFailure: (error) => {
-                  AlgaehLoader({ show: false });
-                  swalMessage({
-                    title: error.message,
-                    type: "error",
-                  });
-                },
-              });
-            }
-
-            getOrderServices($this);
-            getVisitWiseBillDetailS($this);
+                  $this.setState({ ...response.data.records[0] });
+                }
+                AlgaehLoader({ show: false });
+              },
+              onFailure: (error) => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error",
+                });
+              },
+            });
           }
-        );
-      },
-    });
+
+          getOrderServices($this);
+          getVisitWiseBillDetailS($this);
+        }
+      );
+    },
   });
+  // });
 };
 
 const getVisitWiseBillDetailS = ($this) => {
