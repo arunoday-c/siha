@@ -35,16 +35,28 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_salary_loans as SLL on SL.hims_f_salary_id = salary_header_id
           left join hims_f_loan_application as LA on SLL.loan_application_id=hims_f_loan_application_id
           left join hims_d_loan as LM on LA.loan_id=LM.hims_d_loan_id
-          where LA.loan_authorized='IS' and LA.loan_closed ='N' and SL.hospital_id=? and SL.year=? and SL.month=? and SL.salary_paid='Y' ${str} ORDER BY SL.salary_number DESC;`,
+          where LA.loan_authorized='IS' and SL.hospital_id=? and SL.year=? and SL.month=? and SL.salary_paid='Y' ${str} ORDER BY SL.salary_number DESC;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true,
         })
         .then((result) => {
           const header = result.length ? result[0] : {};
-          const total_approved_amount = options.currencyFormat(_.sumBy(result, s => parseFloat(s.approved_amount)),options.args.crypto);
-          const total_balance_amount = options.currencyFormat(_.sumBy(result, s => parseFloat(s.balance_amount)),options.args.crypto);
-          const total_loan_due_amount = options.currencyFormat(_.sumBy(result, s => parseFloat(s.loan_due_amount)),options.args.crypto);
-          const total_pending_loan = options.currencyFormat(_.sumBy(result, s => parseFloat(s.pending_loan)),options.args.crypto);
+          const total_approved_amount = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.approved_amount)),
+            options.args.crypto
+          );
+          const total_balance_amount = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.balance_amount)),
+            options.args.crypto
+          );
+          const total_loan_due_amount = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.loan_due_amount)),
+            options.args.crypto
+          );
+          const total_pending_loan = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.pending_loan)),
+            options.args.crypto
+          );
 
           resolve({
             result: result,
@@ -53,12 +65,11 @@ const executePDF = function executePDFMethod(options) {
             total_balance_amount,
             total_loan_due_amount,
             total_pending_loan,
-          //  total_balance_amount:_.sumBy(result, s => parseFloat(s.balance_amount)),
-          //  total_loan_due_amount:_.sumBy(result, s => parseFloat(s.loan_due_amount)),
-          //  total_pending_loan:_.sumBy(result, s => parseFloat(s.pending_loan)),
+            //  total_balance_amount:_.sumBy(result, s => parseFloat(s.balance_amount)),
+            //  total_loan_due_amount:_.sumBy(result, s => parseFloat(s.loan_due_amount)),
+            //  total_pending_loan:_.sumBy(result, s => parseFloat(s.pending_loan)),
             // no_employees: result.length,
           });
-          
         })
         .catch((error) => {
           options.mysql.releaseConnection();
