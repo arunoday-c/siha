@@ -118,6 +118,7 @@ export function BillDetails({
   const [applyDiscount, setApplyDiscount] = useState(false);
   const { userToken } = useContext(MainContext);
 
+  debugger
   const {
     default_nationality,
     local_vat_applicable,
