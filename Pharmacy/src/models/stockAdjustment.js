@@ -40,7 +40,7 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let strQty = "";
-      if (req.query.transfer_number != null) {
+      if (req.query.adjustment_number != null) {
         strQty += ` and adjustment_number= '${req.query.adjustment_number}'`;
       }
 

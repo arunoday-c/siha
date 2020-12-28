@@ -8,8 +8,8 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let strQty = "";
-      if (req.query.transfer_number != null) {
-        strQty += ` consumption_number= '${req.query.adjustment_number}'`;
+      if (req.query.consumption_number != null) {
+        strQty += ` consumption_number= '${req.query.consumption_number}'`;
       }
 
       if (req.query.transaction_id != null) {
