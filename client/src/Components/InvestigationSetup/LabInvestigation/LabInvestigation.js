@@ -130,7 +130,10 @@ class LabInvestigation extends Component {
       // formula_description: "",
     });
   }
-
+  onDeleteFormula(row) {
+    row.display_formula = null;
+    row.formula = null;
+  }
   render() {
     const { state } = this.context;
     return (
@@ -403,6 +406,16 @@ class LabInvestigation extends Component {
                                     row
                                   )}
                                 />
+                                {row.display_formula !== "" &&
+                                row.display_formula ? (
+                                  <i
+                                    className="fas fa-times"
+                                    onClick={this.onDeleteFormula.bind(
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                ) : null}
                               </div>
                             );
                           },

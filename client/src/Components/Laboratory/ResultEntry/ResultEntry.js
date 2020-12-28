@@ -181,7 +181,6 @@ class ResultEntry extends Component {
   }
 
   render() {
-    debugger;
     // let display =
     //   this.props.providers === undefined
     //     ? []

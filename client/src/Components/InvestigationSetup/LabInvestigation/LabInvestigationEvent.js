@@ -24,6 +24,7 @@ export function AddAnalytes() {
 
       let obj = {
         analyte_id: state.analyte_id,
+        analyte_description: state.analyte_desc,
         analyte_report_group: state.analyte_report_group,
       };
       if (state.hims_d_investigation_test_id !== null) {
@@ -202,12 +203,12 @@ export function analyteidhandle(ctrl, e) {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
   if (this.context !== undefined) {
     this.context.updateState({
       [name]: value,
       analyte_type: e.selected.analyte_type,
       result_unit: e.selected.result_unit,
+      analyte_desc: e.selected.description,
     });
   }
 }

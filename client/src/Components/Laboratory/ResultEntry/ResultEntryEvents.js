@@ -48,7 +48,6 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, value, status) => {
-  debugger;
   value[0].comments = $this.state.comment_list.join("<br/>");
   const critical_exit = _.filter(value, (f) => {
     return f.critical_status === "Y";
@@ -181,7 +180,6 @@ const getAnalytes = ($this) => {
         // }
 
         for (let i = 0; i < response.data.records.length; i++) {
-          debugger;
           response.data.records[i].text_value =
             response.data.records[i].text_value !== null
               ? response.data.records[i].text_value.split("<br/>")
