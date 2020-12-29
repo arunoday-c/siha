@@ -19,7 +19,6 @@ export default function EmployeeMasterPopup({
   employeeDetails,
   HeaderCaption,
 }) {
-  debugger;
   const [HRMS_Active, setHRMS_Active] = useState(false);
   // const [pageDisplay, setPageDisplay] = useState("PersonalDetails");
   // const [personalDetails, setPersonalDetails] = useState({});
@@ -99,7 +98,7 @@ export default function EmployeeMasterPopup({
                 />
               ),
               children: (
-                <PayRollDetails EmpMasterIOputs={employeeDetails.employee_id} />
+                <PayRollDetails employee_id={employeeDetails.employee_id} />
               ),
               componentCode: "EMP_TAB_PAY",
             },
@@ -113,7 +112,7 @@ export default function EmployeeMasterPopup({
               ),
               children: (
                 <FamilyAndIdentification
-                  EmpMasterIOputs={employeeDetails.employee_id}
+                  employee_id={employeeDetails.employee_id}
                 />
               ),
               componentCode: "EMP_TAB_FAM",
@@ -127,9 +126,7 @@ export default function EmployeeMasterPopup({
                 />
               ),
               children: (
-                <CommissionSetup
-                  EmpMasterIOputs={employeeDetails.employee_id}
-                />
+                <CommissionSetup employee_id={employeeDetails.employee_id} />
               ),
               componentCode: "EMP_TAB_COMM",
             },

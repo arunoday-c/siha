@@ -1,12 +1,45 @@
 import React, { createContext, useReducer } from "react";
+// import React from "react";
+// import { EmployeeMasterContext } from "./EmployeeMasterContext";
+// import { EmployeeMasterIndex } from "./EmployeeMasterIndexBeta";
+
+// export default function EmployeeMaster() {
+//   return (
+//     <EmployeeMasterContext>
+//       <EmployeeMasterIndex />
+//     </EmployeeMasterContext>
+//   );
+// }
 
 const baseState = {
-  personalDetails: {},
+  dropdownData: {
+    employee_code_placeHolder: [],
+    relegions: [],
+    countries: [],
+    nationalities: [],
+    idtypes: [],
+    eosReasons: [],
+    agency_list: [],
+    banks: [],
+    companyaccount: [],
+    all_employees: [],
+    designations: [],
+    emp_groups: [],
+    overTime: [],
+    branches: [],
+    // depservices:[],
+    subdepartment: [],
+  },
+  personalDetails: {
+    emloyeeInsertOrUpdateData: [],
+  },
+  OfficalDetails: {},
 };
 
 export const EmployeeMasterContext = createContext(baseState);
 
 const TYPES = {
+  setDropDownData: "setDropDownData",
   setPersonalDetails: "setPersonalDetails",
   setOfficialDetails: "setOfficialDetails",
   setFamilyAndIdentificationDetails: "setFamilyAndIdentificationDetails",
@@ -18,6 +51,8 @@ const TYPES = {
 
 function reducer(state, { type, payload }) {
   switch (type) {
+    case TYPES.setDropDownData:
+      return { ...state, dropdownData: { ...payload } };
     case TYPES.setPersonalDetails:
       return { ...state, personalDetails: payload };
     case TYPES.setOfficialDetails:
@@ -41,6 +76,12 @@ export const FProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, {});
 
   const dispatches = {
+    setDropDownData(e) {
+      dispatch({
+        type: TYPES.setDropDownData,
+        payload: { ...state.dropdownData, ...e },
+      });
+    },
     setPersonalDetails(e) {
       dispatch({ type: TYPES.setPersonalDetails, payload: e });
     },

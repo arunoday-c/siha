@@ -45,7 +45,6 @@ const getEmployeesDetails = async (key, { hospital_id, branches }) => {
       show_all_status: true,
     };
   } else {
-    debugger;
     inputObj = { hospital_id: hospital_id, show_all_status: true };
   }
   const result = await newAlgaehApi({
@@ -106,7 +105,7 @@ export default function EmployeeMasterIndex() {
   //   }
   // }, [branches, hospital_id]);
   const { data: branches, isLoading: tableLoading } = useQuery(
-    ["get-branches", {}],
+    "get-branches",
     getOrganisation,
     {
       onSuccess: (data) => {
@@ -135,7 +134,6 @@ export default function EmployeeMasterIndex() {
     }
   );
   const EditEmployeeMaster = (row) => {
-    debugger;
     setIsOpen((state) => !state);
     setCurrentEmployee(row);
     setEditEmployee(true);

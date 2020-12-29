@@ -15,7 +15,7 @@ const earntexthandle = ($this, e) => {
     if (e.selected.nationality_id !== $this.state.nationality) {
       swalMessage({
         title: "This employee is not entitle for this component.",
-        type: "warning",
+        type: "warningearn_calculation_method",
       });
       $this.setState({
         [name]: null,

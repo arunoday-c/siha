@@ -1,4 +1,6 @@
 import React from "react";
+import { ContextProviderForEmployee } from "../../EmployeeMasterContextForEmployee";
+
 import EmployeeMasterPopup from "./employeeMasterPopup";
 
 export default function EmployeeModal({
@@ -9,14 +11,15 @@ export default function EmployeeModal({
   employee_status,
   HeaderCaption,
 }) {
-  debugger;
   return (
-    <EmployeeMasterPopup
-      visible={open}
-      onClose={onClose}
-      employeeDetails={employeeDetailsPop}
-      employee_status={employee_status}
-      HeaderCaption={HeaderCaption}
-    />
+    <ContextProviderForEmployee>
+      <EmployeeMasterPopup
+        visible={open}
+        onClose={onClose}
+        employeeDetails={employeeDetailsPop}
+        employee_status={employee_status}
+        HeaderCaption={HeaderCaption}
+      />
+    </ContextProviderForEmployee>
   );
 }
