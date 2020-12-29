@@ -148,7 +148,7 @@ export default function Formulae({
                 {" "}
                 <AlgaehButton
                   className="btn btn-default"
-                  style={{ marginLeft: 10 }}
+                  style={{ marginRight: 10 }}
                 >
                   Clear
                 </AlgaehButton>
