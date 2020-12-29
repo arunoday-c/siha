@@ -101,7 +101,7 @@ export function StatementTable(status) {
                       "0.00"}
                   </h6>
                 </div>
-                <div className="col-2">
+                <div className="col">
                   <FinalRemittance data={data} refetch={refetch} />
                 </div>
               </div>
