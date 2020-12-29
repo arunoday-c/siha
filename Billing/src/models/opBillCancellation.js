@@ -848,7 +848,7 @@ export default {
               .executeQuery({
                 query:
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
-            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL');\
+            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL', 'SALES_DISCOUNT');\
             SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
             select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [servicesIds],
@@ -873,6 +873,9 @@ export default {
                 });
                 const OP_CTRL = controls.find((f) => {
                   return f.account == "OP_CTRL";
+                });
+                const SALES_DISCOUNT = controls.find((f) => {
+                  return f.account == "SALES_DISCOUNT";
                 });
 
                 let voucher_type = "";
@@ -999,6 +1002,17 @@ export default {
                     debit_amount: 0,
                     payment_type: "CR",
                     credit_amount: inputParam.company_payable,
+                    hospital_id: req.userIdentity.hospital_id,
+                  });
+                }
+                if (inputParam.sheet_discount_amount > 0) {
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: SALES_DISCOUNT.head_id,
+                    child_id: SALES_DISCOUNT.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: inputParam.sheet_discount_amount,
                     hospital_id: req.userIdentity.hospital_id,
                   });
                 }

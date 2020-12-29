@@ -541,7 +541,7 @@ export default {
 
           if (inputParam.sheet_discount_amount > 0) {
             sendingObject.sheet_discount_percentage =
-              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
+              (inputParam.sheet_discount_amount / inputParam.patient_payable) * 100;
             sendingObject.sheet_discount_percentage = parseFloat(
               parseFloat(sendingObject.sheet_discount_percentage).toFixed(3)
             );
@@ -566,7 +566,7 @@ export default {
           );
 
           sendingObject.net_amount =
-            parseFloat(inputParam.gross_total) -
+            parseFloat(inputParam.patient_payable) -
             sendingObject.sheet_discount_amount;
 
           sendingObject.net_amount = utilities.decimalPoints(
@@ -3786,7 +3786,7 @@ export default {
               .executeQuery({
                 query:
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
-            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL', 'INPUT_TAX');\
+            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL', 'INPUT_TAX', 'SALES_DISCOUNT');\
             SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
             select cost_center_type, cost_center_required from finance_options limit 1;"+ strQuery,
                 values: [servicesIds],
@@ -3820,6 +3820,10 @@ export default {
 
                 const INPUT_TAX = controls.find((f) => {
                   return f.account == "INPUT_TAX";
+                });
+
+                const SALES_DISCOUNT = controls.find((f) => {
+                  return f.account == "SALES_DISCOUNT";
                 });
 
                 let voucher_type = "";
@@ -4100,6 +4104,17 @@ export default {
                       debit_amount: 0,
                       payment_type: "CR",
                       credit_amount: inputParam.total_tax,
+                      hospital_id: req.userIdentity.hospital_id,
+                    });
+                  }
+                  if (inputParam.sheet_discount_amount > 0) {
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: SALES_DISCOUNT.head_id,
+                      child_id: SALES_DISCOUNT.child_id,
+                      debit_amount: inputParam.sheet_discount_amount,
+                      payment_type: "DR",
+                      credit_amount: 0,
                       hospital_id: req.userIdentity.hospital_id,
                     });
                   }
