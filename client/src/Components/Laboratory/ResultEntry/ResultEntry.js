@@ -648,7 +648,7 @@ class ResultEntry extends Component {
                                 <span className="badge badge-warning">Low</span>
                               ) : (
                                 row.critical_type === "H" && (
-                                  <span className="badge badge-warning">
+                                  <span className="badge badge-danger">
                                     High
                                   </span>
                                 )
