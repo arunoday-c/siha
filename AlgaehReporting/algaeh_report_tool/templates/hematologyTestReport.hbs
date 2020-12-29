@@ -74,9 +74,10 @@
         <tr>
             {{!-- <th>Sl No.</th> --}}
             <th class="txtFld">Analyte</th>
-            <th>Result</th>
-            <th>Unit</th>
-            <th>Reference Range</th>
+            <th  class="numberFld">Result</th>
+            <th  class="txtFld"></th>
+            <th class="numberFld">Unit</th>
+            <th class="numberFld">Reference Range</th>
             {{!-- <th>Critical Range</th> --}}
         </tr>
     </thead>
@@ -84,7 +85,7 @@
 {{#hasElement result}}
             {{#each result}}
             <tr>
-                <td colspan="4" class="tableSubHdg">{{investigation_name}}
+                <td colspan="5" class="tableSubHdg">{{investigation_name}}
 
                 </td>
                
@@ -95,7 +96,7 @@
              
              {{else}}
              <tr>
-                <td colspan="4" class="tableSubHdg2 txtFld" >{{analyte_report_group_desc}}</td>
+                <td colspan="5" class="tableSubHdg2 txtFld" >{{analyte_report_group_desc}}</td>
             </tr>
             {{/if}}
 
@@ -103,10 +104,11 @@
         <tr>
             {{!-- <td>{{inc @index}}</td> --}}
             <td class="txtFld" style="width: 55%">{{analyte_name}}</td>
-            <td data-value="{{critical_type}}">{{result}} <sup>{{critical_type}}</sup></td>
-            <td style="width: 10%">{{result_unit}}</td>
+            <td class="numberFld">{{result}}</td>
+            <td class="txtFld" data-value="{{critical_type}}"><sup>{{critical_type}}</sup></td>
+            <td class="numberFld">{{result_unit}}</td>
 
-                    <td>
+                    <td  class="numberFld"  >
 
 
                          {{#if reference_range_required "Y"}} {{#if analyte_type "T"}} 
@@ -128,7 +130,7 @@
         {{/each }}{{/each }}{{/each }}
             {{else}}
             <tr>
-                <td colspan="11" class="noResultTextReport">No Records Found</td>
+                <td colspan="12" class="noResultTextReport">No Records Found</td>
             </tr>{{/hasElement }}
     </tbody>
 </table>

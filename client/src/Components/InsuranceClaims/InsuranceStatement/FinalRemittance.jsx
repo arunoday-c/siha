@@ -132,14 +132,14 @@ export function FinalRemittance({ data, refetch }) {
     <>
       <button
         style={{ marginTop: 10, float: "right" }}
-        className="btn btn-default"
+        className="btn btn-primary"
         onClick={onClickGenerateStatement}
         disabled={!data}
       >
         Generate Statement
       </button>
       <button
-        style={{ marginTop: 10, float: "right" }}
+        style={{ marginTop: 10, marginRight: 10, float: "right" }}
         className="btn btn-default"
         onClick={() => setVisible(true)}
         disabled={!data}

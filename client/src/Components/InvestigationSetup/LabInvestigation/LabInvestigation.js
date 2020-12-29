@@ -409,7 +409,7 @@ class LabInvestigation extends Component {
                                 {row.display_formula !== "" &&
                                 row.display_formula ? (
                                   <i
-                                    className="fas fa-times"
+                                    className="fas fa-trash-alt"
                                     onClick={this.onDeleteFormula.bind(
                                       this,
                                       row

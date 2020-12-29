@@ -584,13 +584,13 @@ img.specimenBarcode {
 .analyteResult [data-value="N"] sup {
   display: none;
 }
-.analyteResult [data-value="L"],
-.analyteResult [data-value="H"] {
+.analyteResult [data-value="L"] sup,
+.analyteResult [data-value="CL"] sup {
   color: rgb(255, 153, 0);
 }
 
-.analyteResult [data-value="CL"],
-.analyteResult [data-value="CH"] {
+.analyteResult [data-value="H"] sup,
+.analyteResult [data-value="CH"] sup {
   color: red;
 }
 .textTruncate {
