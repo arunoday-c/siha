@@ -14,19 +14,30 @@ export default function Formulae({
   analytes,
 }) {
   const [analyte_id, setAnalyte_id] = useState("");
-  const [original_formula, setOriginalFormula] = useState("");
   const [formula_description, setFormula_description] = useState("");
   const [valueForm, setValueForm] = useState([]);
-  const [changed, setChanged] = useState(false);
+  function onClearFormula() {
+    setAnalyte_id("");
+    setFormula_description("");
+    setValueForm([]);
+  }
   function generateFormula() {
-    let descFormula = formula_description;
-    for (let i = 0; i < valueForm.length; i++) {
-      const { label, value } = valueForm[i];
-      const formula_reg = new RegExp(`${label}`, "gi");
-      descFormula = descFormula.replace(formula_reg, value);
+    if (formula_description !== "") {
+      let descFormula = formula_description.replace(/[()?%&^]/g, "");
+      for (let i = 0; i < valueForm.length; i++) {
+        const { label, value } = valueForm[i];
+        const formula_reg = new RegExp(
+          `${label.replace(/[()?%&^]/g, "")}`,
+          "gi"
+        );
+        descFormula = descFormula.replace(formula_reg, value);
+      }
+
+      selectedRow.display_formula = formula_description;
+      selectedRow.original_formula = descFormula;
     }
-    setChanged(false);
-    setOriginalFormula(descFormula);
+
+    closeFormulaPopup();
   }
   return (
     <AlgaehModal
@@ -34,15 +45,7 @@ export default function Formulae({
       onCancel={closeFormulaPopup}
       maskClosable={false}
       title={`Generate forumla for - ${selectedRow.analyte_description} `}
-      onOk={() => {
-        if (changed) {
-          alert("Please Click GENERATE FORMULA before proceeding");
-          return;
-        }
-        selectedRow.display_formula = formula_description;
-        selectedRow.original_formula = original_formula;
-        closeFormulaPopup();
-      }}
+      okButtonProps={{ style: { display: "none" } }}
       className={`row algaehNewModal formulaGeneratorPopup`}
     >
       <div className="col">
@@ -103,11 +106,10 @@ export default function Formulae({
                         return [...prev];
                       });
                     }
-                    // setOriginalFormula(`${original_formula ?? ""}[${_value}]`);
+
                     setFormula_description(
                       `${formula_description ?? ""}[${_desc}]`
                     );
-                    setChanged(true);
                   },
                 }}
               />
@@ -124,20 +126,7 @@ export default function Formulae({
                 }}
                 events={{
                   onChange: (e) => {
-                    // let _originalValue = "";
-                    // if (e.nativeEvent.data === null && original_formula) {
-                    //   _originalValue = original_formula.substring(
-                    //     0,
-                    //     original_formula.length - 1
-                    //   );
-                    // } else {
-                    //   _originalValue = `${original_formula ?? ""}${
-                    //     e.nativeEvent.data
-                    //   }`;
-                    // }
-                    // setOriginalFormula(_originalValue);
                     setFormula_description(e.target.value);
-                    setChanged(true);
                   },
                 }}
               />
@@ -149,6 +138,7 @@ export default function Formulae({
                 <AlgaehButton
                   className="btn btn-default"
                   style={{ marginRight: 10 }}
+                  onClick={onClearFormula}
                 >
                   Clear
                 </AlgaehButton>
@@ -156,12 +146,8 @@ export default function Formulae({
                   className="btn btn-primary"
                   onClick={generateFormula}
                 >
-                  Generate Formula
+                  Save Formula
                 </AlgaehButton>
-              </div>
-              <div className="col-12">
-                <label>Generated Formula</label>
-                <h5>{original_formula}</h5>
               </div>
             </div>
           </div>
