@@ -117,97 +117,102 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let input = req.query;
-      if (input.from_location_id > 0 && input.to_location_id > 0) {
-        let strQty = "";
-        if (req.query.transfer_number != null) {
-          strQty += ` and transfer_number= '${req.query.transfer_number}'`;
-        }
+      // if (input.from_location_id > 0 && input.to_location_id > 0) {
+      let strQty = "";
+      if (req.query.transfer_number != null) {
+        strQty += ` and transfer_number= '${req.query.transfer_number}'`;
+      }
 
-        _mysql
-          .executeQuery({
-            query: `SELECT * from  hims_f_pharmacy_transfer_header \
-          where from_location_id=? and to_location_id=? ${strQty};
-          select D.*,IM.item_description, IU.uom_description from hims_f_pharmacy_transfer_header H \
-          inner join  hims_f_pharmacy_transfer_detail D on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id\
-          inner join hims_d_item_master IM on D.item_id=IM.hims_d_item_master_id \
-          inner join hims_d_pharmacy_uom IU on D.uom_transferred_id=IU.hims_d_pharmacy_uom_id where  
-          H.from_location_id=? and H.to_location_id=? ${strQty};
+      if (req.query.transaction_id != null) {
+        strQty += ` and hims_f_pharmacy_transfer_header_id= '${req.query.transaction_id}'`;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `SELECT *, max(if(H.from_location_id=L.hims_d_pharmacy_location_id, L.location_description,'')) as from_location_description,
+          max(if(H.to_location_id=L.hims_d_pharmacy_location_id, L.location_description,'')) as to_location_description from  hims_f_pharmacy_transfer_header H 
+          inner join hims_d_pharmacy_location L on (H.from_location_id=L.hims_d_pharmacy_location_id or H.to_location_id=L.hims_d_pharmacy_location_id) where 1=1 ${strQty} group by hims_f_pharmacy_transfer_header_id;
+          select D.*,IM.item_description, IU.uom_description from hims_f_pharmacy_transfer_header H 
+          inner join  hims_f_pharmacy_transfer_detail D on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id
+          inner join hims_d_item_master IM on D.item_id=IM.hims_d_item_master_id 
+          inner join hims_d_pharmacy_uom IU on D.uom_transferred_id=IU.hims_d_pharmacy_uom_id 
+          where 1=1 ${strQty};
           select S.* from  hims_f_pharmacy_transfer_header H
           inner join  hims_f_pharmacy_transfer_detail D on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id
           inner join hims_f_pharmacy_transfer_batches S on D.hims_f_pharmacy_transfer_detail_id=S.transfer_detail_id
-          where H.from_location_id=? and H.to_location_id=? ${strQty};
+          where 1=1 ${strQty};
            `,
-            values: [
-              input.from_location_id,
-              input.to_location_id,
-              input.from_location_id,
-              input.to_location_id,
-              input.from_location_id,
-              input.to_location_id,
-            ],
-            printQuery: true,
-          })
-          .then((result) => {
-            _mysql.releaseConnection();
+          values: [
+            input.from_location_id,
+            input.to_location_id,
+            input.from_location_id,
+            input.to_location_id,
+            input.from_location_id,
+            input.to_location_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
 
-            if (result[0].length > 0) {
-              let header = result[0];
-              let detail = result[1];
-              let subDetail = result[2];
+          if (result[0].length > 0) {
+            let header = result[0];
+            let detail = result[1];
+            let subDetail = result[2];
 
-              let outputArray = [];
+            let outputArray = [];
 
-              for (let i = 0; i < header.length; i++) {
-                let t_details = new LINQ(detail)
+            for (let i = 0; i < header.length; i++) {
+              let t_details = new LINQ(detail)
+                .Where(
+                  (w) =>
+                    w.transfer_header_id ==
+                    header[i]["hims_f_pharmacy_transfer_header_id"]
+                )
+                .Select((s) => s)
+                .ToArray();
+
+              let temp = [];
+              for (let m = 0; m < t_details.length; m++) {
+                let sub_details = new LINQ(subDetail)
                   .Where(
                     (w) =>
-                      w.transfer_header_id ==
-                      header[i]["hims_f_pharmacy_transfer_header_id"]
+                      w.transfer_detail_id ==
+                      t_details[m]["hims_f_pharmacy_transfer_detail_id"]
                   )
                   .Select((s) => s)
                   .ToArray();
 
-                let temp = [];
-                for (let m = 0; m < t_details.length; m++) {
-                  let sub_details = new LINQ(subDetail)
-                    .Where(
-                      (w) =>
-                        w.transfer_detail_id ==
-                        t_details[m]["hims_f_pharmacy_transfer_detail_id"]
-                    )
-                    .Select((s) => s)
-                    .ToArray();
-
-                  temp.push({
-                    ...t_details[m],
-                    pharmacy_stock_detail: sub_details,
-                  });
-                }
-
-                outputArray.push({
-                  ...header[i],
-                  stock_detail: temp,
+                temp.push({
+                  ...t_details[m],
+                  pharmacy_stock_detail: sub_details,
                 });
               }
 
-              req.records = outputArray;
-              next();
-            } else {
-              req.records = result[0];
-              next();
+              outputArray.push({
+                ...header[i],
+                stock_detail: temp,
+              });
             }
-          })
-          .catch((error) => {
-            _mysql.releaseConnection();
-            next(error);
-          });
-      } else {
-        req.records = {
-          invalid_input: true,
-          message: "Please provide valid from_location and to_location id",
-        };
-        next();
-      }
+
+            req.records = outputArray;
+            next();
+          } else {
+            req.records = result[0];
+            next();
+          }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+      // } else {
+      //   req.records = {
+      //     invalid_input: true,
+      //     message: "Please provide valid from_location and to_location id",
+      //   };
+      //   next();
+      // }
     } catch (e) {
       _mysql.releaseConnection();
       next(e);

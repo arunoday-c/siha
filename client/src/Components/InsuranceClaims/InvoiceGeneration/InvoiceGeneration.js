@@ -215,6 +215,7 @@ class InvoiceGeneration extends Component {
   }
 
   selectData(e) {
+    debugger
     if (e.target.name === "cash_invoice") {
       this.setState({
         select_invoice: "CH",

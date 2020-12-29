@@ -75,6 +75,40 @@ const adjustQtyHandaler = ($this, e) => {
   });
 };
 
+const getDrilDownData = ($this, transaction_id) => {
+  AlgaehLoader({ show: true });
+  // ClearData($this)
+  algaehApiCall({
+    uri: "/inventorystockAdjustment/getStockAdjustment",
+    module: "inventory",
+    method: "GET",
+    data: { adjustment_number: transaction_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        data.saveEnable = true;
+        data.addItemButton = true;
+        data.dataExists = true
+        $this.setState(data);
+
+        AlgaehLoader({ show: false });
+      } else {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          type: "error",
+          title: response.data.records.message
+        });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   // ClearData($this)
@@ -437,5 +471,6 @@ export {
   batchEventHandaler,
   adjustQtyHandaler,
   AddItemtoList,
-  adjustAmtHandaler
+  adjustAmtHandaler,
+  getDrilDownData
 };

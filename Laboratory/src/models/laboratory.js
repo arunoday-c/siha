@@ -673,10 +673,7 @@ export default {
             "SELECT hims_d_lab_container_id AS container_id, container_id AS container_code \
             FROM hims_d_lab_container WHERE hims_d_lab_container_id=?; \
             SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
-            [
-              inputParam.container_id,
-              inputParam.hims_d_hospital_id
-            ]
+            [inputParam.container_id, inputParam.hims_d_hospital_id]
           );
         } else {
           strQuery = mysql.format(
@@ -685,17 +682,14 @@ export default {
           inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
           where IT.services_id=?;\
           SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
-            [
-              inputParam.service_id,
-              inputParam.hims_d_hospital_id,
-            ]
+            [inputParam.service_id, inputParam.hims_d_hospital_id]
           );
         }
 
         _mysql
           .executeQueryWithTransaction({
             query: strQuery,
-            printQuery: true
+            printQuery: true,
           })
           .then((update_lab_sample) => {
             inputParam.container_id = update_lab_sample[0][0].container_id;
@@ -710,105 +704,107 @@ export default {
               reject(e);
             });
           });
-      }).then((result) => {
-        let _date = new Date();
-        _date = moment(_date).format("YYYY-MM-DD");
-        return new Promise((resolve, reject) => {
-          _mysql
-            .executeQuery({
-              query:
-                "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
+      })
+        .then((result) => {
+          let _date = new Date();
+          _date = moment(_date).format("YYYY-MM-DD");
+          return new Promise((resolve, reject) => {
+            _mysql
+              .executeQuery({
+                query:
+                  "select number,hims_m_hospital_container_mapping_id from hims_m_hospital_container_mapping \
                   where hospital_id =? and container_id=? and date =?",
-              values: [
+                values: [
+                  inputParam.hims_d_hospital_id,
+                  inputParam.container_id,
+                  _date,
+                ],
+                printQuery: true,
+              })
+              .then((container_mapping) => {
+                resolve(container_mapping);
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                  reject(e);
+                });
+              });
+          }).then((record) => {
+            let query = "";
+            let condition = [];
+            let padNum = "";
+            let _newNumber = 1;
+            if (record != null && record.length > 0) {
+              _newNumber = parseInt(record[0].number, 10);
+              _newNumber = _newNumber + 1;
+              padNum = pad(String(_newNumber), 3, "LEFT", "0");
+              condition.push(
+                _newNumber,
+                req.userIdentity.algaeh_d_app_user_id,
+                record[0].hims_m_hospital_container_mapping_id
+              );
+
+              condition.push;
+              query =
+                "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
+            where hims_m_hospital_container_mapping_id =?";
+            } else {
+              condition.push(
                 inputParam.hims_d_hospital_id,
                 inputParam.container_id,
                 _date,
-              ],
-              printQuery: true,
-            })
-            .then((container_mapping) => {
-              resolve(container_mapping);
-            })
-            .catch((e) => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-                reject(e);
-              });
-            });
-        }).then((record) => {
-          let query = "";
-          let condition = [];
-          let padNum = "";
-          let _newNumber = 1;
-          if (record != null && record.length > 0) {
-            _newNumber = parseInt(record[0].number, 10);
-            _newNumber = _newNumber + 1;
-            padNum = pad(String(_newNumber), 3, "LEFT", "0");
-            condition.push(
-              _newNumber,
-              req.userIdentity.algaeh_d_app_user_id,
-              record[0].hims_m_hospital_container_mapping_id
-            );
+                1,
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.algaeh_d_app_user_id
+              );
 
-            condition.push;
-            query =
-              "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
-            where hims_m_hospital_container_mapping_id =?";
-          } else {
-            condition.push(
-              inputParam.hims_d_hospital_id,
-              inputParam.container_id,
-              _date,
-              1,
-              req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.algaeh_d_app_user_id
-            );
-
-            query =
-              "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
+              query =
+                "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
             `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?)";
-          }
+            }
 
-          padNum = pad(String(_newNumber), 3, "LEFT", "0");
-          const dayOfYear = moment().dayOfYear();
-          const labIdNumber =
-            inputParam.lab_location_code +
-            moment().format("YY") +
-            dayOfYear +
-            inputParam.container_code +
-            padNum;
+            padNum = pad(String(_newNumber), 3, "LEFT", "0");
+            const dayOfYear = moment().dayOfYear();
+            const labIdNumber =
+              inputParam.lab_location_code +
+              moment().format("YY") +
+              dayOfYear +
+              inputParam.container_code +
+              padNum;
 
-          _mysql
-            .executeQuery({
-              query:
-                query +
-                ";update hims_f_lab_order set lab_id_number ='" +
-                labIdNumber +
-                "' ,barcode_gen = now() where hims_f_lab_order_id=" +
-                inputParam.hims_f_lab_order_id,
-              values: condition,
-              printQuery: true,
-            })
-            .then((result) => {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = {
-                  lab_id_number: labIdNumber
-                };
-                next();
+            _mysql
+              .executeQuery({
+                query:
+                  query +
+                  ";update hims_f_lab_order set lab_id_number ='" +
+                  labIdNumber +
+                  "' ,barcode_gen = now() where hims_f_lab_order_id=" +
+                  inputParam.hims_f_lab_order_id,
+                values: condition,
+                printQuery: true,
+              })
+              .then((result) => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    lab_id_number: labIdNumber,
+                  };
+                  next();
+                });
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
               });
-            })
-            .catch((e) => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
+          });
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
-      }).catch((e) => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
-        });
-      });
     } catch (e) {
       // _mysql.releaseConnection();
       _mysql.rollBackTransaction(() => {
@@ -859,7 +855,7 @@ export default {
               inputParam.collected,
               inputParam.status,
               req.userIdentity.algaeh_d_app_user_id,
-              inputParam.hims_d_lab_sample_id
+              inputParam.hims_d_lab_sample_id,
             ]
           );
         }
@@ -1033,9 +1029,11 @@ export default {
           max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name,
           max(if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'')) as confirm_by_name,
           max(if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'')) as validate_by_name,
-          LO.*, LA.description from hims_f_ord_analytes LO
+          LO.*, LA.description,max(if(LM.formula is not null,LM.formula,null)) as formula,
+          max(if(LM.display_formula is not null,LM.display_formula,null)) as display_formula  from hims_f_ord_analytes LO
           inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id
           inner join hims_f_lab_order LB on LB.hims_f_lab_order_id = LO.order_id
+          inner join hims_m_lab_analyte as LM on LM.analyte_id = LA.hims_d_lab_analytes_id
           left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)
           left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
           left join hims_d_employee EMO on EMO.hims_d_employee_id=LB.provider_id

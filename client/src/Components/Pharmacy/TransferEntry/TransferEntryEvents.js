@@ -624,6 +624,61 @@ const ReturnCheckboxEvent = ($this, e) => {
   });
 };
 
+
+const getDrilDounData = ($this, transaction_id) => {
+  AlgaehLoader({ show: true });
+
+  debugger
+  algaehApiCall({
+    uri: "/transferEntry/gettransferEntry",
+    module: "pharmacy",
+    method: "GET",
+    data: {
+      transaction_id: transaction_id,
+    },
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        let pharmacy_stock_detail = [];
+        let data = response.data.records[0];
+        for (let i = 0; i < data.stock_detail.length; i++) {
+          if (pharmacy_stock_detail.length === 0) {
+            pharmacy_stock_detail =
+              data.stock_detail[i].pharmacy_stock_detail;
+          } else {
+            pharmacy_stock_detail = pharmacy_stock_detail.concat(
+              data.stock_detail[i].pharmacy_stock_detail
+            );
+          }
+        }
+        data.pharmacy_stock_detail = pharmacy_stock_detail;
+        data.saveEnable = true;
+        data.dataExists = true;
+
+        data.cannotEdit = true;
+
+        data.dataExitst = true;
+
+        data.quantity_transferred = 0;
+        data.item_details = null;
+        data.batch_detail_view = false;
+        data.viewData = true;
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -637,4 +692,5 @@ export {
   generateMaterialTransPhar,
   AcknowledgeTransferEntry,
   ReturnCheckboxEvent,
+  getDrilDounData
 };

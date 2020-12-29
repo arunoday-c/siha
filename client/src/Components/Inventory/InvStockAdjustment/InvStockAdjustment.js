@@ -20,7 +20,8 @@ import {
     batchEventHandaler,
     adjustQtyHandaler,
     AddItemtoList,
-    adjustAmtHandaler
+    adjustAmtHandaler,
+    getDrilDownData
     // generateReport,
 } from "./InvStockAdjustmentEvents";
 
@@ -67,6 +68,11 @@ class InvStockAdjustment extends Component {
                 mappingName: "invuserwiselocations"
             }
         });
+
+        const queryParams = new URLSearchParams(this.props.location.search);
+        if (queryParams.get("transaction_id")) {
+            getDrilDownData(this, queryParams.get("transaction_id"));
+        }
     }
 
     render() {

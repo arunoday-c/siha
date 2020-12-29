@@ -1638,7 +1638,7 @@ export default {
                 } else if (inputParam.payment_type === "LN") {
                   strQuery += _mysql.mysqlQueryFormat(
                     "select head_id, child_id, approved_amount as pay_amount, employee_code, full_name,E.hospital_id, \
-                E.sub_department_id from hims_f_loan_application LA \
+                E.sub_department_id, loan_description from hims_f_loan_application LA \
                 inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id \
                 inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
                 where hims_f_loan_application_id = ?",

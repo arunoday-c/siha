@@ -9,19 +9,22 @@ export function AddAnalytes() {
     onSuccess: () => {
       const { state } = this.context;
       let analytes = state.analytes;
-      const analyte_exists = analytes.find(f => f.analyte_id === state.analyte_id)
+      const analyte_exists = analytes.find(
+        (f) => f.analyte_id === state.analyte_id
+      );
 
       if (analyte_exists !== undefined) {
         swalMessage({
           type: "warning",
           title: "Selected Analyte Already Exists in List",
         });
-        return
+        return;
       }
       let insert_analytes = state.insert_analytes;
 
       let obj = {
         analyte_id: state.analyte_id,
+        analyte_description: state.analyte_desc,
         analyte_report_group: state.analyte_report_group,
       };
       if (state.hims_d_investigation_test_id !== null) {
@@ -87,6 +90,8 @@ export function updateAnalyteGroup(row, rowId) {
       data: {
         hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
         analyte_report_group: row.analyte_report_group,
+        original_formula: row.original_formula,
+        display_formula: row.display_formula,
       },
       method: "PUT",
       onSuccess: (response) => {
@@ -198,12 +203,12 @@ export function analyteidhandle(ctrl, e) {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
   if (this.context !== undefined) {
     this.context.updateState({
       [name]: value,
       analyte_type: e.selected.analyte_type,
       result_unit: e.selected.result_unit,
+      analyte_desc: e.selected.description,
     });
   }
 }

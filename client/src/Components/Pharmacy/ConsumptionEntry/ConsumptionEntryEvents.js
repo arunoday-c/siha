@@ -34,6 +34,35 @@ export default function ConsumptionItemsEvents() {
         });
       });
     },
+    getDrilDownData: ($this, transaction_id) => {
+      AlgaehLoader({ show: true });
+
+      algaehApiCall({
+        uri: "/consumptionEntry/getconsumptionEntry",
+        module: "pharmacy",
+        method: "GET",
+        data: { transaction_id: transaction_id },
+        onSuccess: response => {
+          if (response.data.success === true) {
+            let data = response.data.records;
+            data.saveEnable = true;
+
+            data.addedItem = true;
+            data.ItemDisable = true;
+
+            $this.setState(data);
+            AlgaehLoader({ show: false });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    },
+
     ClearData: $this => {
       let IOputs = ConsumptionIOputs.inputParam();
       $this.setState(IOputs);

@@ -107,59 +107,42 @@ const getCtrlCode = ($this, docNumber) => {
       });
     }
   });
-  // $this.props.getPosEntry({
-  //   uri: "/posEntry/getPosEntry",
-  //   // module:"pharmacy",
-  //   method: "GET",
-  //   printInput: true,
-  //   data: { adjustment_number: docNumber },
-  //   redux: {
-  //     type: "POS_ENTRY_GET_DATA",
-  //     mappingName: "posentry"
-  //   },
-  //   afterSuccess: data => {
-  //     data.saveEnable = true;
-  //     data.patient_payable_h = data.patient_payable;
-  //     data.pos_customer_type = "OT";
-  //     if (data.posted === "Y") {
-  //       data.postEnable = true;
-  //       data.InvoiceEnable = true;
-  //     } else {
-  //       data.postEnable = false;
-  //     }
+};
 
-  //     if (data.cancelled === "Y") {
-  //       data.posCancelled = true;
-  //     } else {
-  //       data.posCancelled = false;
-  //     }
-  //     if (data.visit_id !== null) {
-  //       data.pos_customer_type = "OP";
-  //     }
-  //     data.dataExitst = true;
 
-  //     if (data.receiptdetails.length !== 0) {
-  //       for (let i = 0; i < data.receiptdetails.length; i++) {
-  //         if (data.receiptdetails[i].pay_type === "CA") {
-  //           data.Cashchecked = true;
-  //           data.cash_amount = data.receiptdetails[i].amount;
-  //         }
+const getDrilDownData = ($this, docNumber) => {
+  AlgaehLoader({ show: true });
+  // ClearData($this)
+  algaehApiCall({
+    uri: "/stockAdjustment/getStockAdjustment",
+    module: "pharmacy",
+    method: "GET",
+    data: { adjustment_number: docNumber },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        data.saveEnable = true;
+        data.addItemButton = true;
+        data.dataExists = true
+        $this.setState(data);
 
-  //         if (data.receiptdetails[i].pay_type === "CD") {
-  //           data.Cardchecked = true;
-  //           data.card_amount = data.receiptdetails[i].amount;
-  //         }
-
-  //         if (data.receiptdetails[i].pay_type === "CH") {
-  //           data.Checkchecked = true;
-  //           data.cheque_amount = data.receiptdetails[i].amount;
-  //         }
-  //       }
-  //     }
-  //     $this.setState(data);
-  //     AlgaehLoader({ show: false });
-  //   }
-  // });
+        AlgaehLoader({ show: false });
+      } else {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          type: "error",
+          title: response.data.records.message
+        });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 const ClearData = ($this) => {
@@ -492,5 +475,6 @@ export {
   batchEventHandaler,
   adjustQtyHandaler,
   AddItemtoList,
-  adjustAmtHandaler
+  adjustAmtHandaler,
+  getDrilDownData
 };

@@ -23,7 +23,8 @@ import {
   generateReport,
   getCashiersAndShiftMAP,
   ClosePrescribedItem,
-  getPosEntry
+  getPosEntry,
+  getDrilDownData
 } from "./PointOfSaleEvents";
 // getCtrlCode,
 import "./PointOfSale.scss";
@@ -163,6 +164,9 @@ class PointOfSale extends Component {
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("pos_number")) {
       getPosEntry(this, queryParams.get("pos_number"));
+    }
+    if (queryParams.get("transaction_id")) {
+      getDrilDownData(this, queryParams.get("transaction_id"));
     }
   }
 

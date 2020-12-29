@@ -21,6 +21,7 @@ import {
   adjustQtyHandaler,
   AddItemtoList,
   adjustAmtHandaler,
+  getDrilDownData
   // generateReport,
 } from "./StockAdjustmentEvents";
 
@@ -66,6 +67,11 @@ class StockAdjustment extends Component {
         mappingName: "poslocations",
       },
     });
+
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("transaction_id")) {
+      getDrilDownData(this, queryParams.get("transaction_id"));
+    }
   }
 
   render() {
