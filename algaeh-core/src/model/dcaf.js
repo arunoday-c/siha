@@ -89,7 +89,7 @@ let getPatientDCAF = (req, res, next) => {
                 where V.patient_id = ? and (date(V.visit_date) = date(?) or visit_id=?)  ;\
                 select G.generic_name,'' as type,PD.dispense as quantity from hims_f_prescription PH inner join \
                 hims_f_prescription_detail PD on PD.prescription_id = PH.hims_f_prescription_id inner \
-                join hims_f_patient_visit V on V.episode_id = PH.episode_id  left join hims_d_item_generic G on \
+                join hims_f_patient_visit V on V.hims_f_patient_visit_id = PH.visit_id  left join hims_d_item_generic G on \
                 PD.generic_id = G.hims_d_item_generic_id where V.patient_id=? and (date(V.visit_date) = date(?) or \
                 hims_f_patient_visit_id=?); \
                 select IM.primary_policy_num,IM.primary_effective_start_date,IM.primary_effective_end_date,\
