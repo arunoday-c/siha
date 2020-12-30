@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./FamilyAndIdentification.scss";
+import { swalMessage } from "../../../../../utils/algaehApiCall";
+import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
+import { EmployeeMasterContext } from "../../EmployeeMasterContext";
 // import moment from "moment";
 // import { AlgaehActions } from "../../../../../actions/algaehActions";
 // import { withRouter } from "react-router-dom";
@@ -16,7 +19,7 @@ import hijri from "moment-hijri";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 // import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 // import { getCookie } from "../../../../../utils/algaehApiCall";
-import swal from "sweetalert2";
+// import swal from "sweetalert2";
 import {
   // MainContext,
   AlgaehMessagePop,
@@ -46,17 +49,13 @@ const getFamilyIdentification = async (key, { employee_id }) => {
   });
   return result?.data?.records;
 };
-const getIDTypes = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/identity/get",
-    module: "masterSettings",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
 
 export default function FamilyAndIdentification({ EmpMasterIOputs }) {
   // const { userToken } = useContext(MainContext);
+  const { dropdownData, setDropDownData } = useContext(EmployeeMasterContext);
+  const { setEmployeeUpdateDetails, output } = useContext(
+    EmployeeMasterContextForEmployee
+  );
   const [idDetails, setIdDetails] = useState([]);
   const [dependentDetails, setDependentDetails] = useState([]);
   console.log(dependentDetails, "dependentDetails");
@@ -65,19 +64,20 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
     errors,
     // register,
     reset,
+    handleSubmit,
     setValue,
     getValues,
     watch,
   } = useForm({
     defaultValues: {},
   });
+
   const { valid_upto } = watch(["valid_upto"]);
   const { data: familyIdDetails } = useQuery(
     ["FAMILY_GET_DATA", { employee_id: EmpMasterIOputs }],
     getFamilyIdentification,
     {
       onSuccess: (data) => {
-        debugger;
         setIdDetails(data[0]);
         setDependentDetails(data[1]);
         console.log("familyIdDetails", familyIdDetails);
@@ -92,7 +92,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
   );
   const { data: idtypes } = useQuery("IDTYPE_GET_DATA", getIDTypes, {
     onSuccess: (data) => {
-      debugger;
+      setDropDownData({ idtypes: data });
     },
     onError: (err) => {
       AlgaehMessagePop({
@@ -101,7 +101,21 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
       });
     },
   });
-
+  async function getIDTypes(key) {
+    if (
+      dropdownData.idtypes === undefined ||
+      dropdownData.idtypes.length === 0
+    ) {
+      const result = await newAlgaehApi({
+        uri: "/identity/get",
+        module: "masterSettings",
+        method: "GET",
+      });
+      return result?.data?.records;
+    } else {
+      return dropdownData.idtypes;
+    }
+  }
   // const { data: banks } = useQuery("all-banks", getBanks, {
   //   enabled: !!officialDetails,
 
@@ -130,9 +144,31 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
   //   // row.update();
 
   const AddEmpId = (e) => {
-    debugger;
+    const {
+      identity_documents_id,
+      identity_number,
+      valid_upto,
+      issue_date,
+    } = getValues();
     let idDetail = [...idDetails];
-    const { identity_documents_id, identity_number, valid_upto } = getValues();
+    if (issue_date === null) {
+      swalMessage({
+        title: "Issue Date Cannot be Blank",
+        type: "warning",
+      });
+      return;
+    }
+    if (valid_upto === null) {
+      swalMessage({
+        title: "Expiry Date Cannot be Blank",
+        type: "warning",
+      });
+      return;
+    }
+    debugger;
+    let insertIdDetails =
+      output?.insertIdDetails === undefined ? [] : output?.insertIdDetails;
+
     let hijriConverted = hijri(valid_upto).format("iD-iM-iYYYY");
 
     let inpObj = {
@@ -147,12 +183,29 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
     };
 
     idDetail.push(inpObj);
+    insertIdDetails.push(inpObj);
 
     setIdDetails(() => [...idDetail]);
-    reset({});
+    setEmployeeUpdateDetails({
+      idDetails: idDetail,
+      insertIdDetails: insertIdDetails,
+    });
+    reset({
+      identity_documents_id: null,
+      identity_number: null,
+      valid_upto: null,
+      hijri_valid_upto: "",
+      issue_date: null,
+      alert_required: null,
+      alert_date: null,
+    });
   };
   const addDependentType = (e) => {
     let dependentDetail = dependentDetails;
+    let insertDependentDetails =
+      output?.insertDependentDetails === undefined
+        ? []
+        : output?.insertDependentDetails;
 
     const {
       hims_d_employee_id,
@@ -170,38 +223,53 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
     };
 
     dependentDetail.push(inpObj);
-
+    insertDependentDetails.push(inpObj);
+    setEmployeeUpdateDetails({
+      dependentDetails: dependentDetail,
+      insertDependentDetails: insertDependentDetails,
+    });
     setDependentDetails([...dependentDetail]);
 
-    reset({});
+    reset({
+      dependent_type: null,
+      dependent_name: null,
+      dependent_identity_no: null,
+      dependent_identity_type: null,
+    });
   };
 
   const deleteIdentifications = (row) => {
-    swal({
-      title: "Are you sure you want to delete Identification Component?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-    }).then((willDelete) => {
-      if (willDelete.value) {
-        let idDetail = [...idDetails];
-
-        if (row.hims_d_employee_identification_id !== undefined) {
-          idDetail.splice(row.rowIdx, 1);
-        } else {
-          idDetail.splice(row.rowIdx, 1);
+    let idDetail = idDetails;
+    let insertIdDetails =
+      output?.insertIdDetails === undefined ? [] : output?.insertIdDetails;
+    let deleteIdDetails =
+      output?.deleteIdDetails === undefined ? [] : output?.deleteIdDetails;
+    if (row.hims_d_employee_identification_id !== undefined) {
+      deleteIdDetails.push(row);
+      idDetail.splice(row.rowIdx, 1);
+    } else {
+      for (let x = 0; x < insertIdDetails.length; x++) {
+        if (insertIdDetails[x].deductions_id === row.deductions_id) {
+          insertIdDetails.splice(x, 1);
         }
-        setIdDetails([...idDetail]);
       }
+      debugger;
+      idDetail.splice(row.rowIdx, 1);
+    }
+    setIdDetails([...idDetail]);
+    setEmployeeUpdateDetails({
+      idDetails: idDetail,
+      deleteIdDetails: deleteIdDetails,
+      insertIdDetails: insertIdDetails,
     });
   };
 
   const updateIdentifications = (row) => {
-    let idDetail = [...idDetails];
-
+    let idDetail = idDetails;
+    let insertIdDetails =
+      output?.insertIdDetails === undefined ? [] : output?.insertIdDetails;
+    let updateIdDetails =
+      output?.updateIdDetails === undefined ? [] : output?.updateIdDetails;
     if (row.hims_d_employee_identification_id !== undefined) {
       let hijriConverted = hijri(row.valid_upto).format("iD-iM-iYYYY");
 
@@ -214,7 +282,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
         valid_upto: row.valid_upto,
         hijri_valid_upto: hijriConverted,
       };
-
+      updateIdDetails.push(Updateobj);
       idDetail[row.rowIdx] = Updateobj;
     } else {
       let hijriConverted = hijri(row.valid_upto).format("iD-iM-iYYYY");
@@ -226,42 +294,60 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
         valid_upto: row.valid_upto,
         hijri_valid_upto: hijriConverted,
       };
-
+      insertIdDetails[row.rowIdx] = Updateobj;
       idDetail[row.rowIdx] = Updateobj;
     }
-    setIdDetails(idDetail);
+    setIdDetails([...idDetail]);
+    setEmployeeUpdateDetails({
+      idDetails: idDetail,
+      updateIdDetails: updateIdDetails,
+      insertIdDetails: insertIdDetails,
+    });
   };
 
   const deleteDependencies = (row) => {
-    swal({
-      title: "Are you sure you want to delete Dependenties Component?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-    }).then((willDelete) => {
-      if (willDelete.value) {
-        let dependentDetail = dependentDetails;
-
-        if (row.hims_d_employee_dependents_id !== undefined) {
-          dependentDetail.splice(row.rowIdx, 1);
-        } else {
-          dependentDetail.splice(row.rowIdx, 1);
+    let dependentDetail = dependentDetails;
+    let insertDependentDetails =
+      output?.insertDependentDetails === undefined
+        ? []
+        : output?.insertDependentDetails;
+    let deleteDependentDetails =
+      output?.deleteDependentDetails === undefined
+        ? []
+        : output?.deleteDependentDetails;
+    if (row.hims_d_employee_dependents_id !== undefined) {
+      deleteDependentDetails.push(row);
+      dependentDetail.splice(row.rowIdx, 1);
+    } else {
+      for (let x = 0; x < insertDependentDetails.length; x++) {
+        if (insertDependentDetails[x].deductions_id === row.deductions_id) {
+          insertDependentDetails.splice(x, 1);
         }
-        setDependentDetails(dependentDetail);
-        // $this.setState({
-        //   dependentDetails: dependentDetails,
-
-        // });
       }
+      dependentDetail.splice(row.rowIdx, 1);
+    }
+    setDependentDetails([...dependentDetail]);
+    setEmployeeUpdateDetails({
+      dependentDetails: dependentDetail,
+      deleteDependentDetails: deleteDependentDetails,
+      insertDependentDetails: insertDependentDetails,
     });
+    // $this.setState({
+    //   dependentDetails: dependentDetails,
+
+    // });
   };
 
   const updateDependencies = (row) => {
     let dependentDetail = dependentDetails;
-
+    let insertDependentDetails =
+      output?.insertDependentDetails === undefined
+        ? []
+        : output?.insertDependentDetails;
+    let updateDependentDetails =
+      output?.updateDependentDetails === undefined
+        ? []
+        : output?.updateDependentDetails;
     if (row.hims_d_employee_dependents_id !== undefined) {
       let Updateobj = {
         hims_d_employee_dependents_id: row.hims_d_employee_dependents_id,
@@ -270,7 +356,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
         dependent_identity_type: row.dependent_identity_type,
         dependent_identity_no: row.dependent_identity_no,
       };
-
+      updateDependentDetails.push(Updateobj);
       dependentDetail[row.rowIdx] = Updateobj;
     } else {
       let Updateobj = {
@@ -279,10 +365,15 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
         dependent_identity_type: row.dependent_identity_type,
         dependent_identity_no: row.dependent_identity_no,
       };
-
+      insertDependentDetails[row.rowIdx] = Updateobj;
       dependentDetail[row.rowIdx] = Updateobj;
     }
-    setDependentDetails(dependentDetail);
+    setDependentDetails([...dependentDetail]);
+    setEmployeeUpdateDetails({
+      dependentDetails: dependentDetail,
+      updateDependentDetails: updateDependentDetails,
+      insertDependentDetails: insertDependentDetails,
+    });
     // $this.setState({
     //   dependentDetails: dependentDetails,
     // });
@@ -292,12 +383,14 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
     row.valid_upto = e._d;
 
     if (e.target.gregorianDate !== undefined) {
-      debugger;
-
       row.valid_upto = moment(e.target.gregorianDate, "DD-MM-YYYY").format(
         "YYYY-MM-DD"
       );
     }
+  };
+  const onSubmit = (e) => {
+    console.error(errors);
+    AddEmpId(e);
   };
   const onchangegridcol = (row, e) => {
     let name = e.name || e.target.name;
@@ -314,35 +407,38 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               <span>Personal Identification Details</span>
             </h5>
             <div className="row paddin-bottom-5">
-              <Controller
-                control={control}
-                name="identity_documents_id"
-                render={({ value, onChange, onBlur }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col mandatory" }}
-                    label={{
-                      forceLabel: "Id Type",
-                      isImp: true,
-                    }}
-                    selector={{
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                      },
-                      onClear: () => {
-                        onChange("");
-                      },
-                      name: "identity_documents_id",
-                      dataSource: {
-                        textField: "identity_document_name",
-                        valueField: "hims_d_identity_document_id",
-                        data: idtypes,
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlagehAutoComplete
+              <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}>
+                <Controller
+                  name="identity_documents_id"
+                  control={control}
+                  rules={{ required: "Required" }}
+                  render={({ value, onChange, onBlur }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col mandatory" }}
+                      error={errors}
+                      label={{
+                        forceLabel: "Id Type",
+                        isImp: true,
+                      }}
+                      selector={{
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+                        },
+                        onClear: () => {
+                          onChange("");
+                        },
+                        name: "identity_documents_id",
+                        dataSource: {
+                          textField: "identity_document_name",
+                          valueField: "hims_d_identity_document_id",
+                          data: idtypes,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
             div={{ className: "col-3 mandatory form-group" }}
             label={{
               forceLabel: "Id Type",
@@ -368,32 +464,32 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               },
             }}
           /> */}
-              <Controller
-                name="identity_number"
-                control={control}
-                rules={{ required: "Required" }}
-                render={(props) => (
-                  <AlgaehFormGroup
-                    div={{ className: "col mandatory" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Id Number",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "identity_number",
-                      ...props,
-                      others: {
-                        tabIndex: "2",
-                        placeholder: "",
-                        // type: "number"
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* < AlgaehFormGroup
+                <Controller
+                  name="identity_number"
+                  control={control}
+                  rules={{ required: "Required" }}
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col mandatory" }}
+                      error={errors}
+                      label={{
+                        forceLabel: "Id Number",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "identity_number",
+                        ...props,
+                        others: {
+                          tabIndex: "2",
+                          placeholder: "",
+                          // type: "number"
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* < AlgaehFormGroup
             div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Id Number",
@@ -414,7 +510,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               },
             }}
           /> */}
-              {/* <AlgaehDateHandler
+                {/* <AlgaehDateHandler
             div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Issue Date",
@@ -433,7 +529,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
             }}
             value={this.state.issue_date}
           /> */}
-              {/* <AlgaehHijriDatePicker
+                {/* <AlgaehHijriDatePicker
             div={{
               className: "col-lg-3",
               tabIndex: "6",
@@ -446,47 +542,47 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               onChange: hijriOnChange.bind(this, this),
             }}
           ></AlgaehHijriDatePicker> */}
-              <Controller
-                control={control}
-                name="valid_upto"
-                rules={{ required: "Please Select DOB" }}
-                render={({ onChange, value }) => (
-                  <AlgaehDateHandler
-                    div={{
-                      className: "col mandatory",
-                      tabIndex: "5",
-                    }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Expiry Date",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "valid_upto",
-                      value,
-                      others: {
-                        tabIndex: "4",
-                      },
-                    }}
-                    // others={{ disabled }}
-                    // maxDate={new Date()}
-                    events={{
-                      onChange: (mdate) => {
-                        if (mdate) {
-                          onChange(mdate._d);
-                        } else {
+                <Controller
+                  control={control}
+                  name="valid_upto"
+                  rules={{ required: "Please Select DOB" }}
+                  render={({ onChange, value }) => (
+                    <AlgaehDateHandler
+                      div={{
+                        className: "col mandatory",
+                        tabIndex: "5",
+                      }}
+                      error={errors}
+                      label={{
+                        forceLabel: "Expiry Date",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "valid_upto",
+                        value,
+                        others: {
+                          tabIndex: "4",
+                        },
+                      }}
+                      // others={{ disabled }}
+                      // maxDate={new Date()}
+                      events={{
+                        onChange: (mdate) => {
+                          if (mdate) {
+                            onChange(mdate._d);
+                          } else {
+                            onChange(undefined);
+                          }
+                        },
+                        onClear: () => {
                           onChange(undefined);
-                        }
-                      },
-                      onClear: () => {
-                        onChange(undefined);
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlgaehDateHandler
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlgaehDateHandler
             div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Expiry Date",
@@ -505,28 +601,28 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
             }}
             value={this.state.valid_upto}
           /> */}
-              <AlgaehHijriDatePicker
-                div={{
-                  className: "col mandatory HijriCalendar",
-                  tabIndex: "6",
-                }}
-                gregorianDate={valid_upto || null}
-                label={{ forceLabel: "Hijiri Date" }}
-                textBox={{ className: "txt-fld" }}
-                type="hijri"
-                events={{
-                  onChange: ({ target }) => {
-                    setValue(
-                      "valid_upto",
-                      moment(target?.gregorianDate, "DD-MM-YYYY")._d
-                    );
-                  },
-                  onClear: () => {
-                    setValue("valid_upto", undefined);
-                  },
-                }}
-              />
-              {/* <AlgaehHijriDatePicker
+                <AlgaehHijriDatePicker
+                  div={{
+                    className: "col mandatory HijriCalendar",
+                    tabIndex: "6",
+                  }}
+                  gregorianDate={valid_upto || null}
+                  label={{ forceLabel: "Hijiri Date" }}
+                  textBox={{ className: "txt-fld" }}
+                  type="hijri"
+                  events={{
+                    onChange: ({ target }) => {
+                      setValue(
+                        "valid_upto",
+                        moment(target?.gregorianDate, "DD-MM-YYYY")._d
+                      );
+                    },
+                    onClear: () => {
+                      setValue("valid_upto", undefined);
+                    },
+                  }}
+                />
+                {/* <AlgaehHijriDatePicker
             div={{
               className: "col-3",
             }}
@@ -538,21 +634,21 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               onChange: hijriOnChange.bind(this, this),
             }}
           ></AlgaehHijriDatePicker> */}
-              <div
-                className="col-2"
-                style={{ textAlign: "right", marginTop: 21 }}
-              >
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={() => {
-                    AddEmpId();
-                  }}
+                <div
+                  className="col-2"
+                  style={{ textAlign: "right", marginTop: 21 }}
                 >
-                  Add
-                </button>
-              </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-sm"
+                    style={{ marginTop: 17 }}
+                  >
+                    Add
+                  </button>
+                </div>
+              </form>
             </div>
+
             <div className="row">
               <div className="col-lg-12 " id="employeeId_DetailsGrid_Cntr">
                 {console.log("idDetails", idDetails)}
@@ -614,7 +710,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                             events={{
                               onChange: (e) => {
                                 console.log("Event reaised identity_number");
-                                onchangegridcol(row);
+                                onchangegridcol(row, e);
                               },
                             }}
                           />
@@ -711,12 +807,15 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               <span>Family Details</span>
             </h5>
             <div className="row paddin-bottom-5">
+              {/* <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}> */}
               <Controller
                 control={control}
                 name="dependent_type"
+                rules={{ required: "Please Select" }}
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
                     div={{ className: "col mandatory " }}
+                    error={errors}
                     label={{
                       forceLabel: "Dependent Type",
                       isImp: true,
@@ -900,6 +999,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                   Add
                 </button>
               </div>
+              {/* </form> */}
             </div>
             <div className="row">
               <div className="col-lg-12" id="employeeFamily_DetailsGrid_Cntr">
@@ -949,8 +1049,9 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                               value: row.dependent_name,
                               className: "txt-fld",
                               name: "dependent_name",
-                              events: {
-                                // onChange: onchangegridcol.bind(this, this, row),
+
+                              onChange: (e) => {
+                                onchangegridcol(row, e);
                               },
                             }}
                           />
@@ -1008,8 +1109,8 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                               value: row.dependent_identity_no,
                               className: "txt-fld",
                               name: "dependent_identity_no",
-                              events: {
-                                // onChange: onchangegridcol.bind(this, this, row),
+                              onChange: (e) => {
+                                onchangegridcol(row, e);
                               },
                             }}
                           />

@@ -230,6 +230,7 @@ const AddEarnComponent = ($this, e) => {
 };
 
 const AddDeductionComponent = ($this, e) => {
+  debugger;
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='DeductionComponent'",

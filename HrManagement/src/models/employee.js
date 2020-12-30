@@ -1394,6 +1394,29 @@ export default {
       next(e);
     }
   },
+  getEmployeeRulesDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const { employee_id } = req.query;
+    try {
+      _mysql
+        .executeQuery({
+          query: `
+          SELECT hims_d_employee_id,gratuity_encash,standard_work_hours,ramzan_work_hours,
+          leave_salary_process,late_coming_rule,airfare_process,exclude_machine_data,gratuity_applicable,suspend_salary,
+          pf_applicable from hims_d_employee WHERE hims_d_employee_id =?;`,
+          values: [employee_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getFamilyIdentification: (req, res, next) => {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {

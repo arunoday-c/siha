@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import "./PersonalDetails.scss";
 import moment from "moment";
+import { EmployeeMasterContext } from "../../EmployeeMasterContext";
 // import { AlgaehActions } from "../../../../../actions/algaehActions";
 // import { withRouter } from "react-router-dom";
 // import { connect } from "react-redux";
@@ -35,38 +36,8 @@ import MaskedInput from "react-maskedinput";
 import { useForm, Controller } from "react-hook-form";
 import { newAlgaehApi } from "../../../../../hooks";
 import { useQuery } from "react-query";
+
 // import Enumerable from "linq";
-const initCall = async (key, { fields, tableName, keyFieldName }) => {
-  const result = await newAlgaehApi({
-    uri: "/init/",
-    method: "GET",
-    data: { fields: fields, tableName: tableName, keyFieldName: keyFieldName },
-  });
-  return result?.data?.records;
-};
-const getRelegion = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/masters/get/relegion",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getNationalities = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/masters/get/nationality",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getIDTypes = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/identity/get",
-    module: "masterSettings",
-    method: "GET",
-    data: { identity_status: "A" },
-  });
-  return result?.data?.records;
-};
 const getPersonalDetails = async (key, { employee_id }) => {
   const result = await newAlgaehApi({
     uri: "/employee/getEmployeePersonalDetails",
@@ -76,13 +47,47 @@ const getPersonalDetails = async (key, { employee_id }) => {
   });
   return result?.data?.records;
 };
+
+// const initCall = async (key, { fields, tableName, keyFieldName }) => {
+//   const result = await newAlgaehApi({
+//     uri: "/init/",
+//     method: "GET",
+//     data: { fields: fields, tableName: tableName, keyFieldName: keyFieldName },
+//   });
+//   return result?.data?.records;
+// };
+// const getDropDownData = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/masters/get/relegion",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getNationalities = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/masters/get/nationality",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getIDTypes = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/identity/get",
+//     module: "masterSettings",
+//     method: "GET",
+//     data: { identity_status: "A" },
+//   });
+//   return result?.data?.records;
+// };
+
 export default function PersonalDetails({ EmpMasterIOputs }) {
   const {
     userToken,
-
+    // relegions = [],
     countries = [],
+    nationalities = [],
   } = useContext(MainContext);
-
+  const { setDropDownData, dropdownData } = useContext(EmployeeMasterContext);
   const [samechecked, setsamechecked] = useState("N");
   const [HIMS_Active, setHIMS_Active] = useState(false);
   const [FldEditable, setFldEditable] = useState(true);
@@ -151,42 +156,142 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
       },
     }
   );
-  const { data: employee_code_placeHolder } = useQuery(
+  const { data: dropdownDataPersonalDetails } = useQuery(
     [
-      "employee_code",
+      "dropdown-data1",
       {
         fields: "employee_code",
         tableName: "hims_d_employee",
         keyFieldName: "hims_d_employee_id",
+        // dropdownData: dropdownData,
       },
     ],
-    initCall
-  );
-  const { data: relegions } = useQuery("employee-religion", getRelegion, {});
-  const { data: nationalities } = useQuery(
-    "employee_nationalities",
-    getNationalities
-  );
-  const { data: idtypes } = useQuery("employee_idtypes", getIDTypes, {
-    enabled: !!presonalDetails,
-    initialStale: true,
-    onSuccess: (data) => {
-      let maskedIdentity = data.find((item) => {
-        return (
-          item.hims_d_identity_document_id ===
-          presonalDetails[0].identity_type_id
-        );
-      });
+    getDropDownData,
+    {
+      initialData: {
+        employee_code_placeHolder: [],
+        relegions: [],
+        // nationalities: [],
+        idtypes: [],
+      },
+      enabled: !!presonalDetails,
+      refetchOnMount: false,
+      // refetchOnReconnect: false,
+      // keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      initialStale: true,
+      cacheTime: Infinity,
+      onSuccess: (data) => {
+        setDropDownData({ ...data, countries, nationalities });
 
-      setMasked_identity(maskedIdentity.masked_identity);
-    },
-    onError: (err) => {
-      AlgaehMessagePop({
-        display: err?.message,
-        type: "error",
-      });
-    },
-  });
+        let maskedIdentity = data.idtypes.find((item) => {
+          return (
+            item.hims_d_identity_document_id ===
+            presonalDetails[0].identity_type_id
+          );
+        });
+
+        setMasked_identity(maskedIdentity.masked_identity);
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+      },
+    }
+  );
+  async function getDropDownData(key, { fields, tableName, keyFieldName }) {
+    if (dropdownData === undefined || dropdownData.countries.length === 0) {
+      const result = await Promise.all([
+        newAlgaehApi({
+          uri: "/init/",
+          method: "GET",
+          data: {
+            fields: fields,
+            tableName: tableName,
+            keyFieldName: keyFieldName,
+          },
+        }),
+        newAlgaehApi({
+          uri: "/masters/get/relegion",
+          method: "GET",
+        }),
+        // newAlgaehApi({
+        //   uri: "/masters/get/nationality",
+        //   method: "GET",
+        // }),
+        newAlgaehApi({
+          uri: "/identity/get",
+          module: "masterSettings",
+          method: "GET",
+          data: { identity_status: "A" },
+        }),
+      ]);
+      return {
+        employee_code_placeHolder: result[0]?.data?.records,
+        relegions: result[1]?.data?.records,
+        // nationalities: result[1]?.data?.records,
+        idtypes: result[2]?.data?.records,
+      };
+    } else {
+      return {
+        employee_code_placeHolder: dropdownData.employee_code_placeHolder,
+        relegions: dropdownData.relegions,
+        // nationalities: result[1]?.data?.records,
+        idtypes: dropdownData.idtypes,
+      };
+    }
+  }
+  const {
+    employee_code_placeHolder,
+    relegions,
+    // nationalities,
+    idtypes,
+  } = dropdownDataPersonalDetails;
+  // useEffect(() => {
+  //   return () => {
+  //     debugger;
+
+  //   };
+  // }, [dropdownData]);
+  // const requied_emp_id = isEmpIdRequired;
+  // const { data: employee_code_placeHolder } = useQuery(
+  //   [
+  //     "employee_code",
+  //     {
+  //       fields: "employee_code",
+  //       tableName: "hims_d_employee",
+  //       keyFieldName: "hims_d_employee_id",
+  //     },
+  //   ],
+  //   initCall
+  // );
+  // const { data: relegions } = useQuery("employee-religion", getRelegion, {});
+  // const { data: nationalities } = useQuery(
+  //   "employee_nationalities",
+  //   getNationalities
+  // );
+  // const { data: idtypes } = useQuery("employee_idtypes", getIDTypes, {
+  //   enabled: !!presonalDetails,
+  //   initialStale: true,
+  //   onSuccess: (data) => {
+  //     let maskedIdentity = data.find((item) => {
+  //       return (
+  //         item.hims_d_identity_document_id ===
+  //         presonalDetails[0].identity_type_id
+  //       );
+  //     });
+
+  //     setMasked_identity(maskedIdentity.masked_identity);
+  //   },
+  //   onError: (err) => {
+  //     AlgaehMessagePop({
+  //       display: err?.message,
+  //       type: "error",
+  //     });
+  //   },
+  // });
 
   const sameAsPresent = (e, data) => {
     const value = e.target.checked ? "Y" : "N";
@@ -505,7 +610,10 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     name="nationality"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
-                        div={{ className: "col-lg-2 form-group" }}
+                        div={{
+                          className:
+                            "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
+                        }}
                         label={{
                           forceLabel: "Nationality",
                           isImp: false,
@@ -522,7 +630,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                           dataSource: {
                             textField: "nationality",
                             valueField: "hims_d_nationality_id",
-                            data: nationalities,
+                            data: dropdownData?.nationalities ?? [],
                           },
                         }}
                       />
@@ -562,7 +670,10 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     name="religion_id"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
-                        div={{ className: "col-lg-2 form-group" }}
+                        div={{
+                          className:
+                            "col-lg-2 col-md-2 col-sm-12 mandatory form-group",
+                        }}
                         label={{
                           forceLabel: "Religion",
                           isImp: false,
@@ -623,7 +734,9 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{
+                          className: "col-lg-2 col-md-2 col-sm-12",
+                        }}
                         error={errors}
                         label={{
                           forceLabel: "Personal Contact No.",
@@ -671,7 +784,9 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{
+                          className: "col-lg-2 col-md-2 col-sm-12",
+                        }}
                         error={errors}
                         label={{
                           forceLabel: "Work Contact No.",
@@ -717,7 +832,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     name="identity_type_id"
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                         label={{
                           forceLabel: "PRIMARY ID",
                           isImp: false,
@@ -764,7 +879,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       }}
                     /> */}
                   <div className="col-lg-2 col-md-2 col-sm-12 mandatory">
-                    {/* <label className="styleLabel"> ENTER ID NUMBER</label> */}
+                    <label className="styleLabel"> ENTER ID NUMBER</label>
 
                     {masked_identity ? (
                       <div className="ui input txt-fld">
@@ -787,12 +902,12 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         rules={{ required: "Required" }}
                         render={(props) => (
                           <AlgaehFormGroup
-                            // div={{
-                            //   className: "col-12",
-                            // }}
+                            div={{
+                              className: "col-lg-2 col-md-2 col-sm-12",
+                            }}
                             error={errors}
                             label={{
-                              forceLabel: "ENTER ID NUMBER",
+                              forceLabel: "",
                               isImp: true,
                             }}
                             textBox={{
@@ -849,11 +964,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
-                          className: "col-3 mandatory",
+                          className: "col-lg-3 col-sm-12",
                         }}
                         error={errors}
                         label={{
-                          forceLabel: "Personal Email ID",
+                          forceLabel: "Personal Email Id",
                           isImp: true,
                         }}
                         textBox={{
@@ -898,11 +1013,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
-                          className: "col-3 mandatory",
+                          className: "col-lg-3 col-sm-12",
                         }}
                         error={errors}
                         label={{
-                          forceLabel: "Work Email ID",
+                          forceLabel: "Personal Email Id",
                           isImp: true,
                         }}
                         textBox={{
@@ -1066,11 +1181,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         // rules={{ required: "Add Service Amount" }}
                         render={(props) => (
                           <AlgaehFormGroup
-                            div={{ className: "col-12 form-group" }}
+                            div={{ className: "col-2 mandatory form-group" }}
                             error={errors}
                             label={{
                               fieldName: "address",
-                              isImp: false,
+                              isImp: true,
                             }}
                             textBox={{
                               ...props,
@@ -1109,11 +1224,12 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className: "col-lg-4 col-sm-12 form-group",
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
                             }}
                             label={{
                               fieldName: "country_id",
-                              isImp: false,
+                              // isImp: true,
                             }}
                             error={errors}
                             selector={{
@@ -1141,7 +1257,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group",
+                              "col-lg-4 col-sm-12 form-group form-group",
                           }}
                           label={{
                             fieldName: "country_id",
@@ -1177,11 +1293,12 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className: "col-lg-4 col-sm-12 form-group",
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
                             }}
                             label={{
                               fieldName: "state_id",
-                              isImp: false,
+                              // isImp: true,
                             }}
                             error={errors}
                             selector={{
@@ -1209,7 +1326,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group",
+                              "col-lg-4 col-sm-12 form-group form-group",
                           }}
                           label={{
                             fieldName: "state_id",
@@ -1242,11 +1359,12 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       <Controller
                         name="present_city_id"
                         control={control}
-                        rules={{ required: "Select City" }}
+                        rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className: "col-lg-4 col-sm-12 form-group",
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
                             }}
                             label={{
                               fieldName: "city_id",
@@ -1279,7 +1397,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group",
+                              "col-lg-4 col-sm-12 form-group form-group",
                           }}
                           label={{
                             fieldName: "city_id",
@@ -1343,11 +1461,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         // rules={{ required: "Add Service Amount" }}
                         render={(props) => (
                           <AlgaehFormGroup
-                            div={{ className: "col-lg-8 form-group" }}
+                            div={{ className: "col-lg-8 col-sm-12 form-group" }}
                             error={errors}
                             label={{
                               fieldName: "address",
-                              isImp: false,
+                              isImp: true,
                             }}
                             textBox={{
                               ...props,
@@ -1389,7 +1507,8 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className: "col-lg-4 col-sm-12 form-group",
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
                             }}
                             label={{
                               fieldName: "country_id",
@@ -1421,7 +1540,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group",
+                              "col-lg-4 col-sm-12 form-group form-group",
                           }}
                           label={{
                             fieldName: "country_id",
@@ -1460,7 +1579,8 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className: "col-lg-4 col-sm-12 form-group",
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
                             }}
                             label={{
                               fieldName: "state_id",
@@ -1493,7 +1613,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group",
+                              "col-lg-4 col-sm-12 form-group form-group",
                           }}
                           label={{
                             fieldName: "state_id",
@@ -1535,7 +1655,8 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
-                              className: "col-lg-4 col-sm-12 form-group",
+                              className:
+                                "col-lg-4 col-sm-12 form-group form-group",
                             }}
                             label={{
                               fieldName: "city_id",
@@ -1568,7 +1689,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       {/* <AlagehAutoComplete
                           div={{
                             className:
-                              "col-lg-4 col-sm-12 form-group",
+                              "col-lg-4 col-sm-12 form-group form-group",
                           }}
                           label={{
                             fieldName: "city_id",
@@ -1687,8 +1808,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               name: "license_number",
 
                               others: {
-                                disabled:
-                                  this.state.isdoctor === "Y" ? false : true,
+                                disabled: isdoctor === "Y" ? false : true,
                               },
                             }}
                           />

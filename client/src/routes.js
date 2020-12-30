@@ -249,9 +249,7 @@ const EmployeeMasterIndex = React.lazy(() =>
 );
 const EmployeeMasterIndexBeta = React.lazy(() =>
   retry(() =>
-    import(
-      "./Components/EmployeeManagement/EmployeeMasterIndexBeta/EmployeeMasterIndexBeta"
-    )
+    import("./Components/EmployeeManagement/EmployeeMasterIndexBeta/index")
   )
 );
 const PhysicianScheduleSetup = React.lazy(() =>

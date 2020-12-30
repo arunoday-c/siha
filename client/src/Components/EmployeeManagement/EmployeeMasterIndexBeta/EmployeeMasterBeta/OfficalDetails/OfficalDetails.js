@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import "./OfficalDetails.scss";
+import { EmployeeMasterContext } from "../../EmployeeMasterContext";
 // import moment from "moment";
 // import { AlgaehActions } from "../../../../../actions/algaehActions";
 // import { withRouter } from "react-router-dom";
@@ -43,78 +44,78 @@ const getOfficialDetails = async (key, { employee_id }) => {
   });
   return result?.data?.records;
 };
-const getEosReasons = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/endofservice/eosOptions",
-    module: "hrManagement",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getAgency = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/hrsettings/getAgency",
-    module: "hrManagement",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getBanks = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/bankmaster/getBank",
-    module: "masterSettings",
-    data: { active_status: "A" },
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getCompanyAccount = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/companyAccount/getCompanyAccount",
-    module: "masterSettings",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getEmployees = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/employee/getAllEmployeesForDropDown",
-    module: "hrManagement",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getDesignations = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/hrsettings/getDesignations",
-    module: "hrManagement",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getEmpGroups = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/hrsettings/getEmployeeGroups",
-    module: "hrManagement",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getOvertimeGroups = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/hrsettings/getOvertimeGroups",
-    module: "hrManagement",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
-const getOrganizations = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/organization/getOrganization",
-    method: "GET",
-  });
-  return result?.data?.records;
-};
+// const getEosReasons = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/endofservice/eosOptions",
+//     module: "hrManagement",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getAgency = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/hrsettings/getAgency",
+//     module: "hrManagement",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getBanks = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/bankmaster/getBank",
+//     module: "masterSettings",
+//     data: { active_status: "A" },
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getCompanyAccount = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/companyAccount/getCompanyAccount",
+//     module: "masterSettings",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getEmployees = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/employee/getAllEmployeesForDropDown",
+//     module: "hrManagement",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getDesignations = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/hrsettings/getDesignations",
+//     module: "hrManagement",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getEmpGroups = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/hrsettings/getEmployeeGroups",
+//     module: "hrManagement",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getOvertimeGroups = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/hrsettings/getOvertimeGroups",
+//     module: "hrManagement",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
+// const getOrganizations = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/organization/getOrganization",
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
 const getDepServices = async (key) => {
   const result = await newAlgaehApi({
     uri: "/serviceType/getService",
@@ -126,17 +127,17 @@ const getDepServices = async (key) => {
   return result?.data?.records;
 };
 
-const getSubDepartment = async (key) => {
-  const result = await newAlgaehApi({
-    uri: "/department/get/subdepartment",
-    module: "masterSettings",
-    data: {
-      sub_department_status: "A",
-    },
-    method: "GET",
-  });
-  return result?.data?.records;
-};
+// const getSubDepartment = async (key) => {
+//   const result = await newAlgaehApi({
+//     uri: "/department/get/subdepartment",
+//     module: "masterSettings",
+//     data: {
+//       sub_department_status: "A",
+//     },
+//     method: "GET",
+//   });
+//   return result?.data?.records;
+// };
 
 export default function OfficialDetails({ EmpMasterIOputs }) {
   const [masked_bank_account, setMasked_bank_account] = useState("");
@@ -147,6 +148,8 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
     {}
   );
   const { userToken } = useContext(MainContext);
+  const { dropdownData, setDropDownData } = useContext(EmployeeMasterContext);
+
   const {
     control,
     errors,
@@ -168,6 +171,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
     {
       onSuccess: (data) => {
         debugger;
+        console.log("dropdowndata", dropdownData);
         const HIMS_Active =
           userToken.product_type === "HIMS_ERP" ||
           userToken.product_type === "HIMS_CLINICAL" ||
@@ -196,60 +200,213 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
       },
     }
   );
-  const { data: eosReasons } = useQuery(["eosReasons"], getEosReasons);
-  const { data: agency_list } = useQuery("agency_list", getAgency);
-  const { data: banks } = useQuery("all-banks", getBanks, {
-    enabled: !!officialDetails,
-
-    retry: 0,
-    initialStale: true,
-    onSuccess: (data) => {
-      debugger;
-      let employeeBankAccFormat = data.find((item) => {
-        debugger;
-        return item.hims_d_bank_id === officialDetails[0].employee_bank_id;
-      });
-      setMasked_bank_account(employeeBankAccFormat.masked_bank_account);
-    },
-    onError: (err) => {
-      AlgaehMessagePop({
-        display: err?.message,
-        type: "error",
-      });
-    },
-  });
-
-  const { data: companyaccount } = useQuery(
-    "COMPANY_ACC_DATA",
-    getCompanyAccount
+  const { data: dropdownDataOfficial } = useQuery(
+    [
+      "dropdown-data-officialDetails",
+      {
+        fields: "employee_code",
+        tableName: "hims_d_employee",
+        keyFieldName: "hims_d_employee_id",
+      },
+    ],
+    getDropDownDataOfficial,
+    {
+      initialData: {
+        eosReasons: [],
+        agency_list: [],
+        banks: [],
+        companyaccount: [],
+        all_employees: [],
+        designations: [],
+        emp_groups: [],
+        overTime: [],
+        branches: [],
+        // depservices:[],
+        subdepartment: [],
+      },
+      enabled: !!officialDetails,
+      refetchOnMount: false,
+      // refetchOnReconnect: false,
+      // keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      initialStale: true,
+      cacheTime: Infinity,
+      onSuccess: (data) => {
+        setDropDownData({ ...data });
+        let employeeBankAccFormat = data.banks.find((item) => {
+          return item.hims_d_bank_id === officialDetails[0].employee_bank_id;
+        });
+        setMasked_bank_account(employeeBankAccFormat.masked_bank_account);
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+      },
+    }
   );
-  const { data: all_employees } = useQuery("EMPLY_GET_DATA", getEmployees);
+  // const { data: eosReasons } = useQuery(["eosReasons"], getEosReasons);
+  // const { data: agency_list } = useQuery("agency_list", getAgency);
+  // const { data: banks } = useQuery("all-banks", getBanks, {
+  //   enabled: !!officialDetails,
 
-  const { data: designations } = useQuery("DSGTN_GET_DATA", getDesignations, {
-    onSuccess: (data) => {
+  //   retry: 0,
+  //   initialStale: true,
+  //   onSuccess: (data) => {
+
+  //     let employeeBankAccFormat = data.find((item) => {
+
+  //       return item.hims_d_bank_id === officialDetails[0].employee_bank_id;
+  //     });
+  //     setMasked_bank_account(employeeBankAccFormat.masked_bank_account);
+  //   },
+  //   onError: (err) => {
+  //     AlgaehMessagePop({
+  //       display: err?.message,
+  //       type: "error",
+  //     });
+  //   },
+  // });
+
+  // const { data: companyaccount } = useQuery(
+  //   "COMPANY_ACC_DATA",
+  //   getCompanyAccount
+  // );
+  // const { data: all_employees } = useQuery("EMPLY_GET_DATA", getEmployees);
+
+  // const { data: designations } = useQuery("DSGTN_GET_DATA", getDesignations, {
+  //   onSuccess: (data) => {
+  //     debugger;
+  //   },
+  // });
+
+  // const { data: emp_groups } = useQuery("EMP_GROUP_GET", getEmpGroups);
+  // const { data: overTime } = useQuery("OVER_TIME_GET_DATA", getOvertimeGroups);
+  // const { data: branches } = useQuery("ORGS_GET_DATA", getOrganizations, {
+  //   onSuccess: (data) => {},
+  // });
+  async function getDropDownDataOfficial(key) {
+    debugger;
+    if (
+      dropdownData.designations === undefined ||
+      dropdownData.designations.length === 0
+    ) {
       debugger;
-    },
-  });
-
-  const { data: emp_groups } = useQuery("EMP_GROUP_GET", getEmpGroups);
-  const { data: overTime } = useQuery("OVER_TIME_GET_DATA", getOvertimeGroups);
-  const { data: branches } = useQuery("ORGS_GET_DATA", getOrganizations, {
-    onSuccess: (data) => {},
-  });
+      const result = await Promise.all([
+        newAlgaehApi({
+          uri: "/endofservice/eosOptions",
+          module: "hrManagement",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/hrsettings/getAgency",
+          module: "hrManagement",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/bankmaster/getBank",
+          module: "masterSettings",
+          data: { active_status: "A" },
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/companyAccount/getCompanyAccount",
+          module: "masterSettings",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/employee/getAllEmployeesForDropDown",
+          module: "hrManagement",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/hrsettings/getDesignations",
+          module: "hrManagement",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/hrsettings/getEmployeeGroups",
+          module: "hrManagement",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/hrsettings/getOvertimeGroups",
+          module: "hrManagement",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/organization/getOrganization",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/department/get/subdepartment",
+          module: "masterSettings",
+          data: {
+            sub_department_status: "A",
+          },
+          method: "GET",
+        }),
+      ]);
+      debugger;
+      return {
+        eosReasons: result[0]?.data?.records,
+        agency_list: result[1]?.data?.records,
+        banks: result[2]?.data?.records,
+        companyaccount: result[3]?.data?.records,
+        all_employees: result[4]?.data?.records,
+        designations: result[5]?.data?.records,
+        emp_groups: result[6]?.data?.records,
+        overTime: result[7]?.data?.records,
+        branches: result[8]?.data?.records,
+        // depservices: result[9]?.data?.records,
+        subdepartment: result[9]?.data?.records,
+      };
+    } else {
+      return {
+        eosReasons: dropdownData.eosReasons,
+        agency_list: dropdownData.agency_list,
+        banks: dropdownData.banks,
+        companyaccount: dropdownData.companyaccount,
+        all_employees: dropdownData.all_employees,
+        designations: dropdownData.designations,
+        emp_groups: dropdownData.emp_groups,
+        overTime: dropdownData.overTime,
+        branches: dropdownData.branches,
+        // depservices: result[9]?.data?.records,
+        subdepartment: dropdownData.subdepartment,
+      };
+    }
+  }
   const { data: depservices } = useQuery("SERVICES_GET_DATA", getDepServices, {
     enabled: !!HIMS_Active,
 
     retry: 0,
     initialStale: true,
     onSuccess: (data) => {
+      // setDropDownData((previous) => {
+      //   return { ...previous, ...data };
+      // });
       console.log(officialDetails, "officialDetails");
     },
   });
-  const { data: subdepartment } = useQuery(
-    "SUB_DEPT_GET_DATA",
-    getSubDepartment
-  );
+  // const { data: subdepartment } = useQuery(
+  //   "SUB_DEPT_GET_DATA",
+  //   getSubDepartment
+  // );
 
+  const {
+    eosReasons,
+    agency_list,
+    banks,
+    companyaccount,
+    all_employees,
+    designations,
+    emp_groups,
+    overTime,
+    branches,
+    subdepartment,
+  } = dropdownDataOfficial;
   return (
     <>
       <div
