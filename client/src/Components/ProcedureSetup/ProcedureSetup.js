@@ -5,13 +5,14 @@ import "../../styles/site.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import ProcedureSetupEvent from "./ProcedureSetupEvent";
 import Procedures from "./Procedures/Procedures";
+import ItemAssignPercedure from "./Procedures/ItemAssignPercedure";
 
 export default class ProcedureSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
-
+      isOpenItem: false,
       ProceduresPop: {},
       all_procedures: [],
     };
@@ -26,12 +27,32 @@ export default class ProcedureSetup extends Component {
     });
   }
 
+  ShowItemModel() {
+    this.setState({
+      ...this.state,
+      isOpenItem: !this.state.isOpenItem
+    });
+  }
   CloseModel(e) {
     this.setState(
       {
         ...this.state,
         isOpen: !this.state.isOpen,
         ProceduresPop: {},
+      },
+      () => {
+        if (e === true) {
+          ProcedureSetupEvent().getProcedure(this);
+        }
+      }
+    );
+  }
+
+  CloseItemModel(e) {
+    this.setState(
+      {
+        ...this.state,
+        isOpenItem: !this.state.isOpenItem,
       },
       () => {
         if (e === true) {
@@ -61,11 +82,24 @@ export default class ProcedureSetup extends Component {
               >
                 <i className="fas fa-plus" />
               </button>
+              <button
+                onClick={this.ShowItemModel.bind(this)}
+                type="button"
+                className="btn btn-primary"
+              >
+                <AlgaehLabel label={{ forceLabel: "Item Assign" }} />
+              </button>
               <Procedures
                 HeaderCaption="Procedure Details"
                 show={this.state.isOpen}
                 onClose={this.CloseModel.bind(this)}
                 ProceduresPop={this.state.ProceduresPop}
+                all_procedures={this.state.all_procedures}
+              />
+              <ItemAssignPercedure
+                HeaderCaption="Item Assign"
+                show={this.state.isOpenItem}
+                onClose={this.CloseItemModel.bind(this)}
                 all_procedures={this.state.all_procedures}
               />
             </div>

@@ -560,12 +560,12 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.*, IC.category_desc, IG.group_description,\
             SPU.uom_description as stock_uom_desc, SAPU.uom_description sales_uom_desc \
-            from hims_d_inventory_item_master IM,hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG,\
-            hims_d_inventory_uom SPU,hims_d_inventory_uom SAPU \
-            where IM.category_id = IC.hims_d_inventory_tem_category_id \
-            and IM.group_id = IG.hims_d_inventory_item_group_id \
-            and IM.stocking_uom_id = SPU.hims_d_inventory_uom_id \
-            and IM.sales_uom_id = SAPU.hims_d_inventory_uom_id and IM.item_status='A' ",
+            from hims_d_inventory_item_master IM \
+            inner join hims_d_inventory_tem_category IC on IM.category_id = IC.hims_d_inventory_tem_category_id \
+            inner join hims_d_inventory_item_group IG on IM.group_id = IG.hims_d_inventory_item_group_id\
+            inner join hims_d_inventory_uom SPU on IM.stocking_uom_id = SPU.hims_d_inventory_uom_id \
+            inner join hims_d_inventory_uom SAPU on IM.sales_uom_id = SAPU.hims_d_inventory_uom_id\
+            where IM.item_status='A' ",
         orderBy: "hims_d_inventory_item_master_id desc",
       },
       {

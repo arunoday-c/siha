@@ -622,6 +622,43 @@ export default {
       });
   },
 
+  applyItemProcedure: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    try {
+      let IncludeValues = ["procedure_header_id", "item_id", "service_id", "qty"];
+
+      _mysql
+        .executeQuery({
+          query: "INSERT IGNORE INTO hims_d_procedure_detail(??) VALUES ?",
+          values: input,
+          includeValues: IncludeValues,
+          extraValues: {
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            created_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_date: new Date(),
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true,
+        })
+
+        .then((detail_result) => {
+          _mysql.releaseConnection();
+          req.records = detail_result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   getProcedures: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();

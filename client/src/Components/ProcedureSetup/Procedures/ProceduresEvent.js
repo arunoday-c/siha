@@ -2,6 +2,9 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import algaehLoader from "../../Wrapper/fullPageLoader";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+import Enumerable from "linq";
 
 export default function ProceduresEvent() {
   return {
@@ -247,6 +250,97 @@ export default function ProceduresEvent() {
           }
         },
       });
+    },
+    itemSearch: $this => {
+
+      AlgaehSearch({
+        searchGrid: {
+          columns: spotlightSearch.Items.Invitemmaster
+        },
+        searchName: "invopeningstock",
+        uri: "/gloabelSearch/get",
+        onContainsChange: (text, serchBy, callBack) => {
+          callBack(text);
+        },
+        onRowSelect: row => {
+          $this.setState({
+            item_id: row.hims_d_inventory_item_master_id,
+            item_description: row.item_description,
+            service_id: row.service_id,
+            qty: 1
+          });
+        }
+      });
+
+    },
+    selectToPay: ($this, row, e) => {
+      let _allProcedure = $this.state.all_procedures;
+      let applyBtn = true;
+
+      if (e.target.checked === true) {
+        row["select_to_pay"] = "Y";
+      } else if (e.target.checked === false) {
+        row["select_to_pay"] = "N";
+      }
+
+      _allProcedure[row.rowIdx] = row;
+
+      let listOfinclude = Enumerable.from(_allProcedure)
+        .where((w) => w.select_to_pay === "Y")
+        .toArray();
+      if (listOfinclude.length > 0) {
+        applyBtn = false;
+      }
+      $this.setState({
+        applyBtn: applyBtn,
+        all_procedures: _allProcedure,
+      });
+    },
+    ApplyProcedures: ($this) => {
+      debugger
+      let _allProcedure = $this.state.all_procedures
+
+      let listOfinclude = Enumerable.from(_allProcedure)
+        .where((w) => w.select_to_pay === "Y")
+        .toArray();
+
+      let inputObj = []
+
+      for (let i = 0; i < listOfinclude.length; i++) {
+        inputObj.push({
+          procedure_header_id: listOfinclude[i].hims_d_procedure_id,
+          item_id: $this.state.item_id,
+          service_id: $this.state.service_id,
+          qty: $this.state.qty
+        })
+      }
+
+      algaehApiCall({
+        uri: "/serviceType/applyItemProcedure",
+        module: "masterSettings",
+        data: inputObj,
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            swalMessage({
+              type: "success",
+              title: "Saved successfully . .",
+            });
+            $this.setState({
+              item_description: null,
+              all_procedures: [],
+              applyBtn: true,
+              qty: 1,
+              item_id: null,
+              service_id: null
+            }, () => {
+              $this.props.onClose && $this.props.onClose(true);
+            })
+
+            algaehLoader({ show: false });
+          }
+        },
+      });
+
     }
   };
 }
