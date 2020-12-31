@@ -455,7 +455,7 @@ class ScreenAssignment extends Component {
                               screen_name,
                               component,
                             } = element;
-
+                            // console.log("element---", element);
                             return (
                               <li key={algaeh_app_screens_id}>
                                 <label className="mainHeader">
