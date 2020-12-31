@@ -16,11 +16,12 @@ import {
   getPurchaseDetails,
   generateDeliveryNoteReceipt,
   printBulkBarcode,
-  getDrilDownData
+  getDrilDownData,
 } from "./DeliveryNoteEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import DNEntry from "../../../Models/DNEntry";
 import MyContext from "../../../utils/MyContext";
+
 // import _ from "lodash";
 import { MainContext } from "algaeh-react-components";
 
@@ -72,7 +73,9 @@ class DeliveryNoteEntry extends Component {
     }
 
     if (queryParams.get("purchase_number")) {
-      getPurchaseDetails(this, { purchase_number: queryParams.get("purchase_number") });
+      getPurchaseDetails(this, {
+        purchase_number: queryParams.get("purchase_number"),
+      });
     }
 
     if (
@@ -165,17 +168,17 @@ class DeliveryNoteEntry extends Component {
           printArea={
             this.state.hims_f_inventory_consumption_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateDeliveryNoteReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateDeliveryNoteReceipt(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}

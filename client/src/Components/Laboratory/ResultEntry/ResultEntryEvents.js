@@ -180,6 +180,7 @@ const getAnalytes = ($this) => {
           {
             records_test_formula,
             test_analytes: response.data.records,
+            entered_by: response.data.records[0].entered_by,
             ordered_by_name: response.data.records[0].ordered_by_name,
             entered_by_name: response.data.records[0].entered_by_name,
             confirm_by_name: response.data.records[0].confirm_by_name,
@@ -448,20 +449,6 @@ const onchangegridresult = ($this, row, e) => {
       );
     }
   }
-
-  // console.log("indexOfArray", indexOfArray);
-
-  // for (let l = 0; l < test_analytes.length; l++) {
-  //   if (
-  //     test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
-  //   ) {
-  //     row["critical_type"] = checkRange(row);
-  //     if (row["critical_type"] !== "N") {
-  //       row["critical_status"] = "Y";
-  //     }
-  //     test_analytes[l] = row;
-  //   }
-  // }
   $this.setState({
     test_analytes,
   });
@@ -474,9 +461,8 @@ function checkRange(row) {
   // critical_low = parseFloat(critical_low);
   normal_low = parseFloat(normal_low);
   normal_high = parseFloat(normal_high);
-  // critical_high = parseFloat(critical_high);
-
-  if (row.analyte_type === "QU") {
+  // critical_high = parseFloat(critical_high);  
+  if (row.analyte_type === "QN") {
     if (!result) {
       return null;
     } else if (result < normal_low) {

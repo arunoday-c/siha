@@ -958,8 +958,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS AH.*,date(AH.adjustment_date) as adjustment_date,  \
           L.location_description as location_name from hims_f_pharmacy_stock_adjust_header AH, hims_d_pharmacy_location L \
-          where L.hims_d_pharmacy_location_id = AH.location_id and  AH.hospital_id=?" +
-          hospitalId,
+          where L.hims_d_pharmacy_location_id = AH.location_id ",
         orderBy: "hims_f_pharmacy_stock_adjust_header_id desc",
       },
       {
@@ -967,8 +966,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS AH.*,date(AH.adjustment_date) as adjustment_date,  \
           L.location_description as location_name from hims_f_inventory_stock_adjust_header AH, hims_d_inventory_location L \
-          where L.hims_d_inventory_location_id = AH.location_id and  AH.hospital_id=?" +
-          hospitalId,
+          where L.hims_d_inventory_location_id = AH.location_id ",
         orderBy: "hims_f_inventory_stock_adjust_header_id desc",
       },
       {
@@ -976,8 +974,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RQ.*, CASE RQ.quotation_for \
           WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for, RQ.quotation_for as q_f from \
-          hims_f_procurement_req_quotation_header RQ where RQ.hospital_id=" +
-          hospitalId,
+          hims_f_procurement_req_quotation_header RQ where 1=1 ",
         orderBy: "hims_f_procurement_req_quotation_header_id desc",
       },
       {

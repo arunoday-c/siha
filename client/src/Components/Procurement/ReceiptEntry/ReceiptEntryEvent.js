@@ -1,7 +1,4 @@
-import {
-  swalMessage,
-  algaehApiCall
-} from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -41,8 +38,8 @@ const textEventhandle = ($this, e) => {
     e.value === ""
       ? null
       : e.value || e.target.value === ""
-        ? null
-        : e.target.value;
+      ? null
+      : e.target.value;
 
   $this.setState({
     [name]: value,
@@ -217,17 +214,17 @@ const DeliverySearch = ($this, e) => {
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? 0
                     : Math.abs(
-                      data.dn_entry_detail[i].dn_quantity -
-                      data.dn_entry_detail[i].quantity_outstanding
-                    );
+                        data.dn_entry_detail[i].dn_quantity -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].recieved_quantity =
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? data.dn_entry_detail[i].dn_quantity
                     : Math.abs(
-                      data.dn_entry_detail[i].quantity_recieved_todate -
-                      data.dn_entry_detail[i].quantity_outstanding
-                    );
+                        data.dn_entry_detail[i].quantity_recieved_todate -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].dn_header_id =
                   data.hims_f_procurement_dn_header_id;
@@ -377,7 +374,7 @@ const getCtrlCode = ($this, docNumber) => {
             data.ItemDisable = true;
             data.ClearDisable = true;
           }
-          debugger
+          debugger;
           data.saveEnable = true;
           data.dataExitst = true;
 
@@ -499,7 +496,7 @@ const getData = ($this) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "receiptitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -770,7 +767,7 @@ const RevertReceiptEntry = ($this) => {
       type: "warning",
       title: "Revert reason is Mandatory",
     });
-    return
+    return;
   }
   swal({
     title: "Are you sure you want to Revert ?",
@@ -788,14 +785,15 @@ const RevertReceiptEntry = ($this) => {
         module: "procurement",
         method: "PUT",
         data: {
-          hims_f_procurement_grn_header_id: $this.state.hims_f_procurement_grn_header_id,
+          hims_f_procurement_grn_header_id:
+            $this.state.hims_f_procurement_grn_header_id,
           po_id: $this.state.po_id,
           revert_reason: $this.state.revert_reason,
           // sales_invoice_mode: $this.state.sales_invoice_mode
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            getCtrlCode($this, $this.state.grn_number)
+            getCtrlCode($this, $this.state.grn_number);
             swalMessage({
               type: "success",
               title: "Reverted successfully ...",
@@ -812,7 +810,7 @@ const RevertReceiptEntry = ($this) => {
       });
     }
   });
-}
+};
 
 export {
   texthandle,
@@ -833,5 +831,5 @@ export {
   textEventhandle,
   generateReceiptEntryReport,
   getPOOptions,
-  RevertReceiptEntry
+  RevertReceiptEntry,
 };
