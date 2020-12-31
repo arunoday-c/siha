@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from "react";
 import "../ResultDispatch.scss";
-import { Collapse, Checkbox } from "algaeh-react-components";
+import { Collapse, Checkbox, AlgaehButton } from "algaeh-react-components";
 import moment from "moment";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 // import _ from "lodash";
@@ -10,6 +10,7 @@ export default memo(function ({ details }) {
   const [selectAll, setSelectAll] = useState(false);
   const [listOfDetails, setListOfDetails] = useState(list);
   const [enablePrintButton, setEnablePrintButton] = useState(true);
+  const [loading, setLoading] = useState(false);
   function changeSelectStatus(event) {
     const checkState = event.target.checked;
 
@@ -27,11 +28,34 @@ export default memo(function ({ details }) {
     // setCheckState(event.target.checked);
   }
 
-  function showReport() {
+  function showReport(e) {
+    setLoading(true);
+    const reportType = e.currentTarget.getAttribute("report");
+    let reportExtraParams = {};
+    console.log("reportType", reportType);
     let sentItems = [];
-    const records = listOfDetails
-      .filter((f) => f.checked === true)
-      .map((m, index) => {
+    const recordCheckList = listOfDetails.filter((f) => f.checked === true);
+    let reportName = "labMerge";
+    if (reportType === "merge") {
+      reportExtraParams = { multiMerdgeReport: recordCheckList.length };
+
+      recordCheckList.forEach((item) => {
+        let myRecords = [];
+        myRecords.push({ name: "hims_d_patient_id", value: item.patient_id });
+        myRecords.push({
+          name: "visit_id",
+          value: item.hims_f_patient_visit_id,
+        });
+        myRecords.push({
+          name: "hims_f_lab_order_id",
+          value: item.hims_f_lab_order_id,
+        });
+        sentItems.push(myRecords);
+      });
+
+      reportName = "hematologyTestReport";
+    } else {
+      const records = recordCheckList.map((m, index) => {
         if (index === 0) {
           sentItems.push({ name: "hims_d_patient_id", value: m.patient_id });
           sentItems.push({
@@ -41,7 +65,9 @@ export default memo(function ({ details }) {
         }
         return m.hims_f_lab_order_id;
       });
-    sentItems.push({ name: "lab_order_ids", value: records });
+      sentItems.push({ name: "lab_order_ids", value: records });
+    }
+
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -52,15 +78,20 @@ export default memo(function ({ details }) {
       others: { responseType: "blob" },
       data: {
         report: {
-          reportName: "labMerge",
+          reportName: reportName,
           reportParams: sentItems,
           outputFileType: "PDF",
+          ...reportExtraParams,
         },
       },
       onSuccess: (res) => {
+        setLoading(false);
         const urlBlob = URL.createObjectURL(res.data);
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Visit wise lab report`;
         window.open(origin);
+      },
+      onCatch: () => {
+        setLoading(false);
       },
     });
   }
@@ -142,13 +173,24 @@ export default memo(function ({ details }) {
           </tbody>
         </table>
         <div className="accFooter">
-          <button
+          <AlgaehButton
             className="btn btn-default btn-sm"
+            report="merge"
             onClick={showReport}
             disabled={enablePrintButton}
+            loading={loading}
           >
             Print Selected Reports
-          </button>
+          </AlgaehButton>
+          <AlgaehButton
+            className="btn btn-default btn-sm"
+            report="single"
+            onClick={showReport}
+            disabled={enablePrintButton}
+            loading={loading}
+          >
+            Print All in one Selected Reports
+          </AlgaehButton>
         </div>
       </Panel>
     </Collapse>
