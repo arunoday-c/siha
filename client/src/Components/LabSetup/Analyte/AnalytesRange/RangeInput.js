@@ -318,7 +318,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           }}
         />
       ) : (
-        <div className="col">
+        <div className="col form-group">
           <AlgaehLabel label={{ forceLabel: "Text" }} />
           <textarea
             value={inputs.text_value}
@@ -342,13 +342,9 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         // />
       )}
 
-      <div className="col-12" style={{ padding: 0 }}>
-        <button
-          className="btn btn-primary"
-          style={{ marginTop: 20 }}
-          onClick={onSubmit}
-        >
-          Add
+      <div className="col-12" style={{ textAlign: "right" }}>
+        <button className="btn btn-primary" onClick={onSubmit}>
+          Add to list
         </button>
       </div>
     </div>

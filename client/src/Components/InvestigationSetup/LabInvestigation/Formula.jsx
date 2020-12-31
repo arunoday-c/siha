@@ -82,8 +82,9 @@ export default function Formulae({
                     <li>
                       Type Divide (/) then type 100 in Enter Forumla Field
                     </li>
-                    <li>Click Generate Formula and Validate</li>
-                    <li>Click Save Button</li>
+                    <li>Click Save Formula</li>
+                    <li>Close the Popup</li>
+                    <li>Then click save icon on grid Action column</li>
                   </ul>
                 </div>
               </div>
