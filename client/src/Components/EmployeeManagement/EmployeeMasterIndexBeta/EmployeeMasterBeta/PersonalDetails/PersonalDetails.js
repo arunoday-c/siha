@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import "./PersonalDetails.scss";
 import moment from "moment";
 import { EmployeeMasterContext } from "../../EmployeeMasterContext";
+import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
 // import { AlgaehActions } from "../../../../../actions/algaehActions";
 // import { withRouter } from "react-router-dom";
 // import { connect } from "react-redux";
@@ -18,7 +19,7 @@ import { EmployeeMasterContext } from "../../EmployeeMasterContext";
 //   AlgaehLabel,
 // } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
-// import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
+import AlgaehFileUploader from "../../../../Wrapper/algaehFileUpload";
 // import { getCookie } from "../../../../../utils/algaehApiCall";
 import {
   MainContext,
@@ -88,6 +89,9 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
     nationalities = [],
   } = useContext(MainContext);
   const { setDropDownData, dropdownData } = useContext(EmployeeMasterContext);
+  const { setEmployeeUpdateDetails } = useContext(
+    EmployeeMasterContextForEmployee
+  );
   const [samechecked, setsamechecked] = useState("N");
   const [HIMS_Active, setHIMS_Active] = useState(false);
   const [FldEditable, setFldEditable] = useState(true);
@@ -106,6 +110,9 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
     ["personal-details", { employee_id: EmpMasterIOputs }],
     getPersonalDetails,
     {
+      enabled: !!EmpMasterIOputs,
+      initialStale: true,
+
       onSuccess: (data) => {
         RawSecurityElement({ elementCode: "FLD_EDT_PER" }).then((result) => {
           if (result === "hide") {
@@ -140,10 +147,14 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
         });
 
         setPermanentCities(permanentCities[0].cities);
+        setEmployeeUpdateDetails({
+          ...data[0],
+        });
         const rest = {
           ...data[0],
           date_of_birth: moment(data[0].date_of_birth, "YYYY-MM-DD"),
         };
+
         reset(rest);
         setIdentity_no(data[0].identity_no);
         setIsdoctor(data[0].isdoctor);
@@ -174,7 +185,10 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
         // nationalities: [],
         idtypes: [],
       },
-      enabled: !!presonalDetails,
+      enabled:
+        !!presonalDetails ||
+        EmpMasterIOputs === undefined ||
+        EmpMasterIOputs === null,
       refetchOnMount: false,
       // refetchOnReconnect: false,
       // keepPreviousData: true,
@@ -183,15 +197,16 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
       cacheTime: Infinity,
       onSuccess: (data) => {
         setDropDownData({ ...data, countries, nationalities });
+        if (EmpMasterIOputs !== undefined || EmpMasterIOputs === null) {
+          let maskedIdentity = data.idtypes.find((item) => {
+            return (
+              item.hims_d_identity_document_id ===
+              presonalDetails[0].identity_type_id
+            );
+          });
 
-        let maskedIdentity = data.idtypes.find((item) => {
-          return (
-            item.hims_d_identity_document_id ===
-            presonalDetails[0].identity_type_id
-          );
-        });
-
-        setMasked_identity(maskedIdentity.masked_identity);
+          setMasked_identity(maskedIdentity.masked_identity);
+        }
       },
       onError: (err) => {
         AlgaehMessagePop({
@@ -336,7 +351,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         div={{
                           className: "col-lg-2 col-md-2 col-sm-12 mandatory",
                         }}
-                        // error={errors}
+                        error={errors}
                         label={{
                           forceLabel: "Emp. Code",
                           isImp: true,
@@ -540,14 +555,16 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                   <Controller
                     control={control}
                     name="sex"
+                    rules={{ required: "Required" }}
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
                         div={{
                           className: "col-lg-2 col-md-2 col-sm-12 mandatory",
                         }}
+                        error={errors}
                         label={{
                           fieldName: "gender",
-                          isImp: false,
+                          isImp: true,
                         }}
                         selector={{
                           value,
@@ -608,15 +625,17 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                   <Controller
                     control={control}
                     name="nationality"
+                    rules={{ required: "Required" }}
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
                         div={{
                           className:
                             "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
                         }}
+                        error={errors}
                         label={{
                           forceLabel: "Nationality",
-                          isImp: false,
+                          isImp: true,
                         }}
                         selector={{
                           value,
@@ -668,15 +687,17 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                   <Controller
                     control={control}
                     name="religion_id"
+                    rules={{ required: "Required" }}
                     render={({ value, onChange, onBlur }) => (
                       <AlgaehAutoComplete
                         div={{
                           className:
                             "col-lg-2 col-md-2 col-sm-12 mandatory form-group",
                         }}
+                        error={errors}
                         label={{
                           forceLabel: "Religion",
-                          isImp: false,
+                          isImp: true,
                         }}
                         selector={{
                           value,
@@ -731,16 +752,16 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                   <Controller
                     name="primary_contact_no"
                     control={control}
-                    rules={{ required: "Required" }}
+                    // rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
                           className: "col-lg-2 col-md-2 col-sm-12",
                         }}
-                        error={errors}
+                        // error={errors}
                         label={{
                           forceLabel: "Personal Contact No.",
-                          isImp: true,
+                          // isImp: true,
                         }}
                         textBox={{
                           name: "primary_contact_no",
@@ -781,16 +802,16 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                   <Controller
                     name="secondary_contact_no"
                     control={control}
-                    rules={{ required: "Required" }}
+                    // rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
                           className: "col-lg-2 col-md-2 col-sm-12",
                         }}
-                        error={errors}
+                        // error={errors}
                         label={{
                           forceLabel: "Work Contact No.",
-                          isImp: true,
+                          // isImp: true,
                         }}
                         textBox={{
                           name: "secondary_contact_no",
@@ -840,6 +861,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         selector={{
                           value,
                           onChange: (_, selected) => {
+                            setMasked_identity(_.masked_identity);
                             onChange(selected);
                           },
                           onClear: () => {
@@ -899,13 +921,13 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       <Controller
                         name="identity_no"
                         control={control}
-                        rules={{ required: "Required" }}
+                        // rules={{ required: "Required" }}
                         render={(props) => (
                           <AlgaehFormGroup
                             div={{
-                              className: "col-lg-2 col-md-2 col-sm-12",
+                              className: "col-10",
                             }}
-                            error={errors}
+                            // error={errors}
                             label={{
                               forceLabel: "",
                               isImp: true,
@@ -960,16 +982,16 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                   <Controller
                     name="email"
                     control={control}
-                    rules={{ required: "Required" }}
+                    // rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
                           className: "col-lg-3 col-sm-12",
                         }}
-                        error={errors}
+                        // error={errors}
                         label={{
                           forceLabel: "Personal Email Id",
-                          isImp: true,
+                          // isImp: true,
                         }}
                         textBox={{
                           name: "email",
@@ -1009,16 +1031,16 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                   <Controller
                     name="work_email"
                     control={control}
-                    rules={{ required: "Required" }}
+                    // rules={{ required: "Required" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
                           className: "col-lg-3 col-sm-12",
                         }}
-                        error={errors}
+                        // error={errors}
                         label={{
                           forceLabel: "Personal Email Id",
-                          isImp: true,
+                          // isImp: true,
                         }}
                         textBox={{
                           name: "work_email",
@@ -1182,10 +1204,10 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={(props) => (
                           <AlgaehFormGroup
                             div={{ className: "col-2 mandatory form-group" }}
-                            error={errors}
+                            // error={errors}
                             label={{
                               fieldName: "address",
-                              isImp: true,
+                              // isImp: true,
                             }}
                             textBox={{
                               ...props,
@@ -1231,7 +1253,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               fieldName: "country_id",
                               // isImp: true,
                             }}
-                            error={errors}
+                            // error={errors}
                             selector={{
                               name: "select_procedure",
                               value,
@@ -1300,7 +1322,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               fieldName: "state_id",
                               // isImp: true,
                             }}
-                            error={errors}
+                            // error={errors}
                             selector={{
                               name: "present_state_id",
                               className: "select-fld",
@@ -1359,7 +1381,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       <Controller
                         name="present_city_id"
                         control={control}
-                        rules={{ required: "Select Procedure" }}
+                        // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
@@ -1370,7 +1392,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               fieldName: "city_id",
                               isImp: false,
                             }}
-                            error={errors}
+                            // error={errors}
                             selector={{
                               name: "present_city_id",
                               value,
@@ -1439,6 +1461,25 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         style={{ marginTop: 23, border: "none" }}
                       >
                         <label className="checkbox inline">
+                          <Controller
+                            name="samechecked"
+                            control={control}
+                            // defaultValue={"N"}
+                            rules={{ required: true }}
+                            render={(props) => (
+                              <input
+                                type="checkbox"
+                                onChange={(e) =>
+                                  props.onChange(
+                                    e.target.checked
+                                      ? (props.value = "Y")
+                                      : (props.value = "N")
+                                  )
+                                }
+                                checked={props.value === "Y" ? true : false}
+                              />
+                            )} // props contains: onChange, onBlur and value
+                          />
                           <input
                             type="checkbox"
                             name="samechecked"
@@ -1462,10 +1503,10 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                         render={(props) => (
                           <AlgaehFormGroup
                             div={{ className: "col-lg-8 col-sm-12 form-group" }}
-                            error={errors}
+                            // error={errors}
                             label={{
                               fieldName: "address",
-                              isImp: true,
+                              // isImp: true,
                             }}
                             textBox={{
                               ...props,
@@ -1503,7 +1544,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       <Controller
                         name="permanent_country_id"
                         control={control}
-                        rules={{ required: "Select Procedure" }}
+                        // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
@@ -1514,7 +1555,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               fieldName: "country_id",
                               // isImp: true,
                             }}
-                            error={errors}
+                            // error={errors}
                             selector={{
                               name: "permanent_country_id",
                               value,
@@ -1575,7 +1616,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       <Controller
                         name="permanent_state_id"
                         control={control}
-                        rules={{ required: "Select Procedure" }}
+                        // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
@@ -1586,7 +1627,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               fieldName: "state_id",
                               isImp: false,
                             }}
-                            error={errors}
+                            // error={errors}
                             selector={{
                               name: "permanent_state_id",
                               value,
@@ -1651,7 +1692,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       <Controller
                         name="permanent_city_id"
                         control={control}
-                        rules={{ required: "Select Procedure" }}
+                        // rules={{ required: "Select Procedure" }}
                         render={({ value, onChange }) => (
                           <AlgaehAutoComplete
                             div={{
@@ -1662,7 +1703,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               fieldName: "city_id",
                               isImp: false,
                             }}
-                            error={errors}
+                            // error={errors}
                             selector={{
                               name: "permanent_city_id",
                               value,
@@ -1737,6 +1778,23 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                 <div className="row secondary-box-container">
                   <div className="col">
                     <div>
+                      <AlgaehFileUploader
+                        key={getValues().employee_code || "image"}
+                        // ref={employeeImage}
+                        name="employeeImage"
+                        accept="image/*"
+                        textAltMessage="Employee Image"
+                        serviceParameters={{
+                          uniqueID: getValues().employee_code || null,
+                          fileType: "Employees",
+                          // processDelay: (...val) => {
+                          //   console.log(val, "val");
+                          // },
+                        }}
+                        //Need to add undefined. if no record exists
+                        renderPrevState={true}
+                        forceRefresh={!getValues().employee_code}
+                      />
                       {/* <AlgaehFile
                           ref={(employeeImage) => {
                             this.employeeImage = employeeImage;
@@ -1758,8 +1816,8 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                             processDelay:imageDetails( "employeeImage"),
                           }}
                           renderPrevState={employeeImage}
-                          forceRefresh={this.state.forceRefresh}
-                        />*/}
+                          forceRefresh={!}
+                        /> */}
                     </div>
                   </div>
                 </div>
@@ -1791,11 +1849,11 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                       <Controller
                         name="license_number"
                         control={control}
-                        rules={{ required: "Add Service Amount" }}
+                        // rules={{ required: "Add Service Amount" }}
                         render={(props) => (
                           <AlgaehFormGroup
                             div={{ className: "col-lg-12 col-sm-12 mandatory" }}
-                            error={errors}
+                            // error={errors}
                             label={{
                               fieldName: "license_number",
                               isImp: isdoctor === "Y" ? true : false,

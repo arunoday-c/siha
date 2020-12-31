@@ -4,8 +4,13 @@ import {
   AlgaehModal,
   AlgaehLabel,
   MainContext,
+  AlgaehSecurityElement,
 } from "algaeh-react-components";
 import "../EmployeeMaster.scss";
+import { ContextProviderForEmployee } from "../../EmployeeMasterContextForEmployee";
+
+// import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
+
 import CommissionSetup from "../CommissionSetup/CommissionSetup";
 import PersonalDetails from "../PersonalDetails/PersonalDetails";
 import FamilyAndIdentification from "../FamilyAndIdentification/FamilyAndIdentification";
@@ -19,6 +24,7 @@ export default function EmployeeMasterPopup({
   employeeDetails,
   HeaderCaption,
 }) {
+  // const { clearState } = useContext(EmployeeMasterContextForEmployee);
   const [HRMS_Active, setHRMS_Active] = useState(false);
   // const [pageDisplay, setPageDisplay] = useState("PersonalDetails");
   // const [personalDetails, setPersonalDetails] = useState({});
@@ -53,100 +59,155 @@ export default function EmployeeMasterPopup({
       title={HeaderCaption}
       visible={visible}
       maskClosable={true}
-      onCancel={onClose}
+      onCancel={
+        onClose
+        // clearState();
+      }
+      destroyOnClose={true}
       footer={null}
       className={`row algaehNewModal EmployeeAddEditPopup`}
     >
-      <div className="EmployeeMasterModal">
-        <AlgaehTabs
-          removeCommonSection={true}
-          content={[
-            {
-              title: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Personal Details",
-                  }}
-                />
-              ),
-              children: (
-                <PersonalDetails
-                  EmpMasterIOputs={employeeDetails.employee_id}
-                />
-              ),
-              componentCode: "EMP_TAB_PER",
-            },
-            {
-              title: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Official Details",
-                  }}
-                />
-              ),
-              children: (
-                <OfficalDetails EmpMasterIOputs={employeeDetails.employee_id} />
-              ),
-              componentCode: "EMP_TAB_OFF",
-            },
-            {
-              title: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Payroll Details",
-                  }}
-                />
-              ),
-              children: (
-                <PayRollDetails employee_id={employeeDetails.employee_id} />
-              ),
-              componentCode: "EMP_TAB_PAY",
-            },
-            {
-              title: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "FAMILY & IDENTIFICATION DETAILS",
-                  }}
-                />
-              ),
-              children: (
-                <FamilyAndIdentification
-                  employee_id={employeeDetails.employee_id}
-                />
-              ),
-              componentCode: "EMP_TAB_FAM",
-            },
-            {
-              title: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "commission_setup",
-                  }}
-                />
-              ),
-              children: (
-                <CommissionSetup employee_id={employeeDetails.employee_id} />
-              ),
-              componentCode: "EMP_TAB_COMM",
-            },
-            {
-              title: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Rules Details",
-                  }}
-                />
-              ),
-              children: (
-                <RulesDetails EmpMasterIOputs={employeeDetails.employee_id} />
-              ),
-              componentCode: "EMP_TAB_RUL",
-            },
-          ]}
-          // renderClass="PrepaymentCntr"
-        />
-      </div>
+      <ContextProviderForEmployee>
+        <div className="EmployeeMasterModal">
+          <AlgaehTabs
+            removeCommonSection={true}
+            content={[
+              {
+                title: (
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Personal Details",
+                    }}
+                  />
+                ),
+                children: (
+                  <PersonalDetails
+                    EmpMasterIOputs={employeeDetails?.employee_id}
+                  />
+                ),
+                componentCode: "EMP_TAB_PER",
+              },
+              {
+                title: (
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Official Details",
+                    }}
+                  />
+                ),
+                children: (
+                  <OfficalDetails
+                    EmpMasterIOputs={employeeDetails?.employee_id}
+                  />
+                ),
+                componentCode: "EMP_TAB_OFF",
+              },
+              {
+                title: (
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Payroll Details",
+                    }}
+                  />
+                ),
+                children: (
+                  <PayRollDetails employee_id={employeeDetails?.employee_id} />
+                ),
+                componentCode: "EMP_TAB_PAY",
+              },
+              {
+                title: (
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "FAMILY & IDENTIFICATION DETAILS",
+                    }}
+                  />
+                ),
+                children: (
+                  <FamilyAndIdentification
+                    employee_id={employeeDetails?.employee_id}
+                  />
+                ),
+                componentCode: "EMP_TAB_FAM",
+              },
+              {
+                title: (
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "commission_setup",
+                    }}
+                  />
+                ),
+                children: (
+                  <CommissionSetup employee_id={employeeDetails?.employee_id} />
+                ),
+                componentCode: "EMP_TAB_COMM",
+              },
+              {
+                title: (
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Rules Details",
+                    }}
+                  />
+                ),
+                children: (
+                  <RulesDetails
+                    EmpMasterIOputs={employeeDetails?.employee_id}
+                  />
+                ),
+                componentCode: "EMP_TAB_RUL",
+              },
+            ]}
+
+            // renderClass="PrepaymentCntr"
+          />
+          <div className="popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-12">
+                  <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                    <button
+                      // onClick={InsertUpdateEmployee.bind(this, this)}
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={
+                        employeeDetails?.employee_status === "I" ||
+                        employeeDetails?.blockUpdate === true
+                          ? true
+                          : false
+                      }
+                    >
+                      {employeeDetails?.employee_id === null ||
+                      employeeDetails?.employee_id === undefined ? (
+                        <AlgaehLabel label={{ fieldName: "btnSave" }} />
+                      ) : (
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
+                    </button>
+                  </AlgaehSecurityElement>
+                  <button
+                    onClick={onClose}
+                    type="button"
+                    className="btn btn-default"
+                  >
+                    <AlgaehLabel label={{ fieldName: "btnCancel" }} />
+                  </button>
+
+                  {/* <button
+                      onClick={generateEmployeeContract.bind(this, this)}
+                      type="button"
+                      className="btn btn-other"
+                      style={{ float: "left", margin: 0 }}
+                    >
+                      <AlgaehLabel label={{ forceLabel: "Print Contract" }} />
+                    </button> */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ContextProviderForEmployee>
     </AlgaehModal>
   );
 }

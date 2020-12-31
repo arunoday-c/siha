@@ -141,8 +141,8 @@ export const ContextProviderForEmployee = ({ children }) => {
       });
     },
 
-    clearState(e) {
-      dispatch({ type: TYPES.clearState, payload: e });
+    clearState() {
+      dispatch({ type: TYPES.clearState });
     },
   };
   return (

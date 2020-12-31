@@ -458,14 +458,40 @@ export default function PayRollDetails({ employee_id }) {
     // setValue,
     getValues,
     // watch,
-  } = useForm({
-    defaultValues: {},
-  });
+    handleSubmit,
+  } = useForm({});
+  const {
+    control: control2,
+    getValues: getValues2,
+    reset: reset2,
+    // setValue: setValue2,
+    // watch: watch2,
+    // register: register2,
+    errors: errors2,
+    handleSubmit: handleSubmit2,
+  } = useForm({});
+  const {
+    control: control3,
+    getValues: getValues3,
+    reset: reset3,
+    // setValue: setValue3,
+    // watch: watch3,
+    // register: register2,
+    errors: errors3,
+    handleSubmit: handleSubmit3,
+  } = useForm({});
   // const { valid_upto } = watch(["valid_upto"]);
   const { data: payrollDetails } = useQuery(
     ["PAYROLL_DETAILS_DATA", { employee_id: employee_id }],
     getEmployeePayrollDetails,
     {
+      enabled: employee_id === undefined || employee_id === null,
+      // refetchOnMount: false,
+      // refetchOnReconnect: false,
+      // keepPreviousData: true,
+      // refetchOnWindowFocus: false,
+      initialStale: true,
+      cacheTime: Infinity,
       onSuccess: (data) => {
         setGross_salary(data[0].gross_salary);
         setyearly_gross_salary(data[0].yearly_gross_salary);
@@ -837,7 +863,7 @@ export default function PayRollDetails({ employee_id }) {
     deductioncomponent.push({
       employee_id: employee_id,
       deductions_id: baseStateForCalc.deducation_id,
-      amount: getValues().dedection_amount,
+      amount: getValues2().dedection_amount,
       allocate: baseStateForCalc.allocate,
       calculation_method: baseStateForCalc.deduct_calculation_method,
       calculation_type: baseStateForCalc.deduct_calculation_type,
@@ -852,7 +878,7 @@ export default function PayRollDetails({ employee_id }) {
     insertDeductionComp.push({
       employee_id: employee_id,
       deductions_id: baseStateForCalc.deducation_id,
-      amount: getValues().dedection_amount,
+      amount: getValues2().dedection_amount,
       allocate: baseStateForCalc.allocate,
       calculation_method: baseStateForCalc.deduct_calculation_method,
       calculation_type: baseStateForCalc.deduct_calculation_type,
@@ -873,7 +899,7 @@ export default function PayRollDetails({ employee_id }) {
       earningComponents: earningComponents,
       insertearnComp: output?.insertearnComp,
     });
-    reset({ deducation_id: null, dedection_amount: null });
+    reset2({ deducation_id: null, dedection_amount: null });
   };
 
   const AddContributionComponent = (e) => {
@@ -957,7 +983,7 @@ export default function PayRollDetails({ employee_id }) {
     contributioncomponent.push({
       employee_id: employee_id,
       contributions_id: baseStateForCalc.contribution_id,
-      amount: getValues().contribution_amount,
+      amount: getValues3().contribution_amount,
       allocate: baseStateForCalc.allocate,
       calculation_method: baseStateForCalc.contribut_calculation_method,
       calculation_type: baseStateForCalc.contribut_calculation_type,
@@ -972,7 +998,7 @@ export default function PayRollDetails({ employee_id }) {
     insertContributeComp.push({
       employee_id: employee_id,
       contributions_id: baseStateForCalc.contribution_id,
-      amount: getValues().contribution_amount,
+      amount: getValues3().contribution_amount,
       allocate: baseStateForCalc.allocate,
       calculation_method: baseStateForCalc.contribut_calculation_method,
       calculation_type: baseStateForCalc.contribut_calculation_type,
@@ -992,7 +1018,7 @@ export default function PayRollDetails({ employee_id }) {
       earningComponents: earningComponents,
       insertearnComp: output?.insertearnComp,
     });
-    reset(
+    reset3(
       {
         contribution_id: null,
         contribution_amount: null,
@@ -1390,6 +1416,19 @@ export default function PayRollDetails({ employee_id }) {
     //   insertContributeComp: insertContributeComp,
     // });
   };
+  const onSubmit = (e) => {
+    console.error(errors);
+    AddEarnComponent(e);
+  };
+  const onSubmit2 = (e) => {
+    console.error(errors);
+    AddDeductionComponent(e);
+  };
+  const onSubmit3 = (e) => {
+    console.error(errors);
+    AddContributionComponent(e);
+  };
+
   const earnings = _.filter(payrollcomponents, (f) => {
     return f.component_category === "E";
   });
@@ -1490,53 +1529,54 @@ export default function PayRollDetails({ employee_id }) {
                 </div>
               </div> */}
             <div className="row padding-bottom-5" data-validate="EarnComponent">
-              <Controller
-                control={control}
-                name="earning_id"
-                rules={{ required: "Required" }}
-                render={({ value, onChange, onBlur }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col mandatory" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Earnings Type",
-                      isImp: true,
-                    }}
-                    selector={{
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                        let amount = _.calculation_method === "FO" ? 0 : null;
-                        let formula =
-                          _.calculation_method === "FO" ? _.formula : null;
-                        setBaseStateForCalc({
-                          ...baseStateForCalc,
-                          earning_id: _.hims_d_earning_deduction_id,
-                          earn_amount: amount,
-                          earn_disable:
-                            _.calculation_method === "FO" ? true : false,
-                          earn_calculation_method: _.calculation_method,
-                          earn_calculation_type: _.calculation_type,
-                          earn_limit_applicable: _.limit_applicable,
-                          earn_limit_amount: _.limit_amount,
-                          earn_short_desc: _.short_desc,
-                          earn_formula: formula,
-                        });
-                      },
-                      onClear: () => {
-                        onChange("");
-                      },
-                      name: "earning_id",
-                      dataSource: {
-                        textField: "earning_deduction_description",
-                        valueField: "hims_d_earning_deduction_id",
-                        data: earnings,
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlagehAutoComplete
+              <form key={1} onSubmit={handleSubmit(onSubmit)}>
+                <Controller
+                  control={control}
+                  name="earning_id"
+                  rules={{ required: "Required" }}
+                  render={({ value, onChange, onBlur }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col mandatory" }}
+                      error={errors}
+                      label={{
+                        forceLabel: "Earnings Type",
+                        isImp: true,
+                      }}
+                      selector={{
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+                          let amount = _.calculation_method === "FO" ? 0 : null;
+                          let formula =
+                            _.calculation_method === "FO" ? _.formula : null;
+                          setBaseStateForCalc({
+                            ...baseStateForCalc,
+                            earning_id: _.hims_d_earning_deduction_id,
+                            earn_amount: amount,
+                            earn_disable:
+                              _.calculation_method === "FO" ? true : false,
+                            earn_calculation_method: _.calculation_method,
+                            earn_calculation_type: _.calculation_type,
+                            earn_limit_applicable: _.limit_applicable,
+                            earn_limit_amount: _.limit_amount,
+                            earn_short_desc: _.short_desc,
+                            earn_formula: formula,
+                          });
+                        },
+                        onClear: () => {
+                          onChange("");
+                        },
+                        name: "earning_id",
+                        dataSource: {
+                          textField: "earning_deduction_description",
+                          valueField: "hims_d_earning_deduction_id",
+                          data: earnings,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Earnings Type",
@@ -1555,37 +1595,37 @@ export default function PayRollDetails({ employee_id }) {
                   }}
                 /> */}
 
-              <Controller
-                name="earn_amount"
-                control={control}
-                rules={{ required: "Required" }}
-                render={(props) => (
-                  <AlgaehFormGroup
-                    div={{ className: "col-3 mandatory" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Amount",
-                      isImp:
-                        baseStateForCalc.earn_calculation_method === "FO"
-                          ? false
-                          : true,
-                    }}
-                    textBox={{
-                      name: "earn_amount",
-                      type: "text",
-                      className: "form-control",
-                      ...props,
-                      others: {
-                        disabled:
+                <Controller
+                  name="earn_amount"
+                  control={control}
+                  rules={{ required: "Required" }}
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col-3 mandatory" }}
+                      error={errors}
+                      label={{
+                        forceLabel: "Amount",
+                        isImp:
                           baseStateForCalc.earn_calculation_method === "FO"
-                            ? true
-                            : false,
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlagehFormGroup
+                            ? false
+                            : true,
+                      }}
+                      textBox={{
+                        name: "earn_amount",
+                        type: "text",
+                        className: "form-control",
+                        ...props,
+                        others: {
+                          disabled:
+                            baseStateForCalc.earn_calculation_method === "FO"
+                              ? true
+                              : false,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehFormGroup
                   div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Amount",
@@ -1614,17 +1654,20 @@ export default function PayRollDetails({ employee_id }) {
                   }}
                 /> */}
 
-              <div className="col-2" style={{ paddingTop: "19px" }}>
-                <button
-                  className="btn btn-default"
-                  onClick={() => {
-                    AddEarnComponent();
-                  }}
-                >
-                  Add
-                </button>
-              </div>
+                <div className="col-2" style={{ paddingTop: "19px" }}>
+                  <button
+                    className="btn btn-default"
+                    // onClick={() => {
+                    //   AddEarnComponent();
+                    // }}
+                    type="submit"
+                  >
+                    Add
+                  </button>
+                </div>
+              </form>
             </div>
+
             <div className="row">
               <div
                 className="col-lg-12 margin-top-15"
@@ -1769,69 +1812,70 @@ export default function PayRollDetails({ employee_id }) {
               className="row padding-bottom-5"
               data-validate="DeductionComponent"
             >
-              <Controller
-                control={control}
-                name="deducation_id"
-                rules={{ required: "Required" }}
-                render={({ value, onChange, onBlur }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col mandatory" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Deduction Type",
-                      isImp: true,
-                    }}
-                    selector={{
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                        if (
-                          _.specific_nationality === "Y" &&
-                          output?.nationality !== null
-                        ) {
-                          if (_.nationality_id !== output?.nationality) {
-                            swalMessage({
-                              title:
-                                "This employee is not entitle for this component.",
-                              type: "warning",
-                            });
-                            onChange("");
-                            return;
+              <form key={2} onSubmit={handleSubmit2(onSubmit2)}>
+                <Controller
+                  control={control2}
+                  name="deducation_id"
+                  rules={{ required: "Required" }}
+                  render={({ value, onChange, onBlur }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col mandatory" }}
+                      error={errors2}
+                      label={{
+                        forceLabel: "Deduction Type",
+                        isImp: true,
+                      }}
+                      selector={{
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+                          if (
+                            _.specific_nationality === "Y" &&
+                            output?.nationality !== null
+                          ) {
+                            if (_.nationality_id !== output?.nationality) {
+                              swalMessage({
+                                title:
+                                  "This employee is not entitle for this component.",
+                                type: "warning",
+                              });
+                              onChange("");
+                              return;
+                            }
                           }
-                        }
-                        let amount = _.calculation_method === "FO" ? 0 : null;
-                        let formula =
-                          _.calculation_method === "FO" ? _.formula : null;
+                          let amount = _.calculation_method === "FO" ? 0 : null;
+                          let formula =
+                            _.calculation_method === "FO" ? _.formula : null;
 
-                        setBaseStateForCalc({
-                          ...baseStateForCalc,
-                          dedection_amount: amount,
-                          deducation_id: _.hims_d_earning_deduction_id,
-                          deduct_calculation_method: _.calculation_method,
-                          deduct_calculation_type: _.calculation_type,
-                          deduct_short_desc: _.short_desc,
-                          deduct_formula: formula,
-                          deduct_limit_applicable: _.limit_applicable,
-                          deduct_limit_amount: _.limit_amount,
-                          deduct_min_limit_applicable: _.min_limit_applicable,
-                          deduct_min_limit_amount: _.min_limit_amount,
-                        });
-                      },
-                      onClear: () => {
-                        onChange("");
-                      },
-                      name: "deducation_id",
-                      dataSource: {
-                        textField: "earning_deduction_description",
-                        valueField: "hims_d_earning_deduction_id",
-                        data: deducation,
-                      },
-                    }}
-                  />
-                )}
-              />
+                          setBaseStateForCalc({
+                            ...baseStateForCalc,
+                            dedection_amount: amount,
+                            deducation_id: _.hims_d_earning_deduction_id,
+                            deduct_calculation_method: _.calculation_method,
+                            deduct_calculation_type: _.calculation_type,
+                            deduct_short_desc: _.short_desc,
+                            deduct_formula: formula,
+                            deduct_limit_applicable: _.limit_applicable,
+                            deduct_limit_amount: _.limit_amount,
+                            deduct_min_limit_applicable: _.min_limit_applicable,
+                            deduct_min_limit_amount: _.min_limit_amount,
+                          });
+                        },
+                        onClear: () => {
+                          onChange("");
+                        },
+                        name: "deducation_id",
+                        dataSource: {
+                          textField: "earning_deduction_description",
+                          valueField: "hims_d_earning_deduction_id",
+                          data: deducation,
+                        },
+                      }}
+                    />
+                  )}
+                />
 
-              {/* <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Deduction Type",
@@ -1849,44 +1893,44 @@ export default function PayRollDetails({ employee_id }) {
                     onChange: deducttexthandle.bind(this, this),
                   }}
                 /> */}
-              <Controller
-                name="dedection_amount"
-                control={control}
-                rules={{ required: "Required" }}
-                render={(props) => (
-                  <AlgaehFormGroup
-                    div={{ className: "col-3 mandatory" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Amount",
-                      isImp:
-                        baseStateForCalc.deduct_calculation_method === "FO"
-                          ? false
-                          : true,
-                    }}
-                    textBox={{
-                      name: "dedection_amount",
-                      className: "txt-fld",
-                      decimal: {
-                        allowNegative: false,
-                        thousandSeparator: ",",
-                      },
-                      number: {
-                        allowearningComponentsNegative: false,
-                        thousandSeparator: ",",
-                      },
-                      ...props,
-                      others: {
-                        disabled:
+                <Controller
+                  name="dedection_amount"
+                  control={control2}
+                  rules={{ required: "Required" }}
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col-3 mandatory" }}
+                      error={errors2}
+                      label={{
+                        forceLabel: "Amount",
+                        isImp:
                           baseStateForCalc.deduct_calculation_method === "FO"
-                            ? true
-                            : false,
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlagehFormGroup
+                            ? false
+                            : true,
+                      }}
+                      textBox={{
+                        name: "dedection_amount",
+                        className: "txt-fld",
+                        decimal: {
+                          allowNegative: false,
+                          thousandSeparator: ",",
+                        },
+                        number: {
+                          allowearningComponentsNegative: false,
+                          thousandSeparator: ",",
+                        },
+                        ...props,
+                        others: {
+                          disabled:
+                            baseStateForCalc.deduct_calculation_method === "FO"
+                              ? true
+                              : false,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehFormGroup
                   div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "-----------------",
@@ -1918,16 +1962,18 @@ export default function PayRollDetails({ employee_id }) {
                     },
                   }}
                 /> */}
-              <div className="col-2" style={{ paddingTop: "19px" }}>
-                <button
-                  className="btn btn-default"
-                  onClick={() => {
-                    AddDeductionComponent();
-                  }}
-                >
-                  Add
-                </button>
-              </div>
+                <div className="col-2" style={{ paddingTop: "19px" }}>
+                  <button
+                    className="btn btn-default"
+                    type="submit"
+                    // onClick={() => {
+                    //   AddDeductionComponent();
+                    // }}
+                  >
+                    Add
+                  </button>
+                </div>
+              </form>
             </div>
             <div className="row">
               <div
@@ -2042,69 +2088,70 @@ export default function PayRollDetails({ employee_id }) {
               className="row padding-bottom-5"
               data-validate="ContributeComponent"
             >
-              <Controller
-                control={control}
-                name="contribution_id"
-                rules={{ required: "Required" }}
-                render={({ value, onChange, onBlur }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col mandatory" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Contribution Type",
-                      isImp: true,
-                    }}
-                    selector={{
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                        if (
-                          _.specific_nationality === "Y" &&
-                          output?.nationality !== null
-                        ) {
-                          if (_.nationality_id !== output?.nationality) {
-                            swalMessage({
-                              title:
-                                "This employee is not entitle for this component.",
-                              type: "warning",
-                            });
-                            onChange("");
-                            return;
+              <form key={3} onSubmit={handleSubmit3(onSubmit3)}>
+                <Controller
+                  control={control3}
+                  name="contribution_id"
+                  rules={{ required: "Required" }}
+                  render={({ value, onChange, onBlur }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col mandatory" }}
+                      error={errors3}
+                      label={{
+                        forceLabel: "Contribution Type",
+                        isImp: true,
+                      }}
+                      selector={{
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+                          if (
+                            _.specific_nationality === "Y" &&
+                            output?.nationality !== null
+                          ) {
+                            if (_.nationality_id !== output?.nationality) {
+                              swalMessage({
+                                title:
+                                  "This employee is not entitle for this component.",
+                                type: "warning",
+                              });
+                              onChange("");
+                              return;
+                            }
                           }
-                        }
 
-                        let amount = _.calculation_method === "FO" ? 0 : null;
-                        let formula =
-                          _.calculation_method === "FO" ? _.formula : null;
-                        setBaseStateForCalc({
-                          ...baseStateForCalc,
-                          contribution_id: _.hims_d_earning_deduction_id,
-                          contribution_amount: amount,
-                          contribut_calculation_method: _.calculation_method,
-                          contribut_calculation_type: _.calculation_type,
-                          contribut_short_desc: _.short_desc,
-                          contribut_formula: formula,
-                          contribut_limit_applicable: _.limit_applicable,
-                          contribut_limit_amount: _.limit_amount,
-                          contribut_min_limit_applicable:
-                            _.min_limit_applicable,
-                          contribut_min_limit_amount: _.min_limit_amount,
-                        });
-                      },
-                      onClear: () => {
-                        onChange("");
-                      },
-                      name: "contribution_id",
-                      dataSource: {
-                        textField: "earning_deduction_description",
-                        valueField: "hims_d_earning_deduction_id",
-                        data: contribution,
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlagehAutoComplete
+                          let amount = _.calculation_method === "FO" ? 0 : null;
+                          let formula =
+                            _.calculation_method === "FO" ? _.formula : null;
+                          setBaseStateForCalc({
+                            ...baseStateForCalc,
+                            contribution_id: _.hims_d_earning_deduction_id,
+                            contribution_amount: amount,
+                            contribut_calculation_method: _.calculation_method,
+                            contribut_calculation_type: _.calculation_type,
+                            contribut_short_desc: _.short_desc,
+                            contribut_formula: formula,
+                            contribut_limit_applicable: _.limit_applicable,
+                            contribut_limit_amount: _.limit_amount,
+                            contribut_min_limit_applicable:
+                              _.min_limit_applicable,
+                            contribut_min_limit_amount: _.min_limit_amount,
+                          });
+                        },
+                        onClear: () => {
+                          onChange("");
+                        },
+                        name: "contribution_id",
+                        dataSource: {
+                          textField: "earning_deduction_description",
+                          valueField: "hims_d_earning_deduction_id",
+                          data: contribution,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Contribution Type",
@@ -2122,46 +2169,47 @@ export default function PayRollDetails({ employee_id }) {
                     onChange: contributtexthandle.bind(this, this),
                   }}
                 /> */}
-              <Controller
-                name="dedection_amount"
-                control={control}
-                rules={{ required: "Required" }}
-                render={(props) => (
-                  <AlgaehFormGroup
-                    div={{ className: "col-3 mandatory" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Amount",
-                      isImp:
-                        baseStateForCalc.contribut_calculation_method === "FO"
-                          ? false
-                          : true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "contribution_amount",
-                      decimal: {
-                        allowNegative: false,
-                        thousandSeparator: ",",
-                      },
-                      // value: contribution_amount,
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ",",
-                      },
-                      ...props,
-
-                      others: {
-                        disabled:
+                <Controller
+                  name="dedection_amount"
+                  control={control3}
+                  rules={{ required: "Required" }}
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col-3 mandatory" }}
+                      error={errors3}
+                      label={{
+                        forceLabel: "Amount",
+                        isImp:
                           baseStateForCalc.contribut_calculation_method === "FO"
-                            ? true
-                            : false,
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlagehFormGroup
+                            ? false
+                            : true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "contribution_amount",
+                        decimal: {
+                          allowNegative: false,
+                          thousandSeparator: ",",
+                        },
+                        // value: contribution_amount,
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ",",
+                        },
+                        ...props,
+
+                        others: {
+                          disabled:
+                            baseStateForCalc.contribut_calculation_method ===
+                            "FO"
+                              ? true
+                              : false,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehFormGroup
                   div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Amount",
@@ -2193,16 +2241,18 @@ export default function PayRollDetails({ employee_id }) {
                     },
                   }}
                 /> */}
-              <div className="col-2" style={{ paddingTop: "19px" }}>
-                <button
-                  className="btn btn-default"
-                  onClick={() => {
-                    AddContributionComponent();
-                  }}
-                >
-                  Add
-                </button>
-              </div>
+                <div className="col-2" style={{ paddingTop: "19px" }}>
+                  <button
+                    type="submit"
+                    className="btn btn-default"
+                    // onClick={() => {
+                    //   AddContributionComponent();
+                    // }}
+                  >
+                    Add
+                  </button>
+                </div>
+              </form>
             </div>
             <div className="row">
               <div
