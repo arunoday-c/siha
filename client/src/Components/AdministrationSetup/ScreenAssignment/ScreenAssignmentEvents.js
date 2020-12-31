@@ -35,19 +35,24 @@ export function ScreenAssignmentEvents() {
           }
           getModuleScreenComponent($this, value.value);
 
-          $this.setState({
-            [value.name]: value.value,
-            ScreenList: [],
-            checkAll: false,
-            filterArray: [],
-            searchText: "",
-            // checkAllRoles: false,
-          });
+          $this.setState(
+            {
+              [value.name]: value.value,
+              ScreenList: [],
+              checkAll: false,
+              filterArray: [],
+              searchText: "",
+              // checkAllRoles: false,
+            },
+            () => {
+              getScreenElementsRoles($this);
+            }
+          );
           break;
         default:
           if (value.name === "role_id") {
             getAllAssignedScreen($this, value.value);
-            getScreenElementsRoles($this, value.value);
+            //getScreenElementsRoles($this, value.value);
           }
           $this.setState({
             [value.name]: value.value,
@@ -538,16 +543,18 @@ function getAllAssignedScreen($this, role_id) {
     },
   });
 }
-function getScreenElementsRoles($this, role_id) {
+function getScreenElementsRoles($this) {
   //getAllAssignedScrens
+  debugger;
+  const { role_id, module_id } = $this.state;
   algaehApiCall({
     uri: "/algaehMasters/getScreenElementsRoles",
     method: "GET",
-    data: { role_id: role_id },
+    data: { role_id, module_id },
     onSuccess: (response) => {
       if (response.data.success) {
         const { records } = response.data;
-
+        debugger;
         $this.setState({
           assignedScreenElements: records,
         });
@@ -597,7 +604,7 @@ export function updateScreenElementRoles() {
         assignedScreenElements: this.state.assignedScreenElements,
       },
       onSuccess: (response) => {
-        getScreenElementsRoles(this, this.state.role_id);
+        getScreenElementsRoles(this); // this.state.role_id);
         const { success, message } = response.data;
         this.setState({
           loading_update_element: false,
@@ -628,7 +635,10 @@ function getRoleActiveModules($this, role_id, module_id) {
     onSuccess: (res) => {
       if (res.data.success) {
         let data = res.data.records.screen_list;
-        let ScreenList = $this.state.ScreenList;
+        let ScreenList = $this.state.ScreenList.filter(
+          (f) => f.module_id === module_id
+        );
+
         let checkAllLength = data.map((item) => {
           return item.checked == true; //eslint-disable-line
         });
@@ -639,6 +649,8 @@ function getRoleActiveModules($this, role_id, module_id) {
         if (checkAllLength.length === ScreenList.length) {
           $this.setState({ checkAll: true });
         }
+
+        debugger;
         data.map((item) => {
           let _findModule = _.find(
             ScreenList,

@@ -1746,6 +1746,7 @@ let getAlgaehScreenElement = (req, res, next) => {
           from algaeh_d_app_scrn_elements as e inner join algaeh_d_app_component as c 
           on c.algaeh_d_app_component_id = e.component_id
                    where  e.record_status='A' ${component_id} order by algaeh_d_app_scrn_elements_id desc`,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -2902,10 +2903,11 @@ const assignComponentScreenPermissions = (req, res, next) => {
 //created by:IRFAN
 const getScreensWithComponents = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
+
   try {
     _mysql
       .executeQuery({
-        query: `select algaeh_app_screens_id,screen_code, screen_name ,
+        query: `select S.module_id,algaeh_app_screens_id,screen_code, screen_name ,
         algaeh_d_app_component_id,component_code,screen_id,component_name,
         SE.algaeh_d_app_scrn_elements_id,SE.screen_element_code,SE.screen_element_name,SE.props_type,SE.extra_props
          from algaeh_d_app_screens S left join 
@@ -2929,8 +2931,9 @@ const getScreensWithComponents = (req, res, next) => {
               algaeh_app_screens_id,
               screen_name,
               screen_code,
+              module_id,
             } = screen[0];
-
+            let _elements = [];
             const compo = _.chain(screen)
               .filter((f) => f.algaeh_d_app_component_id !== null)
               .groupBy((g) => g.algaeh_d_app_component_id)
@@ -2941,8 +2944,9 @@ const getScreensWithComponents = (req, res, next) => {
                   component_name,
                   component_code,
                   screen_code,
-                } = component[0];
-                const elem = _.chain(component)
+                } = _.head(component);
+                //  console.log("------------ Logging Screen --------", screen);
+                const elem = _.chain(component) //)
                   .filter((f) => f.algaeh_d_app_scrn_elements_id !== null)
                   .groupBy((g) => g.algaeh_d_app_scrn_elements_id)
                   .map((elements) => {
@@ -2951,9 +2955,9 @@ const getScreensWithComponents = (req, res, next) => {
                       props_type,
                       screen_element_name,
                       algaeh_d_app_scrn_elements_id,
-                    } = elements[0];
+                    } = _.head(elements);
 
-                    return {
+                    const el = {
                       extra_props,
                       props_type,
                       screen_element_name,
@@ -2969,8 +2973,11 @@ const getScreensWithComponents = (req, res, next) => {
                             })
                           : [],
                     };
+                    return el;
+                    // _elements.push(el);
                   })
                   .value();
+                // console.log("_elements------", elem);
                 return {
                   algaeh_d_app_component_id,
                   screen_id,
@@ -3000,10 +3007,10 @@ const getScreensWithComponents = (req, res, next) => {
               screen_name: screen_name,
               screen_code: screen_code,
               componentList: compo,
+              module_id,
             };
           })
           .value();
-
         req.records = createGroup;
 
         next();
@@ -3421,6 +3428,7 @@ const getCurrentAssignedScreenAndComponent = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     if (req.query.role_id > 0 && req.query.module_id > 0) {
+      debugger;
       _mysql
         .executeQuery({
           query: `select M.algaeh_m_module_role_privilage_mapping_id,M.module_id,M.role_id,
@@ -3447,6 +3455,7 @@ const getCurrentAssignedScreenAndComponent = (req, res, next) => {
                   algaeh_m_screen_role_privilage_mapping_id,
                   module_role_map_id,
                   screen_id,
+                  module_id,
                 } = screen[0];
 
                 const compo = screen
@@ -3469,6 +3478,7 @@ const getCurrentAssignedScreenAndComponent = (req, res, next) => {
                   algaeh_app_screens_id: screen_id,
                   checked: true,
                   componentList: compo,
+                  module_id,
                 };
               })
               .value();
@@ -3565,7 +3575,7 @@ const getScreenElementsRoles = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: `select s.screen_name,s.algaeh_app_screens_id, se.algaeh_d_app_scrn_elements_id,se.screen_element_code,se.screen_element_name,
+        query: `select s.module_id, s.screen_name,s.algaeh_app_screens_id, se.algaeh_d_app_scrn_elements_id,se.screen_element_code,se.screen_element_name,
         se.extra_props,se.props_type,c.component_name,c.component_code,esm.screen_element_scren_module_mapping_id,
         esm.view_type as user_view_type,esm.extra_props as user_extra_props,
         case when esm.screen_element_scren_module_mapping_id is null then true else false end checked
@@ -3575,8 +3585,9 @@ const getScreenElementsRoles = (req, res, next) => {
          inner join algaeh_d_app_screens as s on s.algaeh_app_screens_id= c.screen_id and s.record_status='A'
         left join screen_element_scren_module_mapping as esm
         on esm.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
-        where  (esm.role_Id=? or esm.role_Id is null);`,
-        values: [role_id],
+        
+        ;`,
+        //-- where  (esm.role_Id=? or esm.role_Id is null) values: [role_id],
         printQuery: true,
       })
       .then((result) => {
@@ -3585,10 +3596,11 @@ const getScreenElementsRoles = (req, res, next) => {
           .groupBy((g) => g.algaeh_app_screens_id)
           .map((m) => {
             const first = m[0];
-            const { screen_name, algaeh_app_screens_id } = first;
+            const { screen_name, algaeh_app_screens_id, module_id } = first;
             return {
               screen_name,
               algaeh_app_screens_id,
+              module_id,
               component: _.chain(m)
                 .groupBy((g) => g.component_code)
                 .map((c) => {
@@ -3659,6 +3671,7 @@ const getScreenElementsRoles = (req, res, next) => {
             };
           })
           .value();
+        console.log("rest", rest);
         req.records = rest; //result;
         next();
       })

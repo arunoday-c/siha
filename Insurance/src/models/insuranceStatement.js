@@ -5,8 +5,22 @@ import _, { includes } from "lodash";
 import moment from "moment";
 import "regenerator-runtime/runtime";
 import Excel from "exceljs/dist/es5";
-import metaData from "../../insurance_templates/metadata.json";
+// import metaData from "../../insurance_templates/metadata.json";
 export async function generateInsuranceStatement(req, res, next) {
+  let metaData = {};
+  const metadataPath = path.join(
+    process.cwd(),
+    "insurance_templates",
+    "metadata.json"
+  );
+  // console.log("metadataPath==", metadataPath);
+  if (!fs.existsSync(metadataPath)) {
+    next(new Error("Metadata is not configured"));
+    return;
+  } else {
+    const _metaDataRaw = fs.readFileSync(metadataPath, { encoding: "utf-8" });
+    metaData = JSON.parse(_metaDataRaw);
+  }
   const { insurance_statement_id } = req.query;
   const _mysql = new algaehMysql();
   try {
@@ -57,7 +71,7 @@ export async function generateInsuranceStatement(req, res, next) {
       })
       .then((result) => {
         if (result.length === 0) {
-          next(new Error("No records found"));
+          next(new Error("No records founds"));
           return;
         }
         let insurance = [];
@@ -67,7 +81,7 @@ export async function generateInsuranceStatement(req, res, next) {
         const to_date = result.length > 0 ? result[0]["to_date"] : "";
         console.log("fileName", fileName.toLowerCase().replace(/ /g, ""));
         const requireMetaData = rest[fileName.toLowerCase().replace(/ /g, "")];
-        console.log("requireMetaData=========", requireMetaData);
+        console.log("requireMetaData", requireMetaData);
         const { combineservices } = requireMetaData;
         _.chain(result)
           .groupBy((g) => g.visit_id)
