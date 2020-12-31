@@ -133,6 +133,7 @@ class LabInvestigation extends Component {
   onDeleteFormula(row) {
     row.display_formula = null;
     row.formula = null;
+    row.decimals = null;
   }
   render() {
     const { state } = this.context;

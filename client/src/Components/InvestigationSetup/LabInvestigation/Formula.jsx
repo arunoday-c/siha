@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AlgaehModal,
   AlgaehFormGroup,
@@ -16,10 +16,20 @@ export default function Formulae({
   const [analyte_id, setAnalyte_id] = useState("");
   const [formula_description, setFormula_description] = useState("");
   const [valueForm, setValueForm] = useState([]);
+  const [decimals, setDecimals] = useState("");
+  useEffect(() => {
+    if (openFormula) {
+      onClearFormula();
+    }
+  }, [openFormula]);
   function onClearFormula() {
     setAnalyte_id("");
     setFormula_description("");
     setValueForm([]);
+    setDecimals("");
+  }
+  function onChangeDecimals(e) {
+    setDecimals(e.target.value);
   }
   function generateFormula() {
     if (formula_description !== "") {
@@ -35,12 +45,14 @@ export default function Formulae({
 
       selectedRow.display_formula = formula_description;
       selectedRow.original_formula = descFormula;
+      selectedRow.decimals = decimals === "" ? null : decimals;
     }
 
     closeFormulaPopup();
   }
   return (
     <AlgaehModal
+      destroyOnClose={true}
       visible={openFormula}
       onCancel={closeFormulaPopup}
       maskClosable={false}
@@ -128,6 +140,22 @@ export default function Formulae({
                   onChange: (e) => {
                     setFormula_description(e.target.value);
                   },
+                }}
+              />
+              <AlgaehFormGroup
+                div={{ className: "col-3" }}
+                label={{
+                  forceLabel: "Enter Decimals",
+                  isImp: false,
+                }}
+                textBox={{
+                  type: "number",
+                  className: "txt-fld",
+                  name: "Decimals",
+                  value: decimals,
+                }}
+                events={{
+                  onChange: onChangeDecimals,
                 }}
               />
               <div
