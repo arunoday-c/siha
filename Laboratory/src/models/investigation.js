@@ -73,14 +73,16 @@ export default {
         hims_m_lab_analyte_id,
         display_formula,
         original_formula,
+        decimals,
       } = req.body;
       _mysql
         .executeQuery({
-          query: `UPDATE hims_m_lab_analyte SET analyte_report_group =?,formula=?,display_formula=? WHERE (hims_m_lab_analyte_id = ?);`,
+          query: `UPDATE hims_m_lab_analyte SET analyte_report_group =?,formula=?,display_formula=?,decimals=? WHERE (hims_m_lab_analyte_id = ?);`,
           values: [
             analyte_report_group,
             original_formula,
             display_formula,
+            decimals,
             hims_m_lab_analyte_id,
           ],
           printQuery: true,

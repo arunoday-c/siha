@@ -332,7 +332,12 @@ class AddOPBillingForm extends Component {
         ? []
         : this.props.PatientPackageList;
 
-    let insurance_type = this.props.existinsurance === undefined ? [] : this.props.existinsurance.length > 0 ? this.props.existinsurance[0].insurance_type : []
+    let insurance_type =
+      this.props.existinsurance === undefined
+        ? []
+        : this.props.existinsurance.length > 0
+        ? this.props.existinsurance[0].insurance_type
+        : [];
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -411,7 +416,7 @@ class AddOPBillingForm extends Component {
                         <div className="col-lg-2">
                           <button
                             className="btn btn-primary"
-                            style={{ marginTop: "19px" }}
+                            style={{ marginTop: "21px" }}
                             onClick={this.ProcessToBill.bind(this, context)}
                             disabled={this.state.addNewService}
                           >
@@ -428,7 +433,7 @@ class AddOPBillingForm extends Component {
                         <div className="col-lg-2">
                           <button
                             className="btn btn-default"
-                            style={{ marginTop: "19px" }}
+                            style={{ marginTop: "21px" }}
                             onClick={this.ShowBillDetails.bind(this)}
                             disabled={this.state.billDetails}
                           >
@@ -597,8 +602,11 @@ class AddOPBillingForm extends Component {
                               />
                             ),
                             displayTemplate: (row) => {
-                              return (
-                                row.insurance_yesno === "Y" && insurance_type === "I" ? row.discount_percentage : <AlagehFormGroup
+                              return row.insurance_yesno === "Y" &&
+                                insurance_type === "I" ? (
+                                row.discount_percentage
+                              ) : (
+                                <AlagehFormGroup
                                   div={{}}
                                   textBox={{
                                     decimal: { allowNegative: false },
@@ -615,9 +623,10 @@ class AddOPBillingForm extends Component {
                                     },
                                     others: {
                                       placeholder: "0.00",
-                                      disabled: row.trans_package_detail_id > 0
-                                        ? true
-                                        : this.state.Billexists,
+                                      disabled:
+                                        row.trans_package_detail_id > 0
+                                          ? true
+                                          : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -679,8 +688,11 @@ class AddOPBillingForm extends Component {
                             ),
 
                             displayTemplate: (row) => {
-                              return (
-                                row.insurance_yesno === "Y" && insurance_type === "I" ? row.discount_amout : <AlagehFormGroup
+                              return row.insurance_yesno === "Y" &&
+                                insurance_type === "I" ? (
+                                row.discount_amout
+                              ) : (
+                                <AlagehFormGroup
                                   div={{}}
                                   textBox={{
                                     decimal: { allowNegative: false },
@@ -697,9 +709,10 @@ class AddOPBillingForm extends Component {
                                     },
                                     others: {
                                       placeholder: "0.00",
-                                      disabled: row.trans_package_detail_id > 0
-                                        ? true
-                                        : this.state.Billexists,
+                                      disabled:
+                                        row.trans_package_detail_id > 0
+                                          ? true
+                                          : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -1148,7 +1161,7 @@ class AddOPBillingForm extends Component {
 function mapStateToProps(state) {
   return {
     PatientPackageList: state.PatientPackageList,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
   };
 }
 

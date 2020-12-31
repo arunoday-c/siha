@@ -46,7 +46,10 @@ const executePDF = function executePDFMethod(options) {
           LD.month,
           LH.opening_leave_days,
           LH.opening_leave_salary,
-          LH.opening_airticket
+          LH.opening_airticket,
+          LH.utilized_leave_days,
+          LH.utilized_leave_salary_amount,
+          LH.utilized_airticket_amount
           FROM hims_f_employee_leave_salary_header LH
           inner join hims_f_employee_leave_salary_detail LD on LD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id
           inner join hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
@@ -55,6 +58,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
           where EM.employee_status <> 'I' and EM.hospital_id=?  and LD.year=?  and LD.month <= ? ${str}
           group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id
+          -- ,LH.utilized_leave_days,LH.utilized_leave_salary_amount,LH.utilized_airticket_amount
           -- ,LH.opening_leave_days,LH.opening_leave_salary,LH.opening_airticket
           order by LH.employee_id,LD.month;`,
           values: [
@@ -76,31 +80,42 @@ const executePDF = function executePDFMethod(options) {
                 opening_leave_salary,
                 opening_airticket,
                 opening_leave_days,
+                utilized_leave_days,
+                utilized_leave_salary_amount,
+                utilized_airticket_amount,
               } = _.head(item);
 
               const lastObject = _.maxBy(item, (m) => parseInt(m.month));
 
               const total_leave_salary_amount =
                 _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
-                parseFloat(opening_leave_salary);
+                parseFloat(opening_leave_salary) -
+                parseFloat(utilized_leave_salary_amount);
+
               const total_airticket_amount =
                 _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
-                parseFloat(opening_airticket);
+                parseFloat(opening_airticket) -
+                parseFloat(utilized_airticket_amount);
 
               const total_leave_days =
                 _.sumBy(item, (s) => parseFloat(s.leave_days)) +
-                parseFloat(opening_leave_days);
+                parseFloat(opening_leave_days) -
+                parseFloat(utilized_leave_days);
 
               const leavesalary_opening_balance =
-                total_leave_salary_amount -
+                _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
+                parseFloat(opening_leave_salary) -
                 parseFloat(lastObject.leave_salary_amount);
 
               const airefare_opening_balance =
-                total_airticket_amount -
+                _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
+                parseFloat(opening_airticket) -
                 parseFloat(lastObject.airticket_amount);
 
               const leavedays_opening_balance =
-                total_leave_days - parseFloat(lastObject.leave_days);
+                _.sumBy(item, (s) => parseFloat(s.leave_days)) +
+                parseFloat(opening_leave_days) -
+                parseFloat(lastObject.leave_days);
 
               return {
                 ...lastObject,
@@ -119,6 +134,9 @@ const executePDF = function executePDFMethod(options) {
           const grand_total_opening_leave = _.sumBy(newResult, (s) =>
             parseFloat(s.leavedays_opening_balance)
           );
+          const grand_total_utilized_leave_days = _.sumBy(newResult, (s) =>
+            parseFloat(s.utilized_leave_days)
+          );
           const grand_total_accured_leave = _.sumBy(newResult, (s) =>
             parseFloat(s.leave_days)
           );
@@ -128,7 +146,11 @@ const executePDF = function executePDFMethod(options) {
           const grand_opening_leave_salary = _.sumBy(newResult, (s) =>
             parseFloat(s.leavesalary_opening_balance)
           );
-          const grand_accured_leave_salary = _.sumBy(newResult, (s) =>
+          const grand_total_utilized_leave_salary_amount = _.sumBy(
+            newResult,
+            (s) => parseFloat(s.utilized_leave_salary_amount)
+          );
+          const grand_total_accured_leave_salary = _.sumBy(newResult, (s) =>
             parseFloat(s.leave_salary_amount)
           );
           const grand_total_leave_salary = _.sumBy(newResult, (s) =>
@@ -136,6 +158,10 @@ const executePDF = function executePDFMethod(options) {
           );
           const grand_total_airfare_opening_balance = _.sumBy(newResult, (s) =>
             parseFloat(s.airefare_opening_balance)
+          );
+          const grand_total_utilized_airticket_amount = _.sumBy(
+            newResult,
+            (s) => parseFloat(s.utilized_airticket_amount)
           );
           const grand_total_airticket_amount = _.sumBy(newResult, (s) =>
             parseFloat(s.airticket_amount)
@@ -151,11 +177,14 @@ const executePDF = function executePDFMethod(options) {
             year: input.year,
             grand_total_basic_salary,
             grand_total_opening_leave,
+            grand_total_utilized_leave_days,
             grand_total_accured_leave,
             grand_total_leave_days,
             grand_opening_leave_salary,
+            grand_total_utilized_leave_salary_amount,
+            grand_total_accured_leave_salary,
             grand_total_airfare_opening_balance,
-            grand_accured_leave_salary,
+            grand_total_utilized_airticket_amount,
             grand_total_leave_salary,
             grand_total_airticket_amount,
             grand_total_balance_airticket_amount,

@@ -92,6 +92,7 @@ export function updateAnalyteGroup(row, rowId) {
         analyte_report_group: row.analyte_report_group,
         original_formula: row.original_formula,
         display_formula: row.display_formula,
+        decimals: row.decimals,
       },
       method: "PUT",
       onSuccess: (response) => {

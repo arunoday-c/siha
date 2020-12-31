@@ -440,3 +440,24 @@
     text-align: left !important;
   }
 }
+@media print {
+  .financeReportHeader {
+    background-color: red;
+    text-align: center !important;
+    margin-bottom: 0;
+    padding: 10px 0;
+    p {
+      font-size: 0.8rem;
+      span {
+        display: inline-block;
+        margin: 0 5px;
+      }
+    }
+    hr {
+      margin: 8px 0 !important;
+    }
+  }
+  table {
+    width: 100%;
+  }
+}
