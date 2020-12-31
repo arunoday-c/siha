@@ -114,11 +114,11 @@ let getPatientUCAF = (req, res, next) => {
                 inner join hims_d_services S on S.hims_d_services_id = OS.services_id \
                 left outer join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
                 inner join hims_d_service_type ST on ST.hims_d_service_type_id = OS.service_type_id \
-                where OS.billed='N' and V.patient_id = ? and (date(V.visit_date) = date(?) or visit_id=?)  ;\
-                DELETE from hims_f_ucaf_insurance_details where hims_f_ucaf_header_id=?;\
-                DELETE from hims_f_ucaf_medication where hims_f_ucaf_header_id=?;\
-                DELETE from hims_f_ucaf_services where hims_f_ucaf_header_id=?;\
-                DELETE from hims_f_ucaf_header where hims_f_ucaf_header_id=?;",
+                where OS.billed='N' and V.patient_id = ? and (date(V.visit_date) = date(?) or visit_id=?);\
+                DELETE from hims_f_ucaf_insurance_details where hims_f_ucaf_header_id in (select hims_f_ucaf_header_id from hims_f_ucaf_header where patient_id = ? and visit_id=?);\
+                DELETE from hims_f_ucaf_medication where hims_f_ucaf_header_id in (select hims_f_ucaf_header_id from hims_f_ucaf_header where patient_id = ? and visit_id=?);\
+                DELETE from hims_f_ucaf_services where hims_f_ucaf_header_id in (select hims_f_ucaf_header_id from hims_f_ucaf_header where patient_id = ? and visit_id=?);\
+                DELETE from hims_f_ucaf_header where patient_id = ? and visit_id=?;",
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -146,10 +146,14 @@ let getPatientUCAF = (req, res, next) => {
                 _input.patient_id,
                 _input.visit_date,
                 _input.visit_id,
-                hims_f_ucaf_header_id,
-                hims_f_ucaf_header_id,
-                hims_f_ucaf_header_id,
-                hims_f_ucaf_header_id,
+                _input.patient_id,
+                _input.visit_id,
+                _input.patient_id,
+                _input.visit_id,
+                _input.patient_id,
+                _input.visit_id,
+                _input.patient_id,
+                _input.visit_id,
               ],
               printQuery: true,
             })
