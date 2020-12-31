@@ -15,12 +15,6 @@ const executePDF = function executePDFMethod(options) {
         sum_service_net_amout: _.sumBy(options.result[3], (s) =>
           parseFloat(s.service_net_amout)
         ),
-        decimalOnly: {
-          decimal_places,
-          addSymbol: false,
-          symbol_position,
-          currency_symbol,
-        },
         currencyOnly: {
           decimal_places,
           addSymbol: true,
