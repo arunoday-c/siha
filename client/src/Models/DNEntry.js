@@ -42,6 +42,9 @@ export default {
       authorizeEnable: true,
 
       dataExitst: false,
+      delivery_files: [],
+      delivery_docs: [],
+      docChanged: false,
       addItemButton: true,
       ReqData: true,
       ClearDisable: false,
@@ -55,8 +58,8 @@ export default {
       vendor_name: null,
       itemEnter: true,
       dataFinder: false,
-      printBarcode: true
+      printBarcode: true,
     };
     return output;
-  }
+  },
 };
