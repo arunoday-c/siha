@@ -110,14 +110,14 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 
-const getDrilDownData = ($this, docNumber) => {
+const getDrilDownData = ($this, transaction_id) => {
   AlgaehLoader({ show: true });
   // ClearData($this)
   algaehApiCall({
     uri: "/stockAdjustment/getStockAdjustment",
     module: "pharmacy",
     method: "GET",
-    data: { adjustment_number: docNumber },
+    data: { transaction_id: transaction_id },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;

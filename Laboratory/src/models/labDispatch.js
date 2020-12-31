@@ -8,7 +8,7 @@ export function labResultDispatch(req, res, next) {
     _mysql
       .executeQuery({
         query: `select LO.validated_date,LO.critical_status,LO.send_out_test,
-          concat(T.title,". ",E.full_name) as doc_name,PV.maternity_patient,
+        concat( if(T.title is not null,concat(T.title,". "),""),E.full_name)  as doc_name,PV.maternity_patient,
           PV.mlc_accident_reg_no,LO.billed,LO.status,PV.visit_date,S.service_name,
           PV.hims_f_patient_visit_id,PV.patient_id,LO.hims_f_lab_order_id
            from hims_f_lab_order as LO inner join hims_f_patient_visit as PV
