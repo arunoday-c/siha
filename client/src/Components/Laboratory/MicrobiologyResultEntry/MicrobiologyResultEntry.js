@@ -10,7 +10,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -26,7 +26,7 @@ import {
   getMicroResult,
   addComments,
   selectCommentEvent,
-  deleteComment
+  deleteComment,
 } from "./MicrobiologyResultEntryEvents";
 import AlgaehReport from "../../Wrapper/printReports";
 
@@ -43,7 +43,7 @@ class MicrobiologyResultEntry extends Component {
       data_exists: false,
       group_comments_id: null,
       comment_list: [],
-      selcted_comments: ""
+      selcted_comments: "",
     };
   }
 
@@ -52,7 +52,7 @@ class MicrobiologyResultEntry extends Component {
     let value = e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -61,7 +61,7 @@ class MicrobiologyResultEntry extends Component {
 
     AlgaehReport({
       report: {
-        fileName: "haematologyReport"
+        fileName: "haematologyReport",
       },
       data: {
         investigation_name: this.state.service_name,
@@ -74,8 +74,8 @@ class MicrobiologyResultEntry extends Component {
         receipt_date: this.state.ordered_date,
         doctor_name: refBy,
         test_name: this.state.service_name,
-        specimen: this.state.specimen
-      }
+        specimen: this.state.specimen,
+      },
     });
   }
 
@@ -89,8 +89,8 @@ class MicrobiologyResultEntry extends Component {
         method: "GET",
         redux: {
           type: "LAB_EMP_GET_DATA",
-          mappingName: "labiologyusers"
-        }
+          mappingName: "labiologyusers",
+        },
       });
     }
     if (
@@ -103,8 +103,8 @@ class MicrobiologyResultEntry extends Component {
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
-          mappingName: "providers"
-        }
+          mappingName: "providers",
+        },
       });
     }
     this.props.getMicroGroups({
@@ -114,8 +114,8 @@ class MicrobiologyResultEntry extends Component {
       data: { group_status: "A" },
       redux: {
         type: "MICROGROUPS_GET_DATA",
-        mappingName: "microGroups"
-      }
+        mappingName: "microGroups",
+      },
     });
   }
   UNSAFE_componentWillReceiveProps(newProps) {
@@ -131,7 +131,7 @@ class MicrobiologyResultEntry extends Component {
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
         comments: "",
@@ -139,7 +139,7 @@ class MicrobiologyResultEntry extends Component {
         radioGrowth: false,
         radioNoGrowth: true,
         organism_type: null,
-        microAntbiotic: []
+        microAntbiotic: [],
       },
       () => {
         console.log(this.state);
@@ -158,13 +158,13 @@ class MicrobiologyResultEntry extends Component {
       this.props.providers === undefined
         ? []
         : this.props.providers.filter(
-            f => f.hims_d_employee_id === this.state.provider_id
+            (f) => f.hims_d_employee_id === this.state.provider_id
           );
     return (
       <div>
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Result Entry"
           openPopup={this.props.open}
@@ -214,7 +214,7 @@ class MicrobiologyResultEntry extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Test Name"
+                    forceLabel: "Test Name",
                   }}
                 />
 
@@ -225,7 +225,7 @@ class MicrobiologyResultEntry extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-2 form-group" }}
                 label={{
-                  forceLabel: "Entered By"
+                  forceLabel: "Entered By",
                 }}
                 selector={{
                   name: "entered_by",
@@ -234,19 +234,19 @@ class MicrobiologyResultEntry extends Component {
                   dataSource: {
                     textField: "username",
                     valueField: "algaeh_d_app_user_id",
-                    data: this.props.labiologyusers
+                    data: this.props.labiologyusers,
                   },
                   onChange: null,
                   others: {
-                    disabled: true
-                  }
+                    disabled: true,
+                  },
                 }}
               />
 
               <AlagehAutoComplete
                 div={{ className: "col-2" }}
                 label={{
-                  forceLabel: "Confirmed By"
+                  forceLabel: "Confirmed By",
                 }}
                 selector={{
                   name: "confirmed_by",
@@ -255,18 +255,18 @@ class MicrobiologyResultEntry extends Component {
                   dataSource: {
                     textField: "username",
                     valueField: "algaeh_d_app_user_id",
-                    data: this.props.labiologyusers
+                    data: this.props.labiologyusers,
                   },
                   onChange: null,
                   others: {
-                    disabled: true
-                  }
+                    disabled: true,
+                  },
                 }}
               />
               <AlagehAutoComplete
                 div={{ className: "col-2" }}
                 label={{
-                  forceLabel: "Validtaed By"
+                  forceLabel: "Validated By",
                 }}
                 selector={{
                   name: "validated_by",
@@ -275,12 +275,12 @@ class MicrobiologyResultEntry extends Component {
                   dataSource: {
                     textField: "username",
                     valueField: "algaeh_d_app_user_id",
-                    data: this.props.labiologyusers
+                    data: this.props.labiologyusers,
                   },
                   onChange: null,
                   others: {
-                    disabled: true
-                  }
+                    disabled: true,
+                  },
                 }}
               />
               <div className="col">
@@ -297,7 +297,7 @@ class MicrobiologyResultEntry extends Component {
                     <span>
                       <AlgaehLabel
                         label={{
-                          forceLabel: "No Growth"
+                          forceLabel: "No Growth",
                         }}
                       />
                     </span>
@@ -314,7 +314,7 @@ class MicrobiologyResultEntry extends Component {
                     <span>
                       <AlgaehLabel
                         label={{
-                          forceLabel: "growth"
+                          forceLabel: "growth",
                         }}
                       />
                     </span>
@@ -338,7 +338,7 @@ class MicrobiologyResultEntry extends Component {
                             div={{ className: "col" }}
                             label={{
                               forceLabel: "Select Group",
-                              isImp: this.state.radioGrowth
+                              isImp: this.state.radioGrowth,
                             }}
                             selector={{
                               name: "group_id",
@@ -347,18 +347,18 @@ class MicrobiologyResultEntry extends Component {
                               dataSource: {
                                 textField: "group_name",
                                 valueField: "hims_d_micro_group_id",
-                                data: this.props.microGroups
+                                data: this.props.microGroups,
                               },
                               onChange: texthandle.bind(this, this),
                               others: {
-                                disabled: this.state.data_exists
-                              }
+                                disabled: this.state.data_exists,
+                              },
                             }}
                           />
                           <div className="col">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Organism Type"
+                                forceLabel: "Organism Type",
                               }}
                             />
                             <h6>
@@ -373,7 +373,7 @@ class MicrobiologyResultEntry extends Component {
                             div={{ className: "col" }}
                             label={{
                               forceLabel: "Bacteria Name",
-                              isImp: this.state.radioGrowth
+                              isImp: this.state.radioGrowth,
                             }}
                             textBox={{
                               value: this.state.bacteria_name,
@@ -381,11 +381,11 @@ class MicrobiologyResultEntry extends Component {
                               name: "bacteria_name",
 
                               events: {
-                                onChange: texthandle.bind(this, this)
+                                onChange: texthandle.bind(this, this),
                               },
                               others: {
-                                disabled: this.state.data_exists
-                              }
+                                disabled: this.state.data_exists,
+                              },
                             }}
                           />
                           <div
@@ -406,8 +406,8 @@ class MicrobiologyResultEntry extends Component {
                                   others: {
                                     minWidth: 250,
                                     resizable: false,
-                                    style: { textAlign: "left" }
-                                  }
+                                    style: { textAlign: "left" },
+                                  },
                                 },
 
                                 {
@@ -415,11 +415,11 @@ class MicrobiologyResultEntry extends Component {
                                   label: (
                                     <AlgaehLabel
                                       label={{
-                                        forceLabel: "S"
+                                        forceLabel: "S",
                                       }}
                                     />
                                   ),
-                                  displayTemplate: row => {
+                                  displayTemplate: (row) => {
                                     return (
                                       <label className="checkbox inline">
                                         <input
@@ -448,8 +448,8 @@ class MicrobiologyResultEntry extends Component {
                                     maxWidth: 200,
                                     resizable: false,
                                     filterable: false,
-                                    style: { textAlign: "center" }
-                                  }
+                                    style: { textAlign: "center" },
+                                  },
                                 },
 
                                 {
@@ -457,7 +457,7 @@ class MicrobiologyResultEntry extends Component {
                                   label: (
                                     <AlgaehLabel label={{ forceLabel: "I" }} />
                                   ),
-                                  displayTemplate: row => {
+                                  displayTemplate: (row) => {
                                     return (
                                       <label className="checkbox inline">
                                         <input
@@ -486,15 +486,15 @@ class MicrobiologyResultEntry extends Component {
                                     maxWidth: 200,
                                     resizable: false,
                                     filterable: false,
-                                    style: { textAlign: "center" }
-                                  }
+                                    style: { textAlign: "center" },
+                                  },
                                 },
                                 {
                                   fieldName: "resistant",
                                   label: (
                                     <AlgaehLabel label={{ forceLabel: "R" }} />
                                   ),
-                                  displayTemplate: row => {
+                                  displayTemplate: (row) => {
                                     return (
                                       <label className="checkbox inline">
                                         <input
@@ -521,14 +521,14 @@ class MicrobiologyResultEntry extends Component {
                                     maxWidth: 200,
                                     resizable: false,
                                     filterable: false,
-                                    style: { textAlign: "center" }
-                                  }
-                                }
+                                    style: { textAlign: "center" },
+                                  },
+                                },
                               ]}
                               keyId="microAntbiotic"
                               filter={true}
                               dataSource={{
-                                data: this.state.microAntbiotic
+                                data: this.state.microAntbiotic,
                               }}
                               paging={{ page: 0, rowsPerPage: 30 }}
                             />
@@ -545,7 +545,7 @@ class MicrobiologyResultEntry extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-12 form-group" }}
                       label={{
-                        forceLabel: "Select Comment"
+                        forceLabel: "Select Comment",
                       }}
                       selector={{
                         name: "group_comments_id",
@@ -554,21 +554,21 @@ class MicrobiologyResultEntry extends Component {
                         dataSource: {
                           textField: "commnet_name",
                           valueField: "hims_d_group_comment_id",
-                          data: this.state.comments_data
+                          data: this.state.comments_data,
                         },
                         onChange: selectCommentEvent.bind(this, this),
                         onClear: () => {
                           this.setState({
                             group_comments_id: null,
-                            selcted_comments: ""
+                            selcted_comments: "",
                           });
-                        }
+                        },
                       }}
                     />
                     <div className="col-12">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Enter Comment"
+                          forceLabel: "Enter Comment",
                         }}
                       />
 
@@ -664,7 +664,7 @@ class MicrobiologyResultEntry extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={e => {
+                onClick={(e) => {
                   this.onClose(e);
                 }}
               >
@@ -684,7 +684,7 @@ function mapStateToProps(state) {
     providers: state.providers,
     testanalytes: state.testanalytes,
     labanalytes: state.labanalytes,
-    microGroups: state.microGroups
+    microGroups: state.microGroups,
   };
 }
 
@@ -695,7 +695,7 @@ function mapDispatchToProps(dispatch) {
       getProviderDetails: AlgaehActions,
       getTestAnalytes: AlgaehActions,
       getLabAnalytes: AlgaehActions,
-      getMicroGroups: AlgaehActions
+      getMicroGroups: AlgaehActions,
     },
     dispatch
   );
