@@ -487,12 +487,16 @@ function checkRange(row) {
   normal_high = parseFloat(normal_high);
   // critical_high = parseFloat(critical_high);
 
-  if (!result) {
-    return null;
-  } else if (result < normal_low) {
-    return "L";
-  } else if (result > normal_high) {
-    return "H";
+  if (row.analyte_type === "QU") {
+    if (!result) {
+      return null;
+    } else if (result < normal_low) {
+      return "L";
+    } else if (result > normal_high) {
+      return "H";
+    } else {
+      return "N";
+    }
   } else {
     return "N";
   }
