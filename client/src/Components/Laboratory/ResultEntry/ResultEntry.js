@@ -339,7 +339,7 @@ class ResultEntry extends Component {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Validtaed By",
+                          forceLabel: "Validated By",
                         }}
                       />
 
