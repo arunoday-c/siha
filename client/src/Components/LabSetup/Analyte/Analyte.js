@@ -273,7 +273,7 @@ class LabAnalyte extends Component {
                       editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
-                            div={{}}
+                            div={{ className: "noLabel" }}
                             selector={{
                               name: "analyte_type",
                               className: "select-fld",
@@ -332,7 +332,7 @@ class LabAnalyte extends Component {
                       fieldName: "reference_range_required",
                       label: (
                         <AlgaehLabel
-                          label={{ fieldName: "reference_range_required" }}
+                          label={{ forceLabel: "Ref. Range Required" }}
                         />
                       ),
                       displayTemplate: (row) => {
@@ -351,11 +351,11 @@ class LabAnalyte extends Component {
                               checked={_inactive}
                               onChange={this.gridLevelUpdate.bind(this, row)}
                             />
-                            <span>Yes</span>
+                            <span> Yes</span>
                           </div>
                         );
                       },
-                      others: { maxWidth: 100 },
+                      others: { minWidth: 110 },
                     },
                     {
                       fieldName: "created_by",
@@ -428,7 +428,7 @@ class LabAnalyte extends Component {
                       editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
-                            div={{}}
+                            div={{ className: "noLabel" }}
                             selector={{
                               name: "analyte_status",
                               className: "select-fld",

@@ -65,14 +65,22 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
     // register,
     reset,
     handleSubmit,
-    setValue,
+    // setValue,
     getValues,
-    watch,
-  } = useForm({
-    defaultValues: {},
-  });
+    // watch,
+  } = useForm({});
+  const {
+    control: control2,
+    getValues: getValues2,
+    reset: reset2,
+    setValue: setValue2,
+    watch: watch2,
+    // register: register2,
+    errors: errors2,
+    handleSubmit: handleSubmit2,
+  } = useForm({});
 
-  const { valid_upto } = watch(["valid_upto"]);
+  const { valid_upto } = watch2(["valid_upto"]);
   const { data: familyIdDetails } = useQuery(
     ["FAMILY_GET_DATA", { employee_id: EmpMasterIOputs }],
     getFamilyIdentification,
@@ -149,7 +157,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
       identity_number,
       valid_upto,
       issue_date,
-    } = getValues();
+    } = getValues2();
     let idDetail = [...idDetails];
     if (issue_date === null) {
       swalMessage({
@@ -165,7 +173,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
       });
       return;
     }
-    debugger;
+
     let insertIdDetails =
       output?.insertIdDetails === undefined ? [] : output?.insertIdDetails;
 
@@ -190,7 +198,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
       idDetails: idDetail,
       insertIdDetails: insertIdDetails,
     });
-    reset({
+    reset2({
       identity_documents_id: null,
       identity_number: null,
       valid_upto: null,
@@ -388,15 +396,18 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
       );
     }
   };
-  const onSubmit = (e) => {
+  const onSubmit2 = (e) => {
     console.error(errors);
     AddEmpId(e);
+  };
+  const onSubmit = (e) => {
+    console.error(errors);
+    addDependentType(e);
   };
   const onchangegridcol = (row, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    row.update();
   };
   return (
     <>
@@ -407,15 +418,15 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               <span>Personal Identification Details</span>
             </h5>
             <div className="row paddin-bottom-5">
-              <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}>
+              <form key={1} onSubmit={handleSubmit2(onSubmit2)}>
                 <Controller
                   name="identity_documents_id"
-                  control={control}
+                  control={control2}
                   rules={{ required: "Required" }}
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
                       div={{ className: "col mandatory" }}
-                      error={errors}
+                      error={errors2}
                       label={{
                         forceLabel: "Id Type",
                         isImp: true,
@@ -466,12 +477,12 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
           /> */}
                 <Controller
                   name="identity_number"
-                  control={control}
+                  control={control2}
                   rules={{ required: "Required" }}
                   render={(props) => (
                     <AlgaehFormGroup
                       div={{ className: "col mandatory" }}
-                      error={errors}
+                      error={errors2}
                       label={{
                         forceLabel: "Id Number",
                         isImp: true,
@@ -543,7 +554,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
             }}
           ></AlgaehHijriDatePicker> */}
                 <Controller
-                  control={control}
+                  control={control2}
                   name="valid_upto"
                   rules={{ required: "Please Select DOB" }}
                   render={({ onChange, value }) => (
@@ -552,7 +563,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                         className: "col mandatory",
                         tabIndex: "5",
                       }}
-                      error={errors}
+                      error={errors2}
                       label={{
                         forceLabel: "Expiry Date",
                         isImp: true,
@@ -612,13 +623,13 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                   type="hijri"
                   events={{
                     onChange: ({ target }) => {
-                      setValue(
+                      setValue2(
                         "valid_upto",
                         moment(target?.gregorianDate, "DD-MM-YYYY")._d
                       );
                     },
                     onClear: () => {
-                      setValue("valid_upto", undefined);
+                      setValue2("valid_upto", undefined);
                     },
                   }}
                 />
@@ -640,6 +651,7 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
                 >
                   <button
                     type="submit"
+                    // onClick={AddEmpId}
                     className="btn btn-primary btn-sm"
                     style={{ marginTop: 17 }}
                   >
@@ -807,38 +819,38 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               <span>Family Details</span>
             </h5>
             <div className="row paddin-bottom-5">
-              {/* <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}> */}
-              <Controller
-                control={control}
-                name="dependent_type"
-                rules={{ required: "Please Select" }}
-                render={({ value, onChange, onBlur }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col mandatory " }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Dependent Type",
-                      isImp: true,
-                    }}
-                    selector={{
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                      },
-                      onClear: () => {
-                        onChange("");
-                      },
-                      name: "dependent_type",
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: variableJson.DEPENDENT_TYPE,
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlagehAutoComplete
+              <form key={2} onSubmit={handleSubmit(onSubmit)}>
+                <Controller
+                  control={control}
+                  name="dependent_type"
+                  rules={{ required: "Please Select" }}
+                  render={({ value, onChange, onBlur }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col mandatory " }}
+                      error={errors}
+                      label={{
+                        forceLabel: "Dependent Type",
+                        isImp: true,
+                      }}
+                      selector={{
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+                        },
+                        onClear: () => {
+                          onChange("");
+                        },
+                        name: "dependent_type",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: variableJson.DEPENDENT_TYPE,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
             div={{ className: "col-3 mandatory  form-group" }}
             label={{
               forceLabel: "Dependent Type",
@@ -861,28 +873,28 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               },
             }}
           /> */}
-              <Controller
-                name="dependent_name"
-                control={control}
-                rules={{ required: "Required" }}
-                render={(props) => (
-                  <AlgaehFormGroup
-                    div={{ className: "col mandatory" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Dependent",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "dependent_name",
-                      type: "text",
-                      className: "form-control",
-                      ...props,
-                    }}
-                  />
-                )}
-              />
-              {/* < AlgaehFormGroup
+                <Controller
+                  name="dependent_name"
+                  control={control}
+                  rules={{ required: "Required" }}
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col mandatory" }}
+                      error={errors}
+                      label={{
+                        forceLabel: "Dependent",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        name: "dependent_name",
+                        type: "text",
+                        className: "form-control",
+                        ...props,
+                      }}
+                    />
+                  )}
+                />
+                {/* < AlgaehFormGroup
             div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Dependent Name",
@@ -897,35 +909,35 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               },
             }}
           /> */}
-              <Controller
-                control={control}
-                name="dependent_identity_type"
-                render={({ value, onChange, onBlur }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Id Type",
-                      isImp: false,
-                    }}
-                    selector={{
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                      },
-                      onClear: () => {
-                        onChange("");
-                      },
-                      name: "dependent_identity_type",
-                      dataSource: {
-                        textField: "identity_document_name",
-                        valueField: "hims_d_identity_document_id",
-                        data: idtypes,
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <AlagehAutoComplete
+                <Controller
+                  control={control}
+                  name="dependent_identity_type"
+                  render={({ value, onChange, onBlur }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Id Type",
+                        isImp: false,
+                      }}
+                      selector={{
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+                        },
+                        onClear: () => {
+                          onChange("");
+                        },
+                        name: "dependent_identity_type",
+                        dataSource: {
+                          textField: "identity_document_name",
+                          valueField: "hims_d_identity_document_id",
+                          data: idtypes,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
             div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Id Type",
@@ -948,28 +960,28 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               },
             }}
           /> */}
-              <Controller
-                name="dependent_identity_no"
-                control={control}
-                rules={{ required: "Required" }}
-                render={(props) => (
-                  <AlgaehFormGroup
-                    div={{ className: "col" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Id Number",
-                      isImp: false,
-                    }}
-                    textBox={{
-                      name: "dependent_identity_no",
-                      type: "text",
-                      className: "form-control",
-                      ...props,
-                    }}
-                  />
-                )}
-              />
-              {/* < AlgaehFormGroup
+                <Controller
+                  name="dependent_identity_no"
+                  control={control}
+                  rules={{ required: "Required" }}
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col" }}
+                      error={errors}
+                      label={{
+                        forceLabel: "Id Number",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        name: "dependent_identity_no",
+                        type: "text",
+                        className: "form-control",
+                        ...props,
+                      }}
+                    />
+                  )}
+                />
+                {/* < AlgaehFormGroup
             div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Id Number",
@@ -985,21 +997,15 @@ export default function FamilyAndIdentification({ EmpMasterIOputs }) {
               },
             }}
           /> */}
-              <div
-                className="col-2"
-                style={{ textAlign: "right", marginTop: 21 }}
-              >
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={() => {
-                    addDependentType();
-                  }}
+                <div
+                  className="col-2"
+                  style={{ textAlign: "right", marginTop: 21 }}
                 >
-                  Add
-                </button>
-              </div>
-              {/* </form> */}
+                  <button type="submit" className="btn btn-default">
+                    Add
+                  </button>
+                </div>
+              </form>
             </div>
             <div className="row">
               <div className="col-lg-12" id="employeeFamily_DetailsGrid_Cntr">

@@ -77,9 +77,18 @@ export default function CommissionSetup({ employee_id }) {
   const [servTypeCommission, setServTypeCommission] = useState([]);
   const [selectedLang, setSelectedLang] = useState("en");
   const { dropdownData, setDropDownData } = useContext(EmployeeMasterContext);
-  const { control, errors, reset, getValues } = useForm({
-    defaultValues: {},
-  });
+  const { control, errors, reset, getValues, handleSubmit } = useForm({});
+  const {
+    control: control2,
+    getValues: getValues2,
+    reset: reset2,
+    // setValue: setValue2,
+    // watch: watch2,
+    // register: register2,
+    errors: errors2,
+    handleSubmit: handleSubmit2,
+  } = useForm({});
+
   const { data: servTypeCommissionData } = useQuery(
     ["servTypeCommission", { employee_id: employee_id }],
     getServiceTypeDepartments,
@@ -292,7 +301,7 @@ export default function CommissionSetup({ employee_id }) {
       op_credit_commission_percent,
       ip_cash_commission_percent,
       ip_credit_commission_percent,
-    } = getValues();
+    } = getValues2();
     for (let x = 0; x < serviceComm.length; x++) {
       if (serviceComm[x].services_id === services_id) {
         intServiceExists = true;
@@ -320,7 +329,7 @@ export default function CommissionSetup({ employee_id }) {
         serviceComm: serviceCommData,
         insertserviceComm: insertserviceComm,
       });
-      reset({
+      reset2({
         services_id: null,
         service_type_id: null,
         op_cash_commission_percent: 0,
@@ -418,7 +427,14 @@ export default function CommissionSetup({ employee_id }) {
       updateservTypeCommission: updateservTypeCommission,
     });
   };
-
+  const onSubmit = (e) => {
+    console.error(errors);
+    AddSeviceTypeComm();
+  };
+  const onSubmit2 = (e) => {
+    console.error(errors2);
+    AddServiceComm(e);
+  };
   const { empservicetype } = dropdownDataCommission;
   const _serviceslist = empservices;
   return (
@@ -445,37 +461,38 @@ export default function CommissionSetup({ employee_id }) {
                 Service Commission
               </h6>
               <div className="row">
-                <Controller
-                  control={control}
-                  name="service_type_typ_id"
-                  rules={{ required: "Required" }}
-                  render={({ value, onChange, onBlur }) => (
-                    <AlgaehAutoComplete
-                      div={{ className: "col mandatory form-group" }}
-                      error={errors}
-                      label={{
-                        fieldName: "service_type_id",
-                        isImp: true,
-                      }}
-                      selector={{
-                        value,
-                        onChange: (_, selected) => {
-                          onChange(selected);
-                        },
-                        onClear: () => {
-                          onChange("");
-                        },
-                        name: "service_type_typ_id",
-                        dataSource: {
-                          textField: "service_type",
-                          valueField: "hims_d_service_type_id",
-                          data: empservicetype,
-                        },
-                      }}
-                    />
-                  )}
-                />
-                {/* <AlagehAutoComplete
+                <form key={1} onSubmit={handleSubmit(onSubmit)}>
+                  <Controller
+                    control={control}
+                    name="service_type_typ_id"
+                    rules={{ required: "Required" }}
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{ className: "col mandatory form-group" }}
+                        error={errors}
+                        label={{
+                          fieldName: "service_type_id",
+                          isImp: true,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "service_type_typ_id",
+                          dataSource: {
+                            textField: "service_type",
+                            valueField: "hims_d_service_type_id",
+                            data: empservicetype,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                     div={{ className: "col mandatory form-group" }}
                     label={{
                       fieldName: "service_type_id",
@@ -499,29 +516,29 @@ export default function CommissionSetup({ employee_id }) {
                       },
                     }}
                   /> */}
-                <Controller
-                  name="op_cash_servtyp_percent"
-                  control={control}
-                  // rules={{ required: "Required" }}
-                  render={(props) => (
-                    <AlgaehFormGroup
-                      div={{ className: "col form-group" }}
-                      // error={errors}
-                      label={{
-                        fieldName: "op_cash_comission_percent",
-                        // isImp: earn_calculation_method === "FO" ? false : true,
-                      }}
-                      textBox={{
-                        name: "op_cash_servtyp_percent",
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
+                  <Controller
+                    name="op_cash_servtyp_percent"
+                    control={control}
+                    // rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{ className: "col form-group" }}
+                        // error={errors}
+                        label={{
+                          fieldName: "op_cash_comission_percent",
+                          // isImp: earn_calculation_method === "FO" ? false : true,
+                        }}
+                        textBox={{
+                          name: "op_cash_servtyp_percent",
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
 
-                        ...props,
-                      }}
-                    />
-                  )}
-                />
-                {/* <AlagehFormGroup
+                          ...props,
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
                       fieldName: "op_cash_comission_percent",
@@ -537,29 +554,29 @@ export default function CommissionSetup({ employee_id }) {
                     }}
                   /> */}
 
-                <Controller
-                  name="op_credit_servtyp_percent"
-                  control={control}
-                  // rules={{ required: "Required" }}
-                  render={(props) => (
-                    <AlgaehFormGroup
-                      div={{ className: "col form-group" }}
-                      // error={errors}
-                      label={{
-                        fieldName: "op_credit_comission_percent",
-                        // isImp: earn_calculation_method === "FO" ? false : true,
-                      }}
-                      textBox={{
-                        name: "op_credit_servtyp_percent",
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
+                  <Controller
+                    name="op_credit_servtyp_percent"
+                    control={control}
+                    // rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{ className: "col form-group" }}
+                        // error={errors}
+                        label={{
+                          fieldName: "op_credit_comission_percent",
+                          // isImp: earn_calculation_method === "FO" ? false : true,
+                        }}
+                        textBox={{
+                          name: "op_credit_servtyp_percent",
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
 
-                        ...props,
-                      }}
-                    />
-                  )}
-                />
-                {/* <AlagehFormGroup
+                          ...props,
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
                       fieldName: "op_credit_comission_percent",
@@ -574,6 +591,7 @@ export default function CommissionSetup({ employee_id }) {
                       },
                     }}
                   /> */}
+                </form>
               </div>
               <div className="row">
                 <Controller
@@ -653,12 +671,12 @@ export default function CommissionSetup({ employee_id }) {
 
                 <div className="col">
                   <button
-                    type="button"
+                    type="submit"
                     className="btn btn-default"
                     style={{ marginTop: 20 }}
-                    onClick={() => {
-                      AddSeviceTypeComm();
-                    }}
+                    // onClick={() => {
+                    //   AddSeviceTypeComm();
+                    // }}
                   >
                     Add
                   </button>
@@ -789,39 +807,40 @@ export default function CommissionSetup({ employee_id }) {
                 Service Type Commission
               </h6>
               <div className="row">
-                <Controller
-                  control={control}
-                  name="service_type_id"
-                  rules={{ required: "Required" }}
-                  render={({ value, onChange, onBlur }) => (
-                    <AlgaehAutoComplete
-                      div={{ className: "col mandatory form-group" }}
-                      error={errors}
-                      label={{
-                        fieldName: "service_type_id",
-                        isImp: true,
-                      }}
-                      selector={{
-                        value,
-                        onChange: (_, selected) => {
-                          onChange(selected);
-                          debugger;
-                          serviceServTypeHandeler(_.hims_d_service_type_id);
-                        },
-                        onClear: () => {
-                          onChange("");
-                        },
-                        name: "service_type_id",
-                        dataSource: {
-                          textField: "service_type",
-                          valueField: "hims_d_service_type_id",
-                          data: empservicetype,
-                        },
-                      }}
-                    />
-                  )}
-                />
-                {/* <AlagehAutoComplete
+                <form key={2} onSubmit={handleSubmit2(onSubmit2)}>
+                  <Controller
+                    control={control2}
+                    name="service_type_id"
+                    rules={{ required: "Required" }}
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{ className: "col mandatory form-group" }}
+                        error={errors2}
+                        label={{
+                          fieldName: "service_type_id",
+                          isImp: true,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+
+                            serviceServTypeHandeler(_.hims_d_service_type_id);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "service_type_id",
+                          dataSource: {
+                            textField: "service_type",
+                            valueField: "hims_d_service_type_id",
+                            data: empservicetype,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                     div={{ className: "col mandatory form-group" }}
                     label={{
                       fieldName: "service_type_id",
@@ -845,37 +864,37 @@ export default function CommissionSetup({ employee_id }) {
                       },
                     }}
                   /> */}
-                <Controller
-                  control={control}
-                  name="services_id"
-                  rules={{ required: "Required" }}
-                  render={({ value, onChange, onBlur }) => (
-                    <AlgaehAutoComplete
-                      div={{ className: "col-5 mandatory form-group" }}
-                      error={errors}
-                      label={{
-                        forceLabel: "Select Service Type",
-                        isImp: true,
-                      }}
-                      selector={{
-                        value,
-                        onChange: (_, selected) => {
-                          onChange(selected);
-                        },
-                        onClear: () => {
-                          onChange("");
-                        },
-                        name: "services_id",
-                        dataSource: {
-                          textField: "service_name",
-                          valueField: "hims_d_services_id",
-                          data: empservices,
-                        },
-                      }}
-                    />
-                  )}
-                />
-                {/* <AlagehAutoComplete
+                  <Controller
+                    control={control2}
+                    name="services_id"
+                    rules={{ required: "Required" }}
+                    render={({ value, onChange, onBlur }) => (
+                      <AlgaehAutoComplete
+                        div={{ className: "col-5 mandatory form-group" }}
+                        error={errors2}
+                        label={{
+                          forceLabel: "Select Service Type",
+                          isImp: true,
+                        }}
+                        selector={{
+                          value,
+                          onChange: (_, selected) => {
+                            onChange(selected);
+                          },
+                          onClear: () => {
+                            onChange("");
+                          },
+                          name: "services_id",
+                          dataSource: {
+                            textField: "service_name",
+                            valueField: "hims_d_services_id",
+                            data: empservices,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-5 mandatory form-group" }}
                     label={{
                       forceLabel: "Select Service Type",
@@ -898,32 +917,32 @@ export default function CommissionSetup({ employee_id }) {
                       },
                     }}
                   /> */}
-                <Controller
-                  name="op_cash_commission_percent"
-                  control={control}
-                  // rules={{ required: "Required" }}
-                  render={(props) => (
-                    <AlgaehFormGroup
-                      div={{ className: "col form-group" }}
-                      // error={errors}
-                      label={{
-                        fieldName: "op_cash_comission_percent",
-                        // isImp: earn_calculation_method === "FO" ? false : true,
-                      }}
-                      textBox={{
-                        name: "op_cash_commission_percent",
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        ...props,
-                        others: {
-                          // disabled:
-                          // earn_calculation_method === "FO" ? true : false,
-                        },
-                      }}
-                    />
-                  )}
-                />
-                {/* <AlagehFormGroup
+                  <Controller
+                    name="op_cash_commission_percent"
+                    control={control2}
+                    // rules={{ required: "Required" }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{ className: "col form-group" }}
+                        // error={errors}
+                        label={{
+                          fieldName: "op_cash_comission_percent",
+                          // isImp: earn_calculation_method === "FO" ? false : true,
+                        }}
+                        textBox={{
+                          name: "op_cash_commission_percent",
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
+                          ...props,
+                          others: {
+                            // disabled:
+                            // earn_calculation_method === "FO" ? true : false,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
                       fieldName: "op_cash_comission_percent",
@@ -938,11 +957,12 @@ export default function CommissionSetup({ employee_id }) {
                       },
                     }}
                   /> */}
+                </form>
               </div>
               <div className="row">
                 <Controller
                   name="op_credit_commission_percent"
-                  control={control}
+                  control={control2}
                   // rules={{ required: "Required" }}
                   render={(props) => (
                     <AlgaehFormGroup
@@ -982,7 +1002,7 @@ export default function CommissionSetup({ employee_id }) {
                   /> */}
                 <Controller
                   name="ip_cash_commission_percent"
-                  control={control}
+                  control={control2}
                   // rules={{ required: "Required" }}
                   render={(props) => (
                     <AlgaehFormGroup
@@ -1022,7 +1042,7 @@ export default function CommissionSetup({ employee_id }) {
                   /> */}
                 <Controller
                   name="ip_credit_commission_percent"
-                  control={control}
+                  control={control2}
                   // rules={{ required: "Required" }}
                   render={(props) => (
                     <AlgaehFormGroup
@@ -1063,12 +1083,12 @@ export default function CommissionSetup({ employee_id }) {
 
                 <div className="col">
                   <button
-                    type="button"
+                    type="submit"
                     className="btn btn-default"
                     style={{ marginTop: 20 }}
-                    onClick={() => {
-                      AddServiceComm();
-                    }}
+                    // onClick={() => {
+                    //   AddServiceComm();
+                    // }}
                   >
                     Add
                   </button>

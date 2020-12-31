@@ -164,20 +164,6 @@ const getAnalytes = ($this) => {
     onSuccess: (response) => {
       // console.timeEnd("lab");
       if (response.data.success) {
-        // let data = response.data.records;
-        // for (let i = 0; i < data.length; i++) {
-        //   data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
-        //   if (data[i].status === "E" || data[i].status === "N") {
-        //     data[i].validate = "N";
-        //     data[i].confirm = "N";
-        //   } else if (data[i].status === "C") {
-        //     data[i].validate = "N";
-        //     data[i].confirm = "Y";
-        //   } else if (data[i].status === "V") {
-        //     data[i].validate = "Y";
-        //     data[i].confirm = "Y";
-        //   }
-        // }
 
         for (let i = 0; i < response.data.records.length; i++) {
           response.data.records[i].text_value =
@@ -490,12 +476,16 @@ function checkRange(row) {
   normal_high = parseFloat(normal_high);
   // critical_high = parseFloat(critical_high);
 
-  if (!result) {
-    return null;
-  } else if (result < normal_low) {
-    return "L";
-  } else if (result > normal_high) {
-    return "H";
+  if (row.analyte_type === "QU") {
+    if (!result) {
+      return null;
+    } else if (result < normal_low) {
+      return "L";
+    } else if (result > normal_high) {
+      return "H";
+    } else {
+      return "N";
+    }
   } else {
     return "N";
   }

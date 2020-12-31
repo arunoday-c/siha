@@ -27,6 +27,8 @@ import {
   AlgaehLabel,
   // AlgaehLabel,
 } from "algaeh-react-components";
+import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
+
 // import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 // import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 // import { RawSecurityElement } from "algaeh-react-components";
@@ -149,17 +151,21 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
   );
   const { userToken } = useContext(MainContext);
   const { dropdownData, setDropDownData } = useContext(EmployeeMasterContext);
-
+  const { setEmployeeUpdateDetails } = useContext(
+    EmployeeMasterContextForEmployee
+  );
   const {
     control,
     errors,
-    register,
+    // register,
     reset,
     setValue,
     // getValues,
     watch,
   } = useForm({
-    defaultValues: {},
+    defaultValues: {
+      employee_status: "A",
+    },
   });
   const { entitled_daily_ot, employee_status } = watch([
     "entitled_daily_ot",
@@ -169,28 +175,18 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
     ["official-details", { employee_id: EmpMasterIOputs }],
     getOfficialDetails,
     {
+      enabled: !!EmpMasterIOputs,
+      initialStale: true,
       onSuccess: (data) => {
         debugger;
         console.log("dropdowndata", dropdownData);
-        const HIMS_Active =
-          userToken.product_type === "HIMS_ERP" ||
-          userToken.product_type === "HIMS_CLINICAL" ||
-          userToken.product_type === "NO_FINANCE"
-            ? true
-            : false;
-        const HRMS_Active =
-          userToken.product_type === "HIMS_ERP" ||
-          userToken.product_type === "HRMS" ||
-          userToken.product_type === "HRMS_ERP" ||
-          userToken.product_type === "FINANCE_ERP" ||
-          userToken.product_type === "NO_FINANCE"
-            ? true
-            : false;
-        setHIMS_Active(HIMS_Active);
-        setHRMS_Active(HRMS_Active);
+
         setSelectedLang(getCookie("Language"));
         reset({ ...data[0] });
         setOfficialDetailsOfEmployee(data[0]);
+        setEmployeeUpdateDetails({
+          ...data[0],
+        });
       },
       onError: (err) => {
         AlgaehMessagePop({
@@ -224,19 +220,40 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
         // depservices:[],
         subdepartment: [],
       },
-      enabled: !!officialDetails,
-      refetchOnMount: false,
-      // refetchOnReconnect: false,
-      // keepPreviousData: true,
-      refetchOnWindowFocus: false,
+      enabled:
+        !!officialDetails ||
+        EmpMasterIOputs === null ||
+        EmpMasterIOputs === undefined,
+      // refetchOnMount: false,
+      // // refetchOnReconnect: false,
+      // // keepPreviousData: true,
+      // refetchOnWindowFocus: false,
       initialStale: true,
       cacheTime: Infinity,
       onSuccess: (data) => {
+        const HIMS_Active =
+          userToken.product_type === "HIMS_ERP" ||
+          userToken.product_type === "HIMS_CLINICAL" ||
+          userToken.product_type === "NO_FINANCE"
+            ? true
+            : false;
+        const HRMS_Active =
+          userToken.product_type === "HIMS_ERP" ||
+          userToken.product_type === "HRMS" ||
+          userToken.product_type === "HRMS_ERP" ||
+          userToken.product_type === "FINANCE_ERP" ||
+          userToken.product_type === "NO_FINANCE"
+            ? true
+            : false;
+        setHIMS_Active(HIMS_Active);
+        setHRMS_Active(HRMS_Active);
         setDropDownData({ ...data });
-        let employeeBankAccFormat = data.banks.find((item) => {
-          return item.hims_d_bank_id === officialDetails[0].employee_bank_id;
-        });
-        setMasked_bank_account(employeeBankAccFormat.masked_bank_account);
+        if (EmpMasterIOputs !== undefined || EmpMasterIOputs === null) {
+          let employeeBankAccFormat = data.banks.find((item) => {
+            return item.hims_d_bank_id === officialDetails[0].employee_bank_id;
+          });
+          setMasked_bank_account(employeeBankAccFormat.masked_bank_account);
+        }
       },
       onError: (err) => {
         AlgaehMessagePop({
@@ -1131,12 +1148,30 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                       className="checkbox inline"
                       style={{ paddingBottom: 1 }}
                     >
-                      <input
+                      <Controller
+                        name="entitled_daily_ot"
+                        control={control}
+                        // defaultValue={"N"}
+                        render={(props) => (
+                          <input
+                            type="checkbox"
+                            onChange={(e) =>
+                              props.onChange(
+                                e.target.checked
+                                  ? (props.value = "Y")
+                                  : (props.value = "N")
+                              )
+                            }
+                            checked={props.value === "Y" ? true : false}
+                          />
+                        )} // props contains: onChange, onBlur and value
+                      />
+                      {/* <input
                         type="checkbox"
                         value="Y"
                         name="entitled_daily_ot"
                         ref={register({ name: "entitled_daily_ot" })}
-                      />
+                      /> */}
                       {/* <input
                           type="checkbox"
                           name="entitled_daily_ot"
@@ -1154,7 +1189,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                       </span>
                     </label>
                     <div className="row">
-                      {entitled_daily_ot ? (
+                      {entitled_daily_ot === "Y" ? (
                         <Controller
                           control={control}
                           name="overtime_group_id"
@@ -1214,10 +1249,10 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                   </div>
                 </>
               ) : null}
-              {officialDetailsOfEmployee.isDoctor === "Y" ? (
+              {officialDetailsOfEmployee?.isDoctor === "Y" ? (
                 <Controller
                   control={control}
-                  name="sservices_idex"
+                  name="services_id"
                   render={({ value, onChange, onBlur }) => (
                     <AlgaehAutoComplete
                       div={{
@@ -1292,7 +1327,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                       value,
                       onChange: (_, selected) => {
                         onChange(selected);
-                        debugger;
+
                         selected === "I"
                           ? setValue("inactive_date", new Date())
                           : setValue("inactive_date", undefined);
@@ -1368,7 +1403,6 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                     rules={{ required: "Please select a start date" }}
                     render={({ value, onChange }) => (
                       <>
-                        {console.log(value, "value")}
                         <AlgaehDateHandler
                           div={{ className: "col-3 mandatory form-group" }}
                           label={{

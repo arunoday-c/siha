@@ -133,6 +133,9 @@ export default function EmployeeMasterIndex() {
       //   }
     }
   );
+  const addNewEmployee = (row) => {
+    setIsOpen((state) => !state);
+  };
   const EditEmployeeMaster = (row) => {
     setIsOpen((state) => !state);
     setCurrentEmployee(row);
@@ -141,6 +144,7 @@ export default function EmployeeMasterIndex() {
   };
   const CloseModel = (e) => {
     setIsOpen((state) => !state);
+    setCurrentEmployee([]);
     // afterClose: true,
 
     // if (e === true) {
@@ -460,8 +464,11 @@ export default function EmployeeMasterIndex() {
           <div className="row">
             <div className="col-12">
               <button
+                type="button"
                 className="btn btn-primary"
-                // onClick={this.ShowModel.bind(this)}
+                onClick={() => {
+                  addNewEmployee();
+                }}
               >
                 Add an Employee
               </button>

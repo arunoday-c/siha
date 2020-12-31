@@ -117,7 +117,7 @@ class RadOrderedList extends Component {
             <div className="col" style={{ paddingTop: "21px" }}>
               <button
                 className="btn btn-default btn-sm"
-                style={{ marginLeft: "10px" }}
+                style={{ marginRight: "10px" }}
                 type="button"
                 onClick={Refresh.bind(this, this)}
               >
