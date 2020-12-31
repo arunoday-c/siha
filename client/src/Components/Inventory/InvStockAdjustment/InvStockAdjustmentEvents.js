@@ -82,7 +82,7 @@ const getDrilDownData = ($this, transaction_id) => {
     uri: "/inventorystockAdjustment/getStockAdjustment",
     module: "inventory",
     method: "GET",
-    data: { adjustment_number: transaction_id },
+    data: { transaction_id: transaction_id },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;

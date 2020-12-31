@@ -17,6 +17,7 @@ import {
 import {
   ClearData,
   SaveInvoiceEnrty,
+  getDocuments,
   getCtrlCode,
   SalesOrderSearch,
   texthandle,
@@ -29,6 +30,7 @@ import {
   datehandle,
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { Upload } from "antd";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
 import MyContext from "../../../utils/MyContext";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
@@ -43,7 +45,9 @@ import {
 } from "algaeh-react-components";
 import TransationDetails from "../../Finance/DayEndProcess/TransationDetails";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
-
+import { newAlgaehApi } from "../../../hooks";
+const { Dragger } = Upload;
+const { confirm } = Modal;
 class SalesInvoice extends Component {
   constructor(props) {
     super(props);
@@ -132,6 +136,94 @@ class SalesInvoice extends Component {
       console.error(e);
     }
   }
+  saveDocument = (files = [], number, id) => {
+    debugger;
+    if (this.state.invoice_number) {
+      const formData = new FormData();
+      formData.append("grn_number", number || this.state.invoice_number);
+      formData.append(
+        "hims_f_procurement_grn_header_id",
+        id || this.state.hims_f_sales_invoice_header_id
+      );
+      if (files.length) {
+        files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      } else {
+        this.state.sales_invoice_files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      }
+      newAlgaehApi({
+        uri: "/saveReceiptEntryDoc",
+        data: formData,
+        extraHeaders: { "Content-Type": "multipart/form-data" },
+        method: "POST",
+        module: "documentManagement",
+      })
+        .then((value) => getDocuments(this))
+        .catch((e) => console.log(e));
+    } else {
+      swalMessage({
+        title: "Can't upload attachments for unsaved sales Invoice",
+        type: "error",
+      });
+    }
+  };
+  downloadDoc(doc, isPreview) {
+    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    const link = document.createElement("a");
+    if (!isPreview) {
+      link.download = doc.filename;
+      link.href = fileUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      fetch(fileUrl)
+        .then((res) => res.blob())
+        .then((fblob) => {
+          const newUrl = URL.createObjectURL(fblob);
+          window.open(newUrl);
+        });
+    }
+  }
+
+  deleteDoc = (doc) => {
+    const self = this;
+    confirm({
+      title: `Are you sure you want to delete this file?`,
+      content: `${doc.filename}`,
+      icon: "",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        self.onDelete(doc);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  onDelete = (doc) => {
+    newAlgaehApi({
+      uri: "/deleteReceiptEntryDoc",
+      method: "DELETE",
+      module: "documentManagement",
+      data: { id: doc._id },
+    }).then((res) => {
+      if (res.data.success) {
+        this.setState((state) => {
+          const invoice_docs = state.invoice_docs.filter(
+            (item) => item._id !== doc._id
+          );
+          return { invoice_docs };
+        });
+      }
+    });
+  };
 
   render() {
     const class_finder = this.state.dataExitst === true ? " disableFinder" : "";
@@ -222,14 +314,16 @@ class SalesInvoice extends Component {
                   />
                   <h6>
                     {this.state.is_cancelled === "Y" ? (
-                      <span className="badge badge-danger">Cancelled</span>
+                      <span className="badge badge-danger">
+                        invoice_numberCancelled
+                      </span>
                     ) : this.state.is_revert === "Y" ? (
                       <span className="badge badge-danger">Reverted</span>
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                            <span className="badge badge-success">Posted</span>
-                          )}
+                      <span className="badge badge-success">Posted</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
@@ -248,17 +342,17 @@ class SalesInvoice extends Component {
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Invoice",
-                    events: {
-                      onClick: () => {
-                        generateSalesInvoiceReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Invoice",
+                      events: {
+                        onClick: () => {
+                          generateSalesInvoiceReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -399,8 +493,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-                <InvoiceItemList SALESInvoiceIOputs={this.state} />
-              )}
+              <InvoiceItemList SALESInvoiceIOputs={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="row">
@@ -489,7 +583,99 @@ class SalesInvoice extends Component {
               </div>
             </div>
           </div>
+          <div className="col">
+            <div className="row">
+              <div
+                className="portlet portlet-bordered"
+                style={{ marginBottom: 60 }}
+              >
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Attachments</h3>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-3">
+                      {" "}
+                      <Dragger
+                        disabled={!this.state.saveEnable}
+                        accept=".doc,.docx,application/msword,.pdf"
+                        name="sales_invoice_files"
+                        multiple={false}
+                        onRemove={() => {
+                          this.setState((state) => {
+                            return {
+                              sales_invoice_files: [],
+                              docChanged: false,
+                              // saveEnable: state.dataExists && !newFileList.length,
+                            };
+                          });
+                        }}
+                        beforeUpload={(file) => {
+                          this.setState((state) => ({
+                            sales_invoice_files: [file],
+                            docChanged: true,
 
+                            // saveEnable: false,
+                          }));
+                          return false;
+                        }}
+                        fileList={this.state.sales_invoice_files}
+                      >
+                        <p className="upload-drag-icon">
+                          <i className="fas fa-file-upload"></i>
+                        </p>
+                        <p className="ant-upload-text">
+                          {this.state.sales_invoice_files
+                            ? `Click or Drag a file to replace the current file`
+                            : `Click or Drag a file to this area to upload`}
+                        </p>
+                      </Dragger>
+                    </div>
+                    <div className="col-3"></div>
+                    <div className="col-6">
+                      <div className="row">
+                        <div className="col-12">
+                          <ul className="receiptEntryAttachment">
+                            {this.state.invoice_docs?.length ? (
+                              this.state.invoice_docs.map((doc) => (
+                                <li>
+                                  <b> {doc.filename} </b>
+                                  <span>
+                                    <i
+                                      className="fas fa-download"
+                                      onClick={() => this.downloadDoc(doc)}
+                                    ></i>
+                                    <i
+                                      className="fas fa-eye"
+                                      onClick={() =>
+                                        this.downloadDoc(doc, true)
+                                      }
+                                    ></i>
+                                    {!this.state.postEnable ? (
+                                      <i
+                                        className="fas fa-trash"
+                                        onClick={() => this.deleteDoc(doc)}
+                                      ></i>
+                                    ) : null}
+                                  </span>
+                                </li>
+                              ))
+                            ) : (
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Attachments Available</p>
+                              </div>
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="hptl-phase1-footer">
             <div className="row">
               <div className="col-4 leftBtnGroup">
@@ -517,19 +703,35 @@ class SalesInvoice extends Component {
               </div>
               <div className="col-8">
                 <AlgaehSecurityComponent componentCode="SALES_INV_MAIN">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SaveInvoiceEnrty.bind(this, this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Generate",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
+                  {this.state.docChanged && this.state.invoice_number ? (
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.saveDocument}
+                      disabled={!this.state.docChanged}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Upload Documents",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={SaveInvoiceEnrty.bind(this, this)}
+                      disabled={this.state.saveEnable}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Generate",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  )}
                 </AlgaehSecurityComponent>
                 <button
                   type="button"

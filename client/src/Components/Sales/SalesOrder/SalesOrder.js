@@ -256,7 +256,7 @@ class SalesOrder extends Component {
         module: "documentManagement",
         method: "GET",
         extraHeaders: {
-          Accept: "blon",
+          Accept: "blob",
         },
         others: {
           responseType: "blob",

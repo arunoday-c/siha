@@ -1247,6 +1247,7 @@ class PatientProfile extends Component {
           <SickLeave
             openSickLeave={this.state.openSickLeave}
             onClose={this.showSickLeave.bind(this)}
+            patient_diagnosis={_diagnosis}
           />
           <PatientAttendance
             openPatientAttendance={this.state.openPatientAttendance}

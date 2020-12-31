@@ -4,12 +4,20 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { debounce } from "lodash";
+import { newAlgaehApi } from "../../../../hooks";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
   AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
+import { swalMessage } from "../../../../utils/algaehApiCall";
+// import {
+//   AlgaehSecurityComponent,
+//   // Modal,
+//   // AlgaehButton,
+//   // MainContext,
+// } from "algaeh-react-components";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 import {
@@ -33,9 +41,13 @@ import {
   discounthandle,
   AssignData,
 } from "./DNItemListEvents";
+import { getDocuments } from "../DeliveryNoteEntryEvent";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import extend from "extend";
+import { Upload, Modal } from "antd";
 import { Input, Popover } from "algaeh-react-components";
+const { Dragger } = Upload;
+const { confirm } = Modal;
 class DNItemList extends Component {
   constructor(props) {
     super(props);
@@ -121,7 +133,93 @@ class DNItemList extends Component {
       expiry_date: null,
     });
   }
+  saveDocument = (files = [], number, id) => {
+    if (this.state.delivery_note_number) {
+      const formData = new FormData();
+      formData.append("grn_number", number || this.state.delivery_note_number);
+      formData.append(
+        "hims_f_procurement_grn_header_id",
+        id || this.state.hims_f_procurement_dn_header_id
+      );
+      if (files.length) {
+        files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      } else {
+        this.state.delivery_files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      }
+      newAlgaehApi({
+        uri: "/saveReceiptEntryDoc",
+        data: formData,
+        extraHeaders: { "Content-Type": "multipart/form-data" },
+        method: "POST",
+        module: "documentManagement",
+      })
+        .then((value) => getDocuments(this))
+        .catch((e) => console.log(e));
+    } else {
+      swalMessage({
+        title: "Can't upload attachments for unsaved sales Invoice",
+        type: "error",
+      });
+    }
+  };
+  downloadDoc(doc, isPreview) {
+    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    const link = document.createElement("a");
+    if (!isPreview) {
+      link.download = doc.filename;
+      link.href = fileUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      fetch(fileUrl)
+        .then((res) => res.blob())
+        .then((fblob) => {
+          const newUrl = URL.createObjectURL(fblob);
+          window.open(newUrl);
+        });
+    }
+  }
 
+  deleteDoc = (doc) => {
+    const self = this;
+    confirm({
+      title: `Are you sure you want to delete this file?`,
+      content: `${doc.filename}`,
+      icon: "",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        self.onDelete(doc);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  onDelete = (doc) => {
+    newAlgaehApi({
+      uri: "/deleteReceiptEntryDoc",
+      method: "DELETE",
+      module: "documentManagement",
+      data: { id: doc._id },
+    }).then((res) => {
+      if (res.data.success) {
+        this.setState((state) => {
+          const delivery_docs = state.delivery_docs.filter(
+            (item) => item._id !== doc._id
+          );
+          return { delivery_docs };
+        });
+      }
+    });
+  };
   render() {
     let item_name =
       this.state.item_details === null
@@ -1170,6 +1268,132 @@ class DNItemList extends Component {
                                 </div>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                        <div className="col">
+                          <div className="row">
+                            <div
+                              className="portlet portlet-bordered"
+                              style={{ marginBottom: 60 }}
+                            >
+                              <div className="portlet-title">
+                                <div className="caption">
+                                  <h3 className="caption-subject">
+                                    Attachments
+                                  </h3>
+                                </div>
+                              </div>
+                              <div className="portlet-body">
+                                <div className="row">
+                                  <div className="col-3">
+                                    {" "}
+                                    <Dragger
+                                      disabled={!this.state.saveEnable}
+                                      accept=".doc,.docx,application/msword,.pdf"
+                                      name="delivery_files"
+                                      multiple={false}
+                                      onRemove={() => {
+                                        this.setState((state) => {
+                                          return {
+                                            delivery_files: [],
+                                            docChanged: false,
+                                            // saveEnable: state.dataExists && !newFileList.length,
+                                          };
+                                        });
+                                      }}
+                                      beforeUpload={(file) => {
+                                        this.setState((state) => ({
+                                          delivery_files: [file],
+                                          docChanged: true,
+
+                                          // saveEnable: false,
+                                        }));
+                                        return false;
+                                      }}
+                                      fileList={this.state.delivery_files}
+                                    >
+                                      <p className="upload-drag-icon">
+                                        <i className="fas fa-file-upload"></i>
+                                      </p>
+                                      <p className="ant-upload-text">
+                                        {this.state.delivery_files
+                                          ? `Click or Drag a file to replace the current file`
+                                          : `Click or Drag a file to this area to upload`}
+                                      </p>
+                                    </Dragger>
+                                  </div>
+                                  <div className="col-3"></div>
+                                  <div className="col-6">
+                                    <div className="row">
+                                      <div className="col-12">
+                                        <ul className="receiptEntryAttachment">
+                                          {this.state.delivery_docs?.length ? (
+                                            this.state.delivery_docs.map(
+                                              (doc) => (
+                                                <li>
+                                                  <b> {doc.filename} </b>
+                                                  <span>
+                                                    <i
+                                                      className="fas fa-download"
+                                                      onClick={() =>
+                                                        this.downloadDoc(doc)
+                                                      }
+                                                    ></i>
+                                                    <i
+                                                      className="fas fa-eye"
+                                                      onClick={() =>
+                                                        this.downloadDoc(
+                                                          doc,
+                                                          true
+                                                        )
+                                                      }
+                                                    ></i>
+                                                    {!this.state.postEnable ? (
+                                                      <i
+                                                        className="fas fa-trash"
+                                                        onClick={() =>
+                                                          this.deleteDoc(doc)
+                                                        }
+                                                      ></i>
+                                                    ) : null}
+                                                  </span>
+                                                </li>
+                                              )
+                                            )
+                                          ) : (
+                                            <div
+                                              className="col-12 noAttachment"
+                                              key={1}
+                                            >
+                                              <p>No Attachments Available</p>
+                                            </div>
+                                          )}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {/* <AlgaehSecurityComponent componentCode="SALES_INV_MAIN"> */}
+
+                                  {/* </AlgaehSecurityComponent> */}
+                                </div>
+                              </div>
+                            </div>
+                            {this.state.docChanged &&
+                            this.state.delivery_note_number ? (
+                              <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={this.saveDocument}
+                                disabled={!this.state.docChanged}
+                              >
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Upload Documents",
+                                    returnText: true,
+                                  }}
+                                />
+                              </button>
+                            ) : null}
                           </div>
                         </div>
                       </div>

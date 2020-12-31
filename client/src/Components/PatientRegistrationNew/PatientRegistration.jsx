@@ -215,9 +215,9 @@ export function PatientRegistration() {
     savedPatient,
     clearState,
     setServiceInfo,
-    // cardData,
+    cardData,
   } = useContext(FrontdeskContext);
-  // console.log(cardData, "cardData");
+  console.log(cardData, "cardData");
   const [currentCountry] = countries?.filter(
     (item) => item.hims_d_country_id === userToken?.default_country
   );
@@ -506,7 +506,8 @@ export function PatientRegistration() {
     if (input?.card_amount > 0) {
       receiptdetails.push({
         amount: input.card_amount,
-        card_check_number: input.card_number || null,
+        card_check_number: cardData.card_number || null,
+        bank_card_id: cardData.hims_d_bank_card_id,
         card_type: null,
         expiry_date:
           moment(input.card_date).format("YYYY-MM-DD hh:mm:ss") || null,

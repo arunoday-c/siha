@@ -8,6 +8,7 @@ import DNEntry from "../../../Models/DNEntry";
 import Enumerable from "linq";
 // import extend from "extend";
 import _ from "lodash";
+import { newAlgaehApi } from "../../../hooks";
 
 let texthandlerInterval = null;
 
@@ -39,6 +40,39 @@ const loctexthandle = ($this, e) => {
       ReqData: false,
     });
   }
+};
+const getDocuments = ($this) => {
+  newAlgaehApi({
+    uri: "/getReceiptEntryDoc",
+    module: "documentManagement",
+    method: "GET",
+    data: {
+      grn_number: $this.state.delivery_note_number,
+    },
+  })
+    .then((res) => {
+      if (res.data.success) {
+        let { data } = res.data;
+        $this.setState(
+          {
+            delivery_docs: data,
+            delivery_files: [],
+            saveEnable: $this.state.saveEnable,
+            docChanged: false,
+          },
+          () => {
+            AlgaehLoader({ show: false });
+          }
+        );
+      }
+    })
+    .catch((e) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: e.message,
+        type: "error",
+      });
+    });
 };
 
 const vendortexthandle = ($this, e) => {
@@ -442,7 +476,7 @@ const SaveDNEnrty = ($this) => {
       .value();
 
     for (var k = 0; k < item_grp.length; k++) {
-      const item_id = parseInt(item_grp[k])
+      const item_id = parseInt(item_grp[k]);
       const pharmacy_stock_detail = _.filter(
         InputObj.pharmacy_stock_detail,
         (f) => {
@@ -475,7 +509,7 @@ const SaveDNEnrty = ($this) => {
       .value();
 
     for (var l = 0; l < item_grp.length; l++) {
-      const item_id = parseInt(item_grp[l])
+      const item_id = parseInt(item_grp[l]);
       const inventory_stock_detail = _.filter(
         InputObj.inventory_stock_detail,
         (f) => {
@@ -638,6 +672,7 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.printBarcode = false;
           $this.setState(data, () => {
             getData($this);
+            getDocuments($this);
           });
           AlgaehLoader({ show: false });
         }
@@ -655,7 +690,6 @@ const getCtrlCode = ($this, docNumber, row) => {
 
 const getDrilDownData = ($this, transaction_id) => {
   AlgaehLoader({ show: true });
-
 
   algaehApiCall({
     uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
@@ -790,7 +824,7 @@ const getData = ($this) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "dnitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -870,11 +904,12 @@ export {
   PurchaseOrderSearch,
   vendortexthandle,
   ClearData,
+  getDocuments,
   SaveDNEnrty,
   getCtrlCode,
   loctexthandle,
   getPurchaseDetails,
   generateDeliveryNoteReceipt,
   printBulkBarcode,
-  getDrilDownData
+  getDrilDownData,
 };

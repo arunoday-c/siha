@@ -185,7 +185,7 @@ class AnalytesRange extends PureComponent {
           <div className="popupInner">
             <div className="col-12">
               <div className="row">
-                <div className="col-5">
+                <div className="col-4">
                   {/* Range Input */}
                   <div className="row">
                     <div className="col margin-top-15">
@@ -203,7 +203,7 @@ class AnalytesRange extends PureComponent {
                     analyteType={active.analyte_type}
                   />
                 </div>
-                <div className="col-7" id="analyteRangeGridCntr">
+                <div className="col-8" id="analyteRangeGridCntr">
                   {" "}
                   <AlgaehDataGrid
                     id="analyteRangeGrid"
@@ -548,7 +548,7 @@ class AnalytesRange extends PureComponent {
                         label: <AlgaehLabel label={{ forceLabel: "Text" }} />,
                         displayTemplate: (row) => {
                           return (
-                            <ul>
+                            <ul className="analyteTxtUL">
                               {row.text_value_data.length > 0
                                 ? row.text_value_data.map((row) => {
                                     return <li>{row}</li>;
@@ -564,21 +564,11 @@ class AnalytesRange extends PureComponent {
                               name="text_value"
                               onChange={(e) => this.handleChange(row, e)}
                             />
-                            // <AlagehFormGroup
-                            //   div={{}}
-                            //   textBox={{
-                            //     value: row.text_value,
-                            //     className: "txt-fld",
-                            //     name: "text_value",
-                            //     events: {
-                            //       onChange: e => this.handleChange(row, e)
-                            //     }
-                            //   }}
-                            // />
                           );
                         },
                         others: {
                           show: isText,
+                          minWidth: 200,
                         },
                       },
                       {

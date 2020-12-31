@@ -25,7 +25,7 @@ class SickLeave extends Component {
       to_date: null,
       no_of_days: 0,
       remarks: "",
-      diagnosis_data:"",
+      diagnosis_data: "",
       reported_sick: false,
       accompanying_patient: false,
       patient_unfit: false,
@@ -41,6 +41,19 @@ class SickLeave extends Component {
     this.getSickLeave();
   }
 
+  componentDidUpdate() {
+    const primaryExists = this.props.patient_diagnosis
+      .filter((f) => f.diagnosis_type === "P")
+      .map((item) => {
+        return item.icd_description;
+      })
+      .join(",");
+    if (primaryExists !== this.state.diagnosis_data) {
+      this.setState({
+        diagnosis_data: primaryExists,
+      });
+    }
+  }
   getSickLeave() {
     algaehApiCall({
       uri: "/doctorsWorkBench/getSickLeave",
@@ -52,6 +65,7 @@ class SickLeave extends Component {
       onSuccess: (response) => {
         let data = response.data.records[0];
         if (response.data.success) {
+          debugger;
           this.setState({
             ...data,
             reported_sick: data.reported_sick === "Y" ? true : false,
@@ -62,6 +76,7 @@ class SickLeave extends Component {
             advice_light_duty: data.advice_light_duty === "Y" ? true : false,
             pat_need_emp_care: data.pat_need_emp_care === "Y" ? true : false,
             disableEdit: response.data.records.length > 0 ? true : false,
+            // diagnosis_data: primaryExists,
           });
         }
       },
@@ -193,7 +208,7 @@ class SickLeave extends Component {
         type: "warning",
       });
       return;
-    }else if (this.state.diagnosis_data.length === 0) {
+    } else if (this.state.diagnosis_data.length === 0) {
       swalMessage({
         title: "Diagnosis cannot be blank",
         type: "warning",
@@ -231,7 +246,7 @@ class SickLeave extends Component {
         type: "warning",
       });
       return;
-    }else if (this.state.diagnosis_data.length === 0) {
+    } else if (this.state.diagnosis_data.length === 0) {
       swalMessage({
         title: "Diagnosis cannot be blank",
         type: "warning",
@@ -461,7 +476,6 @@ class SickLeave extends Component {
                 </div>
                 <div className="row">
                   {" "}
-                  
                   <div className="col-12 form-group  mandatory">
                     <AlgaehLabel
                       label={{

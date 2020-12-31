@@ -1,7 +1,7 @@
 
 {{{importStyle 'css/ucaf.css'}}}
 <body class="print-body">
-    <h1 style="text-align: center;font-size:30px;"><b>UCAF 2.0</b></h1>
+    <h1 style="text-align: center;font-size:30px; margin-bottom:5px;"><b>UCAF 2.0</b></h1>
     <section class="outerCntr">
         <section class="topSection">
             <section class="borderBox topSectionLeft">
@@ -98,7 +98,7 @@
                                         <span>&#10004;</span>
                                         {{/if}}
                                         )</span> | 
-                        <span style="border-radius: 10px; border:1px solid #000;display:inline-block; text-align:right; float:right; padding:1px 5px;">
+                        <span style="border-radius: 10px; border:1px solid #000;display:inline-block; text-align:right; float:right; padding:0 5px;">
                             <span>Emergency Case ( {{#if header.patient_emergency_case null}}<span></span>
                                         {{else}}
                                         <span>&#10004;</span>
@@ -157,7 +157,7 @@
             </table>
             <hr/>
             <h4>Please tick (&#10004;) where appropriate:</h4>
-            <table>
+            <table style="margin:0">
                 <tbody>
                     <tr>
                         <td colspan="2">
@@ -195,19 +195,19 @@
                             <td class="txtFld">{{service_name}}</td>
                             <td style="width: 100px;">{{service_type}}</td>
                             <td class="numberFld"  style="width: 80px;">{{service_quantity}}</td>
-                            <td class="numberFld" style="width: 80px;">{{numberFormating sum_service_net_amout currencyOnly}}</td>
+                            <td class="numberFld" style="width: 80px;">{{service_net_amout}}</td>
                         </tr>
                     {{/each}}
                      <tr>
                             <td colspan="4" class="numberFld"><b>Total</b></td>
-                            <td class="numberFld numberFldTotal" style="width: 80px;">{{sum_service_net_amout}}</td>
+                            <td class="numberFld numberFldTotal" style="width: 80px;">{{numberFormating sum_service_net_amout currencyOnly}}</td>
                         </tr>
                     </tbody>
                 </table>
             </section>
               <section class=" secondSectionBottom">
-                <p style="line-height: 20px; page-break-after: auto;">Providers Approval/Coding Staff must review/code the recommended service(s) and allocate cost and complete the following:</p>
-                <p style="margin-top:20px">
+                <p style="line-height: 10px; page-break-after: auto;">Providers Approval/Coding Staff must review/code the recommended service(s) and allocate cost and complete the following:</p>
+                <p style="margin-top:5px">
                     <span>Completed/Coded By: <span>.......................................................................................</span></span>
                     <span>Signature: <span>.........................................................</span></span>
                     <span>Date: <span>......./......./.......</span></span>
@@ -230,7 +230,7 @@
                     {{/each}}
                     </tbody>
                 </table>
-                  <p style="margin-top:20px">
+                  <p style="margin-top:5px">
                     <span>In Case management form (CMF 1.0): <b>Yes (......)</b>    <b>No (......)</b></span>
                     {{!-- {{updated_date}} --}}
                 </p>
@@ -249,14 +249,14 @@
 
         <section class="borderBox footerSection">
          <section class="footerSectionLeft">
-             <p style="line-height: 20px;">I hereby certify that ALL information mentioned are correct and that the medical services shown on this form were medically indicated and necessary for the management of this case.</p>
-           <p style="margin-top:20px; text-align:center;">
+             <p style="line-height: 12px;">I hereby certify that All information mentioned are correct and that the medical services shown on this form were medically indicated and necessary for the management of this case.</p>
+           <p style="margin-top:10px; text-align:center;">
                     <span style="width: 80px;display:inline-block;">Physician</span>
                     <span style="width: 80px;display:inline-block;">Signature</span>
                     <span style="width: 80px;display:inline-block;">Stamp</span>
                     <span style="width: 80px;display:inline-block;">Date</span>
             </p>
-            <p style="margin-top:20px; text-align:center;">
+            <p style="margin-top:10px; text-align:center;">
                     <span style="width: 80px;display:inline-block;">{{header.provider_name}}</span>
                     <span style="width: 80px;display:inline-block;">.........</span>
                     <span style="width: 80px;display:inline-block;">.........</span>
@@ -264,14 +264,14 @@
             </p>
          </section>
          <section class="footerSectionRight">
-               <p style="line-height: 20px;">I hereby certify that ALL statements and information provided
+               <p style="line-height: 12px;">I hereby certify that All statements and information provided
 concerning patient identifcation and the present illness or injury
 are TRUE.</p>
-           <p style="margin-top:20px; text-align:center;">
+           <p style="margin-top:10px; text-align:center;">
                     <span >Name and relationship (if guardian): </span>
                    <span>................................................</span>
             </p>
-            <p style="margin-top:20px; text-align:center;">
+            <p style="margin-top:10px; text-align:center;">
                     <span>Signature: <span>.....................................................</span></span>
 
                     <span>Date: <span>......./......./.......</span></span>

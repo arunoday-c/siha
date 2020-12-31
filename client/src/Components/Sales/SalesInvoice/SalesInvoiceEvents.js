@@ -1,8 +1,5 @@
 /* eslint-disable no-multi-str */
-import {
-  swalMessage,
-  algaehApiCall
-} from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -10,6 +7,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import SalesInvoiceIO from "../../../Models/SalesInvoice";
 import _ from "lodash";
 import moment from "moment";
+import { newAlgaehApi } from "../../../hooks";
 
 const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -50,7 +48,39 @@ const ClearData = ($this) => {
   let IOputs = SalesInvoiceIO.inputParam();
   $this.setState(IOputs);
 };
-
+const getDocuments = ($this) => {
+  newAlgaehApi({
+    uri: "/getReceiptEntryDoc",
+    module: "documentManagement",
+    method: "GET",
+    data: {
+      grn_number: $this.state.invoice_number,
+    },
+  })
+    .then((res) => {
+      if (res.data.success) {
+        let { data } = res.data;
+        $this.setState(
+          {
+            invoice_docs: data,
+            sales_invoice_files: [],
+            saveEnable: $this.state.saveEnable,
+            docChanged: false,
+          },
+          () => {
+            AlgaehLoader({ show: false });
+          }
+        );
+      }
+    })
+    .catch((e) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: e.message,
+        type: "error",
+      });
+    });
+};
 const SaveInvoiceEnrty = ($this) => {
   AlgaehLoader({ show: true });
   if ($this.state.invoice_date === null) {
@@ -67,7 +97,7 @@ const SaveInvoiceEnrty = ($this) => {
     data: $this.state,
     onSuccess: (response) => {
       if (response.data.success) {
-        getCtrlCode($this, response.data.records.invoice_number)
+        getCtrlCode($this, response.data.records.invoice_number);
         // $this.setState({
         //   invoice_number: response.data.records.invoice_number,
         //   hims_f_sales_invoice_header_id:
@@ -106,11 +136,10 @@ const getCtrlCode = ($this, docNumber) => {
       onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
-          debugger
+
           data.saveEnable = true;
           data.dataExitst = true;
           data.dateEditable = true;
-
 
           if (data.is_cancelled === "Y") {
             data.postEnable = true;
@@ -125,7 +154,7 @@ const getCtrlCode = ($this, docNumber) => {
               data.postEnable = false;
               data.dataRevert = false;
               data.cancelEnable = false;
-              data.dateEditable = false
+              data.dateEditable = false;
             }
           }
 
@@ -135,7 +164,9 @@ const getCtrlCode = ($this, docNumber) => {
             data.invoice_entry_detail_services = data.invoice_detail;
           }
 
-          $this.setState(data);
+          $this.setState(data, () => {
+            getDocuments($this);
+          });
           AlgaehLoader({ show: false });
 
           // $this.setState({ ...response.data.records });
@@ -198,7 +229,9 @@ const PostSalesInvoice = ($this) => {
     .add($this.state.payment_terms, "days")
     .format("YYYY-MM-DD");
 
-  Inputobj.invoice_date = moment(Inputobj.invoice_date).format("YYYY-MM-DD HH:mm:ss");
+  Inputobj.invoice_date = moment(Inputobj.invoice_date).format(
+    "YYYY-MM-DD HH:mm:ss"
+  );
   algaehApiCall({
     uri: "/SalesInvoice/postSalesInvoice",
     module: "sales",
@@ -206,7 +239,7 @@ const PostSalesInvoice = ($this) => {
     method: "PUT",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        getCtrlCode($this, $this.state.invoice_number)
+        getCtrlCode($this, $this.state.invoice_number);
         swalMessage({
           title: "Posted successfully . .",
           type: "success",
@@ -218,8 +251,9 @@ const PostSalesInvoice = ($this) => {
 };
 
 const SalesOrderSearch = ($this, e) => {
-
-  const invoice_date = moment($this.state.invoice_date, "YYYY-MM-DD").format("YYYY-MM-DD")
+  const invoice_date = moment($this.state.invoice_date, "YYYY-MM-DD").format(
+    "YYYY-MM-DD"
+  );
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Sales.SalesOrder,
@@ -227,7 +261,9 @@ const SalesOrderSearch = ($this, e) => {
     searchName: "SalesOrder",
     uri: "/gloabelSearch/get",
     inputs:
-      " date(sales_order_date) <= date('" + invoice_date + "') and sales_order_mode = '" +
+      " date(sales_order_date) <= date('" +
+      invoice_date +
+      "') and sales_order_mode = '" +
       $this.state.sales_invoice_mode +
       "' and authorize1='Y' \
                 and authorize2='Y' and closed='N' and cancelled='N'",
@@ -324,7 +360,7 @@ const RevertSalesInvoice = ($this) => {
       type: "warning",
       title: "Revert reason is Mandatory",
     });
-    return
+    return;
   }
   swal({
     title: "Are you sure you want to Revert ?",
@@ -342,14 +378,15 @@ const RevertSalesInvoice = ($this) => {
         module: "sales",
         method: "PUT",
         data: {
-          hims_f_sales_invoice_header_id: $this.state.hims_f_sales_invoice_header_id,
+          hims_f_sales_invoice_header_id:
+            $this.state.hims_f_sales_invoice_header_id,
           sales_order_id: $this.state.sales_order_id,
           revert_reason: $this.state.revert_reason,
-          sales_invoice_mode: $this.state.sales_invoice_mode
+          sales_invoice_mode: $this.state.sales_invoice_mode,
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            getCtrlCode($this, $this.state.invoice_number)
+            getCtrlCode($this, $this.state.invoice_number);
             swalMessage({
               type: "success",
               title: "Reverted successfully ...",
@@ -366,18 +403,18 @@ const RevertSalesInvoice = ($this) => {
       });
     }
   });
+};
 
-}
-
-const SaveNarration = $this => {
+const SaveNarration = ($this) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/SalesSettings/SaveNarration",
     module: "sales",
     method: "PUT",
     data: {
-      hims_f_sales_invoice_header_id: $this.state.hims_f_sales_invoice_header_id,
-      narration: $this.state.narration
+      hims_f_sales_invoice_header_id:
+        $this.state.hims_f_sales_invoice_header_id,
+      narration: $this.state.narration,
     },
     onSuccess: (response) => {
       if (response.data.success) {
@@ -395,15 +432,15 @@ const SaveNarration = $this => {
       }
     },
   });
-}
+};
 
-const CancelSalesInvoice = $this => {
+const CancelSalesInvoice = ($this) => {
   if ($this.state.cancel_reason === null || $this.state.cancel_reason === "") {
     swalMessage({
       type: "warning",
       title: "Cancellation reason is Mandatory",
     });
-    return
+    return;
   }
   swal({
     title: "Are you sure you want to Cancel ?",
@@ -421,15 +458,16 @@ const CancelSalesInvoice = $this => {
         module: "sales",
         method: "PUT",
         data: {
-          hims_f_sales_invoice_header_id: $this.state.hims_f_sales_invoice_header_id,
+          hims_f_sales_invoice_header_id:
+            $this.state.hims_f_sales_invoice_header_id,
           sales_order_id: $this.state.sales_order_id,
           sales_invoice_mode: $this.state.sales_invoice_mode,
           cancel_reason: $this.state.cancel_reason,
-          invoice_entry_detail_item: $this.state.invoice_entry_detail_item
+          invoice_entry_detail_item: $this.state.invoice_entry_detail_item,
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            getCtrlCode($this, $this.state.invoice_number)
+            getCtrlCode($this, $this.state.invoice_number);
             swalMessage({
               type: "success",
               title: "Cancelled successfully ...",
@@ -446,14 +484,12 @@ const CancelSalesInvoice = $this => {
       });
     }
   });
-
-}
+};
 
 const datehandle = ($this, ctrl, e) => {
-  debugger
-  let date = moment(ctrl)
+  let date = moment(ctrl);
   $this.setState({
-    [e]: date
+    [e]: date,
   });
 };
 
@@ -472,13 +508,13 @@ const dateValidate = ($this, value, event) => {
       });
     }
   }
-
 };
 
 export {
   texthandle,
   ClearData,
   SaveInvoiceEnrty,
+  getDocuments,
   getCtrlCode,
   PostSalesInvoice,
   generateSalesInvoiceReport,
@@ -487,5 +523,5 @@ export {
   CancelSalesInvoice,
   SaveNarration,
   datehandle,
-  dateValidate
+  dateValidate,
 };
