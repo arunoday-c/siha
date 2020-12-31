@@ -138,7 +138,7 @@ export default function SmartTable({
 
         @page {
           size: auto;
-          margin: 10mm;
+          margin: 5mm;
         }"
     />
   );
