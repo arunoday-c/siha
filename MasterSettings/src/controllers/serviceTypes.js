@@ -12,6 +12,7 @@ const {
   getProcedures,
   updateProcedures,
   updateServicesOthrs,
+  applyItemProcedure,
   releaseDB,
 } = serviceModels;
 
@@ -93,6 +94,18 @@ export default () => {
     "/updateProcedures",
     updateServicesOthrs,
     updateProcedures,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
+  api.post(
+    "/applyItemProcedure",
+    applyItemProcedure,
     (req, res, next) => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
