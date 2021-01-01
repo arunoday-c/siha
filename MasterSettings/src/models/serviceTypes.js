@@ -678,11 +678,9 @@ export default {
             PH.service_id as header_service_id,S.service_code as header_service_code,\
             S.service_name as header_service_name, S.vat_percent, S.vat_applicable, \
             hims_d_procedure_detail_id, procedure_header_id, item_id,\
-            qty,PD.service_id,SR.service_code as detail_service_code,\
+            ROUND(qty,0) as qty,PD.service_id,SR.service_code as detail_service_code,\
             SR.service_name as detail_service_name, S.standard_fee as procedure_amount from hims_d_procedure PH \
             inner join hims_d_services S on PH.service_id=S.hims_d_services_id \
-            left join hims_d_procedure_detail PD on PH.hims_d_procedure_id=PD.procedure_header_id\
-            left join hims_d_services SR on PD.service_id=SR.hims_d_services_id\
             where PH.record_status='A' " +
             strQry +
             " order by hims_d_procedure_id desc;",
@@ -703,19 +701,104 @@ export default {
     }
   },
 
+  getProceduresNew: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    try {
+      let strQry = "";
+
+      if (input.hims_d_procedure_id > 0) {
+        strQry += ` and  hims_d_procedure_id=${input.hims_d_procedure_id}`;
+      } else if (input.service_id > 0) {
+        strQry += ` and PH.service_id=${input.service_id} `;
+      }
+      // hims_d_procedure_detail_id, procedure_header_id, item_id,\
+      //       ROUND(qty,0) as qty,PD.service_id, SR.service_code as detail_service_code,\
+      // SR.service_name as detail_service_name,
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_procedure_id,procedure_code,procedure_desc,procedure_desc_arabic,procedure_status,PH.procedure_type,\
+            PH.service_id as header_service_id,S.service_code as header_service_code,\
+            S.service_name as header_service_name, S.vat_percent, S.vat_applicable, \
+            S.standard_fee as procedure_amount from hims_d_procedure PH \
+            inner join hims_d_services S on PH.service_id=S.hims_d_services_id \
+            where PH.record_status='A' " +
+            strQry +
+            " order by hims_d_procedure_id desc;",
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getProceduresDetail: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    console.log("input", input)
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_procedure_detail_id, procedure_header_id, item_id,\
+            ROUND(qty,0) as qty,PD.service_id, SR.service_code as detail_service_code,\
+            SR.service_name as detail_service_name from hims_d_procedure_detail PD \
+            inner join hims_d_services SR on PD.service_id=SR.hims_d_services_id \
+            where procedure_header_id=? ",
+          values: [input.procedure_header_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   updateProcedures: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
       let input = req.body;
 
-      console.log("input", input)
+      const ProcedureDetail = input.ProcedureDetail.filter(f => f.hims_d_procedure_detail_id != undefined)
+
+      console.log("ProcedureDetail", ProcedureDetail)
+      let strDetailUpdate = ""
+      if (ProcedureDetail.length > 0) {
+        for (let j = 0; j < ProcedureDetail.length; j++) {
+          strDetailUpdate += mysql.format(
+            "UPDATE `hims_d_procedure_detail` SET qty=? where hims_d_procedure_detail_id=?;",
+            [ProcedureDetail[j].qty, ProcedureDetail[j].hims_d_procedure_detail_id]
+          );
+        }
+      }
       _mysql
         .executeQueryWithTransaction({
           query:
             "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `procedure_desc_arabic`=?,\
           `procedure_type`=?,`updated_date`=?, `updated_by`=? \
-          WHERE record_status='A' and `hims_d_procedure_id`=?",
+          WHERE record_status='A' and `hims_d_procedure_id`=?; " + strDetailUpdate,
           values: [
             input.procedure_code,
             input.procedure_desc,
@@ -728,6 +811,7 @@ export default {
           printQuery: true,
         })
         .then((headerResult) => {
+
           if (headerResult != null) {
             new Promise((resolve, reject) => {
               try {

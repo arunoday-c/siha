@@ -13,6 +13,8 @@ const {
   updateProcedures,
   updateServicesOthrs,
   applyItemProcedure,
+  getProceduresDetail,
+  getProceduresNew,
   releaseDB,
 } = serviceModels;
 
@@ -82,6 +84,24 @@ export default () => {
   });
 
   api.get("/getProcedures", getProcedures, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+
+  api.get("/getProceduresNew", getProceduresNew, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+
+  api.get("/getProceduresDetail", getProceduresDetail, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,

@@ -80,7 +80,6 @@ class Procedures extends PureComponent {
     // }
 
     UNSAFE_componentWillReceiveProps(newProps) {
-        debugger
         if (newProps.all_procedures.length > 0) {
             // let IOputs = newProps.all_procedures;
             this.setState({ all_procedures: newProps.all_procedures });
@@ -111,7 +110,6 @@ class Procedures extends PureComponent {
         ProceduresEvent().texthandle(this, e);
     }
     selectToPay(row, e) {
-        debugger
         ProceduresEvent().selectToPay(this, row, e)
     }
     ApplyProcedures(e) {
