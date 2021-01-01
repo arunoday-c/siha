@@ -5,7 +5,7 @@ import {
   AlgaehButton,
   // Checkbox,
 } from "algaeh-react-components";
-// import moment from "moment";
+import moment from "moment";
 import details from "./data";
 export default memo(function (props) {
   const { filters, callBack, triggerUpdate } = props;
@@ -166,7 +166,9 @@ export default memo(function (props) {
                         forceLabel: name,
                         isImp: isImp === undefined ? false : isImp,
                       }}
-                      maxDate={maxDate}
+                      maxDate={
+                        maxDate ? moment(maxDate).add(1, "day") : maxDate
+                      }
                       minDate={minDate}
                       {...dtype}
                       textBox={{
