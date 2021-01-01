@@ -5,6 +5,7 @@ import algaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
+import extend from "extend";
 
 export default function ProceduresEvent() {
   return {
@@ -132,7 +133,6 @@ export default function ProceduresEvent() {
       AlgaehValidation({
         alertTypeIcon: "warning",
         onSuccess: () => {
-
           $this.state.service_code = $this.state.procedure_code;
           $this.state.service_type_id = "2";
           $this.state.service_name = $this.state.procedure_desc;
@@ -297,7 +297,6 @@ export default function ProceduresEvent() {
       });
     },
     ApplyProcedures: ($this) => {
-      debugger
       let _allProcedure = $this.state.all_procedures
 
       let listOfinclude = Enumerable.from(_allProcedure)
@@ -341,6 +340,20 @@ export default function ProceduresEvent() {
         },
       });
 
+    },
+    gridtexthandel: ($this, row, e) => {
+      const name = e.name || e.target.name;
+      const value = e.value || e.target.value;
+      let ProcedureDetail = extend([], $this.state.ProcedureDetail)
+      let _index = ProcedureDetail.indexOf(row);
+
+      row[name] = value;
+      ProcedureDetail[_index] = row;
+
+
+      $this.setState({
+        ProcedureDetail: ProcedureDetail
+      });
     }
   };
 }

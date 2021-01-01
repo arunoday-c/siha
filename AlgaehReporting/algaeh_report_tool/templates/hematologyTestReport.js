@@ -13,7 +13,7 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-      console.log(params);
+      // console.log(params);
 
       options.mysql
         .executeQuery({
@@ -63,7 +63,7 @@ const executePDF = function executePDFMethod(options) {
             ...options.result[1][0],
             ..._.head(res[1]),
           };
-          console.log("header---", header);
+          // console.log("header---", header);
           const result = res[1];
 
           if (result.length > 0) {
@@ -104,7 +104,7 @@ const executePDF = function executePDFMethod(options) {
               // no_employees: result.length,
               result: outputArray,
             });
-            console.log(result);
+            // console.log(result);
           } else {
             resolve({
               header: header,

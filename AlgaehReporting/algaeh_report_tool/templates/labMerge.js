@@ -29,11 +29,15 @@ const executePDF = function executePDFMethod(options) {
              LM.analyte_report_group,
              MS.description as investigation_name,LA.description as analyte_name,
              LO.ordered_date,LO.entered_date,LO.validated_date, 
-             LO.critical_status,LO.comments,OA.result,OA.result_unit,TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)) as normal_low,
+             LO.critical_status,LO.comments,OA.result,OA.result_unit,
+             CASE WHEN OA.result_unit = 'NULL'  THEN '--' WHEN OA.result_unit IS NULL THEN '--' ELSE OA.result_unit END result_unit,
+             TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)) as normal_low,
              TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_high)) as normal_high,
              OA.critical_low,OA.critical_high,S.service_name,   
              E.full_name as validated_by,OA.critical_type, TC.category_name, OA.text_value, 
-             OA.analyte_type from hims_f_lab_order LO   inner join hims_f_lab_sample LS on LO.hims_f_lab_order_id = LS.order_id    
+             OA.analyte_type,
+             CASE WHEN OA.analyte_type = 'QU' THEN OA.normal_qualitative_value WHEN OA.analyte_type = 'T' THEN OA.text_value ELSE CONCAT(TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)), '-',  TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_high))) END AS analyte_ranges
+             from hims_f_lab_order LO   inner join hims_f_lab_sample LS on LO.hims_f_lab_order_id = LS.order_id    
              inner join hims_f_ord_analytes OA on LO.hims_f_lab_order_id = OA.order_id    
              inner join hims_d_lab_specimen MS on LS.sample_id = MS.hims_d_lab_specimen_id    
              inner join hims_d_lab_analytes LA on OA.analyte_id = LA.hims_d_lab_analytes_id     
@@ -54,11 +58,16 @@ const executePDF = function executePDFMethod(options) {
           let records = _.chain(result[1])
             .groupBy((g) => g.hims_f_lab_order_id)
             .map((details) => {
-              const { investigation_name, service_name } = _.head(details);
+              const {
+                investigation_name,
+                service_name,
+                category_name,
+              } = _.head(details);
               testRequestName += `${service_name},`;
               return {
                 investigation_name,
                 service_name,
+                category_name,
                 details: _.chain(details)
                   .groupBy((gt) => gt.analyte_report_group)
                   .map((dtl, gkey) => {
