@@ -39,30 +39,29 @@
         font-family: Arial, sans-serif;
         font-weight: normal;
     }
-    .reportHeaderAnalyte td {
+    .reportHeaderAnalyte tr td {
         border-top:1px solid #ccc;
         border-bottom:1px solid #ccc;
         padding: 3px 5px;
-        font-size: 8px;
+        font-size: 9px;
+        background-color: red!important;
+        font-weight: bold;
     }
 
 </style>
 
 <body>
-
     <table class="reportHeaderCntr" cellspacing="0" cellpadding="0">
-      
-
-          <tr>
+        <tr>
             <td>
                 <table class="reportHeaderInnerCntr">
                     <tr style="vertical-align: top">
-                        <td style="vertical-align: top" style="height: 60px;">
+                        <td style="vertical-align: top" style="height: 62px;">
                             <p><b>Patient Code</b>: {{patient_code}}</p>
                             <p><b>Patient Name & Age</b>:  {{patient_name}} {{age_in_years}} YRS / {{age_in_months}} MTH / {{age_in_days}} DYS</p>
                             <p><b>Refer By</b>: {{doctor_name}} </p>   <p><b>Test Requested</b>: Mentioned Below </p> <p><b>ID No.</b>: {{primary_id_no}}</p>
                         </td>
-                        <td width="30%" style="vertical-align: top">
+                        <td width="38%" style="vertical-align: top">
                             <p><b>Sample Collected:</b></p>
                             <p>{{organization_name}}</p>
                             <p>{{address1}}</p>
@@ -73,21 +72,18 @@
                 </table>
             </td>
         </tr>
-         <tr>
+        <tr>
             <td>
                 <table class="reportHeaderAnalyte">
-                   <tr style="background-color: lightgray;">
-        <td width="40%" class="txtFld">Analyte</td>
-        <td width="20%" class="numberFld">Result</td>
-        <td width="20%" class="numberFld">Unit</td>
-        <td width="20%" class="numberFld">Reference Range</td></tr>
-    </tr>
+                    <tr>
+                        <td width="32%" class="txtFld">Analyte</td>
+                        <td width="20%" class="numberFld">Result</td>
+                        <td width="3%" class="numberFld"></td>
+                        <td width="15%" class="numberFld">Unit</td>
+                        <td width="30%" class="numberFld">Reference Range</td>
+                    </tr>
                 </table>
             </td>
         </tr>
-
-
     </table>
-    
-
 </body>

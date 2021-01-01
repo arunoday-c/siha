@@ -4,26 +4,44 @@
 {{#each records}}
     <table class="tableForDataNoBorder" cell-padding="0">
         <tbody>
-        <tr class="tableSubHdg2" >
-            <td colspan="4" class="txtFld">
-                <b>{{service_name}}</b> - ({{investigation_name}})
+        <tr class="tableSubHdg2 " >
+            <td colspan="5" class="txtFld">
+                <b>{{service_name}}</b> - ({{category_name}}) <span style="text-align: right; float:right;">{{investigation_name}}</span>
             </td>
            
         </tr>
         {{#each details}}
          {{#if order 1 }}
             <tr style="page-break-after: auto;">
-                <td colspan="4" class="tableSubHdg2 txtFld" style="background-color:rgb(255, 255, 255);"><i>{{analyte_report_group_desc}}</i></td>
+                <td colspan="5" class="tableSubHdg2 txtFld" style="background-color:rgb(255, 255, 255);"><i>{{analyte_report_group_desc}}</i></td>
             </tr>
          {{/if}}
         {{#each groupDetails}}
-       <tr>
+       <tr class="analyteResult">
             {{!-- <td>{{inc @index}}</td> --}}
-            <td width="40%" class="txtFld">{{analyte_name}}</td>
-            <td width="20%" class="numberFld" data-value="{{critical_type}}">{{result}} <sup>{{critical_type}}</sup></td>
-            <td width="20%" class="numberFld">{{#if reference_range_required "Y"}} {{result_unit}} {{else}} -- {{/if}}</td>
-            <td width="20%" class="numberFld">
-                {{#if reference_range_required "Y"}} 
+            <td width="32%" class="txtFld" style="vertical-align: top;">{{analyte_name}}</td>
+            <td width="20%" class="numberFld"  style="vertical-align: top;">{{result}}</td>
+            <td width="3%"  class="txtFld"  style="vertical-align: top;" data-value="{{critical_type}}"><sup>{{critical_type}}</sup></td>
+            <td width="15%" class="numberFld"  style="vertical-align: top;">{{#if reference_range_required "Y"}} {{result_unit}} {{else}} -- {{/if}}</td>
+            <td width="30%" class="numberFld"  style="vertical-align: top;">
+
+ {{#if reference_range_required "Y"}}
+                            {{#if analyte_type "T"}}
+                                <ul class="rangeUl">
+                                {{#each (commentBreakUp text_value commentBreakUp)}}
+                                    <li>{{this}}</li>
+                                {{/each}}
+                                </ul>
+                            {{else}}
+                        {{analyte_ranges }}
+                        {{/if}}
+                        {{else}} -- {{/if}}
+
+
+
+
+
+                {{!-- {{#if reference_range_required "Y"}} 
                     {{#if analyte_type "T"}} 
                         <ul class="rangeUl"> 
                         {{#each (commentBreakUp text_value commentBreakUp)}}
@@ -32,7 +50,7 @@
                         </ul>
                     {{else}}
                     {{normal_low }} - {{normal_high}}{{/if}}
-                {{else}} -- {{/if}}
+                {{else}} -- {{/if}} --}}
             </td>
         </tr>
         {{/each}}
