@@ -1273,11 +1273,13 @@ function getAccountHeadsForReport(
       if (str) {
         qryStr = str;
       }
+      //concat(account_name,' / ',account_code)as
+      //concat(child_name,' / ',ledger_code) as
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,
+          query: `select finance_account_head_id,account_code,account_name,
            account_parent,account_level,          H.created_from as created_status ,sort_order,parent_acc_id,root_id,
-          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id,C.created_from as child_created_from,
+          finance_account_child_id, child_name,head_id,C.created_from as child_created_from,
           coalesce(H.arabic_account_name,'') as arabic_account_name,
           coalesce(C.arabic_child_name,'') as arabic_child_name
           from finance_account_head H left join 
@@ -1646,7 +1648,7 @@ function createHierarchy(
         }
 
         //END---calulating Amount
-
+        console.log("item=============", item);
         target.push({
           ...item,
           trans_symbol: trans_symbol,
@@ -2088,11 +2090,12 @@ function getAccountHeadsForProfitAndLoss(
       if (finance_account_head_id == 5) {
         trans_symbol = "Dr.";
       }
-
+      //concat(account_name,' / ',account_code)as
+      //concat(child_name,' / ',ledger_code) as
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,account_parent,account_level,
-          sort_order,parent_acc_id,root_id,          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id
+          query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+          sort_order,parent_acc_id,root_id,          finance_account_child_id,child_name,head_id,ledger_code
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id 
            where root_id=? order by account_level,sort_order;  
@@ -2327,7 +2330,7 @@ function buildHierarchyForProfitAndLoss(
           finance_account_child_id: item["finance_account_child_id"],
           trans_symbol: trans_symbol,
           ...subtitleObj,
-
+          ledger_code: item.ledger_code,
           label: item.child_name,
           head_id: item["head_id"],
 
@@ -2367,7 +2370,7 @@ function buildHierarchyForProfitAndLoss(
             ...item,
             trans_symbol: trans_symbol,
             ...subtitleObj,
-
+            ledger_code: item.account_code,
             label: item.account_name,
 
             leafnode: "N",
@@ -2403,7 +2406,7 @@ function buildHierarchyForProfitAndLoss(
           ...subtitleObj,
 
           label: item.account_name,
-
+          ledger_code: item.account_code,
           leafnode: "N",
         });
       }
@@ -2453,11 +2456,12 @@ function getLedgersForProfitAndLossMonthWise(
       if (finance_account_head_id == 5) {
         trans_symbol = "Dr.";
       }
-
+      //concat(account_name,' / ',account_code)as
+      //concat(child_name,' / ',ledger_code) as
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,account_parent,account_level,
-          sort_order,parent_acc_id,root_id,          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id
+          query: `select finance_account_head_id,account_code, account_name,account_parent,account_level,
+          sort_order,parent_acc_id,root_id,          finance_account_child_id, child_name,head_id,ledger_code
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id 
            where root_id=? order by account_level,sort_order;  
@@ -2579,11 +2583,13 @@ function getTrialBalanceFunc(
       const nonZeroQuery = non_zero
         ? " and (debit_amount !=0 or credit_amount !=0) "
         : "";
+      //concat(account_name,' / ',account_code)
+      //concat(child_name,' / ',coalesce(ledger_code,'')) as
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,
+          query: `select finance_account_head_id,account_code, account_name,
            account_parent,account_level, parent_acc_id,root_id,
-          finance_account_child_id,concat(child_name,' / ',coalesce(ledger_code,'')) as child_name,head_id, 
+          finance_account_child_id, child_name,head_id, 
           coalesce(H.arabic_account_name,'') as arabic_account_name, coalesce(C.arabic_child_name,'') as arabic_child_name,
           H.group_code as header_ledger_code,C.ledger_code as child_ledger_code
           from finance_account_head H left join finance_account_child C on C.head_id=H.finance_account_head_id ${str} where root_id=?  ; 
@@ -3078,14 +3084,16 @@ function createHierarchyTransactionTB(
                 title: item.account_name,
                 label: item.account_name,
                 arabic_name: item.arabic_account_name,
-                ledger_code: item.header_ledger_code,
+                // ledger_code: item.header_ledger_code,
+                ledger_code: item.account_code,
                 leafnode: "N",
               });
             }
           } else {
             target.push({
               ...item,
-              ledger_code: item.header_ledger_code,
+              ledger_code: item.account_code,
+              // ledger_code: item.header_ledger_code,
               tr_debit_amount: tr_debit_amount,
               tr_credit_amount: tr_credit_amount,
               cb_amount: cb_amount,
@@ -3212,6 +3220,7 @@ function createHierarchyTransactionTB(
           tr_debit_amount = TR_BALANCE.total_debit_amount;
           tr_credit_amount = TR_BALANCE.total_credit_amount;
         }
+
         ///END calculating transaction amount between  from_date  and to_date-----
         if (nonZeroQuery === "Y") {
           if (
@@ -3222,7 +3231,8 @@ function createHierarchyTransactionTB(
           ) {
             target.push({
               ...item,
-              ledger_code: item.header_ledger_code,
+              //  ledger_code: item.header_ledger_code,
+              ledger_code: item.account_code,
               tr_debit_amount: tr_debit_amount,
               tr_credit_amount: tr_credit_amount,
               cb_amount: cb_amount,
@@ -3237,7 +3247,8 @@ function createHierarchyTransactionTB(
         } else {
           target.push({
             ...item,
-            ledger_code: item.header_ledger_code,
+            // ledger_code: item.header_ledger_code,
+            ledger_code: item.account_code,
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
             cb_amount: cb_amount,

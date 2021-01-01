@@ -815,7 +815,7 @@ export default {
               //  console.log("INCOME QRY FINISH SUCsESS");
               data["qry"] = direct_expense_qry;
               data["trans_symbol"] = "Dr";
-              console.log("incomeOutputArray", incomeOutputArray);
+
               const incomeResult = incomeOutputArray["outputArray"];
               const maxLevel =
                 incomeOutputArray["max_level"][0]["account_level"];
@@ -1287,7 +1287,7 @@ function buildHierarchy(
               arabic_name: item.arabic_child_name,
               label: item.child_name,
               head_id: item["head_id"],
-
+              ledger_code: item.ledger_code,
               leafnode: "Y",
             });
           }
@@ -1299,7 +1299,7 @@ function buildHierarchy(
             arabic_name: item.arabic_child_name,
             label: item.child_name,
             head_id: item["head_id"],
-
+            ledger_code: item.ledger_code,
             leafnode: "Y",
           });
         }
@@ -1343,26 +1343,28 @@ function buildHierarchy(
             });
             let notPush = nonExistingArray.length === ObjProceeding.length;
             if (!notPush) {
-              const { arabic_account_name, group_code, ...others } = item;
+              //group_code
+              const { arabic_account_name, account_code, ...others } = item;
               target.push({
                 ...others,
                 trans_symbol: trans_symbol,
                 ...columns_wise_amounts,
                 arabic_name: arabic_account_name,
                 label: item.account_name,
-                ledger_code: group_code,
+                ledger_code: account_code,
                 leafnode: "N",
               });
             }
           } else {
-            const { arabic_account_name, group_code, ...others } = item;
+            //group_code
+            const { arabic_account_name, account_code, ...others } = item;
             target.push({
               ...others,
               trans_symbol: trans_symbol,
               ...columns_wise_amounts,
               arabic_name: arabic_account_name,
               label: item.account_name,
-              ledger_code: group_code,
+              ledger_code: account_code,
               leafnode: "N",
             });
           }
@@ -1401,24 +1403,24 @@ function buildHierarchy(
           });
           let notPush = nonExistingArray.length === ObjProceeding.length;
           if (!notPush) {
-            const { arabic_account_name, group_code, ...others } = item;
+            const { arabic_account_name, account_code, ...others } = item;
             target.push({
               ...others,
               trans_symbol: trans_symbol,
               ...columns_wise_amounts,
-              ledger_code: group_code,
+              ledger_code: account_code,
               label: item.account_name,
               arabic_name: arabic_account_name,
               leafnode: "N",
             });
           }
         } else {
-          const { arabic_account_name, group_code, ...others } = item;
+          const { arabic_account_name, account_code, ...others } = item;
           target.push({
             ...others,
             trans_symbol: trans_symbol,
             ...columns_wise_amounts,
-            ledger_code: group_code,
+            ledger_code: account_code,
             label: item.account_name,
             arabic_name: arabic_account_name,
             leafnode: "N",
