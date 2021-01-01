@@ -36,6 +36,7 @@ import _ from "lodash";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import swal from "sweetalert2";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -65,102 +66,280 @@ class AddOPBillingForm extends Component {
   ProcessToBill(context, e) {
     let $this = this;
 
-    let SelectedService = Enumerable.from(this.state.billdetails)
-      .where(
-        (w) =>
-          w.service_type_id === $this.state.s_service_type &&
-          w.services_id === $this.state.s_service
-      )
-      .toArray();
+    debugger
+    algaehApiCall({
+      uri: "/billing/checkServiceExists",
+      module: "billing",
+      method: "POST",
+      data: {
+        services_id: this.state.s_service,
+        visit_id: this.state.visit_id,
+        service_type_id: this.state.s_service_type
+      },
+      onSuccess: (response) => {
+        if (response.data.success) {
+          // let DataAdd = true
+          if (response.data.records.exists === true) {
+            swal({
+              title: this.state.service_name + " Service Already ordered to this visit Do you want to order again ?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Yes",
+              confirmButtonColor: "#44b8bd",
+              cancelButtonColor: "#d33",
+              cancelButtonText: "No",
+            }).then((willDelete) => {
+              if (willDelete.value) {
+                let SelectedService = Enumerable.from(this.state.billdetails)
+                  .where(
+                    (w) =>
+                      w.service_type_id === $this.state.s_service_type &&
+                      w.services_id === $this.state.s_service
+                  )
+                  .toArray();
 
-    if (SelectedService.length === 0) {
-      if (this.state.patient_id !== null && this.state.visit_id !== null) {
-        if (
-          this.state.s_service_type !== null &&
-          this.state.s_service !== null
-        ) {
-          AlgaehLoader({ show: true });
-          let applydiscount = false;
-          let serviceInput = [
-            {
-              insured: this.state.insured,
-              vat_applicable: this.state.vat_applicable,
-              hims_d_services_id: this.state.s_service,
-              primary_insurance_provider_id: this.state.insurance_provider_id,
-              primary_network_office_id: this.state
-                .hims_d_insurance_network_office_id,
-              primary_network_id: this.state.network_id,
-              sec_insured: this.state.sec_insured,
-              secondary_insurance_provider_id: this.state
-                .secondary_insurance_provider_id,
-              secondary_network_id: this.state.secondary_network_id,
-              secondary_network_office_id: this.state
-                .secondary_network_office_id,
-              test_id: this.state.test_id,
-            },
-          ];
+                if (SelectedService.length === 0) {
+                  if (this.state.patient_id !== null && this.state.visit_id !== null) {
+                    if (
+                      this.state.s_service_type !== null &&
+                      this.state.s_service !== null
+                    ) {
+                      AlgaehLoader({ show: true });
+                      let applydiscount = false;
+                      let serviceInput = [
+                        {
+                          insured: this.state.insured,
+                          vat_applicable: this.state.vat_applicable,
+                          hims_d_services_id: this.state.s_service,
+                          primary_insurance_provider_id: this.state.insurance_provider_id,
+                          primary_network_office_id: this.state
+                            .hims_d_insurance_network_office_id,
+                          primary_network_id: this.state.network_id,
+                          sec_insured: this.state.sec_insured,
+                          secondary_insurance_provider_id: this.state
+                            .secondary_insurance_provider_id,
+                          secondary_network_id: this.state.secondary_network_id,
+                          secondary_network_office_id: this.state
+                            .secondary_network_office_id,
+                          test_id: this.state.test_id,
+                        },
+                      ];
 
-          algaehApiCall({
-            uri: "/billing/getBillDetails",
-            module: "billing",
-            method: "POST",
-            data: serviceInput,
-            onSuccess: (response) => {
-              if (response.data.success) {
-                let data = response.data.records;
+                      algaehApiCall({
+                        uri: "/billing/getBillDetails",
+                        module: "billing",
+                        method: "POST",
+                        data: serviceInput,
+                        onSuccess: (response) => {
+                          if (response.data.success) {
+                            let data = response.data.records;
 
-                if (data.billdetails[0].pre_approval === "Y") {
-                  AlgaehLoader({ show: false });
+                            if (data.billdetails[0].pre_approval === "Y") {
+                              AlgaehLoader({ show: false });
+                              successfulMessage({
+                                message:
+                                  "Selected Service is Pre-Approval required, you don't have rights to bill.",
+                                title: "Warning",
+                                icon: "warning",
+                              });
+                            } else {
+                              let existingservices = $this.state.billdetails;
+
+                              if (data.billdetails.length !== 0) {
+                                data.billdetails[0].created_date = new Date();
+                                existingservices.splice(0, 0, data.billdetails[0]);
+                              }
+
+                              if (this.state.mode_of_pay === "Insurance") {
+                                applydiscount = true;
+                              }
+                              if (context !== null) {
+                                context.updateState({
+                                  billdetails: existingservices,
+                                  applydiscount: applydiscount,
+                                  // s_service_type: null,
+                                  s_service: null,
+                                  service_name: "",
+                                  saveEnable: false,
+                                  promo_code: null,
+                                });
+                              }
+
+                              algaehApiCall({
+                                uri: "/billing/billingCalculations",
+                                module: "billing",
+                                method: "POST",
+                                data: { billdetails: existingservices },
+                                onSuccess: (response) => {
+                                  if (response.data.success) {
+                                    if (context !== null) {
+                                      response.data.records.patient_payable_h =
+                                        response.data.records.patient_payable ||
+                                        $this.state.patient_payable;
+
+                                      response.data.records.billDetails = false;
+                                      if (this.state.default_pay_type === "CD") {
+                                        response.data.records.card_amount =
+                                          response.data.records.receiveable_amount;
+                                        response.data.records.cash_amount = 0;
+                                      }
+
+                                      context.updateState({ ...response.data.records });
+                                      AlgaehLoader({ show: false });
+                                    }
+                                  }
+                                },
+                                onFailure: (error) => {
+                                  AlgaehLoader({ show: false });
+                                  swalMessage({
+                                    title: error.message,
+                                    type: "error",
+                                  });
+                                },
+                              });
+                            }
+                          }
+                        },
+                        onFailure: (error) => {
+                          AlgaehLoader({ show: false });
+                          swalMessage({
+                            title: error.message,
+                            type: "error",
+                          });
+                        },
+                      });
+                    } else {
+                      successfulMessage({
+                        message: "Please select the Service and Service Type.",
+                        title: "Warning",
+                        icon: "warning",
+                      });
+                    }
+                  } else {
+                    successfulMessage({
+                      message: "Please select the patient and visit.",
+                      title: "Warning",
+                      icon: "warning",
+                    });
+                  }
+                } else {
                   successfulMessage({
-                    message:
-                      "Selected Service is Pre-Approval required, you don't have rights to bill.",
+                    message: "Selected Service already exists.",
                     title: "Warning",
                     icon: "warning",
                   });
-                } else {
-                  let existingservices = $this.state.billdetails;
+                }
+              }
+            });
+          } else {
 
-                  if (data.billdetails.length !== 0) {
-                    data.billdetails[0].created_date = new Date();
-                    existingservices.splice(0, 0, data.billdetails[0]);
-                  }
+            let SelectedService = Enumerable.from(this.state.billdetails)
+              .where(
+                (w) =>
+                  w.service_type_id === $this.state.s_service_type &&
+                  w.services_id === $this.state.s_service
+              )
+              .toArray();
 
-                  if (this.state.mode_of_pay === "Insurance") {
-                    applydiscount = true;
-                  }
-                  if (context !== null) {
-                    context.updateState({
-                      billdetails: existingservices,
-                      applydiscount: applydiscount,
-                      // s_service_type: null,
-                      s_service: null,
-                      service_name: "",
-                      saveEnable: false,
-                      promo_code: null,
-                    });
-                  }
+            if (SelectedService.length === 0) {
+              if (this.state.patient_id !== null && this.state.visit_id !== null) {
+                if (
+                  this.state.s_service_type !== null &&
+                  this.state.s_service !== null
+                ) {
+                  AlgaehLoader({ show: true });
+                  let applydiscount = false;
+                  let serviceInput = [
+                    {
+                      insured: this.state.insured,
+                      vat_applicable: this.state.vat_applicable,
+                      hims_d_services_id: this.state.s_service,
+                      primary_insurance_provider_id: this.state.insurance_provider_id,
+                      primary_network_office_id: this.state
+                        .hims_d_insurance_network_office_id,
+                      primary_network_id: this.state.network_id,
+                      sec_insured: this.state.sec_insured,
+                      secondary_insurance_provider_id: this.state
+                        .secondary_insurance_provider_id,
+                      secondary_network_id: this.state.secondary_network_id,
+                      secondary_network_office_id: this.state
+                        .secondary_network_office_id,
+                      test_id: this.state.test_id,
+                    },
+                  ];
 
                   algaehApiCall({
-                    uri: "/billing/billingCalculations",
+                    uri: "/billing/getBillDetails",
                     module: "billing",
                     method: "POST",
-                    data: { billdetails: existingservices },
+                    data: serviceInput,
                     onSuccess: (response) => {
                       if (response.data.success) {
-                        if (context !== null) {
-                          response.data.records.patient_payable_h =
-                            response.data.records.patient_payable ||
-                            $this.state.patient_payable;
+                        let data = response.data.records;
 
-                          response.data.records.billDetails = false;
-                          if (this.state.default_pay_type === "CD") {
-                            response.data.records.card_amount =
-                              response.data.records.receiveable_amount;
-                            response.data.records.cash_amount = 0;
+                        if (data.billdetails[0].pre_approval === "Y") {
+                          AlgaehLoader({ show: false });
+                          successfulMessage({
+                            message:
+                              "Selected Service is Pre-Approval required, you don't have rights to bill.",
+                            title: "Warning",
+                            icon: "warning",
+                          });
+                        } else {
+                          let existingservices = $this.state.billdetails;
+
+                          if (data.billdetails.length !== 0) {
+                            data.billdetails[0].created_date = new Date();
+                            existingservices.splice(0, 0, data.billdetails[0]);
                           }
 
-                          context.updateState({ ...response.data.records });
-                          AlgaehLoader({ show: false });
+                          if (this.state.mode_of_pay === "Insurance") {
+                            applydiscount = true;
+                          }
+                          if (context !== null) {
+                            context.updateState({
+                              billdetails: existingservices,
+                              applydiscount: applydiscount,
+                              // s_service_type: null,
+                              s_service: null,
+                              service_name: "",
+                              saveEnable: false,
+                              promo_code: null,
+                            });
+                          }
+
+                          algaehApiCall({
+                            uri: "/billing/billingCalculations",
+                            module: "billing",
+                            method: "POST",
+                            data: { billdetails: existingservices },
+                            onSuccess: (response) => {
+                              if (response.data.success) {
+                                if (context !== null) {
+                                  response.data.records.patient_payable_h =
+                                    response.data.records.patient_payable ||
+                                    $this.state.patient_payable;
+
+                                  response.data.records.billDetails = false;
+                                  if (this.state.default_pay_type === "CD") {
+                                    response.data.records.card_amount =
+                                      response.data.records.receiveable_amount;
+                                    response.data.records.cash_amount = 0;
+                                  }
+
+                                  context.updateState({ ...response.data.records });
+                                  AlgaehLoader({ show: false });
+                                }
+                              }
+                            },
+                            onFailure: (error) => {
+                              AlgaehLoader({ show: false });
+                              swalMessage({
+                                title: error.message,
+                                type: "error",
+                              });
+                            },
+                          });
                         }
                       }
                     },
@@ -172,38 +351,40 @@ class AddOPBillingForm extends Component {
                       });
                     },
                   });
+                } else {
+                  successfulMessage({
+                    message: "Please select the Service and Service Type.",
+                    title: "Warning",
+                    icon: "warning",
+                  });
                 }
+              } else {
+                successfulMessage({
+                  message: "Please select the patient and visit.",
+                  title: "Warning",
+                  icon: "warning",
+                });
               }
-            },
-            onFailure: (error) => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.message,
-                type: "error",
+            } else {
+              successfulMessage({
+                message: "Selected Service already exists.",
+                title: "Warning",
+                icon: "warning",
               });
-            },
-          });
-        } else {
-          successfulMessage({
-            message: "Please select the Service and Service Type.",
-            title: "Warning",
-            icon: "warning",
-          });
+            }
+          }
+
         }
-      } else {
-        successfulMessage({
-          message: "Please select the patient and visit.",
-          title: "Warning",
-          icon: "warning",
+      },
+      onFailure: (error) => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
         });
-      }
-    } else {
-      successfulMessage({
-        message: "Selected Service already exists.",
-        title: "Warning",
-        icon: "warning",
-      });
-    }
+      },
+    });
+
   }
 
   updateBillDetail(context, row, e) {
@@ -336,8 +517,8 @@ class AddOPBillingForm extends Component {
       this.props.existinsurance === undefined
         ? []
         : this.props.existinsurance.length > 0
-        ? this.props.existinsurance[0].insurance_type
-        : [];
+          ? this.props.existinsurance[0].insurance_type
+          : [];
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -604,42 +785,42 @@ class AddOPBillingForm extends Component {
                             displayTemplate: (row) => {
                               return row.insurance_yesno === "Y" &&
                                 insurance_type === "I" ? (
-                                row.discount_percentage
-                              ) : (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    decimal: { allowNegative: false },
-                                    value: row.discount_percentage,
-                                    className: "txt-fld",
-                                    name: "discount_percentage",
-                                    events: {
-                                      onChange: ondiscountgridcol.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      ),
-                                    },
-                                    others: {
-                                      placeholder: "0.00",
-                                      disabled:
-                                        row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
-                                      onBlur: makeZeroIngrid.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      ),
-                                      onFocus: (e) => {
-                                        e.target.oldvalue = e.target.value;
+                                  row.discount_percentage
+                                ) : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      decimal: { allowNegative: false },
+                                      value: row.discount_percentage,
+                                      className: "txt-fld",
+                                      name: "discount_percentage",
+                                      events: {
+                                        onChange: ondiscountgridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
                                       },
-                                    },
-                                  }}
-                                />
-                              );
+                                      others: {
+                                        placeholder: "0.00",
+                                        disabled:
+                                          row.trans_package_detail_id > 0
+                                            ? true
+                                            : this.state.Billexists,
+                                        onBlur: makeZeroIngrid.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                        onFocus: (e) => {
+                                          e.target.oldvalue = e.target.value;
+                                        },
+                                      },
+                                    }}
+                                  />
+                                );
                               // return (
                               //   <AlagehFormGroup
                               //     div={{}}
@@ -690,42 +871,42 @@ class AddOPBillingForm extends Component {
                             displayTemplate: (row) => {
                               return row.insurance_yesno === "Y" &&
                                 insurance_type === "I" ? (
-                                row.discount_amout
-                              ) : (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    decimal: { allowNegative: false },
-                                    value: row.discount_amout,
-                                    className: "txt-fld",
-                                    name: "discount_amout",
-                                    events: {
-                                      onChange: ondiscountgridcol.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      ),
-                                    },
-                                    others: {
-                                      placeholder: "0.00",
-                                      disabled:
-                                        row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
-                                      onBlur: makeZeroIngrid.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      ),
-                                      onFocus: (e) => {
-                                        e.target.oldvalue = e.target.value;
+                                  row.discount_amout
+                                ) : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      decimal: { allowNegative: false },
+                                      value: row.discount_amout,
+                                      className: "txt-fld",
+                                      name: "discount_amout",
+                                      events: {
+                                        onChange: ondiscountgridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
                                       },
-                                    },
-                                  }}
-                                />
-                              );
+                                      others: {
+                                        placeholder: "0.00",
+                                        disabled:
+                                          row.trans_package_detail_id > 0
+                                            ? true
+                                            : this.state.Billexists,
+                                        onBlur: makeZeroIngrid.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                        onFocus: (e) => {
+                                          e.target.oldvalue = e.target.value;
+                                        },
+                                      },
+                                    }}
+                                  />
+                                );
                             },
                           },
 
