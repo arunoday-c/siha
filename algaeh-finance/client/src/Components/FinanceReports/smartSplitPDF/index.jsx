@@ -15,18 +15,14 @@ export default function SmartTable({
   // }
 
   function splitingTable() {
-    const getHeader = document
-      .getElementById("finance_report_header")
-      .cloneNode(true);
+    const cloneElement = control().cloneNode(true);
+    const getHeader = cloneElement.querySelector("#finance_report_header");
     const rootDiv = document.createElement("div");
-    // rootDiv.setAttribute("class", "newStickyGrid");
-
-    const contentElecment = document.createElement("div");
-    // contentElecment.setAttribute("class", "table-scroll reportGridPlain");
-
+    rootDiv.appendChild(getHeader);
+    debugger;
     try {
       let tableCollections = [];
-      const cloneElement = control().cloneNode(true);
+
       const table = cloneElement.querySelector("table");
       table.setAttribute("class", "splitted-cols");
       const tblHeader = table.querySelector("thead");
@@ -90,12 +86,12 @@ export default function SmartTable({
           tbody.appendChild(tr);
         }
         tabtable.appendChild(tbody);
-        contentElecment.appendChild(getHeader);
-        contentElecment.appendChild(tabtable);
 
-        rootDiv.appendChild(contentElecment);
+        // contentElecment.appendChild(tabtable);
 
-        // rootDiv.appendChild(tabtable);
+        // rootDiv.appendChild(contentElecment);
+
+        rootDiv.appendChild(tabtable);
         // const horizontal = document.createElement("br");
         //rootDiv.appendChild(horizontal);
       }
@@ -105,6 +101,7 @@ export default function SmartTable({
       setLoading(false);
       console.error(e);
     }
+
     return rootDiv;
   }
 
