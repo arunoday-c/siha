@@ -394,14 +394,14 @@ class ResultEntryList extends Component {
               >
                 Clear
               </button>
-              <button
+              {/* <button
                 style={{ marginLeft: "10px" }}
                 className="btn btn-primary btn-sm"
                 type="button"
                 onClick={getSampleCollectionDetails.bind(this, this)}
               >
                 Load
-              </button>
+              </button> */}
             </div>
           </div>
           <div className="row">

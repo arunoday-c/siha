@@ -92,14 +92,14 @@ export default memo(function () {
           >
             Clear
           </button>
-          <button
+          {/* <button
             style={{ marginLeft: "10px" }}
             className="btn btn-primary btn-sm"
             type="button"
             onClick={() => {}}
           >
             Load
-          </button>
+          </button> */}
         </div>
       </div>
       <div className="row">

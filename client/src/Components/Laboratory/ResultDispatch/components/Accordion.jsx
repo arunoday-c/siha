@@ -122,6 +122,7 @@ export default memo(function ({ details }) {
                 ></Checkbox>
               </th>
               <th>Test Name</th>
+              <th>Test Category</th>
               <th>Critical</th>
               <th>Status</th>
               <th>Billed</th>
@@ -133,6 +134,7 @@ export default memo(function ({ details }) {
               const {
                 status,
                 service_name,
+                category_name,
                 critical_status,
                 billed,
                 send_out_test,
@@ -150,7 +152,8 @@ export default memo(function ({ details }) {
                   </td>
                   <td style={{ textAlign: "left", fontWeight: "bold" }}>
                     {service_name}
-                  </td>
+                  </td>{" "}
+                  <td width="150">{category_name}</td>
                   <td width="20">{critical_status === "Y" ? "Yes" : "No"}</td>
                   <td width="120">
                     {status === "O"
@@ -175,21 +178,22 @@ export default memo(function ({ details }) {
         <div className="accFooter">
           <AlgaehButton
             className="btn btn-default btn-sm"
-            report="merge"
-            onClick={showReport}
-            disabled={enablePrintButton}
-            loading={loading}
-          >
-            Print Selected Reports
-          </AlgaehButton>
-          <AlgaehButton
-            className="btn btn-default btn-sm"
             report="single"
             onClick={showReport}
             disabled={enablePrintButton}
             loading={loading}
           >
-            Print All in one Selected Reports
+            Print as merge report
+          </AlgaehButton>{" "}
+          <AlgaehButton
+            className="btn btn-default btn-sm"
+            report="merge"
+            onClick={showReport}
+            disabled={enablePrintButton}
+            loading={loading}
+            style={{ marginLeft: 10 }}
+          >
+            Print as separate report
           </AlgaehButton>
         </div>
       </Panel>
