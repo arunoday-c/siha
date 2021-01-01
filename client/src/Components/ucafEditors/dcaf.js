@@ -6,12 +6,13 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
 } from "../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 // import ButtonType from "../Wrapper/algaehButton";
 import Swal from "sweetalert2";
 import moment from "moment";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
+import { AlgaehFormGroup } from "algaeh-react-components";
 export default class DcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -133,7 +134,21 @@ export default class DcafEditor extends Component {
       });
     }
   }
-
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    if (value <= 0) {
+      swalMessage({
+        title: "Quantity cannot be less than or equal to Zero",
+        type: "warning",
+      });
+    } else {
+      row[name] = value;
+      // row.update();
+    }
+    // row[name] = value;
+    // row.update();
+  }
   render() {
     return (
       <div className="">
@@ -829,6 +844,34 @@ export default class DcafEditor extends Component {
                                     label={{ forceLabel: "Quantity" }}
                                   />
                                 ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <AlgaehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        updateInternally: true,
+                                        number: {
+                                          allowNegative: false,
+                                          thousandSeparator: ",",
+                                        },
+
+                                        value: row.quantity ? row.quantity : 1,
+                                        className: "txt-fld",
+                                        name: "quantity",
+                                        events: {
+                                          onChange: this.changeGridEditors.bind(
+                                            this,
+                                            row
+                                          ),
+                                        },
+
+                                        others: {
+                                          placeholder: "",
+                                        },
+                                      }}
+                                    />
+                                  );
+                                },
                               },
                             ]}
                             keyId="hims_f_dcaf_medication_id"

@@ -1030,7 +1030,6 @@ export default function PayRollDetails({ employee_id }) {
   };
 
   const onchangegridcol = (row, e) => {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
@@ -1038,7 +1037,6 @@ export default function PayRollDetails({ employee_id }) {
   };
 
   const calculationTotals = (parameters, From, callBack) => {
-    debugger;
     let gross_salary = Enumerable.from(parameters.earningComponents).sum((w) =>
       parseFloat(w.amount)
     );
@@ -1726,7 +1724,6 @@ export default function PayRollDetails({ employee_id }) {
                       fieldName: "amount",
                       label: "Amount",
                       editorTemplate: (row) => {
-                        debugger;
                         return row.calculation_method === "FO" ? (
                           row.amount
                         ) : (
@@ -1743,7 +1740,6 @@ export default function PayRollDetails({ employee_id }) {
                               name: "amount",
 
                               onChange: (e) => {
-                                debugger;
                                 onchangegridcol(row, e);
                               },
 

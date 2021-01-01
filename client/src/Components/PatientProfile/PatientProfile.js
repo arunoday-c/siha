@@ -345,10 +345,11 @@ class PatientProfile extends Component {
         data: {
           patient_id: current_patient, //Window.global["current_patient"],
           visit_id: visit_id, //Window.global["visit_id"],
-          forceReplace: true,
+          // forceReplace: true,
         },
         onSuccess: (response) => {
           if (response.data.success) {
+            debugger;
             that.setState({ openUCAF: true, UCAFData: response.data.records });
           }
         },

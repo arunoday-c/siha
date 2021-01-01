@@ -6,10 +6,12 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
 } from "../Wrapper/algaehWrapper";
+import { AlgaehFormGroup } from "algaeh-react-components";
 // import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
-
+import Swal from "sweetalert2";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 export default class UcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -62,6 +64,68 @@ export default class UcafEditor extends Component {
     }
   }
 
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    if (value <= 0) {
+      swalMessage({
+        title: "Quantity cannot be less than or equal to Zero",
+        type: "warning",
+      });
+    } else {
+      row[name] = value;
+      // row.update();
+    }
+    // row[name] = value;
+    // row.update();
+  }
+
+  onClickReloadData(source, e, loader) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, force load!",
+    }).then((result) => {
+      if (result.value) {
+        const that = this;
+        algaehApiCall({
+          uri: "/ucaf/getPatientUCAF",
+          method: "GET",
+          data: {
+            patient_id: Window.global["current_patient"],
+            visit_id: Window.global["visit_id"],
+            forceReplace: "true",
+          },
+          onSuccess: (response) => {
+            loader.setState({
+              loading: false,
+            });
+            if (response.data.success === true) {
+              const data = response.data.records.hims_f_ucaf_header[0];
+              const insurance =
+                response.data.records.hims_f_ucaf_insurance_details[0];
+              data.dcaf_services = response.data.records.hims_f_ucaf_services;
+              data.dcaf_medication =
+                response.data.records.hims_f_ucaf_medication;
+
+              that.setState({
+                ...data,
+                ...insurance,
+              });
+            }
+          },
+        });
+      } else {
+        loader.setState({
+          loading: false,
+        });
+      }
+    });
+  }
   render() {
     return (
       <div className="">
@@ -1020,6 +1084,34 @@ export default class UcafEditor extends Component {
                                     label={{ forceLabel: "Quantity" }}
                                   />
                                 ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <AlgaehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        updateInternally: true,
+                                        number: {
+                                          allowNegative: false,
+                                          thousandSeparator: ",",
+                                        },
+
+                                        value: row.quantity ? row.quantity : 1,
+                                        className: "txt-fld",
+                                        name: "quantity",
+                                        events: {
+                                          onChange: this.changeGridEditors.bind(
+                                            this,
+                                            row
+                                          ),
+                                        },
+
+                                        others: {
+                                          placeholder: "",
+                                        },
+                                      }}
+                                    />
+                                  );
+                                },
                               },
                             ]}
                             keyId="hims_f_ucaf_medication_id"
@@ -1048,15 +1140,18 @@ export default class UcafEditor extends Component {
                   >
                     Save & Print
                   </button>
-                  {/* <button
+                  <button
                     type="button"
                     className="btn btn-default"
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
+                    onClick={this.onClickReloadData.bind(this, this)}
                   >
-                    Cancel
-                  </button> */}
+                    {/* {this.state.loading ? (
+                      <span className="showBtnLoader">
+                        <i className="fas fa-spinner fa-spin" />
+                      </span>
+                    ) : null} */}
+                    Reload Data
+                  </button>
                 </div>
               </div>
             </div>
