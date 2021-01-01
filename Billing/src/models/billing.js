@@ -98,6 +98,50 @@ export default {
     }
   },
 
+  checkServiceExists: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+
+      let strQuery = ""
+      if (inputParam.service_type_id == 5) {
+        strQuery = `SELECT hims_f_lab_order_id FROM hims_f_lab_order where visit_id= ${inputParam.visit_id} and service_id=${inputParam.services_id};`
+      } else if (inputParam.service_type_id == 11) {
+        strQuery = `SELECT hims_f_rad_order_id FROM hims_f_rad_order where visit_id= ${inputParam.visit_id} and service_id=${inputParam.services_id};`
+      }
+      if (strQuery == "") {
+        _mysql.releaseConnection();
+        req.records = { exists: false };
+        next();
+        return
+      }
+      _mysql
+        .executeQuery({
+          query: strQuery,
+          printQuery: true,
+        })
+        .then((headerRcptResult) => {
+          _mysql.releaseConnection();
+          if (headerRcptResult.length > 0) {
+            req.records = { exists: true };
+
+          } else {
+            req.records = { exists: false };
+          }
+          next();
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
   addBillData: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
