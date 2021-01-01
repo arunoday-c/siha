@@ -158,6 +158,11 @@ class Procedures extends PureComponent {
   InsertProcedures(e) {
     ProceduresEvent().AddProcedure(this, e);
   }
+  gridtexthandel(row, e) {
+    ProceduresEvent().gridtexthandel(this, row, e);
+  }
+
+
 
   render() {
     return (
@@ -467,6 +472,29 @@ class Procedures extends PureComponent {
                                   label={{ forceLabel: "Quantity" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ","
+                                      },
+                                      dontAllowKeys: ["-", "e", "."],
+                                      value: row.qty,
+                                      className: "txt-fld",
+                                      name: "qty",
+                                      events: {
+                                        onChange: this.gridtexthandel.bind(
+                                          this,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              },
                               others: {
                                 maxWidth: 100,
                               },
