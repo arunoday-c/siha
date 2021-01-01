@@ -1,6 +1,11 @@
 import React, { memo, useState, useEffect } from "react";
 import "../ResultDispatch.scss";
-import { Collapse, Checkbox, AlgaehButton } from "algaeh-react-components";
+import {
+  Collapse,
+  Checkbox,
+  AlgaehButton,
+  AlgaehMessagePop,
+} from "algaeh-react-components";
 import moment from "moment";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 // import _ from "lodash";
@@ -8,6 +13,7 @@ const { Panel } = Collapse;
 export default memo(function ({ details }) {
   const { visit_date, doc_name, mlc_accident_reg_no, list } = details;
   const [selectAll, setSelectAll] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(false);
   const [listOfDetails, setListOfDetails] = useState(list);
   const [enablePrintButton, setEnablePrintButton] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -19,20 +25,33 @@ export default memo(function ({ details }) {
       //   return item.checked === undefined || item.checked === false;
       // })
       .map((item) => {
-        setEnablePrintButton(item.status === "V" && checkState ? false : true);
-        setSelectAll(item.status === "V" && checkState ? checkState : false);
         return { ...item, checked: item.status === "V" ? checkState : false };
       });
+    const checkList = test.filter((f) => f.checked === true);
+    if (checkList.length === list.length) {
+      setIndeterminate(false);
+      setSelectAll(true);
+    } else {
+      setIndeterminate(true);
+      setSelectAll(false);
+    }
     setListOfDetails(test);
-
-    // setCheckState(event.target.checked);
+    setEnablePrintButton(checkList.length === 0 ? true : false);
+    if (checkList.length === 0) {
+      setIndeterminate(false);
+      setSelectAll(false);
+      AlgaehMessagePop({
+        type: "warning",
+        display: "Report's validation is pending you can't print now.",
+      });
+    }
+    // setCheckState(checkState);
   }
 
   function showReport(e) {
     setLoading(true);
     const reportType = e.currentTarget.getAttribute("report");
     let reportExtraParams = {};
-    console.log("reportType", reportType);
     let sentItems = [];
     const recordCheckList = listOfDetails.filter((f) => f.checked === true);
     let reportName = "labMerge";
@@ -117,6 +136,7 @@ export default memo(function ({ details }) {
               <th>
                 {" "}
                 <Checkbox
+                  indeterminate={indeterminate}
                   checked={selectAll}
                   onChange={changeSelectStatus}
                 ></Checkbox>
@@ -144,6 +164,7 @@ export default memo(function ({ details }) {
                     <CheckBoxCheck
                       item={item}
                       setSelectAll={setSelectAll}
+                      setIndeterminate={setIndeterminate}
                       items={listOfDetails}
                       setEnablePrintButton={setEnablePrintButton}
                     />
@@ -197,7 +218,13 @@ export default memo(function ({ details }) {
   );
 });
 
-function CheckBoxCheck({ item, setSelectAll, items, setEnablePrintButton }) {
+function CheckBoxCheck({
+  item,
+  setSelectAll,
+  setIndeterminate,
+  items,
+  setEnablePrintButton,
+}) {
   const [checkState, setCheckState] = useState(item.checked);
   useEffect(() => {
     setCheckState(item.checked);
@@ -209,12 +236,19 @@ function CheckBoxCheck({ item, setSelectAll, items, setEnablePrintButton }) {
     const checked = items.filter((item) => {
       return item.checked || item.checked === true;
     });
-    checked.length < items.length ? setSelectAll(false) : setSelectAll(true);
+    if (checked.length < items.length) {
+      setSelectAll(false);
+      setIndeterminate(true);
+    } else {
+      setSelectAll(true);
+      setIndeterminate(false);
+    }
 
     if (checked.length > 0) {
       setEnablePrintButton(false);
     } else {
       setEnablePrintButton(true);
+      setIndeterminate(false);
     }
   }
   return (

@@ -1,5 +1,5 @@
+import _ from "lodash";
 import { newAlgaehApi } from "../../../hooks";
-
 export async function loadPatientRecords({
   patient_id,
 }: {
@@ -12,8 +12,8 @@ export async function loadPatientRecords({
       method: "GET",
       data: { patient_id },
     });
-    console.log("result.data", result.data);
-    return result.data.records;
+
+    return _.orderBy(result.data.records, (o) => o.visit_date, "desc");
   } catch (e) {
     throw e;
   }

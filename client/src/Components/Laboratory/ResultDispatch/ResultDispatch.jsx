@@ -1,5 +1,4 @@
 import React, { memo, useState, useEffect } from "react";
-
 import { AlgaehLabel, Spin } from "algaeh-react-components";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import Accordion from "./components/Accordion";
@@ -63,6 +62,10 @@ export default memo(function () {
       },
     });
   }
+  function onClearHandle() {
+    history.push(`${location.pathname}`);
+    window.location.reload(true);
+  }
   async function funLoadPatientRecords() {
     setIsLoading(true);
     const records = await loadPatientRecords({ patient_id: patientId });
@@ -88,18 +91,18 @@ export default memo(function () {
           <button
             className="btn btn-default btn-sm"
             type="button"
-            onClick={() => {}}
+            onClick={onClearHandle}
           >
             Clear
           </button>
-          <button
+          {/* <button
             style={{ marginLeft: "10px" }}
             className="btn btn-primary btn-sm"
             type="button"
             onClick={() => {}}
           >
             Load
-          </button>
+          </button> */}
         </div>
       </div>
       <div className="row">
