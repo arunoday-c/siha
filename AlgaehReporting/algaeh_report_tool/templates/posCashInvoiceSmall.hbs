@@ -26,7 +26,7 @@
                 </tr> --}}
                 <tr>
                     <td style="width:40%">Bill No/ رقم الفاتوره<span class="numberFld">:</span></td>
-                    <td style="width:60%"><b>{{header.invoice_number}}</b></td>
+                    <td style="width:60%"><b>{{header.pos_number}}</b></td>
 
                 </tr>
                 <tr>
@@ -63,71 +63,55 @@
             <table class="tableDotPrint2" cell-padding="0">
                 <thead>
                     <tr>
-                        <th class="txtFld">Service Desc.<p>وصف الخدمة</p>
+                         <th class="txtFld">Item Desc.<p>وصف السلعة</p>
                         </th>
-                        {{!-- <th class="numberFld">Price<p>السعر</p>
+                        <th>Qty<p>كمية</p>
                         </th>
-                        <th class="numberFld">Discount<p>خصم</p>
-                        </th> --}}
-                        <th class="numberFld">Net Amt. <p>المبلغ الصافي</p>
+                         <th class="numberFld">Pat. Payble <p>حصة المريض</p>
                         </th>
-                        <th class="numberFld">Vat Amt. <p>قيمة الضريبة</p>
+                        <th class="numberFld">Disc. <p>خصم</p>
                         </th>
                         <th class="numberFld">Total Amount<p>المبلغ الإجمالي</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each detail}}
-                    {{!-- <tr>
-                        <td colspan="8" class="tableSubHdg"><b>{{service_type}}/{{arabic_service_type}}</b></td>
-                    </tr> --}}
-                    {{#each detailList}}
                     <tr>
-                        <td class="txtFld">{{ capitalization service_name}}
-                            {{#if service_type_id 1 }}
-                            {{#if new_visit_patient "N"}}
-                            <span>Follow Up</span>
-                            {{/if}}
-                            {{/if}} </td>
-                        {{!-- <td class="numberFld">{{gross_amount}}</td>
-                        <td class="numberFld">{{discount_amount}}</td> --}}
+                        <td>{{item_description}}</td>
+                        <td>{{quantity}}</td>
                         <td class="numberFld">{{patient_share}}</td>
-                        <td class="numberFld">{{patient_tax}}</td>
+                        <td class="numberFld">{{discount_amount}}</td>
                         <td class="numberFld">{{patient_payable}}</td>
                     </tr>
                     {{/each}}
-                    {{/each}}
+
+
 
                 </tbody>
-                <tfoot class="tblFooter">
-                    <tr>
-                        <td colspan="6"></td>
-                    </tr>
-                </tfoot>
-            </table>
             </table>
             <table class="tableTotalSmall">
                 <tr>
                     <td>Sub Total</td>
-                    <td>{{total_gross_amount}}</td>
+                    <td>{{numberFormating total_patient_share decimalOnly}}</td>
                     <td class="numberFld">: القيمة قبل الخصم</td>
                 </tr>
                 <tr>
                     <td>Discount</td>
-                    <td>{{total_discount_amount}}</td>
+
+                    <td>{{numberFormating total_discount_amount decimalOnly}}</td>
                     <td class="numberFld">: الخصم</td>
                 </tr>
                 <tr> {{#if vat_applicable "Y"}}
                 <tr>
-                    <td>VAT 15%</td>
-                    <td>{{total_patient_tax}}</td>
-                    <td class="numberFld">:15% قيمة الضريبة</td>
+                    <td>VAT</td>
+                    <td>{{numberFormating total_patient_tax decimalOnly}}</td>
+                    <td class="numberFld">:قيمة الضريبة</td>
                 </tr>
                 {{else}} <tr></tr>{{/if}}
                 </tr>
                 <tr>
                     <td>Receivable</td>
-                    <td><b>{{total_patient_payable}}</b></td>
+                    <td>{{numberFormating total_patient_payable currencyOnly}}</td>
                     <td>المبلغ النقدي:</td>
                 </tr>
                 {{!-- <tr>

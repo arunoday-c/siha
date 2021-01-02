@@ -66,7 +66,7 @@ class AddOPBillingForm extends Component {
   ProcessToBill(context, e) {
     let $this = this;
 
-    debugger
+    debugger;
     algaehApiCall({
       uri: "/billing/checkServiceExists",
       module: "billing",
@@ -74,14 +74,18 @@ class AddOPBillingForm extends Component {
       data: {
         services_id: this.state.s_service,
         visit_id: this.state.visit_id,
-        service_type_id: this.state.s_service_type
+        service_type_id: this.state.s_service_type,
       },
       onSuccess: (response) => {
         if (response.data.success) {
           // let DataAdd = true
           if (response.data.records.exists === true) {
             swal({
-              title: this.state.service_name + " Service Already ordered to this visit Do you want to order again ?",
+              title: "Service already ordered!",
+              html:
+                "<b>" +
+                this.state.service_name +
+                "</b> ordered to this visit previously. <br/>Do you wish to order again?",
               type: "warning",
               showCancelButton: true,
               confirmButtonText: "Yes",
@@ -99,7 +103,10 @@ class AddOPBillingForm extends Component {
                   .toArray();
 
                 if (SelectedService.length === 0) {
-                  if (this.state.patient_id !== null && this.state.visit_id !== null) {
+                  if (
+                    this.state.patient_id !== null &&
+                    this.state.visit_id !== null
+                  ) {
                     if (
                       this.state.s_service_type !== null &&
                       this.state.s_service !== null
@@ -111,7 +118,8 @@ class AddOPBillingForm extends Component {
                           insured: this.state.insured,
                           vat_applicable: this.state.vat_applicable,
                           hims_d_services_id: this.state.s_service,
-                          primary_insurance_provider_id: this.state.insurance_provider_id,
+                          primary_insurance_provider_id: this.state
+                            .insurance_provider_id,
                           primary_network_office_id: this.state
                             .hims_d_insurance_network_office_id,
                           primary_network_id: this.state.network_id,
@@ -138,7 +146,7 @@ class AddOPBillingForm extends Component {
                               AlgaehLoader({ show: false });
                               successfulMessage({
                                 message:
-                                  "Selected Service is Pre-Approval required, you don't have rights to bill.",
+                                  "Pre-approval required for selected service, Please approve before billing.",
                                 title: "Warning",
                                 icon: "warning",
                               });
@@ -147,7 +155,11 @@ class AddOPBillingForm extends Component {
 
                               if (data.billdetails.length !== 0) {
                                 data.billdetails[0].created_date = new Date();
-                                existingservices.splice(0, 0, data.billdetails[0]);
+                                existingservices.splice(
+                                  0,
+                                  0,
+                                  data.billdetails[0]
+                                );
                               }
 
                               if (this.state.mode_of_pay === "Insurance") {
@@ -178,13 +190,17 @@ class AddOPBillingForm extends Component {
                                         $this.state.patient_payable;
 
                                       response.data.records.billDetails = false;
-                                      if (this.state.default_pay_type === "CD") {
+                                      if (
+                                        this.state.default_pay_type === "CD"
+                                      ) {
                                         response.data.records.card_amount =
                                           response.data.records.receiveable_amount;
                                         response.data.records.cash_amount = 0;
                                       }
 
-                                      context.updateState({ ...response.data.records });
+                                      context.updateState({
+                                        ...response.data.records,
+                                      });
                                       AlgaehLoader({ show: false });
                                     }
                                   }
@@ -210,7 +226,7 @@ class AddOPBillingForm extends Component {
                       });
                     } else {
                       successfulMessage({
-                        message: "Please select the Service and Service Type.",
+                        message: "Please select the service and Service Type.",
                         title: "Warning",
                         icon: "warning",
                       });
@@ -224,7 +240,7 @@ class AddOPBillingForm extends Component {
                   }
                 } else {
                   successfulMessage({
-                    message: "Selected Service already exists.",
+                    message: "Selected service already exists.",
                     title: "Warning",
                     icon: "warning",
                   });
@@ -232,7 +248,6 @@ class AddOPBillingForm extends Component {
               }
             });
           } else {
-
             let SelectedService = Enumerable.from(this.state.billdetails)
               .where(
                 (w) =>
@@ -242,7 +257,10 @@ class AddOPBillingForm extends Component {
               .toArray();
 
             if (SelectedService.length === 0) {
-              if (this.state.patient_id !== null && this.state.visit_id !== null) {
+              if (
+                this.state.patient_id !== null &&
+                this.state.visit_id !== null
+              ) {
                 if (
                   this.state.s_service_type !== null &&
                   this.state.s_service !== null
@@ -254,7 +272,8 @@ class AddOPBillingForm extends Component {
                       insured: this.state.insured,
                       vat_applicable: this.state.vat_applicable,
                       hims_d_services_id: this.state.s_service,
-                      primary_insurance_provider_id: this.state.insurance_provider_id,
+                      primary_insurance_provider_id: this.state
+                        .insurance_provider_id,
                       primary_network_office_id: this.state
                         .hims_d_insurance_network_office_id,
                       primary_network_id: this.state.network_id,
@@ -281,7 +300,7 @@ class AddOPBillingForm extends Component {
                           AlgaehLoader({ show: false });
                           successfulMessage({
                             message:
-                              "Selected Service is Pre-Approval required, you don't have rights to bill.",
+                              "Pre-approval required for selected service, Please approve before billing.",
                             title: "Warning",
                             icon: "warning",
                           });
@@ -327,7 +346,9 @@ class AddOPBillingForm extends Component {
                                     response.data.records.cash_amount = 0;
                                   }
 
-                                  context.updateState({ ...response.data.records });
+                                  context.updateState({
+                                    ...response.data.records,
+                                  });
                                   AlgaehLoader({ show: false });
                                 }
                               }
@@ -353,7 +374,7 @@ class AddOPBillingForm extends Component {
                   });
                 } else {
                   successfulMessage({
-                    message: "Please select the Service and Service Type.",
+                    message: "Please select the service and Service Type.",
                     title: "Warning",
                     icon: "warning",
                   });
@@ -367,13 +388,12 @@ class AddOPBillingForm extends Component {
               }
             } else {
               successfulMessage({
-                message: "Selected Service already exists.",
+                message: "Selected service already exists.",
                 title: "Warning",
                 icon: "warning",
               });
             }
           }
-
         }
       },
       onFailure: (error) => {
@@ -384,7 +404,6 @@ class AddOPBillingForm extends Component {
         });
       },
     });
-
   }
 
   updateBillDetail(context, row, e) {
@@ -517,8 +536,8 @@ class AddOPBillingForm extends Component {
       this.props.existinsurance === undefined
         ? []
         : this.props.existinsurance.length > 0
-          ? this.props.existinsurance[0].insurance_type
-          : [];
+        ? this.props.existinsurance[0].insurance_type
+        : [];
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -785,42 +804,42 @@ class AddOPBillingForm extends Component {
                             displayTemplate: (row) => {
                               return row.insurance_yesno === "Y" &&
                                 insurance_type === "I" ? (
-                                  row.discount_percentage
-                                ) : (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      decimal: { allowNegative: false },
-                                      value: row.discount_percentage,
-                                      className: "txt-fld",
-                                      name: "discount_percentage",
-                                      events: {
-                                        onChange: ondiscountgridcol.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
+                                row.discount_percentage
+                              ) : (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    decimal: { allowNegative: false },
+                                    value: row.discount_percentage,
+                                    className: "txt-fld",
+                                    name: "discount_percentage",
+                                    events: {
+                                      onChange: ondiscountgridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                    },
+                                    others: {
+                                      placeholder: "0.00",
+                                      disabled:
+                                        row.trans_package_detail_id > 0
+                                          ? true
+                                          : this.state.Billexists,
+                                      onBlur: makeZeroIngrid.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                      onFocus: (e) => {
+                                        e.target.oldvalue = e.target.value;
                                       },
-                                      others: {
-                                        placeholder: "0.00",
-                                        disabled:
-                                          row.trans_package_detail_id > 0
-                                            ? true
-                                            : this.state.Billexists,
-                                        onBlur: makeZeroIngrid.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
-                                        onFocus: (e) => {
-                                          e.target.oldvalue = e.target.value;
-                                        },
-                                      },
-                                    }}
-                                  />
-                                );
+                                    },
+                                  }}
+                                />
+                              );
                               // return (
                               //   <AlagehFormGroup
                               //     div={{}}
@@ -871,42 +890,42 @@ class AddOPBillingForm extends Component {
                             displayTemplate: (row) => {
                               return row.insurance_yesno === "Y" &&
                                 insurance_type === "I" ? (
-                                  row.discount_amout
-                                ) : (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      decimal: { allowNegative: false },
-                                      value: row.discount_amout,
-                                      className: "txt-fld",
-                                      name: "discount_amout",
-                                      events: {
-                                        onChange: ondiscountgridcol.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
+                                row.discount_amout
+                              ) : (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    decimal: { allowNegative: false },
+                                    value: row.discount_amout,
+                                    className: "txt-fld",
+                                    name: "discount_amout",
+                                    events: {
+                                      onChange: ondiscountgridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                    },
+                                    others: {
+                                      placeholder: "0.00",
+                                      disabled:
+                                        row.trans_package_detail_id > 0
+                                          ? true
+                                          : this.state.Billexists,
+                                      onBlur: makeZeroIngrid.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                      onFocus: (e) => {
+                                        e.target.oldvalue = e.target.value;
                                       },
-                                      others: {
-                                        placeholder: "0.00",
-                                        disabled:
-                                          row.trans_package_detail_id > 0
-                                            ? true
-                                            : this.state.Billexists,
-                                        onBlur: makeZeroIngrid.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
-                                        onFocus: (e) => {
-                                          e.target.oldvalue = e.target.value;
-                                        },
-                                      },
-                                    }}
-                                  />
-                                );
+                                    },
+                                  }}
+                                />
+                              );
                             },
                           },
 

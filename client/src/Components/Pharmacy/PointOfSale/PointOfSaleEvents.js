@@ -22,29 +22,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-          [name]: value,
-          mode_of_pay: "1",
-          OTItemAddDis: false,
-        })
+            [name]: value,
+            mode_of_pay: "1",
+            OTItemAddDis: false,
+          })
         : $this.setState({
-          [name]: value,
-          mode_of_pay: "",
-          OTItemAddDis: false,
-        });
+            [name]: value,
+            mode_of_pay: "",
+            OTItemAddDis: false,
+          });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-          [name]: value,
-          insurance_yesno: "N",
-          insured: "N",
-        })
+            [name]: value,
+            insurance_yesno: "N",
+            insured: "N",
+          })
         : $this.setState({
-          [name]: value,
-          insurance_yesno: "Y",
-          insured: "Y",
-        });
+            [name]: value,
+            insurance_yesno: "Y",
+            insured: "Y",
+          });
       break;
 
     default:
@@ -1200,6 +1200,47 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
   });
 };
 
+const generatePOSReceiptSmall = ($this, rpt_name, rpt_desc) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        others: {
+          width: "80mm",
+          showHeaderFooter: true,
+          usehbs: "Small",
+          singleHeaderFooter: true,
+        },
+        reportName: rpt_name,
+        pageOrentation: "portrait",
+        reportParams: [
+          {
+            name: "hims_f_pharmacy_pos_header_id",
+            value: $this.state.hims_f_pharmacy_pos_header_id,
+          },
+          {
+            name: "pos_customer_type",
+            value: $this.state.pos_customer_type,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
+      window.open(origin);
+      // window.document.title = rpt_desc;
+    },
+  });
+};
+
 const generatePharmacyLabel = ($this) => {
   algaehApiCall({
     uri: "/report",
@@ -1604,5 +1645,6 @@ export {
   qtyonchangegridcol,
   processSelectedItems,
   getMedicationAprovalList,
-  getDrilDownData
+  getDrilDownData,
+  generatePOSReceiptSmall,
 };
