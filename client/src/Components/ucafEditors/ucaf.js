@@ -3,10 +3,10 @@ import "./udocaf.scss";
 import {
   AlagehFormGroup,
   AlgaehDateHandler,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
 } from "../Wrapper/algaehWrapper";
-import { AlgaehFormGroup } from "algaeh-react-components";
+import { AlgaehFormGroup, AlgaehDataGrid } from "algaeh-react-components";
 // import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
@@ -74,7 +74,6 @@ export default class UcafEditor extends Component {
       });
     } else {
       row[name] = value;
-      // row.update();
     }
     // row[name] = value;
     // row.update();
@@ -101,15 +100,12 @@ export default class UcafEditor extends Component {
             forceReplace: "true",
           },
           onSuccess: (response) => {
-            loader.setState({
-              loading: false,
-            });
             if (response.data.success === true) {
               const data = response.data.records.hims_f_ucaf_header[0];
               const insurance =
                 response.data.records.hims_f_ucaf_insurance_details[0];
-              data.dcaf_services = response.data.records.hims_f_ucaf_services;
-              data.dcaf_medication =
+              data.ucaf_services = response.data.records.hims_f_ucaf_services;
+              data.ucaf_medication =
                 response.data.records.hims_f_ucaf_medication;
 
               that.setState({
@@ -124,6 +120,32 @@ export default class UcafEditor extends Component {
           loading: false,
         });
       }
+    });
+  }
+  updateUcafMedicationQuantity(data) {
+    algaehApiCall({
+      uri: "/ucaf/updateUcafMedicationQuantity",
+      method: "PUT",
+      data: {
+        type: data.type,
+        quantity: data.quantity,
+        hims_f_ucaf_header_id: data.hims_f_ucaf_header_id,
+        hims_f_ucaf_medication_id: data.hims_f_ucaf_medication_id,
+      },
+      onSuccess: (response) => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success",
+          });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
     });
   }
   render() {
@@ -1040,11 +1062,14 @@ export default class UcafEditor extends Component {
                                 ),
                               },
                             ]}
-                            keyId="hims_f_ucaf_header_id"
-                            dataSource={{
-                              data: this.state.ucaf_services,
-                            }}
-                            paging={{ page: 0, rowsPerPage: 10 }}
+                            // keyId="hims_f_ucaf_header_id"
+                            data={
+                              this.state.ucaf_services
+                                ? this.state.ucaf_services
+                                : []
+                            }
+                            pagination={true}
+                            // paging={{ page: 0, rowsPerPage: 10 }}
                           />
                         </div>
 
@@ -1070,12 +1095,18 @@ export default class UcafEditor extends Component {
                                     }}
                                   />
                                 ),
+                                editorTemplate: (row) => {
+                                  return row.generic_name;
+                                },
                               },
                               {
                                 fieldName: "type",
                                 label: (
                                   <AlgaehLabel label={{ forceLabel: "Type" }} />
                                 ),
+                                editorTemplate: (row) => {
+                                  return row.type;
+                                },
                               },
                               {
                                 fieldName: "quantity",
@@ -1085,6 +1116,9 @@ export default class UcafEditor extends Component {
                                   />
                                 ),
                                 displayTemplate: (row) => {
+                                  return row.quantity ? row.quantity : 1;
+                                },
+                                editorTemplate: (row) => {
                                   return (
                                     <AlgaehFormGroup
                                       div={{}}
@@ -1094,31 +1128,41 @@ export default class UcafEditor extends Component {
                                           allowNegative: false,
                                           thousandSeparator: ",",
                                         },
-
+                                        onChange: this.changeGridEditors.bind(
+                                          this,
+                                          row
+                                        ),
                                         value: row.quantity ? row.quantity : 1,
                                         className: "txt-fld",
                                         name: "quantity",
-                                        events: {
-                                          onChange: this.changeGridEditors.bind(
-                                            this,
-                                            row
-                                          ),
-                                        },
 
                                         others: {
                                           placeholder: "",
                                         },
                                       }}
+                                      // events={{
+
+                                      // }}
                                     />
                                   );
                                 },
                               },
                             ]}
-                            keyId="hims_f_ucaf_medication_id"
-                            dataSource={{
-                              data: this.state.ucaf_medication,
+                            loading={false}
+                            isEditable={"editOnly"}
+                            events={{
+                              // onDone: () => {},
+                              onSave: this.updateUcafMedicationQuantity.bind(
+                                this
+                              ),
                             }}
-                            paging={{ page: 0, rowsPerPage: 10 }}
+                            // height="34vh"
+                            pagination={true}
+                            data={
+                              this.state.ucaf_medication
+                                ? this.state.ucaf_medication
+                                : []
+                            }
                           />
                         </div>
                       </div>

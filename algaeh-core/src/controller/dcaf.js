@@ -3,7 +3,11 @@ import httpStatus from "../utils/httpStatus";
 
 import dcaf from "../model/dcaf";
 
-const { getPatientDCAF, updateDcafDetails } = dcaf;
+const {
+  getPatientDCAF,
+  updateDcafDetails,
+  updateDcafMedicationQuantity,
+} = dcaf;
 
 export default ({ config, db }) => {
   let api = Router();
@@ -13,7 +17,7 @@ export default ({ config, db }) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      records: result
+      records: result,
     });
   });
 
@@ -21,9 +25,20 @@ export default ({ config, db }) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      records: result
+      records: result,
     });
   });
+  api.put(
+    "/updateDcafMedicationQuantity",
+    updateDcafMedicationQuantity,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+    }
+  );
 
   return api;
 };

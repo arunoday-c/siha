@@ -492,8 +492,34 @@ const updateDcafDetails = (req, res, next) => {
     next(e);
   }
 };
+const updateDcafMedicationQuantity = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
 
+  try {
+    const input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: `update hims_f_dcaf_medication set type=? , quantity=? where hims_f_dcaf_medication_id=? `,
+        values: [input.type, input.quantity, input.hims_f_dcaf_medication_id],
+        // printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 export default {
   getPatientDCAF,
   updateDcafDetails,
+  updateDcafMedicationQuantity,
 };

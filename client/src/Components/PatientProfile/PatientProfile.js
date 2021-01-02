@@ -349,7 +349,6 @@ class PatientProfile extends Component {
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            debugger;
             that.setState({ openUCAF: true, UCAFData: response.data.records });
           }
         },
@@ -542,7 +541,16 @@ class PatientProfile extends Component {
           },
         }}
       >
-        <DcafEditor dataProps={this.state.DCAFData} />
+        <DcafEditor
+          dataProps={this.state.DCAFData}
+          onReloadClose={{
+            onClose: () => {
+              this.setState({ openDCAF: false }, () => {
+                this.setState({ openDCAF: true });
+              });
+            },
+          }}
+        />
       </AlgaehModalPopUp>
     );
   }

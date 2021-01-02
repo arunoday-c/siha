@@ -455,7 +455,8 @@ const updateUcafDetails = (req, res, next) => {
           `patient_diagnosys`=?,`patient_principal_code_1`=?,`patient_principal_code_2`=?,\
           `patient_principal_code_3`=?,`patient_principal_code_4`=?,`patient_complaint_type`=?,\
           `patient_indicated_LMP`=?,`patient_emergency_type`=?,`updated_date`=?,`updated_by`=?,`hospital_id`=?\
-          WHERE  `hims_f_ucaf_header_id`=?;",
+          WHERE  `hims_f_ucaf_header_id`=?;\
+          ",
         values: [
           input.patient_marital_status,
           input.patient_emergency_case,
@@ -499,8 +500,34 @@ const updateUcafDetails = (req, res, next) => {
     next(e);
   }
 };
+const updateUcafMedicationQuantity = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
 
+  try {
+    const input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: `update hims_f_ucaf_medication set type=? , quantity=? where hims_f_ucaf_medication_id=? `,
+        values: [input.type, input.quantity, input.hims_f_ucaf_medication_id],
+        // printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 export default {
   getPatientUCAF,
   updateUcafDetails,
+  updateUcafMedicationQuantity,
 };

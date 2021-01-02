@@ -3,7 +3,11 @@ import utils from "../utils";
 import httpStatus from "../utils/httpStatus";
 import ucafModels from "../model/ucaf";
 
-const { getPatientUCAF, updateUcafDetails } = ucafModels;
+const {
+  getPatientUCAF,
+  updateUcafDetails,
+  updateUcafMedicationQuantity,
+} = ucafModels;
 
 export default ({ config, db }) => {
   let api = Router();
@@ -13,7 +17,7 @@ export default ({ config, db }) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      records: result
+      records: result,
     });
   });
 
@@ -21,9 +25,21 @@ export default ({ config, db }) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      records: result
+      records: result,
     });
   });
+
+  api.put(
+    "/updateUcafMedicationQuantity",
+    updateUcafMedicationQuantity,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+    }
+  );
 
   return api;
 };

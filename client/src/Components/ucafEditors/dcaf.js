@@ -3,7 +3,7 @@ import "./udocaf.scss";
 import {
   AlagehFormGroup,
   AlgaehDateHandler,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 import moment from "moment";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
-import { AlgaehFormGroup } from "algaeh-react-components";
+import { AlgaehFormGroup, AlgaehDataGrid } from "algaeh-react-components";
 export default class DcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -69,10 +69,12 @@ export default class DcafEditor extends Component {
             forceReplace: "true",
           },
           onSuccess: (response) => {
-            loader.setState({
-              loading: false,
-            });
             if (response.data.success === true) {
+              // if (typeof this.props.onReloadClose === "function") {
+
+              //   this.props.onReloadClose();
+              // }
+
               const data = response.data.records.hims_f_dcaf_header[0];
               const insurance =
                 response.data.records.hims_f_dcaf_insurance_details[0];
@@ -116,7 +118,6 @@ export default class DcafEditor extends Component {
   }
 
   componentDidMount() {
-    debugger;
     if (
       this.props.dataProps.hims_f_dcaf_header !== undefined &&
       this.props.dataProps.hims_f_dcaf_header.length > 0
@@ -148,6 +149,32 @@ export default class DcafEditor extends Component {
     }
     // row[name] = value;
     // row.update();
+  }
+  updateDcafMedicationQuantity(data) {
+    algaehApiCall({
+      uri: "/dcaf/updateDcafMedicationQuantity",
+      method: "PUT",
+      data: {
+        type: data.type,
+        quantity: data.quantity,
+        hims_f_dcaf_header_id: data.hims_f_dcaf_header_id,
+        hims_f_dcaf_medication_id: data.hims_f_dcaf_medication_id,
+      },
+      onSuccess: (response) => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success",
+          });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
   }
   render() {
     return (
@@ -801,14 +828,20 @@ export default class DcafEditor extends Component {
                               },
                             ]}
                             keyId="hims_f_dcaf_header_id"
-                            dataSource={{
-                              data: this.state.dcaf_services,
-                            }}
-                            paging={{
-                              page: 0,
-                              rowsPerPage: 10,
-                              showPagination: true,
-                            }}
+                            // loading={false}
+                            // isEditable={"editOnly"}
+                            // events={{
+                            //   // onDone: () => {},
+                            //   onSave: updateProcessList,
+
+                            // }}
+                            // height="34vh"
+                            pagination={true}
+                            data={
+                              this.state.dcaf_services
+                                ? this.state.dcaf_services
+                                : []
+                            }
                           />
                         </div>
                         <div className="col-12" id="medicationGrd_Cntr">
@@ -830,12 +863,18 @@ export default class DcafEditor extends Component {
                                     }}
                                   />
                                 ),
+                                editorTemplate: (row) => {
+                                  return row.generic_name;
+                                },
                               },
                               {
                                 fieldName: "type",
                                 label: (
                                   <AlgaehLabel label={{ forceLabel: "Type" }} />
                                 ),
+                                editorTemplate: (row) => {
+                                  return row.type;
+                                },
                               },
                               {
                                 fieldName: "quantity",
@@ -845,6 +884,9 @@ export default class DcafEditor extends Component {
                                   />
                                 ),
                                 displayTemplate: (row) => {
+                                  return row.quantity ? row.quantity : 1;
+                                },
+                                editorTemplate: (row) => {
                                   return (
                                     <AlgaehFormGroup
                                       div={{}}
@@ -854,31 +896,41 @@ export default class DcafEditor extends Component {
                                           allowNegative: false,
                                           thousandSeparator: ",",
                                         },
-
+                                        onChange: this.changeGridEditors.bind(
+                                          this,
+                                          row
+                                        ),
                                         value: row.quantity ? row.quantity : 1,
                                         className: "txt-fld",
                                         name: "quantity",
-                                        events: {
-                                          onChange: this.changeGridEditors.bind(
-                                            this,
-                                            row
-                                          ),
-                                        },
 
                                         others: {
                                           placeholder: "",
                                         },
                                       }}
+                                      // events={{
+
+                                      //
                                     />
                                   );
                                 },
                               },
                             ]}
-                            keyId="hims_f_dcaf_medication_id"
-                            dataSource={{
-                              data: this.state.dcaf_medication,
+                            loading={false}
+                            isEditable={"editOnly"}
+                            events={{
+                              // onDone: () => {},
+                              onSave: this.updateDcafMedicationQuantity.bind(
+                                this
+                              ),
                             }}
-                            paging={{ page: 0, rowsPerPage: 10 }}
+                            // height="34vh"
+                            pagination={true}
+                            data={
+                              this.state.dcaf_medication
+                                ? this.state.dcaf_medication
+                                : []
+                            }
                           />
                         </div>
                       </div>
