@@ -759,10 +759,10 @@ export default class DcafEditor extends Component {
                   <div className="col-12">
                     <div className="attendingPhysician">
                       <div className="row">
-                        <div className="col-12" id="serviceGrid_Cntr">
+                        <div className="col-6" id="serviceGrid_Cntr">
                           <h5 style={{ marginBottom: 0, marginTop: 10 }}>
                             Suggestive line(s) of management: Kindly, enumerate
-                            the recommended investigation, and/or procedures
+                            the recommended investigation, and/or procedures.{" "}
                             <b>For outpatient approvals only:</b>
                           </h5>
                           <AlgaehDataGrid
@@ -811,7 +811,7 @@ export default class DcafEditor extends Component {
                             }}
                           />
                         </div>
-                        <div className="col-12" id="medicationGrd_Cntr">
+                        <div className="col-6" id="medicationGrd_Cntr">
                           <h5 style={{ marginBottom: 0, marginTop: 10 }}>
                             Providers Approval/Coding staff must review/code the
                             recommended services(s) and allocate cost and
@@ -836,6 +836,9 @@ export default class DcafEditor extends Component {
                                 label: (
                                   <AlgaehLabel label={{ forceLabel: "Type" }} />
                                 ),
+                                others: {
+                                  maxWidth: 150,
+                                },
                               },
                               {
                                 fieldName: "quantity",
@@ -871,6 +874,9 @@ export default class DcafEditor extends Component {
                                       }}
                                     />
                                   );
+                                },
+                                others: {
+                                  maxWidth: 100,
                                 },
                               },
                             ]}
