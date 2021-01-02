@@ -32,6 +32,10 @@ export function ResultInput({ row, onChange }) {
           setValue(e.target.value);
           handler(e);
         },
+        onWheel: (e) => {
+          e.preventDefault();
+          e.target.blur();
+        },
         onKeyDown: (e) => {
           if (e.keyCode === 13) {
             const elem =
