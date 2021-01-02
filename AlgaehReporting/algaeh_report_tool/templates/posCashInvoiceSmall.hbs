@@ -1,0 +1,131 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<style type="text/css">
+    .print-body {
+        font-size: 13px !important;
+        -webkit-font-smoothing: antialiased !important;
+        -moz-osx-font-smoothing: grayscale !important;
+        font-family: Arial !important;
+    }
+
+    .footerContent {
+        font-size: 11px !important;
+        line-height: 15px;
+    }
+</style>
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableDotPrint1" cell-padding="0" width="100%">
+
+
+                {{!-- <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr> --}}
+                <tr>
+                    <td style="width:40%">Bill No/ رقم الفاتوره<span class="numberFld">:</span></td>
+                    <td style="width:60%"><b>{{header.pos_number}}</b></td>
+
+                </tr>
+                <tr>
+                    <td>Bill Date/تاريخ الفاتورة<span class="numberFld">:</span></td>
+                    <td>{{dateTime header.invoice_date "date"}}</td>
+                </tr>
+                <tr>
+                    <td>MR No/رقم الملف<span class="numberFld">:</span></td>
+                    <td><b>{{header.patient_code}}</b></td>
+
+                </tr>
+                <tr>
+                    <td>Patient Name/الإسم<span class="numberFld">:</span></td>
+                    <td><b>{{header.patient_full_name}}</b></td>
+                </tr>
+                <tr>
+                    <td>Doctor / طبيب<span class="numberFld">:</span></td>
+                    <td><b>{{header.full_name}}</b></td>
+                </tr>
+                <tr>
+                    <td>VAT Reg No./الرقم الضريبي:</td>
+                    <td>{{header.tax_number}}</td>
+                </tr>
+                <tr>
+                    <td>Insurance Co./شركة التأمين:</td>
+                    <td>{{header.insurance_provider_name}}</td>
+                </tr>
+
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableDotPrint2" cell-padding="0">
+                <thead>
+                    <tr>
+                         <th class="txtFld">Item Desc.<p>وصف السلعة</p>
+                        </th>
+                        <th>Qty<p>كمية</p>
+                        </th>
+                         <th class="numberFld">Pat. Payble <p>حصة المريض</p>
+                        </th>
+                        <th class="numberFld">Disc. <p>خصم</p>
+                        </th>
+                        <th class="numberFld">Total Amount<p>المبلغ الإجمالي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each detail}}
+                    <tr>
+                        <td>{{item_description}}</td>
+                        <td>{{quantity}}</td>
+                        <td class="numberFld">{{patient_share}}</td>
+                        <td class="numberFld">{{discount_amount}}</td>
+                        <td class="numberFld">{{patient_payable}}</td>
+                    </tr>
+                    {{/each}}
+
+
+
+                </tbody>
+            </table>
+            <table class="tableTotalSmall">
+                <tr>
+                    <td>Sub Total</td>
+                    <td>{{numberFormating total_patient_share decimalOnly}}</td>
+                    <td class="numberFld">: القيمة قبل الخصم</td>
+                </tr>
+                <tr>
+                    <td>Discount</td>
+
+                    <td>{{numberFormating total_discount_amount decimalOnly}}</td>
+                    <td class="numberFld">: الخصم</td>
+                </tr>
+                <tr> {{#if vat_applicable "Y"}}
+                <tr>
+                    <td>VAT</td>
+                    <td>{{numberFormating total_patient_tax decimalOnly}}</td>
+                    <td class="numberFld">:قيمة الضريبة</td>
+                </tr>
+                {{else}} <tr></tr>{{/if}}
+                </tr>
+                <tr>
+                    <td>Receivable</td>
+                    <td>{{numberFormating total_patient_payable currencyOnly}}</td>
+                    <td>المبلغ النقدي:</td>
+                </tr>
+                {{!-- <tr>
+                    <td>Paid Amount</td>
+                    <td>0.00</td>
+                    <td>المبلغ المدفوع</td>
+                </tr>
+                <tr>
+                    <td>Due Amount</td>
+                    <td>{{total_net_claim}}</td>
+                    <td>المبلغ المتبقي</td>
+                </tr> --}}
+            </table>
+        </section>
+
+    </div>
+</body>
