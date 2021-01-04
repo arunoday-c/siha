@@ -623,6 +623,7 @@ export default function BalanceSheet({
       </div>
 
       <ReportLayout
+        dates={rangeDate}
         showArabic={showArabic}
         title={`${type === "pandl" ? "Profit and Loss" : "Balance Sheet"}  ${
           reportType === "comparison" ? "Comparison" : ""
