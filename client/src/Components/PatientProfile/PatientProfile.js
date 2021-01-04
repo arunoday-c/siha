@@ -320,12 +320,12 @@ class PatientProfile extends Component {
 
     if (chief_complaint === null || chief_complaint.length < 4) {
       swalMessage({
-        title: "Enter Chief Complaint. Atlest 4 letter",
+        title: "Please enter chief complaint.",
         type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
-        title: "Enter Significant Signs. Atlest 4 letter",
+        title: "Please enter significant signs.",
         type: "warning",
       });
     } else if (
@@ -389,12 +389,12 @@ class PatientProfile extends Component {
       chief_complaint.length < 4
     ) {
       swalMessage({
-        title: "Enter Chief Complaint. Atlest 4 letter",
+        title: "Please enter chief complaint.",
         type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
-        title: "Enter Significant Signs. Atlest 4 letter",
+        title: "Please enter significant signs.",
         type: "warning",
       });
     } else if (
@@ -458,12 +458,12 @@ class PatientProfile extends Component {
       chief_complaint.length < 4
     ) {
       swalMessage({
-        title: "Enter Chief Complaint. Atlest 4 letter",
+        title: "Please enter chief complaint.",
         type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
-        title: "Enter Significant Signs. Atlest 4 letter",
+        title: "Please enter significant signs.",
         type: "warning",
       });
     } else if (
@@ -605,7 +605,7 @@ class PatientProfile extends Component {
     //   chief_complaint.length < 4
     // ) {
     //   swalMessage({
-    //     title: "Enter Chief Complaint. Atlest 4 letter",
+    //     title: "Please enter chief complaint.",
     //     type: "warning"
     //   });
     // } else if (
@@ -614,7 +614,7 @@ class PatientProfile extends Component {
     //   significant_signs.length < 4
     // ) {
     //   swalMessage({
-    //     title: "Enter Significant Signs. Atlest 4 letter",
+    //     title: "Please enter significant signs.",
     //     type: "warning"
     //   });
     // } else if (

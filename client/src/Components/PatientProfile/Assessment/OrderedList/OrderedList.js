@@ -144,14 +144,14 @@ class OrderedList extends PureComponent {
     if (this.props.chief_complaint === true) {
       swalMessage({
         type: "warning",
-        title: "Enter Chief Complaint. Atlest 4 letter",
+        title: "Please enter chief complaint.",
       });
       return;
     }
     if (this.props.significant_signs === true) {
       swalMessage({
         type: "warning",
-        title: "Enter Significant Signs. Atlest 4 letter",
+        title: "Please enter significant signs.",
       });
       return;
     }

@@ -22,7 +22,7 @@ export default function SubjectiveHandler() {
         $this.setState({
           onset_date: _duration_Date_Interval.onset_date,
           interval: _duration_Date_Interval.interval,
-          [name]: value
+          [name]: value,
         });
       } else if (name === "interval") {
         value = e.value || e.target.value;
@@ -33,7 +33,7 @@ export default function SubjectiveHandler() {
 
         $this.setState({
           onset_date: _dur_date_inter.onset_date,
-          [name]: value
+          [name]: value,
         });
       }
     },
@@ -42,7 +42,7 @@ export default function SubjectiveHandler() {
       let value = e.value || e.target.value;
 
       $this.setState({
-        [name]: value
+        [name]: value,
       });
     },
     datehandle: ($this, ctrl, e) => {
@@ -51,14 +51,14 @@ export default function SubjectiveHandler() {
       $this.setState({
         duration: _durat_interval.duration,
         interval: _durat_interval.interval,
-        onset_date: moment(ctrl)._d
+        onset_date: moment(ctrl)._d,
       });
     },
-    addChiefComplainToPatient: $this => {
+    addChiefComplainToPatient: ($this) => {
       if ($this.state.chief_complaint === null) {
         swalMessage({
-          title: "Please Enter Chief Complaint . .",
-          type: "warning"
+          title: "Please Enter Chief Complaint",
+          type: "warning",
         });
         return;
       }
@@ -78,27 +78,27 @@ export default function SubjectiveHandler() {
         complaint_inactive: "N",
         complaint_inactive_date: null,
         complaint_type: $this.state.complaint_type,
-        lmp_days: $this.state.lmp_days
+        lmp_days: $this.state.lmp_days,
       });
       algaehApiCall({
         uri: "/doctorsWorkBench/addPatientChiefComplaints",
         data: patChiefComp,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             swalMessage({
               title: "Chief Complaint added successfully . .",
-              type: "success"
+              type: "success",
             });
           }
-        }
+        },
       });
-    }
+    },
   };
 }
 
 function durationToDateAndInterval(duration, interval) {
   const _interval = Enumerable.from(GlobalVariables.PAIN_DURATION)
-    .where(w => w.value === interval)
+    .where((w) => w.value === interval)
     .firstOrDefault().name;
   const _date = moment().add(-duration, _interval.toLowerCase());
   return { interval, onset_date: _date._d };
