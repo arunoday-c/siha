@@ -344,6 +344,35 @@ const itemhandle = ($this, item) => {
   //   );
   // }
 };
+const clearInputState = ($this) => {
+  $this.setState({
+    generic_name_item_description: "",
+    saveMedicationEnable: false,
+    addItemEnable: true,
+    item_id: null,
+    generic_id: null,
+    dosage: 1,
+    med_units: "",
+    frequency: "0",
+    no_of_days: 0,
+    dispense: null,
+    frequency_type: "PD",
+    chronic_inactive: "N",
+    isFavMedcine: "N",
+    frequency_time: "AM",
+    frequency_route: "OR",
+    uom_id: null,
+    service_id: null,
+    item_category_id: null,
+    item_group_id: null,
+    pre_approval: null,
+    generic_name: "",
+    item_description: "",
+    instructions: "",
+    start_date: moment().format("YYYY-MM-DD"),
+    total_quantity: 0,
+  });
+};
 const AddItemsOrUpdate = ($this) => {
   let medicationitems = $this.state.medicationitems;
   let medicationobj = {
@@ -386,6 +415,7 @@ const AddItemsOrUpdate = ($this) => {
       secondary_network_office_id: $this.state.secondary_network_office_id,
     },
   ];
+  const rIndex = medicationitems.length;
 
   algaehApiCall({
     uri: "/billing/getBillDetails",
@@ -418,7 +448,7 @@ const AddItemsOrUpdate = ($this) => {
             type: "warning",
           });
         }
-
+        medicationobj["rIndex"] = rIndex;
         medicationitems.push(medicationobj);
         $this.setState(
           {
@@ -426,7 +456,9 @@ const AddItemsOrUpdate = ($this) => {
             updateButton: false,
             rowDetails: [],
           },
-          $this.clearInputState
+          () => {
+            clearInputState($this);
+          }
         );
       }
     },
@@ -470,29 +502,28 @@ const AddItems = ($this) => {
 
   let validate =
     $this.state.item_id !== null &&
-      $this.state.generic_id !== null &&
-      $this.state.dosage !== null &&
-      $this.state.med_units !== null &&
-      $this.state.frequency !== null &&
-      $this.state.no_of_days !== null &&
-      $this.state.frequency_type !== null &&
-      $this.state.frequency_time !== null &&
-      $this.state.frequency_route !== null &&
-      $this.state.uom_id !== null &&
-      $this.state.service_id !== null &&
-      $this.state.item_category_id !== null &&
-      $this.state.item_group_id !== null
+    $this.state.generic_id !== null &&
+    $this.state.dosage !== null &&
+    $this.state.med_units !== null &&
+    $this.state.frequency !== null &&
+    $this.state.no_of_days !== null &&
+    $this.state.frequency_type !== null &&
+    $this.state.frequency_time !== null &&
+    $this.state.frequency_route !== null &&
+    $this.state.uom_id !== null &&
+    $this.state.service_id !== null &&
+    $this.state.item_category_id !== null &&
+    $this.state.item_group_id !== null
       ? true
       : false;
 
   let item_exists = $this.state.medicationitems.find(
     (f) => f.item_id === $this.state.item_id
-  )
+  );
   if ($this.state.updateButton && validate) {
-    deleteItems($this, $this.state.rowDetails);
-    AddItemsOrUpdate($this);
+    // deleteItems($this, $this.state.rowDetails);
+    updateItems($this, $this.state.rowDetails);
   } else if (!$this.state.updateButton && validate) {
-
     if (item_exists === undefined) {
       AddItemsOrUpdate($this);
     } else {
@@ -501,7 +532,6 @@ const AddItems = ($this) => {
         type: "error",
       });
     }
-
   } else {
     swalMessage({
       title: "Please enter all detils of prescription",
@@ -524,31 +554,74 @@ const dateFormater = (value) => {
 
 const deleteItems = ($this, row) => {
   let medicationitems = $this.state.medicationitems;
-  medicationitems.splice(row.rowIdx, 1);
+  // medicationitems.splice(row.rowIdx, 1);
   let saveMedicationEnable = medicationitems.length > 0 ? false : true;
-
-  $this.setState({
-    medicationitems: medicationitems,
-    saveMedicationEnable: saveMedicationEnable,
-  });
+  const details = medicationitems
+    .filter((f) => f.rIndex !== row.rIndex)
+    .map((item, index) => {
+      return { ...item, rIndex: index };
+    });
+  $this.setState(
+    {
+      medicationitems: details,
+      saveMedicationEnable: saveMedicationEnable,
+    }
+    // () => {
+    //   AddItemsOrUpdate($this);
+    // }
+  );
 };
 
-// const updateItems = ($this, row) => {
-//   let medicationitems = $this.state.medicationitems;
-//   const { dosage, no_of_days, instructions } = row;
-//   if (dosage || no_of_days || instructions) {
-//     swalMessage({
-//       title: "Please Enter Correct Values",
-//       type: "error",
-//     });
-//   } else {
-//     medicationitems[row.rowId] = row;
-//     $this.setState({
-//       saveMedicationEnable: false,
-//       medicationitems: medicationitems,
-//     });
-//   }
-// };
+const updateItems = ($this, row) => {
+  let medicationitems = $this.state.medicationitems;
+  const { dosage, no_of_days, instructions } = row;
+  if (!dosage || !no_of_days || !instructions) {
+    swalMessage({
+      title: "Please Enter Correct Values",
+      type: "error",
+    });
+  } else {
+    let udateObj = {
+      item_id: $this.state.item_id,
+      generic_id: $this.state.generic_id,
+      dosage: $this.state.dosage,
+      med_units: $this.state.med_units,
+      frequency: $this.state.frequency,
+      no_of_days: $this.state.no_of_days,
+      frequency_type: $this.state.frequency_type,
+      frequency_time: $this.state.frequency_time,
+      frequency_route: $this.state.frequency_route,
+      start_date: $this.state.start_date,
+      uom_id: $this.state.uom_id,
+      service_id: $this.state.service_id,
+      item_category_id: $this.state.item_category_id,
+      item_group_id: $this.state.item_group_id,
+      instructions: $this.state.instructions,
+      dispense: $this.state.dispense,
+      requested_quantity: $this.state.dispense,
+      approved_qty: $this.state.dispense,
+      // insured: $this.state.insured,
+      // item_status: "A",
+      chronic_inactive: $this.state.chronic_inactive,
+      isFavMedcine: $this.state.isFavMedcine,
+    };
+
+    let indexOfRow = row.rIndex;
+
+    // medicationitems[].indexOf(row);
+    medicationitems[indexOfRow] = { ...row, ...udateObj };
+    $this.setState(
+      {
+        // saveMedicationEnable: false,
+        medicationitems: medicationitems,
+        updateButton: false,
+      },
+      () => {
+        clearInputState($this);
+      }
+    );
+  }
+};
 
 const calcuateDispense = ($this, e) => {
   // if (e.target === null || e.target.value !== e.target.oldvalue) {
@@ -733,6 +806,7 @@ export {
   getItemStock,
   AddItemsOrUpdate,
   printPrescription,
+  clearInputState,
   // updateItems,
   // onchangegridcol,
   // EditGrid,

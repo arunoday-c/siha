@@ -28,6 +28,7 @@ import {
   SaveMedication,
   dateFormater,
   numberhandle,
+  clearInputState,
   // updateItems,
   // onchangegridcol,
   // EditGrid,
@@ -251,35 +252,35 @@ class OrderMedication extends Component {
     });
   }
 
-  clearInputState = () => {
-    this.setState({
-      generic_name_item_description: "",
-      saveMedicationEnable: false,
-      addItemEnable: true,
-      item_id: null,
-      generic_id: null,
-      dosage: 1,
-      med_units: "",
-      frequency: "0",
-      no_of_days: 0,
-      dispense: null,
-      frequency_type: "PD",
-      chronic_inactive: "N",
-      isFavMedcine: "N",
-      frequency_time: "AM",
-      frequency_route: "OR",
-      uom_id: null,
-      service_id: null,
-      item_category_id: null,
-      item_group_id: null,
-      pre_approval: null,
-      generic_name: "",
-      item_description: "",
-      instructions: "",
-      start_date: moment().format("YYYY-MM-DD"),
-      total_quantity: 0,
-    });
-  };
+  // clearInputState = () => {
+  //   this.setState({
+  //     generic_name_item_description: "",
+  //     saveMedicationEnable: false,
+  //     addItemEnable: true,
+  //     item_id: null,
+  //     generic_id: null,
+  //     dosage: 1,
+  //     med_units: "",
+  //     frequency: "0",
+  //     no_of_days: 0,
+  //     dispense: null,
+  //     frequency_type: "PD",
+  //     chronic_inactive: "N",
+  //     isFavMedcine: "N",
+  //     frequency_time: "AM",
+  //     frequency_route: "OR",
+  //     uom_id: null,
+  //     service_id: null,
+  //     item_category_id: null,
+  //     item_group_id: null,
+  //     pre_approval: null,
+  //     generic_name: "",
+  //     item_description: "",
+  //     instructions: "",
+  //     start_date: moment().format("YYYY-MM-DD"),
+  //     total_quantity: 0,
+  //   });
+  // };
   onEditRow(row) {
     this.setState({
       rowDetails: row,
@@ -325,7 +326,7 @@ class OrderMedication extends Component {
             saveMedicationEnable: true,
             medicationitems: [],
           },
-          this.clearInputState
+          clearInputState.bind(this)
         );
       }
     });
@@ -464,6 +465,7 @@ class OrderMedication extends Component {
                             </div>
                           );
                         }}
+                        disabled={this.state.updateButton}
                         onClear={this.clearItemCodeHandler.bind(this)}
                         onClick={this.itemChangeHandle.bind(this)}
                       />
@@ -707,11 +709,19 @@ class OrderMedication extends Component {
                               displayTemplate: (row) => {
                                 return (
                                   <>
-                                    <span onClick={() => this.onEditRow(row)}>
+                                    <span
+                                      onClick={(e) => {
+                                        this.onEditRow(row);
+                                      }}
+                                    >
                                       <i className="fas fa-pen"></i>
                                     </span>
                                     <span
-                                      onClick={deleteItems.bind(this, this)}
+                                      onClick={deleteItems.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
                                     >
                                       <i className="fas fa-trash-alt"></i>
                                     </span>
