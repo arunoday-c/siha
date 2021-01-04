@@ -12,6 +12,10 @@
                         <th>Invoice Date</th>
                         <th>Customer Name</th>
                         <th>Sales Persona Name</th>
+                        <th>Posted</th>
+                        {{!-- <th>Return</th>
+                        <th>Revert</th> --}}
+                        <th>Cancel</th>
                         <th>Total Amount</th>
                     </tr>
                 </thead>
@@ -21,14 +25,18 @@
                         <td>{{inc @index}}</td>
                         <td>{{invoice_number}}</td>
                         <td>{{invoice_date}}</td>
-                        <td>{{customer_name}}</td>
-                        <td>{{sales_per_name}}</td>
+                        <td class="txtFld">{{customer_name}}</td>
+                        <td class="txtFld">{{sales_per_name}}</td>
+                        <td class="">{{is_posted}}</td>
+                        {{!-- <td class="">{{return_done}}</td>
+                        <td class="">{{is_revert}}</td> --}}
+                        <td class="">{{is_cancelled}}</td>
                         <td class="numberFld">{{net_payable}}</td>
                     </tr>
                     {{/each }}
                     <tr class="numberFldTotalBottom">
 
-                        <td colspan="5" class="numberFld">Total</td>
+                        <td colspan="7" class="numberFld">Total</td>
                         <td class="numberFld">{{net_payable}}</td>
                     </tr>
                     {{else}}

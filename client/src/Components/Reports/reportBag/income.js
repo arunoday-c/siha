@@ -1,4 +1,9 @@
-export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
+export default function Income({
+  hospital_id,
+  RECEIPT_TYPE,
+  cashier_id,
+  FORMAT_YESNO,
+}) {
   return {
     name: "Income",
     excel: "true",
@@ -583,26 +588,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
           //   },
           // },
           {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_id",
             initialLoad: true,
@@ -625,6 +611,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
             },
           },
           {
+            className: "col-3 form-group",
             type: "dropdown",
             name: "customer_id",
             initialLoad: true,
@@ -643,6 +630,78 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
               textField: "customer_name",
               valueField: "hims_d_customer_id",
               data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "posted_status",
+            initialLoad: true,
+            isImp: false,
+            label: "Posted",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_YESNO,
+            },
+          },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "revert_status",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Revert",
+          //   dataSource: {
+          //     textField: "name",
+          //     valueField: "value",
+          //     data: FORMAT_YESNO,
+          //   },
+          // },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "return_status",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Return",
+          //   dataSource: {
+          //     textField: "name",
+          //     valueField: "value",
+          //     data: FORMAT_YESNO,
+          //   },
+          // },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "cancel_status",
+            initialLoad: true,
+            isImp: false,
+            label: "Cancel",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_YESNO,
             },
           },
         ],
