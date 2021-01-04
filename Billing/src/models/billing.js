@@ -108,6 +108,8 @@ export default {
         strQuery = `SELECT hims_f_lab_order_id FROM hims_f_lab_order where visit_id= ${inputParam.visit_id} and service_id=${inputParam.services_id};`
       } else if (inputParam.service_type_id == 11) {
         strQuery = `SELECT hims_f_rad_order_id FROM hims_f_rad_order where visit_id= ${inputParam.visit_id} and service_id=${inputParam.services_id};`
+      } else if (inputParam.service_type_id == 14) {
+        strQuery = `SELECT hims_f_package_header_id FROM hims_f_package_header where visit_id= ${inputParam.visit_id} and services_id=${inputParam.services_id};`
       }
       if (strQuery == "") {
         _mysql.releaseConnection();
