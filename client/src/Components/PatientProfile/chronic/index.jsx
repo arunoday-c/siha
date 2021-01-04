@@ -95,6 +95,9 @@ export default function ({ checkChronicExists, updateChronic }) {
                 <b>Status</b>
               </th>
               <th>
+                <b>ICD Code</b>
+              </th>{" "}
+              <th>
                 <b>Chronic Conditions</b>
               </th>
               <th>
@@ -126,6 +129,7 @@ export default function ({ checkChronicExists, updateChronic }) {
                         {item.chronic_inactive === "N" ? "ACTIVE" : "INACTIVE"}
                       </button>
                     </td>
+                    <td>{item.icd_code}</td>
                     <td>{item.icd_description}</td>
                     <td>
                       {item.added_by} /{" "}

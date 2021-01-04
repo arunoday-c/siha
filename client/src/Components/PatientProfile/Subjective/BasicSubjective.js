@@ -1302,15 +1302,14 @@ class BasicSubjective extends Component {
                     onCancel={() => {
                       this.setState({ editPrescriptionModal: false });
                     }}
-                    width={720}
-                    footer={null}
-                    // className={`${userLanguage}_comp row algaehNewModal`}
+                    className={`row algaehNewModal updatePresModal`}
+                    footer={false}
                   >
-                    <div className="row popupInner">
+                    <div className="col popupInner">
                       <div className="row medicationSearchCntr">
                         <AlgaehAutoSearch
                           div={{
-                            className: "col-8 mandatory form-group",
+                            className: "col-12 mandatory form-group",
                           }}
                           label={{
                             forceLabel: "Generic Name / Item Name",
@@ -1363,17 +1362,8 @@ class BasicSubjective extends Component {
                           onClear={this.clearItemCodeHandler.bind(this)}
                           onClick={this.itemHandle.bind(this)}
                         />
-                        {/* <div className="col-4">
-                            <button
-                              className="btn btn-default btn-small"
-                              style={{ marginTop: 21 }}
-                              onClick={this.favMedData.bind(this)}
-                            >
-                              Show Favourite
-                            </button>
-                          </div> */}
                         <AlagehAutoComplete
-                          div={{ className: "col-6  mandatory form-group" }}
+                          div={{ className: "col-3  mandatory form-group" }}
                           label={{ forceLabel: "Frequency", isImp: true }}
                           selector={{
                             sort: "off",
@@ -1390,7 +1380,7 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-6  mandatory form-group" }}
+                          div={{ className: "col-3  mandatory form-group" }}
                           label={{ forceLabel: "Freq. Type", isImp: true }}
                           selector={{
                             sort: "off",
@@ -1407,7 +1397,7 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-6 mandatory form-group" }}
+                          div={{ className: "col-3 mandatory form-group" }}
                           label={{ forceLabel: "Consume", isImp: true }}
                           selector={{
                             sort: "off",
@@ -1424,7 +1414,7 @@ class BasicSubjective extends Component {
                           }}
                         />{" "}
                         <AlagehAutoComplete
-                          div={{ className: "col-6 mandatory form-group" }}
+                          div={{ className: "col-3 mandatory form-group" }}
                           label={{ forceLabel: "Route", isImp: true }}
                           selector={{
                             sort: "off",
@@ -1441,7 +1431,7 @@ class BasicSubjective extends Component {
                           }}
                         />{" "}
                         <AlagehFormGroup
-                          div={{ className: "col-3  mandatory form-group" }}
+                          div={{ className: "col  mandatory form-group" }}
                           label={{
                             forceLabel: "Dosage",
                             isImp: true,
@@ -1463,7 +1453,7 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-4 mandatory form-group" }}
+                          div={{ className: "col mandatory form-group" }}
                           label={{
                             forceLabel: "Units",
                             isImp: true,
@@ -1485,7 +1475,7 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-5  mandatory form-group" }}
+                          div={{ className: "col  mandatory form-group" }}
                           label={{
                             forceLabel: "Duration (Days)",
                             isImp: true,
@@ -1506,7 +1496,7 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <AlgaehDateHandler
-                          div={{ className: "col-4 mandatory form-group" }}
+                          div={{ className: "col mandatory form-group" }}
                           label={{ forceLabel: "Start Date", isImp: true }}
                           textBox={{
                             className: "txt-fld",
@@ -1518,54 +1508,6 @@ class BasicSubjective extends Component {
                           }}
                           value={this.state.start_date}
                         />
-                        {/* <div className="col">
-                          <label>Is Chronic Medication</label>
-                          <div className="customCheckbox">
-                            <label className="checkbox block">
-                              <input
-                                type="checkbox"
-                                name="chronic_inactive"
-                                value={this.state.chronic_inactive}
-                                checked={this.state.chronic_inactive === "Y"}
-                                // disabled={this.state.disableEdit}
-                                onChange={(e) => {
-                                  e.target.checked
-                                    ? this.setState({
-                                        chronic_inactive: "Y",
-                                      })
-                                    : this.setState({
-                                        chronic_inactive: "N",
-                                      });
-                                }}
-                              />
-                              <span>Yes</span>
-                            </label>
-                          </div>
-                        </div>
-                        <div className="col">
-                          <label>Add to Favourite</label>
-                          <div className="customCheckbox">
-                            <label className="checkbox block">
-                              <input
-                                type="checkbox"
-                                name="isFavMedcine"
-                                value={this.state.isFavMedcine}
-                                checked={this.state.isFavMedcine === "Y"}
-                                // disabled={this.state.disableEdit}
-                                onChange={(e) => {
-                                  e.target.checked
-                                    ? this.setState({
-                                        isFavMedcine: "Y",
-                                      })
-                                    : this.setState({
-                                        isFavMedcine: "N",
-                                      });
-                                }}
-                              />
-                              <span>Yes</span>
-                            </label>
-                          </div>
-                        </div> */}
                         <div className="col-12">
                           <label className="style_Label ">Instruction</label>
                           <textarea
@@ -1583,6 +1525,11 @@ class BasicSubjective extends Component {
                           <span style={{ float: "left" }}>
                             Pharmacy Stock: <b>{this.state.total_quantity}</b>
                           </span>
+                        </div>
+                        <div
+                          className="col-12 margin-bottom-15"
+                          style={{ textAlign: "right" }}
+                        >
                           <button
                             className="btn btn-primary btn-sm"
                             type="button"
@@ -1663,7 +1610,7 @@ class BasicSubjective extends Component {
                                               "DD dddd MMMM YYYY"
                                             )}
                                           </small>
-                                          <div className="deletePresItem">
+                                          <div className="medAction deletePresItem">
                                             <i
                                               onClick={this.deletePrecription.bind(
                                                 this,
@@ -1672,6 +1619,8 @@ class BasicSubjective extends Component {
                                               )}
                                               className="fas fa-trash"
                                             />
+                                          </div>
+                                          <div className="medAction reOrderOnHover">
                                             <i
                                               onClick={this.onEditRow.bind(
                                                 this,

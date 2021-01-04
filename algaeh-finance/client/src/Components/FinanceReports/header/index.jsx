@@ -1,7 +1,8 @@
 import React, { memo, useContext } from "react";
+import moment from "moment";
 import { OrganizationContext } from "../context";
 
-export default memo(function ({ title }) {
+export default memo(function ({ title, dates }) {
   const { organizationDetail } = useContext(OrganizationContext);
   const {
     organization_name,
@@ -17,6 +18,13 @@ export default memo(function ({ title }) {
       </div>
       <hr></hr>
       <h3>{title}</h3>
+      {dates && Array.isArray(dates)
+        ? dates
+            .map((date) => {
+              return moment(date).format("DD/MM/YYYY");
+            })
+            .join(" - ")
+        : dates}
     </div>
   );
 });

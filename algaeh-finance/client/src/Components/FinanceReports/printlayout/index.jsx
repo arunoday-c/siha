@@ -15,6 +15,7 @@ export default function ({
   renderAfterTable,
   excelBodyRender,
   showArabic,
+  dates,
 }) {
   const isExpand = layout === undefined ? true : layout.expand;
   const createPrintObject = useRef(undefined);
@@ -53,7 +54,7 @@ export default function ({
     <>
       <div className="row" ref={createPrintObject}>
         <div className="col-12">
-          <ReportHeader title={title} />
+          <ReportHeader title={title} dates={dates} />
           <div className="reportHeaderAction">
             <span>
               <SmartTable

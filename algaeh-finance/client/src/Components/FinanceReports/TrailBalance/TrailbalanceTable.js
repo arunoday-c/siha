@@ -203,6 +203,7 @@ export default function TrailBalaceReport({
 
       <PrintLayout
         title="Trail Balance"
+        dates={dates}
         showArabic={showArabic}
         columns={columns}
         data={accounts || []}

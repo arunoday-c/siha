@@ -498,93 +498,7 @@ class SalesInvoice extends Component {
           </MyContext.Provider>
 
           <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-3 textAreaLeft" }}
-              label={{
-                forceLabel: "Enter Narration",
-                isImp: false,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "narration",
-                value: this.state.narration,
-                events: {
-                  onChange: texthandle.bind(this, this),
-                },
-                others: {
-                  // disabled: this.state.dataExitst,
-                  multiline: true,
-                  rows: "3",
-                },
-              }}
-            />
-            <div className="col-9" style={{ textAlign: "right" }}>
-              <div className="row">
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Sub Total",
-                    }}
-                  />
-                  <h6>{GetAmountFormart(this.state.sub_total)}</h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Discount Amount",
-                    }}
-                  />
-                  <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
-                </div>
-
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Net Total",
-                    }}
-                  />
-                  <h6>{GetAmountFormart(this.state.net_total)}</h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Tax",
-                    }}
-                  />
-                  <h6>{GetAmountFormart(this.state.total_tax)}</h6>
-                </div>
-                <AlagehFormGroup
-                  div={{ className: "col-3 textAreaLeft" }}
-                  label={{
-                    forceLabel: "Retention amt",
-                    isImp: false,
-                  }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    className: "txt-fld",
-                    name: "retention_amt",
-                    value: this.state.retention_amt,
-                    events: {
-                      onChange: texthandle.bind(this, this),
-                    },
-                    others: {
-                      disabled: this.state.dataExitst,
-                    },
-                  }}
-                />
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Net Receivable",
-                    }}
-                  />
-                  <h6>{GetAmountFormart(this.state.net_payable)}</h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col">
-            <div className="row">
+            <div className="col-6">
               <div
                 className="portlet portlet-bordered"
                 style={{ marginBottom: 60 }}
@@ -675,7 +589,110 @@ class SalesInvoice extends Component {
                 </div>
               </div>
             </div>
+            <div className="col-6" style={{ textAlign: "right" }}>
+              <div className="row">
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Sub Total",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.sub_total)}</h6>
+                </div>
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Discount Amount",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
+                </div>
+
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Net Total",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.net_total)}</h6>
+                </div>
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Tax",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.total_tax)}</h6>
+                </div>
+                <AlagehFormGroup
+                  div={{ className: "col-3" }}
+                  label={{
+                    forceLabel: "Retention amt",
+                    isImp: false,
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    className: "txt-fld",
+                    name: "retention_amt",
+                    value: this.state.retention_amt,
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
+                    others: {
+                      disabled: this.state.dataExitst,
+                    },
+                  }}
+                />
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Net Receivable",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.net_payable)}</h6>
+                </div>
+                <AlgaehDateHandler
+                  div={{ className: "col-3" }}
+                  label={{
+                    forceLabel: "Delivery Date",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "invoice_date",
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    onChange: datehandle.bind(this, this),
+                    onBlur: dateValidate.bind(this, this),
+                  }}
+                  disabled={this.state.dateEditable}
+                  value={this.state.invoice_date}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-12 textAreaLeft" }}
+                  label={{
+                    forceLabel: "Enter Narration",
+                    isImp: false,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "narration",
+                    value: this.state.narration,
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
+                    others: {
+                      // disabled: this.state.dataExitst,
+                      multiline: true,
+                      rows: "3",
+                    },
+                  }}
+                />
+              </div>
+            </div>
           </div>
+
           <div className="hptl-phase1-footer">
             <div className="row">
               <div className="col-4 leftBtnGroup">

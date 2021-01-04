@@ -75,6 +75,7 @@ export function getChronic(req, res, next) {
         MAX(if(C.added_provider_id=E.hims_d_employee_id,E.full_name,'')) as added_by,
         MAX(if(C.updated_provider_id=E.hims_d_employee_id,E.full_name,'')) as updated_by,
         MAX(ICD.icd_description) as icd_description,
+        MAX(ICD.icd_code) as icd_code,
         MAX(C.chronic_inactive) as chronic_inactive,
         MAX(C.created_date) as created_date,
         MAX(C.updated_date) as updated_date,
