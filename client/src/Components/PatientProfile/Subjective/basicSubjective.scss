@@ -84,51 +84,57 @@
           &:last-child {
             border-bottom: none;
           }
-
-          .reOrderOnHover {
+          .medAction {
             position: absolute;
             text-align: center;
-            width: 36px;
+            width: 30px;
             bottom: 0;
-            background: #8d8d8d;
-            padding: 5px;
-            color: #fff;
-            height: 36px;
-            font-size: 1.4rem;
-            right: 0;
+            background: #ffffff;
+            padding: 0;
+            color: #525252;
+            height: 29px;
+            font-size: 1rem;
+            right: 3px;
+            top: 0;
+            bottom: 10px;
+            border: 1px solid #d0cfcf;
+            line-height: 28px;
+            border-radius: 5px;
             display: none;
+            background: #ffffff;
+            cursor: pointer;
+          }
+          .reOrderOnHover {
+            top: 0;
+            &:hover {
+              background-color: #cacaca;
+            }
           }
 
           .deletePresItem {
-            position: absolute;
-            text-align: center;
-            width: 36px;
-            bottom: 0;
-            background: #ffffff;
-            padding: 5% 5px 5px;
-            color: #f00;
-            height: 36px;
-            font-size: 1.4rem;
-            right: 0;
-            display: none;
-            top: 10px;
-            height: auto;
-            box-shadow: -5px 0px 20px 0px #0000002b;
-            bottom: 10px;
+            color: #d65b5b;
+            top: 29px;
+            &:hover {
+              background-color: #d65b5b;
+              color: white;
+            }
           }
           &:hover {
-            .reOrderOnHover {
-              display: none;
-              cursor: pointer;
-              background: #009182;
-            }
+            background-color: white;
+            .reOrderOnHover,
             .deletePresItem {
               display: block;
-              cursor: pointer;
             }
           }
         }
       }
     }
+  }
+}
+.updatePresModal {
+  min-width: 55vw !important;
+  max-width: 55vw !important;
+  .medicationSearchCntr {
+    margin-top: 10px;
   }
 }
