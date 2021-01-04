@@ -814,13 +814,12 @@ export default {
     //  H.finance_day_end_header_id=SD.day_end_header_id
     // left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
     // group by  finance_day_end_header_id;
-    let strQuery = ""
+    let strQuery = "";
     if (input.revert_trans == "Y") {
       strQuery = `select finance_revert_day_end_header_id as finance_day_end_header_id, transaction_date,    
           ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
           invoice_no, from_screen, narration, entered_date 
-          from finance_revert_day_end_header`
-
+          from finance_revert_day_end_header`;
     } else {
       strQuery = `select finance_day_end_header_id, transaction_date,    
           ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
@@ -830,7 +829,7 @@ export default {
           ${joinStr}
           left join  algaeh_d_app_screens S on H.from_screen=S.screen_code
           left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
-          where ${strQry}; `
+          where ${strQry}; `;
     }
     _mysql
       .executeQuery({
@@ -1302,13 +1301,13 @@ export default {
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                              };`;
+                            };`;
                           } else {
                             updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                              };`;
+                            };`;
                           }
                         }
 
@@ -1432,12 +1431,16 @@ export default {
     let input = req.body;
     _mysql
       .executeQueryWithTransaction({
-        query: "select * from finance_day_end_header where finance_day_end_header_id=?; \
+        query:
+          "select * from finance_day_end_header where finance_day_end_header_id=?; \
                 select * from finance_day_end_sub_detail where day_end_header_id=?",
-        values: [input.finance_day_end_header_id, input.finance_day_end_header_id],
-        printQuery: true
+        values: [
+          input.finance_day_end_header_id,
+          input.finance_day_end_header_id,
+        ],
+        printQuery: true,
       })
-      .then(voucher_result => {
+      .then((voucher_result) => {
         const voucher_header = voucher_result[0][0];
         const voucher_detail = voucher_result[1];
         _mysql
@@ -1461,7 +1464,7 @@ export default {
             ],
             printQuery: true,
           })
-          .then(header_result => {
+          .then((header_result) => {
             const IncludeValuess = [
               "payment_date",
               "head_id",
@@ -1490,18 +1493,20 @@ export default {
               })
               .then((subResult) => {
                 let strQuery = `delete from finance_day_end_sub_detail where day_end_header_id=${input.finance_day_end_header_id};
-                  delete from finance_day_end_header where finance_day_end_header_id=${input.finance_day_end_header_id};`
+                  delete from finance_day_end_header where finance_day_end_header_id=${input.finance_day_end_header_id};`;
                 if (input.from_screen == "PR0004") {
                   _mysql
                     .executeQueryWithTransaction({
-                      query: "select hims_f_procurement_grn_header_id, po_id from hims_f_procurement_grn_header where grn_number=?;",
+                      query:
+                        "select hims_f_procurement_grn_header_id, po_id from hims_f_procurement_grn_header where grn_number=?;",
                       values: [input.document_number],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(receipt_result => {
+                    .then((receipt_result) => {
                       _mysql
                         .executeQueryWithTransaction({
-                          query: `UPDATE hims_f_procurement_po_header SET is_posted='N', authorize1='N', authorize2='N',\
+                          query:
+                            `UPDATE hims_f_procurement_po_header SET is_posted='N', authorize1='N', authorize2='N',\
                     is_revert='Y', revert_reason=?, reverted_date=?, reverted_by=? WHERE hims_f_procurement_po_header_id=?; \
                     UPDATE hims_f_procurement_grn_header SET posted='N', is_revert='Y', reverted_date=?, reverted_by=? \
                     WHERE hims_f_procurement_grn_header_id=?;` + strQuery,
@@ -1512,7 +1517,7 @@ export default {
                             receipt_result[0].po_id,
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
-                            receipt_result[0].hims_f_procurement_grn_header_id
+                            receipt_result[0].hims_f_procurement_grn_header_id,
                           ],
                           printQuery: true,
                         })
@@ -1540,12 +1545,12 @@ export default {
 
                   _mysql
                     .executeQueryWithTransaction({
-                      query: "select hims_f_sales_invoice_header_id, sales_invoice_mode, sales_order_id from hims_f_sales_invoice_header where invoice_number=?;",
+                      query:
+                        "select hims_f_sales_invoice_header_id, sales_invoice_mode, sales_order_id from hims_f_sales_invoice_header where invoice_number=?;",
                       values: [input.document_number],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(invoie_result => {
-
+                    .then((invoie_result) => {
                       let strQry = "";
 
                       if (invoie_result[0].sales_invoice_mode === "S") {
@@ -1560,13 +1565,14 @@ export default {
                         );
                       }
 
-
                       _mysql
                         .executeQueryWithTransaction({
-                          query: "UPDATE hims_f_sales_order SET is_posted='N', authorize1='N', authorize2='N',\
+                          query:
+                            "UPDATE hims_f_sales_order SET is_posted='N', authorize1='N', authorize2='N',\
                     is_revert='Y', revert_reason=?, reverted_date=?, reverted_by=? WHERE hims_f_sales_order_id=?; \
                     UPDATE hims_f_sales_invoice_header SET is_posted='N', is_revert='Y', reverted_date=?, reverted_by=? \
-                    WHERE hims_f_sales_invoice_header_id=?;"+ strQry,
+                    WHERE hims_f_sales_invoice_header_id=?;" +
+                            strQry,
                           values: [
                             input.revert_reason,
                             new Date(),
@@ -1574,13 +1580,13 @@ export default {
                             invoie_result[0].sales_order_id,
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
-                            invoie_result[0].hims_f_sales_invoice_header_id
+                            invoie_result[0].hims_f_sales_invoice_header_id,
                           ],
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(result => {
-                          const sales_order_services = result[2]
-                          let IncludeValues = []
+                        .then((result) => {
+                          const sales_order_services = result[2];
+                          let IncludeValues = [];
                           if (invoie_result[0].sales_invoice_mode === "S") {
                             IncludeValues = [
                               "sales_order_id",
@@ -1596,18 +1602,20 @@ export default {
                               "tax_amount",
                               "total_amount",
                               "comments",
-                              "arabic_comments"
+                              "arabic_comments",
                             ];
 
                             _mysql
                               .executeQuery({
                                 query:
-                                  `INSERT INTO hims_f_sales_order_adj_services(??) VALUES ?;` + strQuery,
+                                  `INSERT INTO hims_f_sales_order_adj_services(??) VALUES ?;` +
+                                  strQuery,
                                 values: sales_order_services,
                                 includeValues: IncludeValues,
                                 extraValues: {
-                                  created_by: req.userIdentity.algaeh_d_app_user_id,
-                                  created_date: new Date()
+                                  created_by:
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                  created_date: new Date(),
                                 },
                                 bulkInsertOrUpdate: true,
                                 printQuery: true,
@@ -1624,7 +1632,9 @@ export default {
                                   next(error);
                                 });
                               });
-                          } else if (invoie_result[0].sales_invoice_mode === "I") {
+                          } else if (
+                            invoie_result[0].sales_invoice_mode === "I"
+                          ) {
                             IncludeValues = [
                               "sales_order_id",
                               "item_id",
@@ -1644,12 +1654,14 @@ export default {
                             _mysql
                               .executeQuery({
                                 query:
-                                  `INSERT INTO hims_f_sales_order_adj_item(??) VALUES ?;` + strQuery,
+                                  `INSERT INTO hims_f_sales_order_adj_item(??) VALUES ?;` +
+                                  strQuery,
                                 values: sales_order_services,
                                 includeValues: IncludeValues,
                                 extraValues: {
-                                  created_by: req.userIdentity.algaeh_d_app_user_id,
-                                  created_date: new Date()
+                                  created_by:
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                  created_date: new Date(),
                                 },
                                 bulkInsertOrUpdate: true,
                                 printQuery: true,
@@ -1673,17 +1685,15 @@ export default {
                               next();
                             });
                           }
-
-
                         })
 
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.rollBackTransaction(() => {
                             next(e);
                           });
                         });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.rollBackTransaction(() => {
                         next(e);
                       });
@@ -1707,7 +1717,6 @@ export default {
           next(e);
         });
       });
-
   },
   //created by irfan: to
   removeAccountHead: (req, res, next) => {
@@ -1853,7 +1862,7 @@ export default {
   previewDayEndEntries: (req, res, next) => {
     const _mysql = new algaehMysql();
 
-    let strQuery = ""
+    let strQuery = "";
 
     const decimal_places = req.userIdentity.decimal_places;
 
@@ -1863,15 +1872,14 @@ export default {
       case payment_type when 'CR' then 'Credit' else 'Debit' end
        as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
       from finance_revert_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
-      left join finance_account_child C on SD.child_id=C.finance_account_child_id where revert_day_end_header_id=? order by payment_type desc;`
-
+      left join finance_account_child C on SD.child_id=C.finance_account_child_id where revert_day_end_header_id=? order by payment_type desc;`;
     } else {
       strQuery = `select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
       child_id,concat(account_name,'-->',child_name ) as to_account,  ROUND( debit_amount , ${decimal_places}) as debit_amount,
       case payment_type when 'CR' then 'Credit' else 'Debit' end
        as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
       from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
-      left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=? order by payment_type desc;`
+      left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=? order by payment_type desc;`;
     }
 
     _mysql
@@ -2165,19 +2173,19 @@ export default {
               if (data.debit_amount != input.opening_balance) {
                 voucherStr = `update finance_voucher_details set ${
                   input.type === "CR" ? "credit_amount" : "debit_amount"
-                  }=${input.opening_balance},
+                }=${input.opening_balance},
                 payment_type ='${input.type === "CR" ? "CR" : "DR"}',${
                   input.type === "CR" ? "debit_amount" : "credit_amount"
-                  }=0  where finance_voucher_id=${data.finance_voucher_id};`;
+                }=0  where finance_voucher_id=${data.finance_voucher_id};`;
               }
             } else if (data.root_id == 2 || data.root_id == 3) {
               if (data.credit_amount != input.opening_balance) {
                 voucherStr = `update finance_voucher_details set ${
                   input.type === "DR" ? "debit_amount" : "credit_amount"
-                  }=${input.opening_balance},
+                }=${input.opening_balance},
                 payment_type ='${input.type === "DR" ? "DR" : "CR"}',${
                   input.type === "DR" ? "credit_amount" : "debit_amount"
-                  }=0 where finance_voucher_id=${data.finance_voucher_id};`;
+                }=0 where finance_voucher_id=${data.finance_voucher_id};`;
               }
             }
             executeFunction();
@@ -2771,11 +2779,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-            parseFloat(item["total_debit_amount"])
+              parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-            parseFloat(item["total_credit_amount"])
+              parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;
@@ -2932,7 +2940,7 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
             finance_account_head_id,
             finance_account_head_id,
           ],
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
