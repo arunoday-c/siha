@@ -1,40 +1,111 @@
-{{{importStyle 'css/algaehReportStyles.css'}}}
-<style type="text/css">
-    .reportHeaderCntr {
-        width: 94%;
-        border-collapse: collapse;
-        padding: 0; margin: 0;
-        
-    }
 
-.reportHeaderInnerCntr {
+<style type="text/css">
+
+    .reportHeaderCntr {
         width: 100%;
         border-collapse: collapse;
-        margin: 0 18px;
+        margin: 0 18px 0;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        font-size: 11px;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .col-left {
+        float: left;
+        width: 25%;
+        text-align: left;
+    }
+
+    .col-center {
+        width: 50%;
+        text-align: center;
+        float: none;
+        margin: 0 auto;
+    }
+
+    .col-right {
+        float: right;
+        width: 25%;
+        text-align: right;
+    }
+
+    .hospitalLogo img {
+        margin: 0;
+        padding: 0;
+        border: none;
+        height: 35px;
+        width: auto;
+        text-align: center;
+    }
+
+    .reportHeaderCntr h5 {
+        margin: 3px 0;
+        padding: 0;
+        font-size: 11px;
+    }
+
+    .reportHeaderCntr p {
+        margin: 2px 0;
+        padding: 0;
+        font-size: 7px;
+        line-height: 10px;
+    }
+
+    .reportHeaderCntr p b {
+        font-size: 8px;
+    }
+
+    .showFilterValue {
+        width: 100%;
+    }
+
+    .showFilterValue span {
+
+        font-weight: bold;
+        display: inline-block;
+        padding: 3px 5px;
+        border-left: 1px solid #ccc;
+        text-align: left;
+    }
+
+    .showFilterValue span:first-child {
+        border-left: none;
+    }
+
+    .showFilterValue small {
+        display: block;
+        color: #ccc;
+    }
+
+    .headerFooterStyle {
+        width: 100%;
+        height: 10px;
+        float: left;
+        text-align: center;
+        border-top: 0.5rem dotted #ccc;
+        font-size: 8px;
+        margin-top: 5px;
+    }
+    .reportHeaderPat {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 18px 0px;
         text-align: left;
         font-family: Arial, sans-serif;
         font-weight: normal;
     }
-    .reportHeaderInnerCntr td {
-        border:none;
-        padding: 0 5px;
-        margin: 0;
+    .reportHeaderPat tr td {
+        border-top:1px solid #ccc;
+        border-bottom:1px solid #ccc;
+        padding: 3px 5px;
         font-size: 8px;
     }
-    .reportHeaderInnerCntr td p{
-        line-height: 5px;
-
-    }
-     .reportHeaderInnerCntr td b{
-        width: 90px;
-        display: inline-block;
-
-    }
-
     .reportHeaderAnalyte {
         width: 100%;
         border-collapse: collapse;
-        margin: 5px 18px 2px;
+        margin: 0 18px 0;
         text-align: left;
         font-family: Arial, sans-serif;
         font-weight: normal;
@@ -44,37 +115,73 @@
         border-bottom:1px solid #ccc;
         padding: 3px 5px;
         font-size: 9px;
-        background-color: red!important;
+        background-color:#000;
         font-weight: bold;
-    }
-
+    }.numberFld {
+  text-align: right !important;
+}
+.txtFld {
+  text-align: left !important;
+}
+.numberFldTotal {
+  background: #f2f2f2;
+  font-weight: bold;
+}
+.numberFldTotalBottom {
+  background: #ffc7a6;
+  font-weight: bold;
+}
 </style>
-
 <body>
-    <table class="reportHeaderCntr" cellspacing="0" cellpadding="0">
-        <tr>
-            <td>
-                <table class="reportHeaderInnerCntr">
-                    <tr style="vertical-align: top">
-                        <td style="vertical-align: top" style="height: 62px;">
-                            <p><b>Patient Code</b>: {{patient_code}}</p>
-                            <p><b>Patient Name & Age</b>:  {{patient_name}} {{age_in_years}} YRS / {{age_in_months}} MTH / {{age_in_days}} DYS</p>
-                            <p><b>Refer By</b>: {{doctor_name}} </p>   <p><b>Test Requested</b>: Mentioned Below </p> <p><b>ID No.</b>: {{primary_id_no}}</p>
-                        </td>
-                        <td width="38%" style="vertical-align: top">
-                            <p><b>Sample Collected:</b></p>
-                            <p>{{organization_name}}</p>
-                            <p>{{address1}}</p>
-                            <p>Tel: <span>{{phone1}}</span></p>
-                            <p>Vat No: <span>{{tax_number}}</span></p>
-                        </td>
-                    </tr>
+
+    
+    <div style="width:94%;">
+        <div class="reportHeaderCntr" >
+        <div class="col-left">
+            <p><b>{{organization_name}}</b></p>
+            <p>{{address1}}</p>
+            <p>Tel: <span>{{phone1}}</span></p>
+            <p>Vat No: <span>{{tax_number}}</span></p>
+        </div>
+        <div class="col-right">
+            <p><b>{{legal_name}}</b></p>
+            <p>{{address2}}</p>
+            <p><span style="display: inline-block; text-align:left;">{{phone1}} :</span>رقم الهاتف</p>
+            <p>رقم الضريبة المضافة: <span>{{tax_number}}</span></p>
+        </div>
+
+        <div class="col-center">
+            <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
+            {{!-- <h5>{{{report_name_for_header}}}</h5> --}}
+        </div>
+        </div>
+       <section>
+        <table class="reportHeaderPat" width="100%"  cellspacing="0" cellpadding="0">
+<tr>
+                <td><label>MRN Number</label></td>
+                <td> <span>{{patient_code}}</span></td>
+
+                <td><label>Identity No.</label></td>
+                <td><span>{{primary_id_no}}</span></td>
+            </tr>
+            <tr>
+                <td><label>Patient Name</label></td>
+                <td><span>{{patient_name}}</span></td>
+
+                <td><label>Company name</label></td>
+                <td> <span>{{insurance_provider_name}}</span></td>
+            </tr>
+            <tr>
+                <td><label>Age & Gender</label></td>
+                <td><span>{{age_in_years}}Y/ {{age_in_months}}M/ {{age_in_days}}D - {{gender}}</span></td>
+                <td><label>Doctor Ordered by</label></td>
+                <td> <span>{{doctor_name}}</span></td>
+            </tr>
                 </table>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <table class="reportHeaderAnalyte">
+    </section>
+       <section>
+        <table class="reportHeaderAnalyte" width="100%"  cellspacing="0" cellpadding="0">
+
                     <tr>
                         <td width="32%" class="txtFld">Analyte</td>
                         <td width="20%" class="numberFld">Result</td>
@@ -83,7 +190,6 @@
                         <td width="30%" class="numberFld">Reference Range</td>
                     </tr>
                 </table>
-            </td>
-        </tr>
-    </table>
+    </section>
+    </div>
 </body>
