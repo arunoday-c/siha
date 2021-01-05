@@ -3765,8 +3765,6 @@ function getEarningComponents(options) {
           // console.log("total_days", empResult["total_days"]);
 
           if (leave_salary == null || leave_salary == undefined) {
-
-            // console.log("leave_period", leave_period)
             let total_paid_days =
               parseFloat(empResult["total_paid_days"]) - leave_period - early_join_days;
             current_earning_per_day_salary = parseFloat(obj["amount"]) / parseFloat(empResult["total_days"]);
@@ -3790,13 +3788,15 @@ function getEarningComponents(options) {
               current_earning_amt = obj["limit_amount"];
             }
           } else if (leave_salary == "N") {
+            console.log("empResult", empResult)
             leave_salary_days =
-              parseFloat(empResult["total_days"]) -
+              parseFloat(empResult["total_work_days"]) -
               (parseFloat(empResult["paid_leave"]) >
-                parseFloat(empResult["total_days"])
-                ? parseFloat(empResult["total_days"])
+                parseFloat(empResult["total_work_days"])
+                ? parseFloat(empResult["total_work_days"])
                 : parseFloat(empResult["paid_leave"]));
 
+            console.log("leave_salary_days", leave_salary_days)
             current_earning_per_day_salary = parseFloat(
               obj["amount"] / parseFloat(empResult["total_days"])
             );
