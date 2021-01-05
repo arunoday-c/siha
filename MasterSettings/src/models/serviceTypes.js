@@ -681,6 +681,8 @@ export default {
             ROUND(qty,0) as qty,PD.service_id,SR.service_code as detail_service_code,\
             SR.service_name as detail_service_name, S.standard_fee as procedure_amount from hims_d_procedure PH \
             inner join hims_d_services S on PH.service_id=S.hims_d_services_id \
+            left join hims_d_procedure_detail PD on PH.hims_d_procedure_id=PD.procedure_header_id\
+            left join hims_d_services SR on PD.service_id=SR.hims_d_services_id\
             where PH.record_status='A' " +
             strQry +
             " order by hims_d_procedure_id desc;",

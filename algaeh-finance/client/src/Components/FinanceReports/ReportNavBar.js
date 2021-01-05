@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getItem, tokenDecode } from "algaeh-react-components";
+import {
+  AlgaehSecurityComponent,
+  getItem,
+  tokenDecode,
+} from "algaeh-react-components";
+import { Item } from "semantic-ui-react";
 export default function ReportNavBar({
   REPORT_LIST,
   setSelected,
@@ -38,29 +43,43 @@ export default function ReportNavBar({
       <h6>Favourite Reports</h6>
       <ul className="menuListUl">
         {REPORT_LIST.map((item, index) => {
-          if (item.secureModule === "CASHFLOW" && enableCashFlow === false) {
-            return null;
-          }
+          // if (item.secureModule === "CASHFLOW") {
+          //   return;
+          //   // <AlgaehSecurityComponent componentCode="FIN_RPT_CASHFLOW">
+          //   //   <li>DFGF</li>;
+          //   // </AlgaehSecurityComponent>;
+          // }
+
           return (
-            <li key={index}>
-              <span
-                className={selectedClass(item.key)}
-                onClick={() => {
-                  setSelected(item.key);
-                  setSelectedFilter({});
-                }}
-              >
-                {item.title}
-              </span>
-              {RenderChildren(
-                item.children,
-                (selected) => {
-                  setSelected(item.key);
-                  setSelectedFilter({ filterKey: selected.key });
-                },
-                selectedFilter
-              )}
-            </li>
+            <AlgaehSecurityComponent
+              componentCode={
+                item.key === "CF"
+                  ? "FIN_RPT_CASHFLOW"
+                  : item.key === "BS"
+                  ? "FIN_RPT_BALSHEET"
+                  : ""
+              }
+            >
+              <li key={index}>
+                <span
+                  className={selectedClass(item.key)}
+                  onClick={() => {
+                    setSelected(item.key);
+                    setSelectedFilter({});
+                  }}
+                >
+                  {item.title}
+                </span>
+                {RenderChildren(
+                  item.children,
+                  (selected) => {
+                    setSelected(item.key);
+                    setSelectedFilter({ filterKey: selected.key });
+                  },
+                  selectedFilter
+                )}
+              </li>
+            </AlgaehSecurityComponent>
           );
         })}
       </ul>
