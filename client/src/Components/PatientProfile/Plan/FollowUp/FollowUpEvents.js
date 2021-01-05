@@ -11,26 +11,48 @@ const texthandle = ($this, e) => {
 
     $this.setState({
       [name]: value,
-      followup_date: moment(newdate)._d
+      followup_date: moment(newdate)._d,
     });
   } else {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 };
+const getPatientFollowUps = ($this) => {
+  const { current_patient } = Window.global;
+  algaehApiCall({
+    uri: "/doctorsWorkBench/getFollowUp",
+    method: "GET",
+    data: { patient_id: current_patient },
+    onSuccess: (response) => {
+      if (response.data.success) {
+        $this.setState({
+          patientFollowUps: response.data.records,
+        });
+      }
+    },
+    onFailure: (error) => {
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
 
-const addFollowUp = $this => {
+const addFollowUp = ($this) => {
   const {
     current_patient,
     provider_id,
     episode_id,
-    sub_department_id
+    sub_department_id,
+    visit_id,
   } = Window.global;
   if ($this.state.followup_days === 0) {
     swalMessage({
       title: "Please Enter Next visit After",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let inputObj = {
@@ -41,42 +63,82 @@ const addFollowUp = $this => {
       reason: $this.state.followup_comments,
       followup_type: $this.state.followup_type,
       followup_days: $this.state.followup_days,
-      followup_date: $this.state.followup_date
+      followup_date: $this.state.followup_date,
+      visit_id: visit_id,
     };
     algaehApiCall({
       uri: "/doctorsWorkBench/addFollowUp",
       data: inputObj,
       method: "POST",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Added Succesfully...",
-            type: "success"
+            type: "success",
           });
         }
 
-        $this.setState({
-          followup_comments: null,
-          followup_type: "OP",
-          followup_days: 0,
-          followup_date: null,
-          radioOP: true,
-          radioIP: false
-        });
+        $this.setState(
+          {
+            followup_comments: null,
+            followup_type: "OP",
+            followup_days: 0,
+            followup_date: null,
+            radioOP: true,
+            radioIP: false,
+          },
+          () => {
+            getPatientFollowUps($this);
+          }
+        );
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 };
-
+const updateSameFollowUp = ($this) => {
+  if ($this.state.followup_days === 0) {
+    swalMessage({
+      title: "Please Enter Next visit After",
+      type: "warning",
+    });
+  } else {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/updateSameFollowUp",
+      data: {
+        him_f_patient_followup_id: $this.state.him_f_patient_followup_id,
+        followup_type: $this.state.followup_type,
+        // followup_days: $this.state.followup_days,
+        reason: $this.state.followup_comments,
+        followup_date: $this.state.followup_date,
+      },
+      method: "put",
+      onSuccess: (response) => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Updated Succesfully...",
+            type: "success",
+          });
+          getPatientFollowUps($this);
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+};
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -94,10 +156,10 @@ const radioChange = ($this, e) => {
     [e.target.name]: e.target.value,
     radioIP: radioIP,
     radioOP: radioOP,
-    followup_comments: null,
-    followup_type: "OP",
-    followup_days: 0,
-    followup_date: null
+    // followup_comments: null,
+    // followup_type: "OP",
+    // followup_days: 0,
+    // followup_date: null,
   });
 };
 
@@ -106,12 +168,20 @@ const dateValidate = ($this, value, event) => {
   if (inRange) {
     swalMessage({
       title: "Cannot be past Date.",
-      type: "warning"
+      type: "warning",
     });
     event.target.focus();
     $this.setState({
-      [event.target.name]: null
+      [event.target.name]: null,
     });
   }
 };
-export { texthandle, addFollowUp, datehandle, radioChange, dateValidate };
+export {
+  texthandle,
+  addFollowUp,
+  datehandle,
+  getPatientFollowUps,
+  radioChange,
+  dateValidate,
+  updateSameFollowUp,
+};

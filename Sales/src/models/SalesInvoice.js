@@ -203,7 +203,7 @@ export function addInvoiceEntry(req, res, next) {
   try {
     let input = req.body;
     let invoice_number = "";
-
+    debugger;
     _mysql
       .generateRunningNumber({
         user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -218,8 +218,8 @@ export function addInvoiceEntry(req, res, next) {
             query:
               "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode, \
                                 sales_order_id, location_id, customer_id, payment_terms, project_id, sub_total, discount_amount, \
-                                net_total, total_tax, net_payable, retention_amt, narration, created_date, created_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                net_total, total_tax, net_payable, retention_amt, narration,delivery_date, created_date, created_by, hospital_id)\
+                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               invoice_number,
               input.invoice_date,
@@ -236,6 +236,7 @@ export function addInvoiceEntry(req, res, next) {
               input.net_payable,
               input.retention_amt,
               input.narration,
+              input.delivery_date,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.hospital_id,
@@ -405,11 +406,12 @@ export function postSalesInvoice(req, res, next) {
     _mysql
       .executeQueryWithTransaction({
         query:
-          "UPDATE `hims_f_sales_invoice_header` SET invoice_date=?, `is_posted`=?, `posted_date`=?, `posted_by`=? \
+          "UPDATE `hims_f_sales_invoice_header` SET invoice_date=?,delivery_date=?, `is_posted`=?, `posted_date`=?, `posted_by`=? \
           WHERE `hims_f_sales_invoice_header_id`=?",
         values: [
           inputParam.invoice_date,
           inputParam.posted,
+          inputParam.delivery_date,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           inputParam.hims_f_sales_invoice_header_id,

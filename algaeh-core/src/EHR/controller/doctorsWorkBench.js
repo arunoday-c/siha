@@ -72,6 +72,8 @@ const {
   getActiveEncounters,
   updateAllergy,
   deleteAllergy,
+  checkFollowUPofVisit,
+  updateSameFollowUp,
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -137,7 +139,19 @@ export default () => {
     },
     releaseConnection
   );
-
+  api.get(
+    "/checkFollowUPofVisit",
+    checkFollowUPofVisit,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
   api.get(
     "/getPhysicalExamination/getAllDepartmentBased",
     getAllPhysicalExamination,
@@ -240,7 +254,19 @@ export default () => {
     },
     releaseConnection
   );
-
+  api.put(
+    "/updateSameFollowUp",
+    updateSameFollowUp,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
   // created by irfan : add Allergy
   api.post("/addAllergy", addAllergy, (req, res, next) => {
     let result = req.records;

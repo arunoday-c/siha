@@ -82,6 +82,7 @@ const getDocuments = ($this) => {
     });
 };
 const SaveInvoiceEnrty = ($this) => {
+  debugger;
   AlgaehLoader({ show: true });
   if ($this.state.invoice_date === null) {
     swalMessage({
@@ -97,6 +98,7 @@ const SaveInvoiceEnrty = ($this) => {
     data: $this.state,
     onSuccess: (response) => {
       if (response.data.success) {
+        debugger;
         getCtrlCode($this, response.data.records.invoice_number);
         // $this.setState({
         //   invoice_number: response.data.records.invoice_number,
