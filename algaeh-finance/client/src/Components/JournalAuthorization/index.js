@@ -18,7 +18,7 @@ import {
   LoadVouchersToAuthorize,
   ApproveReject,
   LoadVoucherDetails,
-  LoadVoucherData
+  LoadVoucherData,
 } from "./event";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 import { useLocation, useHistory } from "react-router-dom";
@@ -32,7 +32,7 @@ export default memo(function (props) {
 
   const [data, setData] = useState([]);
   const [visible, setVisibale] = useState(false);
-  // const [visibleEditVoucher,setVisibleEditVoucher]=useState(false)  
+  // const [visibleEditVoucher,setVisibleEditVoucher]=useState(false)
   const [rowDetails, setRowDetails] = useState([]);
   const [voucherNo, setVoucherNo] = useState("");
   const [level, setLevel] = useState("1");
@@ -105,6 +105,13 @@ export default memo(function (props) {
         });
         return;
       }
+      if (String(record.entered_id) === record.current_user_id) {
+        AlgaehMessagePop({
+          type: "warning",
+          display: "Same user created JV can't approve",
+        });
+        return;
+      }
       confirm({
         okText: "Approve",
         okType: "primary",
@@ -163,6 +170,13 @@ export default memo(function (props) {
         });
         return;
       }
+      if (String(record.entered_id) === record.current_user_id) {
+        AlgaehMessagePop({
+          type: "warning",
+          display: "Same user created JV can't reject",
+        });
+        return;
+      }
       confirm({
         okText: "Reject",
         okType: "primary",
@@ -181,7 +195,6 @@ export default memo(function (props) {
     }
 
     function openVoucherEdit(e) {
-
       // finance_voucher_header_id = record.finance_voucher_header_id;
       LoadVoucherData({
         finance_voucher_header_id: record.finance_voucher_header_id,
@@ -190,7 +203,7 @@ export default memo(function (props) {
           history.push("/JournalVoucher", {
             type: "Adjust",
             data: result,
-            finance_voucher_header_id: record.finance_voucher_header_id
+            finance_voucher_header_id: record.finance_voucher_header_id,
           });
         })
         .catch((error) => {
@@ -217,20 +230,20 @@ export default memo(function (props) {
               record.voucher_type === "journal"
                 ? "JVReport_journal"
                 : record.voucher_type === "contra"
-                  ? "JVReport_contra"
-                  : record.voucher_type === "receipt"
-                    ? "JVReport_receipt"
-                    : record.voucher_type === "payment"
-                      ? "JVReport_payment"
-                      : record.voucher_type === "sales"
-                        ? "JVReport_sales"
-                        : record.voucher_type === "purchase"
-                          ? "JVReport_purchase"
-                          : record.voucher_type === "credit_note"
-                            ? "JVReport_creditNote"
-                            : record.voucher_type === "debit_note"
-                              ? "JVReport_debitNote"
-                              : "JVReport_expense",
+                ? "JVReport_contra"
+                : record.voucher_type === "receipt"
+                ? "JVReport_receipt"
+                : record.voucher_type === "payment"
+                ? "JVReport_payment"
+                : record.voucher_type === "sales"
+                ? "JVReport_sales"
+                : record.voucher_type === "purchase"
+                ? "JVReport_purchase"
+                : record.voucher_type === "credit_note"
+                ? "JVReport_creditNote"
+                : record.voucher_type === "debit_note"
+                ? "JVReport_debitNote"
+                : "JVReport_expense",
             // pageOrentation: "landscape",
             reportParams: [
               {
@@ -288,8 +301,8 @@ export default memo(function (props) {
             </Tooltip>
           </>
         ) : (
-              "----"
-            )}
+          "----"
+        )}
       </>
     );
   };
@@ -547,8 +560,8 @@ export default memo(function (props) {
                                     Rejected
                                   </span>
                                 ) : (
-                                        "------"
-                                      )}
+                                  "------"
+                                )}
                               </span>
                             );
                           },

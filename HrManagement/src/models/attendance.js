@@ -5134,7 +5134,7 @@ export default {
                           select hims_f_leave_application_id,LA.employee_id,leave_application_code,from_leave_session,
                           case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
                           L.leave_description,from_date,to_leave_session, holiday_included,
-                          CASE WHEN L.leave_category='A' and AN.from_normal_salary='N' THEN DATE_ADD(LA.to_date, INTERVAL 1 DAY) else LA.to_date END as to_date,
+                          LA.to_date,
                           weekoff_included,total_applied_days from hims_f_leave_application LA 
                           inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                           inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
@@ -5225,8 +5225,7 @@ export default {
                         
                         select hims_f_leave_application_id,LA.employee_id,leave_application_code,from_leave_session,
                         case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
-                        L.leave_description,from_date,to_leave_session,holiday_included,
-                        CASE WHEN L.leave_category='A' and AN.from_normal_salary='N' THEN DATE_SUB(LA.to_date, INTERVAL 1 DAY) else LA.to_date END as to_date,
+                        L.leave_description,from_date,to_leave_session,holiday_included, LA.to_date,
                         weekoff_included,total_applied_days from hims_f_leave_application LA 
                         inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                         inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
@@ -5542,7 +5541,7 @@ export default {
                             case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type, 
                             case when  L.leave_category='A' and  AN.from_normal_salary='N' then 'A' else 'O' end as leave_category,
                             L.leave_description,from_date,to_leave_session, holiday_included,
-                            CASE WHEN L.leave_category='A' and AN.from_normal_salary='N' THEN DATE_SUB(LA.to_date, INTERVAL 1 DAY) else LA.to_date END as to_date,
+                            LA.to_date,
                             weekoff_included,total_applied_days from hims_f_leave_application LA 
                             inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                             inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
@@ -5668,7 +5667,7 @@ export default {
                           case when  L.leave_category='A' and  AN.from_normal_salary='N' then 'A' else 'O'
                           end as leave_category,
                           L.leave_description,from_date,to_leave_session,holiday_included,
-                          CASE WHEN L.leave_category='A' and AN.from_normal_salary='N' THEN DATE_SUB(LA.to_date, INTERVAL 1 DAY) else LA.to_date END as to_date,
+                          LA.to_date,
                           weekoff_included,total_applied_days from hims_f_leave_application LA 
                           inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                           inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
@@ -6116,7 +6115,7 @@ export default {
                           to_date,
                           allDates: allDatesMonthYear,
                         });
-                        console.log("attResult", attResult);
+                        // console.log("attResult", attResult);
                         mergeTimesheetData({
                           _mysql: _mysql,
                           attResult: attResult,
@@ -6483,10 +6482,13 @@ export default {
             );
             const HALF_MIN = parseInt(total_minutes / 2) % parseInt(60);
 
+            // console.log("options.salary_pay_before_end_date", options.salary_pay_before_end_date)
+            // console.log("options.payroll_payment_date", options.payroll_payment_date)
             if (
               options.salary_pay_before_end_date == "Y" &&
               options.payroll_payment_date > 0
             ) {
+              // console.log("1")
               processBulkAtt_with_cutoff({
                 _mysql,
                 options,
@@ -6509,6 +6511,7 @@ export default {
                   next(e);
                 });
             } else {
+              // console.log("2")
               processBulkAtt_Normal({
                 _mysql,
                 options,

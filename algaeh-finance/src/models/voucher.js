@@ -2072,6 +2072,7 @@ export default {
 
     const input = req.query;
     const decimal_places = req.userIdentity.decimal_places;
+    const user_id = req.userIdentity.algaeh_d_app_user_id;
     if (input.auth_level > 0 && input.auth_level <= 2) {
       let strQry = "";
 
@@ -2114,9 +2115,11 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select distinct finance_voucher_header_id,VD.head_id,VD.child_id,voucher_type, ROUND(amount,${decimal_places}) as amount,H.payment_date,\
-          H.narration,voucher_no,payment_mode, ref_no, H.cheque_date,   VD.auth_status ,U.username as entered_by from finance_voucher_header H\
-          inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
+          query: `select distinct finance_voucher_header_id,VD.head_id,VD.child_id,voucher_type, ROUND(amount,${decimal_places}) as amount,H.payment_date,
+          H.narration,voucher_no,payment_mode, ref_no, H.cheque_date,   VD.auth_status ,U.username as entered_by,
+          VD.entered_by as entered_id,'${user_id}' as current_user_id
+           from finance_voucher_header H
+          inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
           where posted_from='V'  and VD.payment_type='CR'  ${strQry};`,
           printQuery: true,
