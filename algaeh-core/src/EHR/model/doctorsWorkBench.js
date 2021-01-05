@@ -2848,30 +2848,62 @@ let getFollowUp = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let inputData = extend({}, req.query);
-  //
-  //   // let followup_date = "date(inputData.date_of_recall)"";
-  //
-  //   debugLog("strQuery: ", strQuery);
-  //   db.getConnection((error, connection) => {
-  //     connection.query(strQuery, [inputData.doctor_id], (error, result) => {
-  //       releaseDBConnection(db, connection);
-  //       if (error) {
-  //         next(error);
-  //       }
-  //       req.records = result;
-  //       next();
-  //     });
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
+let getAllPatientFollowUp = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  debugger;
+  try {
+    let inputData = req.query;
+    let strQuery = `SELECT PF.doctor_id,PF.patient_id,EM.sub_department_id,PAT.full_name as pat_name, PAT.patient_code,PAT.primary_id_no,PAT.contact_number, EM.full_name as doc_name,
+    SD.sub_department_desc, PF.followup_date FROM hims_f_patient_followup as PF
+        inner join hims_f_patient PAT on PAT.hims_d_patient_id = PF.patient_id
+        inner join hims_d_employee EM on EM.hims_d_employee_id = PF.doctor_id
+        inner join hims_d_sub_department SD on SD.hims_d_sub_department_id = EM.sub_department_id
+        where date(PF.followup_date) between date(?) and date(?) `;
+
+    if (inputData.doctor_id != null) {
+      strQuery += " and PF.doctor_id='" + inputData.doctor_id + "'";
+    }
+
+    if (inputData.sub_department_id != null) {
+      strQuery +=
+        " and PF.sub_department_id='" + inputData.sub_department_id + "'";
+    }
+
+    _mysql
+      .executeQuery({
+        query: strQuery,
+        values: [inputData.recall_start, inputData.recall_end],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
+        const arrangedData = _.chain(result)
+          .groupBy((g) => g.followup_date)
+          .map((details, key) => {
+            const { followup_date, full_name } = _.head(details);
+            return {
+              patient_name: full_name,
+              date: followup_date,
+              patients: details,
+            };
+          })
+          .value();
+
+        req.records = arrangedData;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 let checkFollowUPofVisit = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
@@ -2897,7 +2929,6 @@ let checkFollowUPofVisit = (req, res, next) => {
   }
 };
 let updateSameFollowUp = (req, res, next) => {
-  debugger;
   const _mysql = new algaehMysql({ path: keyPath });
 
   try {
@@ -3532,4 +3563,5 @@ export default {
   deleteAllergy,
   checkFollowUPofVisit,
   updateSameFollowUp,
+  getAllPatientFollowUp,
 };
