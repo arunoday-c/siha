@@ -91,18 +91,15 @@ const executePDF = function executePDFMethod(options) {
                       parseFloat(total_debit) + parseFloat(item.debit_amount)
                     ).toFixed(decimal_places);
                   });
-
-                  const dateWiseGroup = _.chain(result)
-                    .groupBy((g) => g.payment_date)
-                    .value();
-
                   const outputArray = [];
-                  let final_balance = "";
+                  // const dateWiseGroup = _.chain(result)
+                  //   .groupBy((g) => g.payment_date)
+                  //   .value();
+                  // for (let i in dateWiseGroup) {
+                  //   outputArray.push(...dateWiseGroup[i]);
+                  // }
 
-                  for (let i in dateWiseGroup) {
-                    // dateWiseGroup[i][0]["transaction_date"] = i;
-                    outputArray.push(...dateWiseGroup[i]);
-                  }
+                  let final_balance = "";
 
                   if (result[0]["root_id"] == 1 || result[0]["root_id"] == 5) {
                     const diffrence = parseFloat(
@@ -132,6 +129,41 @@ const executePDF = function executePDFMethod(options) {
                     opening_balance = output[1][0]["cred_minus_deb"];
                     closing_balance = output[2][0]["cred_minus_deb"];
                   }
+                  let lastAmount = 0;
+                  _.chain(result)
+                    .groupBy((g) => g.payment_date)
+                    .forEach((detail) => {
+                      detail.forEach((item, idx) => {
+                        let row_closing_balance = 0;
+                        const debit_amt = parseFloat(item.debit_amount);
+                        const credit_amt = parseFloat(item.credit_amount);
+                        if (idx === 0) {
+                          lastAmount = parseFloat(lastAmount + opening_balance);
+                        }
+                        if (item.root_id === 1 || item.root_id === 5) {
+                          if (debit_amt > 0) {
+                            row_closing_balance = lastAmount + debit_amt;
+                          } else {
+                            row_closing_balance = lastAmount - credit_amt;
+                          }
+                        } else {
+                          if (credit_amt > 0) {
+                            row_closing_balance = lastAmount + credit_amt;
+                          } else {
+                            row_closing_balance = lastAmount - debit_amt;
+                          }
+                        }
+                        lastAmount = row_closing_balance;
+                        outputArray.push({
+                          ...item,
+                          voucher_type: _.startCase(item.voucher_type),
+                          row_closing_balance: parseFloat(
+                            row_closing_balance
+                          ).toFixed(decimal_places),
+                        });
+                      });
+                    })
+                    .value();
 
                   resolve({
                     details: outputArray,
@@ -144,6 +176,12 @@ const executePDF = function executePDFMethod(options) {
                     final_balance: final_balance,
                     opening_balance: opening_balance,
                     closing_balance: closing_balance,
+                    from_date: moment(input.from_date, "YYYY-MM-DD").format(
+                      "DD-MM-YYYY"
+                    ),
+                    to_date: moment(input.to_date, "YYYY-MM-DD").format(
+                      "DD-MM-YYYY"
+                    ),
                   });
                 } else {
                   resolve({

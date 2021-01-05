@@ -1,8 +1,11 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
+    <center><h4>Ledger Report</h4></center>
     <div class="print-body">
+        
         <section>
+            <span> Selected Date Range : {{from_date}} ~ {{to_date}} </span>
             <table class="tableForDataNoBorder" cell-padding="0">
                 <thead>
                     <tr>
@@ -11,6 +14,7 @@
                         <th width=""  class="txtFld">Voucher No.</th>
                         <th width="" class="numberFld ">Debit Amt</th>
                         <th width="" class="numberFld ">Credit Amt</th>
+                        <th width="" class="numberFld ">Closing Balance</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -19,7 +23,7 @@
                     </tr>
 
                     <tr class="numberFld ">
-                        <td class="numberFld" colspan="4">Opening Balance</td>
+                        <td class="numberFld" colspan="5">Opening Balance</td>
                         <td class="numberFld" ><b>{{opening_balance}}</b></td>
                     </tr>
                     {{#each details}}
@@ -29,6 +33,7 @@
                         <td  class="txtFld">{{voucher_no}}</td>
                         <td class="numberFld ">{{debit_amount}}</td>
                         <td class="numberFld ">{{credit_amount}}</td>
+                        <td class="numberFld ">{{row_closing_balance}}</td>
                     </tr>
 
                     {{/each }}
@@ -44,7 +49,7 @@
                         <td class="numberFld">{{CB_credit_side}}</td>
                     </tr> --}}
                     <tr class="numberFld ">
-                        <td class="numberFld" colspan="4">Closing Balance</td>
+                        <td class="numberFld" colspan="5">Closing Balance</td>
                         <td class="numberFld" ><b>{{closing_balance}}</b></td>
                     </tr>
                     {{!-- <tr class="numberFld numberFldTotalBottom">
