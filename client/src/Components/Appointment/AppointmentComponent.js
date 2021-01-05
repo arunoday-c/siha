@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useContext } from "react";
+import React, { useLayoutEffect, useContext, useEffect } from "react";
 import moment from "moment";
 import {
   AlagehAutoComplete,
@@ -22,8 +22,51 @@ import {
   Input,
   Select,
 } from "algaeh-react-components";
+import { useLocation } from "react-router-dom";
+
 function AppointmentComponent(props) {
   const { countries = [] } = useContext(MainContext);
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state) {
+      const {
+        sub_department_id,
+        date_of_birth,
+        patient_code,
+        hims_d_patient_id,
+        pat_name,
+        arabic_name,
+        gender,
+        tel_code,
+        title_id,
+        contact_number,
+        email,
+      } = location.state.data;
+      const yrsAge = moment().diff(
+        moment(date_of_birth, "YYYY-MM-DD"),
+        "years"
+      );
+
+      props.setstates("patient_code", patient_code);
+      props.setstates("patient_id", hims_d_patient_id);
+      props.setstates("patient_name", pat_name);
+      props.setstates("arabic_name", arabic_name);
+      props.setstates("gender", gender);
+      props.setstates("age", yrsAge);
+      props.setstates("date_of_birth", date_of_birth);
+      props.setstates("sub_department_id", sub_department_id);
+      props.setstates("contact_number", contact_number);
+      props.setstates("tel_code", tel_code);
+      props.setstates("title_id", title_id);
+      props.setstates("email", email);
+      props.setstates("fromSearch", true);
+
+      // props.setstates("provider_id", doctor_id);
+    } else {
+      return;
+    }
+  }, [location.state]);
+
   useLayoutEffect(() => {
     const getAllTables = document.getElementsByTagName("table");
     for (let i = 0; i < getAllTables.length; i++) {

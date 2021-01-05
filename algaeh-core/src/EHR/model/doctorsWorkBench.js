@@ -2851,10 +2851,11 @@ let getFollowUp = (req, res, next) => {
 };
 let getAllPatientFollowUp = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
-  debugger;
+
   try {
     let inputData = req.query;
-    let strQuery = `SELECT PF.doctor_id,PF.patient_id,EM.sub_department_id,PAT.full_name as pat_name, PAT.patient_code,PAT.primary_id_no,PAT.contact_number, EM.full_name as doc_name,
+    let strQuery = `SELECT PF.doctor_id,PAT.email,PAT.date_of_birth,PAT.email,PAT.hims_d_patient_id,PF.patient_id,PAT.arabic_name,PAT.gender,PAT.tel_code,PAT.title_id,
+    EM.sub_department_id,PAT.full_name as pat_name, PAT.patient_code,PAT.primary_id_no,PAT.contact_number, EM.full_name as doc_name,
     SD.sub_department_desc, PF.followup_date FROM hims_f_patient_followup as PF
         inner join hims_f_patient PAT on PAT.hims_d_patient_id = PF.patient_id
         inner join hims_d_employee EM on EM.hims_d_employee_id = PF.doctor_id

@@ -1827,6 +1827,11 @@ class Appointment extends PureComponent {
       return <td></td>;
     }
   }
+  setstates(name, value) {
+    this.setState({
+      [name]: value,
+    });
+  }
   nullifyState(name) {
     let clearOther = {};
     if (name === "sub_department_id") {
@@ -1978,6 +1983,7 @@ class Appointment extends PureComponent {
             this.dropDownCountry(e);
           }}
           nullifyState={(name) => this.nullifyState(name)}
+          setstates={(name, value) => this.setstates(name, value)}
           updatePatientAppointment={(data) =>
             this.updatePatientAppointment(data)
           }
