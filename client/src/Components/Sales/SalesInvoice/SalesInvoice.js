@@ -137,7 +137,6 @@ class SalesInvoice extends Component {
     }
   }
   saveDocument = (files = [], number, id) => {
-    debugger;
     if (this.state.invoice_number) {
       const formData = new FormData();
       formData.append("grn_number", number || this.state.invoice_number);
@@ -659,15 +658,15 @@ class SalesInvoice extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "invoice_date",
+                    name: "delivery_date",
                   }}
-                  maxDate={new Date()}
+                  minDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this),
-                    onBlur: dateValidate.bind(this, this),
+                    // onBlur: dateValidate.bind(this, this),
                   }}
                   disabled={this.state.dateEditable}
-                  value={this.state.invoice_date}
+                  value={this.state.delivery_date}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-12 textAreaLeft" }}
