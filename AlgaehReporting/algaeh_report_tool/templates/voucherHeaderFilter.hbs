@@ -78,7 +78,6 @@
 
     .headerFooterStyle {
         width: 100%;
-        height: 10px;
         float: left;
         text-align: center;
         border-top: 0.5rem dotted #ccc;
@@ -105,12 +104,15 @@
 
         <div class="col-center">
             <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
-            {{!-- <h5>{{{report_name_for_header}}}</h5> --}}
+            <h5>{{report_name_for_header}}</h5>
         </div>
         <div class="headerFooterStyle">
- <p class="showFilterValue">{{#each filter}}
+ {{!-- <p class="showFilterValue">{{#each filter}}
                     <span><small>{{label}}:</small>{{labelValue}} </span>
-                    {{/each }}</p>
+                    {{/each }}</p> --}}
+
+                     <p style="text-align: center;">
+            <b> Selected Date Range : 05/01/2021 ~ 05/01/2021 </b></p>
         </div>
     </div>
 

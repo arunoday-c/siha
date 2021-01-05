@@ -165,6 +165,10 @@ class DisPatientForm extends Component {
                             <span className="badge badge-secondary">
                               Cancelled
                             </span>
+                          ) : this.state.cancelled === "P" ? (
+                            <span className="badge badge-secondary">
+                              Partially Cancelled
+                            </span>
                           ) : this.state.balance_credit > 0 ? (
                             <span className="badge badge-danger">
                               Not Settled
