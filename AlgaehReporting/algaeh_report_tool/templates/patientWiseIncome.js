@@ -1,22 +1,15 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
+  const _ = options.loadash;
   return new Promise(function (resolve, reject) {
     try {
-      const _ = options.loadash;
-      const moment = options.moment;
-
+      let str = "";
       let input = {};
       let params = options.args.reportParams;
-      // const utilities = new algaehUtilities();
+
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-
-      let strData = "";
-
-      //   if (input.hospital_id > 0) {
-      //     strData += ` and P.hospital_id= ${input.hospital_id}`;
-      //   }
 
       options.mysql
         .executeQuery({
@@ -35,12 +28,52 @@ const executePDF = function executePDFMethod(options) {
           values: [input.hospital_id, input.hospital_id],
           printQuery: true,
         })
-        .then((ress) => {
-          let final_result = ress;
-          resolve({
-            result: final_result,
-          });
+        // .then((ress) => {
+        //   let final_result = ress;
+        //   resolve({
+        //     result: final_result,
+        //     net_payable: options.currencyFormat(
+        //       _.sumBy(result, (s) => parseFloat(s.op_pat_income)),
+        //       options.args.crypto
+        //     ),
+        //   });
+        // })
+
+        .then((result) => {
+          const data = {
+            details: result,
+            net_pat_op_income: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.pat_op_income)),
+              options.args.crypto
+            ),
+            net_pat_op_can: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.pat_op_can)),
+              options.args.crypto
+            ),
+            net_op_pat_income: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.op_pat_income)),
+              options.args.crypto
+            ),
+            net_pat_pos_income: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.pat_pos_income)),
+              options.args.crypto
+            ),
+            net_pat_pos_can: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.pat_pos_can)),
+              options.args.crypto
+            ),
+            net_pos_pat_income: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.pos_pat_income)),
+              options.args.crypto
+            ),
+            net_net_pat_income: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.net_pat_income)),
+              options.args.crypto
+            ),
+          };
+          resolve(data);
         })
+
         .catch((error) => {
           options.mysql.releaseConnection();
         });

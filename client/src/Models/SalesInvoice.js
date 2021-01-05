@@ -10,6 +10,7 @@ export default {
       loaction_id: null,
       location_name: null,
       invoice_date: new Date(),
+      delivery_date: new Date(),
       dataExitst: false,
       project_name: null,
       customer_name: null,

@@ -2538,13 +2538,14 @@ let addFollowUp = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`, `episode_id`, `followup_type`, \
+          "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`, `episode_id`,visit_id, `followup_type`, \
         `followup_date`, `sub_department_id`, `reason`, `created_by` ,`created_date`,hospital_id) \
-       VALUES ( ?, ?, ?, ?, ?, ?,?, ?, ?, ?);",
+       VALUES ( ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?);",
         values: [
           inputParam.patient_id,
           inputParam.doctor_id,
           inputParam.episode_id,
+          inputParam.visit_id,
           inputParam.followup_type,
           inputParam.followup_date,
           inputParam.sub_department_id,
@@ -2805,7 +2806,7 @@ let getFollowUp = (req, res, next) => {
   try {
     let inputData = req.query;
     let strQuery =
-      "SELECT p.patient_code,p.full_name, p.registration_date,p.gender,p.date_of_birth,p.contact_number, \
+      "SELECT p.patient_code,p.full_name,PF.followup_status,PF.visit_id,PF.reason,PF.followup_type,PF.followup_date, p.registration_date,p.gender,p.date_of_birth,p.contact_number, \
       E.full_name as employee_name, SD.sub_department_name FROM hims_f_patient_followup PF, \
       hims_f_patient p, hims_d_sub_department SD , hims_d_employee E where PF.patient_id = p.hims_d_patient_id \
       and SD.hims_d_sub_department_id=PF.sub_department_id and E.hims_d_employee_id=PF.doctor_id ";
@@ -2825,6 +2826,9 @@ let getFollowUp = (req, res, next) => {
     if (inputData.sub_department_id != null) {
       strQuery +=
         " and PF.sub_department_id='" + inputData.sub_department_id + "'";
+    }
+    if (inputData.patient_id != null) {
+      strQuery += " and PF.patient_id='" + inputData.patient_id + "'";
     }
     _mysql
       .executeQuery({
@@ -2868,7 +2872,60 @@ let getFollowUp = (req, res, next) => {
   //   next(e);
   // }
 };
+let checkFollowUPofVisit = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
 
+  try {
+    _mysql
+      .executeQuery({
+        query: `SELECT him_f_patient_followup_id,followup_type,reason,followup_date from hims_f_patient_followup
+          where visit_id=?  `,
+        values: [req.query.visit_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+let updateSameFollowUp = (req, res, next) => {
+  debugger;
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query: `Update hims_f_patient_followup set followup_type=?,reason=?,followup_date=?
+         where him_f_patient_followup_id=? `,
+        values: [
+          input.followup_type,
+          input.reason,
+          input.followup_date,
+          input.him_f_patient_followup_id,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    next(error);
+  }
+};
 //created by irfan: to get
 let getPatientEpisodeSummary = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -3473,4 +3530,6 @@ export default {
   getSickLeave,
   updateAllergy,
   deleteAllergy,
+  checkFollowUPofVisit,
+  updateSameFollowUp,
 };

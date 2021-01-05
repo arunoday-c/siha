@@ -21,7 +21,18 @@
                 </thead>
                 <tbody>
 
-                    {{#each result}}
+                     <tr class="numberFldTotalBottom">
+
+                        <td colspan="3" class="numberFld"></td>
+                        <td class="numberFld">{{net_pat_op_income}}</td>
+                        <td class="numberFld">{{net_pat_op_can}}</td>
+                        <td class="numberFld">{{net_op_pat_income}}</td>
+                        <td class="numberFld">{{net_pat_pos_income}}</td>
+                        <td class="numberFld">{{net_pat_pos_can}}</td>
+                        <td class="numberFld">{{net_pos_pat_income}}</td>
+                        <td class="numberFld">{{net_net_pat_income}}</td>
+                    </tr>
+                    {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{patient_code}}</td>
@@ -37,6 +48,17 @@
 
                     </tr>
                     {{/each }}
+                     <tr class="numberFldTotalBottom">
+
+                        <td colspan="3" class="numberFld"></td>
+                        <td class="numberFld">{{net_pat_op_income}}</td>
+                        <td class="numberFld">{{net_pat_op_can}}</td>
+                        <td class="numberFld">{{net_op_pat_income}}</td>
+                        <td class="numberFld">{{net_pat_pos_income}}</td>
+                        <td class="numberFld">{{net_pat_pos_can}}</td>
+                        <td class="numberFld">{{net_pos_pat_income}}</td>
+                        <td class="numberFld">{{net_net_pat_income}}</td>
+                    </tr>
                     {{!-- <tr class="numberFldTotalBottom">
                         <td colspan="6"></td>
                         <td class="numberFld">{{total_before_vat}}</td>

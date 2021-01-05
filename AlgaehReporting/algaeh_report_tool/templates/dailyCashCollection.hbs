@@ -23,17 +23,17 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{daily_handover_date}}</td>
-                        <td>{{expected_cash}}</td>
-                        <td>{{expected_card}}</td>
-                        <td>{{expected_total}}</td>
+                        <td class="numberFld">{{expected_cash}}</td>
+                        <td class="numberFld">{{expected_card}}</td>
+                        <td class="numberFld">{{expected_total}}</td>
                         <td class="numberFld">{{collected_total}}</td>
                         <td class="numberFld">{{total_diff}}</td>
-                        <td class="numberFld">{{status}}</td>
+                        <td>{{status}}</td>
                     </tr>
                     {{/each }}
                     <tr class="numberFldTotalBottom">
 
-                        <td colspan="2" class="numberFld">Total</td>
+                        <td colspan="2" class="numberFld"></td>
                         <td class="numberFld">{{expected_cash}}</td>
                         <td class="numberFld">{{expected_card}}</td>
                         <td class="numberFld">{{expected_total}}</td>
