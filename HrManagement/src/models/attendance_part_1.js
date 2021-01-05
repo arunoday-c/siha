@@ -420,7 +420,7 @@ export function getDaysMonthArray(start, end) {
 
     return arr;
   } catch (e) {
-    console.log("dates:", e);
+    // console.log("dates:", e);
   }
 }
 
@@ -436,9 +436,9 @@ export function bulkTimeValidate(
   let actual_hours = 0;
   let actual_mins = 0;
 
-  console.log("1", STDWH)
-  console.log("2", STDWM)
-  console.log("3", day.status)
+  // console.log("1", STDWH)
+  // console.log("2", STDWM)
+  // console.log("3", day.status)
   if (day.status == "PR") {
     actual_hours = STDWH;
     actual_mins = STDWM;
@@ -562,7 +562,7 @@ export function getEmployeeWeekOffsandHolidays(
       employee["date_of_joining"] > from_date &&
       employee["exit_date"] == null
     ) {
-      console.log("allHolidays", allHolidays);
+      // console.log("allHolidays", allHolidays);
       emp_holidays = allHolidays.filter((w) => {
         if (employee["week_day"]) {
           return (
@@ -605,7 +605,7 @@ export function getEmployeeWeekOffsandHolidays(
         );
       });
     }
-    console.log("employee", employee);
+    // console.log("employee", employee);
     //EN --------- CALCULATING WEEK OFF AND HOLIDAYS
 
     return emp_holidays;
@@ -1528,7 +1528,7 @@ export function generateProjectRosterTimesheet(input) {
     const sort_data = _.sortBy(final_roster, (s) => parseInt(s.employee_code));
     return sort_data;
   } catch (e) {
-    console.log("ERRR:", e);
+    // console.log("ERRR:", e);
     return e;
   }
 }
@@ -1959,7 +1959,7 @@ export function bulkTimesheetRosterDataMatch(input) {
       .value();
     return final_roster;
   } catch (e) {
-    console.log("ERRR:", e);
+    // console.log("ERRR:", e);
     return e;
   }
 }
@@ -2045,9 +2045,9 @@ export function mergeTimesheetData(input) {
               RMZ_MIN_ = RMZ_DB.format("mm");
             }
           }
-          console.log("STD_WH_", STD_WH_)
-          console.log("STD_WM_", STD_WM_)
-          console.log("day_worked_status", day["worked_status"])
+          // console.log("STD_WH_", STD_WH_)
+          // console.log("STD_WM_", STD_WM_)
+          // console.log("day_worked_status", day["worked_status"])
           switch (day["worked_status"]) {
             case "AB":
               if (
@@ -2421,7 +2421,7 @@ export function mergeTimesheetData(input) {
             actual_minutes=values(actual_minutes) ,updated_by=values(updated_by),\
             updated_date=values(updated_date);";
         }
-        console.log("insertArray", insertArray)
+        // console.log("insertArray", insertArray)
         _mysql
           .executeQuery({
             query: Qry,
@@ -2581,7 +2581,13 @@ export function processBulkAtt_Normal(data) {
           E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
             /employee_id/gi,
             "TS.employee_id"
-          )} group by TS.employee_id having count(*)< ?; ;`,
+          )} group by TS.employee_id having count(*)< ?; 
+          select L.from_date,L.to_date, L.employee_joined from hims_f_leave_application L inner join hims_f_employee_annual_leave AL on AL.leave_application_id=L.hims_f_leave_application_id
+          inner join hims_d_employee E on E.hims_d_employee_id=L.employee_id
+          where month=? and year=? ${strQry.replace(
+            /employee_id/gi,
+            "L.employee_id"
+          )};`,
           values: [
             input.year,
             input.month,
@@ -2591,10 +2597,15 @@ export function processBulkAtt_Normal(data) {
             input.year,
             input.month,
             total_no_Days,
+            input.month,
+            input.year,
           ],
           printQuery: true,
         })
-        .then((partialAtt) => {
+        .then((att_result) => {
+          const partialAtt = att_result[0]
+          const annual_leave = att_result[1]
+          // console.log("annual_leave", annual_leave)
           if (partialAtt.length > 0) {
             let message = "";
 
@@ -2605,6 +2616,22 @@ export function processBulkAtt_Normal(data) {
             _mysql.releaseConnection();
             reject({ invalid_input: true, message: message });
           } else {
+            let ann_from_date_mnth = null;
+            let ann_to_date_mnth = null;
+            let attence_till_date = null;
+            if (annual_leave.length > 0) {
+              ann_from_date_mnth = moment(annual_leave[0].from_date).format(
+                "M"
+              );
+              ann_to_date_mnth = moment(annual_leave[0].to_date).format(
+                "M"
+              );
+              if (ann_from_date_mnth == ann_to_date_mnth && annual_leave[0].employee_joined == "N") {
+                attence_till_date = annual_leave[0].to_date
+              }
+            }
+            // console.log("ann_from_date_mnth", ann_from_date_mnth)
+            // console.log("ann_to_date_mnth", ann_to_date_mnth)
             _mysql
               .executeQuery({
                 query: ` 
@@ -2759,68 +2786,139 @@ export function processBulkAtt_Normal(data) {
                           ) {
                             display_present_days = 1;
                           }
+                          // console.log("attence_till_date", attence_till_date)
 
-                          dailyAttendance.push({
-                            employee_id: AttenResult[i]["employee_id"],
-                            project_id: AttenResult[i]["project_id"],
-                            hospital_id: AttenResult[i]["hospital_id"],
-                            sub_department_id:
-                              AttenResult[i]["sub_department_id"],
-                            attendance_date: AttenResult[i]["attendance_date"],
-                            year: input.year,
-                            month: input.month,
-                            total_days: 1,
-                            present_days: present_days,
-                            display_present_days: display_present_days,
-                            absent_days: absent,
-                            total_work_days: 1,
-                            weekoff_days:
-                              AttenResult[i]["status"] == "WO" ? 1 : 0,
-                            holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
-                            paid_leave: paid_leave,
-                            unpaid_leave: unpaid_leave,
-                            anual_leave: anual_leave,
-                            total_hours:
-                              AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                ? AttenResult[i]["worked_hours"]
-                                : AttenResult[i]["actual_hours"] +
+                          if (attence_till_date === null) {
+                            dailyAttendance.push({
+                              employee_id: AttenResult[i]["employee_id"],
+                              project_id: AttenResult[i]["project_id"],
+                              hospital_id: AttenResult[i]["hospital_id"],
+                              sub_department_id:
+                                AttenResult[i]["sub_department_id"],
+                              attendance_date: AttenResult[i]["attendance_date"],
+                              year: input.year,
+                              month: input.month,
+                              total_days: 1,
+                              present_days: present_days,
+                              display_present_days: display_present_days,
+                              absent_days: absent,
+                              total_work_days: 1,
+                              weekoff_days:
+                                AttenResult[i]["status"] == "WO" ? 1 : 0,
+                              holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
+                              paid_leave: paid_leave,
+                              unpaid_leave: unpaid_leave,
+                              anual_leave: anual_leave,
+                              total_hours:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? AttenResult[i]["worked_hours"]
+                                  : AttenResult[i]["actual_hours"] +
+                                  "." +
+                                  AttenResult[i]["actual_minutes"],
+                              hours:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? AttenResult[i]["hours"]
+                                  : AttenResult[i]["actual_hours"],
+                              minutes:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? AttenResult[i]["minutes"]
+                                  : AttenResult[i]["actual_minutes"],
+                              working_hours:
+                                AttenResult[i]["actual_hours"] +
                                 "." +
                                 AttenResult[i]["actual_minutes"],
-                            hours:
-                              AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                ? AttenResult[i]["hours"]
-                                : AttenResult[i]["actual_hours"],
-                            minutes:
-                              AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                ? AttenResult[i]["minutes"]
-                                : AttenResult[i]["actual_minutes"],
-                            working_hours:
-                              AttenResult[i]["actual_hours"] +
-                              "." +
-                              AttenResult[i]["actual_minutes"],
 
-                            shortage_hours:
-                              AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                ? shortage_time
-                                : 0,
-                            shortage_minutes:
-                              AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                ? shortage_min
-                                : 0,
-                            ot_work_hours:
-                              AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                ? ot_time
-                                : 0,
-                            ot_minutes:
-                              AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                ? ot_min
-                                : 0,
+                              shortage_hours:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? shortage_time
+                                  : 0,
+                              shortage_minutes:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? shortage_min
+                                  : 0,
+                              ot_work_hours:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? ot_time
+                                  : 0,
+                              ot_minutes:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? ot_min
+                                  : 0,
 
-                            ot_weekoff_hours: week_off_ot_hour,
-                            ot_weekoff_minutes: week_off_ot_min,
-                            ot_holiday_hours: holiday_ot_hour,
-                            ot_holiday_minutes: holiday_ot_min,
-                          });
+                              ot_weekoff_hours: week_off_ot_hour,
+                              ot_weekoff_minutes: week_off_ot_min,
+                              ot_holiday_hours: holiday_ot_hour,
+                              ot_holiday_minutes: holiday_ot_min,
+                            });
+                          } else {
+
+                            const date_match = moment(AttenResult[i]["attendance_date"]).isSameOrBefore(moment(attence_till_date).format("YYYY-MM-DD"))
+                            if (date_match) {
+                              // console.log("attendance_date", AttenResult[i]["attendance_date"])
+                              dailyAttendance.push({
+                                employee_id: AttenResult[i]["employee_id"],
+                                project_id: AttenResult[i]["project_id"],
+                                hospital_id: AttenResult[i]["hospital_id"],
+                                sub_department_id:
+                                  AttenResult[i]["sub_department_id"],
+                                attendance_date: AttenResult[i]["attendance_date"],
+                                year: input.year,
+                                month: input.month,
+                                total_days: 1,
+                                present_days: present_days,
+                                display_present_days: display_present_days,
+                                absent_days: absent,
+                                total_work_days: 1,
+                                weekoff_days:
+                                  AttenResult[i]["status"] == "WO" ? 1 : 0,
+                                holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
+                                paid_leave: paid_leave,
+                                unpaid_leave: unpaid_leave,
+                                anual_leave: anual_leave,
+                                total_hours:
+                                  AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                    ? AttenResult[i]["worked_hours"]
+                                    : AttenResult[i]["actual_hours"] +
+                                    "." +
+                                    AttenResult[i]["actual_minutes"],
+                                hours:
+                                  AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                    ? AttenResult[i]["hours"]
+                                    : AttenResult[i]["actual_hours"],
+                                minutes:
+                                  AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                    ? AttenResult[i]["minutes"]
+                                    : AttenResult[i]["actual_minutes"],
+                                working_hours:
+                                  AttenResult[i]["actual_hours"] +
+                                  "." +
+                                  AttenResult[i]["actual_minutes"],
+
+                                shortage_hours:
+                                  AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                    ? shortage_time
+                                    : 0,
+                                shortage_minutes:
+                                  AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                    ? shortage_min
+                                    : 0,
+                                ot_work_hours:
+                                  AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                    ? ot_time
+                                    : 0,
+                                ot_minutes:
+                                  AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                    ? ot_min
+                                    : 0,
+
+                                ot_weekoff_hours: week_off_ot_hour,
+                                ot_weekoff_minutes: week_off_ot_min,
+                                ot_holiday_hours: holiday_ot_hour,
+                                ot_holiday_minutes: holiday_ot_min,
+                              });
+                            }
+                          }
+
                         }
                       } else {
                         for (let i = 0; i < at_leng; i++) {
@@ -3211,6 +3309,7 @@ export function processBulkAtt_Normal(data) {
                           let pending_len = pending_unpaid.length;
                           let attResult = [];
 
+                          // console.log("DilayResult", DilayResult)
                           for (let i = 0; i < DilayResult.length; i++) {
                             let pending_unpaid_leave = 0;
 
@@ -3231,8 +3330,10 @@ export function processBulkAtt_Normal(data) {
                               DilayResult[i]["partial_attendance"] == "N" &&
                               DilayResult[i]["late_joined"] == "N"
                             ) {
-                              DilayResult[i]["total_work_days"] =
-                                options["salary_calendar_fixed_days"];
+                              if (parseFloat(DilayResult[i]["total_work_days"]) > parseFloat(options["salary_calendar_fixed_days"])) {
+                                DilayResult[i]["total_work_days"] =
+                                  options["salary_calendar_fixed_days"];
+                              }
 
                               let t_paid_days = "";
 
@@ -3240,6 +3341,7 @@ export function processBulkAtt_Normal(data) {
                                 DilayResult[i]["anual_leave"] > 0 &&
                                 options["leave_salary_payment_days"] == "P"
                               ) {
+                                // console.log("1 if")
                                 t_paid_days =
                                   parseFloat(DilayResult[i]["present_days"]) +
                                   parseFloat(DilayResult[i]["paid_leave"]) +
@@ -3256,9 +3358,11 @@ export function processBulkAtt_Normal(data) {
                                 DilayResult[i]["total_days"] = month_days;
                                 DilayResult[i]["total_work_days"] = month_days;
                               } else {
+                                // console.log("2 else")
                                 let annual_leaves = parseFloat(
                                   DilayResult[i]["anual_leave"]
                                 );
+                                // console.log("annual_leaves", annual_leaves)
                                 if (
                                   parseFloat(DilayResult[i]["anual_leave"]) >
                                   parseFloat(
@@ -3269,8 +3373,14 @@ export function processBulkAtt_Normal(data) {
                                     options["salary_calendar_fixed_days"]
                                   );
                                 }
+                                // console.log("total_work_days", DilayResult[i]["total_work_days"])
+                                // console.log("absent_days", DilayResult[i]["absent_days"])
+                                // console.log("unpaid_leave", DilayResult[i]["unpaid_leave"])
+                                // console.log("pending_unpaid_leave", pending_unpaid_leave)
+                                // console.log("annual_leaves", annual_leaves)
+
                                 t_paid_days =
-                                  options["salary_calendar_fixed_days"] -
+                                  DilayResult[i]["total_work_days"] -
                                   parseFloat(DilayResult[i]["absent_days"]) -
                                   parseFloat(DilayResult[i]["unpaid_leave"]) -
                                   annual_leaves -
@@ -3280,6 +3390,10 @@ export function processBulkAtt_Normal(data) {
 
                               // DilayResult[i]["total_days"]=options["salary_calendar_fixed_days"];
 
+                              // console.log("t_paid_days", t_paid_days)
+                              // console.log("paid_leave", DilayResult[i]["paid_leave"])
+                              // console.log("unpaid_leave", DilayResult[i]["unpaid_leave"])
+                              // console.log("pending_unpaid_leave", pending_unpaid_leave)
                               attResult.push({
                                 ...DilayResult[i],
                                 total_paid_days:
@@ -3298,7 +3412,7 @@ export function processBulkAtt_Normal(data) {
                                 updated_by: user_id,
                               });
                             } else {
-                              console.log("Here im i");
+                              // console.log("Here im i");
                               attResult.push({
                                 ...DilayResult[i],
                                 total_paid_days:
@@ -5992,19 +6106,19 @@ export function processBulkAtt_with_cutoff(data) {
                 }
               })
               .catch((e) => {
-                console.log("ERR3", e);
+                // console.log("ERR3", e);
                 _mysql.releaseConnection();
                 reject({ invalid_input: true, message: e });
               });
           }
         })
         .catch((e) => {
-          console.log("ERR4", e);
+          // console.log("ERR4", e);
           _mysql.releaseConnection();
           reject({ invalid_input: true, message: e });
         });
     } catch (e) {
-      console.log("ERR:0", e);
+      // console.log("ERR:0", e);
       reject(e);
     }
   });
