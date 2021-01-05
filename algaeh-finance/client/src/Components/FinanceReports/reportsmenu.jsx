@@ -26,8 +26,9 @@ export default [
     key: "AP",
     title: "AP Aging",
   },
-  // {
-  //   key: "CF",
-  //   title: "Cashflow",
-  // },
+  {
+    key: "CF",
+    secureModule: "CASHFLOW",
+    title: "Cashflow",
+  },
 ];

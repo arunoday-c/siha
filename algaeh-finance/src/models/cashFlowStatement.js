@@ -10,15 +10,25 @@ export default {
     const decimal_places = req.userIdentity.decimal_places;
 
     const input = req.query;
-
+    //query 0: SELECT finance_account_child_id ,child_name  FROM finance_account_child
+    // where  ledger_code='PL' limit 1;
+    //query 1: where  account_code='1.2.3'
+    //query 2: where  account_code='1.2' || where H.account_code not in ( '1.2.3','1.2.4')
+    //query 3: where  account_code='2.2'
+    //query 4: where  account_code='1.1'
+    //query 5: where account_code in ('2.1','3.1')
+    //query 6: where account_code ='1.2.4'
     _mysql
       .executeQuery({
-        query: `SELECT finance_account_child_id ,child_name  FROM finance_account_child
-        where  ledger_code='PL' limit 1;
+        query: `
+        SELECT finance_account_child_id ,child_name  FROM  finance_account_head as AH 
+inner join finance_account_child as AC on AH.finance_account_head_id = AC.head_id
+where  AH.account_type='PL' limit 1;
+        
         
         with recursive cte as (
           select finance_account_head_id,account_code,account_name,       
-          parent_acc_id from finance_account_head   where  account_code='1.2.3' 
+          parent_acc_id from finance_account_head   where  account_type ='AR'
           union                 
           select H.finance_account_head_id,H.account_code,H.account_name,       
           H.parent_acc_id from finance_account_head H  
@@ -28,18 +38,18 @@ export default {
         
         with recursive cte as (
         select finance_account_head_id,account_code,account_name,       
-        parent_acc_id from finance_account_head   where  account_code='1.2' 
+        parent_acc_id from finance_account_head   where  account_type='CA'
         union                 
         select H.finance_account_head_id,H.account_code,H.account_name,       
         H.parent_acc_id from finance_account_head H  
         inner join cte on H.parent_acc_id = cte.finance_account_head_id 
-        where H.account_code not in ( '1.2.3','1.2.4')
+        where H.account_type not in ('AR','CACE')
         )select * from cte ;
         
         
         with recursive cte as (
         select finance_account_head_id,account_code,account_name,       
-        parent_acc_id from finance_account_head   where  account_code='2.2' 
+        parent_acc_id from finance_account_head   where  account_type='CL' 
         union                 
         select H.finance_account_head_id,H.account_code,H.account_name,       
         H.parent_acc_id from finance_account_head H  
@@ -50,7 +60,7 @@ export default {
         
         with recursive cte as (
         select finance_account_head_id,account_code,account_name,       
-        parent_acc_id from finance_account_head   where  account_code='1.1' 
+        parent_acc_id from finance_account_head   where  account_type='NCA' 
         union                 
         select H.finance_account_head_id,H.account_code,H.account_name,       
         H.parent_acc_id from finance_account_head H  
@@ -60,7 +70,7 @@ export default {
         
         with recursive cte as (
         select finance_account_head_id,account_code,account_name,       
-        parent_acc_id from finance_account_head where account_code in ('2.1','3.1')
+        parent_acc_id from finance_account_head where account_type in ('NCL','EQTY')
         union
         select H.finance_account_head_id,H.account_code,H.account_name,       
         H.parent_acc_id from finance_account_head H  
@@ -69,13 +79,14 @@ export default {
         
         with recursive cte as (
           select finance_account_head_id,account_code,account_name,       
-          parent_acc_id from finance_account_head   where  account_code='1.2.4' 
+          parent_acc_id from finance_account_head   where  account_type='CACE' 
           union                 
           select H.finance_account_head_id,H.account_code,H.account_name,       
           H.parent_acc_id from finance_account_head H  
           inner join cte on H.parent_acc_id = cte.finance_account_head_id  
           )select * from cte ;
         `,
+        printQuery: true,
       })
       .then((result) => {
         //operating Activities
@@ -128,7 +139,7 @@ export default {
         if (PL) {
           switch (input.display_column_by) {
             case "T":
-              cashFlow_TotalsOnly(data)
+              cashFlow_TotalsOnly(data, next)
                 .then((result) => {
                   req.records = result;
                   next();
@@ -141,7 +152,7 @@ export default {
             case "M":
 
             case "Y":
-              cashFlow_monthly_yearly(data)
+              cashFlow_monthly_yearly(data, next)
                 .then((result) => {
                   req.records = result;
                   next();
@@ -169,7 +180,7 @@ export default {
 };
 
 //created by irfan:
-function cashFlow_TotalsOnly(options) {
+function cashFlow_TotalsOnly(options, next) {
   try {
     return new Promise((resolve, reject) => {
       const {
@@ -533,11 +544,12 @@ function cashFlow_TotalsOnly(options) {
     });
   } catch (e) {
     console.log("e:", e);
+    next(e);
   }
 }
 
 //created by irfan:
-function cashFlow_monthly_yearly(options) {
+function cashFlow_monthly_yearly(options, next) {
   try {
     return new Promise((resolve, reject) => {
       const {
@@ -1198,5 +1210,6 @@ function cashFlow_monthly_yearly(options) {
     });
   } catch (e) {
     console.log("e:", e);
+    next(e);
   }
 }

@@ -19,10 +19,14 @@
                         <td>{{inc @index}}</td>
                         <td>{{service_type_code}}</td>
                         <td>{{service_type}}</td>
-                        <td>{{total_amount}}</td>
+                        <td class="numberFld">{{total_amount}}</td>
                     </tr>
                     {{/each }}
+  <tr class="numberFldTotalBottom">
 
+                        <td colspan="3" class="numberFld">Total</td>
+                        <td class="numberFld">{{net_payable}}</td>
+                    </tr>
                 </tbody>
             </table>
         </section>

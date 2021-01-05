@@ -283,7 +283,7 @@ export default {
               _mysql
                 .executeQuery({
                   query:
-                    "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
+                    "SELECT (param_value - 1) as param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
                         and record_status='A';",
                   printQuery: true,
                 })
