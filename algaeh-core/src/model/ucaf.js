@@ -117,8 +117,8 @@ let getPatientUCAF = (req, res, next) => {
                 where OS.billed='N' and V.patient_id = ? and (date(V.visit_date) = date(?) or visit_id=?);\
                 DELETE from hims_f_ucaf_insurance_details where hims_f_ucaf_header_id in (select hims_f_ucaf_header_id from hims_f_ucaf_header where patient_id = ? and visit_id=?);\
                 DELETE from hims_f_ucaf_medication where hims_f_ucaf_header_id in (select hims_f_ucaf_header_id from hims_f_ucaf_header where patient_id = ? and visit_id=?);\
-                DELETE from hims_f_ucaf_services where hims_f_ucaf_header_id in (select hims_f_ucaf_header_id from hims_f_ucaf_header where patient_id = ? and visit_id=?);\
-                DELETE from hims_f_ucaf_header where patient_id = ? and visit_id=?;",
+                DELETE from hims_f_ucaf_services where hims_f_ucaf_header_id in (select hims_f_ucaf_header_id from hims_f_ucaf_header where patient_id = ? and visit_id=?);",
+              // DELETE from hims_f_ucaf_header where patient_id = ? and visit_id=?;",
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -152,8 +152,8 @@ let getPatientUCAF = (req, res, next) => {
                 _input.visit_id,
                 _input.patient_id,
                 _input.visit_id,
-                _input.patient_id,
-                _input.visit_id,
+                // _input.patient_id,
+                // _input.visit_id,
               ],
               printQuery: true,
             })
@@ -222,7 +222,7 @@ let getPatientUCAF = (req, res, next) => {
               for (var i = 0; i < outputResult[3].length; i++) {
                 const _out = outputResult[3][i];
                 _fields["patient_diagnosys"] +=
-                  _out["long_icd_description"] + ",";
+                  _out["long_icd_description"] + " | ";
                 _fields["patient_principal_code_" + (i + 1)] = _out["icd_code"];
               }
 
@@ -237,10 +237,39 @@ let getPatientUCAF = (req, res, next) => {
 
               _fields["patient_other_conditions"] =
                 outputResult[7][0]["other_signs"];
-              _mysql
-                .executeQueryWithTransaction({
-                  query:
-                    "insert into hims_f_ucaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
+              let strHeaderQry = "";
+              if (hims_f_ucaf_header_id > 0) {
+                strHeaderQry = _mysql.mysqlQueryFormat(
+                  "update hims_f_ucaf_header set `patient_emergency_type`=?,`patient_emergency_case`=?,\
+                      `patient_duration_of_illness`=?,\
+                      `patient_chief_comp_main_symptoms`=?,`patient_significant_signs`=?,`patient_other_conditions`=?,\
+                      `patient_diagnosys`=?,`patient_principal_code_1`=?,`patient_principal_code_2`=?,\
+                      `patient_principal_code_3`=?,`patient_principal_code_4`=?,`patient_complaint_type`=?,`patient_indicated_LMP`=?,\
+                      `hospital_id`=? where `hims_f_ucaf_header_id`=?",
+                  [
+                    _input.patient_emergency_type,
+                    _input.patient_emergency_case,
+                    _input.patient_duration_of_illness,
+                    _input.patient_chief_comp_main_symptoms,
+                    _input.patient_significant_signs,
+                    _input.patient_other_conditions,
+                    _input.patient_diagnosys,
+
+                    _input.patient_principal_code_1,
+                    _input.patient_principal_code_2,
+                    _input.patient_principal_code_3,
+                    _input.patient_principal_code_4,
+
+                    _input.patient_complaint_type,
+                    _input.patient_indicated_LMP,
+
+                    req.userIdentity.hospital_id,
+                    hims_f_ucaf_header_id,
+                  ]
+                );
+              } else {
+                strHeaderQry = _mysql.mysqlQueryFormat(
+                  "insert into hims_f_ucaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
                 `eligible_reference_number`,`new_visit_patient`,`appointment_patient`,`sub_department_name`,\
                 `patient_code`,\
                 `patient_marital_status`,`patient_full_name`,`case_type`,`patient_emergency_case`,\
@@ -252,7 +281,7 @@ let getPatientUCAF = (req, res, next) => {
                 `patient_indicated_LMP`,`patient_gender`,`age_in_years`,`created_by`,`hospital_id`) \
                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
                 ",
-                  values: [
+                  [
                     _fields.patient_id,
                     _fields.visit_id,
                     _fields.visit_date,
@@ -288,16 +317,26 @@ let getPatientUCAF = (req, res, next) => {
                     _fields.age_in_years,
                     req.userIdentity.algaeh_d_app_user_id,
                     req.userIdentity.hospital_id,
-                  ],
+                  ]
+                );
+              }
+              _mysql
+                .executeQueryWithTransaction({
+                  query: strHeaderQry,
                   printQuery: true,
                 })
                 .then((headerResult) => {
-                  req["hims_f_ucaf_header_id"] = headerResult["insertId"];
+                  if (hims_f_ucaf_header_id > 0) {
+                    req["hims_f_ucaf_header_id"] = hims_f_ucaf_header_id;
+                  } else {
+                    req["hims_f_ucaf_header_id"] = headerResult["insertId"];
+                  }
+
                   let _services_query = {
                     query: "INSERT INTO hims_f_ucaf_services (??) values ?",
                     values: ucaf_service,
                     extraValues: {
-                      hims_f_ucaf_header_id: headerResult["insertId"],
+                      hims_f_ucaf_header_id: req["hims_f_ucaf_header_id"],
                     },
                     bulkInsertOrUpdate: true,
                   };
@@ -310,7 +349,7 @@ let getPatientUCAF = (req, res, next) => {
                     query: "INSERT INTO hims_f_ucaf_medication (??) values ?",
                     values: outputResult[5],
                     extraValues: {
-                      hims_f_ucaf_header_id: headerResult["insertId"],
+                      hims_f_ucaf_header_id: req["hims_f_ucaf_header_id"],
                     },
                     bulkInsertOrUpdate: true,
                   };
@@ -331,7 +370,8 @@ let getPatientUCAF = (req, res, next) => {
                                 "INSERT INTO hims_f_ucaf_insurance_details (??) values ?",
                               values: outputResult[6],
                               extraValues: {
-                                hims_f_ucaf_header_id: headerResult["insertId"],
+                                hims_f_ucaf_header_id:
+                                  req["hims_f_ucaf_header_id"],
                               },
                               bulkInsertOrUpdate: true,
                             })

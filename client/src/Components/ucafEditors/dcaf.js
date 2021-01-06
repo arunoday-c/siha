@@ -67,6 +67,23 @@ export default class DcafEditor extends Component {
             patient_id: Window.global["current_patient"],
             visit_id: Window.global["visit_id"],
             forceReplace: "true",
+            patient_duration_of_illness: this.state.patient_duration_of_illness,
+            patient_chief_comp_main_symptoms: this.state
+              .patient_chief_comp_main_symptoms,
+            patient_significant_signs: this.state.patient_significant_signs,
+            patient_other_conditions: this.state.patient_other_conditions,
+            patient_diagnosys: this.state.patient_diagnosys,
+            patient_principal_code_1: this.state.patient_principal_code_1,
+            patient_principal_code_2: this.state.patient_principal_code_2,
+            patient_principal_code_3: this.state.patient_principal_code_3,
+            patient_principal_code_4: this.state.patient_principal_code_4,
+            regular_dental_trt: this.state.regular_dental_trt,
+            dental_cleaning: this.state.dental_cleaning,
+            patient_rta: this.state.patient_rta,
+            patient_work_related: this.state.patient_work_related,
+            how: this.state.how,
+            when: this.state.when,
+            where: this.state.where,
           },
           onSuccess: (response) => {
             if (response.data.success === true) {
@@ -90,9 +107,7 @@ export default class DcafEditor extends Component {
           },
         });
       } else {
-        loader.setState({
-          loading: false,
-        });
+        return;
       }
     });
   }
@@ -570,7 +585,24 @@ export default class DcafEditor extends Component {
                             },
                           }}
                         />
-
+                        <AlagehFormGroup
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "Other Conditions",
+                            isImp: false,
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "patient_other_conditions",
+                            value: this.state.patient_other_conditions,
+                            events: {
+                              onChange: this.ChangeEventHandler.bind(this),
+                            },
+                            option: {
+                              type: "text",
+                            },
+                          }}
+                        />
                         <AlagehFormGroup
                           div={{ className: "col-6 form-group" }}
                           label={{
@@ -589,8 +621,25 @@ export default class DcafEditor extends Component {
                             },
                           }}
                         />
-
                         <AlagehFormGroup
+                          div={{ className: "col-3 form-group" }}
+                          label={{
+                            forceLabel: "Principal Code 1",
+                            isImp: false,
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "patient_principal_code_1",
+                            value: this.state.patient_principal_code_1,
+                            events: {
+                              onChange: this.ChangeEventHandler.bind(this),
+                            },
+                            option: {
+                              type: "text",
+                            },
+                          }}
+                        />
+                        {/* <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Primary",
@@ -607,8 +656,8 @@ export default class DcafEditor extends Component {
                               type: "text",
                             },
                           }}
-                        />
-                        <AlagehFormGroup
+                        /> */}
+                        {/* <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
                             forceLabel: "Secondary",
@@ -625,18 +674,54 @@ export default class DcafEditor extends Component {
                               type: "text",
                             },
                           }}
-                        />
+                        /> */}
 
                         <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
+                          div={{ className: "col-3 form-group" }}
                           label={{
-                            forceLabel: "Other Conditions",
+                            forceLabel: "Principal Code 2",
                             isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "patient_other_conditions",
-                            value: this.state.patient_other_conditions,
+                            name: "patient_principal_code_2",
+                            value: this.state.patient_principal_code_2,
+                            events: {
+                              onChange: this.ChangeEventHandler.bind(this),
+                            },
+                            option: {
+                              type: "text",
+                            },
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-3 form-group" }}
+                          label={{
+                            forceLabel: "Principal Code 3",
+                            isImp: false,
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "patient_principal_code_3",
+                            value: this.state.patient_principal_code_3,
+                            events: {
+                              onChange: this.ChangeEventHandler.bind(this),
+                            },
+                            option: {
+                              type: "text",
+                            },
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-3 form-group" }}
+                          label={{
+                            forceLabel: "Principal Code 4",
+                            isImp: false,
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "patient_principal_code_4",
+                            value: this.state.patient_principal_code_4,
                             events: {
                               onChange: this.ChangeEventHandler.bind(this),
                             },
