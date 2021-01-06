@@ -198,9 +198,12 @@ table {
 }
 .insImg {
   border: 1px solid #000;
-  height: 120px;
+  text-align: center;
 }
-
+.insImg img {
+  height: 100%;
+  width: 100%;
+}
 .footerSection {
   width: 97.2%;
   float: left;

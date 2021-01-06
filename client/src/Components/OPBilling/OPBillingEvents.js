@@ -410,13 +410,17 @@ const ShowOrderPackage = ($this) => {
   });
 };
 
-const ClosePackage = ($this) => {
+const ClosePackage = ($this, e) => {
   $this.setState(
     {
       isPackOpen: !$this.state.isPackOpen,
     },
     () => {
-      getPatientDetails($this, $this.state.patient_code);
+      if (e === false) {
+        return
+      } else {
+        getPatientDetails($this, $this.state.patient_code);
+      }
     }
   );
 };

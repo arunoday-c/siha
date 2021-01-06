@@ -362,16 +362,6 @@ export function postSalesOrder(req, res, next) {
             strQuery += "select 1=1;";
           }
 
-          const upd_sales_order_items = _.filter(
-            input.sales_order_items,
-            (f) => {
-              return (
-                f.hims_f_sales_order_items_id !== null ||
-                f.hims_f_sales_order_items_id !== undefined
-              );
-            }
-          );
-
           const ins_sales_order_items = _.filter(
             input.sales_order_items,
             (f) => {
@@ -387,6 +377,26 @@ export function postSalesOrder(req, res, next) {
               return (
                 f.hims_f_sales_order_services_id === null ||
                 f.hims_f_sales_order_services_id === undefined
+              );
+            }
+          );
+
+          const upd_sales_order_items = _.filter(
+            input.sales_order_items,
+            (f) => {
+              return (
+                f.hims_f_sales_order_items_id !== null ||
+                f.hims_f_sales_order_items_id !== undefined
+              );
+            }
+          );
+
+          const upd_sales_order_services = _.filter(
+            input.sales_order_services,
+            (f) => {
+              return (
+                f.hims_f_sales_order_services_id !== null ||
+                f.hims_f_sales_order_services_id !== undefined
               );
             }
           );
@@ -412,8 +422,32 @@ export function postSalesOrder(req, res, next) {
               );
             }
           }
+
+          if (upd_sales_order_services.length > 0) {
+            for (let i = 0; i < upd_sales_order_services.length; i++) {
+              strQuery += mysql.format(
+                "UPDATE hims_f_sales_order_services SET `quantity`=?, extended_cost = ?, \
+                              discount_percentage= ?,discount_amount= ?, net_extended_cost= ?, tax_percentage=?, tax_amount= ?,\
+                              total_amount=? where `hims_f_sales_order_services_id`=?;",
+                [
+                  upd_sales_order_services[i].quantity,
+                  upd_sales_order_services[i].extended_cost,
+                  upd_sales_order_services[i].discount_percentage,
+                  upd_sales_order_services[i].discount_amount,
+                  upd_sales_order_services[i].net_extended_cost,
+                  upd_sales_order_services[i].tax_percentage,
+                  upd_sales_order_services[i].tax_amount,
+                  upd_sales_order_services[i].total_amount,
+                  upd_sales_order_services[i].hims_f_sales_order_services_id,
+                ]
+              );
+            }
+          }
+
           let IncludeValues = [];
           if (ins_sales_order_items.length > 0) {
+
+
             IncludeValues = [
               "item_id",
               "uom_id",
@@ -457,6 +491,8 @@ export function postSalesOrder(req, res, next) {
                 });
               });
           } else if (ins_sales_order_services.length > 0) {
+
+
             IncludeValues = [
               "services_id",
               "service_frequency",
