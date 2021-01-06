@@ -402,7 +402,7 @@ export function getDaysArray(start, end) {
     }
 
     return arr;
-  } catch (e) { }
+  } catch (e) {}
 }
 
 //created by irfan: to generate dates,month,year
@@ -488,8 +488,8 @@ export function bulkTimeValidate(
           error: true,
           message: ` invalid time for ${employee_code} on
                         ${moment(day.attendance_date, "YYYY-MM-DD").format(
-            "DD-MM-YYYY"
-          )}`,
+                          "DD-MM-YYYY"
+                        )}`,
         };
       }
     }
@@ -571,7 +571,7 @@ export function getEmployeeWeekOffsandHolidays(
                 w.holiday_type == "RS" &&
                 w.religion_id == employee["religion_id"]) ||
               moment(w.holiday_date).format("dd").toUpperCase() ===
-              employee["week_day"]) &&
+                employee["week_day"]) &&
             w.holiday_date >= employee["date_of_joining"]
           );
         }
@@ -581,7 +581,7 @@ export function getEmployeeWeekOffsandHolidays(
               w.holiday_type == "RS" &&
               w.religion_id == employee["religion_id"]) ||
             moment(w.holiday_date).format("dd").toUpperCase() ===
-            employee["week_day"]) &&
+              employee["week_day"]) &&
           w.holiday_date >= employee["date_of_joining"]
         );
       });
@@ -1087,8 +1087,8 @@ export function generateProjectRosterTimesheet(input) {
           allDates.forEach((attendance_date) => {
             const TimeSheetUploaded = empTimeSheet
               ? empTimeSheet.find((e) => {
-                return e.attendance_date == attendance_date;
-              })
+                  return e.attendance_date == attendance_date;
+                })
               : undefined;
 
             let color = "";
@@ -1167,7 +1167,7 @@ export function generateProjectRosterTimesheet(input) {
                       leaveFound.from_date == leaveFound.to_date &&
                       leaveFound.to_date == attendance_date &&
                       parseFloat(leaveFound.total_applied_days) ==
-                      parseFloat(0.5)
+                        parseFloat(0.5)
                     ) {
                       leaveFound.leave_type =
                         leaveFound.leave_type == "PL" ? "HPL" : "HUL";
@@ -1301,8 +1301,8 @@ export function generateProjectRosterTimesheet(input) {
             if (attendance_date <= emp[0]["exit_date"]) {
               const TimeSheetUploaded = empTimeSheet
                 ? empTimeSheet.find((e) => {
-                  return e.attendance_date == attendance_date;
-                })
+                    return e.attendance_date == attendance_date;
+                  })
                 : undefined;
 
               let color = "";
@@ -1381,7 +1381,7 @@ export function generateProjectRosterTimesheet(input) {
                         leaveFound.from_date == leaveFound.to_date &&
                         leaveFound.to_date == attendance_date &&
                         parseFloat(leaveFound.total_applied_days) ==
-                        parseFloat(0.5)
+                          parseFloat(0.5)
                       ) {
                         leaveFound.leave_type =
                           leaveFound.leave_type == "PL" ? "HPL" : "HUL";
@@ -2354,9 +2354,9 @@ export function mergeTimesheetData(input) {
               } else {
                 errorString += ` <li> No project is Assigned for ${
                   employee["employee_code"]
-                  } on  ${moment(day.attendance_date, "YYYY-MM-DD").format(
-                    "DD-MM-YYYY"
-                  )} </li>`;
+                } on  ${moment(day.attendance_date, "YYYY-MM-DD").format(
+                  "DD-MM-YYYY"
+                )} </li>`;
               }
               break;
           }
@@ -2603,8 +2603,8 @@ export function processBulkAtt_Normal(data) {
           printQuery: true,
         })
         .then((att_result) => {
-          const partialAtt = att_result[0]
-          const annual_leave = att_result[1]
+          const partialAtt = att_result[0];
+          const annual_leave = att_result[1];
           // console.log("annual_leave", annual_leave)
           if (partialAtt.length > 0) {
             let message = "";
@@ -2623,11 +2623,12 @@ export function processBulkAtt_Normal(data) {
               ann_from_date_mnth = moment(annual_leave[0].from_date).format(
                 "M"
               );
-              ann_to_date_mnth = moment(annual_leave[0].to_date).format(
-                "M"
-              );
-              if (ann_from_date_mnth == ann_to_date_mnth && annual_leave[0].employee_joined == "N") {
-                attence_till_date = annual_leave[0].to_date
+              ann_to_date_mnth = moment(annual_leave[0].to_date).format("M");
+              if (
+                ann_from_date_mnth == ann_to_date_mnth &&
+                annual_leave[0].employee_joined == "N"
+              ) {
+                attence_till_date = annual_leave[0].to_date;
               }
             }
             // console.log("ann_from_date_mnth", ann_from_date_mnth)
@@ -2643,9 +2644,9 @@ export function processBulkAtt_Normal(data) {
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
              left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
             S.year=? and S.month=? and S.salary_type='NS' where   ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
-                  /employee_id/gi,
-                  "TS.employee_id"
-                )};`,
+              /employee_id/gi,
+              "TS.employee_id"
+            )};`,
                 values: [
                   month_start,
                   month_end,
@@ -2795,7 +2796,8 @@ export function processBulkAtt_Normal(data) {
                               hospital_id: AttenResult[i]["hospital_id"],
                               sub_department_id:
                                 AttenResult[i]["sub_department_id"],
-                              attendance_date: AttenResult[i]["attendance_date"],
+                              attendance_date:
+                                AttenResult[i]["attendance_date"],
                               year: input.year,
                               month: input.month,
                               total_days: 1,
@@ -2805,7 +2807,8 @@ export function processBulkAtt_Normal(data) {
                               total_work_days: 1,
                               weekoff_days:
                                 AttenResult[i]["status"] == "WO" ? 1 : 0,
-                              holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
+                              holidays:
+                                AttenResult[i]["status"] == "HO" ? 1 : 0,
                               paid_leave: paid_leave,
                               unpaid_leave: unpaid_leave,
                               anual_leave: anual_leave,
@@ -2813,8 +2816,8 @@ export function processBulkAtt_Normal(data) {
                                 AttenResult[i]["consider_ot_shrtg"] == "Y"
                                   ? AttenResult[i]["worked_hours"]
                                   : AttenResult[i]["actual_hours"] +
-                                  "." +
-                                  AttenResult[i]["actual_minutes"],
+                                    "." +
+                                    AttenResult[i]["actual_minutes"],
                               hours:
                                 AttenResult[i]["consider_ot_shrtg"] == "Y"
                                   ? AttenResult[i]["hours"]
@@ -2851,8 +2854,11 @@ export function processBulkAtt_Normal(data) {
                               ot_holiday_minutes: holiday_ot_min,
                             });
                           } else {
-
-                            const date_match = moment(AttenResult[i]["attendance_date"]).isSameOrBefore(moment(attence_till_date).format("YYYY-MM-DD"))
+                            const date_match = moment(
+                              AttenResult[i]["attendance_date"]
+                            ).isSameOrBefore(
+                              moment(attence_till_date).format("YYYY-MM-DD")
+                            );
                             if (date_match) {
                               // console.log("attendance_date", AttenResult[i]["attendance_date"])
                               dailyAttendance.push({
@@ -2861,7 +2867,8 @@ export function processBulkAtt_Normal(data) {
                                 hospital_id: AttenResult[i]["hospital_id"],
                                 sub_department_id:
                                   AttenResult[i]["sub_department_id"],
-                                attendance_date: AttenResult[i]["attendance_date"],
+                                attendance_date:
+                                  AttenResult[i]["attendance_date"],
                                 year: input.year,
                                 month: input.month,
                                 total_days: 1,
@@ -2871,7 +2878,8 @@ export function processBulkAtt_Normal(data) {
                                 total_work_days: 1,
                                 weekoff_days:
                                   AttenResult[i]["status"] == "WO" ? 1 : 0,
-                                holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
+                                holidays:
+                                  AttenResult[i]["status"] == "HO" ? 1 : 0,
                                 paid_leave: paid_leave,
                                 unpaid_leave: unpaid_leave,
                                 anual_leave: anual_leave,
@@ -2879,8 +2887,8 @@ export function processBulkAtt_Normal(data) {
                                   AttenResult[i]["consider_ot_shrtg"] == "Y"
                                     ? AttenResult[i]["worked_hours"]
                                     : AttenResult[i]["actual_hours"] +
-                                    "." +
-                                    AttenResult[i]["actual_minutes"],
+                                      "." +
+                                      AttenResult[i]["actual_minutes"],
                                 hours:
                                   AttenResult[i]["consider_ot_shrtg"] == "Y"
                                     ? AttenResult[i]["hours"]
@@ -2918,7 +2926,6 @@ export function processBulkAtt_Normal(data) {
                               });
                             }
                           }
-
                         }
                       } else {
                         for (let i = 0; i < at_leng; i++) {
@@ -3070,8 +3077,8 @@ export function processBulkAtt_Normal(data) {
                                 AttenResult[i]["consider_ot_shrtg"] == "Y"
                                   ? AttenResult[i]["worked_hours"]
                                   : AttenResult[i]["actual_hours"] +
-                                  "." +
-                                  AttenResult[i]["actual_minutes"],
+                                    "." +
+                                    AttenResult[i]["actual_minutes"],
                               hours:
                                 AttenResult[i]["consider_ot_shrtg"] == "Y"
                                   ? AttenResult[i]["hours"]
@@ -3225,23 +3232,23 @@ export function processBulkAtt_Normal(data) {
                    where      \
                   DA.hospital_id=${input.hospital_id}  and year=${
                           input.year
-                          } and month=${
+                        } and month=${
                           input.month
-                          }   ${strQry}    group by employee_id,project_id;
+                        }   ${strQry}    group by employee_id,project_id;
         
                   delete from hims_f_project_wise_payroll  where  
                   hospital_id=${input.hospital_id}  and year=${
                           input.year
-                          }  and month=${input.month}  and employee_id in 
+                        }  and month=${input.month}  and employee_id in 
                   ( select hims_d_employee_id from hims_d_employee E 
                     left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
                     S.year=${input.year} and S.month=${
                           input.month
-                          } inner join hims_d_sub_department SD
+                        } inner join hims_d_sub_department SD
                    on E.sub_department_id=SD.hims_d_sub_department_id ${strQry.replace(
-                            /employee_id/gi,
-                            "hims_d_employee_id"
-                          )} where   E.suspend_salary <>'Y' and ( S.salary_processed is null or  S.salary_processed='N') ) and hims_f_project_wise_payroll_id>0 ; `;
+                     /employee_id/gi,
+                     "hims_d_employee_id"
+                   )} where   E.suspend_salary <>'Y' and ( S.salary_processed is null or  S.salary_processed='N') ) and hims_f_project_wise_payroll_id>0 ; `;
                       }
 
                       let total_days = 0;
@@ -3270,9 +3277,9 @@ export function processBulkAtt_Normal(data) {
                ${deptStr}      left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
                S.year=? and S.month=? and S.salary_type='NS' where ( S.salary_processed is null or  S.salary_processed='N') and  \
           DA.hospital_id=?  and DA.year=? and DA.month=? and (E.exit_date is null or E.exit_date >date(?) ) ${strQry.replace(
-                            /employee_id/gi,
-                            "DA.employee_id"
-                          )}   group by employee_id;  
+            /employee_id/gi,
+            "DA.employee_id"
+          )}   group by employee_id;  
           select employee_id, sum(updaid_leave_duration) as updaid_leave_duration from hims_f_pending_leave 
   where month=? and year=? group by employee_id;  ${projectQry}       `,
                           values: [
@@ -3330,7 +3337,12 @@ export function processBulkAtt_Normal(data) {
                               DilayResult[i]["partial_attendance"] == "N" &&
                               DilayResult[i]["late_joined"] == "N"
                             ) {
-                              if (parseFloat(DilayResult[i]["total_work_days"]) > parseFloat(options["salary_calendar_fixed_days"])) {
+                              if (
+                                parseFloat(DilayResult[i]["total_work_days"]) >
+                                parseFloat(
+                                  options["salary_calendar_fixed_days"]
+                                )
+                              ) {
                                 DilayResult[i]["total_work_days"] =
                                   options["salary_calendar_fixed_days"];
                               }
@@ -3356,7 +3368,7 @@ export function processBulkAtt_Normal(data) {
                                   month_start
                                 ).daysInMonth();
                                 DilayResult[i]["total_days"] = month_days;
-                                DilayResult[i]["total_work_days"] = month_days;
+                                // DilayResult[i]["total_work_days"] = month_days;
                               } else {
                                 // console.log("2 else")
                                 let annual_leaves = parseFloat(
@@ -3380,12 +3392,19 @@ export function processBulkAtt_Normal(data) {
                                 // console.log("annual_leaves", annual_leaves)
 
                                 t_paid_days =
-                                  DilayResult[i]["total_work_days"] -
-                                  parseFloat(DilayResult[i]["absent_days"]) -
-                                  parseFloat(DilayResult[i]["unpaid_leave"]) -
-                                  annual_leaves -
-                                  //parseFloat(DilayResult[i]["anual_leave"]) -
-                                  parseFloat(pending_unpaid_leave);
+                                  parseFloat(DilayResult[i]["absent_days"]) >
+                                  DilayResult[i]["total_days"]
+                                    ? 0
+                                    : DilayResult[i]["total_work_days"] -
+                                      parseFloat(
+                                        DilayResult[i]["absent_days"]
+                                      ) -
+                                      parseFloat(
+                                        DilayResult[i]["unpaid_leave"]
+                                      ) -
+                                      annual_leaves -
+                                      //parseFloat(DilayResult[i]["anual_leave"]) -
+                                      parseFloat(pending_unpaid_leave);
                               }
 
                               // DilayResult[i]["total_days"]=options["salary_calendar_fixed_days"];
@@ -3398,7 +3417,7 @@ export function processBulkAtt_Normal(data) {
                                 ...DilayResult[i],
                                 total_paid_days:
                                   t_paid_days >=
-                                    options["salary_calendar_fixed_days"]
+                                  options["salary_calendar_fixed_days"]
                                     ? options["salary_calendar_fixed_days"]
                                     : t_paid_days,
                                 total_leave:
@@ -3637,10 +3656,10 @@ export function processBulkAtt_with_cutoff(data) {
 
   prev_cutoff_next_day = moment(
     prev_year +
-    "-" +
-    prev_month +
-    "-" +
-    (parseInt(options.payroll_payment_date) + 1),
+      "-" +
+      prev_month +
+      "-" +
+      (parseInt(options.payroll_payment_date) + 1),
     "YYYY-M-D"
   ).format("YYYY-MM-DD");
 
@@ -3664,9 +3683,9 @@ export function processBulkAtt_with_cutoff(data) {
     S.year=? and S.month=? where E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')   and 
     TS.hospital_id=? and attendance_date between
     date(?) and date(?)   ${strQry.replace(
-            /employee_id/gi,
-            "TS.employee_id"
-          )}  group by TS.employee_id  
+      /employee_id/gi,
+      "TS.employee_id"
+    )}  group by TS.employee_id  
       having count(*)< ?;    `,
           values: [
             year,
@@ -3715,9 +3734,9 @@ export function processBulkAtt_with_cutoff(data) {
             S.year=? and S.month=? 
             where  ( S.salary_processed is null or  S.salary_processed='N') and TS.year=? and TS.month=? and   TS.hospital_id=? and attendance_date between
             date(?) and date(?)        ${strQry.replace(
-                  /employee_id/gi,
-                  "TS.employee_id"
-                )} ; 
+              /employee_id/gi,
+              "TS.employee_id"
+            )} ; 
             
   
             select hims_f_pending_leave_id, hims_f_leave_application_id,P.employee_id,
@@ -3817,7 +3836,7 @@ export function processBulkAtt_with_cutoff(data) {
 
                       const prev_data =
                         prev_month_timesheet_data[
-                        AttenResult[0]["employee_id"]
+                          AttenResult[0]["employee_id"]
                         ];
 
                       const empUnpaidPending = pending_leaves.filter((f) => {
@@ -3971,8 +3990,8 @@ export function processBulkAtt_with_cutoff(data) {
                               AttenResult[i]["consider_ot_shrtg"] == "Y"
                                 ? AttenResult[i]["worked_hours"]
                                 : AttenResult[i]["actual_hours"] +
-                                "." +
-                                AttenResult[i]["actual_minutes"],
+                                  "." +
+                                  AttenResult[i]["actual_minutes"],
                             hours:
                               AttenResult[i]["consider_ot_shrtg"] == "Y"
                                 ? AttenResult[i]["hours"]
@@ -4034,7 +4053,7 @@ export function processBulkAtt_with_cutoff(data) {
                         if (options.attendance_type == "DMP") {
                           const rosterData =
                             cm_after_cutoff_roster[
-                            AttenResult[0]["employee_id"]
+                              AttenResult[0]["employee_id"]
                             ];
 
                           current_left_days.forEach((attendance_date) => {
@@ -4055,7 +4074,7 @@ export function processBulkAtt_with_cutoff(data) {
                                   leaveFound.from_date == leaveFound.to_date &&
                                   leaveFound.to_date == attendance_date &&
                                   parseFloat(leaveFound.total_applied_days) ==
-                                  parseFloat(0.5)
+                                    parseFloat(0.5)
                                 ) {
                                   leaveFound.leave_type =
                                     leaveFound.leave_type == "PL"
@@ -4316,7 +4335,7 @@ export function processBulkAtt_with_cutoff(data) {
                                   leaveFound.from_date == leaveFound.to_date &&
                                   leaveFound.to_date == attendance_date &&
                                   parseFloat(leaveFound.total_applied_days) ==
-                                  parseFloat(0.5)
+                                    parseFloat(0.5)
                                 ) {
                                   leaveFound.leave_type =
                                     leaveFound.leave_type == "PL"
@@ -4613,7 +4632,7 @@ export function processBulkAtt_with_cutoff(data) {
                               //calculating over time
                               week_off_ot_hour = parseInt(
                                 parseInt(Math.abs(worked_minutes)) /
-                                parseInt(60)
+                                  parseInt(60)
                               );
                               week_off_ot_min =
                                 parseInt(Math.abs(worked_minutes)) %
@@ -4629,7 +4648,7 @@ export function processBulkAtt_with_cutoff(data) {
                               //calculating over time
                               holiday_ot_hour = parseInt(
                                 parseInt(Math.abs(worked_minutes)) /
-                                parseInt(60)
+                                  parseInt(60)
                               );
                               holiday_ot_min =
                                 parseInt(Math.abs(worked_minutes)) %
@@ -4714,8 +4733,8 @@ export function processBulkAtt_with_cutoff(data) {
                                 AttenResult[i]["consider_ot_shrtg"] == "Y"
                                   ? AttenResult[i]["worked_hours"]
                                   : AttenResult[i]["actual_hours"] +
-                                  "." +
-                                  AttenResult[i]["actual_minutes"],
+                                    "." +
+                                    AttenResult[i]["actual_minutes"],
                               hours:
                                 AttenResult[i]["consider_ot_shrtg"] == "Y"
                                   ? AttenResult[i]["hours"]
@@ -4808,7 +4827,7 @@ export function processBulkAtt_with_cutoff(data) {
                         if (options.attendance_type == "DMP") {
                           const rosterData =
                             cm_after_cutoff_roster[
-                            AttenResult[0]["employee_id"]
+                              AttenResult[0]["employee_id"]
                             ];
 
                           current_left_days.forEach((attendance_date) => {
@@ -4828,10 +4847,10 @@ export function processBulkAtt_with_cutoff(data) {
                                   let leave_days = 1;
                                   if (
                                     leaveFound.from_date ==
-                                    leaveFound.to_date &&
+                                      leaveFound.to_date &&
                                     leaveFound.to_date == attendance_date &&
                                     parseFloat(leaveFound.total_applied_days) ==
-                                    parseFloat(0.5)
+                                      parseFloat(0.5)
                                   ) {
                                     leaveFound.leave_type =
                                       leaveFound.leave_type == "PL"
@@ -4932,12 +4951,12 @@ export function processBulkAtt_with_cutoff(data) {
                                   holidays: 0,
                                   paid_leave:
                                     leave.status == "PL" ||
-                                      leave.status == "HPL"
+                                    leave.status == "HPL"
                                       ? leave.leave_days
                                       : 0,
                                   unpaid_leave:
                                     leave.status == "UL" ||
-                                      leave.status == "HUL"
+                                    leave.status == "HUL"
                                       ? leave.leave_days
                                       : 0,
                                   anual_leave:
@@ -5131,10 +5150,10 @@ export function processBulkAtt_with_cutoff(data) {
                                   let leave_days = 1;
                                   if (
                                     leaveFound.from_date ==
-                                    leaveFound.to_date &&
+                                      leaveFound.to_date &&
                                     leaveFound.to_date == attendance_date &&
                                     parseFloat(leaveFound.total_applied_days) ==
-                                    parseFloat(0.5)
+                                      parseFloat(0.5)
                                   ) {
                                     leaveFound.leave_type =
                                       leaveFound.leave_type == "PL"
@@ -5232,12 +5251,12 @@ export function processBulkAtt_with_cutoff(data) {
                                   holidays: 0,
                                   paid_leave:
                                     leave.status == "PL" ||
-                                      leave.status == "HPL"
+                                    leave.status == "HPL"
                                       ? leave.leave_days
                                       : 0,
                                   unpaid_leave:
                                     leave.status == "UL" ||
-                                      leave.status == "HUL"
+                                    leave.status == "HUL"
                                       ? leave.leave_days
                                       : 0,
                                   anual_leave:
@@ -5436,7 +5455,7 @@ export function processBulkAtt_with_cutoff(data) {
                               leaveFound.from_date == leaveFound.to_date &&
                               leaveFound.to_date == attendance_date &&
                               parseFloat(leaveFound.total_applied_days) ==
-                              parseFloat(0.5)
+                                parseFloat(0.5)
                             ) {
                               leaveFound.leave_type =
                                 leaveFound.leave_type == "PL" ? "HPL" : "HUL";
@@ -5808,21 +5827,21 @@ export function processBulkAtt_with_cutoff(data) {
                           inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
                            where      \
                           DA.hospital_id=${
-                          input.hospital_id
+                            input.hospital_id
                           }  and year=${year} and month=${month}   ${strQry}    group by employee_id,project_id;
                 
                           delete from hims_f_project_wise_payroll  where  
                           hospital_id=${
-                          input.hospital_id
+                            input.hospital_id
                           }  and year=${year}  and month=${month}  and employee_id in 
                           ( select hims_d_employee_id from hims_d_employee E 
                             left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
                             S.year=${year} and S.month=${month} 
                             inner join hims_d_sub_department SD
                            on E.sub_department_id=SD.hims_d_sub_department_id ${strQry.replace(
-                            /employee_id/gi,
-                            "hims_d_employee_id"
-                          )} where   E.suspend_salary <>'Y' and ( S.salary_processed is null or  S.salary_processed='N')  ) and hims_f_project_wise_payroll_id>0 ; `;
+                             /employee_id/gi,
+                             "hims_d_employee_id"
+                           )} where   E.suspend_salary <>'Y' and ( S.salary_processed is null or  S.salary_processed='N')  ) and hims_f_project_wise_payroll_id>0 ; `;
                       }
 
                       _mysql
@@ -5843,9 +5862,9 @@ export function processBulkAtt_with_cutoff(data) {
                    S.year=? and S.month=?  
                    where ( S.salary_processed is null or  S.salary_processed='N') and DA.year=? and DA.month=? 
                    and DA.hospital_id=?    and (E.exit_date is null or E.exit_date >date(?) )${strQry.replace(
-                            /employee_id/gi,
-                            "DA.employee_id"
-                          )}    group by employee_id;
+                     /employee_id/gi,
+                     "DA.employee_id"
+                   )}    group by employee_id;
                     
                    select employee_id,COALESCE(sum(pending_unpaid_leave) ,0) as pending_unpaid_leave,COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as prev_month_shortage_hr ,
                    COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as prev_month_ot_hr ,   
@@ -5912,7 +5931,7 @@ export function processBulkAtt_with_cutoff(data) {
                                 ...DilayResult[i],
                                 total_paid_days:
                                   t_paid_days >=
-                                    options["salary_calendar_fixed_days"]
+                                  options["salary_calendar_fixed_days"]
                                     ? options["salary_calendar_fixed_days"]
                                     : t_paid_days,
                                 total_leave:
