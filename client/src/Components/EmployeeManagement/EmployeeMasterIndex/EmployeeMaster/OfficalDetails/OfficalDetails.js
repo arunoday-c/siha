@@ -354,6 +354,26 @@ class OfficalDetails extends Component {
                     },
                   }}
                 />
+                {this.state.employee_type === "PB" ? (
+                  <AlgaehDateHandler
+                    div={{ className: "col mandatory form-group" }}
+                    label={{
+                      forceLabel: "Probation Date",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "probation_date",
+                      others: {
+                        tabIndex: "1",
+                      },
+                    }}
+                    events={{
+                      onChange: datehandle.bind(this, this),
+                    }}
+                    value={this.state.probation_date}
+                  />
+                ) : null}
                 <AlgaehDateHandler
                   div={{ className: "col mandatory form-group" }}
                   label={{

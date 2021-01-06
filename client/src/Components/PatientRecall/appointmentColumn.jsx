@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 
 const Column = ({ data }) => {
   const history = useHistory();
+
   return (
     <div className="card">
       <h2>{data.date}</h2>

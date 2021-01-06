@@ -15,6 +15,7 @@ const baseState = {
     employee_designation_id: null,
     license_number: null,
     sex: null,
+    probation_date: null,
     date_of_birth: null,
     date_of_joining: null,
     date_of_resignation: null,

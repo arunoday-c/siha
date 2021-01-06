@@ -16,6 +16,7 @@ export default {
       license_number: null,
       sex: null,
       date_of_birth: null,
+      probation_date: null,
       date_of_joining: null,
       date_of_resignation: null,
       category_id: null,

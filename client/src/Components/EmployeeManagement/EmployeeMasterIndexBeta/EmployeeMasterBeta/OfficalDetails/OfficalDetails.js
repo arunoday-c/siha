@@ -167,9 +167,10 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
       employee_status: "A",
     },
   });
-  const { entitled_daily_ot, employee_status } = watch([
+  const { entitled_daily_ot, employee_status, employee_type } = watch([
     "entitled_daily_ot",
     "employee_status",
+    "employee_type",
   ]);
   const { data: officialDetails } = useQuery(
     ["official-details", { employee_id: EmpMasterIOputs }],
@@ -671,6 +672,47 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                     },
                   }}
                 /> */}
+
+              {employee_type === "PB" ? (
+                <Controller
+                  name="probation_date"
+                  control={control}
+                  render={({ onChange, value }) => (
+                    <AlgaehDateHandler
+                      div={{
+                        className: "col mandatory form-group",
+                      }}
+                      error={errors}
+                      label={{
+                        fieldName: "probation_date",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        value: value,
+                        className: "form-control",
+                        name: "probation_date",
+                        others: {
+                          tabIndex: "1",
+                        },
+                      }}
+                      events={{
+                        onChange: (mdate) => {
+                          if (mdate) {
+                            onChange(mdate._d);
+                          } else {
+                            onChange(undefined);
+                          }
+                        },
+                        onClear: () => {
+                          onChange(undefined);
+                        },
+                      }}
+                      // others={{ disabled: true }}
+                      // maxDate={moment().add(1, "days")}
+                    />
+                  )}
+                />
+              ) : null}
               <Controller
                 name="date_of_joining"
                 control={control}

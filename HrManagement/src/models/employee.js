@@ -334,7 +334,7 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name, date_of_birth, sex,\
+              "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name,probation_date, date_of_birth, sex,\
             primary_contact_no,secondary_contact_no,email,work_email,blood_group,nationality,religion_id,\
             marital_status,present_address,present_address2,present_pincode,present_city_id,\
             present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
@@ -350,6 +350,7 @@ export default {
               input.employee_code,
               input.full_name,
               input.arabic_name,
+              input.probation_date,
               input.date_of_birth,
               input.sex,
               input.primary_contact_no,
@@ -466,7 +467,7 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "UPDATE hims_d_employee SET employee_code=?,full_name=?,arabic_name=?, date_of_birth=?, sex=?,\
+              "UPDATE hims_d_employee SET employee_code=?,full_name=?,arabic_name=?,probation_date=?, date_of_birth=?, sex=?,\
               primary_contact_no=?, secondary_contact_no=?, email=?, work_email=?, blood_group=?, nationality=?,\
               religion_id=?, marital_status=?, present_address=?, present_address2=?, present_pincode=?,\
               present_city_id=?, present_state_id=?, present_country_id=?, permanent_address=?,\
@@ -485,6 +486,7 @@ export default {
               input.employee_code,
               input.full_name,
               input.arabic_name,
+              input.probation_date,
               input.date_of_birth,
               input.sex,
               input.primary_contact_no,

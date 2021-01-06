@@ -123,7 +123,6 @@ class EmployeeMasterIndex extends Component {
   }
 
   onClickHandler(e) {
-    debugger;
     algaehApiCall({
       uri: "/employee/downloadEmployeeMaster",
       method: "GET",
@@ -145,7 +144,6 @@ class EmployeeMasterIndex extends Component {
         link.click();
       },
       onCatch: (error) => {
-        debugger;
         var reader = new FileReader();
         reader.onload = function () {
           const parse = JSON.parse(reader.result);
