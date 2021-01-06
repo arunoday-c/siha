@@ -241,7 +241,7 @@ class OrderingPackages extends Component {
         package_type: null,
       },
       () => {
-        this.props.onClose && this.props.onClose(e);
+        this.props.onClose && this.props.onClose(false);
       }
     );
   };
