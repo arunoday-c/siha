@@ -425,8 +425,8 @@ function PatientRecall() {
 
   return (
     <div className="patient_recall">
-      <div className="row inner-top-search">
-        <form onSubmit={handleSubmit(getFollowUpData)}>
+      <form onSubmit={handleSubmit(getFollowUpData)}>
+        <div className="row inner-top-search">
           <Controller
             control={control}
             name="recall_start"
@@ -616,11 +616,13 @@ function PatientRecall() {
             },
           }}
         /> */}
-          <div className="col mt-4">
-            <button type="submit">Load</button>
+          <div className="col" style={{ marginTop: 21 }}>
+            <button className="btn btn-primary" type="submit">
+              Load
+            </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
       <div className="scrolling-wrapper">
         <Spin spinning={loading}>
           {followUpData?.map((item, index) => (
