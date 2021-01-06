@@ -1030,11 +1030,13 @@ export default {
           max(if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'')) as confirm_by_name,
           max(if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'')) as validate_by_name,
           LO.*, LA.description,max(if(LM.formula is not null,LM.formula,null)) as formula,
-          max(if(LM.display_formula is not null,LM.display_formula,null)) as display_formula,max(if(LM.decimals is not null,LM.decimals,null)) as decimals  from hims_f_ord_analytes LO
+          max(if(LM.display_formula is not null,LM.display_formula,null)) as display_formula,
+          max(if(LM.decimals is not null,LM.decimals,null)) as decimals  from hims_f_ord_analytes LO
           inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id
           inner join hims_f_lab_order LB on LB.hims_f_lab_order_id = LO.order_id
           inner join hims_m_lab_analyte as LM on LM.analyte_id = LA.hims_d_lab_analytes_id
-          left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)
+          left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LO.entered_by or 
+            CL.algaeh_d_app_user_id=LO.validate_by or CL.algaeh_d_app_user_id=LO.confirm_by)
           left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
           left join hims_d_employee EMO on EMO.hims_d_employee_id=LB.provider_id
           where LO.record_status='A'  AND LO.order_id=? group by LO.analyte_id order by LO.hims_f_ord_analytes_id;`,
@@ -1326,7 +1328,6 @@ export default {
   updateLabResultEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
-    utilities.logger().log("updateLabResultEntry: ");
     try {
       let inputParam = req.body;
       console.log(req.body, "body");
@@ -1351,9 +1352,9 @@ export default {
       //   .Select(s => s.run_type)
       //   .ToArray();
       let { runtype } = inputParam[inputParam.length - 1];
-      console.log(runtype, "run type");
+      // console.log(runtype, "run type");
 
-      console.log("inputParam: ", inputParam[0].critical_status);
+      // console.log("inputParam: ", inputParam[0].critical_status);
 
       let ref = null;
       let entered_by = null;
@@ -1409,11 +1410,12 @@ export default {
       let qry = "";
 
       for (let i = 0; i < req.body.length; i++) {
+
         qry += mysql.format(
           "UPDATE `hims_f_ord_analytes` SET result=?,\
         `status`=?,`remarks`=?,`run1`=?,`run2`=?,`run3`=?,`critical_type`=?,\
         entered_by=?,entered_date=?,validate_by=?,validated_date=?,\
-        confirm_by=?,confirmed_date=?,amended=?,amended_date=?,normal_low=?, normal_high=?,\
+        confirm_by=?,confirmed_date=?,amended=?,amended_date=?,normal_low=?, normal_high=?, text_value=?,\
         updated_date=?,updated_by=? where order_id=? AND hims_f_ord_analytes_id=?;",
           [
             inputParam[i].result,
@@ -1443,6 +1445,7 @@ export default {
               : null,
             inputParam[i].normal_low,
             inputParam[i].normal_high,
+            inputParam[i].val_text_value,
             moment().format("YYYY-MM-DD HH:mm"),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].order_id,
@@ -1707,7 +1710,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {
