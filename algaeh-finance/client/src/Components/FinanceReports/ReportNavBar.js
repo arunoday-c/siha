@@ -57,6 +57,14 @@ export default function ReportNavBar({
                   ? "FIN_RPT_CASHFLOW"
                   : item.key === "BS"
                   ? "FIN_RPT_BALSHEET"
+                  : item.key === "PL"
+                  ? "FIN_RPT_PNL"
+                  : item.key === "TB"
+                  ? "FIN_RPT_TRLBLN"
+                  : item.key === "AR"
+                  ? "FIN_RPT_AR_AGN"
+                  : item.key === "AP"
+                  ? "FIN_RPT_AP_AGN"
                   : ""
               }
             >
