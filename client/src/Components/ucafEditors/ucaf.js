@@ -98,6 +98,22 @@ export default class UcafEditor extends Component {
             patient_id: Window.global["current_patient"],
             visit_id: Window.global["visit_id"],
             forceReplace: "true",
+            patient_emergency_type: this.state.patient_emergency_type,
+            patient_emergency_case: this.state.patient_emergency_case,
+            patient_duration_of_illness: this.state.patient_duration_of_illness,
+            patient_chief_comp_main_symptoms: this.state
+              .patient_chief_comp_main_symptoms,
+            patient_significant_signs: this.state.patient_significant_signs,
+            patient_other_conditions: this.state.patient_other_conditions,
+            patient_diagnosys: this.state.patient_diagnosys,
+
+            patient_principal_code_1: this.state.patient_principal_code_1,
+            patient_principal_code_2: this.state.patient_principal_code_2,
+            patient_principal_code_3: this.state.patient_principal_code_3,
+            patient_principal_code_4: this.state.patient_principal_code_4,
+
+            patient_complaint_type: this.state.patient_complaint_type,
+            patient_indicated_LMP: this.state.patient_indicated_LMP,
           },
           onSuccess: (response) => {
             if (response.data.success === true) {
@@ -116,9 +132,7 @@ export default class UcafEditor extends Component {
           },
         });
       } else {
-        loader.setState({
-          loading: false,
-        });
+        return;
       }
     });
   }

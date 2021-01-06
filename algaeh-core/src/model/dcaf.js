@@ -112,10 +112,12 @@ let getPatientDCAF = (req, res, next) => {
                 inner join hims_d_services S on S.hims_d_services_id = OS.services_id \
                 left outer join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
                 inner join hims_d_service_type ST on ST.hims_d_service_type_id = OS.service_type_id \
-                where OS.billed='N' and V.patient_id = ? and (date(V.visit_date) = date(?) or visit_id=?)  ;\
-                DELETE from hims_f_dcaf_insurance_details where hims_f_dcaf_header_id=?;\
-                DELETE from hims_f_dcaf_medication where hims_f_dcaf_header_id=?;\
-                DELETE from hims_f_dcaf_services where hims_f_dcaf_header_id=?;",
+                where OS.billed='N' and V.patient_id = ? and (date(V.visit_date) = date(?) or visit_id=?);\
+                DELETE from hims_f_dcaf_insurance_details where hims_f_dcaf_header_id in (select hims_f_dcaf_header_id from hims_f_dcaf_header where patient_id = ? and visit_id=?);\
+                DELETE from hims_f_dcaf_medication where hims_f_dcaf_header_id in (select hims_f_dcaf_header_id from hims_f_dcaf_header where patient_id = ? and visit_id=?);\
+                DELETE from hims_f_dcaf_services where hims_f_dcaf_header_id in (select hims_f_dcaf_header_id from hims_f_dcaf_header where patient_id = ? and visit_id=?);",
+              // DELETE from hims_f_dcaf_header where patient_id = ? and visit_id=?;",
+
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -143,9 +145,14 @@ let getPatientDCAF = (req, res, next) => {
                 _input.patient_id,
                 _input.visit_date,
                 _input.visit_id,
-                hims_f_dcaf_header_id,
-                hims_f_dcaf_header_id,
-                hims_f_dcaf_header_id,
+                _input.patient_id,
+                _input.visit_id,
+                _input.patient_id,
+                _input.visit_id,
+                _input.patient_id,
+                _input.visit_id,
+                // _input.patient_id,
+                // _input.visit_id,
               ],
               printQuery: true,
             })
@@ -198,8 +205,8 @@ let getPatientDCAF = (req, res, next) => {
               _fields["patient_diagnosys"] = "";
               for (var i = 0; i < outputResult[3].length; i++) {
                 const _out = outputResult[3][i];
-                _fields["patient_diagnosys"] =
-                  _out["long_icd_description"] + "/" + _out["icd_code"];
+                _fields["patient_diagnosys"] +=
+                  _out["long_icd_description"] + " | ";
                 _fields["patient_principal_code_" + (i + 1)] = _out["icd_code"];
               }
 
@@ -225,20 +232,29 @@ let getPatientDCAF = (req, res, next) => {
                   "update hims_f_dcaf_header set `eligible_reference_number`=?,\
                     `patient_duration_of_illness`=?,\
                     `patient_chief_comp_main_symptoms`=?,`patient_significant_signs`=?,`patient_other_conditions`=?,\
-                    `patient_diagnosys`=?,`regular_dental_trt`=?,`dental_cleaning`=?,\
-                    `RTA`=?,`work_related`=?,`hospital_id`=? where hims_f_dcaf_header_id",
+                    `patient_diagnosys`=?,`patient_principal_code_1`=?,`patient_principal_code_2`=?,\
+                    `patient_principal_code_3`=?,`patient_principal_code_4`=?,`regular_dental_trt`=?,`dental_cleaning`=?,\
+                    `RTA`=?,`work_related`=?,`how`=?,`when`=?,`where`=?,`hospital_id`=? where `hims_f_dcaf_header_id`=?",
                   [
-                    _fields.eligible_reference_number,
-                    _fields.patient_duration_of_illness,
-                    _fields.patient_chief_comp_main_symptoms,
-                    _fields.patient_significant_signs,
-                    _fields.patient_other_conditions,
-                    _fields.patient_diagnosys,
+                    _input.eligible_reference_number,
+                    _input.patient_duration_of_illness,
+                    _input.patient_chief_comp_main_symptoms,
+                    _input.patient_significant_signs,
+                    _input.patient_other_conditions,
+                    _input.patient_diagnosys,
 
-                    _fields.regular_dental_trt,
-                    _fields.dental_cleaning,
-                    _fields.patient_rta,
-                    _fields.patient_work_related,
+                    _input.patient_principal_code_1,
+                    _input.patient_principal_code_2,
+                    _input.patient_principal_code_3,
+                    _input.patient_principal_code_4,
+
+                    _input.regular_dental_trt,
+                    _input.dental_cleaning,
+                    _input.patient_rta,
+                    _input.patient_work_related,
+                    _input.how,
+                    _input.when,
+                    _input.where,
                     req.userIdentity.hospital_id,
                     hims_f_dcaf_header_id,
                   ]
@@ -249,10 +265,11 @@ let getPatientDCAF = (req, res, next) => {
                     `new_visit_patient`,`sub_department_name`,`patient_code`,`eligible_reference_number`,\
                     `patient_full_name`,`patient_duration_of_illness`,\
                     `patient_chief_comp_main_symptoms`,`patient_significant_signs`,`patient_other_conditions`,\
-                    `patient_diagnosys`,`regular_dental_trt`,`dental_cleaning`,\
+                    `patient_diagnosys`,`patient_principal_code_1`,`patient_principal_code_2`,\
+                    `patient_principal_code_3`,`patient_principal_code_4`,`regular_dental_trt`,`dental_cleaning`,\
                     `RTA`,`work_related`,\
                     `patient_gender`,`age_in_years`,`hospital_id`) \
-                    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                    values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                   [
                     _fields.patient_id,
                     _fields.visit_id,
@@ -270,6 +287,10 @@ let getPatientDCAF = (req, res, next) => {
                     _fields.patient_significant_signs,
                     _fields.patient_other_conditions,
                     _fields.patient_diagnosys,
+                    _fields.patient_principal_code_1,
+                    _fields.patient_principal_code_2,
+                    _fields.patient_principal_code_3,
+                    _fields.patient_principal_code_4,
 
                     _fields.regular_dental_trt,
                     _fields.dental_cleaning,
@@ -415,16 +436,37 @@ const _getDcafDetails = (_mysql, req) => {
           "select * from hims_f_dcaf_header where hims_f_dcaf_header_id=?; \
           select * from hims_f_dcaf_insurance_details where hims_f_dcaf_header_id=?; \
           select * from hims_f_dcaf_medication where hims_f_dcaf_header_id=?; \
-          select * from hims_f_dcaf_services where hims_f_dcaf_header_id=?;",
+          select * from hims_f_dcaf_services where hims_f_dcaf_header_id=?;\
+          select  ICD.long_icd_description,icd_code from hims_f_patient_diagnosis D inner join hims_d_icd ICD \
+          on D.daignosis_id = ICD.hims_d_icd_id inner join hims_f_patient_visit V \
+          on D.episode_id = V.episode_id  \
+          where V.patient_id=? and hims_f_patient_visit_id=? \
+          and D.record_status ='A' and D.final_daignosis='Y';",
         values: [
           req.hims_f_dcaf_header_id,
           req.hims_f_dcaf_header_id,
           req.hims_f_dcaf_header_id,
           req.hims_f_dcaf_header_id,
+          req.query.patient_id,
+          req.query.visit_id,
         ],
         printQuery: true,
       })
       .then((result) => {
+        const _fields = result[0].length > 0 ? { ...result[0][0] } : {};
+        _fields["patient_diagnosys"] = "";
+        for (var i = 0; i < result[3].length; i++) {
+          const _out = result[3][i];
+          _fields["patient_diagnosys"] += _out["long_icd_description"] + " | ";
+          _fields["patient_principal_code_" + (i + 1)] = _out["icd_code"];
+        }
+
+        for (var i = 1; i < 5; i++) {
+          if (_fields["patient_principal_code_" + i] === undefined) {
+            _fields["patient_principal_code_" + i] = undefined;
+          }
+        }
+
         resolve({
           hims_f_dcaf_header: result[0],
           hims_f_dcaf_insurance_details: result[1],
@@ -449,7 +491,8 @@ const updateDcafDetails = (req, res, next) => {
         query:
           "update hims_f_dcaf_header set `patient_marital_status`=?,\
           `patient_duration_of_illness`=?,`patient_chief_comp_main_symptoms`=?,\
-          `patient_significant_signs`=?,`patient_diagnosys`=?,\
+          `patient_significant_signs`=?,`patient_diagnosys`=?,`patient_principal_code_1`=?,`patient_principal_code_2`=?,\
+          `patient_principal_code_3`=?,`patient_principal_code_4`=?,\
           `primary`=?,`secondary`=?,`patient_other_conditions`=?,`regular_dental_trt`=?,\
           `dental_cleaning`=?,`RTA`=?,`work_related`=?,`others`=?,\
           `how`=?,`when`=?,`where`=?,`updated_date`=?,`updated_by`=?,`hospital_id`=?\
@@ -460,6 +503,10 @@ const updateDcafDetails = (req, res, next) => {
           input.patient_chief_comp_main_symptoms,
           input.patient_significant_signs,
           input.patient_diagnosys,
+          input.patient_principal_code_1,
+          input.patient_principal_code_2,
+          input.patient_principal_code_3,
+          input.patient_principal_code_4,
           input.primary,
           input.secondary,
           input.patient_other_conditions,
