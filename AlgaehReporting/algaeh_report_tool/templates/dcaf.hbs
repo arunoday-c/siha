@@ -49,8 +49,8 @@
                 <table>
                   <tbody>
                     <tr>
-                        <td width="100%">
-                            <p class="insImg" style="height: 87px;" ><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/></p>
+                         <td width="100%">
+                            <p class="insImg" style="height: 118px;" ><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"/></p>
                         </td>
                     </tr>
                   </tbody>
@@ -202,8 +202,8 @@
                     {{#each medication }}
                         <tr>
                             <td class="txtFld" >{{generic_name}}</td>
-                            <td style="width: 100px;">{{type}}</td>
-                            <td style="width: 80px;">{{#if quantity null}} 1 {{else}} {{quantity}} {{/if}}</td>
+                            <td class="numberFld" style="width: 100px;">{{type}}</td>
+                            <td class="numberFld" style="width: 80px;">{{#if quantity null}} 1.00 {{else}} {{quantity}} {{/if}}</td>
                         </tr>
                     {{/each}}
                     </tbody>

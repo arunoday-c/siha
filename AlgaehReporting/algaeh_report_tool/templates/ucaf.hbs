@@ -224,8 +224,8 @@
                     {{#each medication }}
                         <tr>
                             <td class="txtFld" >{{generic_name}}</td>
-                            <td style="width: 100px;">{{type}}</td>
-                            <td style="width: 80px;">{{#if quantity null}} 1 {{else}} {{quantity}} {{/if}}</td>
+                            <td class="numberFld"  style="width: 100px;">{{type}}</td>
+                            <td class="numberFld"  style="width: 80px;">{{#if quantity null}} 1.00 {{else}} {{quantity}} {{/if}}</td>
                         </tr>
                     {{/each}}
                     </tbody>
