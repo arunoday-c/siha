@@ -731,7 +731,7 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `select account,M.description,H.root_id,child_id,M.head_id,H.account_name,C.child_name, C.arabic_child_name from \
+        query: `select account,M.description,M.mapping_group,M.mapping_group_id,H.root_id,child_id,M.head_id,H.account_name,C.child_name, C.arabic_child_name from \
           finance_accounts_maping M left join finance_account_head H\
           on M.head_id=H.finance_account_head_id left join finance_account_child C \
           on M.child_id=C.finance_account_child_id  ${str};`,
@@ -740,7 +740,19 @@ export default {
       })
       .then((result) => {
         _mysql.releaseConnection();
-        req.records = result;
+        const arrangedData = _.chain(result)
+          .groupBy((g) => g.mapping_group)
+          .map((details, key) => {
+            const { mapping_group, mapping_group_id } = _.head(details);
+            return {
+              mapping_group: mapping_group,
+              mapping_group_id: mapping_group_id,
+              details: details,
+            };
+          })
+          .value();
+
+        req.records = arrangedData;
         next();
       })
       .catch((e) => {

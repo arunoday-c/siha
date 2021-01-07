@@ -455,8 +455,8 @@ const _getDcafDetails = (_mysql, req) => {
       .then((result) => {
         const _fields = result[0].length > 0 ? { ...result[0][0] } : {};
         _fields["patient_diagnosys"] = "";
-        for (var i = 0; i < result[3].length; i++) {
-          const _out = result[3][i];
+        for (var i = 0; i < result[4].length; i++) {
+          const _out = result[4][i];
           _fields["patient_diagnosys"] += _out["long_icd_description"] + " | ";
           _fields["patient_principal_code_" + (i + 1)] = _out["icd_code"];
         }

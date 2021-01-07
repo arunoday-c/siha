@@ -21,7 +21,6 @@ export default function Mapping(props) {
       getFinanceAccountsMaping(),
     ])
       .then((results) => {
-        debugger
         setAccountHeads({
           1: results[0][0].children,
           2: results[1][0].children,
@@ -83,39 +82,48 @@ export default function Mapping(props) {
             <div className="portlet-body">
               <div className="row">
                 {mappings.map((item) => (
-                  <AlgaehTreeSearch
-                    key={item.account}
-                    div={{ className: "col-3 form-group" }}
-                    label={{
-                      forceLabel: item.description,
-                      isImp: false,
-                      align: "ltr",
-                    }}
-                    tree={{
-                      treeDefaultExpandAll: true,
-                      onChange: (val) => update(val, item.account),
-                      name: item.account,
-                      data: [
-                        ...accountHeads[1],
-                        ...accountHeads[2],
-                        ...accountHeads[4],
-                        ...accountHeads[5],
-                      ],
-                      textField: "label",
-                      valueField: (node) => {
-                        if (node["leafnode"] === "Y") {
-                          return (
-                            node["head_id"] +
-                            "-" +
-                            node["finance_account_child_id"]
-                          );
-                        } else {
-                          return node["finance_account_head_id"];
-                        }
-                      },
-                      defaultValue: `${item.head_id}-${item.child_id}`,
-                    }}
-                  />
+                  <>
+                    <h2>{item.mapping_group}</h2>
+                    <div className="card">
+                      <div className="row">
+                        {item.details.map((items) => (
+                          <AlgaehTreeSearch
+                            key={items.account}
+                            div={{ className: "col-3 form-group" }}
+                            label={{
+                              forceLabel: items.description,
+                              isImp: false,
+                              align: "ltr",
+                            }}
+                            tree={{
+                              treeDefaultExpandAll: true,
+                              onChange: (val) => update(val, items.account),
+                              name: items.account,
+                              data: [
+                                ...accountHeads[1],
+                                ...accountHeads[2],
+                                ...accountHeads[4],
+                                ...accountHeads[5],
+                              ],
+                              textField: "label",
+                              valueField: (node) => {
+                                if (node["leafnode"] === "Y") {
+                                  return (
+                                    node["head_id"] +
+                                    "-" +
+                                    node["finance_account_child_id"]
+                                  );
+                                } else {
+                                  return node["finance_account_head_id"];
+                                }
+                              },
+                              defaultValue: `${items.head_id}-${items.child_id}`,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </>
                 ))}
                 {/* <div className="col-3">
                   <AlgaehButton

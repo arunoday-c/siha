@@ -37,7 +37,11 @@ import moment from "moment";
 // import Options from "../../Options.json";
 import OrderingPackages from "../PatientProfile/Assessment/OrderingPackages/OrderingPackages";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
-import { MainContext, AlgaehSecurityComponent } from "algaeh-react-components";
+import {
+  MainContext,
+  AlgaehSecurityComponent,
+  RawSecurityComponent,
+} from "algaeh-react-components";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -63,6 +67,16 @@ class OPBilling extends Component {
       userToken: {},
       priceModalVisible: false,
     };
+    this.smallRecipt = [
+      {
+        label: "Print Receipt",
+        events: {
+          onClick: () => {
+            generateReceipt(this, this);
+          },
+        },
+      },
+    ];
   }
   static contextType = MainContext;
 
@@ -154,6 +168,19 @@ class OPBilling extends Component {
     ) {
       getPatientDetails(this, this.props.patient_code);
     }
+
+    RawSecurityComponent({ componentCode: "OP_SML_PRNT" }).then((result) => {
+      if (result === "show") {
+        this.smallRecipt.push({
+          label: "Print Receipt Small",
+          events: {
+            onClick: () => {
+              generateReceiptSmall(this, this);
+            },
+          },
+        });
+      }
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -244,13 +271,27 @@ class OPBilling extends Component {
           // data.visit_id = data.hims_f_patient_visit_id;
           if (data.receiptdetails.length !== 0) {
             for (let i = 0; i < data.receiptdetails.length; i++) {
-              data.Cashchecked = data.receiptdetails[i].pay_type === "CA" ? true : false
-              data.cash_amount = data.receiptdetails[i].pay_type === "CA" ? data.receiptdetails[i].amount : 0
+              data.Cashchecked =
+                data.receiptdetails[i].pay_type === "CA" ? true : false;
+              data.cash_amount =
+                data.receiptdetails[i].pay_type === "CA"
+                  ? data.receiptdetails[i].amount
+                  : 0;
 
-              data.Cardchecked = data.receiptdetails[i].pay_type === "CD" ? true : false
-              data.card_amount = data.receiptdetails[i].pay_type === "CD" ? data.receiptdetails[i].amount : 0
-              data.card_check_number = data.receiptdetails[i].pay_type === "CD" ? data.receiptdetails[i].card_check_number : null
-              data.selectedCard = data.receiptdetails[i].pay_type === "CD" ? { hims_d_bank_card_id: data.receiptdetails[i].bank_card_id } : null
+              data.Cardchecked =
+                data.receiptdetails[i].pay_type === "CD" ? true : false;
+              data.card_amount =
+                data.receiptdetails[i].pay_type === "CD"
+                  ? data.receiptdetails[i].amount
+                  : 0;
+              data.card_check_number =
+                data.receiptdetails[i].pay_type === "CD"
+                  ? data.receiptdetails[i].card_check_number
+                  : null;
+              data.selectedCard =
+                data.receiptdetails[i].pay_type === "CD"
+                  ? { hims_d_bank_card_id: data.receiptdetails[i].bank_card_id }
+                  : null;
               // data.Cashchecked = false;
               // data.Cardchecked = false;
               // if (data.receiptdetails[i].pay_type === "CA") {
@@ -338,7 +379,7 @@ class OPBilling extends Component {
           amount: this.state.card_amount,
           updated_date: null,
           card_type: null,
-          bank_card_id: this.state.selectedCard?.hims_d_bank_card_id
+          bank_card_id: this.state.selectedCard?.hims_d_bank_card_id,
         });
       }
       if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
@@ -505,11 +546,11 @@ class OPBilling extends Component {
                       </div>
                     </div>
                   ) : (
-                        <div>
-                          <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
-                          <h6>{this.state.created_name}</h6>
-                        </div>
-                      )}
+                    <div>
+                      <AlgaehLabel label={{ forceLabel: "Bill Created By" }} />
+                      <h6>{this.state.created_name}</h6>
+                    </div>
+                  )}
                 </div>
               ) : null}
             </div>
@@ -517,25 +558,8 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
-                      },
-                    },
-                  },
-                  {
-                    label: "Print Receipt Small",
-                    events: {
-                      onClick: () => {
-                        generateReceiptSmall(this, this);
-                      },
-                    },
-                  },
-                ],
-              }
+                  menuitems: this.smallRecipt,
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -618,8 +642,8 @@ class OPBilling extends Component {
                     this.state.patient_id === null
                       ? true
                       : this.state.Billexists === true
-                        ? true
-                        : false
+                      ? true
+                      : false
                   }
                 >
                   <AlgaehLabel
