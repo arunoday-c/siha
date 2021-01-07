@@ -545,7 +545,7 @@ function getAllAssignedScreen($this, role_id) {
 }
 function getScreenElementsRoles($this) {
   //getAllAssignedScrens
-  debugger;
+
   const { role_id, module_id } = $this.state;
   algaehApiCall({
     uri: "/algaehMasters/getScreenElementsRoles",
@@ -554,7 +554,7 @@ function getScreenElementsRoles($this) {
     onSuccess: (response) => {
       if (response.data.success) {
         const { records } = response.data;
-        debugger;
+        console.log("records", records);
         $this.setState({
           assignedScreenElements: records,
         });
@@ -650,7 +650,6 @@ function getRoleActiveModules($this, role_id, module_id) {
           $this.setState({ checkAll: true });
         }
 
-        debugger;
         data.map((item) => {
           let _findModule = _.find(
             ScreenList,

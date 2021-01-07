@@ -10,6 +10,7 @@ import {
 } from "./ScreenAssignmentEvents";
 import { MainContext } from "algaeh-react-components";
 import { Checkbox, Button } from "algaeh-react-components";
+import CheckBoxState from "./checkState";
 class ScreenAssignment extends Component {
   _isMounted = false;
   constructor(props) {
@@ -481,6 +482,7 @@ class ScreenAssignment extends Component {
                                               stages,
                                               checked,
                                             } = items;
+
                                             return (
                                               <React.Fragment
                                                 key={
@@ -489,15 +491,27 @@ class ScreenAssignment extends Component {
                                               >
                                                 {stages.length === 0 ? (
                                                   <li>
-                                                    <Checkbox
-                                                      defaultChecked={checked}
+                                                    <CheckBoxState
+                                                      checked={checked}
+                                                      screen_element_name={
+                                                        screen_element_name
+                                                      }
+                                                      items={items}
+                                                    />
+                                                    {/* <Checkbox
+                                                     
+                                                      checked={
+                                                        checked === undefined
+                                                          ? false
+                                                          : checked
+                                                      }
                                                       onChange={this.onClickElementClick.bind(
                                                         this,
                                                         items
                                                       )}
                                                     >
                                                       {screen_element_name}
-                                                    </Checkbox>
+                                                    </Checkbox> */}
                                                   </li>
                                                 ) : (
                                                   <React.Fragment>

@@ -2120,7 +2120,6 @@ const moduleScreenAssignment = (req, res, next) => {
           values: [role_id],
         })
         .then((result) => {
-          console.log("result", result);
           const module_privilage_map = result.map(
             (item) => item.algaeh_m_module_role_privilage_mapping_id
           );
@@ -3585,9 +3584,9 @@ const getScreenElementsRoles = (req, res, next) => {
          inner join algaeh_d_app_screens as s on s.algaeh_app_screens_id= c.screen_id and s.record_status='A'
         left join screen_element_scren_module_mapping as esm
         on esm.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
-        
-        ;`,
-        //-- where  (esm.role_Id=? or esm.role_Id is null) values: [role_id],
+        and (esm.role_Id=? or esm.role_Id is null);`,
+        //-- where  (esm.role_Id=? or esm.role_Id is null)
+        values: [role_id],
         printQuery: true,
       })
       .then((result) => {
@@ -3671,7 +3670,6 @@ const getScreenElementsRoles = (req, res, next) => {
             };
           })
           .value();
-        console.log("rest", rest);
         req.records = rest; //result;
         next();
       })
@@ -3704,8 +3702,8 @@ const updateScreenElementRoles = (req, res, next) => {
           if (screen_element_scren_module_mapping_id !== null) {
             removeItem += _mysql.mysqlQueryFormat(
               `delete from screen_element_scren_module_mapping 
-                 where screen_element_scren_module_mapping_id=?;`,
-              [screen_element_scren_module_mapping_id]
+                 where algaeh_d_app_scrn_elements_id=? and role_id=?;`,
+              [algaeh_d_app_scrn_elements_id, role_id]
             );
           }
 
@@ -3750,7 +3748,6 @@ const updateScreenElementRoles = (req, res, next) => {
           printQuery: true,
         })
         .then((result) => {
-          console.log("result", result);
           _mysql.releaseConnection();
           req.records = {
             success: true,
