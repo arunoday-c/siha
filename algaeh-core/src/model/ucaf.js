@@ -456,16 +456,36 @@ const _getUcafDetails = (_mysql, req) => {
           "select * from hims_f_ucaf_header where hims_f_ucaf_header_id=?; \
           select * from hims_f_ucaf_insurance_details where hims_f_ucaf_header_id=?; \
           select * from hims_f_ucaf_medication where hims_f_ucaf_header_id=?; \
-          select * from hims_f_ucaf_services where hims_f_ucaf_header_id=?;",
+          select * from hims_f_ucaf_services where hims_f_ucaf_header_id=?;\
+          select  ICD.long_icd_description,icd_code from hims_f_patient_diagnosis D inner join hims_d_icd ICD \
+          on D.daignosis_id = ICD.hims_d_icd_id inner join hims_f_patient_visit V \
+          on D.episode_id = V.episode_id  \
+          where V.patient_id=? and hims_f_patient_visit_id=? \
+          and D.record_status ='A' and D.final_daignosis='Y';",
         values: [
           req.hims_f_ucaf_header_id,
           req.hims_f_ucaf_header_id,
           req.hims_f_ucaf_header_id,
           req.hims_f_ucaf_header_id,
+          req.query.patient_id,
+          req.query.visit_id,
         ],
         printQuery: true,
       })
       .then((result) => {
+        const _fields = result[0].length > 0 ? { ...result[0][0] } : {};
+        _fields["patient_diagnosys"] = "";
+        for (var i = 0; i < result[4].length; i++) {
+          const _out = result[4][i];
+          _fields["patient_diagnosys"] += _out["long_icd_description"] + " | ";
+          _fields["patient_principal_code_" + (i + 1)] = _out["icd_code"];
+        }
+
+        for (var i = 1; i < 5; i++) {
+          if (_fields["patient_principal_code_" + i] === undefined) {
+            _fields["patient_principal_code_" + i] = undefined;
+          }
+        }
         resolve({
           hims_f_ucaf_header: result[0],
           hims_f_ucaf_insurance_details: result[1],
