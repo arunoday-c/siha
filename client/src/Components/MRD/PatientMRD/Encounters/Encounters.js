@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./encounters.scss";
+import { PatientAttachments } from "../../../PatientRegistrationNew/PatientAttachment";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import algaehLoader from "../../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -336,7 +337,7 @@ class Encounters extends Component {
   // method: "GET",
   getPatientEncounterDetails() {
     algaehLoader({ show: true });
-
+    debugger;
     algaehApiCall({
       uri: "/mrd/getPatientEncounterDetails",
       method: "GET",
@@ -557,6 +558,12 @@ class Encounters extends Component {
       },
     });
   }
+  showAttachments() {
+    this.setState({
+      attachmentOpen: !this.state.attachmentOpen,
+    });
+  }
+
   downloadDoc(doc, isPreview) {
     if (doc.fromPath === true) {
       this.setState({ pdfLoading: true }, () => {
@@ -731,7 +738,15 @@ class Encounters extends Component {
               </div>
             </div>
           </div>
-
+          <PatientAttachments
+            visible={this.state.attachmentOpen}
+            onClose={this.showAttachments.bind(this)}
+            patientData={{
+              hims_d_patient_id: Window.global["mrd_patient"],
+              patient_code: Window.global.patient_code,
+            }}
+            onlyShow={true}
+          />
           <div className="col-lg-8">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
@@ -747,6 +762,13 @@ class Encounters extends Component {
 
                 {this.state.generalInfo !== undefined ? (
                   <div className="actions">
+                    <button
+                      className="btn btn-default"
+                      style={{ marginRight: 10 }}
+                      onClick={this.showAttachments.bind(this)}
+                    >
+                      view Patient Attachments
+                    </button>
                     <button
                       className="btn btn-default"
                       style={{ marginRight: 10 }}
