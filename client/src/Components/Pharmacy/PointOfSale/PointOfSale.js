@@ -45,7 +45,7 @@ import {
   getCookie,
 } from "../../../utils/algaehApiCall";
 import PrescribedItemList from "./PrescribedItemList";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehSecurityComponent } from "algaeh-react-components";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -539,18 +539,20 @@ class PointOfSale extends Component {
                       >
                         Cash Invoice
                       </button>
-                      <button
-                        onClick={generatePOSReceiptSmall.bind(
-                          this,
-                          this,
-                          "posCashInvoice",
-                          "Cash Invoice"
-                        )}
-                        className="btn btn-other"
-                        style={{ float: "left" }}
-                      >
-                        Smart Cash Invoice
-                      </button>
+                      <AlgaehSecurityComponent componentCode="POS_SML_PRNT">
+                        <button
+                          onClick={generatePOSReceiptSmall.bind(
+                            this,
+                            this,
+                            "posCashInvoice",
+                            "Cash Invoice"
+                          )}
+                          className="btn btn-other"
+                          style={{ float: "left" }}
+                        >
+                          Smart Cash Invoice
+                        </button>
+                      </AlgaehSecurityComponent>
 
                       {/* <button
                         onClick={generatePharmacyLabel.bind(this, this)}
