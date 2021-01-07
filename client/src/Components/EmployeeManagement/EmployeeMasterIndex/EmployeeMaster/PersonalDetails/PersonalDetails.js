@@ -172,7 +172,7 @@ class PersonalDetails extends Component {
     }, 2000);
 
     RawSecurityElement({ elementCode: "FLD_EDT_PER" }).then((result) => {
-      if (result === "hide") {
+      if (result === "show") {
         this.setState({ FldEditable: false });
       }
     });
