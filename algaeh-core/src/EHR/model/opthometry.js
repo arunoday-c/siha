@@ -4,8 +4,8 @@ const keyPath = require("algaeh-keys/keys");
 
 let addGlassPrescription = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
-
   let input = req.body;
+  console.log(" input.cva_specs,===========", input.cva_specs);
   try {
     _mysql
       .executeQuery({
@@ -130,16 +130,16 @@ let addGlassPrescription = (req, res, next) => {
           input.colored,
           input.anti_scratch,
           input.cl_type,
-          input.remarks
+          input.remarks,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -155,9 +155,7 @@ let getGlassPrescription = (req, res, next) => {
   let str_qry = "";
 
   if (req.query.hims_f_glass_prescription_id > 0) {
-    str_qry += ` and hims_f_glass_prescription_id=${
-      req.query.hims_f_glass_prescription_id
-    }`;
+    str_qry += ` and hims_f_glass_prescription_id=${req.query.hims_f_glass_prescription_id}`;
   }
 
   if (req.query.patient_id > 0) {
@@ -188,14 +186,14 @@ let getGlassPrescription = (req, res, next) => {
             bifocal,medium,lenticular,single_vision,dark,\
             safety_thickness,anti_reflecting_coating,photosensitive,\
             high_index,colored,anti_scratch,cl_type,remarks from hims_f_glass_prescription where hospital_id=? ${str_qry} `,
-        values: [req.userIdentity.hospital_id]
+        values: [req.userIdentity.hospital_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -333,23 +331,23 @@ let updateGlassPrescription = (req, res, next) => {
             input.anti_scratch,
             input.cl_type,
             input.remarks,
-            input.hims_f_glass_prescription_id
+            input.hims_f_glass_prescription_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "please send valid glass_prescription id"
+        message: "please send valid glass_prescription id",
       };
       next();
     }
@@ -368,21 +366,21 @@ let deleteGlassPrescription = (req, res, next) => {
         .executeQuery({
           query:
             "delete from hims_f_glass_prescription where hims_f_glass_prescription_id=?",
-          values: [input.hims_f_glass_prescription_id]
+          values: [input.hims_f_glass_prescription_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "please send valid glass_prescription id"
+        message: "please send valid glass_prescription id",
       };
       next();
     }
@@ -395,5 +393,5 @@ export default {
   addGlassPrescription,
   getGlassPrescription,
   updateGlassPrescription,
-  deleteGlassPrescription
+  deleteGlassPrescription,
 };

@@ -5,19 +5,17 @@ import "./Eye.scss";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 
 // import { AlgaehActions } from "../../../actions/algaehActions";
-import EyeModalEvent from "./EyeModalEvent"
+import EyeModalEvent from "./EyeModalEvent";
 import OptometricIOputs from "../../../Models/Optometric";
-
+import PrintGlassPrescription from "./printPrescription";
 export default class GlassPrescription extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
+    this.state = { cva_specs: null };
   }
 
   UNSAFE_componentWillMount() {
@@ -34,49 +32,49 @@ export default class GlassPrescription extends Component {
 
   DVRightEventHandler(e) {
     this.setState({
-      cva_dv_right: e.target.value
+      cva_dv_right: e.target.value,
     });
   }
 
-
   ChangeEventHandler(e) {
-    EyeModalEvent().ChangeEventHandler(this, e)
+    EyeModalEvent().ChangeEventHandler(this, e);
   }
 
   SaveGlassPrescription() {
-    EyeModalEvent().SaveGlassPrescription(this)
+    EyeModalEvent().SaveGlassPrescription(this);
   }
 
   radioChange(e) {
-    EyeModalEvent().radioChange(this, e)
+    EyeModalEvent().radioChange(this, e);
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
-
-    if (newProps.PrescriptionData !== undefined &&
-      newProps.PrescriptionData.length !== 0) {
-
-      let data = newProps.PrescriptionData[0]
-      this.setState({ ...this.state, ...data })
+    if (
+      newProps.PrescriptionData !== undefined &&
+      newProps.PrescriptionData.length !== 0
+    ) {
+      let data = newProps.PrescriptionData[0];
+      this.setState({ ...this.state, ...data });
     }
   }
 
   render() {
     return (
       <React.Fragment>
-
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.openGlassPres}
         >
           <div className="popupInner">
-            <div className="popRightDiv table-responsive" style={{ overflow: "auto" }}>
+            <div
+              className="popRightDiv table-responsive"
+              style={{ overflow: "auto" }}
+            >
               <table className="table table-bordered table-sm">
                 <thead>
-
                   <tr>
                     <th />
                     <th />
@@ -110,9 +108,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.POWER_GLASS_TYPE
+                            data: GlobalVariables.POWER_GLASS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -126,9 +124,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.POWER_GLASS_TYPE
+                            data: GlobalVariables.POWER_GLASS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -142,9 +140,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AXIS_TYPE
+                            data: GlobalVariables.AXIS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -158,9 +156,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.ADD_TYPE
+                            data: GlobalVariables.ADD_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -175,9 +173,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.POWER_GLASS_TYPE
+                            data: GlobalVariables.POWER_GLASS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -191,9 +189,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.POWER_GLASS_TYPE
+                            data: GlobalVariables.POWER_GLASS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -208,9 +206,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AXIS_TYPE
+                            data: GlobalVariables.AXIS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -224,9 +222,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.ADD_TYPE
+                            data: GlobalVariables.ADD_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -241,7 +239,9 @@ export default class GlassPrescription extends Component {
                             type="radio"
                             name="cva_specs"
                             value="S"
-                            checked={this.state.cva_specs === "S" ? true : false}
+                            checked={
+                              this.state.cva_specs === "S" ? true : false
+                            }
                             onChange={this.radioChange.bind(this)}
                           />
                           <span>Specs</span>
@@ -251,7 +251,9 @@ export default class GlassPrescription extends Component {
                             type="radio"
                             name="cva_specs"
                             value="C"
-                            checked={this.state.cva_specs === "C" ? true : false}
+                            checked={
+                              this.state.cva_specs === "C" ? true : false
+                            }
                             onChange={this.radioChange.bind(this)}
                           />
                           <span>CL</span>
@@ -267,11 +269,11 @@ export default class GlassPrescription extends Component {
                           name: "cva_dv_right",
                           value: this.state.cva_dv_right,
                           events: {
-                            onChange: this.DVRightEventHandler.bind(this)
+                            onChange: this.DVRightEventHandler.bind(this),
                           },
                           option: {
-                            type: "text"
-                          }
+                            type: "text",
+                          },
                         }}
                       />
                     </td>
@@ -283,11 +285,11 @@ export default class GlassPrescription extends Component {
                           name: "cva_dv_left",
                           value: this.state.cva_dv_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
                           option: {
-                            type: "text"
-                          }
+                            type: "text",
+                          },
                         }}
                       />
                     </td>
@@ -302,11 +304,11 @@ export default class GlassPrescription extends Component {
                           name: "cva_nv_right",
                           value: this.state.cva_nv_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
                           option: {
-                            type: "text"
-                          }
+                            type: "text",
+                          },
                         }}
                       />
                     </td>
@@ -318,10 +320,10 @@ export default class GlassPrescription extends Component {
                           name: "cva_nv_left",
                           value: this.state.cva_nv_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
                           option: {
-                            type: "text"
+                            type: "text",
                           },
                         }}
                       />
@@ -352,9 +354,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -368,9 +370,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -384,9 +386,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AXIS_TYPE
+                            data: GlobalVariables.AXIS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -401,9 +403,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -417,9 +419,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -433,9 +435,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AXIS_TYPE
+                            data: GlobalVariables.AXIS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -454,9 +456,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -470,9 +472,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -486,9 +488,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AXIS_TYPE
+                            data: GlobalVariables.AXIS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -502,9 +504,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.DV_VISION_TYPE
+                            data: GlobalVariables.DV_VISION_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -518,9 +520,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -534,9 +536,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -550,9 +552,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AXIS_TYPE
+                            data: GlobalVariables.AXIS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -566,9 +568,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.DV_VISION_TYPE
+                            data: GlobalVariables.DV_VISION_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -585,9 +587,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -600,9 +602,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -616,9 +618,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AXIS_TYPE
+                            data: GlobalVariables.AXIS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -632,9 +634,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.NV_VISION_TYPE
+                            data: GlobalVariables.NV_VISION_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -648,9 +650,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -664,9 +666,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -680,9 +682,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.AXIS_TYPE
+                            data: GlobalVariables.AXIS_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -696,9 +698,9 @@ export default class GlassPrescription extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.NV_VISION_TYPE
+                            data: GlobalVariables.NV_VISION_TYPE,
                           },
-                          onChange: this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this),
                         }}
                       />
                     </td>
@@ -724,9 +726,9 @@ export default class GlassPrescription extends Component {
                           name: "k1_right",
                           value: this.state.k1_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          others: { type: "number" }
+                          others: { type: "number" },
                         }}
                       />
                     </td>
@@ -738,9 +740,9 @@ export default class GlassPrescription extends Component {
                           name: "k2_right",
                           value: this.state.k2_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          others: { type: "number" }
+                          others: { type: "number" },
                         }}
                       />
                     </td>
@@ -752,9 +754,9 @@ export default class GlassPrescription extends Component {
                           name: "axis_right",
                           value: this.state.axis_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          others: { type: "number" }
+                          others: { type: "number" },
                         }}
                       />
                     </td>
@@ -766,9 +768,9 @@ export default class GlassPrescription extends Component {
                           name: "k1_left",
                           value: this.state.k1_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          others: { type: "number" }
+                          others: { type: "number" },
                         }}
                       />
                     </td>
@@ -780,9 +782,9 @@ export default class GlassPrescription extends Component {
                           name: "k2_left",
                           value: this.state.k2_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          others: { type: "number" }
+                          others: { type: "number" },
                         }}
                       />
                     </td>
@@ -794,9 +796,9 @@ export default class GlassPrescription extends Component {
                           name: "axis_left",
                           value: this.state.axis_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          others: { type: "number" }
+                          others: { type: "number" },
                         }}
                       />
                     </td>
@@ -823,10 +825,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_dv_right_prism",
                           value: this.state.bcva_dv_right_prism,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
-
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -838,9 +839,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_dv_right_bc",
                           value: this.state.bcva_dv_right_bc,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -852,9 +853,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_dv_right_dia",
                           value: this.state.bcva_dv_right_dia,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -866,9 +867,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_dv_left_prism",
                           value: this.state.bcva_dv_left_prism,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -880,9 +881,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_dv_left_bc",
                           value: this.state.bcva_dv_left_bc,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -895,8 +896,8 @@ export default class GlassPrescription extends Component {
                           value: this.state.bcva_dv_left_dia,
                           option: { type: "text" },
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
-                          }
+                            onChange: this.ChangeEventHandler.bind(this),
+                          },
                         }}
                       />
                     </td>
@@ -912,8 +913,8 @@ export default class GlassPrescription extends Component {
                           value: this.state.bcva_nv_right_prism,
                           option: { type: "text" },
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
-                          }
+                            onChange: this.ChangeEventHandler.bind(this),
+                          },
                         }}
                       />
                     </td>
@@ -925,9 +926,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_nv_right_bc",
                           value: this.state.bcva_nv_right_bc,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -939,9 +940,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_nv_right_dia",
                           value: this.state.bcva_nv_right_dia,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -953,9 +954,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_nv_left_prism",
                           value: this.state.bcva_nv_left_prism,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -967,9 +968,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_nv_left_bc",
                           value: this.state.bcva_nv_left_bc,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -981,9 +982,9 @@ export default class GlassPrescription extends Component {
                           name: "bcva_nv_left_dia",
                           value: this.state.bcva_nv_left_dia,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -999,9 +1000,9 @@ export default class GlassPrescription extends Component {
                           name: "pachy_right",
                           value: this.state.pachy_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1013,9 +1014,9 @@ export default class GlassPrescription extends Component {
                           name: "pachy_left",
                           value: this.state.pachy_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1031,9 +1032,9 @@ export default class GlassPrescription extends Component {
                           name: "w_wcs_right",
                           value: this.state.w_wcs_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1045,9 +1046,9 @@ export default class GlassPrescription extends Component {
                           name: "w_wcs_left",
                           value: this.state.w_wcs_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1063,9 +1064,9 @@ export default class GlassPrescription extends Component {
                           name: "ac_depth_right",
                           value: this.state.ac_depth_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1077,9 +1078,9 @@ export default class GlassPrescription extends Component {
                           name: "ac_depth_left",
                           value: this.state.ac_depth_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1095,13 +1096,12 @@ export default class GlassPrescription extends Component {
                           name: "ipd_right",
                           value: this.state.ipd_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
-
                   </tr>
                   <tr>
                     <td>Color Vision (SC/CC)</td>
@@ -1114,9 +1114,9 @@ export default class GlassPrescription extends Component {
                           name: "color_vision_wnl_right",
                           value: this.state.color_vision_wnl_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1128,9 +1128,9 @@ export default class GlassPrescription extends Component {
                           name: "color_vision_wnl_left",
                           value: this.state.color_vision_wnl_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1146,9 +1146,9 @@ export default class GlassPrescription extends Component {
                           name: "confrontation_fields_full_right",
                           value: this.state.confrontation_fields_full_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1160,9 +1160,9 @@ export default class GlassPrescription extends Component {
                           name: "confrontation_fields_full_left",
                           value: this.state.confrontation_fields_full_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1178,9 +1178,9 @@ export default class GlassPrescription extends Component {
                           name: "pupils_errl_right",
                           value: this.state.pupils_errl_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1192,9 +1192,9 @@ export default class GlassPrescription extends Component {
                           name: "pupils_errl_left",
                           value: this.state.pupils_errl_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1210,9 +1210,9 @@ export default class GlassPrescription extends Component {
                           name: "cover_test_ortho_right",
                           value: this.state.cover_test_ortho_right,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1224,9 +1224,9 @@ export default class GlassPrescription extends Component {
                           name: "cover_test_ortho_left",
                           value: this.state.cover_test_ortho_left,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1242,9 +1242,9 @@ export default class GlassPrescription extends Component {
                           name: "covergence",
                           value: this.state.covergence,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1261,9 +1261,9 @@ export default class GlassPrescription extends Component {
                           name: "safe_fesa",
                           value: this.state.safe_fesa,
                           events: {
-                            onChange: this.ChangeEventHandler.bind(this)
+                            onChange: this.ChangeEventHandler.bind(this),
                           },
-                          option: { type: "text" }
+                          option: { type: "text" },
                         }}
                       />
                     </td>
@@ -1411,7 +1411,6 @@ export default class GlassPrescription extends Component {
                           <span>Colored</span>
                         </label>
 
-
                         <label className="checkbox inline">
                           <input
                             type="checkbox"
@@ -1421,7 +1420,6 @@ export default class GlassPrescription extends Component {
                           />
                           <span>Anti-Scratch</span>
                         </label>
-
                       </div>
                     </td>
                   </tr>
@@ -1461,9 +1459,7 @@ export default class GlassPrescription extends Component {
                     <td colspan="8" rowspan="2">
                       <textarea
                         className="textArea"
-                        value={
-                          this.state.remarks
-                        }
+                        value={this.state.remarks}
                         name="remarks"
                         onChange={this.ChangeEventHandler.bind(this)}
                       >
@@ -1480,6 +1476,7 @@ export default class GlassPrescription extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-lg-12">
+                  <PrintGlassPrescription />
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -1490,7 +1487,7 @@ export default class GlassPrescription extends Component {
                   <button
                     type="button"
                     className="btn btn-default"
-                    onClick={e => {
+                    onClick={(e) => {
                       this.onClose(e);
                     }}
                   >
