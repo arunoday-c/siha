@@ -741,7 +741,7 @@ export default {
       .then((result) => {
         _mysql.releaseConnection();
         const arrangedData = _.chain(result)
-          .groupBy((g) => g.mapping_group)
+          .groupBy((g) => g.mapping_group_id)
           .map((details, key) => {
             const { mapping_group, mapping_group_id } = _.head(details);
             return {
