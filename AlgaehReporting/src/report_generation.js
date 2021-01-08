@@ -515,6 +515,7 @@ export default {
                                 _inputParam.reportParams == null
                                   ? []
                                   : _inputParam.reportParams,
+                              specialHeader: _inputParam.specialHeader,
                             }
                           );
 

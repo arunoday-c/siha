@@ -31,64 +31,13 @@ export default memo(function Modal(props) {
   function onPdfGeneration() {
     setPleaseWait("Please wait pdf is generating...");
     setLoading(true);
-    // if (Object.keys(resultdata).length === 0) {
-    //   setLoading(false);
-    //   setPleaseWait("");
-    //   AlgaehMessagePop({
-    //     type: "info",
-    //     display: "Please select Branch and Cost Center"
-    //   });
-    //   return;
-    // } else {
-    //   if (
-    //     resultdata["hospital_id"] === undefined ||
-    //     resultdata["cost_center_id"] === undefined
-    //   ) {
-    //     setLoading(false);
-    //     setPleaseWait("");
-    //     AlgaehMessagePop({
-    //       type: "info",
-    //       display: "Branch and Cost Center are mandatory"
-    //     });
-    //     return;
-    //   }
-    // }
+
     generateReport("pdf", resultdata)
       .then((result) => {
-        // console.log("result", result);
-        // var file = new Blob([result], { type: "application/pdf" });
-
-        // var fileURL = URL.createObjectURL(result);
-        // let newWindow = window.open(
-        //   "",
-        //   "",
-        //   "width=800,height=500,left=200,top=200"
-        // );
-        // newWindow.onload = () => {
-        //   newWindow.location = result;
-        // };
-
-        let myWindow = window.open(
-          "",
-          "",
-          "width=800,height=500,left=200,top=200,"
-        );
-        myWindow.document.title = "Ledger report";
-        myWindow.document.body.style.overflow = "hidden";
-        let divElem = document.createElement("div");
-        divElem.id = "algaeh_frame";
-        divElem.style.width = "100%";
-        divElem.style.height = "100%";
-        let elem = document.createElement("iframe");
-        elem.src = result;
-        elem.setAttribute("webkitallowfullscreen", true);
-        elem.setAttribute("allowfullscreen", true);
-        elem.style.width = "100%";
-        elem.style.height = "100%";
-        divElem.appendChild(elem);
-        myWindow.document.body.appendChild(divElem);
-        onOk("pdf");
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${result}&filename=Ledger report`;
         setLoading(false);
+        window.open(origin);
+        onOk("pdf");
       })
       .catch((error) => {
         setLoading(false);
@@ -141,6 +90,27 @@ export default memo(function Modal(props) {
                 value: moment(dateRange[1]).format("YYYY-MM-DD"),
               };
         let data;
+        const specialHeader = [
+          {
+            name: "Date Range",
+            value: `${moment(dateRange[0]).format("DD-MM-YYYY")} ~ ${moment(
+              dateRange[1]
+            ).format("DD-MM-YYYY")}`,
+          },
+          {
+            name: "Account Header",
+            value:
+              parentId === 1
+                ? "Assets"
+                : parentId === 2
+                ? "Liabilities"
+                : parentId === 4
+                ? "Income"
+                : parentId === 3
+                ? "Capital"
+                : "Expense",
+          },
+        ];
         if (fromInvoice) {
           data = {
             report: {
@@ -164,6 +134,7 @@ export default memo(function Modal(props) {
                 outcomeDataCostCenter,
                 // monthwise
               ],
+              specialHeader,
             },
           };
         } else {
@@ -226,6 +197,7 @@ export default memo(function Modal(props) {
                 outcomeDataCostCenter,
                 // monthwise
               ],
+              specialHeader,
             },
           };
         }
