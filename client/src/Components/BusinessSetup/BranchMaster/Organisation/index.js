@@ -10,7 +10,7 @@ import { newAlgaehApi } from "../../../../hooks";
 import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import { MainContext } from "algaeh-react-components";
 import { logoUrl, LoadLogo } from "../imagesSettings";
-import EmailConfig from "./EmailConfig";
+// import EmailConfig from "./EmailConfig";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
@@ -234,119 +234,10 @@ export function Organization(props) {
           </div>
           <div className="portlet-body">
             <div className="row">
-              <div className="col-3">
-                <div className="row">
-                  <div className="col-12">
-                    <label>Logo For Application</label>
-                    <Upload
-                      name="org_image"
-                      listType="picture-card"
-                      showUploadList={false}
-                      onChange={onLogoHandleChange}
-                      data={{
-                        image_id: hims_d_organization_id,
-                        logo_type: "APP",
-                      }}
-                      action={logoUrl({ uri: "/Document/saveLogo" })}
-                      accept=".png"
-                      className="orgImageUpload"
-                    >
-                      {app_logo ? (
-                        <img
-                          src={app_logo}
-                          alt="avatar"
-                          style={{ width: "100%" }}
-                        />
-                      ) : (
-                        <>
-                          <LoadLogo
-                            key="app"
-                            input={{
-                              image_id: hims_d_organization_id,
-                              logo_type: "APP",
-                            }}
-                          />
-                          {uploadButton}
-                        </>
-                      )}
-                    </Upload>
-                  </div>
-                  <div className="col-12">
-                    <label>Logo For Report</label>
-                    <Upload
-                      name="org_image"
-                      listType="picture-card"
-                      showUploadList={false}
-                      onChange={onImageHandleChange}
-                      data={{
-                        image_id: hims_d_organization_id,
-                        logo_type: "ORG",
-                      }}
-                      action={logoUrl({ uri: "/Document/saveLogo" })}
-                      accept=".png"
-                      className="orgImageUpload"
-                    >
-                      {org_image ? (
-                        <img
-                          src={org_image}
-                          alt="avatar"
-                          style={{ width: "100%" }}
-                        />
-                      ) : (
-                        <>
-                          <LoadLogo
-                            input={{
-                              image_id: hims_d_organization_id,
-                              logo_type: "ORG",
-                            }}
-                          />
-                          {uploadButton}
-                        </>
-                      )}
-                    </Upload>
-                  </div>
-                  <div className="col-12">
-                    <label>Seal For Report</label>
-                    <Upload
-                      name="org_image"
-                      listType="picture-card"
-                      showUploadList={false}
-                      onChange={onSealLogoHandleChange}
-                      data={{
-                        image_id: hims_d_organization_id,
-                        logo_type: "SEAL",
-                      }}
-                      action={logoUrl({ uri: "/Document/saveLogo" })}
-                      accept=".png"
-                      className="orgImageUpload"
-                    >
-                      {seal_logo ? (
-                        <img
-                          src={seal_logo}
-                          alt="avatar"
-                          style={{ width: "100%" }}
-                        />
-                      ) : (
-                        <>
-                          <LoadLogo
-                            key="seal"
-                            input={{
-                              image_id: hims_d_organization_id,
-                              logo_type: "SEAL",
-                            }}
-                          />
-                          {uploadButton}
-                        </>
-                      )}
-                    </Upload>
-                  </div>
-                </div>
-              </div>{" "}
-              <div className="col-9">
-                {" "}
+              <div className="col-12">
                 <div className="row">
                   <AlgaehAutoComplete
-                    div={{ className: "col-6 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Product Type", isImp: true }}
                     selector={{
                       name: "product_type",
@@ -383,9 +274,18 @@ export function Organization(props) {
                       onClear: onClearHandler,
                     }}
                   />{" "}
+                  <div className="col-3 globalSearchCntr mandatory">
+                    <AlgaehLabel
+                      label={{ forceLabel: "Head of Organisation" }}
+                    />
+                    <h6 onClick={employeeSearch}>
+                      {fullName ? fullName : full_name}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
                   <AlgaehFormGroup
                     div={{
-                      className: "col-6 form-group mandatory",
+                      className: "col-3 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Business Reg. Name",
@@ -401,20 +301,6 @@ export function Organization(props) {
                       disabled: disabledEdits,
                     }}
                   />
-                </div>
-                <div className="row">
-                  {/* <div className="col-12">
-            {" "}
-            <div className="ui input">
-              <input
-                type="text"
-                disabled={disabledEdits}
-                name="organization_name"
-                defaultValue={organization_name}
-                onChange={onChangeHandler}
-              ></input>
-            </div>
-          </div> */}
                   <AlgaehFormGroup
                     div={{
                       className: "col-3 form-group mandatory",
@@ -508,7 +394,7 @@ export function Organization(props) {
                   />{" "}
                   <AlgaehFormGroup
                     div={{
-                      className: "col-5 form-group mandatory",
+                      className: "col-3 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Email",
@@ -524,7 +410,7 @@ export function Organization(props) {
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "col-4 form-group mandatory",
+                      className: "col-3 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Phone",
@@ -540,7 +426,7 @@ export function Organization(props) {
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "col-6 form-group mandatory",
+                      className: "col-3 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Address Line 1",
@@ -556,7 +442,7 @@ export function Organization(props) {
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "col-6 form-group mandatory",
+                      className: "col-3 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Address Line 2",
@@ -570,14 +456,7 @@ export function Organization(props) {
                       onChange: onChangeHandler,
                     }}
                   />{" "}
-                  <div className="col-10 globalSearchCntr">
-                    <AlgaehLabel label={{ forceLabel: "Organisation Head" }} />
-                    <h6 onClick={employeeSearch}>
-                      {fullName ? fullName : full_name}
-                      <i className="fas fa-search fa-lg"></i>
-                    </h6>
-                  </div>
-                  <div className="col">
+                  <div className="col-12">
                     <AlgaehButton
                       className="btn btn-primary"
                       style={{ float: "right", marginTop: 20 }}
@@ -590,13 +469,121 @@ export function Organization(props) {
                   </div>
                 </div>
               </div>
+              <div className="col-12">
+                <div className="row">
+                  <div className="col">
+                    <label>Logo For Application</label>
+                    <Upload
+                      name="org_image"
+                      listType="picture-card"
+                      showUploadList={false}
+                      onChange={onLogoHandleChange}
+                      data={{
+                        image_id: hims_d_organization_id,
+                        logo_type: "APP",
+                      }}
+                      action={logoUrl({ uri: "/Document/saveLogo" })}
+                      accept=".png"
+                      className="orgImageUpload"
+                    >
+                      {app_logo ? (
+                        <img
+                          src={app_logo}
+                          alt="avatar"
+                          style={{ width: "100%" }}
+                        />
+                      ) : (
+                        <>
+                          <LoadLogo
+                            key="app"
+                            input={{
+                              image_id: hims_d_organization_id,
+                              logo_type: "APP",
+                            }}
+                          />
+                          {uploadButton}
+                        </>
+                      )}
+                    </Upload>
+                  </div>
+                  <div className="col">
+                    <label>Logo For Report</label>
+                    <Upload
+                      name="org_image"
+                      listType="picture-card"
+                      showUploadList={false}
+                      onChange={onImageHandleChange}
+                      data={{
+                        image_id: hims_d_organization_id,
+                        logo_type: "ORG",
+                      }}
+                      action={logoUrl({ uri: "/Document/saveLogo" })}
+                      accept=".png"
+                      className="orgImageUpload"
+                    >
+                      {org_image ? (
+                        <img
+                          src={org_image}
+                          alt="avatar"
+                          style={{ width: "100%" }}
+                        />
+                      ) : (
+                        <>
+                          <LoadLogo
+                            input={{
+                              image_id: hims_d_organization_id,
+                              logo_type: "ORG",
+                            }}
+                          />
+                          {uploadButton}
+                        </>
+                      )}
+                    </Upload>
+                  </div>
+                  <div className="col">
+                    <label>Seal For Report</label>
+                    <Upload
+                      name="org_image"
+                      listType="picture-card"
+                      showUploadList={false}
+                      onChange={onSealLogoHandleChange}
+                      data={{
+                        image_id: hims_d_organization_id,
+                        logo_type: "SEAL",
+                      }}
+                      action={logoUrl({ uri: "/Document/saveLogo" })}
+                      accept=".png"
+                      className="orgImageUpload"
+                    >
+                      {seal_logo ? (
+                        <img
+                          src={seal_logo}
+                          alt="avatar"
+                          style={{ width: "100%" }}
+                        />
+                      ) : (
+                        <>
+                          <LoadLogo
+                            key="seal"
+                            input={{
+                              image_id: hims_d_organization_id,
+                              logo_type: "SEAL",
+                            }}
+                          />
+                          {uploadButton}
+                        </>
+                      )}
+                    </Upload>
+                  </div>
+                </div>
+              </div>{" "}
             </div>
           </div>
         </div>
       </div>
-      <div className="col-4">
+      {/* <div className="col-4">
         {userToken.user_type === "SU" ? <EmailConfig /> : null}
-      </div>
+      </div> */}
     </div>
   );
 }
