@@ -63,11 +63,11 @@
             <table class="tableDotPrint2" cell-padding="0">
                 <thead>
                     <tr>
-                         <th class="txtFld">Item Desc.<p>وصف السلعة</p>
+                        <th class="txtFld">Item Desc.<p>وصف السلعة</p>
                         </th>
                         <th>Qty<p>كمية</p>
                         </th>
-                         <th class="numberFld">Pat. Payble <p>حصة المريض</p>
+                        <th class="numberFld">Pat. Payble <p>حصة المريض</p>
                         </th>
                         <th class="numberFld">Disc. <p>خصم</p>
                         </th>
@@ -103,9 +103,9 @@
                 </tr>
                 <tr> {{#if vat_applicable "Y"}}
                 <tr>
-                    <td>VAT</td>
+                    <td>VAT {{default_vat_percent}}%</td>
                     <td>{{numberFormating total_patient_tax decimalOnly}}</td>
-                    <td class="numberFld">:قيمة الضريبة</td>
+                    <td class="numberFld">:{{default_vat_percent}}% قيمة الضريبة</td>
                 </tr>
                 {{else}} <tr></tr>{{/if}}
                 </tr>

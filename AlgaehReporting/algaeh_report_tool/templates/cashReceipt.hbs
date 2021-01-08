@@ -126,9 +126,9 @@
                 </tr>
                 <tr> {{#if vat_applicable "Y"}}
                 <tr>
-                    <td>VAT Amount</td>
+                    <td>VAT Amount {{default_vat_percent}}%</td>
                     <td>{{total_patient_tax}}</td>
-                    <td class="numberFld">: 15% قيمة الضريبة</td>
+                    <td class="numberFld">: {{default_vat_percent}}% قيمة الضريبة</td>
                 </tr>
                 <tr>
                     <td>Amount After VAT</td>

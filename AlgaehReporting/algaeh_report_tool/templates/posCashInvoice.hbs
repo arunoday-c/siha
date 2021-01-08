@@ -57,8 +57,9 @@
                 </tr>
                 <tr>
                     <td colspan="2"><label class="textEnLft">Primary Diagnosis</label>:<span
-                            class="valueText">{{header.icd_code}} / {{header.long_icd_description}}</span><label class="textArRht">التشخيص الأولي</label></td>
-                  
+                            class="valueText">{{header.icd_code}} / {{header.long_icd_description}}</span><label
+                            class="textArRht">التشخيص الأولي</label></td>
+
                 </tr>
 
             </table>
@@ -121,21 +122,26 @@
                     <td class="numberFld">{{numberFormating total_discount_amount currencyheader}}</td>
                     <td>الخصم</td>
                 </tr>
+                <tr> {{#if vat_applicable "Y"}}
                 <tr>
-                    <td>VAT Amount</td>
+                <tr>
+                    <td>VAT Amount {{default_vat_percent}}%</td>
                     <td class="numberFld">{{numberFormating header.net_tax currencyheader}}</td>
-                    <td>قيمة الضريبة المضافة</td>
+                    <td>{{default_vat_percent}}% قيمة الضريبة المضافة</td>
                 </tr>
                 <tr>
-                    <td>Client VAT Amount</td>
+                    <td>Client VAT Amount {{default_vat_percent}}%</td>
                     <td class="numberFld">{{numberFormating header.patient_tax currencyheader}}</td>
-                    <td>الضريبة المضافة على العميل</td>
+                    <td>{{default_vat_percent}}% الضريبة المضافة على العميل</td>
                 </tr>
                 <tr>
-                    <td>Company VAT amount</td>
+                    <td>Company VAT amount {{default_vat_percent}}%</td>
                     <td class="numberFld">{{numberFormating header.company_tax currencyheader}}</td>
-                    <td>الضريبة المضافة على الشركة</td>
+                    <td>{{default_vat_percent}}% الضريبة المضافة على الشركة</td>
                 </tr>
+                </tr>
+                {{else}} <tr></tr>{{/if}}
+
                 <tr>
                     <td>Net Total Including VAT</td>
                     <td class="numberFld">{{numberFormating header.net_total currencyheader}}</td>
@@ -148,7 +154,7 @@
                 </tr>
                 <tr>
                     <td>Paid Amount</td>
-                     <td class="numberFld">{{numberFormating header.patient_payable currencyheader}}</td>
+                    <td class="numberFld">{{numberFormating header.patient_payable currencyheader}}</td>
                     <td>المبلغ المدفوع</td>
                 </tr>
                 <tr>

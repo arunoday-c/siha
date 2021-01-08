@@ -119,9 +119,9 @@
                 </tr>
                 <tr> {{#if vat_applicable "Y"}}
                 <tr>
-                    <td>VAT 15%</td>
+                    <td>VAT {{default_vat_percent}}%</td>
                     <td>{{total_patient_tax}}</td>
-                    <td class="numberFld">:15% قيمة الضريبة</td>
+                    <td class="numberFld">:{{default_vat_percent}}% قيمة الضريبة</td>
                 </tr>
                 {{else}} <tr></tr>{{/if}}
                 </tr>
