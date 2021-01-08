@@ -70,76 +70,61 @@ export default function Mapping(props) {
   }
 
   return (
-    <div className="FinanceMappingScreen">
-      <div className="row margin-top-15 margin-bottom-15">
-        <div className="col">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              {/* <div className="caption">
-                <h3 className="caption-subject">OP Billing</h3>
-              </div> */}
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                {mappings.map((item) => (
-                  <>
-                    <h2>{item.mapping_group}</h2>
-                    <div className="card">
-                      <div className="row">
-                        {item.details.map((items) => (
-                          <AlgaehTreeSearch
-                            key={items.account}
-                            div={{ className: "col-3 form-group" }}
-                            label={{
-                              forceLabel: items.description,
-                              isImp: false,
-                              align: "ltr",
-                            }}
-                            tree={{
-                              treeDefaultExpandAll: true,
-                              onChange: (val) => update(val, items.account),
-                              name: items.account,
-                              data: [
-                                ...accountHeads[1],
-                                ...accountHeads[2],
-                                ...accountHeads[4],
-                                ...accountHeads[5],
-                              ],
-                              textField: "label",
-                              valueField: (node) => {
-                                if (node["leafnode"] === "Y") {
-                                  return (
-                                    node["head_id"] +
-                                    "-" +
-                                    node["finance_account_child_id"]
-                                  );
-                                } else {
-                                  return node["finance_account_head_id"];
-                                }
-                              },
-                              defaultValue: `${items.head_id}-${items.child_id}`,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ))}
-                {/* <div className="col-3">
-                  <AlgaehButton
-                    onClick={updateMapping}
-                    className="btn btn-primary"
-                  >
-                    MAP/UPDATE
-                  </AlgaehButton>
-                </div> */}
+    <div
+      className=" FinanceMappingScreen"
+      style={{ marginTop: 20, marginBottom: 75 }}
+    >
+      <div class="row">
+        {mappings.map((item) => (
+          <div class="col-12">
+            <div className="card">
+              <div className="card-header">
+                <b>{item.mapping_group}</b>
+              </div>
+              <div className="card-body" style={{ paddingBottom: 5 }}>
+                <div className="row">
+                  {item.details.map((items) => (
+                    <AlgaehTreeSearch
+                      key={items.account}
+                      div={{ className: "col-3 form-group" }}
+                      label={{
+                        forceLabel: items.description,
+                        isImp: false,
+                        align: "ltr",
+                      }}
+                      tree={{
+                        treeDefaultExpandAll: true,
+                        onChange: (val) => update(val, items.account),
+                        name: items.account,
+                        data: [
+                          ...accountHeads[1],
+                          ...accountHeads[2],
+                          ...accountHeads[4],
+                          ...accountHeads[5],
+                        ],
+                        textField: "label",
+                        valueField: (node) => {
+                          if (node["leafnode"] === "Y") {
+                            return (
+                              node["head_id"] +
+                              "-" +
+                              node["finance_account_child_id"]
+                            );
+                          } else {
+                            return node["finance_account_head_id"];
+                          }
+                        },
+                        defaultValue: `${items.head_id}-${items.child_id}`,
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>{" "}
-        {/* <div className="col-4">fgfgfg</div>
-        <div className="col-4">fgfgfg</div> */}
+        ))}
       </div>
+
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-lg-12">
