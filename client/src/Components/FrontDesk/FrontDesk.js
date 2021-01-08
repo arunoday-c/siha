@@ -11,7 +11,7 @@ import RegistrationPatient from "../RegistrationPatient/RegistrationPatient";
 import {
   getCookie,
   algaehApiCall,
-  swalMessage
+  swalMessage,
 } from "../../utils/algaehApiCall";
 import { removeGlobal, setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -30,15 +30,22 @@ class FrontDesk extends Component {
           ? getCookie("ScreenName").replace("/", "") +
             prevLang.charAt(0).toUpperCase() +
             prevLang.slice(1)
-          : getCookie("ScreenName").replace("/", "")
+          : getCookie("ScreenName").replace("/", ""),
     };
     // this.routeComponents = this.routeComponents.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.location.state.data.visit_id !== null) {
+      this.setState({
+        visitCreated: true,
+      });
+    }
+  }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.screen !== prevState.FD_Screen) {
       this.setState({
-        FD_Screen: this.props.screen
+        FD_Screen: this.props.screen,
       });
     }
   }
@@ -50,18 +57,18 @@ class FrontDesk extends Component {
       method: "GET",
       data: {
         employee_id: patient.provider_id,
-        sub_department_id: patient.sub_department_id
+        sub_department_id: patient.sub_department_id,
       },
       redux: {
         type: "SERV_DTLS_GET_DATA",
-        mappingName: "employeeSerDetails"
+        mappingName: "employeeSerDetails",
       },
-      afterSuccess: data => {
+      afterSuccess: (data) => {
         if (!data[0].services_id) {
           swalMessage({
             title:
               "Error: Service is not created for the doctor, Please Contact the admin",
-            type: "error"
+            type: "error",
           });
         } else {
           this.setState(
@@ -74,14 +81,14 @@ class FrontDesk extends Component {
                   : Window.global["FD-STD"],
               ...patient,
               checkinID,
-              hims_d_services_id: data[0].services_id
+              hims_d_services_id: data[0].services_id,
             },
             () => {
               this.changeDisplays();
             }
           );
         }
-      }
+      },
     });
   }
 
@@ -100,21 +107,21 @@ class FrontDesk extends Component {
       module: "frontDesk",
       method: "PUT",
       data: patient,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.visitCreated = true;
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         console.log(error, "from update");
-      }
+      },
     });
   }
 
   // No visit is created
   backToAppointment() {
     setGlobal({
-      "FD-STD": "Appointment"
+      "FD-STD": "Appointment",
     });
     this.setState(
       {
@@ -125,7 +132,7 @@ class FrontDesk extends Component {
               this.state.Language.slice(1)
             : Window.global["FD-STD"],
         visitCreated: false,
-        fromRegistration: true
+        fromRegistration: true,
       },
       () => this.changeDisplays()
     );
@@ -137,7 +144,7 @@ class FrontDesk extends Component {
       {
         FD_Screen: "Appointment",
         visitCreated: true,
-        fromRegistration: true
+        fromRegistration: true,
       },
       () => this.changeDisplays()
     );
@@ -176,13 +183,13 @@ class FrontDesk extends Component {
             patient_age: this.state.patient_age,
             patient_gender: this.state.patient_gender,
             patient_phone: this.state.patient_phone,
-            patient_email: this.state.patient_email
+            patient_email: this.state.patient_email,
           }}
           visit_type={10}
           fromAppoinment={true}
           hims_d_services_id={this.state.hims_d_services_id}
         />
-      )
+      ),
     };
   }
 
@@ -201,7 +208,8 @@ class FrontDesk extends Component {
           />
           <button
             style={{
-              display: this.state.FD_Screen === "Appointment" ? "none" : "block"
+              display:
+                this.state.FD_Screen === "Appointment" ? "none" : "block",
             }}
             className="btn btn-default bk-bn"
             onClick={
@@ -223,14 +231,14 @@ class FrontDesk extends Component {
 
 function mapStateToProps(state) {
   return {
-    employeeSerDetails: state.employeeSerDetails
+    employeeSerDetails: state.employeeSerDetails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getEmployeeServiceID: AlgaehActions
+      getEmployeeServiceID: AlgaehActions,
     },
     dispatch
   );
