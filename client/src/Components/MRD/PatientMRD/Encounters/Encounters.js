@@ -759,42 +759,46 @@ class Encounters extends Component {
                                 this.state.generalInfo.encountered_date
                               ).format("DD-MM-YYYY HH:mm A")
                             : "----------"} */}
-
-                {this.state.generalInfo !== undefined ? (
-                  <div className="actions">
-                    <button
-                      className="btn btn-default"
-                      style={{ marginRight: 10 }}
-                      onClick={this.showAttachments.bind(this)}
-                    >
-                      view Patient Attachments
-                    </button>
-                    <button
-                      className="btn btn-default"
-                      style={{ marginRight: 10 }}
-                      onClick={this.printPatSummary.bind(this)}
-                    >
-                      Print Summary Report
-                    </button>
-                    <button
-                      className="btn btn-default"
-                      style={{ marginRight: 10 }}
-                      onClick={this.printSickleave.bind(this)}
-                    >
-                      Print Sick Leave
-                    </button>
-                    <button
-                      className="btn btn-default"
-                      style={{ marginRight: 10 }}
-                      onClick={this.printPrescription.bind(this)}
-                    >
-                      Print Prescription
-                    </button>
-                  </div>
-                ) : null}
               </div>
 
               <div className="portlet-body encounterDetailCntr">
+                <div className="row">
+                  <div className="col-12">
+                    {this.state.generalInfo !== undefined ? (
+                      <div style={{ float: "right" }}>
+                        <button
+                          className="btn btn-default"
+                          style={{ marginRight: 10 }}
+                          onClick={this.showAttachments.bind(this)}
+                        >
+                          view Patient Attachments
+                        </button>
+                        <button
+                          className="btn btn-default"
+                          style={{ marginRight: 10 }}
+                          onClick={this.printPatSummary.bind(this)}
+                        >
+                          Print Summary Report
+                        </button>
+                        <button
+                          className="btn btn-default"
+                          style={{ marginRight: 10 }}
+                          onClick={this.printSickleave.bind(this)}
+                        >
+                          Print Sick Leave
+                        </button>
+                        <button
+                          className="btn btn-default"
+                          style={{ marginRight: 10 }}
+                          onClick={this.printPrescription.bind(this)}
+                        >
+                          Print Prescription
+                        </button>
+                      </div>
+                    ) : null}
+                    <hr style={{ margin: "0 0 5px" }} />
+                  </div>
+                </div>
                 <div className="row generalInfo">
                   <div className="col-lg-12">
                     <h6 className="smallh6">General Information</h6>
