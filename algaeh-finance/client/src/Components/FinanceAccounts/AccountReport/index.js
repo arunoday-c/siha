@@ -112,7 +112,7 @@ export default memo(function Modal(props) {
                 ? "Capital"
                 : "Expense",
           },
-          { name: "Account Name", value: nodeName },
+          { name: "Account Name", value: inputdata.nodeName },
         ];
         if (fromInvoice) {
           data = {
