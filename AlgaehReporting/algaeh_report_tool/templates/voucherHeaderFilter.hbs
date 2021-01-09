@@ -104,16 +104,16 @@
 
         <div class="col-center">
             <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
-            <h5>{{report_name_for_header}}</h5>
+            <h5>{{report_name_for_header}} - {{specialHeader.1.value}}</h5>
+            
         </div>
-        <div class="headerFooterStyle">
+        <div class="headerFooterStyle"> <p style="text-align: center;margin-top:5px;"> <b>{{specialHeader.2.value}} </b></p>
+                     <p style="text-align: center;">
+            Selected Date Range :  <b> {{specialHeader.0.value}} </b></p>
  {{!-- <p class="showFilterValue">{{#each filter}}
                     <span><small>{{label}}:</small>{{labelValue}} </span>
                     {{/each }}</p> --}}
-    <p style="text-align: center;">
-            <b>{{specialHeader.1.value}} </b></p>
-                     <p style="text-align: center;">
-            Selected Date Range :  <b> {{specialHeader.0.value}} </b></p>
+   
         </div>
     </div>
 
