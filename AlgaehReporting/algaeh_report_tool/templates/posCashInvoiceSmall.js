@@ -9,6 +9,8 @@ const executePDF = function executePDFMethod(options) {
         decimal_places,
         symbol_position,
         currency_symbol,
+        vat_percent,
+        vat_applicable
       } = options.args.crypto;
       const internalParameters = parameters.reportParams;
       const headerID = _.find(
@@ -114,6 +116,8 @@ H.hims_f_pharmacy_pos_header_id=?;";
               symbol_position,
               currency_symbol,
             },
+            vat_applicable: vat_applicable,
+            default_vat_percent: parseFloat(vat_percent)
           };
           mysql.releaseConnection();
           resolve(result);
