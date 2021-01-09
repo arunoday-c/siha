@@ -2,7 +2,7 @@
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import _, { keys } from "lodash";
+import _ from "lodash";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -56,11 +56,18 @@ const UpdateLabOrder = ($this, value, status) => {
     value[0].critical_status = "Y";
   }
   AlgaehLoader({ show: true });
+  debugger;
 
   for (let k = 0; k < value.length; k++) {
     if (value[k].analyte_type === "T" && $this.state.edit_range) {
-      value[k].val_text_value = value[k].text_value !== null && value[k].text_value !== "" ? value[k].text_value.replace(/\r?\n/g, "<br/>") : null;
-      value[k].dis_text_value = value[k].val_text_value !== null && value[k].text_value !== "" ? value[keys].val_text_value.split("<br/>") : [];
+      value[k].val_text_value =
+        value[k].text_value !== null && value[k].text_value !== ""
+          ? value[k].text_value.replace(/\r?\n/g, "<br/>")
+          : null;
+      value[k].dis_text_value =
+        value[k].text_value !== null && value[k].text_value !== ""
+          ? value[k].val_text_value.split("<br/>")
+          : [];
     }
   }
   algaehApiCall({
@@ -99,7 +106,7 @@ const UpdateLabOrder = ($this, value, status) => {
             validated_by:
               response.data.records.validated_by || $this.state.validated_by,
             run_type: status === "N" ? last.runtype : $this.state.run_type,
-            edit_range: false
+            edit_range: false,
           },
           () => {
             AlgaehLoader({ show: false });
@@ -167,22 +174,26 @@ const getAnalytes = ($this) => {
     onSuccess: (response) => {
       // console.timeEnd("lab");
       if (response.data.success) {
-
-        debugger
+        debugger;
         for (let i = 0; i < response.data.records.length; i++) {
           if (response.data.records[i].analyte_type === "T") {
             response.data.records[i].dis_text_value =
-              response.data.records[i].text_value !== null && response.data.records[i].text_value !== ""
+              response.data.records[i].text_value !== null &&
+              response.data.records[i].text_value !== ""
                 ? response.data.records[i].text_value.split("<br/>")
                 : [];
 
             // response.data.records[i].text_value = response.data.records[i].text_value.replace("<br/>", "\n/g")
             response.data.records[i].text_value =
-              response.data.records[i].text_value !== null && response.data.records[i].text_value !== ""
-                ? response.data.records[i].text_value.replace(new RegExp("<br/>|<br />", "g"), '\n')
-                : null
+              response.data.records[i].text_value !== null &&
+              response.data.records[i].text_value !== ""
+                ? response.data.records[i].text_value.replace(
+                    new RegExp("<br/>|<br />", "g"),
+                    "\n"
+                  )
+                : null;
           } else {
-            response.data.records[i].dis_text_value = []
+            response.data.records[i].dis_text_value = [];
           }
         }
         const records_test_formula = _.filter(
@@ -475,7 +486,7 @@ function checkRange(row) {
   // critical_low = parseFloat(critical_low);
   normal_low = parseFloat(normal_low);
   normal_high = parseFloat(normal_high);
-  // critical_high = parseFloat(critical_high);  
+  // critical_high = parseFloat(critical_high);
   if (row.analyte_type === "QN") {
     if (!result) {
       return null;
