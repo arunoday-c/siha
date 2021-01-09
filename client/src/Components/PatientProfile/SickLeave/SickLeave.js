@@ -39,19 +39,23 @@ class SickLeave extends Component {
       hims_f_patient_sick_leave_id: null,
     };
     this.getSickLeave();
+    this.canUpdate = true;
   }
 
   componentDidUpdate() {
-    const primaryExists = this.props.patient_diagnosis
-      .filter((f) => f.diagnosis_type === "P")
-      .map((item) => {
-        return item.icd_description;
-      })
-      .join(",");
-    if (primaryExists !== this.state.diagnosis_data) {
-      this.setState({
-        diagnosis_data: primaryExists,
-      });
+    if (this.state.diagnosis_data === "" && this.canUpdate === true) {
+      const primaryExists = this.props.patient_diagnosis
+        .filter((f) => f.diagnosis_type === "P")
+        .map((item) => {
+          return item.icd_description;
+        })
+        .join(",");
+      if (primaryExists !== this.state.diagnosis_data) {
+        this.setState({
+          diagnosis_data: primaryExists,
+        });
+        this.canUpdate = false;
+      }
     }
   }
   getSickLeave() {
@@ -65,7 +69,6 @@ class SickLeave extends Component {
       onSuccess: (response) => {
         let data = response.data.records[0];
         if (response.data.success) {
-          debugger;
           this.setState({
             ...data,
             reported_sick: data.reported_sick === "Y" ? true : false,
@@ -77,6 +80,7 @@ class SickLeave extends Component {
             pat_need_emp_care: data.pat_need_emp_care === "Y" ? true : false,
             disableEdit: response.data.records.length > 0 ? true : false,
             // diagnosis_data: primaryExists,
+            hims_f_patient_sick_leave_id: data.hims_f_patient_sick_leave_id,
           });
         }
       },
@@ -129,12 +133,9 @@ class SickLeave extends Component {
   }
 
   textAreaEvent(e) {
-    // significant_signs
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-
+    this.canUpdate = false;
     this.setState({
-      [name]: value,
+      [e.target.name]: e.target.value,
     });
   }
 
