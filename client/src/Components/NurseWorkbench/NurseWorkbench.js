@@ -46,7 +46,7 @@ import RadResults from "../PatientProfile/Assessment/RadResult/RadResult";
 import NursesNotes from "../PatientProfile/Examination/NursesNotes";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
 import { debounce } from "lodash";
-
+import sockets from "../../sockets";
 class NurseWorkbench extends Component {
   constructor(props) {
     super(props);
@@ -84,6 +84,7 @@ class NurseWorkbench extends Component {
       shift_id: null,
       searchText: "",
       filterList: [],
+      patient_provider_id: undefined,
     };
     this.getVitalsRef = undefined;
     this.baseState = this.state;
@@ -117,7 +118,7 @@ class NurseWorkbench extends Component {
     //   getAllChiefComplaints(this);
     // }
     this.isMale = false;
-
+    this.socket = sockets;
     this.complaintType = [];
   }
 
@@ -444,6 +445,7 @@ class NurseWorkbench extends Component {
               title: "Recorded Successfully",
               type: "success",
             });
+            this.socket.emit("nursing_done", this.state.patient_provider_id);
             // var element = document.querySelectorAll("[nursing_pat]");
             // for (var i = 0; i < element.length; i++) {
             //   element[i].classList.remove("active");
@@ -759,6 +761,8 @@ class NurseWorkbench extends Component {
     } else {
       this.complaintType = GlobalVariables.COMPLAINT_TYPE;
     }
+
+    this.setState({ patient_provider_id: data.provider_id });
     setGlobal({
       current_patient: data.patient_id,
       episode_id: data.episode_id,

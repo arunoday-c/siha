@@ -156,6 +156,11 @@ db.once("open", function () {
     socket.on("disconnect", () => {
       console.log("Client disconnected");
     });
+    socket.on("nursing_done", (provider_id) => {
+      socket.broadcast
+        .to(`${provider_id}`)
+        .emit("nursing_completed", { status: "ok" });
+    });
   });
 
   pharmacy(io);

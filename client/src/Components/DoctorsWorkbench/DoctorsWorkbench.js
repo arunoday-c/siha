@@ -265,6 +265,12 @@ class DoctorsWorkbench extends Component {
         this.loadListofData();
       }
     });
+
+    this.socket.on("nursing_completed", (response) => {
+      if (response.status === "ok") {
+        this.loadListofData();
+      }
+    });
     // this.getAppointmentStatus();
   }
 
