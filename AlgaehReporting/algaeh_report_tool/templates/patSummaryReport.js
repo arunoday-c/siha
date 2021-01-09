@@ -17,8 +17,7 @@ const executePDF = function executePDFMethod(options) {
           FROM hims_f_patient_visit VI
           left join hims_f_patient P on P.hims_d_patient_id = VI.patient_id
           left join hims_d_identity_document ID on ID.hims_d_identity_document_id = P.primary_identity_id
-          left join algaeh_d_app_user USR on USR.algaeh_d_app_user_id = VI.doctor_id
-          left join hims_d_employee EM on EM.hims_d_employee_id = USR.employee_id
+          left join hims_d_employee EM on EM.hims_d_employee_id = VI.doctor_id
           left join hims_d_sub_department SUB on SUB.hims_d_sub_department_id = VI.sub_department_id
           where VI.patient_id = ? and VI.hims_f_patient_visit_id=?;
           -- Chief Complaint (Result - 1)
