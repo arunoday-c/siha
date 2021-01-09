@@ -100,17 +100,11 @@ export default {
             }
             strQuery =
               "select E.hims_d_employee_id as employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
-              0 as unpaid_leave, S.hims_f_salary_id, 0 as pending_unpaid_leave from hims_d_employee E left join hims_f_salary as S on  \
+              0 as unpaid_leave, S.hims_f_salary_id,S.salary_processed, S.salary_type, 0 as pending_unpaid_leave from hims_d_employee E left join hims_f_salary as S on  \
               E.hims_d_employee_id = S.employee_id and E.suspend_salary ='N' and S.`year`=? and S.`month` = ? \
               where record_status='A'  and E.hospital_id=?" +
               _stringData;
 
-            strQuery =
-              "select E.hims_d_employee_id as employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
-              0 as unpaid_leave, S.hims_f_salary_id, 0 as pending_unpaid_leave from hims_d_employee E left join hims_f_salary as S on  \
-              E.hims_d_employee_id = S.employee_id and E.suspend_salary ='N' and S.`year`=? and S.`month` = ? \
-              where record_status='A'  and E.hospital_id=?" +
-              _stringData;
           } else {
             if (input.employee_id != null) {
               _stringData += " and A.employee_id=?";
@@ -122,7 +116,7 @@ export default {
             A.display_present_days,A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
             A.total_paid_days,A.pending_unpaid_leave,A.total_hours, A.total_working_hours,A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
-            E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
+            E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed, S.salary_type \
             from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
             on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
             left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
@@ -164,6 +158,7 @@ export default {
             let empResult = []
             const dateWiseGroup = _.chain(employee_data)
               .groupBy((g) => g.employee_id)
+              .filter((f) => f.salary_processed == 'N')
               .value();
 
             for (let i in dateWiseGroup) {
@@ -171,23 +166,21 @@ export default {
               empResult.push(...dateWiseGroup[i]);
             }
 
-            // console.log("empResult --- ", empResult)
+            console.log("empResult --- ", empResult)
             empResult.map((o) => {
-              // console.log("o.salary_processed ", o.salary_processed)
-              // console.log("o.salary_type ", o.salary_type)
-              if (o.salary_processed == 'Y' && o.salary_type == 'LS') {
-
-              } else {
+              if (o.salary_processed == 'N' && (o.salary_type == 'NS' || o.salary_type == 'FS')) {
                 _salaryHeader_id.push(o.hims_f_salary_id);
+                _myemp.push(o.employee_id);
+              } else if (o.salary_processed == 'N' && o.salary_type == 'LS') {
+                _salaryHeader_id.push(o.hims_f_salary_id);
+                _myemp.push(o.employee_id);
               }
-              // _salaryHeader_id.push(o.hims_f_salary_id);
-              _myemp.push(o.employee_id);
             });
 
             if (_salaryHeader_id.length == 0) {
               _salaryHeader_id.push(null)
             }
-            // console.log("_salaryHeader_id --- ", _salaryHeader_id)
+            console.log("_salaryHeader_id --- ", _salaryHeader_id)
             // console.log("_myemp --- ", _myemp)
 
             if (_myemp.length == 0) {
