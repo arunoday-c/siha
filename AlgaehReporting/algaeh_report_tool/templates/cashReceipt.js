@@ -6,78 +6,77 @@ const executePDF = function executePDFMethod(options) {
       const detail = options.result[1];
       const userObject = options.args.crypto;
 
-      console.log("userObject", userObject)
+      // console.log("userObject", userObject)
       const result = {
         header: { ...header[0], ...options.mainData[0] },
         detail: _.chain(detail)
-          .groupBy(g => g.service_type)
+          .groupBy((g) => g.service_type)
           .map(function (dtl, key) {
-            const find = _.find(dtl, f => f.service_type === key);
+            const find = _.find(dtl, (f) => f.service_type === key);
             return {
               service_type: key,
               arabic_service_type: find["arabic_service_type"],
-              detailList: dtl
+              detailList: dtl,
             };
           })
           .value(),
         total_gross_amount: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.gross_amount)),
+          _.sumBy(detail, (s) => parseFloat(s.gross_amount)),
           userObject,
           false
         ),
         total_discount_amount: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.discount_amount)),
+          _.sumBy(detail, (s) => parseFloat(s.discount_amount)),
           userObject,
           false
         ),
         total_patient_share: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.patient_share)),
+          _.sumBy(detail, (s) => parseFloat(s.patient_share)),
           userObject,
           false
         ),
         total_patient_payable: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.patient_payable)),
+          _.sumBy(detail, (s) => parseFloat(s.patient_payable)),
           userObject,
           false
         ),
 
-
         // total_copay_amount: _.sumBy(detail, s => parseFloat(s.company_resp)),
         total_patient_tax: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.patient_tax)),
+          _.sumBy(detail, (s) => parseFloat(s.patient_tax)),
           userObject,
           false
         ),
         total_company_resp: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.company_resp)),
+          _.sumBy(detail, (s) => parseFloat(s.company_resp)),
           userObject,
           false
         ),
         vat_amount_total: options.currencyFormat(
           _.sumBy(
             detail,
-            s => parseFloat(s.patient_tax) + parseFloat(s.company_tax)
+            (s) => parseFloat(s.patient_tax) + parseFloat(s.company_tax)
           ),
           userObject,
           false
         ),
         total_net_amount: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.net_amount)),
+          _.sumBy(detail, (s) => parseFloat(s.net_amount)),
           userObject,
           false
         ),
         total_company_tax: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.company_tax)),
+          _.sumBy(detail, (s) => parseFloat(s.company_tax)),
           userObject,
           false
         ),
         total_net_claim: options.currencyFormat(
-          _.sumBy(detail, s => parseFloat(s.net_claim)),
+          _.sumBy(detail, (s) => parseFloat(s.net_claim)),
           userObject,
           false
         ),
         vat_applicable: userObject.vat_applicable,
-        default_vat_percent: parseFloat(userObject.vat_percent)
+        default_vat_percent: parseFloat(userObject.vat_percent),
       };
 
       resolve(result);
