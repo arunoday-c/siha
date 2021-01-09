@@ -32,6 +32,7 @@ export default memo(function Modal(props) {
     setPleaseWait("Please wait pdf is generating...");
     setLoading(true);
 
+    resultdata["nodeName"] = selectedNode?.node?.full_name;
     generateReport("pdf", resultdata)
       .then((result) => {
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${result}&filename=Ledger report`;
@@ -75,6 +76,7 @@ export default memo(function Modal(props) {
             labelValue: inputdata["cost_center_id_label"],
           };
         }
+
         const from_date =
           dateRange.length === 0
             ? {}
@@ -110,6 +112,7 @@ export default memo(function Modal(props) {
                 ? "Capital"
                 : "Expense",
           },
+          { name: "Account Name", value: nodeName },
         ];
         if (fromInvoice) {
           data = {
