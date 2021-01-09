@@ -1,7 +1,7 @@
 import React, { useRef, useState, useLayoutEffect } from "react";
 import ReactToPrint from "react-to-print";
 import { AlgaehModal, Tree } from "algaeh-react-components";
-export default function PrintAccounts({ visible, data, onClose }) {
+export default function PrintAccounts({ visible, data, onClose, title }) {
   const [loading, setLoading] = useState(false);
   const treeRef = useRef(undefined);
   const printRef = useRef(undefined);
@@ -13,26 +13,32 @@ export default function PrintAccounts({ visible, data, onClose }) {
   // }, [visible]);
   return (
     <AlgaehModal
-      title={`Chart of account`}
+      title={`Chart of Accounts - ${title}`}
       //${voucherNo}
       centered
       visible={visible}
-      footer={null}
+      // footer={true}
       closable={true}
+      okText="Print"
+      onOk={() => {
+        printRef.current.click();
+      }}
+      okButtonProps={{
+        loading: loading,
+      }}
+      onCancel={onClose}
       className={`row algaehNewModal`}
     >
       <ReactToPrint
         trigger={() => (
-          // <i
-          //   ref={printRef}
-          //   className={`fas fa-${
-          //     loading === true ? "spinner fa-spin" : "print"
-          //   }`}
-          //   // style={{ display: "none" }}
-          // />
           <button
             className="btn btn-primary"
-            style={{ marginTop: 10, marginLeft: 10, textAlign: "right" }}
+            style={{
+              marginTop: 10,
+              marginLeft: 10,
+              textAlign: "right",
+              display: "none",
+            }}
             ref={printRef}
           >
             Print{" "}
@@ -55,25 +61,26 @@ export default function PrintAccounts({ visible, data, onClose }) {
           setLoading(false);
         }}
         removeAfterPrint={true}
-        // documentTitle="Accounts"
+        documentTitle={`Chart of Accounts - ${title}`}
         pageStyle="@media print {
-            html, body {
-  
-              overflow: initial !important;
-              -webkit-print-color-adjust: exact;
-            }
+          html, body {
+
+            overflow: initial !important;
+            -webkit-print-color-adjust: exact;
+            margin:20px;
+            color:black;
           }
-  
-          @page {
-            size: auto;
-          }"
+        }
+
+        @page {
+          size: auto;
+        }"
       />
 
       <div className="col-12">
-        {" "}
         <div ref={treeRef}>
           <div className="CoAHeader" style={{ textAlign: "center" }}>
-            <h2>Asset Account</h2>
+            <h2>{title}</h2>
             <hr />
           </div>
           <Tree
