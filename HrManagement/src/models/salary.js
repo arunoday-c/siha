@@ -160,21 +160,31 @@ export default {
 
             let _salaryHeader_id = [];
             let _myemp = [];
-            let empResult_data = []
+            let empResult = []
 
             const dateWiseGroup = _.chain(employee_data)
               .groupBy((g) => g.employee_id)
               .value();
 
             for (let i in dateWiseGroup) {
-              // dateWiseGroup[i][0]["transaction_date"] = i;
-              empResult_data.push(...dateWiseGroup[i]);
+              empResult.push(...dateWiseGroup[i]);
             }
 
-            // empResult = empResult.filter(f => f.salary_processed == 'N' || f.salary_processed == null)
-            // console.log("empResult_data --- ", empResult_data)
+            empResult = _.chain(empResult).groupBy(g => g.employee_id)
+              .map(details => {
+                // console.log("details", details)
+                const firstRecord = _.head(details);
+                const record = details.length === 1 && (firstRecord.salary_processed === "Y" && firstRecord.salary_type === "LS") ? firstRecord :
+                  details.find(f => f.salary_processed !== "Y");
+                // console.log("record", record)
+                if (record !== undefined) { return { ...record } }
+              })
+              .filter(f => f !== undefined).value();
+            // console.log("empResult --- ", empResult)
 
-            empResult_data.map((o) => {
+            empResult.map((o) => {
+              // console.log("o.salary_type", o.salary_type)
+              // console.log("o.salary_processed", o.salary_processed)
               if (o.salary_type == null) {
                 _salaryHeader_id.push(o.hims_f_salary_id);
               } if (o.salary_processed == 'N' && (o.salary_type == 'NS' || o.salary_type == 'FS')) {
@@ -182,12 +192,8 @@ export default {
               } else if (o.salary_processed == 'N' && o.salary_type == 'LS') {
                 _salaryHeader_id.push(o.hims_f_salary_id);
               }
-              // _salaryHeader_id.push(o.hims_f_salary_id);
               _myemp.push(o.employee_id);
 
-              if ((o.salary_processed == 'N' || o.salary_processed == null) || (o.salary_type !== 'LS')) {
-
-              }
             });
 
 
@@ -406,12 +412,12 @@ export default {
 
                 new Promise((resolve, reject) => {
                   try {
-                    const empResult = _.chain(empResult_data).groupBy(g => g.employee_id)
-                      .map(details => {
-                        const record = details.length === 1 ? _.head(details) :
-                          _.find(details, f => f.salary_processed === null || f.salary_processed === "N");
-                        return { ...record }
-                      }).value();
+                    // const empResult = _.chain(empResult_data).groupBy(g => g.employee_id)
+                    //   .map(details => {
+                    //     const record = details.length === 1 ? _.head(details) :
+                    //       _.find(details, f => f.salary_processed === null || f.salary_processed === "N");
+                    //     return { ...record }
+                    //   }).value();
                     // console.log("empResult====== ", empResult);
                     for (let i = 0; i < empResult.length; i++) {
                       let results = Salaryresults;
@@ -3786,7 +3792,7 @@ function getEarningComponents(options) {
             component_type: obj.component_type,
           });
         } else if (obj["calculation_type"] == "V") {
-          let leave_period = empResult["total_applied_days"] && empResult["employee_joined"] == "N"
+          let leave_period = empResult["total_applied_days"]
             ? parseFloat(empResult["total_applied_days"])
             : 0;
 
