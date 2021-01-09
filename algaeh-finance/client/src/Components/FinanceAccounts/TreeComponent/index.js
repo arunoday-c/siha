@@ -657,6 +657,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   {layout === "tree" ? (
                     <div className="treeNodeWrapper">
                       <PrintAccount
+                        title={title}
                         visible={openPrint}
                         data={treeData}
                         onClose={() => {

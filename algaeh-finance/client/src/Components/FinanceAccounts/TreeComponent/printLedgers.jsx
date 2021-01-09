@@ -1,27 +1,55 @@
 import React, { useRef, useState, useLayoutEffect } from "react";
 import ReactToPrint from "react-to-print";
 import { AlgaehModal, Tree } from "algaeh-react-components";
-export default function PrintAccounts({ visible, data, onClose }) {
+export default function PrintAccounts({ visible, data, onClose, title }) {
   const [loading, setLoading] = useState(false);
   const treeRef = useRef(undefined);
   const printRef = useRef(undefined);
-  useLayoutEffect(() => {
-    if (visible === true) {
-      printRef.current.click();
-      onClose();
-    }
-  }, [visible]);
+  // useLayoutEffect(() => {
+  //   if (visible === true) {
+  //     printRef.current.click();
+  //     onClose();
+  //   }
+  // }, [visible]);
   return (
-    <AlgaehModal centered visible={visible} footer={null} closable={false}>
+    <AlgaehModal
+      title={`Chart of Accounts - ${title}`}
+      //${voucherNo}
+      centered
+      visible={visible}
+      // footer={true}
+      closable={true}
+      okText="Print"
+      onOk={() => {
+        printRef.current.click();
+      }}
+      okButtonProps={{
+        loading: loading,
+      }}
+      onCancel={onClose}
+      className={`row algaehNewModal`}
+    >
       <ReactToPrint
         trigger={() => (
-          <i
+          <button
+            className="btn btn-primary"
+            style={{
+              marginTop: 10,
+              marginLeft: 10,
+              textAlign: "right",
+              display: "none",
+            }}
             ref={printRef}
-            className={`fas fa-${
-              loading === true ? "spinner fa-spin" : "print"
-            }`}
-            style={{ display: "none" }}
-          />
+          >
+            Print{" "}
+            <i
+              ref={printRef}
+              className={`fas fa-${
+                loading === true ? "spinner fa-spin" : "print"
+              }`}
+              // style={{ display: "none" }}
+            />
+          </button>
         )}
         content={() => {
           return treeRef.current;
@@ -33,25 +61,36 @@ export default function PrintAccounts({ visible, data, onClose }) {
           setLoading(false);
         }}
         removeAfterPrint={true}
-        documentTitle="Accounts"
+        documentTitle={`Chart of Accounts - ${title}`}
         pageStyle="@media print {
-            html, body {
-  
-              overflow: initial !important;
-              -webkit-print-color-adjust: exact;
-            }
+          html, body {
+
+            overflow: initial !important;
+            -webkit-print-color-adjust: exact;
+            margin:20px;
+            color:black;
           }
-  
-          @page {
-            size: auto;
-          }"
+        }
+
+        @page {
+          size: auto;
+        }"
       />
-      <Tree
-        ref={treeRef}
-        showLine={true}
-        defaultExpandAll={true}
-        treeData={data}
-      />
+
+      <div className="col-12">
+        <div ref={treeRef}>
+          <div className="CoAHeader" style={{ textAlign: "center" }}>
+            <h2>{title}</h2>
+            <hr />
+          </div>
+          <Tree
+            showLine={true}
+            defaultExpandAll={true}
+            treeData={data}
+            style={{ fontSize: 18, color: "black" }}
+          />
+        </div>
+      </div>
     </AlgaehModal>
   );
 }
