@@ -563,7 +563,7 @@ export default function BalanceSheet({
         visible={showDrillDown}
         onClose={OnCloseDrillDown}
         row={row}
-        dates={changedDateRange.length !== 0 ? changedDateRange : dates}
+        dates={rangeDate}
       />
       <div className="row inner-top-search">
         <Filter
