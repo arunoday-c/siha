@@ -410,8 +410,8 @@ export function postSalesInvoice(req, res, next) {
           WHERE `hims_f_sales_invoice_header_id`=?",
         values: [
           inputParam.invoice_date,
-          inputParam.posted,
           inputParam.delivery_date,
+          inputParam.posted,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           inputParam.hims_f_sales_invoice_header_id,

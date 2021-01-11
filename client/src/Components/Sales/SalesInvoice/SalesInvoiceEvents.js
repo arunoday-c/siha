@@ -90,6 +90,12 @@ const SaveInvoiceEnrty = ($this) => {
       title: "Invoice Date - Cannot be empty.",
     });
     return;
+  } else if ($this.state.delivery_date === null) {
+    swalMessage({
+      type: "warning",
+      title: "Delivery Date - Cannot be empty.",
+    });
+    return;
   }
   algaehApiCall({
     uri: "/SalesInvoice/addInvoiceEntry",
@@ -222,6 +228,14 @@ const generateSalesInvoiceReport = (data) => {
 };
 
 const PostSalesInvoice = ($this) => {
+  if ($this.state.delivery_date === null) {
+    swalMessage({
+      type: "warning",
+      title: "Delivery Date - Cannot be empty.",
+    });
+    return;
+  }
+
   AlgaehLoader({ show: true });
   let Inputobj = $this.state;
 
