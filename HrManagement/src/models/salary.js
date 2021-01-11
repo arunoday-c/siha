@@ -172,11 +172,9 @@ export default {
 
             empResult = _.chain(empResult).groupBy(g => g.employee_id)
               .map(details => {
-                // console.log("details", details)
                 const firstRecord = _.head(details);
                 const record = details.length === 1 && (firstRecord.salary_processed === "Y" && firstRecord.salary_type === "LS") ? firstRecord :
                   details.find(f => f.salary_processed !== "Y");
-                // console.log("record", record)
                 if (record !== undefined) { return { ...record } }
               })
               .filter(f => f !== undefined).value();

@@ -2545,6 +2545,7 @@ export function processBulkAtt_Normal(data) {
   const dailyAttendance = [];
   return new Promise((resolve, reject) => {
     try {
+      console.log("input", input)
       let month_start = moment(input.year + "-" + input.month, "YYYY-M")
         .startOf("month")
         .format("YYYY-MM-DD");
@@ -2573,7 +2574,7 @@ export function processBulkAtt_Normal(data) {
       _mysql
         .executeQuery({
           query: ` 
-            select E.employee_code,E.full_name
+            select E.employee_code,E.full_name, E.hims_d_employee_id
           from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id and E.suspend_salary <>'Y' \
           inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
            left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
@@ -2582,12 +2583,9 @@ export function processBulkAtt_Normal(data) {
             /employee_id/gi,
             "TS.employee_id"
           )} group by TS.employee_id having count(*)< ?; 
-          select L.from_date,L.to_date, L.employee_joined, L.actual_to_date from hims_f_leave_application L 
+          select L.from_date,L.to_date, L.employee_joined, L.actual_to_date, L.employee_id from hims_f_leave_application L 
           inner join hims_f_employee_annual_leave AL on AL.leave_application_id=L.hims_f_leave_application_id
-          where month=? and year=? ${strQry.replace(
-            /employee_id/gi,
-            "L.employee_id"
-          )};`,
+          where month=? and year=? and L.employee_id in (?);`,
           values: [
             input.year,
             input.month,
@@ -2599,13 +2597,15 @@ export function processBulkAtt_Normal(data) {
             total_no_Days,
             input.month,
             input.year,
+            input._myemp
           ],
           printQuery: true,
         })
         .then((att_result) => {
           const partialAtt = att_result[0];
-          const annual_leave = att_result[1];
-          // console.log("annual_leave", annual_leave)
+          const annual_leave_data = att_result[1];
+
+
           if (partialAtt.length > 0) {
             let message = "";
 
@@ -2616,34 +2616,6 @@ export function processBulkAtt_Normal(data) {
             _mysql.releaseConnection();
             reject({ invalid_input: true, message: message });
           } else {
-            let ann_from_date_mnth = null;
-            let ann_to_date_mnth = null;
-            let attence_till_date = null;
-            let calc_mnth_annl_leav = 0
-            if (annual_leave.length > 0) {
-              ann_from_date_mnth = moment(annual_leave[0].from_date).format(
-                "M"
-              );
-              ann_to_date_mnth = moment(annual_leave[0].actual_to_date).format("M");
-              if (
-                ann_from_date_mnth == ann_to_date_mnth
-              ) {
-                if (annual_leave[0].employee_joined == "N") { attence_till_date = annual_leave[0].actual_to_date; }
-                else {
-                  const fromDate_firstDate = moment(annual_leave[0].from_date)
-                    .startOf("month")
-                    .format("YYYY-MM-DD");
-                  console.log("fromDate_firstDate", fromDate_firstDate)
-                  console.log("from_date", annual_leave[0].from_date)
-                  calc_mnth_annl_leav = moment(annual_leave[0].from_date).diff(
-                    moment(fromDate_firstDate),
-                    "days"
-                  );
-                }
-              }
-            }
-            // console.log("ann_from_date_mnth", ann_from_date_mnth)
-            // console.log("ann_to_date_mnth", ann_to_date_mnth)
             _mysql
               .executeQuery({
                 query: ` 
@@ -2673,11 +2645,39 @@ export function processBulkAtt_Normal(data) {
               .then((result) => {
                 // const AttenResult = result;
                 //present month
+                // console.log("annual_leave_data", annual_leave_data)
                 if (result.length > 0) {
                   _.chain(result)
                     .groupBy((g) => g.employee_id)
                     .map((AttenResult) => {
                       const at_leng = AttenResult.length;
+                      // console.log("AttenResult", AttenResult.length)
+                      const selected_employee_id = _.head(AttenResult)
+                      // console.log("selected_employee_id", selected_employee_id)
+
+
+                      const annual_leave = annual_leave_data.filter(f => f.employee_id === selected_employee_id.employee_id)
+                      // console.log("annual_leave", annual_leave)
+                      let ann_from_date_mnth = null;
+                      let ann_to_date_mnth = null;
+                      let attence_till_date = null;
+                      // let calc_mnth_annl_leav = 0
+                      if (annual_leave.length > 0) {
+                        ann_from_date_mnth = moment(annual_leave[0].from_date).format(
+                          "M"
+                        );
+                        ann_to_date_mnth = moment(annual_leave[0].actual_to_date).format("M");
+                        if (
+                          ann_from_date_mnth == ann_to_date_mnth
+                        ) {
+                          if (annual_leave[0].employee_joined == "N") {
+                            attence_till_date = annual_leave[0].actual_to_date;
+                          }
+                        }
+                      }
+
+                      // console.log("ann_from_date_mnth", ann_from_date_mnth)
+                      // console.log("ann_to_date_mnth", ann_to_date_mnth)
 
                       if (AttenResult[0]["partial_attendance"] == "N") {
                         for (let i = 0; i < at_leng; i++) {
@@ -3360,8 +3360,34 @@ export function processBulkAtt_Normal(data) {
 
                               let t_paid_days = "";
 
-                              console.log("calc_mnth_annl_leav", calc_mnth_annl_leav)
 
+
+                              const annual_leave = annual_leave_data.filter(f => f.employee_id === DilayResult[i]["employee_id"])
+                              // console.log("annual_leave", annual_leave)
+                              let ann_from_date_mnth = null;
+                              let ann_to_date_mnth = null;
+                              let calc_mnth_annl_leav = 0
+                              if (annual_leave.length > 0) {
+                                ann_from_date_mnth = moment(annual_leave[0].from_date).format(
+                                  "M"
+                                );
+                                ann_to_date_mnth = moment(annual_leave[0].actual_to_date).format("M");
+                                if (
+                                  ann_from_date_mnth == ann_to_date_mnth
+                                ) {
+                                  if (annual_leave[0].employee_joined == "Y") {
+
+                                    const fromDate_firstDate = moment(annual_leave[0].from_date)
+                                      .startOf("month")
+                                      .format("YYYY-MM-DD");
+                                    calc_mnth_annl_leav = moment(annual_leave[0].from_date).diff(
+                                      moment(fromDate_firstDate),
+                                      "days"
+                                    );
+                                  }
+                                }
+                              }
+                              // console.log("calc_mnth_annl_leav", calc_mnth_annl_leav)
                               if (
                                 DilayResult[i]["anual_leave"] > 0 &&
                                 options["leave_salary_payment_days"] == "P"
@@ -3375,7 +3401,8 @@ export function processBulkAtt_Normal(data) {
                                   ) +
                                   parseFloat(DilayResult[i]["total_holidays"]) -
                                   parseFloat(DilayResult[i]["anual_leave"]) -
-                                  parseFloat(pending_unpaid_leave) - parseFloat(calc_mnth_annl_leav);
+                                  parseFloat(pending_unpaid_leave)
+                                  - parseFloat(calc_mnth_annl_leav);
 
                                 const month_days = moment(
                                   month_start
@@ -3417,7 +3444,8 @@ export function processBulkAtt_Normal(data) {
                                     ) -
                                     annual_leaves -
                                     //parseFloat(DilayResult[i]["anual_leave"]) -
-                                    parseFloat(pending_unpaid_leave) - parseFloat(calc_mnth_annl_leav);
+                                    parseFloat(pending_unpaid_leave)
+                                    - parseFloat(calc_mnth_annl_leav);
                               }
 
                               // DilayResult[i]["total_days"]=options["salary_calendar_fixed_days"];
