@@ -130,30 +130,58 @@ const executePDF = function executePDFMethod(options) {
                     closing_balance = output[2][0]["cred_minus_deb"];
                   }
                   let lastAmount = 0;
+                  let index = 0;
                   _.chain(result)
                     .groupBy((g) => g.payment_date)
                     .forEach((detail) => {
                       detail.forEach((item, idx) => {
                         let row_closing_balance = 0;
+
                         const debit_amt = parseFloat(item.debit_amount);
                         const credit_amt = parseFloat(item.credit_amount);
-                        if (idx === 0) {
-                          lastAmount = parseFloat(lastAmount + opening_balance);
+
+                        if (idx === 0 && index === 0) {
+                          lastAmount =
+                            parseFloat(lastAmount) +
+                            parseFloat(opening_balance);
                         }
+
                         if (item.root_id === 1 || item.root_id === 5) {
                           if (debit_amt > 0) {
-                            row_closing_balance = lastAmount + debit_amt;
+                            row_closing_balance =
+                              parseFloat(lastAmount) + parseFloat(debit_amt);
+                            if (credit_amt > 0) {
+                              row_closing_balance =
+                                row_closing_balance - credit_amt;
+                            }
                           } else {
-                            row_closing_balance = lastAmount - credit_amt;
+                            row_closing_balance =
+                              parseFloat(lastAmount) - parseFloat(credit_amt);
+                            if (debit_amt > 0) {
+                              row_closing_balance =
+                                row_closing_balance + debit_amt;
+                            }
                           }
                         } else {
                           if (credit_amt > 0) {
-                            row_closing_balance = lastAmount + credit_amt;
+                            row_closing_balance =
+                              parseFloat(lastAmount) + parseFloat(credit_amt);
+                            if (debit_amt > 0) {
+                              row_closing_balance =
+                                row_closing_balance - debit_amt;
+                            }
                           } else {
-                            row_closing_balance = lastAmount - debit_amt;
+                            row_closing_balance =
+                              parseFloat(lastAmount) - parseFloat(debit_amt);
+                            if (credit_amt > 0) {
+                              row_closing_balance =
+                                row_closing_balance + credit_amt;
+                            }
                           }
                         }
-                        lastAmount = row_closing_balance;
+
+                        lastAmount = parseFloat(row_closing_balance);
+
                         outputArray.push({
                           ...item,
                           voucher_type: _.startCase(item.voucher_type),
@@ -162,6 +190,7 @@ const executePDF = function executePDFMethod(options) {
                           ).toFixed(decimal_places),
                         });
                       });
+                      index++;
                     })
                     .value();
 

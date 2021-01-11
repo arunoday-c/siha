@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => {},
+          printQuery: (query) => { },
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -1687,6 +1687,11 @@ export default {
       strQry += mysql.format(
         `UPDATE hims_f_leave_application SET early_rejoin = ?, employee_joined='Y', to_date = ? where hims_f_leave_application_id =? ; `,
         [input.early_rejoin, input.to_date, input.hims_f_leave_application_id]
+      );
+
+      strQry += mysql.format(
+        `UPDATE hims_f_employee_annual_leave SET employee_joined='Y' where leave_application_id =? ; `,
+        [input.hims_f_leave_application_id]
       );
     }
     _mysql

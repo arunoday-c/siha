@@ -43,7 +43,6 @@ export default {
         H.parent_acc_id from finance_account_head H
         inner join cte on H.parent_acc_id = cte.finance_account_head_id  and H.account_code<>'5.1'
         )select * from cte ;  SELECT cost_center_type,cost_center_required,report_dill_down_level  FROM finance_options limit 1;
-
         `,
         printQuery: true,
       })
@@ -337,7 +336,9 @@ export default {
                                   parseFloat(s.total)
                                 );
                                 item["total"] = parseFloat(
-                                  parseFloat(item["total"]) - parseFloat(tot)
+                                  parseFloat(
+                                    item["total"] ? item["total"] : 0
+                                  ) - parseFloat(tot)
                                 ).toFixed(decimal_places);
                                 //const { children, ...rest } = item;
                                 const cosTotal = parseFloat(
@@ -377,7 +378,8 @@ export default {
                                 const tot = _.sumBy(allCOS, (s) =>
                                   parseFloat(s.total)
                                 );
-                                item["total"] = item["total"] - tot;
+                                item["total"] =
+                                  (item["total"] ? item["total"] : 0) - tot;
                                 //const { children, ...rest } = item;
 
                                 cosResult[0]["total"] =
@@ -406,7 +408,11 @@ export default {
                           if (cosResult.length > 0) {
                             Object.keys(gross_profit).forEach((item) => {
                               g_prop[item] = parseFloat(
-                                parseFloat(incomeResult[0][item]) -
+                                parseFloat(
+                                  incomeResult.length > 0
+                                    ? incomeResult[0][item]
+                                    : 0
+                                ) -
                                   parseFloat(
                                     cosResult[0][item] ? cosResult[0][item] : 0
                                   )
@@ -1016,7 +1022,11 @@ export default {
                       if (cosResult.length > 0) {
                         Object.keys(gross_profit).forEach((item) => {
                           g_prop[item] = parseFloat(
-                            parseFloat(incomeResult[0][item]) -
+                            parseFloat(
+                              incomeResult.length > 0
+                                ? incomeResult[0][item]
+                                : 0
+                            ) -
                               parseFloat(
                                 cosResult[0][item] ? cosResult[0][item] : 0
                               )

@@ -22,8 +22,8 @@
                     </tr> --}}
 
                     <tr class="numberFld ">
-                        <td class="numberFld" colspan="5">Opening Balance</td>
-                        <td class="numberFld" ><b>{{opening_balance}}</b></td>
+                        <td class="numberFld" colspan="5"></td>
+                        <td class="numberFld"> <small>Opening Balance: </small><b>{{opening_balance}}</b></td>
                     </tr>
                     {{#each details}}
                     <tr>
@@ -39,8 +39,9 @@
 
                     <tr class="numberFld ">
                         <td class="numberFld" colspan="3"></td>
-                        <td class="numberFld">{{total_debit}}</td>
-                        <td class="numberFld">{{total_credit}}</td>
+                        <td class="numberFld"><b>{{total_debit}}</b></td>
+                        <td class="numberFld"><b>{{total_credit}}</b></td>
+                        <td></td>
                     </tr>
                     {{!-- <tr class="numberFld ">
                         <td class="numberFld" colspan="3">Closing Balance</td>
@@ -48,8 +49,8 @@
                         <td class="numberFld">{{CB_credit_side}}</td>
                     </tr> --}}
                     <tr class="numberFld ">
-                        <td class="numberFld" colspan="5">Closing Balance</td>
-                        <td class="numberFld" ><b>{{closing_balance}}</b></td>
+                        <td class="numberFld" colspan="5"></td>
+                        <td class="numberFld" ><small>Closing Balance</small>: <b>{{closing_balance}}</b></td>
                     </tr>
                     {{!-- <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="3"></td>

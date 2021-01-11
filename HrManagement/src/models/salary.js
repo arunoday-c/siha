@@ -60,32 +60,37 @@ export default {
             _stringData += " and E.employee_group_id=?";
             inputValues.push(input.group_id);
           }
+
+          // IF(S.salary_type = 'LS' and S.salary_processed='Y', null, S.hims_f_salary_id) as S.hims_f_salary_id ,  \
+          //   IF(S.salary_type = 'LS' and S.salary_processed='Y', null, S.salary_processed) as S.salary_processed, \
+          //   IF(S.salary_type = 'LS' and S.salary_processed='Y', null, S.salary_type) as S.salary_type, \
           strQuery =
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
             A.display_present_days,A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
             A.total_paid_days,A.pending_unpaid_leave, A.total_hours, A.total_working_hours, A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours, E.employee_code, E.gross_salary, \
-            S.hims_f_salary_id,S.salary_processed, S.salary_type, AL.from_normal_salary, LA.total_applied_days ,\
+            S.hims_f_salary_id , S.salary_processed, S.salary_type, \
+            AL.from_normal_salary, LA.total_applied_days ,\
             case  when E.exit_date  between date('" +
             month_start +
             "') and date('" +
             month_end +
-            "') then 'Y' else 'N' end as partial_attendance, LA.employee_joined \
+            "') then 'Y' else 'N' end as partial_attendance \
             from hims_f_attendance_monthly as A \
             inner join  hims_d_employee as E on  E.hims_d_employee_id = A.employee_id and \
             A.hospital_id = E.hospital_id and E.suspend_salary ='N' \
             left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
-            and S.employee_id = A.employee_id \
+            and S.employee_id = A.employee_id  \
             left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
-            and  AL.year=? and AL.month=? and AL.cancelled='N' \
-            left join hims_f_leave_application LA on LA.hims_f_leave_application_id=AL.leave_application_id \
+            and  AL.year=? and AL.month=? and AL.cancelled='N' and AL.employee_joined='N' \
+            left join hims_f_leave_application LA on LA.hims_f_leave_application_id=AL.leave_application_id and LA.employee_joined='N'\
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id  where \
             A.`year`=? and A.`month`=? and A.hospital_id=?" +
             _stringData +
             " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y' or date(E.last_salary_process_date ) <= date('" +
             month_end +
-            "')) ;";
+            "'))";
           // and (S.salary_processed is null or  S.salary_processed='N');
           // hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` 
         } else {
@@ -156,31 +161,45 @@ export default {
             let _salaryHeader_id = [];
             let _myemp = [];
             let empResult = []
+
             const dateWiseGroup = _.chain(employee_data)
               .groupBy((g) => g.employee_id)
-              .filter((f) => f.salary_processed == 'N')
               .value();
 
             for (let i in dateWiseGroup) {
-              // dateWiseGroup[i][0]["transaction_date"] = i;
               empResult.push(...dateWiseGroup[i]);
             }
 
-            console.log("empResult --- ", empResult)
+            empResult = _.chain(empResult).groupBy(g => g.employee_id)
+              .map(details => {
+                const firstRecord = _.head(details);
+                const record = details.length === 1 && (firstRecord.salary_processed === "Y" && firstRecord.salary_type === "LS") ? firstRecord :
+                  details.find(f => f.salary_processed !== "Y");
+                if (record !== undefined) { return { ...record } }
+              })
+              .filter(f => f !== undefined).value();
+            // console.log("empResult --- ", empResult)
+
             empResult.map((o) => {
-              if (o.salary_processed == 'N' && (o.salary_type == 'NS' || o.salary_type == 'FS')) {
+              // console.log("o.salary_type", o.salary_type)
+              // console.log("o.salary_processed", o.salary_processed)
+              if (o.salary_type == null) {
                 _salaryHeader_id.push(o.hims_f_salary_id);
-                _myemp.push(o.employee_id);
+              } if (o.salary_processed == 'N' && (o.salary_type == 'NS' || o.salary_type == 'FS')) {
+                _salaryHeader_id.push(o.hims_f_salary_id);
               } else if (o.salary_processed == 'N' && o.salary_type == 'LS') {
                 _salaryHeader_id.push(o.hims_f_salary_id);
-                _myemp.push(o.employee_id);
               }
+              _myemp.push(o.employee_id);
+
             });
+
+
 
             if (_salaryHeader_id.length == 0) {
               _salaryHeader_id.push(null)
             }
-            console.log("_salaryHeader_id --- ", _salaryHeader_id)
+            // console.log("_salaryHeader_id --- ", _salaryHeader_id)
             // console.log("_myemp --- ", _myemp)
 
             if (_myemp.length == 0) {
@@ -391,6 +410,13 @@ export default {
 
                 new Promise((resolve, reject) => {
                   try {
+                    // const empResult = _.chain(empResult_data).groupBy(g => g.employee_id)
+                    //   .map(details => {
+                    //     const record = details.length === 1 ? _.head(details) :
+                    //       _.find(details, f => f.salary_processed === null || f.salary_processed === "N");
+                    //     return { ...record }
+                    //   }).value();
+                    // console.log("empResult====== ", empResult);
                     for (let i = 0; i < empResult.length; i++) {
                       let results = Salaryresults;
                       let leave_salary_accrual_amount = 0;
@@ -709,8 +735,7 @@ export default {
                                           // console.log("empResult[i].employee_joined", empResult[i].employee_joined)
                                           // console.log("empResult[i].from_normal_salary", empResult[i].from_normal_salary)
                                           if (
-                                            empResult[i].from_normal_salary !==
-                                            "N" || empResult[i].employee_joined == 'Y'
+                                            (empResult[i].from_normal_salary !== "N")
                                           ) {
                                             if (
                                               current_earning_amt_array.length >
@@ -3765,7 +3790,7 @@ function getEarningComponents(options) {
             component_type: obj.component_type,
           });
         } else if (obj["calculation_type"] == "V") {
-          let leave_period = empResult["total_applied_days"] && empResult["employee_joined"] == "N"
+          let leave_period = empResult["total_applied_days"]
             ? parseFloat(empResult["total_applied_days"])
             : 0;
 
