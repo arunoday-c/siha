@@ -29,7 +29,7 @@ export function downloadExcel(data, callBack) {
     },
     onCatch: error => {
       var reader = new FileReader();
-      reader.onload = function() {
+      reader.onload = function () {
         AlgaehLoader({ show: false });
         const parse = JSON.parse(reader.result);
         swalMessage({
@@ -41,7 +41,12 @@ export function downloadExcel(data, callBack) {
     }
   });
 }
-export function processDetails(data, error, result) {
+export function processDetails(data, employee_data, error, result) {
+  debugger
+  data._myemp = employee_data.map(o => {
+    return o.employee_id;
+  });
+
   algaehApiCall({
     uri: "/attendance/postBulkTimeSheetMonthWise",
     method: "GET",

@@ -1212,6 +1212,9 @@ class NurseWorkbench extends Component {
                                 {data.patient_code}/ {data.primary_id_no}
                               </small>
                               {data.full_name}
+                              <small style={{ display: "block" }}>
+                                Dr.{data.doctor_name}
+                              </small>
                             </span>
                             <span className="opStatus ">
                               <b className="">{data.visit_type_desc}</b> /{" "}
