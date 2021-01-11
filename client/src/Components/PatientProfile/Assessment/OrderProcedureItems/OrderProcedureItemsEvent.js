@@ -99,6 +99,7 @@ export default function OrderProcedureItemsEvent() {
             $this.state.inventory_stock_detail = $this.state.Procedure_items;
             $this.state.transaction_date = new Date();
             $this.state.provider_id = Window.global["provider_id"];
+            $this.state.ScreenCode = "INV0007";
             algaehApiCall({
               uri: "/inventoryconsumption/addInventoryConsumption",
               module: "inventory",
