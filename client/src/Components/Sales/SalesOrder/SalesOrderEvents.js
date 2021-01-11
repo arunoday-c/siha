@@ -377,7 +377,7 @@ const ClearData = ($this, e) => {
     canceled_reason_sales: "",
     rejectVisible: false,
     is_posted: "N",
-    is_revert: "N"
+    is_revert: "N",
     // services_required: "N"
   };
 
@@ -418,7 +418,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
         });
         return;
       }
-      debugger
+
       InputObj.quote_validity =
         InputObj.sales_order_mode === "S"
           ? null
@@ -429,7 +429,9 @@ const SaveSalesOrderEnrty = ($this, from) => {
           ? null
           : moment(InputObj.delivery_date, "YYYY-MM-DD").format("YYYY-MM-DD");
 
-      InputObj.sales_order_date = moment(InputObj.sales_order_date).format("YYYY-MM-DD h:mm:ss");
+      InputObj.sales_order_date = moment(InputObj.sales_order_date).format(
+        "YYYY-MM-DD h:mm:ss"
+      );
 
       let strUri = "";
       let strMessage = "Saved successfully";
@@ -444,10 +446,10 @@ const SaveSalesOrderEnrty = ($this, from) => {
       } else {
         strUri = "/SalesOrder/addSalesOrder";
       }
-      delete InputObj.organizations
-      delete InputObj.cost_projects
-      delete InputObj.order_detail
-      delete InputObj.invoice_docs
+      delete InputObj.organizations;
+      delete InputObj.cost_projects;
+      delete InputObj.order_detail;
+      delete InputObj.invoice_docs;
       const settings = { header: undefined, footer: undefined };
 
       AlgaehLoader({ show: true });
@@ -466,6 +468,11 @@ const SaveSalesOrderEnrty = ($this, from) => {
             getCtrlCode($this, response.data.records.sales_order_number);
             if ($this.state.invoice_files.length) {
               $this.saveDocument();
+            }
+            if ($this.context.socket.connected) {
+              $this.context.socket.emit("sales_order_auth", {
+                sales_order_number: response.data.records.sales_order_number,
+              });
             }
             // if (from === "P") {
             //   if ($this.context.socket.connected) {
@@ -524,18 +531,20 @@ const getCtrlCode = ($this, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
-        debugger
+        debugger;
         const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 
         data.grid_edit = true;
 
         if (queryParams.get("sales_order_number")) {
-          data.authBtnEnable = data.cancelled === "Y" || data.is_posted === "N" ? true : false;
+          data.authBtnEnable =
+            data.cancelled === "Y" || data.is_posted === "N" ? true : false;
           data.ItemDisable = true;
           data.ClearDisable = true;
-          data.cancelDisable = data.cancelled === "Y" || data.is_posted === "N" ? true : false;
-          data.order_auth = true
+          data.cancelDisable =
+            data.cancelled === "Y" || data.is_posted === "N" ? true : false;
+          data.order_auth = true;
           // for (let i = 0; i < data.order_detail.length; i++) {
           //   data.order_detail[i].quantity_outstanding =
           //     data.order_detail[i].quantity;
@@ -550,11 +559,9 @@ const getCtrlCode = ($this, docNumber) => {
           data.sales_order_services = data.order_detail;
         }
 
-
         data.dataExists = true;
         data.selectedData = true;
         data.itemAdd = false;
-
 
         if (data.is_revert === "Y") {
           data.itemAdd = true;
@@ -715,7 +722,7 @@ const dateValidate = ($this, value, event) => {
       });
     }
   } else {
-    inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"))
+    inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
     if (inRange) {
       swalMessage({
         title: "Selected Date cannot be past Date.",
@@ -727,7 +734,6 @@ const dateValidate = ($this, value, event) => {
       });
     }
   }
-
 };
 
 const AuthorizeOrderEntry = ($this, authorize) => {
@@ -794,6 +800,21 @@ const AuthorizeOrderEntry = ($this, authorize) => {
           authorize2: authorize2,
         });
         getCtrlCode($this, $this.state.sales_order_number);
+        if (authorize1 === "Y") {
+          if ($this.context.socket.connected) {
+            $this.context.socket.emit("sales_order_auth_level_one", {
+              sales_order_number: $this.state.sales_order_number,
+            });
+          }
+        } else if (authorize2 === "Y") {
+          if ($this.context.socket.connected) {
+            $this.context.socket.emit(
+              "sales_order_auth_level_two",
+              { sales_order_number: $this.state.sales_order_number },
+              $this.state.created_by
+            );
+          }
+        }
         swalMessage({
           title: "Authorized successfully . .",
           type: "success",

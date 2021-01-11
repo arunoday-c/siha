@@ -3,9 +3,8 @@ import { createNotification } from "./utils";
 
 export default function purchase(socket) {
   const _mysql = new algaehMysql();
-
+  // module_id = 15 and SR.screen_id = 53
   socket.on("send_purchase_auth", async (data) => {
-    console.log(data);
     try {
       const result = await _mysql.executeQuery({
         query: `SELECT 
@@ -19,7 +18,7 @@ export default function purchase(socket) {
                      INNER JOIN
                   algaeh_d_app_user AU ON AU.algaeh_d_app_user_id = RU.user_id
               WHERE
-                  module_id = 15 AND SR.screen_id = 53
+              module_code = 'PROC' AND SR.screen_code = 'PR0002'
                       AND MR.role_id NOT IN (SELECT 
                           MR.role_id
                       FROM
@@ -49,12 +48,11 @@ export default function purchase(socket) {
         socket.to(`${id}`).emit("notification", promises[index]);
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   });
 
   socket.on("purchase_auth_level_one", async (data) => {
-    console.log(data);
     try {
       const result = await _mysql.executeQuery({
         query: `SELECT 
@@ -68,7 +66,7 @@ export default function purchase(socket) {
                      INNER JOIN
                   algaeh_d_app_user AU ON AU.algaeh_d_app_user_id = RU.user_id
               WHERE
-                  module_id = 15 AND SR.screen_id = 53
+              module_code = 'PROC' AND SR.screen_code = 'PR0002'
                       AND MR.role_id NOT IN (SELECT 
                           MR.role_id
                       FROM
@@ -98,7 +96,7 @@ export default function purchase(socket) {
         socket.to(`${id}`).emit("notification", promises[index]);
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   });
 
@@ -106,7 +104,7 @@ export default function purchase(socket) {
     try {
       if (typeof id === "number") {
         const emp = await _mysql.executeQuery({
-          query: `SELECT employee_id FROM twareat_live_db.algaeh_d_app_user where algaeh_d_app_user_id=?`,
+          query: `SELECT employee_id FROM algaeh_d_app_user where algaeh_d_app_user_id=?`,
           values: [id],
           printQuery: true,
         });
@@ -122,7 +120,7 @@ export default function purchase(socket) {
         }
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   });
 }
