@@ -4,6 +4,7 @@ import labModels from "../models/laboratory";
 import { labResultDispatch } from "../models/labDispatch";
 const {
   getLabOrderedServices,
+  getLabOrderServiceForDoc,
   getLabOrderedServicesPatient,
   updateLabOrderServices,
   getTestAnalytes,
@@ -17,7 +18,8 @@ const {
   getLabOrderedComment,
   getAnalytesByTestID,
   getInvestigationResult,
-  generateBarCode
+  generateBarCode,
+  updateLabOrderServiceForDoc,
 } = labModels;
 
 export default () => {
@@ -28,6 +30,27 @@ export default () => {
       records: req.records,
     });
   });
+
+  api.get(
+    "/getLabOrderServiceForDoc",
+    getLabOrderServiceForDoc,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.put(
+    "/updateLabOrderServiceForDoc",
+    updateLabOrderServiceForDoc,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
   api.get(
     "/getLabOrderedServicesPatient",
     getLabOrderedServicesPatient,
@@ -63,16 +86,12 @@ export default () => {
       });
     }
   );
-  api.put(
-    "/generateBarCode",
-    generateBarCode,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
-    }
-  );
+  api.put("/generateBarCode", generateBarCode, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   api.get("/getTestAnalytes", getTestAnalytes, (req, res, next) => {
     const data = req.records;

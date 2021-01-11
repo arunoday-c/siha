@@ -92,6 +92,11 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
+      let _stringData = "";
+
+      if (req.query.from_date != null) {
+        _stringData += " and visit_id =" + req.query.visit_id;
+      }
       _mysql
         .executeQuery({
           query:
@@ -104,7 +109,43 @@ export default {
               inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id   left join hims_m_patient_insurance_mapping IM on\
               V.hims_f_patient_visit_id=IM.patient_visit_id  left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id   left join hims_d_insurance_provider IPR  on \
               IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id   where PE.record_status='A' and P.record_status='A' and E.record_status='A' \
-              and V.record_status='A' and SD.record_status='A'   and encounter_id <>'null' and PE.patient_id=?\
+              and V.record_status='A' and SD.record_status='A'   and encounter_id <>'null' and PE.patient_id=?" +
+            _stringData +
+            "order by encountered_date desc;",
+          values: [req.query.patient_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getPatientEncounterDetailsForVisit: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,\
+              E.full_name as provider_name, visit_id,significant_signs,\
+              V.insured,V.sec_insured,V.sub_department_id,SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date,\
+              primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,PE.examination_notes,PE.assesment_notes,\
+              secondary_insurance_provider_id,IPR.insurance_provider_name as sec_insurance_provider_name  from hims_f_patient_encounter PE  inner join  hims_f_patient P on\
+              PE.patient_id=P.hims_d_patient_id   inner join hims_d_employee E on E.hims_d_employee_id=PE.provider_id  inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=PE.visit_id\
+              inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id   left join hims_m_patient_insurance_mapping IM on\
+              V.hims_f_patient_visit_id=IM.patient_visit_id  left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id   left join hims_d_insurance_provider IPR  on \
+              IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id   where PE.record_status='A' and P.record_status='A' and E.record_status='A' \
+              and V.record_status='A' and SD.record_status='A'   and encounter_id <>'null' and PE.patient_id=? and PE.visit_id=\
               order by encountered_date desc;",
           values: [req.query.patient_id],
           printQuery: true,
@@ -123,7 +164,6 @@ export default {
       next(e);
     }
   },
-
   getPatientChiefComplaint: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
