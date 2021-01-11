@@ -335,6 +335,7 @@ class DayEndProcess extends Component {
   }
   DrillDownScree(row) {
     persistStateOnBack(this.state, true);
+    debugger
     if (
       row.from_screen === "FD0002" ||
       row.from_screen === "BL0001" ||
@@ -347,7 +348,7 @@ class DayEndProcess extends Component {
       this.props.history.push(
         `/OPBillCancellation?bill_cancel_number=${row.document_number}`
       );
-    } else if (row.from_screen === "INV0009") {
+    } else if (row.from_screen === "INV0009" || row.from_screen === "INV0006") {
       // Inventory Transfer
       this.props.history.push(
         `/InvTransferEntry?transfer_number=${row.document_number}`

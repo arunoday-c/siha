@@ -274,6 +274,7 @@ export default function PackageSetupEvent() {
                         $this.state.consumtion_items;
                       InputObj.transaction_date = new Date();
                       InputObj.provider_id = Window.global["provider_id"];
+                      $this.state.ScreenCode = "INV0007";
                       algaehApiCall({
                         uri: "/inventoryconsumption/addInventoryConsumption",
                         module: "inventory",
