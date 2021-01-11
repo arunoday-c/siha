@@ -11,7 +11,7 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import { MainContext } from "algaeh-react-components";
-import { AlgaehSecurityElement } from "algaeh-react-components";
+import { AlgaehSecurityElement, AlgaehTreeSearch } from "algaeh-react-components";
 
 class LoanMaster extends Component {
   constructor(props) {
@@ -19,8 +19,9 @@ class LoanMaster extends Component {
     this.FIN_Active = false;
     this.state = {
       finance_account: [],
+      selected_account: null
     };
-    this.getLoanMaster();
+
   }
 
   static contextType = MainContext;
@@ -29,14 +30,15 @@ class LoanMaster extends Component {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "HRMS_ERP"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
     if (this.FIN_Active === true) {
       this.getFinanceHeaders(this);
     }
+    this.getLoanMaster();
   }
 
   getFinanceHeaders() {
@@ -70,6 +72,9 @@ class LoanMaster extends Component {
       uri: "/payrollsettings/getLoanMaster",
       module: "hrManagement",
       method: "GET",
+      data: {
+        FIN_Active: this.FIN_Active
+      },
       onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
@@ -87,9 +92,27 @@ class LoanMaster extends Component {
   }
 
   addLoanMaster() {
+    if (this.FIN_Active) {
+      if (
+        this.state.selected_account === null ||
+        this.state.selected_account === undefined
+      ) {
+        swalMessage({
+          title: "Please Select G/L Account",
+          type: "warning"
+        });
+        return;
+      }
+    }
+
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
+        let gl_selected_account =
+          this.state.selected_account !== null
+            ? this.state.selected_account.split("-")
+            : [];
+
         algaehApiCall({
           uri: "/payrollsettings/addLoanMaster",
           module: "hrManagement",
@@ -100,6 +123,8 @@ class LoanMaster extends Component {
             loan_account: this.state.loan_account,
             loan_limit_type: this.state.loan_limit_type,
             loan_maximum_amount: this.state.loan_maximum_amount,
+            child_id: gl_selected_account.length > 0 ? gl_selected_account[1] : undefined,
+            head_id: gl_selected_account.length > 0 ? gl_selected_account[0] : undefined
           },
           onSuccess: (res) => {
             if (res.data.success) {
@@ -134,6 +159,9 @@ class LoanMaster extends Component {
         loan_account: data.loan_account,
         loan_limit_type: data.loan_limit_type,
         loan_maximum_amount: data.loan_maximum_amount,
+        loan_status: data.loan_status,
+        head_id: data.head_id,
+        child_id: data.child_id,
         record_status: "A",
       },
       onSuccess: (response) => {
@@ -310,7 +338,7 @@ class LoanMaster extends Component {
             }}
           /> */}
 
-          {/* {this.FIN_Active ?
+          {this.FIN_Active ?
             <div className="col">
               <AlgaehTreeSearch
                 div={{ className: "col form-group" }}
@@ -344,7 +372,7 @@ class LoanMaster extends Component {
                   value: this.state.selected_account
                 }}
               />
-            </div> : null} */}
+            </div> : null}
           <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
             <div className="col-2 form-group">
               <button
@@ -445,10 +473,10 @@ class LoanMaster extends Component {
                             {row.loan_limit_type === "L"
                               ? "Loan Limit"
                               : row.loan_limit_type === "B"
-                              ? "Basic"
-                              : row.loan_limit_type === "G"
-                              ? "Gratuity"
-                              : "------"}
+                                ? "Basic"
+                                : row.loan_limit_type === "G"
+                                  ? "Gratuity"
+                                  : "------"}
                           </span>
                         );
                       },
@@ -505,35 +533,85 @@ class LoanMaster extends Component {
                             }}
                           />
                         ) : (
-                          row.loan_maximum_amount
-                        );
+                            row.loan_maximum_amount
+                          );
                       },
                     },
                     // {
-                    //   fieldName: "loan_account",
+                    //   fieldName: "loan_status",
                     //   label: (
-                    //     <AlgaehLabel label={{ forceLabel: "G/L Account" }} />
+                    //     <AlgaehLabel label={{ fieldName: "status" }} />
                     //   ),
-                    //   editorTemplate: row => {
+                    //   displayTemplate: (row) => {
+                    //     return row.loan_status === "A"
+                    //       ? "Active"
+                    //       : "Inactive";
+                    //   },
+                    //   editorTemplate: (row) => {
                     //     return (
-                    //       <AlagehFormGroup
-                    //         div={{ className: "col" }}
-                    //         textBox={{
-                    //           className: "txt-fld",
-                    //           name: "loan_account",
-                    //           value: row.loan_account,
-                    //           events: {
-                    //             onChange: this.changeGridEditors.bind(this, row)
+                    //       <AlagehAutoComplete
+                    //         div={{}}
+                    //         selector={{
+                    //           name: "loan_status",
+                    //           className: "select-fld",
+                    //           value: row.loan_status,
+                    //           dataSource: {
+                    //             textField: "name",
+                    //             valueField: "value",
+                    //             data: GlobalVariables.FORMAT_STATUS,
                     //           },
+                    //           onChange: this.changeGridEditors.bind(
+                    //             this,
+                    //             row
+                    //           ),
                     //           others: {
-                    //             errormessage: "Account - cannot be blank",
-                    //             required: true
-                    //           }
+                    //             errormessage: "Status - cannot be blank",
+                    //             required: true,
+                    //           },
                     //         }}
                     //       />
                     //     );
-                    //   }
-                    // }
+                    //   },
+                    // },
+                    {
+                      fieldName: "child_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "G/L Account" }} />
+                      ),
+                      editorTemplate: row => {
+                        return this.FIN_Active ? (
+                          <AlgaehTreeSearch
+                            div={{}}
+                            tree={{
+                              treeDefaultExpandAll: true,
+                              onChange: value => {
+                                debugger
+                                row.selected_account = value
+
+                                let gl_selected_account = value.split("-");
+                                row.child_id = gl_selected_account.length > 0 ? gl_selected_account[1] : undefined;
+                                row.head_id = gl_selected_account.length > 0 ? gl_selected_account[0] : undefined;
+
+                                row.update();
+                              },
+                              data: this.state.finance_account || [],
+                              textField: "label",
+                              valueField: node => {
+                                if (node["leafnode"] === "Y") {
+                                  return (
+                                    node["head_id"] +
+                                    "-" +
+                                    node["finance_account_child_id"]
+                                  );
+                                } else {
+                                  return node["finance_account_head_id"];
+                                }
+                              },
+                              value: row.selected_account
+                            }}
+                          />) : null;
+                      }
+                    }
                   ]}
                   keyId="hims_d_loan_id"
                   dataSource={{
@@ -543,7 +621,7 @@ class LoanMaster extends Component {
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => {},
+                    onEdit: () => { },
                     onDelete: this.deleteLoanMaster.bind(this),
                     onDone: this.updateLoanMater.bind(this),
                   }}

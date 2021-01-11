@@ -712,6 +712,7 @@ export function generateExcelTimesheet(input) {
             let leave,
               holiday_or_weekOff = null;
 
+
             if (leaveLen > 0) {
               const leaveFound = empLeave.find((f) => {
                 return (
@@ -1070,6 +1071,7 @@ export function generateProjectRosterTimesheet(input) {
         const outputArray = [];
         const empTimeSheet = timeSheetData[emp[0]["hims_d_employee_id"]];
 
+
         const empHolidayweekoff = getEmployeeWeekOffsandHolidays(
           from_date,
 
@@ -1094,6 +1096,7 @@ export function generateProjectRosterTimesheet(input) {
             let color = "";
 
             if (TimeSheetUploaded != undefined) {
+
               switch (TimeSheetUploaded.status) {
                 case "PL":
                 case "HPL":
@@ -1144,7 +1147,9 @@ export function generateProjectRosterTimesheet(input) {
                   color: color,
                 });
               }
+
             } else {
+
               const ProjAssgned = emp.find((e) => {
                 return e.attendance_date == attendance_date;
               });
@@ -1161,6 +1166,8 @@ export function generateProjectRosterTimesheet(input) {
                       attendance_date <= f.to_date
                     );
                   });
+
+
 
                   if (leaveFound) {
                     if (

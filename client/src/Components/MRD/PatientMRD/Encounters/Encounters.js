@@ -1,57 +1,63 @@
 import React, { Component } from "react";
 import "./encounters.scss";
-import { PatientAttachments } from "../../../PatientRegistrationNew/PatientAttachment";
-import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
+// import { PatientAttachments } from "../../../PatientRegistrationNew/PatientAttachment";
+// import { AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import algaehLoader from "../../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 // import NursesNotes from "../../../PatientProfile/Examination/NursesNotes";
-import Options from "../../../../Options.json";
-// import Summary from "../Summary/Summary";
-import { Dimmer, Loader } from "semantic-ui-react";
+// import Options from "../../../../Options.json";
+// // import Summary from "../Summary/Summary";
+// import { Dimmer, Loader } from "semantic-ui-react";
+import OPEncounterDetails from "./OpEncounterDetails";
 import {
-  // AlgaehDataGrid,
-  AlgaehModal,
+  AlgaehDataGrid,
+  // AlgaehModal,
   // AlgaehButton,
 } from "algaeh-react-components";
-import { newAlgaehApi } from "../../../../hooks";
+// import { newAlgaehApi } from "../../../../hooks";
 class Encounters extends Component {
   constructor(props) {
     super(props);
     this.state = {
       patientEncounters: [],
-      patientComplaints: [],
-      patientDiagnosis: [],
-      patientMedications: [],
-      patientInvestigations: [],
-      patientPakages: [],
-      consumableorderedList: [],
-      nursingNotes: [],
-      patientProcedures: [],
-      patientVital: [],
-      loaderChiefComp: false,
-      loaderSignificantSigns_Others: false,
-      loaderVitals: false,
-      openAttachmentsModal: false,
-      attached_docs: [],
+      // patientComplaints: [],
+      // patientDiagnosis: [],
+      // patientMedications: [],
+      // patientInvestigations: [],
+      // patientPakages: [],
+      // consumableorderedList: [],
+      // nursingNotes: [],
+      // patientProcedures: [],
+      // patientVital: [],
+      // loaderChiefComp: false,
+      // loaderSignificantSigns_Others: false,
+      // loaderVitals: false,
+      // openAttachmentsModal: false,
+      // attached_docs: [],
+      episode_id: null,
+      encounter_id: null,
+      visit_id: null,
     };
   }
 
   setEncounterDetails(row, e) {
     // const enc_id = e.currentTarget.getAttribute("enc-id");
-    const episode_id = e.currentTarget.getAttribute("epi-id");
-    const visit_id = e.currentTarget.getAttribute("visit-id");
+    // const episode_id = e.currentTarget.getAttribute("epi-id");
+    // const visit_id = e.currentTarget.getAttribute("visit-id");
+    // this.setState({
 
-    this.getPatientChiefComplaint(episode_id);
-    this.getPatientDiagnosis(episode_id);
-    this.getPatientMedication(row.encounter_id);
-    this.getPatientInvestigation(visit_id);
-    this.getPatientPakages(visit_id, Window.global["mrd_patient"]);
-    this.getConsumableorderedList(visit_id);
-    this.getNursingNotes(visit_id, Window.global["mrd_patient"]);
-    this.getPatientVitals(Window.global["mrd_patient"], visit_id);
-    this.getEncounterDetails(row.encounter_id);
+    // })
+    // this.getPatientChiefComplaint(episode_id);
+    // this.getPatientDiagnosis(episode_id);
+    // this.getPatientMedication(row.encounter_id);
+    // this.getPatientInvestigation(visit_id);
+    // this.getPatientPakages(visit_id, Window.global["mrd_patient"]);
+    // this.getConsumableorderedList(visit_id);
+    // this.getNursingNotes(visit_id, Window.global["mrd_patient"]);
+    // this.getPatientVitals(Window.global["mrd_patient"], visit_id);
+    // this.getEncounterDetails(row.encounter_id);
 
     const general_info = Enumerable.from(this.state.patientEncounters)
       .where((w) => w.encounter_id === parseInt(row.encounter_id, 10))
@@ -59,6 +65,9 @@ class Encounters extends Component {
 
     this.setState({
       generalInfo: general_info,
+      episode_id: e.currentTarget.getAttribute("epi-id"),
+      visit_id: e.currentTarget.getAttribute("visit-id"),
+      encounter_id: row.encounter_id,
     });
   }
 
@@ -72,272 +81,272 @@ class Encounters extends Component {
   //   }
   // }
 
-  getEncounterDetails(encounter_id) {
-    this.setState(
-      {
-        loaderSignificantSigns_Others: true,
-      },
-      () => {
-        algaehApiCall({
-          uri: "/doctorsWorkBench/getPatientEncounter",
-          method: "GET",
-          data: {
-            encounter_id: encounter_id,
-          },
-          onSuccess: (response) => {
-            let data = response.data.records[0];
-            if (response.data.success) {
-              this.setState({
-                significant_signs: data.significant_signs,
-                other_signs: data.other_signs,
-                loaderSignificantSigns_Others: false,
-              });
-            }
-          },
-          onFailure: (error) => {
-            swalMessage({
-              title: error.message,
-              type: "error",
-            });
-          },
-        });
-      }
-    );
-  }
+  // getEncounterDetails(encounter_id) {
+  //   this.setState(
+  //     {
+  //       loaderSignificantSigns_Others: true,
+  //     },
+  //     () => {
+  //       algaehApiCall({
+  //         uri: "/doctorsWorkBench/getPatientEncounter",
+  //         method: "GET",
+  //         data: {
+  //           encounter_id: encounter_id,
+  //         },
+  //         onSuccess: (response) => {
+  //           let data = response.data.records[0];
+  //           if (response.data.success) {
+  //             this.setState({
+  //               significant_signs: data.significant_signs,
+  //               other_signs: data.other_signs,
+  //               loaderSignificantSigns_Others: false,
+  //             });
+  //           }
+  //         },
+  //         onFailure: (error) => {
+  //           swalMessage({
+  //             title: error.message,
+  //             type: "error",
+  //           });
+  //         },
+  //       });
+  //     }
+  //   );
+  // }
 
-  getPatientVitals(patient_id, visit_id) {
-    this.setState(
-      {
-        loaderVitals: true,
-      },
-      () => {
-        algaehApiCall({
-          uri: "/doctorsWorkBench/getPatientVitals",
-          method: "GET",
-          data: {
-            patient_id: patient_id,
-            visit_id: visit_id,
-          },
-          cancelRequestId: "getPatientVitals",
-          onSuccess: (response) => {
-            algaehLoader({ show: false });
-            if (response.data.success && response.data.records.length !== 0) {
-              const _Vitals =
-                response.data.records !== undefined &&
-                response.data.records.length > 0
-                  ? response.data.records[0].list
-                  : // Enumerable.from(response.data.records)
-                    //   .groupBy("$.visit_date", null, (k, g) => {
-                    //     return {
-                    //       key: k,
-                    //       details: g.getSource(),
-                    //     };
-                    //   })
-                    //   .toArray()
-                    [];
+  // getPatientVitals(patient_id, visit_id) {
+  //   this.setState(
+  //     {
+  //       loaderVitals: true,
+  //     },
+  //     () => {
+  //       algaehApiCall({
+  //         uri: "/doctorsWorkBench/getPatientVitals",
+  //         method: "GET",
+  //         data: {
+  //           patient_id: patient_id,
+  //           visit_id: visit_id,
+  //         },
+  //         cancelRequestId: "getPatientVitals",
+  //         onSuccess: (response) => {
+  //           algaehLoader({ show: false });
+  //           if (response.data.success && response.data.records.length !== 0) {
+  //             const _Vitals =
+  //               response.data.records !== undefined &&
+  //               response.data.records.length > 0
+  //                 ? response.data.records[0].list
+  //                 : // Enumerable.from(response.data.records)
+  //                   //   .groupBy("$.visit_date", null, (k, g) => {
+  //                   //     return {
+  //                   //       key: k,
+  //                   //       details: g.getSource(),
+  //                   //     };
+  //                   //   })
+  //                   //   .toArray()
+  //                   [];
 
-              this.setState({ patientVital: _Vitals, loaderVitals: false });
-            } else if (response.data.records.length === 0) {
-              this.setState({
-                patientVital: [],
-                loaderVitals: false,
-              });
-            }
-          },
-          onFailure: (error) => {
-            algaehLoader({ show: false });
-            swalMessage({
-              title: error.message,
-              type: "error",
-            });
-          },
-        });
-      }
-    );
-  }
+  //             this.setState({ patientVital: _Vitals, loaderVitals: false });
+  //           } else if (response.data.records.length === 0) {
+  //             this.setState({
+  //               patientVital: [],
+  //               loaderVitals: false,
+  //             });
+  //           }
+  //         },
+  //         onFailure: (error) => {
+  //           algaehLoader({ show: false });
+  //           swalMessage({
+  //             title: error.message,
+  //             type: "error",
+  //           });
+  //         },
+  //       });
+  //     }
+  //   );
+  // }
 
-  getPatientChiefComplaint(episode_id) {
-    this.setState(
-      {
-        loaderChiefComp: true,
-      },
-      () => {
-        algaehApiCall({
-          uri: "/mrd/getPatientChiefComplaint",
-          method: "GET",
-          data: {
-            episode_id: episode_id,
-          },
-          module: "MRD",
-          cancelRequestId: "getPatientChiefComplaint",
-          onSuccess: (response) => {
-            if (response.data.success) {
-              this.setState({
-                patientComplaints: response.data.records,
-                loaderChiefComp: false,
-              });
-            }
-          },
-          onFailure: (error) => {
-            swalMessage({
-              title: error.message,
-              type: "error",
-            });
-          },
-        });
-      }
-    );
-  }
+  // getPatientChiefComplaint(episode_id) {
+  //   this.setState(
+  //     {
+  //       loaderChiefComp: true,
+  //     },
+  //     () => {
+  //       algaehApiCall({
+  //         uri: "/mrd/getPatientChiefComplaint",
+  //         method: "GET",
+  //         data: {
+  //           episode_id: episode_id,
+  //         },
+  //         module: "MRD",
+  //         cancelRequestId: "getPatientChiefComplaint",
+  //         onSuccess: (response) => {
+  //           if (response.data.success) {
+  //             this.setState({
+  //               patientComplaints: response.data.records,
+  //               loaderChiefComp: false,
+  //             });
+  //           }
+  //         },
+  //         onFailure: (error) => {
+  //           swalMessage({
+  //             title: error.message,
+  //             type: "error",
+  //           });
+  //         },
+  //       });
+  //     }
+  //   );
+  // }
 
-  getPatientDiagnosis(episode_id) {
-    algaehApiCall({
-      uri: "/mrd/getPatientDiagnosis",
-      module: "MRD",
-      method: "GET",
-      data: {
-        episode_id: episode_id,
-      },
-      onSuccess: (response) => {
-        algaehLoader({ show: false });
-        if (response.data.success) {
-          this.setState({ patientDiagnosis: response.data.records });
-        }
-      },
-      onFailure: (error) => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
-  getPatientMedication(enc_id) {
-    algaehApiCall({
-      uri: "/mrd/getPatientMedication",
-      module: "MRD",
-      method: "GET",
-      data: {
-        encounter_id: enc_id,
-      },
-      cancelRequestId: "getPatientMedication",
-      onSuccess: (response) => {
-        if (response.data.success) {
-          this.setState({ patientMedications: response.data.records });
-        }
-      },
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
-  getPatientInvestigation(visit_id) {
-    algaehApiCall({
-      uri: "/mrd/getPatientInvestigation",
-      module: "MRD",
-      method: "GET",
-      data: {
-        visit_id: visit_id,
-      },
-      cancelRequestId: "getPatientInvestigation",
-      onSuccess: (response) => {
-        algaehLoader({ show: false });
-        if (response.data.success) {
-          this.setState({ patientInvestigations: response.data.records });
-        }
-      },
-      onFailure: (error) => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
-  getConsumableorderedList(visit_id) {
-    algaehApiCall({
-      uri: "/orderAndPreApproval/getVisitConsumable",
-      method: "GET",
-      data: {
-        visit_id: visit_id, //Window.global["visit_id"]
-      },
-      // cancelRequestId: "getPatientInvestigation",
-      onSuccess: (response) => {
-        algaehLoader({ show: false });
-        if (response.data.success) {
-          this.setState({ consumableorderedList: response.data.records });
-        }
-      },
-      onFailure: (error) => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
-  getNursingNotes(visit_id, patient_id) {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getNurseNotes",
-      data: { patient_id, visit_id },
-      method: "GET",
-      // cancelRequestId: "getPatientInvestigation",
-      onSuccess: (response) => {
-        algaehLoader({ show: false });
-        if (response.data.success) {
-          this.setState({ nursingNotes: response.data.records });
-        }
-      },
-      onFailure: (error) => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
-  getPatientPakages(visit_id, patient_id) {
-    algaehApiCall({
-      uri: "/orderAndPreApproval/getPatientPackage",
-      method: "GET",
-      data: {
-        package_visit_type: "ALL",
-        patient_id: patient_id,
-        visit_id: visit_id,
-      },
-      // cancelRequestId: "getPatientInvestigation",
-      onSuccess: (response) => {
-        algaehLoader({ show: false });
-        if (response.data.success) {
-          this.setState({ patientPakages: response.data.records });
-        }
-      },
-      onFailure: (error) => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
-  dateFormater(value) {
-    if (value !== null) {
-      return moment(value).format(Options.dateFormat);
-    }
-  }
-  // uri: "/doctorsWorkBench/getNurseNotes",
-  // data: { patient_id, visit_id },
-  // method: "GET",
+  // getPatientDiagnosis(episode_id) {
+  //   algaehApiCall({
+  //     uri: "/mrd/getPatientDiagnosis",
+  //     module: "MRD",
+  //     method: "GET",
+  //     data: {
+  //       episode_id: episode_id,
+  //     },
+  //     onSuccess: (response) => {
+  //       algaehLoader({ show: false });
+  //       if (response.data.success) {
+  //         this.setState({ patientDiagnosis: response.data.records });
+  //       }
+  //     },
+  //     onFailure: (error) => {
+  //       algaehLoader({ show: false });
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
+  // getPatientMedication(enc_id) {
+  //   algaehApiCall({
+  //     uri: "/mrd/getPatientMedication",
+  //     module: "MRD",
+  //     method: "GET",
+  //     data: {
+  //       encounter_id: enc_id,
+  //     },
+  //     cancelRequestId: "getPatientMedication",
+  //     onSuccess: (response) => {
+  //       if (response.data.success) {
+  //         this.setState({ patientMedications: response.data.records });
+  //       }
+  //     },
+  //     onFailure: (error) => {
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
+  // getPatientInvestigation(visit_id) {
+  //   algaehApiCall({
+  //     uri: "/mrd/getPatientInvestigation",
+  //     module: "MRD",
+  //     method: "GET",
+  //     data: {
+  //       visit_id: visit_id,
+  //     },
+  //     cancelRequestId: "getPatientInvestigation",
+  //     onSuccess: (response) => {
+  //       algaehLoader({ show: false });
+  //       if (response.data.success) {
+  //         this.setState({ patientInvestigations: response.data.records });
+  //       }
+  //     },
+  //     onFailure: (error) => {
+  //       algaehLoader({ show: false });
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
+  // getConsumableorderedList(visit_id) {
+  //   algaehApiCall({
+  //     uri: "/orderAndPreApproval/getVisitConsumable",
+  //     method: "GET",
+  //     data: {
+  //       visit_id: visit_id, //Window.global["visit_id"]
+  //     },
+  //     // cancelRequestId: "getPatientInvestigation",
+  //     onSuccess: (response) => {
+  //       algaehLoader({ show: false });
+  //       if (response.data.success) {
+  //         this.setState({ consumableorderedList: response.data.records });
+  //       }
+  //     },
+  //     onFailure: (error) => {
+  //       algaehLoader({ show: false });
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
+  // getNursingNotes(visit_id, patient_id) {
+  //   algaehApiCall({
+  //     uri: "/doctorsWorkBench/getNurseNotes",
+  //     data: { patient_id, visit_id },
+  //     method: "GET",
+  //     // cancelRequestId: "getPatientInvestigation",
+  //     onSuccess: (response) => {
+  //       algaehLoader({ show: false });
+  //       if (response.data.success) {
+  //         this.setState({ nursingNotes: response.data.records });
+  //       }
+  //     },
+  //     onFailure: (error) => {
+  //       algaehLoader({ show: false });
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
+  // getPatientPakages(visit_id, patient_id) {
+  //   algaehApiCall({
+  //     uri: "/orderAndPreApproval/getPatientPackage",
+  //     method: "GET",
+  //     data: {
+  //       package_visit_type: "ALL",
+  //       patient_id: patient_id,
+  //       visit_id: visit_id,
+  //     },
+  //     // cancelRequestId: "getPatientInvestigation",
+  //     onSuccess: (response) => {
+  //       algaehLoader({ show: false });
+  //       if (response.data.success) {
+  //         this.setState({ patientPakages: response.data.records });
+  //       }
+  //     },
+  //     onFailure: (error) => {
+  //       algaehLoader({ show: false });
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
+  // dateFormater(value) {
+  //   if (value !== null) {
+  //     return moment(value).format(Options.dateFormat);
+  //   }
+  // }
+  // // uri: "/doctorsWorkBench/getNurseNotes",
+  // // data: { patient_id, visit_id },
+  // // method: "GET",
   getPatientEncounterDetails() {
     algaehLoader({ show: true });
-    debugger;
+
     algaehApiCall({
       uri: "/mrd/getPatientEncounterDetails",
       method: "GET",
@@ -361,315 +370,315 @@ class Encounters extends Component {
     });
   }
 
-  printPatSummary() {
-    // const { episode_id, current_patient, visit_id } = Window.global;
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: "patSummaryReport",
-          reportParams: [
-            {
-              name: "patient_id",
-              value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
-            },
-            {
-              name: "visit_id",
-              value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
-            },
-            {
-              name: "episode_id",
-              value: this.state.generalInfo.episode_id, // Window.global["episode_id"]
-            },
-          ],
-          outputFileType: "PDF",
-        },
-      },
-      onSuccess: (res) => {
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Patient Summary Report`;
-        window.open(origin);
-        // window.document.title = "";
-      },
+  // printPatSummary() {
+  //   // const { episode_id, current_patient, visit_id } = Window.global;
+  //   algaehApiCall({
+  //     uri: "/report",
+  //     method: "GET",
+  //     module: "reports",
+  //     headers: {
+  //       Accept: "blob",
+  //     },
+  //     others: { responseType: "blob" },
+  //     data: {
+  //       report: {
+  //         reportName: "patSummaryReport",
+  //         reportParams: [
+  //           {
+  //             name: "patient_id",
+  //             value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
+  //           },
+  //           {
+  //             name: "visit_id",
+  //             value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
+  //           },
+  //           {
+  //             name: "episode_id",
+  //             value: this.state.generalInfo.episode_id, // Window.global["episode_id"]
+  //           },
+  //         ],
+  //         outputFileType: "PDF",
+  //       },
+  //     },
+  //     onSuccess: (res) => {
+  //       const urlBlob = URL.createObjectURL(res.data);
+  //       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Patient Summary Report`;
+  //       window.open(origin);
+  //       // window.document.title = "";
+  //     },
 
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
-  printSickleave() {
-    // const { episode_id, current_patient, visit_id } = Window.global;
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: "sickLeave",
-          reportParams: [
-            {
-              name: "patient_id",
-              value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
-            },
-            {
-              name: "visit_id",
-              value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
-            },
-            {
-              name: "episode_id",
-              value: this.state.generalInfo.episode_id, // Window.global["episode_id"]
-            },
-          ],
-          outputFileType: "PDF",
-        },
-      },
-      onSuccess: (res) => {
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sick Leave`;
-        window.open(origin);
-        // window.document.title = "";
-      },
+  //     onFailure: (error) => {
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
+  // printSickleave() {
+  //   // const { episode_id, current_patient, visit_id } = Window.global;
+  //   algaehApiCall({
+  //     uri: "/report",
+  //     method: "GET",
+  //     module: "reports",
+  //     headers: {
+  //       Accept: "blob",
+  //     },
+  //     others: { responseType: "blob" },
+  //     data: {
+  //       report: {
+  //         reportName: "sickLeave",
+  //         reportParams: [
+  //           {
+  //             name: "patient_id",
+  //             value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
+  //           },
+  //           {
+  //             name: "visit_id",
+  //             value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
+  //           },
+  //           {
+  //             name: "episode_id",
+  //             value: this.state.generalInfo.episode_id, // Window.global["episode_id"]
+  //           },
+  //         ],
+  //         outputFileType: "PDF",
+  //       },
+  //     },
+  //     onSuccess: (res) => {
+  //       const urlBlob = URL.createObjectURL(res.data);
+  //       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sick Leave`;
+  //       window.open(origin);
+  //       // window.document.title = "";
+  //     },
 
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
-  }
+  //     onFailure: (error) => {
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     },
+  //   });
+  // }
 
-  printPrescription() {
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: "prescription",
-          reportParams: [
-            {
-              name: "hims_d_patient_id",
-              value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
-            },
-            {
-              name: "visit_id",
-              value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
-            },
-            {
-              name: "visit_code",
-              value: null,
-            },
-          ],
-          outputFileType: "PDF",
-        },
-      },
-      onSuccess: (res) => {
-        const urlBlob = URL.createObjectURL(res.data);
+  // printPrescription() {
+  //   algaehApiCall({
+  //     uri: "/report",
+  //     method: "GET",
+  //     module: "reports",
+  //     headers: {
+  //       Accept: "blob",
+  //     },
+  //     others: { responseType: "blob" },
+  //     data: {
+  //       report: {
+  //         reportName: "prescription",
+  //         reportParams: [
+  //           {
+  //             name: "hims_d_patient_id",
+  //             value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
+  //           },
+  //           {
+  //             name: "visit_id",
+  //             value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
+  //           },
+  //           {
+  //             name: "visit_code",
+  //             value: null,
+  //           },
+  //         ],
+  //         outputFileType: "PDF",
+  //       },
+  //     },
+  //     onSuccess: (res) => {
+  //       const urlBlob = URL.createObjectURL(res.data);
 
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
-        window.open(origin);
-        // window.document.title = "";
-      },
-    });
-  }
+  //       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
+  //       window.open(origin);
+  //       // window.document.title = "";
+  //     },
+  //   });
+  // }
 
-  generateReport(row, report_type) {
-    let inputObj = {};
-    if (report_type === "RAD") {
-      inputObj = {
-        tab_name: "Radiology Report",
-        reportName: "radiologyReport",
-        data: [
-          {
-            name: "hims_f_rad_order_id",
-            value: row.hims_f_rad_order_id,
-          },
-        ],
-      };
-    } else {
-      inputObj = {
-        tab_name: "Lab Report",
-        reportName: "hematologyTestReport",
-        data: [
-          {
-            name: "hims_d_patient_id",
-            value: row.patient_id,
-          },
-          {
-            name: "visit_id",
-            value: row.visit_id,
-          },
-          {
-            name: "hims_f_lab_order_id",
-            value: row.hims_f_lab_order_id,
-          },
-        ],
-      };
-    }
-    // let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
-    let tab_name = inputObj.tab_name;
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: inputObj.reportName,
-          reportParams: inputObj.data,
-          outputFileType: "PDF",
-        },
-      },
-      onSuccess: (res) => {
-        // const url = URL.createObjectURL(res.data);
-        // let myWindow = window.open(
-        //   "{{ product.metafields.google.custom_label_0 }}",
-        //   "_blank"
-        // );
+  // generateReport(row, report_type) {
+  //   let inputObj = {};
+  //   if (report_type === "RAD") {
+  //     inputObj = {
+  //       tab_name: "Radiology Report",
+  //       reportName: "radiologyReport",
+  //       data: [
+  //         {
+  //           name: "hims_f_rad_order_id",
+  //           value: row.hims_f_rad_order_id,
+  //         },
+  //       ],
+  //     };
+  //   } else {
+  //     inputObj = {
+  //       tab_name: "Lab Report",
+  //       reportName: "hematologyTestReport",
+  //       data: [
+  //         {
+  //           name: "hims_d_patient_id",
+  //           value: row.patient_id,
+  //         },
+  //         {
+  //           name: "visit_id",
+  //           value: row.visit_id,
+  //         },
+  //         {
+  //           name: "hims_f_lab_order_id",
+  //           value: row.hims_f_lab_order_id,
+  //         },
+  //       ],
+  //     };
+  //   }
+  //   // let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
+  //   let tab_name = inputObj.tab_name;
+  //   algaehApiCall({
+  //     uri: "/report",
+  //     method: "GET",
+  //     module: "reports",
+  //     headers: {
+  //       Accept: "blob",
+  //     },
+  //     others: { responseType: "blob" },
+  //     data: {
+  //       report: {
+  //         reportName: inputObj.reportName,
+  //         reportParams: inputObj.data,
+  //         outputFileType: "PDF",
+  //       },
+  //     },
+  //     onSuccess: (res) => {
+  //       // const url = URL.createObjectURL(res.data);
+  //       // let myWindow = window.open(
+  //       //   "{{ product.metafields.google.custom_label_0 }}",
+  //       //   "_blank"
+  //       // );
 
-        // myWindow.document.write(
-        //   "<iframe src= '" + url + "' width='100%' height='100%' />"
-        // );
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${tab_name}`;
-        window.open(origin);
-        // window.document.title = tab_name;
-      },
-    });
-  }
-  showAttachments() {
-    this.setState({
-      attachmentOpen: !this.state.attachmentOpen,
-    });
-  }
+  //       // myWindow.document.write(
+  //       //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+  //       // );
+  //       const urlBlob = URL.createObjectURL(res.data);
+  //       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${tab_name}`;
+  //       window.open(origin);
+  //       // window.document.title = tab_name;
+  //     },
+  //   });
+  // }
+  // showAttachments() {
+  //   this.setState({
+  //     attachmentOpen: !this.state.attachmentOpen,
+  //   });
+  // }
 
-  downloadDoc(doc, isPreview) {
-    if (doc.fromPath === true) {
-      this.setState({ pdfLoading: true }, () => {
-        newAlgaehApi({
-          uri: "/getContractDoc",
-          module: "documentManagement",
-          method: "GET",
-          extraHeaders: {
-            Accept: "blon",
-          },
-          others: {
-            responseType: "blob",
-          },
-          data: {
-            contract_no: doc.contract_no,
-            filename: doc.filename,
-            download: true,
-          },
-        })
-          .then((resp) => {
-            const urlBlob = URL.createObjectURL(resp.data);
-            if (isPreview) {
-              window.open(urlBlob);
-            } else {
-              const link = document.createElement("a");
-              link.download = doc.filename;
-              link.href = urlBlob;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }
-            this.setState({ pdfLoading: false });
-          })
-          .catch((error) => {
-            console.log(error);
-            this.setState({ pdfLoading: false });
-          });
-      });
-    } else {
-      const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-      const link = document.createElement("a");
-      if (!isPreview) {
-        link.download = doc.filename;
-        link.href = fileUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        fetch(fileUrl)
-          .then((res) => res.blob())
-          .then((fblob) => {
-            const newUrl = URL.createObjectURL(fblob);
-            window.open(newUrl);
-          });
-      }
-    }
-  }
-  getSavedDocument(row) {
-    newAlgaehApi({
-      uri: "/getContractDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        contract_no: row.lab_id_number,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          this.setState({
-            attached_docs: data,
-          });
-        }
-      })
-      .catch((e) => {
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-      });
-  }
-  getDocuments(row) {
-    newAlgaehApi({
-      uri: "/getRadiologyDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        hims_f_rad_order_id: row.hims_f_rad_order_id,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          this.setState({
-            attached_docs: data,
-          });
-        }
-      })
-      .catch((e) => {
-        // AlgaehLoader({ show: false });
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-      });
-  }
+  // downloadDoc(doc, isPreview) {
+  //   if (doc.fromPath === true) {
+  //     this.setState({ pdfLoading: true }, () => {
+  //       newAlgaehApi({
+  //         uri: "/getContractDoc",
+  //         module: "documentManagement",
+  //         method: "GET",
+  //         extraHeaders: {
+  //           Accept: "blon",
+  //         },
+  //         others: {
+  //           responseType: "blob",
+  //         },
+  //         data: {
+  //           contract_no: doc.contract_no,
+  //           filename: doc.filename,
+  //           download: true,
+  //         },
+  //       })
+  //         .then((resp) => {
+  //           const urlBlob = URL.createObjectURL(resp.data);
+  //           if (isPreview) {
+  //             window.open(urlBlob);
+  //           } else {
+  //             const link = document.createElement("a");
+  //             link.download = doc.filename;
+  //             link.href = urlBlob;
+  //             document.body.appendChild(link);
+  //             link.click();
+  //             document.body.removeChild(link);
+  //           }
+  //           this.setState({ pdfLoading: false });
+  //         })
+  //         .catch((error) => {
+  //           console.log(error);
+  //           this.setState({ pdfLoading: false });
+  //         });
+  //     });
+  //   } else {
+  //     const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+  //     const link = document.createElement("a");
+  //     if (!isPreview) {
+  //       link.download = doc.filename;
+  //       link.href = fileUrl;
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       document.body.removeChild(link);
+  //     } else {
+  //       fetch(fileUrl)
+  //         .then((res) => res.blob())
+  //         .then((fblob) => {
+  //           const newUrl = URL.createObjectURL(fblob);
+  //           window.open(newUrl);
+  //         });
+  //     }
+  //   }
+  // }
+  // getSavedDocument(row) {
+  //   newAlgaehApi({
+  //     uri: "/getContractDoc",
+  //     module: "documentManagement",
+  //     method: "GET",
+  //     data: {
+  //       contract_no: row.lab_id_number,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         let { data } = res.data;
+  //         this.setState({
+  //           attached_docs: data,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       swalMessage({
+  //         title: e.message,
+  //         type: "error",
+  //       });
+  //     });
+  // }
+  // getDocuments(row) {
+  //   newAlgaehApi({
+  //     uri: "/getRadiologyDoc",
+  //     module: "documentManagement",
+  //     method: "GET",
+  //     data: {
+  //       hims_f_rad_order_id: row.hims_f_rad_order_id,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         let { data } = res.data;
+  //         this.setState({
+  //           attached_docs: data,
+  //         });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       // AlgaehLoader({ show: false });
+  //       swalMessage({
+  //         title: e.message,
+  //         type: "error",
+  //       });
+  //     });
+  // }
   render() {
     return (
       <div className="encounters">
@@ -724,21 +733,27 @@ class Encounters extends Component {
                   //   return "cursor-pointer";
                   // }}
                   keyId="index"
-                  dataSource={{
-                    data: this.state.patientEncounters,
-                  }}
+                  data={this.state.patientEncounters}
                   isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{
-                    onDelete: (row) => {},
-                    onEdit: (row) => {},
-                    onDone: (row) => {},
-                  }}
+                  // paging={{ page: 0, rowsPerPage: 10 }}
+                  pagination={true}
+                  // events={{
+                  //   onDelete: (row) => {},
+                  //   onEdit: (row) => {},
+                  //   onDone: (row) => {},
+                  // }}
                 />
               </div>
             </div>
           </div>
-          <PatientAttachments
+          <OPEncounterDetails
+            episode_id={this.state.episode_id}
+            encounter_id={this.state.encounter_id}
+            visit_id={this.state.visit_id}
+            patient_id={Window.global["mrd_patient"]}
+            generalInfo={this.state.generalInfo}
+          />
+          {/* <PatientAttachments
             visible={this.state.attachmentOpen}
             onClose={this.showAttachments.bind(this)}
             patientData={{
@@ -746,22 +761,22 @@ class Encounters extends Component {
               patient_code: Window.global.patient_code,
             }}
             onlyShow={true}
-          />
-          <div className="col-lg-8">
+          /> */}
+          {/* <div className="col-lg-8">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">OP Encounter Details </h3>
-                </div>
+                </div> */}
 
-                {/* {this.state.generalInfo !== undefined
+          {/* {this.state.generalInfo !== undefined
                             ? moment(
                                 this.state.generalInfo.encountered_date
                               ).format("DD-MM-YYYY HH:mm A")
                             : "----------"} */}
-              </div>
+          {/* </div> */}
 
-              <div className="portlet-body encounterDetailCntr">
+          {/* <div className="portlet-body encounterDetailCntr">
                 <div className="row">
                   <div className="col-12">
                     {this.state.generalInfo !== undefined ? (
@@ -905,7 +920,7 @@ class Encounters extends Component {
                 </div>
 
                 {/* VITALS START */}
-                <div className="row vitals">
+          {/* <div className="row vitals">
                   <div className="col-12">
                     <h6 className="smallh6">Vitals</h6>
                     {this.state.loaderVitals ? (
@@ -913,17 +928,17 @@ class Encounters extends Component {
                         <Dimmer active>
                           <Loader inline="centered">Loading</Loader>
                         </Dimmer>
-                      </div>
-                    ) : (
+                      </div> */}
+          {/* ) : (
                       <div className="col-12">
                         <div className="row">
                           {this.state.patientVital.length > 0 ? (
                             this.state.patientVital.map((item, index) => (
-                              <React.Fragment key={index}>
-                                {/* <div className="col-lg-12">
+                              <React.Fragment key={index}> */}
+          {/* <div className="col-lg-12">
                                 Recorded on {item.key}
                               </div> */}
-                                <div className="col-2 borderVitals">
+          {/* <div className="col-2 borderVitals">
                                   <AlgaehLabel
                                     label={{
                                       forceLabel: item.vitals_name,
@@ -933,9 +948,9 @@ class Encounters extends Component {
                                     {item.vital_value}
                                     <span>{item.uom}</span>
                                   </h6>
-                                </div>
+                                </div> */}
 
-                                {/* {item.details.map((row, indexD) => (
+          {/* {item.details.map((row, indexD) => (
                                 <div key={indexD} className="col borderVitals">
                                   <AlgaehLabel
                                     label={{
@@ -948,19 +963,19 @@ class Encounters extends Component {
                                   </h6>
                                 </div>
                               ))} */}
-                              </React.Fragment>
+          {/* </React.Fragment>
                             ))
                           ) : (
                             <span className="col">----------</span>
                           )}
                         </div>
                       </div>
-                    )}
-                  </div>
-                </div>
-                {/* VITALS END */}
+                    )} */}
+          {/* </div>
+                </div> */}
+          {/* VITALS END */}
 
-                <div className="row diagnosis">
+          {/* <div className="row diagnosis">
                   <div className="col-lg-12">
                     <h6 className="smallh6">Diagnosis</h6>
                     <div className="row">
@@ -983,10 +998,10 @@ class Encounters extends Component {
                           </h6>
                         ))}
                       </div>
-                    </div>
-                  </div>
-                </div>
-                {this.state.patientInvestigations.length !== 0 ? (
+                    </div> */}
+          {/* </div> */}
+          {/* </div> */}
+          {/* {this.state.patientInvestigations.length !== 0 ? (
                   <div className="row investigation">
                     <div className="col-lg-12">
                       <h6 className="smallh6">Investigation</h6>
@@ -1279,8 +1294,8 @@ class Encounters extends Component {
                       </div>
                     </div>
                   </div>
-                ) : null}
-                <AlgaehModal
+                ) : null} */}
+          {/* <AlgaehModal
                   title="View Attachments"
                   visible={this.state.openAttachmentsModal}
                   mask={true}
@@ -1348,8 +1363,8 @@ class Encounters extends Component {
                       </div>
                     </div>
                   </div>
-                </AlgaehModal>
-                {this.state.patientPakages.length !== 0 ? (
+                </AlgaehModal> */}
+          {/* {this.state.patientPakages.length !== 0 ? (
                   <div className="row investigation">
                     <div className="col-lg-12">
                       <h6 className="smallh6">Pakages</h6>
@@ -1729,8 +1744,8 @@ class Encounters extends Component {
                       </div>
                     </div>
                   </div>
-                ) : null}
-                {this.state.patientProcedures.length !== 0 ? (
+                ) : null}  */}
+          {/* {this.state.patientProcedures.length !== 0 ? (
                   <div className="row procedures">
                     <div className="col-lg-12">
                       <h6 className="smallh6">Procedures</h6>
@@ -1810,12 +1825,12 @@ class Encounters extends Component {
                       </div>
                     </div>
                   </div>
-                ) : null}
-              </div>
-            </div>
-          </div>
+                ) : null} */}
         </div>
       </div>
+      //     </div>
+      //   </div>
+      // </div>
     );
   }
 }

@@ -107,6 +107,23 @@
       "value": "OTHER"
     }
   ],
+  "DOC_LAB_RESULT": [
+    {
+      "name": "ALL",
+
+      "value": "A"
+    },
+    {
+      "name": "Checked",
+
+      "value": "Y"
+    },
+    {
+      "name": "Not Checked",
+
+      "value": "N"
+    }
+  ],
   "FORMAT_MARTIALSTS": [
     {
       "name": "Married",

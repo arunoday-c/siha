@@ -46,12 +46,21 @@ export default {
   getLoanMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
 
+    let strQuery = " ";
+    let strField = " ";
+
+    console.log("req.query.FIN_Active", req.query.FIN_Active)
+
+    if (req.query.FIN_Active == true) {
+      strQuery = " left join finance_account_child C on L.child_id= C.finance_account_child_id "
+      strField = " , child_name "
+    }
     _mysql
       .executeQuery({
         query:
           "select hims_d_loan_id,loan_code, loan_description, loan_account, loan_limit_type, \
-          loan_maximum_amount,loan_status from hims_d_loan where record_status='A' \
-          order by hims_d_loan_id desc",
+          loan_maximum_amount,loan_status, concat(L.head_id, '-', L.child_id) as selected_account"+ strField
+          + "from hims_d_loan L " + strQuery + " where record_status='A' order by hims_d_loan_id desc",
         printQuery: true,
       })
       .then((result) => {
@@ -65,7 +74,7 @@ export default {
       });
   },
 
-  addLoanMaster_JAN_23_2020: (req, res, next) => {
+  addLoanMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
 
@@ -73,14 +82,16 @@ export default {
       .executeQuery({
         query:
           "INSERT INTO hims_d_loan (loan_code,loan_description, loan_account,loan_limit_type,\
-                loan_maximum_amount, created_date,created_by,updated_date,updated_by) \
-                values(?,?,?,?,?,?,?,?,?)",
+                loan_maximum_amount, head_id, child_id, created_date, created_by, updated_date, updated_by) \
+                values(?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.loan_code,
           input.loan_description,
           input.loan_account,
           input.loan_limit_type,
           input.loan_maximum_amount,
+          input.head_id,
+          input.child_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
@@ -99,7 +110,7 @@ export default {
   },
 
   //modified by:irfan to add vendor
-  addLoanMaster: (req, res, next) => {
+  addLoanMaster_JAN_11_2021: (req, res, next) => {
     let input = req.body;
     const _mysql = new algaehMysql();
     try {
@@ -218,19 +229,23 @@ export default {
       .executeQuery({
         query:
           "update hims_d_loan set loan_code=?,loan_description=?,loan_account=?,\
-          loan_limit_type=?,loan_maximum_amount=?, record_status=?, updated_date=?, updated_by=?  \
-          WHERE hims_d_loan_id = ?",
+          loan_limit_type=?,loan_maximum_amount=?, loan_status=?, record_status=?, head_id=?, child_id=?, \
+          updated_date=?, updated_by=? WHERE hims_d_loan_id = ?",
         values: [
           input.loan_code,
           input.loan_description,
           input.loan_account,
           input.loan_limit_type,
           input.loan_maximum_amount,
+          input.loan_status,
           input.record_status,
+          input.head_id,
+          input.child_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.hims_d_loan_id,
         ],
+        printQuery: true
       })
       .then((update_loan) => {
         _mysql.releaseConnection();

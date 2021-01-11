@@ -378,6 +378,9 @@ const PayrollOptions = React.lazy(() =>
 const ClinicalDeskNew = React.lazy(() =>
   retry(() => import("./Components/DoctorsWorkbench/DoctorsWorkbench-new"))
 );
+const ResultViewForDoc = React.lazy(() =>
+  retry(() => import("./Components/DoctorsWorkbench/ResultViewForDoc"))
+);
 const EmpShiftRost = React.lazy(() =>
   retry(() =>
     import(
@@ -789,6 +792,11 @@ const privateRoutes = [
     path: "/DoctorsWorkbench",
     isExactPath: true,
     component: <DoctorsWorkbench />,
+  },
+  {
+    path: "/ResultViewForDoc",
+    isExactPath: true,
+    component: <ResultViewForDoc />,
   },
   {
     path: "/NurseWorkbench",
