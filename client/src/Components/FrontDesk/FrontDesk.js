@@ -36,10 +36,12 @@ class FrontDesk extends Component {
   }
 
   componentDidMount() {
-    if (this.props.location.state.data.visit_id !== null) {
+    if (this.props.location.state?.data.visit_id !== null) {
       this.setState({
         visitCreated: true,
       });
+    } else {
+      return;
     }
   }
   componentDidUpdate(prevProps, prevState) {
