@@ -150,17 +150,33 @@ const executePDF = function executePDFMethod(options) {
                           if (debit_amt > 0) {
                             row_closing_balance =
                               parseFloat(lastAmount) + parseFloat(debit_amt);
+                            if (credit_amt > 0) {
+                              row_closing_balance =
+                                row_closing_balance - credit_amt;
+                            }
                           } else {
                             row_closing_balance =
                               parseFloat(lastAmount) - parseFloat(credit_amt);
+                            if (debit_amt > 0) {
+                              row_closing_balance =
+                                row_closing_balance + debit_amt;
+                            }
                           }
                         } else {
                           if (credit_amt > 0) {
                             row_closing_balance =
                               parseFloat(lastAmount) + parseFloat(credit_amt);
+                            if (debit_amt > 0) {
+                              row_closing_balance =
+                                row_closing_balance - debit_amt;
+                            }
                           } else {
                             row_closing_balance =
                               parseFloat(lastAmount) - parseFloat(debit_amt);
+                            if (credit_amt > 0) {
+                              row_closing_balance =
+                                row_closing_balance + credit_amt;
+                            }
                           }
                         }
 
