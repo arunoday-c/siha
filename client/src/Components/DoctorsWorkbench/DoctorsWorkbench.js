@@ -13,6 +13,8 @@ import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import sockets from "../../sockets";
+import { AlgaehButton } from "algaeh-react-components";
+// import { useHistory } from "react-router-dom";
 
 class DoctorsWorkbench extends Component {
   constructor(props) {
@@ -651,6 +653,13 @@ class DoctorsWorkbench extends Component {
                       }}
                     />
                   </h3>
+                  <AlgaehButton
+                    onClick={() => {
+                      this.props.history.push("/ResultViewForDoc");
+                    }}
+                  >
+                    Go to Lab Result
+                  </AlgaehButton>
                 </div>
                 <div className="actions rightLabelCount">
                   <AlgaehLabel label={{ forceLabel: "No. of Encounters" }} />
