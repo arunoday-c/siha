@@ -996,6 +996,7 @@ class DeptMaster extends Component {
                     dataSource={{
                       data: this.state.subDepartments,
                     }}
+                    filter={true}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{

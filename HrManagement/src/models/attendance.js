@@ -5225,7 +5225,8 @@ export default {
                         
                         select hims_f_leave_application_id,LA.employee_id,leave_application_code,from_leave_session,
                         case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
-                        L.leave_description,from_date,to_leave_session,holiday_included, LA.to_date,
+                        L.leave_description,from_date,to_leave_session,holiday_included, 
+                        CASE WHEN LA.employee_joined = 'N' THEN to_date ELSE DATE_SUB(LA.to_date, INTERVAL 1 DAY) END as to_date,
                         weekoff_included,total_applied_days from hims_f_leave_application LA 
                         inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                         inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
@@ -5521,7 +5522,6 @@ export default {
                   new Date(to_date)
                 );
 
-                // console.log("options.attendance_type", options.attendance_type)
                 if (options.attendance_type == "DM") {
                   _mysql
                     .executeQuery({
@@ -5667,7 +5667,7 @@ export default {
                           case when  L.leave_category='A' and  AN.from_normal_salary='N' then 'A' else 'O'
                           end as leave_category,
                           L.leave_description,from_date,to_leave_session,holiday_included,
-                          LA.to_date,
+                          CASE WHEN LA.employee_joined = 'N' THEN to_date ELSE DATE_SUB(LA.to_date, INTERVAL 1 DAY) END as to_date,
                           weekoff_included,total_applied_days from hims_f_leave_application LA 
                           inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                           inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 

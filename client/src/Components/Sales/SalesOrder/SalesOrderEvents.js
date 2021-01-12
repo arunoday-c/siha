@@ -469,6 +469,14 @@ const SaveSalesOrderEnrty = ($this, from) => {
             // if ($this.state.invoice_files.length) {
             //   $this.saveDocument();
             // }
+            if ($this.state.invoice_files.length) {
+              $this.saveDocument();
+            }
+            if ($this.context.socket.connected) {
+              $this.context.socket.emit("sales_order_auth", {
+                sales_order_number: response.data.records.sales_order_number,
+              });
+            }
             // if (from === "P") {
             //   if ($this.context.socket.connected) {
             //     $this.context.socket.emit("SALE_LST_AUTH1", sendJsonBody);
@@ -794,6 +802,21 @@ const AuthorizeOrderEntry = ($this, authorize) => {
           authorize2: authorize2,
         });
         getCtrlCode($this, $this.state.sales_order_number);
+        if (authorize1 === "Y") {
+          if ($this.context.socket.connected) {
+            $this.context.socket.emit("sales_order_auth_level_one", {
+              sales_order_number: $this.state.sales_order_number,
+            });
+          }
+        } else if (authorize2 === "Y") {
+          if ($this.context.socket.connected) {
+            $this.context.socket.emit(
+              "sales_order_auth_level_two",
+              { sales_order_number: $this.state.sales_order_number },
+              $this.state.created_by
+            );
+          }
+        }
         swalMessage({
           title: "Authorized successfully . .",
           type: "success",

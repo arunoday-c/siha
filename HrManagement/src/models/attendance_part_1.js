@@ -712,6 +712,7 @@ export function generateExcelTimesheet(input) {
             let leave,
               holiday_or_weekOff = null;
 
+
             if (leaveLen > 0) {
               const leaveFound = empLeave.find((f) => {
                 return (
@@ -1070,6 +1071,7 @@ export function generateProjectRosterTimesheet(input) {
         const outputArray = [];
         const empTimeSheet = timeSheetData[emp[0]["hims_d_employee_id"]];
 
+
         const empHolidayweekoff = getEmployeeWeekOffsandHolidays(
           from_date,
 
@@ -1094,6 +1096,7 @@ export function generateProjectRosterTimesheet(input) {
             let color = "";
 
             if (TimeSheetUploaded != undefined) {
+
               switch (TimeSheetUploaded.status) {
                 case "PL":
                 case "HPL":
@@ -1144,7 +1147,9 @@ export function generateProjectRosterTimesheet(input) {
                   color: color,
                 });
               }
+
             } else {
+
               const ProjAssgned = emp.find((e) => {
                 return e.attendance_date == attendance_date;
               });
@@ -1161,6 +1166,8 @@ export function generateProjectRosterTimesheet(input) {
                       attendance_date <= f.to_date
                     );
                   });
+
+
 
                   if (leaveFound) {
                     if (
@@ -3331,6 +3338,8 @@ export function processBulkAtt_Normal(data) {
                           for (let i = 0; i < DilayResult.length; i++) {
                             let pending_unpaid_leave = 0;
 
+                            console.log("total_work_days", parseFloat(DilayResult[i]["total_work_days"]), options["salary_calendar_fixed_days"])
+
                             if (pending_len > 0) {
                               let emp_leave = pending_unpaid.find((f) => {
                                 return (
@@ -3348,15 +3357,7 @@ export function processBulkAtt_Normal(data) {
                               DilayResult[i]["partial_attendance"] == "N" &&
                               DilayResult[i]["late_joined"] == "N"
                             ) {
-                              if (
-                                parseFloat(DilayResult[i]["total_work_days"]) >
-                                parseFloat(
-                                  options["salary_calendar_fixed_days"]
-                                )
-                              ) {
-                                DilayResult[i]["total_work_days"] =
-                                  options["salary_calendar_fixed_days"];
-                              }
+
 
                               let t_paid_days = "";
 
@@ -3387,6 +3388,17 @@ export function processBulkAtt_Normal(data) {
                                   }
                                 }
                               }
+
+                              if (
+                                parseFloat(DilayResult[i]["total_work_days"]) <
+                                parseFloat(
+                                  options["salary_calendar_fixed_days"]
+                                ) && ann_to_date_mnth === null
+                              ) {
+                                DilayResult[i]["total_work_days"] =
+                                  options["salary_calendar_fixed_days"];
+                              }
+
                               // console.log("calc_mnth_annl_leav", calc_mnth_annl_leav)
                               if (
                                 DilayResult[i]["anual_leave"] > 0 &&
