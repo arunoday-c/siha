@@ -697,6 +697,9 @@ class Encounters extends Component {
                     {
                       fieldName: "encountered_date",
                       label: "Consult Date & Time",
+                      className: (drow) => {
+                        return "greenCell";
+                      },
                       displayTemplate: (row) => {
                         return (
                           <span
@@ -704,7 +707,7 @@ class Encounters extends Component {
                             epi-id={row.episode_id}
                             visit-id={row.visit_id}
                             onClick={this.setEncounterDetails.bind(this, row)}
-                            className="pat-code"
+                            className="pat-code2"
                           >
                             {moment(row.encountered_date).format(
                               "DD-MM-YYYY HH:mm A"
@@ -715,10 +718,7 @@ class Encounters extends Component {
                       others: {
                         maxWidth: 150,
                         resizable: false,
-                        style: { textAlign: "center" },
-                      },
-                      className: (drow) => {
-                        return "greenCell";
+                        style: { textAlign: "left" },
                       },
                     },
                     {
@@ -734,14 +734,7 @@ class Encounters extends Component {
                   // }}
                   keyId="index"
                   data={this.state.patientEncounters}
-                  isEditable={false}
-                  // paging={{ page: 0, rowsPerPage: 10 }}
                   pagination={true}
-                  // events={{
-                  //   onDelete: (row) => {},
-                  //   onEdit: (row) => {},
-                  //   onDone: (row) => {},
-                  // }}
                 />
               </div>
             </div>
