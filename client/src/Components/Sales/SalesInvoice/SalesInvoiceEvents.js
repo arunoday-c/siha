@@ -7,7 +7,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import SalesInvoiceIO from "../../../Models/SalesInvoice";
 import _ from "lodash";
 import moment from "moment";
-import { newAlgaehApi } from "../../../hooks";
+// import { newAlgaehApi } from "../../../hooks";
 
 const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -48,41 +48,8 @@ const ClearData = ($this) => {
   let IOputs = SalesInvoiceIO.inputParam();
   $this.setState(IOputs);
 };
-const getDocuments = ($this) => {
-  newAlgaehApi({
-    uri: "/getReceiptEntryDoc",
-    module: "documentManagement",
-    method: "GET",
-    data: {
-      grn_number: $this.state.invoice_number,
-    },
-  })
-    .then((res) => {
-      if (res.data.success) {
-        let { data } = res.data;
-        $this.setState(
-          {
-            invoice_docs: data,
-            sales_invoice_files: [],
-            saveEnable: $this.state.saveEnable,
-            docChanged: false,
-          },
-          () => {
-            AlgaehLoader({ show: false });
-          }
-        );
-      }
-    })
-    .catch((e) => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: e.message,
-        type: "error",
-      });
-    });
-};
+
 const SaveInvoiceEnrty = ($this) => {
-  debugger;
   AlgaehLoader({ show: true });
   if ($this.state.invoice_date === null) {
     swalMessage({
@@ -104,8 +71,11 @@ const SaveInvoiceEnrty = ($this) => {
     data: $this.state,
     onSuccess: (response) => {
       if (response.data.success) {
-        debugger;
         getCtrlCode($this, response.data.records.invoice_number);
+        // if ($this.state.sales_invoice_files.length) {
+        //
+        //   $this.saveDocument();
+        // }
         // $this.setState({
         //   invoice_number: response.data.records.invoice_number,
         //   hims_f_sales_invoice_header_id:
@@ -173,7 +143,7 @@ const getCtrlCode = ($this, docNumber) => {
           }
 
           $this.setState(data, () => {
-            getDocuments($this);
+            $this.saveDocument();
           });
           AlgaehLoader({ show: false });
 
@@ -530,7 +500,7 @@ export {
   texthandle,
   ClearData,
   SaveInvoiceEnrty,
-  getDocuments,
+  // getDocuments,
   getCtrlCode,
   PostSalesInvoice,
   generateSalesInvoiceReport,

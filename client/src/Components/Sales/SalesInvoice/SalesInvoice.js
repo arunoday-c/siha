@@ -9,6 +9,7 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Options from "../../../Options.json";
 // import moment from "moment";
 // import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
@@ -17,7 +18,7 @@ import {
 import {
   ClearData,
   SaveInvoiceEnrty,
-  getDocuments,
+  // getDocuments,
   getCtrlCode,
   SalesOrderSearch,
   texthandle,
@@ -51,7 +52,10 @@ const { confirm } = Modal;
 class SalesInvoice extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      sales_invoice_files: [],
+      invoice_docs: [],
+    };
   }
 
   UNSAFE_componentWillMount() {
@@ -104,7 +108,6 @@ class SalesInvoice extends Component {
 
   onOpenPreviewPopUP() {
     try {
-      debugger;
       const queryParams = new URLSearchParams(this.props.location.search);
       const finance_day_end_header_id = queryParams.get(
         "finance_day_end_header_id"
@@ -136,6 +139,39 @@ class SalesInvoice extends Component {
       console.error(e);
     }
   }
+  getDocuments = () => {
+    newAlgaehApi({
+      uri: "/getReceiptEntryDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        grn_number: this.state.invoice_number,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          this.setState(
+            {
+              invoice_docs: data,
+              sales_invoice_files: [],
+              saveEnable: this.state.saveEnable,
+              docChanged: false,
+            },
+            () => {
+              AlgaehLoader({ show: false });
+            }
+          );
+        }
+      })
+      .catch((e) => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  };
   saveDocument = (files = [], number, id) => {
     if (this.state.invoice_number) {
       const formData = new FormData();
@@ -160,7 +196,7 @@ class SalesInvoice extends Component {
         method: "POST",
         module: "documentManagement",
       })
-        .then((value) => getDocuments(this))
+        .then((value) => this.getDocuments(number))
         .catch((e) => console.log(e));
     } else {
       swalMessage({
@@ -512,8 +548,8 @@ class SalesInvoice extends Component {
                     <div className="col-3">
                       {" "}
                       <Dragger
-                        disabled={!this.state.saveEnable}
-                        accept=".doc,.docx,application/msword,.pdf"
+                        // disabled={!this.state.saveEnable}
+                        accept=".doc,.docx,application/msword,.pdf,.png,.jpg"
                         name="sales_invoice_files"
                         multiple={false}
                         onRemove={() => {
