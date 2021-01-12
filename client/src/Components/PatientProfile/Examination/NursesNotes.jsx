@@ -148,11 +148,11 @@ export default function NursesNotes({
         <div className="row">
           {!viewOnly && (
             <>
-              <div className="col-12">
+              {/* <div className="col-12">
                 {" "}
                 <h6>Enter Nursing Notes</h6>
                 <hr />{" "}
-              </div>
+              </div> */}
               <div className="col-12">
                 <textarea
                   value={input}
