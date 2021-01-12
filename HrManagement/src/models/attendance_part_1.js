@@ -3362,12 +3362,15 @@ export function processBulkAtt_Normal(data) {
                               let t_paid_days = "";
 
 
-
+                              const total_work_days = DilayResult[i]["total_work_days"];
+                              // console.log("1", total_work_days)
+                              DilayResult[i]["total_work_days"] = options["salary_calendar_fixed_days"]
                               const annual_leave = annual_leave_data.filter(f => f.employee_id === DilayResult[i]["employee_id"])
                               // console.log("annual_leave", annual_leave)
                               let ann_from_date_mnth = null;
                               let ann_to_date_mnth = null;
-                              let calc_mnth_annl_leav = 0
+                              let calc_mnth_annl_leav = 0;
+                              let employee_join = false;
                               if (annual_leave.length > 0) {
                                 ann_from_date_mnth = moment(annual_leave[0].from_date).format(
                                   "M"
@@ -3377,6 +3380,7 @@ export function processBulkAtt_Normal(data) {
                                   ann_from_date_mnth == ann_to_date_mnth
                                 ) {
                                   if (annual_leave[0].employee_joined == "Y") {
+                                    employee_join = true;
 
                                     const fromDate_firstDate = moment(annual_leave[0].from_date)
                                       .startOf("month")
@@ -3392,15 +3396,17 @@ export function processBulkAtt_Normal(data) {
                               // console.log("total_work_days", DilayResult[i]["total_work_days"])
                               // console.log("salary_calendar_fixed_days", options["salary_calendar_fixed_days"])
                               // console.log("ann_to_date_mnth", ann_to_date_mnth)
+                              // console.log("annual_leave", annual_leave.length)
+                              // console.log("employee_join", employee_join)
 
                               if (
-                                parseFloat(DilayResult[i]["total_work_days"]) <
+                                parseFloat(total_work_days) <
                                 parseFloat(
                                   options["salary_calendar_fixed_days"]
-                                ) || ann_to_date_mnth !== null
+                                ) && ann_to_date_mnth !== null && employee_join == false
                               ) {
-                                DilayResult[i]["total_work_days"] =
-                                  options["salary_calendar_fixed_days"];
+                                // console.log("1")
+                                DilayResult[i]["total_work_days"] = total_work_days;
                               }
 
                               // console.log("total_work_days", DilayResult[i]["total_work_days"])

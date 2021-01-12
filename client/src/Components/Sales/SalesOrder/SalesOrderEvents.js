@@ -834,6 +834,45 @@ const AuthorizeOrderEntry = ($this, authorize) => {
   });
 };
 
+
+const RejectSalesServiceOrder = ($this) => {
+  if (!$this.state.reject_reason_sales) {
+    swalMessage({
+      title: "Please add reason for Rejection",
+      type: "warning",
+    });
+    return;
+  }
+  algaehApiCall({
+    uri: "/SalesOrder/rejectSalesServiceOrder",
+    module: "sales",
+    data: $this.state,
+    method: "PUT",
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        swalMessage({
+          title: "Cancelled successfully . .",
+          type: "success",
+        });
+        $this.setState({
+          cancelDisable: true,
+          rejectVisible: false,
+          // authBtnEnable: true,
+        });
+        getCtrlCode($this, $this.state.sales_order_number);
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
+
 const CancelSalesServiceOrder = ($this) => {
   if (!$this.state.canceled_reason_sales) {
     swalMessage({
@@ -901,4 +940,5 @@ export {
   CancelSalesServiceOrder,
   getCostCenters,
   ContractSearch,
+  RejectSalesServiceOrder
 };

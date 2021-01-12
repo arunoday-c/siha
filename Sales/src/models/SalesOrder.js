@@ -1072,7 +1072,7 @@ export function cancelSalesServiceOrder(req, res, next) {
 
     _mysql
       .executeQueryWithTransaction({
-        query: `UPDATE hims_f_sales_order SET cancelled='Y', is_posted='N', authorize1='N', \
+        query: `UPDATE hims_f_sales_order SET cancelled='Y', authorize1='N', \
                     authorize2='N',revert_reason=? ,cancelled_date=?, cancelled_by=? 
                     WHERE hims_f_sales_order_id=?`,
         values: [
@@ -1104,16 +1104,19 @@ export function cancelSalesServiceOrder(req, res, next) {
 
 export function rejectSalesServiceOrder(req, res, next) {
   const _mysql = new algaehMysql();
+
+  console.log("cancelSalesServiceOrder: ");
   try {
     req.mySQl = _mysql;
     let inputParam = { ...req.body };
 
     _mysql
       .executeQueryWithTransaction({
-        query:
-          "UPDATE `hims_f_sales_order` SET `is_posted`='N', `updated_date`=?, `updated_by`=? \
-                    WHERE `hims_f_sales_order_id`=?",
+        query: `UPDATE hims_f_sales_order SET is_reject='Y', is_posted='N', authorize1='N', \
+                    authorize2='N',revert_reason=? ,rejected_date=?, rejected_by=? 
+                    WHERE hims_f_sales_order_id=?`,
         values: [
+          inputParam.reject_reason_sales,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           inputParam.hims_f_sales_order_id,
