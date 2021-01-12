@@ -466,6 +466,9 @@ const SaveSalesOrderEnrty = ($this, from) => {
         onSuccess: (response) => {
           if (response.data.success) {
             getCtrlCode($this, response.data.records.sales_order_number);
+            // if ($this.state.invoice_files.length) {
+            //   $this.saveDocument();
+            // }
             if ($this.state.invoice_files.length) {
               $this.saveDocument();
             }
@@ -531,7 +534,6 @@ const getCtrlCode = ($this, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
-        debugger;
         const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 
@@ -589,7 +591,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.organizations = $this.props.hospitaldetails;
 
         $this.setState(data, () => {
-          $this.getDocuments();
+          $this.saveDocument();
         });
       }
       AlgaehLoader({ show: false });

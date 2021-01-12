@@ -834,7 +834,7 @@ class SalesOrder extends Component {
                   <div className="col-3">
                     {" "}
                     <Dragger
-                      accept=".doc,.docx,application/msword,.pdf"
+                      accept=".doc,.docx,application/msword,.pdf,jpg,.png,"
                       name="contract_file"
                       multiple={false}
                       onRemove={() => {
