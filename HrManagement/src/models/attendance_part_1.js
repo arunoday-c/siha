@@ -3338,7 +3338,7 @@ export function processBulkAtt_Normal(data) {
                           for (let i = 0; i < DilayResult.length; i++) {
                             let pending_unpaid_leave = 0;
 
-                            console.log("total_work_days", parseFloat(DilayResult[i]["total_work_days"]), options["salary_calendar_fixed_days"])
+                            // console.log("total_work_days", parseFloat(DilayResult[i]["total_work_days"]), options["salary_calendar_fixed_days"])
 
                             if (pending_len > 0) {
                               let emp_leave = pending_unpaid.find((f) => {
@@ -3389,17 +3389,21 @@ export function processBulkAtt_Normal(data) {
                                 }
                               }
 
+                              // console.log("total_work_days", DilayResult[i]["total_work_days"])
+                              // console.log("salary_calendar_fixed_days", options["salary_calendar_fixed_days"])
+                              // console.log("ann_to_date_mnth", ann_to_date_mnth)
+
                               if (
                                 parseFloat(DilayResult[i]["total_work_days"]) <
                                 parseFloat(
                                   options["salary_calendar_fixed_days"]
-                                ) && ann_to_date_mnth === null
+                                ) || ann_to_date_mnth !== null
                               ) {
                                 DilayResult[i]["total_work_days"] =
                                   options["salary_calendar_fixed_days"];
                               }
 
-                              // console.log("calc_mnth_annl_leav", calc_mnth_annl_leav)
+                              // console.log("total_work_days", DilayResult[i]["total_work_days"])
                               if (
                                 DilayResult[i]["anual_leave"] > 0 &&
                                 options["leave_salary_payment_days"] == "P"

@@ -18,7 +18,8 @@ const executePDF = function executePDFMethod(options) {
           D.frequency, date_format(D.start_date ,'%d-%m-%Y')as from_date, D.dosage, D.no_of_days,  D.instructions, 
           E.full_name as full_name, E.license_number, coalesce(IP.insurance_provider_name,'--')as insurance_provider_name,  
           coalesce(M.card_class,'--')as card_class , coalesce(M.primary_policy_num,'--')as primary_policy_num, I.sfda_code,
-          CC.comment,ICD.daignosis_id, IC.icd_code,IC.icd_description
+          ICD.daignosis_id, IC.icd_code,IC.icd_description
+          -- CC.comment,
           from hims_f_prescription as H 
           inner join hims_f_patient_visit as V on H.visit_id = V.hims_f_patient_visit_id  
           inner join hims_f_prescription_detail as D on prescription_id = H.hims_f_prescription_id  
@@ -28,7 +29,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_nationality as N on N.hims_d_nationality_id = P.nationality_id  
           inner join hims_d_sub_department S on S.hims_d_sub_department_id = V.sub_department_id  
           inner join hims_d_employee E on E.hims_d_employee_id = H.provider_id 
-          inner join hims_f_episode_chief_complaint CC on H.episode_id = CC.episode_id 
+          -- inner join hims_f_episode_chief_complaint CC on H.episode_id = CC.episode_id 
           left join hims_f_patient_diagnosis ICD on H.episode_id = ICD.episode_id  and ICD.diagnosis_type = 'P' and ICD.record_status='A'
           left join hims_d_icd IC on ICD.daignosis_id = IC.hims_d_icd_id 
           left join hims_m_patient_insurance_mapping as M on M.patient_visit_id = V.hims_f_patient_visit_id  

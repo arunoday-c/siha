@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import "./doctor_workbench.scss";
 import {
   // AlgaehButton,
   // AlgaehFormGroup,
@@ -31,7 +32,7 @@ const ResultViewForDoc = () => {
     defaultValues: {
       from_date: moment().clone().startOf("month").format("YYYY-MM-DD"),
       to_date: new Date(),
-      doctor_viewed: "",
+      doctor_viewed: "A",
     },
   });
 
@@ -287,118 +288,122 @@ const ResultViewForDoc = () => {
     }
   };
   return (
-    <div className="hptl-phase1-result-entry-form">
+    <div>
       <form onSubmit={handleSubmit(getLabOrderServiceForDoc)}>
-        <Controller
-          control={control}
-          name="from_date"
-          rules={{ required: "Please Select DOB" }}
-          render={({ onChange, value }) => (
-            <AlgaehDateHandler
-              div={{
-                className: "col form-group",
-                tabIndex: "4",
-              }}
-              error={errors}
-              label={{
-                fieldName: "from_date",
-                isImp: true,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "from_date",
-                value,
-              }}
-              // others={{ disabled }}
-              // maxDate={new Date()}
-              events={{
-                onChange: (mdate) => {
-                  if (mdate) {
-                    onChange(mdate._d);
-                  } else {
+        <div className="row inner-top-search">
+          <Controller
+            control={control}
+            name="from_date"
+            rules={{ required: "Please Select DOB" }}
+            render={({ onChange, value }) => (
+              <AlgaehDateHandler
+                div={{
+                  className: "col-2 form-group mandatory",
+                  tabIndex: "4",
+                }}
+                error={errors}
+                label={{
+                  fieldName: "from_date",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "from_date",
+                  value,
+                }}
+                // others={{ disabled }}
+                // maxDate={new Date()}
+                events={{
+                  onChange: (mdate) => {
+                    if (mdate) {
+                      onChange(mdate._d);
+                    } else {
+                      onChange(undefined);
+                    }
+                  },
+                  onClear: () => {
                     onChange(undefined);
-                  }
-                },
-                onClear: () => {
-                  onChange(undefined);
-                },
-              }}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="to_date"
-          rules={{ required: "Please Select DOB" }}
-          render={({ onChange, value }) => (
-            <AlgaehDateHandler
-              div={{
-                className: "col form-group",
-                tabIndex: "4",
-              }}
-              error={errors}
-              label={{
-                fieldName: "to_date",
-                isImp: true,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "to_date",
-                value,
-              }}
-              // others={{ disabled }}
-              // maxDate={new Date()}
-              events={{
-                onChange: (mdate) => {
-                  if (mdate) {
-                    onChange(mdate._d);
-                  } else {
+                  },
+                }}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="to_date"
+            rules={{ required: "Please Select DOB" }}
+            render={({ onChange, value }) => (
+              <AlgaehDateHandler
+                div={{
+                  className: "col-2 form-group mandatory",
+                  tabIndex: "4",
+                }}
+                error={errors}
+                label={{
+                  fieldName: "to_date",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "to_date",
+                  value,
+                }}
+                // others={{ disabled }}
+                // maxDate={new Date()}
+                events={{
+                  onChange: (mdate) => {
+                    if (mdate) {
+                      onChange(mdate._d);
+                    } else {
+                      onChange(undefined);
+                    }
+                  },
+                  onClear: () => {
                     onChange(undefined);
-                  }
-                },
-                onClear: () => {
-                  onChange(undefined);
-                },
-              }}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="doctor_viewed"
-          rules={{ required: "Required" }}
-          render={({ value, onChange, onBlur }) => (
-            <AlgaehAutoComplete
-              div={{
-                className: "col form-group",
-              }}
-              error={errors}
-              label={{
-                forcelabel: "Result Seen",
-                isImp: true,
-              }}
-              selector={{
-                value,
-                onChange: (_, selected) => {
-                  onChange(selected);
-                },
-                onClear: () => {
-                  onChange("");
-                },
-                name: "doctor_viewed",
-                dataSource: {
-                  textField: "name",
-
-                  valueField: "value",
-                  data: variableJson.DOC_LAB_RESULT,
-                },
-              }}
-            />
-          )}
-        />
-        <button className="btn btn-primary" type="submit">
-          Load
-        </button>
+                  },
+                }}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="doctor_viewed"
+            rules={{ required: "Required" }}
+            render={({ value, onChange, onBlur }) => (
+              <AlgaehAutoComplete
+                div={{
+                  className: "col-2 form-group mandatory",
+                }}
+                error={errors}
+                label={{
+                  forceLabel: "Result Seen",
+                  isImp: true,
+                }}
+                selector={{
+                  value,
+                  onChange: (_, selected) => {
+                    onChange(selected);
+                  },
+                  onClear: () => {
+                    onChange("");
+                  },
+                  name: "doctor_viewed",
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: variableJson.DOC_LAB_RESULT,
+                  },
+                }}
+              />
+            )}
+          />
+          <div className="col" style={{ marginTop: 21 }}>
+            {" "}
+            <button className="btn btn-default" type="submit">
+              Load
+            </button>
+          </div>
+        </div>
       </form>
 
       <div className="portlet-body" id="resultListEntryCntr">
@@ -468,258 +473,287 @@ const ResultViewForDoc = () => {
         ) : null}
 
         <Spin spinning={loading}>
-          <AlgaehDataGrid
-            id="samplecollection_grid"
-            columns={[
-              {
-                fieldName: "action",
-                label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                displayTemplate: (row) => {
-                  return (
-                    <>
-                      <span>
-                        <i
-                          style={{
-                            pointerEvents:
-                              row.status === "O"
-                                ? ""
-                                : row.sample_status === "N"
-                                ? "none"
-                                : "",
-                          }}
-                          className="fas fa-file-signature"
-                          aria-hidden="true"
-                          onClick={() => generateLabResultReport(row)}
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3>Doctor Lab</h3>
+              </div>
+              <div className="actions">
+                <small>Only validated result will show below.</small>
+              </div>
+            </div>
+            <div className="portlet-body ResultViewForDocGrid">
+              <AlgaehDataGrid
+                columns={[
+                  {
+                    fieldName: "action",
+                    label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                    displayTemplate: (row) => {
+                      return (
+                        <>
+                          <span>
+                            <i
+                              style={{
+                                pointerEvents:
+                                  row.status === "O"
+                                    ? ""
+                                    : row.sample_status === "N"
+                                    ? "none"
+                                    : "",
+                              }}
+                              className="fas fa-file-signature"
+                              aria-hidden="true"
+                              onClick={() => generateLabResultReport(row)}
+                            />
+                          </span>
+                          <span>
+                            <i
+                              className="fas fa-paperclip"
+                              aria-hidden="true"
+                              onClick={() => {
+                                // currentRow: row,
+                                setLab_id_number(row.lab_id_number);
+                                setOpenViewAttachmentModal(true);
+                                setInvestigation_test_id(
+                                  row.hims_d_investigation_test_id
+                                );
+                              }}
+                            />
+                          </span>
+                        </>
+                      );
+                    },
+                    others: {
+                      filterable: false,
+                      maxWidth: 100,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "doctor_viewed",
+                    label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
+                    displayTemplate: (row) => {
+                      return (
+                        <input
+                          type="checkbox"
+                          // value=""
+                          defaultChecked={
+                            row.doctor_viewed === "Y" ? true : false
+                          }
+                          onChange={(e) => changeChecks(row, e)}
+                          // checked={row.doctor_viewed === "Y" ? true : false}
                         />
-                      </span>
-                      <span>
-                        <i
-                          // style={{
-                          //   pointerEvents:
-                          //     row.status === "O"
-                          //       ? ""
-                          //       : row.sample_status === "N"
-                          //       ? "none"
-                          //       : "",
-                          // }}
-                          className="fas fa-paperclip"
-                          aria-hidden="true"
+                      );
+                    },
+
+                    others: {
+                      maxWidth: 150,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "doctor_viewed_change",
+                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                    displayTemplate: (row) => {
+                      return row.doctor_viewed === "Y" ? (
+                        <span className="badge badge-success">Seen</span>
+                      ) : (
+                        <span className="badge badge-secondary">Unseen</span>
+                      );
+                    },
+
+                    others: {
+                      maxWidth: 150,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "patient_code",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                    ),
+                    disabled: false,
+                    displayTemplate: (row) => {
+                      return (
+                        <span
                           onClick={() => {
-                            // currentRow: row,
-                            setLab_id_number(row.lab_id_number);
-                            setOpenViewAttachmentModal(true);
-                            setInvestigation_test_id(
-                              row.hims_d_investigation_test_id
-                            );
+                            setGlobal({
+                              mrd_patient: row.patient_id,
+                              patient_code: row.patient_code,
+                            });
+                            setVisit_id(row.visit_id);
+                            setPatient_id(row.patient_id);
+                            setOpenMrdModal(true);
+                            // document.getElementById("mrd-router").click();
                           }}
-                        />
-                      </span>
-                    </>
-                  );
-                },
-                others: {
-                  filterable: false,
-                  maxWidth: 100,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "doctor_viewed",
-                label: <AlgaehLabel label={{ fieldName: "" }} />,
-                displayTemplate: (row) => {
-                  return (
-                    <input
-                      type="checkbox"
-                      // value=""
-                      defaultChecked={row.doctor_viewed === "Y" ? true : false}
-                      onChange={(e) => changeChecks(row, e)}
-                      // checked={row.doctor_viewed === "Y" ? true : false}
-                    />
-                  );
-                },
+                          className="pat-code2"
+                        >
+                          {row.patient_code}
+                        </span>
+                      );
+                    },
+                    others: {
+                      maxWidth: 150,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "full_name",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                    ),
+                    disabled: true,
+                    others: {
+                      resizable: false,
+                      style: { textAlign: "left" },
+                    },
+                  },
+                  {
+                    fieldName: "service_name",
+                    label: <AlgaehLabel label={{ forceLabel: "Test Name" }} />,
 
-                others: {
-                  maxWidth: 150,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "doctor_viewed_change",
-                label: <AlgaehLabel label={{ fieldName: "" }} />,
-                displayTemplate: (row) => {
-                  return row.doctor_viewed === "Y" ? "Viewed" : "Not Viewed";
-                },
+                    disabled: true,
+                    others: {
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "ordered_date",
+                    label: (
+                      <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                    ),
+                    displayTemplate: (row) => {
+                      return <span>{changeDateFormat(row.ordered_date)}</span>;
+                    },
+                    disabled: true,
 
-                others: {
-                  maxWidth: 150,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "ordered_date",
-                label: <AlgaehLabel label={{ fieldName: "ordered_date" }} />,
-                displayTemplate: (row) => {
-                  return <span>{changeDateFormat(row.ordered_date)}</span>;
-                },
-                disabled: true,
+                    others: {
+                      maxWidth: 150,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "lab_id_number",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
+                    ),
+                    disabled: true,
+                    others: {
+                      maxWidth: 130,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "test_type",
+                    label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
+                    displayTemplate: (row) => {
+                      return row.test_type === "S" ? (
+                        <span className="badge badge-danger">Stat</span>
+                      ) : (
+                        <span className="badge badge-secondary">Routine</span>
+                      );
+                    },
+                    disabled: true,
+                    others: {
+                      maxWidth: 90,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  // {
+                  //   fieldName: "sample_status",
+                  //   label: (
+                  //     <AlgaehLabel label={{ forceLabel: "Specimen Status" }} />
+                  //   ),
+                  //   displayTemplate: (row) => {
+                  //     return row.sample_status === "N" ? (
+                  //       <span className="badge badge-light">Not Done</span>
+                  //     ) : row.sample_status === "A" ? (
+                  //       <span className="badge badge-success">Accepted</span>
+                  //     ) : row.sample_status === "R" ? (
+                  //       <span className="badge badge-danger">Rejected</span>
+                  //     ) : null;
+                  //   },
+                  //   disabled: true,
+                  //   others: {
+                  //     maxWidth: 150,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  // },
+                  // {
+                  //   fieldName: "status",
+                  //   label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                  //   displayTemplate: (row) => {
+                  //     return row.status === "CL" ? (
+                  //       <span className="badge badge-secondary">Collected</span>
+                  //     ) : row.status === "CN" ? (
+                  //       <span className="badge badge-danger">Cancelled</span>
+                  //     ) : row.status === "CF" ? (
+                  //       <span className="badge badge-primary">Confirmed</span>
+                  //     ) : (
+                  //       <span className="badge badge-success">Validated</span>
+                  //     );
+                  //   },
+                  //   disabled: true,
+                  //   others: {
+                  //     maxWidth: 130,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  // },
+                  // {
+                  //   fieldName: "critical_status",
+                  //   label: (
+                  //     <AlgaehLabel
+                  //       label={{ forceLabel: "Critical Result" }}
+                  //     />
+                  //   ),
+                  //   displayTemplate: (row) => {
+                  //     return row.critical_status === "N" ? (
+                  //       <span className="badge badge-primary">No</span>
+                  //     ) : (
+                  //       <span className="badge badge-danger">Yes</span>
+                  //     );
+                  //   },
+                  //   disabled: true,
+                  //   others: {
+                  //     maxWidth: 130,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  // },
+                ]}
+                keyId="patient_code"
+                data={labOrderServicesForDoc}
+                filter={true}
+                pagination={true}
+              />{" "}
+            </div>
+          </div>
 
-                others: {
-                  maxWidth: 150,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "test_type",
-                label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
-                displayTemplate: (row) => {
-                  return row.test_type === "S" ? (
-                    <span className="badge badge-danger">Stat</span>
-                  ) : (
-                    <span className="badge badge-secondary">Routine</span>
-                  );
-                },
-                disabled: true,
-                others: {
-                  maxWidth: 90,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "sample_status",
-                label: (
-                  <AlgaehLabel label={{ forceLabel: "Specimen Status" }} />
-                ),
-                displayTemplate: (row) => {
-                  return row.sample_status === "N" ? (
-                    <span className="badge badge-light">Not Done</span>
-                  ) : row.sample_status === "A" ? (
-                    <span className="badge badge-success">Accepted</span>
-                  ) : row.sample_status === "R" ? (
-                    <span className="badge badge-danger">Rejected</span>
-                  ) : null;
-                },
-                disabled: true,
-                others: {
-                  maxWidth: 150,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "lab_id_number",
-                label: <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />,
-                disabled: true,
-                others: {
-                  maxWidth: 130,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "patient_code",
-                label: <AlgaehLabel label={{ fieldName: "patient_code" }} />,
-                disabled: false,
-                displayTemplate: (row) => {
-                  return (
-                    <span
-                      onClick={() => {
-                        setGlobal({
-                          mrd_patient: row.patient_id,
-                          patient_code: row.patient_code,
-                        });
-                        setVisit_id(row.visit_id);
-                        setPatient_id(row.patient_id);
-                        setOpenMrdModal(true);
-                        // document.getElementById("mrd-router").click();
-                      }}
-                      className="pat-code"
-                    >
-                      {row.patient_code}
-                    </span>
-                  );
-                },
-                others: {
-                  maxWidth: 150,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "full_name",
-                label: <AlgaehLabel label={{ fieldName: "patient_name" }} />,
-                disabled: true,
-                others: {
-                  resizable: false,
-                  style: { textAlign: "left" },
-                },
-              },
-              {
-                fieldName: "service_name",
-                label: <AlgaehLabel label={{ forceLabel: "Test Name" }} />,
-
-                disabled: true,
-                others: {
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              {
-                fieldName: "status",
-                label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                displayTemplate: (row) => {
-                  return row.status === "CL" ? (
-                    <span className="badge badge-secondary">Collected</span>
-                  ) : row.status === "CN" ? (
-                    <span className="badge badge-danger">Cancelled</span>
-                  ) : row.status === "CF" ? (
-                    <span className="badge badge-primary">Confirmed</span>
-                  ) : (
-                    <span className="badge badge-success">Validated</span>
-                  );
-                },
-                disabled: true,
-                others: {
-                  maxWidth: 130,
-                  resizable: false,
-                  style: { textAlign: "center" },
-                },
-              },
-              // {
-              //   fieldName: "critical_status",
-              //   label: (
-              //     <AlgaehLabel
-              //       label={{ forceLabel: "Critical Result" }}
-              //     />
-              //   ),
-              //   displayTemplate: (row) => {
-              //     return row.critical_status === "N" ? (
-              //       <span className="badge badge-primary">No</span>
-              //     ) : (
-              //       <span className="badge badge-danger">Yes</span>
-              //     );
-              //   },
-              //   disabled: true,
-              //   others: {
-              //     maxWidth: 130,
-              //     resizable: false,
-              //     style: { textAlign: "center" },
-              //   },
-              // },
-            ]}
-            keyId="patient_code"
-            data={labOrderServicesForDoc}
-            filter={true}
-            pagination={true}
-          />{" "}
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-12">
+                <AlgaehButton
+                  className="btn btn-primary"
+                  // disabled={!processList.length}
+                  // loading={loading}
+                  onClick={() => updateLabOrderServiceForDoc()}
+                >
+                  Update as seen
+                </AlgaehButton>
+              </div>
+            </div>
+          </div>
         </Spin>
-        <AlgaehButton onClick={() => updateLabOrderServiceForDoc()}>
-          Update
-        </AlgaehButton>
       </div>
     </div>
   );

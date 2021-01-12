@@ -13,7 +13,6 @@ import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import sockets from "../../sockets";
-import { AlgaehButton } from "algaeh-react-components";
 // import { useHistory } from "react-router-dom";
 
 class DoctorsWorkbench extends Component {
@@ -601,26 +600,26 @@ class DoctorsWorkbench extends Component {
                               </span>
 
                               {data.nurse_examine === "Y" ? (
-                                <span className="opStatus nursing">
-                                  Nursing Done ({data.visit_type_desc})
+                                <span className="opStatus nursing animated flash repeat-2 slow">
+                                  <b>Nursing Done</b>
                                 </span>
                               ) : (
                                 <span className="opStatus nursing">
-                                  Nursing Pending ({data.visit_type_desc})
+                                  Nursing Pending
                                 </span>
                               )}
 
                               {data.new_visit_patient === "Y" ? (
                                 <span className="opPatientStatus newVisit">
-                                  New Visit
+                                  New Visit ({data.visit_type_desc})
                                 </span>
                               ) : data.new_visit_patient === "P" ? (
                                 <span className="opPatientStatus packageVisit">
-                                  Package Utilize Visit
+                                  Package Utilize Visit ({data.visit_type_desc})
                                 </span>
                               ) : (
                                 <span className="opPatientStatus followUp">
-                                  Follow Up Visit
+                                  Follow Up Visit ({data.visit_type_desc})
                                 </span>
                               )}
                             </span>
@@ -653,13 +652,6 @@ class DoctorsWorkbench extends Component {
                       }}
                     />
                   </h3>
-                  <AlgaehButton
-                    onClick={() => {
-                      this.props.history.push("/ResultViewForDoc");
-                    }}
-                  >
-                    Go to Lab Result
-                  </AlgaehButton>
                 </div>
                 <div className="actions rightLabelCount">
                   <AlgaehLabel label={{ forceLabel: "No. of Encounters" }} />
@@ -670,6 +662,15 @@ class DoctorsWorkbench extends Component {
                         .toArray().length
                     }
                   </span>
+                  <a
+                    className="btn btn-primary btn-circle active"
+                    style={{ marginLeft: 10 }}
+                    onClick={() => {
+                      this.props.history.push("/ResultViewForDoc");
+                    }}
+                  >
+                    <i className="fas fa-flask" />
+                  </a>
                 </div>
               </div>
               <div className="portlet-body">

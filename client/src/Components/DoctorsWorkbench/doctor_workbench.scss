@@ -846,3 +846,21 @@
     }
   }
 }
+.ResultViewForDocGrid {
+  min-height: 62vh;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
+    }
+    .pageLeft {
+      display: none;
+    }
+  }
+  .pat-code2 {
+    color: navy !important;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

@@ -71,7 +71,8 @@ export default {
             A.total_paid_days,A.pending_unpaid_leave, A.total_hours, A.total_working_hours, A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours, E.employee_code, E.gross_salary, \
             S.hims_f_salary_id , S.salary_processed, S.salary_type, \
-            AL.from_normal_salary, LA.total_applied_days ,\
+            CASE WHEN LA.employee_joined='N' THEN AL.from_normal_salary ELSE null END as from_normal_salary, \
+            CASE WHEN LA.employee_joined='N' THEN LA.total_applied_days ELSE 0 END as total_applied_days,\
             case  when E.exit_date  between date('" +
             month_start +
             "') and date('" +
@@ -83,8 +84,8 @@ export default {
             left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
             and S.employee_id = A.employee_id  \
             left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
-            and  AL.year=? and AL.month=? and AL.cancelled='N' and AL.employee_joined='N' \
-            left join hims_f_leave_application LA on LA.hims_f_leave_application_id=AL.leave_application_id and LA.employee_joined='N'\
+            and  AL.year=? and AL.month=? and AL.cancelled='N'  \
+            left join hims_f_leave_application LA on LA.hims_f_leave_application_id=AL.leave_application_id \
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id  where \
             A.`year`=? and A.`month`=? and A.hospital_id=?" +
             _stringData +
@@ -3802,6 +3803,8 @@ function getEarningComponents(options) {
           // console.log("total_days", empResult["total_days"]);
 
           if (leave_salary == null || leave_salary == undefined) {
+            // console.log("leave_period", leave_period);
+            // console.log("early_join_days", early_join_days);
             let total_paid_days =
               parseFloat(empResult["total_paid_days"]) - leave_period - early_join_days;
             current_earning_per_day_salary = parseFloat(obj["amount"]) / parseFloat(empResult["total_days"]);
