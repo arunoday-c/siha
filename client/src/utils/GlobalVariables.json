@@ -109,17 +109,17 @@
   ],
   "DOC_LAB_RESULT": [
     {
-      "name": "ALL",
+      "name": "All",
 
       "value": "A"
     },
     {
-      "name": "Checked",
+      "name": "Seen",
 
       "value": "Y"
     },
     {
-      "name": "Not Checked",
+      "name": "Unseen",
 
       "value": "N"
     }
