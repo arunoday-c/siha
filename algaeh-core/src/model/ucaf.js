@@ -487,7 +487,7 @@ const _getUcafDetails = (_mysql, req) => {
           }
         }
         resolve({
-          hims_f_ucaf_header: result[0],
+          hims_f_ucaf_header: [_fields],
           hims_f_ucaf_insurance_details: result[1],
           hims_f_ucaf_medication: result[2],
           hims_f_ucaf_services: result[3],
