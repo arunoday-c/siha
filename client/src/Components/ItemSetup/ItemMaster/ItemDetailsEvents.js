@@ -415,8 +415,9 @@ const numberEventHandaler = ($this, ctrl, e) => {
 
 
 const getFinanceAccountsMaping = ($this) => {
+  debugger
   algaehApiCall({
-    uri: "/finance/getFinanceAccountsMaping",
+    uri: "/finance/getFinanceAccountMapingSingle",
     data: { accounts: ["DEF_INCOME_PHAR"] },
     module: "finance",
     method: "GET",
@@ -426,7 +427,7 @@ const getFinanceAccountsMaping = ($this) => {
         if (response.data.result.length > 0) {
           $this.setState({
             head_id: response.data.result[0].head_id,
-            child_id: response.data.result[0].child_id,
+            child_id: response.data.result[0].child_id
           });
         }
       }

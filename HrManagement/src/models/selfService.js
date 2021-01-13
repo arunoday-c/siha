@@ -439,7 +439,7 @@ export default {
     return new Promise((resolve, reject) => {
       try {
         // const utilities = new algaehUtilities();
-
+        //and E.suspend_salary='Y'
         _mysql
           .executeQuery({
             query:
@@ -451,7 +451,7 @@ export default {
             inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
             inner join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id \
             left join hims_f_leave_application LA on E.hims_d_employee_id = LA.employee_id \
-            where E.record_status = 'A'  and LA.status='APR' and LA.processed='Y' and E.suspend_salary='Y' and E.hospital_id=? order by LA.to_date desc;",
+            where E.record_status = 'A'  and LA.status='APR' and LA.processed='Y' and E.hospital_id=? order by LA.to_date desc;",
             printQuery: true,
             values: [req.query.hospital_id],
           })

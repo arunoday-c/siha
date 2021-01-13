@@ -696,7 +696,7 @@ export default function NewPackageEvent() {
     },
     getFinanceAccountsMaping: ($this, e) => {
       algaehApiCall({
-        uri: "/finance/getFinanceAccountsMaping",
+        uri: "/finance/getFinanceAccountMapingSingle",
         data: { accounts: ["DEF_INCOME_PACK"] },
         module: "finance",
         method: "GET",
@@ -705,7 +705,7 @@ export default function NewPackageEvent() {
             if (response.data.result.length > 0) {
               $this.setState({
                 head_id: response.data.result[0].head_id,
-                child_id: response.data.result[0].child_id,
+                child_id: response.data.result[0].child_id
               });
             }
           }
