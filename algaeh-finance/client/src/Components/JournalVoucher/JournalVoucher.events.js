@@ -1,5 +1,5 @@
+import _ from "lodash";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-
 export function getVoucherNumber(input) {
   input = input || {};
   return new Promise((resolve, reject) => {
@@ -18,7 +18,7 @@ export function getVoucherNumber(input) {
           reject(error);
         },
       });
-    } catch (e) { }
+    } catch (e) {}
   });
 }
 export function getHeaders(input) {
@@ -76,6 +76,14 @@ export function addJurnorLedger(input) {
   } else {
     if (merdgeRecords.length > 0) {
       input["receipt_type"] = "M";
+      const sumAmount = _.sumBy(input.details, (s) => parseFloat(s.amount));
+      const totalAmount = _.sumBy(merdgeRecords, (s) =>
+        parseFloat(s.balance_amount)
+      );
+      const pending_amount = sumAmount / 2;
+      if (totalAmount !== pending_amount) {
+        input["partial_amount"] = pending_amount;
+      }
       return addVoucher(input, "/voucher/addVoucher");
     } else {
       return addVoucher(rest, "/voucher/addVoucher");

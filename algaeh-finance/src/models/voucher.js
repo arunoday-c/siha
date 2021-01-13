@@ -131,7 +131,7 @@ export default {
       default:
         voucher_type = input.voucher_type.toUpperCase();
     }
-    const { merdgeRecords } = input;
+    const { merdgeRecords, partial_amount } = input;
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
@@ -193,14 +193,14 @@ export default {
                         });
 
                         if (ledger != undefined) {
-                          console.log("1", ledger.deb_minus_cred);
-                          console.log("1", entry.amount);
+                          // console.log("1", ledger.deb_minus_cred);
+                          // console.log("1", entry.amount);
 
                           const temp =
                             parseFloat(ledger.deb_minus_cred) -
                             parseFloat(entry.amount);
 
-                          console.log("1", temp);
+                          // console.log("1", temp);
                           if (temp < 0) {
                             internal_eror = true;
                             req.records = {
@@ -274,7 +274,7 @@ export default {
                     next(error);
                   });
               } else {
-                console.log("2");
+                // console.log("2");
                 resolve({});
               }
             }
@@ -327,7 +327,7 @@ export default {
 
                   // if (credit_amount == debit_amount) {
 
-                  console.log("resul====", resul);
+                  // console.log("resul====", resul);
                   if (
                     resul.length == 1 &&
                     (resul[0]["cost_center_type"] == "P" ||
@@ -476,6 +476,7 @@ export default {
                           for (let i = 0; i < merdgeRecords.length; i++) {
                             const {
                               balance_amount,
+
                               invoice_no,
                               voucher_type,
                               finance_voucher_header_id,
@@ -508,7 +509,9 @@ export default {
                               //   invoice_no,
                               //   balance_amount,
                               // } = merdgeRecords[i];
-                              let head_amount = balance_amount;
+                              let head_amount = partial_amount
+                                ? partial_amount
+                                : balance_amount;
                               // if (hasMultiple === "M") {
                               //   const oneRecord = subHeaderResult.find(
                               //     (f) =>
@@ -574,27 +577,38 @@ export default {
                             // }
 
                             newDetails.forEach((item) => {
-                              const { amount, ...rest } = item;
+                              const {
+                                amount,
+                                debit_amount,
+                                credit_amount,
+                                ...rest
+                              } = item;
+
                               arrCounter.push({
                                 ...rest,
                                 debit_amount:
                                   item.payment_type === "DR"
-                                    ? balance_amount
+                                    ? partial_amount
+                                      ? debit_amount
+                                      : balance_amount
                                     : 0,
                                 credit_amount:
                                   item.payment_type === "CR"
-                                    ? balance_amount
+                                    ? partial_amount
+                                      ? credit_amount
+                                      : balance_amount
                                     : 0,
                               });
                             });
                           }
+
                           _mysql
                             .executeQueryWithTransaction({
                               query: `${queryString}${updateQry}`,
+                              printQuery: true,
                             })
                             .then((resultsubheader) => {
                               //Done.....
-                              // console.log("Subdetails are inserted");
                             })
                             .catch((error) => {
                               _mysql.rollBackTransaction(() => {
@@ -705,7 +719,7 @@ export default {
     let input = req.body;
     let finance_voucher_id = [];
 
-    console.log("input"), input;
+    // console.log("input"), input;
     let queryString = "";
     for (let i = 0; i < input.details.length; i++) {
       queryString += _mysql.mysqlQueryFormat(
@@ -720,7 +734,7 @@ export default {
         finance_voucher_id.push(input.details[i].finance_voucher_id);
       }
     }
-    console.log("finance_voucher_id", finance_voucher_id);
+    // console.log("finance_voucher_id", finance_voucher_id);
     _mysql
       .executeQueryWithTransaction({
         query: queryString,
@@ -1172,7 +1186,7 @@ export default {
                             next(error);
                           });
                       }).then((res) => {
-                        console.log("res:", res);
+                        // console.log("res:", res);
                         //ST-profit and loss calculation
                         result.forEach((m) => {
                           if (m.root_id == 4) {
@@ -1709,7 +1723,7 @@ export default {
                             });
                         }
                       }).then((res) => {
-                        console.log("res:", res);
+                        // console.log("res:", res);
                         //ST-profit and loss calculation
                         result.forEach((m) => {
                           if (m.root_id == 4) {
