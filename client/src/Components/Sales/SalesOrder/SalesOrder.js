@@ -508,7 +508,7 @@ class SalesOrder extends Component {
                       forceLabel: "Created By",
                     }}
                   />
-                  <h6>{this.state.full_name}</h6>
+                  <h6>{this.state.created_name}</h6>
                 </div>
               ) : null}
             </div>
@@ -807,12 +807,42 @@ class SalesOrder extends Component {
               <div className="row">
                 <div className="col">
                   <p>
-                    Reason:<b>{this.state.revert_reason}</b>
+                    Cancelled Reason:<b>{this.state.revert_reason}</b>
                   </p>
                 </div>
                 <div className="col-4">
                   <p>
-                    Reverted By:<b>{this.state.user_display_name}</b>
+                    Cancelled By:<b>{this.state.cancelled_name}</b>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : this.state.is_revert === "Y" ? (
+            <div className="alert alert-danger">
+              <div className="row">
+                <div className="col">
+                  <p>
+                    Reverted Reason:<b>{this.state.revert_reason}</b>
+                  </p>
+                </div>
+                <div className="col-4">
+                  <p>
+                    Reverted By:<b>{this.state.reverted_name}</b>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : this.state.is_reject === "Y" ? (
+            <div className="alert alert-danger">
+              <div className="row">
+                <div className="col">
+                  <p>
+                    Reject Reason:<b>{this.state.revert_reason}</b>
+                  </p>
+                </div>
+                <div className="col-4">
+                  <p>
+                    Rejected By:<b>{this.state.rejected_name}</b>
                   </p>
                 </div>
               </div>
@@ -1071,22 +1101,25 @@ class SalesOrder extends Component {
                       />
                     </button>
                   </AlgaehSecurityComponent>
-                  <AlgaehSecurityComponent componentCode="SALES_ORD_CANCEL">
-                    <button
-                      type="button"
-                      className="btn btn-danger"
-                      disabled={this.state.cancelDisable}
-                      onClick={() => {
-                        this.setState({ cancelVisible: true });
-                      }}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Cancel", returnText: true }}
-                      />
-                    </button>
-                  </AlgaehSecurityComponent>
+                  {this.state.sales_order_mode === "S" ?
+                    <AlgaehSecurityComponent componentCode="SALES_ORD_CANCEL">
+
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        disabled={this.state.cancelDisable}
+                        onClick={() => {
+                          this.setState({ cancelVisible: true });
+                        }}
+                      >
+                        <AlgaehLabel
+                          label={{ forceLabel: "Cancel", returnText: true }}
+                        />
+                      </button>
+                    </AlgaehSecurityComponent> : null}
+
                   <AlgaehSecurityComponent componentCode="SALE_LST_AUTH1">
-                    {this.state.cancelled === "N" ? (
+                    {this.state.cancelled === "N" && this.state.is_posted === "Y" ? (
                       <button
                         type="button"
                         className="btn btn-other"

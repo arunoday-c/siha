@@ -378,6 +378,8 @@ const ClearData = ($this, e) => {
     rejectVisible: false,
     is_posted: "N",
     is_revert: "N",
+    cancelled: "N",
+    is_reject: "N"
     // services_required: "N"
   };
 
@@ -534,6 +536,7 @@ const getCtrlCode = ($this, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
+
         const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 
@@ -561,11 +564,13 @@ const getCtrlCode = ($this, docNumber) => {
           data.sales_order_services = data.order_detail;
         }
 
+        data.rejectVisible = false;
+        data.cancelVisible = false;
         data.dataExists = true;
         data.selectedData = true;
         data.itemAdd = false;
 
-        if (data.is_revert === "Y") {
+        if (data.is_revert === "Y" || data.is_reject === "Y") {
           data.itemAdd = true;
           data.serviceAdd = false;
           data.dataExists = false;
@@ -851,11 +856,10 @@ const RejectSalesServiceOrder = ($this) => {
     onSuccess: (response) => {
       if (response.data.success === true) {
         swalMessage({
-          title: "Cancelled successfully . .",
+          title: "Rejected successfully . .",
           type: "success",
         });
         $this.setState({
-          cancelDisable: true,
           rejectVisible: false,
           // authBtnEnable: true,
         });
@@ -874,6 +878,7 @@ const RejectSalesServiceOrder = ($this) => {
 };
 
 const CancelSalesServiceOrder = ($this) => {
+  debugger
   if (!$this.state.canceled_reason_sales) {
     swalMessage({
       title: "Please add reason for Rejection",
@@ -893,7 +898,6 @@ const CancelSalesServiceOrder = ($this) => {
           type: "success",
         });
         $this.setState({
-          cancelDisable: true,
           rejectVisible: false,
           // authBtnEnable: true,
         });

@@ -9,26 +9,36 @@ export function getSalesOrder(req, res, next) {
     if (req.query.HRMNGMT_Active === "true") {
       strQuery =
         "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number, CM.contract_number, \
-                        U.user_display_name, UE.full_name from hims_f_sales_order SO \
-                        left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
-                        left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
-                        inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
-                        inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
-                        left join  algaeh_d_app_user U on  SO.reverted_by = U.algaeh_d_app_user_id \
-                        inner join algaeh_d_app_user UC on SO.created_by = UC.algaeh_d_app_user_id \
-                        inner join hims_d_employee UE on UE.hims_d_employee_id = UC.employee_id \
-                        where SO.sales_order_number =? ";
+            max(if(UC.algaeh_d_app_user_id = SO.reverted_by, UE.full_name,'' )) as reverted_name, \
+            max(if(UC.algaeh_d_app_user_id = SO.created_by, UE.full_name,'' )) as created_name, \
+            max(if(UC.algaeh_d_app_user_id = SO.cancelled_by, UE.full_name,'' )) as cancelled_name, \
+            max(if(UC.algaeh_d_app_user_id = SO.rejected_by, UE.full_name,'' )) as rejected_name \
+            from hims_f_sales_order SO \
+            left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
+            left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
+            inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
+            inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
+            inner join algaeh_d_app_user UC on (SO.created_by = UC.algaeh_d_app_user_id or \
+            SO.reverted_by = UC.algaeh_d_app_user_id or SO.cancelled_by = UC.algaeh_d_app_user_id \
+            or SO.rejected_by = UC.algaeh_d_app_user_id) \
+            inner join hims_d_employee UE on UE.hims_d_employee_id = UC.employee_id \
+            where SO.sales_order_number =? group by hims_f_sales_order_id; ";
     } else {
       strQuery =
-        "SELECT SO.*, C.customer_name, SQ.sales_quotation_number, CM.contract_number, U.user_display_name, UE.full_name \
-                        from hims_f_sales_order SO \
-                        left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
-                        left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
-                        inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
-                        left join  algaeh_d_app_user U on  SO.reverted_by = U.algaeh_d_app_user_id \
-                        inner join algaeh_d_app_user UC on SO.created_by = UC.algaeh_d_app_user_id \
-                        inner join hims_d_employee UE on UE.hims_d_employee_id = UC.employee_id \
-                        where SO.sales_order_number =? ";
+        "SELECT SO.*, C.customer_name, SQ.sales_quotation_number, CM.contract_number, \
+            max(if(UC.algaeh_d_app_user_id = SO.reverted_by, UE.full_name,'' )) as reverted_name, \
+            max(if(UC.algaeh_d_app_user_id = SO.created_by, UE.full_name,'' )) as created_name, \
+            max(if(UC.algaeh_d_app_user_id = SO.cancelled_by, UE.full_name,'' )) as cancelled_name, \
+            max(if(UC.algaeh_d_app_user_id = SO.rejected_by, UE.full_name,'' )) as rejected_name \
+            from hims_f_sales_order SO \
+            left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
+            left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
+            inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
+            inner join algaeh_d_app_user UC on (SO.created_by = UC.algaeh_d_app_user_id or \
+            SO.reverted_by = UC.algaeh_d_app_user_id or SO.cancelled_by = UC.algaeh_d_app_user_id \
+            or SO.rejected_by = UC.algaeh_d_app_user_id) \
+            inner join hims_d_employee UE on UE.hims_d_employee_id = UC.employee_id \
+            where SO.sales_order_number =? ";
     }
     _mysql
       .executeQuery({
@@ -43,14 +53,14 @@ export function getSalesOrder(req, res, next) {
           if (headerResult[0].sales_order_mode == "I") {
             strQuery = mysql.format(
               "select QI.*, IM.item_description, IU.uom_description from hims_f_sales_order_items QI \
-                            inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
-                            inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_order_id=?",
+                  inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
+                  inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_order_id=?",
               [headerResult[0].hims_f_sales_order_id]
             );
           } else if (headerResult[0].sales_order_mode == "S") {
             strQuery = mysql.format(
               "select QS.*, S.service_name from hims_f_sales_order_services QS \
-                            inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_order_id=?;",
+                  inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_order_id=?;",
               [headerResult[0].hims_f_sales_order_id]
             );
           }
@@ -323,7 +333,7 @@ export function postSalesOrder(req, res, next) {
       _mysql
         .executeQuery({
           query:
-            "UPDATE hims_f_sales_order set cancelled='N', customer_po_no=?, customer_id=?, project_id=?, \
+            "UPDATE hims_f_sales_order set is_reject='N', customer_po_no=?, customer_id=?, project_id=?, \
                         hospital_id=?, is_posted= ?, sub_total=?, discount_amount=?, net_total=?, \
                         total_tax=?, net_payable=?, narration=?, updated_date=?, updated_by=? \
                         where hims_f_sales_order_id=?",
@@ -1070,11 +1080,24 @@ export function cancelSalesServiceOrder(req, res, next) {
     req.mySQl = _mysql;
     let inputParam = { ...req.body };
 
+    let strQuery = ""
+    if (inputParam.invoice_generated === "Y") {
+      strQuery = mysql.format(
+        "UPDATE hims_f_sales_invoice_header SET is_cancelled='Y',\
+        cancel_reason=? ,cancelled_date=?, cancelled_by=? WHERE sales_order_id=? and hims_f_sales_invoice_header_id>0; ",
+        [
+          inputParam.canceled_reason_sales,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          inputParam.hims_f_sales_order_id
+        ]
+      );
+    }
     _mysql
       .executeQueryWithTransaction({
         query: `UPDATE hims_f_sales_order SET cancelled='Y', authorize1='N', \
                     authorize2='N',revert_reason=? ,cancelled_date=?, cancelled_by=? 
-                    WHERE hims_f_sales_order_id=?`,
+                    WHERE hims_f_sales_order_id=?;`+ strQuery,
         values: [
           inputParam.canceled_reason_sales,
           new Date(),
@@ -1089,6 +1112,7 @@ export function cancelSalesServiceOrder(req, res, next) {
           req.records = headerResult;
           next();
         });
+
       })
       .catch((e) => {
         _mysql.rollBackTransaction(() => {
