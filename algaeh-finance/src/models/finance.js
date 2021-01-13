@@ -688,11 +688,13 @@ export default {
     let input = req.body;
     let strQry = "";
 
-    input.forEach((item) => {
-      strQry += `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id}
-       where account='${item.account}';`;
+    input.forEach((outerItem) => {
+      for (let i = 0; i < outerItem.details?.length; i++) {
+        const item = outerItem.details[i];
+        strQry += `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id}
+        where account='${item.account}';`;
+      }
     });
-
     if (strQry != "") {
       _mysql
         .executeQuery({
