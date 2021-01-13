@@ -211,7 +211,7 @@ const PostSalesInvoice = ($this) => {
 
   Inputobj.posted = "Y";
   Inputobj.ScreenCode = "SAL005";
-  Inputobj.due_date = moment($this.state.invoice_date, "YYYY-MM-DD")
+  Inputobj.due_date = moment($this.state.delivery_date, "YYYY-MM-DD")
     .add($this.state.payment_terms, "days")
     .format("YYYY-MM-DD");
 
