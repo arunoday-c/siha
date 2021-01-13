@@ -92,6 +92,31 @@ class Appointment extends PureComponent {
     });
   }
 
+  PatientRecallDataFill() {
+    if (this.props.visitCreated) {
+      this.clearSaveState();
+    }
+    const data = this.props.location.state?.data;
+    const doctors = this.state.departments.filter((item) => {
+      return item.value === data.sub_department_id;
+    })[0].children;
+    if (data) {
+      const selectDate = moment(data.followup_date, "YYYY-MM-DD").format(
+        "YYYY-MM-01"
+      );
+      this.setState(
+        {
+          sub_department_id: data.sub_department_id,
+          provider_id: data.doctor_id,
+          activeDateHeader: data.followup_date,
+          doctors: doctors,
+          selectedHDate: selectDate,
+          byPassValidation: true,
+        },
+        () => this.getAppointmentSchedule()
+      );
+    }
+  }
   restoreOldState() {
     if (this.props.fromRegistration) {
       let x = JSON.parse(localStorage.getItem("ApptCriteria"));
@@ -387,7 +412,13 @@ class Appointment extends PureComponent {
               departments: response.data.records,
               // departments: response.data.records.departmets,
             },
-            () => this.restoreOldState()
+            () => {
+              if (this.props.location.state?.data) {
+                this.PatientRecallDataFill();
+              } else {
+                this.restoreOldState();
+              }
+            }
           );
         }
       },
