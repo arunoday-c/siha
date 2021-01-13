@@ -243,8 +243,8 @@ class SalesOrderList extends Component {
                           return row.is_posted === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
+                              <span className="badge badge-danger">No</span>
+                            );
                         },
                         filterable: true,
                       },
@@ -304,10 +304,10 @@ class SalesOrderList extends Component {
                               Item Order
                             </span>
                           ) : (
-                            <span className="badge badge-success">
-                              Service Order
-                            </span>
-                          );
+                              <span className="badge badge-success">
+                                Service Order
+                              </span>
+                            );
                         },
                         others: {
                           maxWidth: 150,
@@ -375,25 +375,38 @@ class SalesOrderList extends Component {
                           return row.is_revert === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
+                              <span className="badge badge-danger">No</span>
+                            );
                         },
                       },
                       {
                         fieldName: "cancelled",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Order Reject" }} />
+                          <AlgaehLabel label={{ forceLabel: "Order Cancelled" }} />
                         ),
                         filterable: true,
                         displayTemplate: (row) => {
                           return row.cancelled === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
+                              <span className="badge badge-danger">No</span>
+                            );
                         },
                       },
-
+                      {
+                        fieldName: "is_reject",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Order Rejected" }} />
+                        ),
+                        filterable: true,
+                        displayTemplate: (row) => {
+                          return row.is_reject === "Y" ? (
+                            <span className="badge badge-success">Yes</span>
+                          ) : (
+                              <span className="badge badge-danger">No</span>
+                            );
+                        },
+                      },
                       {
                         fieldName: "invoice_generated",
                         label: (
@@ -406,13 +419,13 @@ class SalesOrderList extends Component {
                             row.invoice_generated === "Y" ? (
                               <span className="badge badge-success">Yes</span>
                             ) : (
-                              <span className="badge badge-danger">No</span>
-                            )
+                                <span className="badge badge-danger">No</span>
+                              )
                           ) : row.closed === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
+                                <span className="badge badge-danger">No</span>
+                              );
                         },
                         others: {
                           maxWidth: 150,
@@ -439,13 +452,13 @@ class SalesOrderList extends Component {
                     pagination={true}
                     isFilterable={true}
                     persistence={this.state.persistence}
-                    // keyId="sales_order_number"
-                    // filter={true}
-                    // dataSource={{
-                    //   data: this.state.order_list
-                    // }}
-                    // noDataText="No data available"
-                    // paging={{ page: 0, rowsPerPage: 10 }}
+                  // keyId="sales_order_number"
+                  // filter={true}
+                  // dataSource={{
+                  //   data: this.state.order_list
+                  // }}
+                  // noDataText="No data available"
+                  // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>

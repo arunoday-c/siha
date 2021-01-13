@@ -9,7 +9,8 @@ import {
     cancelSalesServiceOrder,
     ValidateContract,
     getContractSalesOrder,
-    postSalesOrder
+    postSalesOrder,
+    rejectSalesServiceOrder
 } from "../models/SalesOrder";
 
 export default function SalesOrder() {
@@ -57,6 +58,13 @@ export default function SalesOrder() {
     });
 
     api.put("/cancelSalesServiceOrder", cancelSalesServiceOrder, (req, res, next) => {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+            success: true,
+            records: req.records
+        });
+    });
+
+    api.put("/rejectSalesServiceOrder", rejectSalesServiceOrder, (req, res, next) => {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
             success: true,
             records: req.records

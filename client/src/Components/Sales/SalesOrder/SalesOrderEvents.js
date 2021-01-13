@@ -378,6 +378,8 @@ const ClearData = ($this, e) => {
     rejectVisible: false,
     is_posted: "N",
     is_revert: "N",
+    cancelled: "N",
+    is_reject: "N"
     // services_required: "N"
   };
 
@@ -534,6 +536,7 @@ const getCtrlCode = ($this, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
+
         const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 
@@ -561,11 +564,13 @@ const getCtrlCode = ($this, docNumber) => {
           data.sales_order_services = data.order_detail;
         }
 
+        data.rejectVisible = false;
+        data.cancelVisible = false;
         data.dataExists = true;
         data.selectedData = true;
         data.itemAdd = false;
 
-        if (data.is_revert === "Y") {
+        if (data.is_revert === "Y" || data.is_reject === "Y") {
           data.itemAdd = true;
           data.serviceAdd = false;
           data.dataExists = false;
@@ -834,7 +839,46 @@ const AuthorizeOrderEntry = ($this, authorize) => {
   });
 };
 
+
+const RejectSalesServiceOrder = ($this) => {
+  if (!$this.state.reject_reason_sales) {
+    swalMessage({
+      title: "Please add reason for Rejection",
+      type: "warning",
+    });
+    return;
+  }
+  algaehApiCall({
+    uri: "/SalesOrder/rejectSalesServiceOrder",
+    module: "sales",
+    data: $this.state,
+    method: "PUT",
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        swalMessage({
+          title: "Rejected successfully . .",
+          type: "success",
+        });
+        $this.setState({
+          rejectVisible: false,
+          // authBtnEnable: true,
+        });
+        getCtrlCode($this, $this.state.sales_order_number);
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
+
 const CancelSalesServiceOrder = ($this) => {
+  debugger
   if (!$this.state.canceled_reason_sales) {
     swalMessage({
       title: "Please add reason for Rejection",
@@ -854,7 +898,6 @@ const CancelSalesServiceOrder = ($this) => {
           type: "success",
         });
         $this.setState({
-          cancelDisable: true,
           rejectVisible: false,
           // authBtnEnable: true,
         });
@@ -901,4 +944,5 @@ export {
   CancelSalesServiceOrder,
   getCostCenters,
   ContractSearch,
+  RejectSalesServiceOrder
 };

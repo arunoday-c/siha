@@ -688,11 +688,13 @@ export default {
     let input = req.body;
     let strQry = "";
 
-    input.forEach((item) => {
-      strQry += `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id}
-       where account='${item.account}';`;
+    input.forEach((outerItem) => {
+      for (let i = 0; i < outerItem.details?.length; i++) {
+        const item = outerItem.details[i];
+        strQry += `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id}
+        where account='${item.account}';`;
+      }
     });
-
     if (strQry != "") {
       _mysql
         .executeQuery({
@@ -716,6 +718,49 @@ export default {
       };
       next();
     }
+  },
+  //created by irfan: to
+  getFinanceAccountMapingSingle: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // const utilities = new algaehUtilities();
+
+    const input = req.query;
+    let str = "";
+
+    if (input.accounts != undefined && input.accounts.length > 0) {
+      str = ` where account in ('${input.accounts}')`;
+    }
+
+    _mysql
+      .executeQuery({
+        query: `select account,M.description,M.mapping_group,M.mapping_group_id,H.root_id,child_id,M.head_id,H.account_name,C.child_name, C.arabic_child_name from \
+          finance_accounts_maping M left join finance_account_head H\
+          on M.head_id=H.finance_account_head_id left join finance_account_child C \
+          on M.child_id=C.finance_account_child_id  ${str};`,
+
+        printQuery: false,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        // const arrangedData = _.chain(result)
+        //   .groupBy((g) => g.mapping_group_id)
+        //   .map((details, key) => {
+        //     const { mapping_group, mapping_group_id } = _.head(details);
+        //     return {
+        //       mapping_group: mapping_group,
+        //       mapping_group_id: mapping_group_id,
+        //       details: details,
+        //     };
+        //   })
+        //   .value();
+
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   },
   //created by irfan: to
   getFinanceAccountsMaping: (req, res, next) => {
@@ -1313,13 +1358,13 @@ export default {
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                            };`;
+                              };`;
                           } else {
                             updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                            };`;
+                              };`;
                           }
                         }
 
@@ -2185,19 +2230,19 @@ export default {
               if (data.debit_amount != input.opening_balance) {
                 voucherStr = `update finance_voucher_details set ${
                   input.type === "CR" ? "credit_amount" : "debit_amount"
-                }=${input.opening_balance},
+                  }=${input.opening_balance},
                 payment_type ='${input.type === "CR" ? "CR" : "DR"}',${
                   input.type === "CR" ? "debit_amount" : "credit_amount"
-                }=0  where finance_voucher_id=${data.finance_voucher_id};`;
+                  }=0  where finance_voucher_id=${data.finance_voucher_id};`;
               }
             } else if (data.root_id == 2 || data.root_id == 3) {
               if (data.credit_amount != input.opening_balance) {
                 voucherStr = `update finance_voucher_details set ${
                   input.type === "DR" ? "debit_amount" : "credit_amount"
-                }=${input.opening_balance},
+                  }=${input.opening_balance},
                 payment_type ='${input.type === "DR" ? "DR" : "CR"}',${
                   input.type === "DR" ? "credit_amount" : "debit_amount"
-                }=0 where finance_voucher_id=${data.finance_voucher_id};`;
+                  }=0 where finance_voucher_id=${data.finance_voucher_id};`;
               }
             }
             executeFunction();
@@ -2791,11 +2836,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-              parseFloat(item["total_debit_amount"])
+            parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-              parseFloat(item["total_credit_amount"])
+            parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;

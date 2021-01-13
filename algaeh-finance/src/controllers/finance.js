@@ -16,7 +16,8 @@ const {
   renameAccountHeads,
   getOpeningBalance,
   getCildLedgers,
-  revertDayEnd
+  revertDayEnd,
+  getFinanceAccountMapingSingle
 } = finance;
 
 export default () => {
@@ -63,6 +64,29 @@ export default () => {
   api.get(
     "/getFinanceAccountsMaping",
     getFinanceAccountsMaping,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            result: req.records.message
+          })
+          .end();
+      } else {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .json({
+            success: true,
+            result: req.records
+          })
+          .end();
+      }
+    }
+  );
+  api.get(
+    "/getFinanceAccountMapingSingle",
+    getFinanceAccountMapingSingle,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res

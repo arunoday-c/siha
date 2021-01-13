@@ -439,7 +439,7 @@ export default {
     return new Promise((resolve, reject) => {
       try {
         // const utilities = new algaehUtilities();
-
+        //and E.suspend_salary='Y'
         _mysql
           .executeQuery({
             query:

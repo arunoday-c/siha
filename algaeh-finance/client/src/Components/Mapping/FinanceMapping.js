@@ -37,19 +37,46 @@ export default function Mapping(props) {
       });
   }, []);
 
-  function update(value, account_name) {
+  function update(value, account_name, mapping_group_id) {
     setMappings((state) => {
-      const reqIndex = state.findIndex((item) => item.account === account_name);
-      if (value) {
-        const [head_id, child_id] = value.split("-");
-        state[reqIndex].head_id = head_id;
-        state[reqIndex].child_id = child_id;
-        return [...state];
+      const mainIndex = state.findIndex(
+        (f) => f.mapping_group_id === mapping_group_id
+      );
+      if (mainIndex >= 0) {
+        const reqIndex = state[mainIndex]["details"].findIndex(
+          (f) =>
+            String(f.account).toUpperCase() ===
+            String(account_name).toUpperCase()
+        );
+        if (reqIndex >= 0) {
+          if (value) {
+            const [head_id, child_id] = value.split("-");
+            state[mainIndex]["details"][reqIndex]["head_id"] = head_id;
+            state[mainIndex]["details"][reqIndex]["child_id"] = child_id;
+            return [...state];
+          } else {
+            state[mainIndex]["details"][reqIndex]["head_id"] = null;
+            state[mainIndex]["details"][reqIndex]["child_id"] = null;
+            return [...state];
+          }
+        } else {
+          return [...state];
+        }
       } else {
-        state[reqIndex].head_id = null;
-        state[reqIndex].child_id = null;
         return [...state];
       }
+
+      // const reqIndex = state.findIndex((item) => item.account === account_name);
+      // if (value) {
+      //   const [head_id, child_id] = value.split("-");
+      //   state[reqIndex].head_id = head_id;
+      //   state[reqIndex].child_id = child_id;
+      //   return [...state];
+      // } else {
+      //   state[reqIndex].head_id = null;
+      //   state[reqIndex].child_id = null;
+      //   return [...state];
+      // }
     });
   }
 
@@ -94,7 +121,8 @@ export default function Mapping(props) {
                       }}
                       tree={{
                         treeDefaultExpandAll: true,
-                        onChange: (val) => update(val, items.account),
+                        onChange: (val) =>
+                          update(val, items.account, item.mapping_group_id),
                         name: items.account,
                         data: [
                           ...accountHeads[1],

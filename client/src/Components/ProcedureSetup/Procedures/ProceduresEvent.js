@@ -235,8 +235,8 @@ export default function ProceduresEvent() {
     },
     getFinanceAccountsMaping: ($this) => {
       algaehApiCall({
-        uri: "/finance/getFinanceAccountsMaping",
-        data: { accounts: ["DEF_INCOME_PROC"] },
+        uri: "/finance/getFinanceAccountMapingSingle",
+        data: { accounts: ["DEF_INCOME_PACK"] },
         module: "finance",
         method: "GET",
         onSuccess: (response) => {
@@ -244,7 +244,7 @@ export default function ProceduresEvent() {
             if (response.data.result.length > 0) {
               $this.setState({
                 head_id: response.data.result[0].head_id,
-                child_id: response.data.result[0].child_id,
+                child_id: response.data.result[0].child_id
               });
             }
           }
