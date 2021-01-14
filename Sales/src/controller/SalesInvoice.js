@@ -10,7 +10,8 @@ import {
     generateAccountingEntry,
     revertSalesInvoice,
     CancelSalesInvoice,
-    getSalesInvoiceList
+    getSalesInvoiceList,
+    saveDeliveryDate
 } from "../models/SalesInvoice";
 
 export default function SalesOrder() {
@@ -65,6 +66,15 @@ export default function SalesOrder() {
         "/postSalesInvoice",
         postSalesInvoice,
         generateAccountingEntry,
+        (req, res, next) => {
+            res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+                success: true,
+                records: req.records
+            });
+        });
+    api.put(
+        "/saveDeliveryDate",
+        saveDeliveryDate,
         (req, res, next) => {
             res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
                 success: true,

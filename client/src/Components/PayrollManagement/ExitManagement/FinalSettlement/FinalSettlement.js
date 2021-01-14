@@ -137,7 +137,7 @@ class FinalSettlement extends Component {
             }
 
             this.setState({
-              forfeitChecked: datas.forfiet === "Y" ? true : false,
+              forfeitChecked: datas?.forfiet === "Y" ? true : false,
             });
             this.setState(
               {

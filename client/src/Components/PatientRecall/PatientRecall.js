@@ -12,12 +12,17 @@ import {
   AlgaehDateHandler,
   AlgaehMessagePop,
   Spin,
+  // persistStorageOnRemove,
+  // persistStageOnGet,
+  // persistStateOnBack
 } from "algaeh-react-components";
 import { swalMessage } from "../../utils/algaehApiCall";
 import { Controller, useForm } from "react-hook-form";
 // import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
 import Column from "./appointmentColumn";
+import { useLocation, useHistory } from "react-router-dom";
+
 const getDoctorsAndDepts = async (key) => {
   const result = await newAlgaehApi({
     uri: "/department/get/get_All_Doctors_DepartmentWise",
@@ -33,7 +38,7 @@ function PatientRecall() {
     control,
     errors,
     handleSubmit,
-    // setValue, //watch,
+    setValue, //watch,
     getValues,
   } = useForm({
     shouldFocusError: true,
@@ -48,6 +53,8 @@ function PatientRecall() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [followUpData, setFollowUpData] = useState([]);
+  const history = useHistory();
+  const location = useLocation();
   const {} = useQuery(["dropdown-data"], getDoctorsAndDepts, {
     refetchOnReconnect: false,
     // keepPreviousData: true,
@@ -56,6 +63,19 @@ function PatientRecall() {
     cacheTime: Infinity,
     onSuccess: (data) => {
       setDepartments(data.departmets);
+      const params = new URLSearchParams(location?.search);
+      // let provider_id = params.get("provider_id");
+      let sub_department_id = params.get("sub_department_id");
+
+      if (sub_department_id === "null" || sub_department_id === null) {
+        return;
+      } else {
+        const doctor = data.departmets.filter((item) => {
+          return item.sub_department_id === parseInt(sub_department_id);
+        });
+
+        setDoctors(doctor[0].doctors);
+      }
     },
     onError: (err) => {
       AlgaehMessagePop({
@@ -66,26 +86,65 @@ function PatientRecall() {
   });
 
   useEffect(() => {
-    getFollowUpData(getValues()).then(() => setLoading(false));
+    const params = new URLSearchParams(location?.search);
+    let recall_start = params.get("recall_start");
+
+    if (recall_start === "null" || recall_start === null) {
+      getFollowUpData(getValues()).then(() => setLoading(false));
+    } else {
+      setValue("recall_start", params.get("recall_start"));
+      setValue("recall_end", params.get("recall_end"));
+      setValue(
+        "sub_department_id",
+        params.get("sub_department_id") !== "null"
+          ? params.get("sub_department_id")
+          : null
+      );
+
+      setValue(
+        "provider_id",
+        params.get("provider_id") !== "null" ? params.get("provider_id") : null
+      );
+
+      getFollowUpData(getValues()).then(() => setLoading(false));
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getFollowUpData = async (data) => {
-    debugger;
+    const from_data = data.recall_start
+      ? moment(data.recall_start).format("YYYY/MM/DD")
+      : null;
+    const to_data = data.recall_end
+      ? moment(data.recall_end).format("YYYY/MM/DD")
+      : null;
+
     try {
       const res = await newAlgaehApi({
         uri: "/doctorsWorkBench/getAllPatientFollowUp",
         method: "GET",
         data: {
-          recall_start: data.recall_start,
-          recall_end: data.recall_end,
-          sub_department_id: data.sub_department_id,
-          doctor_id: data.provider_id,
+          recall_start: from_data,
+          recall_end: to_data,
+          sub_department_id:
+            data.sub_department_id === "" ? null : data.sub_department_id,
+          doctor_id: data.provider_id === "" ? null : data.provider_id,
         },
       });
       if (res.data.success) {
-        debugger;
         setFollowUpData(res.data.records);
+        let state = getValues();
+
+        //
+
+        return history?.push(
+          `${
+            location?.pathname
+          }?recall_start=${from_data}&recall_end=${to_data}&sub_department_id=${
+            state.sub_department_id
+          }&provider_id=${state.provider_id ? state.provider_id : null}`
+        );
       }
     } catch (e) {
       AlgaehMessagePop({
@@ -538,6 +597,7 @@ function PatientRecall() {
                   value,
                   onChange: (_, selected) => {
                     onChange(selected);
+                    setValue("provider_id", "");
                     setDoctors(_.doctors);
                   },
                   onClear: () => {

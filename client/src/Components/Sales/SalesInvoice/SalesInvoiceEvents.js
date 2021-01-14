@@ -50,7 +50,7 @@ const ClearData = ($this) => {
 };
 
 const SaveInvoiceEnrty = ($this) => {
-  AlgaehLoader({ show: true });
+
   if ($this.state.invoice_date === null) {
     swalMessage({
       type: "warning",
@@ -63,7 +63,14 @@ const SaveInvoiceEnrty = ($this) => {
       title: "Delivery Date - Cannot be empty.",
     });
     return;
+  } else if ($this.state.sales_invoice_mode === "I" && $this.state.cust_good_rec_date === null) {
+    swalMessage({
+      type: "warning",
+      title: "Goods Recived Date - Cannot be empty.",
+    });
+    return;
   }
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/SalesInvoice/addInvoiceEntry",
     module: "sales",
@@ -211,7 +218,7 @@ const PostSalesInvoice = ($this) => {
 
   Inputobj.posted = "Y";
   Inputobj.ScreenCode = "SAL005";
-  Inputobj.due_date = moment($this.state.invoice_date, "YYYY-MM-DD")
+  Inputobj.due_date = moment($this.state.delivery_date, "YYYY-MM-DD")
     .add($this.state.payment_terms, "days")
     .format("YYYY-MM-DD");
 
@@ -496,6 +503,53 @@ const dateValidate = ($this, value, event) => {
   }
 };
 
+const SaveDeliveryDate = ($this) => {
+  if ($this.state.delivery_date === null) {
+    swalMessage({
+      type: "warning",
+      title: "Delivery Date - Cannot be empty.",
+    });
+    return;
+  }
+
+  AlgaehLoader({ show: true });
+  let Inputobj = {
+    hims_f_sales_invoice_header_id: $this.state.hims_f_sales_invoice_header_id,
+    invoice_number: $this.state.invoice_number,
+    delivery_date: $this.state.delivery_date,
+    due_date: moment($this.state.delivery_date, "YYYY-MM-DD")
+      .add($this.state.payment_terms, "days")
+      .format("YYYY-MM-DD"),
+
+  };
+
+  // Inputobj.posted = "Y";
+  // Inputobj.ScreenCode = "SAL005";
+  // Inputobj.due_date = moment($this.state.delivery_date, "YYYY-MM-DD")
+  //   .add($this.state.payment_terms, "days")
+  //   .format("YYYY-MM-DD");
+
+  // Inputobj.invoice_date = moment(Inputobj.invoice_date).format(
+  //   "YYYY-MM-DD HH:mm:ss"
+  // );
+  algaehApiCall({
+    uri: "/SalesInvoice/saveDeliveryDate",
+    module: "sales",
+    data: Inputobj,
+    method: "PUT",
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        getCtrlCode($this, $this.state.invoice_number);
+        swalMessage({
+          title: "Saved successfully . .",
+          type: "success",
+        });
+      }
+      AlgaehLoader({ show: false });
+    },
+  });
+};
+
 export {
   texthandle,
   ClearData,
@@ -510,4 +564,5 @@ export {
   SaveNarration,
   datehandle,
   dateValidate,
+  SaveDeliveryDate
 };
