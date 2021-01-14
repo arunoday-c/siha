@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./SalaryProcessing.scss";
 
-import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
 import {
@@ -15,7 +15,7 @@ import {
   // generateLevGratReconReport
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
-import { AlgaehSecurityElement } from "algaeh-react-components";
+import { AlgaehSecurityElement, AlgaehDataGrid } from "algaeh-react-components";
 const STATUS = {
   CHECK: true,
   UNCHECK: false,
@@ -147,7 +147,6 @@ class NewSalaryProcessing extends Component {
                       <div className="row">
                         <div className="col-lg-12" id="Salary_Management_Cntr">
                           <AlgaehDataGrid
-                            id="Salary_Management_Cntr_grid"
                             columns={[
                               {
                                 label: (
@@ -244,6 +243,18 @@ class NewSalaryProcessing extends Component {
                                 others: {
                                   minWidth: 80,
                                 },
+                                filterable: true,
+                                filterType: "choices",
+                                choices: [
+                                  {
+                                    name: "Finalized",
+                                    value: "Y",
+                                  },
+                                  {
+                                    name: "Not Finalized",
+                                    value: "N",
+                                  },
+                                ],
                               },
                               {
                                 fieldName: "salary_paid",
@@ -269,6 +280,18 @@ class NewSalaryProcessing extends Component {
                                 others: {
                                   minWidth: 80,
                                 },
+                                filterable: true,
+                                filterType: "choices",
+                                choices: [
+                                  {
+                                    name: "Paid",
+                                    value: "Y",
+                                  },
+                                  {
+                                    name: "Unpaid",
+                                    value: "N",
+                                  },
+                                ],
                               },
                               {
                                 fieldName: "employee_code",
@@ -279,6 +302,7 @@ class NewSalaryProcessing extends Component {
                                     }}
                                   />
                                 ),
+                                filterable: true,
                                 // others: {
                                 //   minWidth: 80,
                                 // },
@@ -296,6 +320,7 @@ class NewSalaryProcessing extends Component {
                                   minWidth: 300,
                                   style: { textAlign: "left" },
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "salary_number",
@@ -309,6 +334,7 @@ class NewSalaryProcessing extends Component {
                                 others: {
                                   minWidth: 120,
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "display_present_days",
@@ -319,6 +345,7 @@ class NewSalaryProcessing extends Component {
                                     }}
                                   />
                                 ),
+                                filterable: true,
                               },
                               {
                                 fieldName: "advance_due",
@@ -336,6 +363,7 @@ class NewSalaryProcessing extends Component {
                                     </span>
                                   );
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "loan_due_amount",
@@ -354,6 +382,7 @@ class NewSalaryProcessing extends Component {
                                     </span>
                                   );
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "loan_payable_amount",
@@ -374,6 +403,7 @@ class NewSalaryProcessing extends Component {
                                     </span>
                                   );
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "net_salary",
@@ -391,15 +421,16 @@ class NewSalaryProcessing extends Component {
                                     </span>
                                   );
                                 },
+                                filterable: true,
                               },
                             ]}
                             keyId="algaeh_d_module_id"
-                            dataSource={{
-                              data: this.state.salaryprocess_header,
-                            }}
-                            filter={true}
-                            isEditable={false}
-                            paging={{ page: 0, rowsPerPage: 20 }}
+                            // dataSource={{
+                            //   data: this.state.salaryprocess_header,
+                            // }}
+                            data={this.state.salaryprocess_header}
+                            pagination={true}
+                            isFilterable={true}
                             events={{
                               onEdit: () => {},
                               onDelete: () => {},

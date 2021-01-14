@@ -3,7 +3,7 @@ import "./NewSalaryPayments.scss";
 import {
   // AlagehFormGroup,
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import {
   LoadSalaryPayment,
@@ -22,7 +22,7 @@ import moment from "moment";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
 
-import { AlgaehSecurityElement } from "algaeh-react-components";
+import { AlgaehSecurityElement, AlgaehDataGrid } from "algaeh-react-components";
 class NewSalaryPayment extends Component {
   constructor(props) {
     super(props);
@@ -187,14 +187,26 @@ class NewSalaryPayment extends Component {
                                 displayTemplate: (row) => {
                                   return row.salary_paid === "N" ? (
                                     <span className="badge badge-warning">
-                                      No
+                                      Unpaid
                                     </span>
                                   ) : (
                                     <span className="badge badge-success">
-                                      Yes
+                                      Paid
                                     </span>
                                   );
                                 },
+                                filterable: true,
+                                filterType: "choices",
+                                choices: [
+                                  {
+                                    name: "Paid",
+                                    value: "Y",
+                                  },
+                                  {
+                                    name: "Unpaid",
+                                    value: "N",
+                                  },
+                                ],
                               },
                               {
                                 fieldName: "salary_number",
@@ -206,6 +218,7 @@ class NewSalaryPayment extends Component {
                                     }}
                                   />
                                 ),
+                                filterable: true,
                               },
                               {
                                 fieldName: "employee_code",
@@ -219,6 +232,7 @@ class NewSalaryPayment extends Component {
                                 others: {
                                   minWidth: 160,
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "full_name",
@@ -234,6 +248,7 @@ class NewSalaryPayment extends Component {
                                   minWidth: 150,
                                   maxWidth: 250,
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "display_present_days",
@@ -245,6 +260,7 @@ class NewSalaryPayment extends Component {
                                     }}
                                   />
                                 ),
+                                filterable: true,
                                 //disabled: true
                               },
 
@@ -266,6 +282,7 @@ class NewSalaryPayment extends Component {
                                     </span>
                                   );
                                 },
+                                filterable: true,
                                 //disabled: true
                               },
                               {
@@ -286,6 +303,7 @@ class NewSalaryPayment extends Component {
                                     </span>
                                   );
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "loan_payable_amount",
@@ -307,6 +325,7 @@ class NewSalaryPayment extends Component {
                                     </span>
                                   );
                                 },
+                                filterable: true,
                               },
                               {
                                 fieldName: "net_salary",
@@ -326,16 +345,20 @@ class NewSalaryPayment extends Component {
                                     </span>
                                   );
                                 },
+                                filterable: true,
                                 //disabled: true
                               },
                             ]}
                             keyId="algaeh_d_module_id"
-                            dataSource={{
-                              data: this.state.salary_payment,
-                            }}
-                            filter={true}
-                            isEditable={false}
-                            paging={{ page: 0, rowsPerPage: 10 }}
+                            // dataSource={{
+                            //   data: this.state.salary_payment,
+                            // }}
+                            data={this.state.salary_payment}
+                            pagination={true}
+                            isFilterable={true}
+                            // filter={true}
+                            // isEditable={false}
+                            // paging={{ page: 0, rowsPerPage: 10 }}
                           />
                         </div>
                       </div>

@@ -1,5 +1,9 @@
 #SalaryPayment_Cntr {
-  .ReactTable {
-    max-height: 49vh !important;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 49vh;
+      max-height: 49vh;
+      overflow: auto;
+    }
   }
 }
