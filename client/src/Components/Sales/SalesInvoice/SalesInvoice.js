@@ -29,6 +29,7 @@ import {
   SaveNarration,
   dateValidate,
   datehandle,
+  SaveDeliveryDate
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { Upload } from "antd";
@@ -689,7 +690,7 @@ class SalesInvoice extends Component {
                 <AlgaehDateHandler
                   div={{ className: "col-3" }}
                   label={{
-                    forceLabel: "Delivery Date",
+                    forceLabel: "Customer Delivery Date",
                     isImp: true,
                   }}
                   textBox={{
@@ -701,9 +702,28 @@ class SalesInvoice extends Component {
                     onChange: datehandle.bind(this, this),
                     // onBlur: dateValidate.bind(this, this),
                   }}
-                  disabled={this.state.dateEditable}
+                  // disabled={this.state.dateEditable}
                   value={this.state.delivery_date}
                 />
+                {this.state.sales_invoice_mode === "I" ?
+                  <AlgaehDateHandler
+                    div={{ className: "col-3" }}
+                    label={{
+                      forceLabel: "Customer Goods Recv. Date",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "cust_good_rec_date",
+                    }}
+                    minDate={new Date()}
+                    events={{
+                      onChange: datehandle.bind(this, this),
+                    }}
+                    disabled={this.state.dataExitst}
+                    value={this.state.cust_good_rec_date}
+                  /> : null}
+
                 <AlagehFormGroup
                   div={{ className: "col-12 textAreaLeft" }}
                   label={{
@@ -745,12 +765,22 @@ class SalesInvoice extends Component {
                     />
                   </button>
                 ) : null}
-                {/* <button
-                  className="btn btn-primary"
-                  onClick={this.onOpenPreviewPopUP.bind(this)}
-                >
-                  Finance Transaction
-                </button> */}
+                {this.state.hims_f_sales_invoice_header_id > 0 && this.state.is_posted === "Y" ? (
+                  <AlgaehSecurityComponent componentCode="SALE_INV_SAV_DELDATE">
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      onClick={SaveDeliveryDate.bind(this, this)}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Save Delivery Date",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  </AlgaehSecurityComponent>
+                ) : null}
               </div>
               <div className="col-8">
                 <AlgaehSecurityComponent componentCode="SALES_INV_MAIN">
@@ -825,7 +855,7 @@ class SalesInvoice extends Component {
                       }}
                     />
                   </button>
-                </AlgaehSecurityComponent>{" "}
+                </AlgaehSecurityComponent>
                 <AlgaehSecurityComponent componentCode="SALE_INV_POST">
                   <button
                     type="button"
