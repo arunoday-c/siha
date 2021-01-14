@@ -4,11 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./employee_master_index.scss";
 import "../../../styles/site.scss";
-import {
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehAutoComplete,
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
@@ -27,7 +23,7 @@ import {
   // selectAllBranches,
 } from "./EmployeeMasterIndexEvent";
 // import variableJson from "../../../utils/GlobalVariables.json";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehDataGrid } from "algaeh-react-components";
 import _ from "lodash";
 
 class EmployeeMasterIndex extends Component {
@@ -438,6 +434,7 @@ class EmployeeMasterIndex extends Component {
                         filterable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "employee_status",
@@ -460,6 +457,26 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Active",
+                          value: "A",
+                        },
+                        {
+                          name: "Inactive",
+                          value: "I",
+                        },
+                        {
+                          name: "Resigned",
+                          value: "R",
+                        },
+                        {
+                          name: "Terminated",
+                          value: "T",
+                        },
+                      ],
                     },
                     {
                       fieldName: "employee_code",
@@ -471,6 +488,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "identity_no",
@@ -482,6 +500,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "full_name",
@@ -493,6 +512,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "arabic_name",
@@ -506,6 +526,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "sex",
@@ -515,6 +536,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "designation",
@@ -529,6 +551,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "nationality_name",
@@ -541,6 +564,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "religion_name",
@@ -551,6 +575,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
 
                     {
@@ -564,6 +589,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "sub_department_name",
@@ -576,6 +602,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "createdUser",
@@ -588,6 +615,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "updatedUser",
@@ -599,6 +627,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     // {
                     //   fieldName: "license_number",
@@ -636,12 +665,13 @@ class EmployeeMasterIndex extends Component {
                     // }
                   ]}
                   keyId="service_code"
-                  dataSource={{
-                    data: this.state.Employeedetails,
-                  }}
-                  filter={true}
-                  // isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 50 }}
+                  // dataSource={{
+                  //   data: this.state.Employeedetails,
+                  // }}
+
+                  data={this.state.Employeedetails}
+                  pagination={true}
+                  isFilterable={true}
                 />
               </div>
             </div>

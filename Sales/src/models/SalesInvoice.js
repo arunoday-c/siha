@@ -216,14 +216,15 @@ export function addInvoiceEntry(req, res, next) {
         _mysql
           .executeQuery({
             query:
-              "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode, \
+              "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode, cust_good_rec_date,\
                                 sales_order_id, location_id, customer_id, payment_terms, project_id, sub_total, discount_amount, \
                                 net_total, total_tax, net_payable, retention_amt, narration,delivery_date, created_date, created_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               invoice_number,
               input.invoice_date,
               input.sales_invoice_mode,
+              input.cust_good_rec_date,
               input.sales_order_id,
               input.location_id,
               input.customer_id,
@@ -425,6 +426,72 @@ export function postSalesInvoice(req, res, next) {
           pool: _mysql.pool,
         };
         next();
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
+
+
+export function saveDeliveryDate(req, res, next) {
+  console.log("saveDeliveryDate");
+  const _mysql = new algaehMysql();
+
+  try {
+    req.mySQl = _mysql;
+    let inputParam = { ...req.body };
+
+    _mysql
+      .executeQueryWithTransaction({
+        query:
+          "UPDATE `hims_f_sales_invoice_header` SET delivery_date=?, updated_date=?, updated_by=? \
+          WHERE `hims_f_sales_invoice_header_id`=?; \
+          select finance_day_end_header_id from finance_day_end_header where document_number=?;",
+        values: [
+          inputParam.delivery_date,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          inputParam.hims_f_sales_invoice_header_id,
+          inputParam.invoice_number
+        ],
+        printQuery: true,
+      })
+      .then((headerResult) => {
+        const day_end_detail = headerResult[1][0]
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "UPDATE `finance_day_end_header` SET due_date=? \
+          WHERE `finance_day_end_header_id`=?; \
+          UPDATE finance_voucher_header set due_date=? where day_end_header_id = ?;",
+            values: [
+              inputParam.due_date,
+              day_end_detail.finance_day_end_header_id,
+              inputParam.due_date,
+              day_end_detail.finance_day_end_header_id
+            ],
+            printQuery: true,
+          })
+          .then((financeResult) => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = financeResult;
+              next();
+            });
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+
       })
       .catch((e) => {
         _mysql.rollBackTransaction(() => {
@@ -730,8 +797,8 @@ export function generateAccountingEntry(req, res, next) {
                         headerResult[0].invoice_number,
                         inputParam.ScreenCode,
                         sales_done +
-                          " Sales done for  " +
-                          headerResult[0].customer_name,
+                        " Sales done for  " +
+                        headerResult[0].customer_name,
                         headerResult[0].invoice_number,
                         inputParam.due_date,
                         new Date(),
@@ -809,8 +876,8 @@ export function generateAccountingEntry(req, res, next) {
                         if (inputParam.sales_invoice_mode === "I") {
                           let waited_avg_cost = utilities.decimalPoints(
                             parseFloat(headerResult[i].dispatch_quantity) *
-                              parseFloat(headerResult[i].conversion_factor) *
-                              parseFloat(headerResult[i].waited_avg_cost),
+                            parseFloat(headerResult[i].conversion_factor) *
+                            parseFloat(headerResult[i].waited_avg_cost),
                             decimal_places
                           );
                           //COGS Entry

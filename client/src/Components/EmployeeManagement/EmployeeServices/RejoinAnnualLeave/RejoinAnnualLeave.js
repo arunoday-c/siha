@@ -3,14 +3,14 @@ import "./RejoinAnnualLeave.scss";
 import "../../../../styles/site.scss";
 import {
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 
 import moment from "moment";
 import Options from "../../../../Options.json";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehDataGrid } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 
@@ -146,13 +146,14 @@ export default class RejoinAnnualLeave extends Component {
   }
 
   gridOndateHandler(row, e) {
-    let inRange = moment(e).isAfter(moment(row["expectedDate"]).format("YYYY-MM-DD"));
+    let inRange = moment(e).isAfter(
+      moment(row["expectedDate"]).format("YYYY-MM-DD")
+    );
     if (inRange) {
       swalMessage({
         title: "Rejoin Date cannot be gretsre than Expected Rejoin Date.",
         type: "warning",
       });
-
     } else {
       let employee_data = this.state.employee_data;
       let _index = employee_data.indexOf(row);
@@ -307,6 +308,8 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "date",
                     },
 
                     {
@@ -337,6 +340,8 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "date",
                     },
                     {
                       fieldName: "employee_joined",
@@ -347,8 +352,8 @@ export default class RejoinAnnualLeave extends Component {
                             {row.employee_joined === "Y" ? (
                               <span className="badge badge-success">Yes</span>
                             ) : (
-                                <span className="badge badge-warning">No</span>
-                              )}
+                              <span className="badge badge-warning">No</span>
+                            )}
                           </span>
                         );
                       },
@@ -357,6 +362,18 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Yes",
+                          value: "Y",
+                        },
+                        {
+                          name: "No",
+                          value: "N",
+                        },
+                      ],
                     },
                     {
                       fieldName: "early_rejoin",
@@ -369,8 +386,8 @@ export default class RejoinAnnualLeave extends Component {
                             {row.early_rejoin === "Y" ? (
                               <span className="badge badge-success">Yes</span>
                             ) : (
-                                <span className="badge badge-warning">No</span>
-                              )}
+                              <span className="badge badge-warning">No</span>
+                            )}
                           </span>
                         );
                       },
@@ -379,6 +396,18 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Yes",
+                          value: "Y",
+                        },
+                        {
+                          name: "No",
+                          value: "N",
+                        },
+                      ],
                     },
                     {
                       fieldName: "employee_code",
@@ -390,6 +419,7 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "full_name",
@@ -401,6 +431,7 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "left" },
                       },
+                      filterable: true,
                     },
 
                     {
@@ -414,6 +445,7 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
 
                     // {
@@ -439,6 +471,7 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "from_date",
@@ -455,6 +488,7 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "to_date",
@@ -471,15 +505,14 @@ export default class RejoinAnnualLeave extends Component {
                         resizable: false,
                         style: { textAlign: "center" },
                       },
+                      filterable: true,
+                      filterType: "date",
                     },
                   ]}
                   keyId="re_join_code"
-                  dataSource={{
-                    data: this.state.employee_data,
-                  }}
-                  filter={true}
-                  // isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 50 }}
+                  data={this.state.employee_data}
+                  pagination={true}
+                  isFilterable={true}
                 />
               </div>
             </div>

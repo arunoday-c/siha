@@ -5,3 +5,12 @@
     max-height: 30vh !important;
   }
 }
+#Salary_Management_Cntr {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 53vh;
+      max-height: 53vh;
+      overflow: auto;
+    }
+  }
+}
