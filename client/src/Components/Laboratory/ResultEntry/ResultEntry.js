@@ -30,6 +30,7 @@ import {
   deleteComment,
   ongridEditRanges,
   eidtRanges,
+  reloadAnalytesMaster
 } from "./ResultEntryEvents";
 import { ResultInput } from "./ResultInput";
 import AlgaehReport from "../../Wrapper/printReports";
@@ -1123,12 +1124,23 @@ class ResultEntry extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
+                  disabled={this.state.status === "V" ? true : false}
                   onClick={eidtRanges.bind(this, this)}
                 >
                   Edit Ranges
                 </button>
               </AlgaehSecurityComponent>
 
+              <AlgaehSecurityComponent componentCode="RELOAD_ANALYTES_MAS">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={this.state.status === "V" ? true : false}
+                  onClick={reloadAnalytesMaster.bind(this, this)}
+                >
+                  Reload Analytes
+                </button>
+              </AlgaehSecurityComponent>
               <button
                 type="button"
                 className="btn btn-default"
