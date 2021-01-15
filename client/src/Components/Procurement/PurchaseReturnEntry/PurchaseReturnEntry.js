@@ -5,14 +5,14 @@ import { bindActionCreators } from "redux";
 import "./PurchaseReturnEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
-import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete, AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   vendortexthandle,
   loctexthandle,
-  // texthandle,
+  texthandle,
   poforhandle,
   ReceiptSearch,
   ClearData,
@@ -297,6 +297,25 @@ class PurchaseReturnEntry extends Component {
                       : "------"}
                   </h6>
                 </div>
+                <AlagehFormGroup
+                  div={{ className: "col mandatory" }}
+                  label={{
+                    forceLabel: "Return Reference No..",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    value: this.state.return_ref_no,
+                    className: "txt-fld",
+                    name: "return_ref_no",
+
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
+                    others: {
+                      disabled: this.state.is_posted === "N" ? false : true,
+                    },
+                  }}
+                />
 
                 {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}

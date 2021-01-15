@@ -181,8 +181,9 @@ export default {
               query:
                 "INSERT INTO `hims_f_procurement_po_return_header` (purchase_return_number, grn_header_id, return_date, \
                   po_return_from, pharmcy_location_id, inventory_location_id, location_type, vendor_id, payment_terms, \
-                  comment, sub_total, discount_amount, net_total, tax_amount, receipt_net_total, receipt_net_payable, return_total, hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                  comment, sub_total, discount_amount, net_total, tax_amount, receipt_net_total, receipt_net_payable, \
+                  return_total, hospital_id, return_ref_no) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 purchase_return_number,
                 input.grn_header_id,
@@ -201,7 +202,8 @@ export default {
                 input.receipt_net_total,
                 input.receipt_net_payable,
                 input.return_total,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
+                input.return_ref_no,
               ],
               printQuery: true
             })
@@ -323,7 +325,7 @@ export default {
       });
     }
   },
-  postPurchaseOrderEntry: (req, res, next) => {
+  postPurchaseReturnOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let inputParam = { ...req.body };
@@ -331,9 +333,10 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_f_procurement_po_return_header` SET `is_posted` = 'Y', `posted_date`=?, `posted_by`=? \
+            "UPDATE `hims_f_procurement_po_return_header` SET `return_ref_no`=?, `is_posted` = 'Y', `posted_date`=?, `posted_by`=? \
           WHERE `hims_f_procurement_return_po_header_id`=?;",
           values: [
+            inputParam.return_ref_no,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam.hims_f_procurement_return_po_header_id
@@ -426,7 +429,7 @@ export default {
                   sub_department_id = result[2].length > 0 ? result[2][0].hims_d_sub_department_id : null
                 } else {
                   strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, \
-                  GH.inovice_number, \
+                  GH.inovice_number, RH.return_ref_no, \
                   RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id,PL.hospital_id, V.head_id as v_head_id, \
                   V.child_id as v_child_id, V.vendor_name\
                   from hims_f_procurement_po_return_header RH \
@@ -473,7 +476,7 @@ export default {
                           inputParam.ScreenCode,
                           "Purchase Return " + "/" + headerResult[0].vendor_name + "/" + headerResult[0].grn_number,
                           "Y",
-                          headerResult[0].inovice_number,
+                          headerResult[0].return_ref_no,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id
                         ],

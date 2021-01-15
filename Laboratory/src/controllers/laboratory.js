@@ -20,6 +20,7 @@ const {
   getInvestigationResult,
   generateBarCode,
   updateLabOrderServiceForDoc,
+  reloadAnalytesMaster
 } = labModels;
 
 export default () => {
@@ -140,6 +141,13 @@ export default () => {
   });
 
   api.put("/updateLabSampleStatus", updateLabSampleStatus, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+
+  api.put("/reloadAnalytesMaster", reloadAnalytesMaster, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

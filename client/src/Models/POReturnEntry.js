@@ -24,6 +24,7 @@ export default {
       receipt_net_total: 0,
       receipt_net_payable: 0,
       return_total: 0,
+      return_ref_no: null,
 
       cancelled: "N",
       is_posted: "N",
