@@ -331,7 +331,6 @@ export default function JournalVoucher() {
               if (res.data.success) {
                 const [defaultAC] = res.data.result;
                 setJournerList((state) => {
-                  debugger;
                   const first = state[0];
                   const second = state[1];
                   const veryFirst = _.head(defaultAC?.details);

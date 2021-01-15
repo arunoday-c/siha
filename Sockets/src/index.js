@@ -19,6 +19,8 @@ import labsock from "./labSocket";
 import selfServiceSocket from "./selfServiceSocket";
 import purchase from "./purchase";
 import pharmacy from "./pharmacy";
+
+import generalNotification from "./general";
 const _port = process.env.PORT;
 const exp = express();
 
@@ -91,6 +93,7 @@ db.once("open", function () {
     });
 
     socket.on("getAll", () => {
+      // console.log("Here in get all");
       notifiModel
         .find({
           user_id: socket.client.user,
@@ -152,6 +155,7 @@ db.once("open", function () {
     appsock(socket);
     labsock(socket);
     selfServiceSocket(socket);
+
     purchase(socket);
     socket.on("disconnect", () => {
       console.log("Client disconnected");
@@ -164,7 +168,7 @@ db.once("open", function () {
   });
 
   pharmacy(io);
+  generalNotification(io);
   app.listen(_port);
-
   console.log(`IO Sockets are running on PORT - *${_port}`);
 });
