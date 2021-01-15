@@ -18,10 +18,11 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { Input, Tooltip } from "antd";
 import AlgaehSearch from "../../Wrapper/globalSearch.js";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
-import { Tag, Modal } from "antd";
+import { Tag } from "antd";
 import {
   AlgaehSecurityElement,
   RawSecurityElement,
+  AlgaehModal,
 } from "algaeh-react-components";
 
 class IDType extends Component {
@@ -176,14 +177,16 @@ class IDType extends Component {
       hims_d_identity_document_id: null,
       visible: false,
       activateEdit: false,
+      viewEmployee: [],
     });
   }
   _onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
-  showModal = () => {
+  showModal = (row) => {
     this.setState({
       visible: true,
+      viewEmployee: row,
     });
   };
 
@@ -713,33 +716,10 @@ class IDType extends Component {
                           displayTemplate: (row) => {
                             // <span>{row.english_name}</span>
                             return row.notify_expiry === "Y" ? (
-                              <div>
-                                <Modal
-                                  title="Notify Users List"
-                                  visible={this.state.visible}
-                                  footer={null}
-                                  closable
-                                  onCancel={this.handleCancel}
-                                >
-                                  <ul className="notifyUserListPopup">
-                                    {row.employees.map((item) => {
-                                      return (
-                                        <li key={item.employee_code}>
-                                          <b>
-                                            {" "}
-                                            {item.employee_code} |{" "}
-                                            {item.full_name}
-                                          </b>
-                                        </li>
-                                      );
-                                    })}
-                                  </ul>
-                                </Modal>
-                                <i
-                                  className="fas fa-eye"
-                                  onClick={this.showModal}
-                                ></i>
-                              </div>
+                              <i
+                                className="fas fa-eye"
+                                onClick={() => this.showModal(row)}
+                              ></i>
                             ) : null;
                           },
                           others: { show: this.state.IDGridColumnHide },
@@ -829,6 +809,27 @@ class IDType extends Component {
                       events={{}}
                     />{" "}
                   </div>
+                  {this.state.visible ? (
+                    <AlgaehModal
+                      title="Notify Users List"
+                      visible={this.state.visible}
+                      footer={null}
+                      closable
+                      onCancel={this.handleCancel}
+                    >
+                      <ul className="notifyUserListPopup">
+                        {this.state.viewEmployee.employees.map((item) => {
+                          return (
+                            <li key={item.employee_code}>
+                              <b>
+                                {item.employee_code} | {item.full_name}
+                              </b>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </AlgaehModal>
+                  ) : null}
                 </div>
               </div>
             </div>
