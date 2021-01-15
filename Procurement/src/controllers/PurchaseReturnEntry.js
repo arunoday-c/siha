@@ -9,7 +9,7 @@ const {
   addPurchaseReturnEntry,
   cancelPurchaseOrderEntry,
   getPurchaseReturnEntry,
-  postPurchaseOrderEntry,
+  postPurchaseReturnOrderEntry,
   generateAccountingEntry
 } = purchaseReturnModels;
 
@@ -47,8 +47,8 @@ export default () => {
     });
   });
 
-  api.put("/postPurchaseOrderEntry",
-    postPurchaseOrderEntry,
+  api.put("/postPurchaseReturnOrderEntry",
+    postPurchaseReturnOrderEntry,
     generateAccountingEntry,
     (req, res, next) => {
       if (req.body.po_return_from == "PHR") {
