@@ -1035,8 +1035,8 @@ export default {
                       hospital_id: headerResult[0].hospital_id,
                     });
 
-                    //Non Recived Entry
-                    if (non_reviced_transfer_cost > 0) {
+                    // Non Recived Entry
+                    if (inputParam.ack_done == "N" && non_reviced_transfer_cost > 0) {
                       non_reviced_transfer_cost = utilities.decimalPoints(
                         non_reviced_transfer_cost,
                         decimal_places
@@ -1058,7 +1058,7 @@ export default {
                       payment_date: new Date(),
                       head_id: headerResult[0].to_head_id,
                       child_id: headerResult[0].to_child_id,
-                      debit_amount: ack_cost,
+                      debit_amount: inputParam.ack_done == "Y" ? transfered_cost : ack_cost,
                       payment_type: "DR",
                       credit_amount: 0,
                       hospital_id: headerResult[0].to_hospital_id,
