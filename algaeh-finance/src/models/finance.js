@@ -873,19 +873,22 @@ export default {
     // group by  finance_day_end_header_id;
     let strQuery = "";
     if (input.revert_trans == "Y") {
-      strQuery = `select finance_revert_day_end_header_id as finance_day_end_header_id, transaction_date,    
-          ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
-          invoice_no, from_screen, narration, entered_date 
-          from finance_revert_day_end_header`;
+      strQuery = `select R.finance_revert_day_end_header_id as finance_day_end_header_id, R.transaction_date,    
+          ROUND( R.amount , ${decimal_places}) as amount, R.voucher_type, R.document_number,  
+          R.invoice_no, R.from_screen, R.narration, R.entered_date, EMP.full_name as entered_by
+          from finance_revert_day_end_header R 
+          left join algaeh_d_app_user U on U.algaeh_d_app_user_id = R.entered_by
+          left join hims_d_employee EMP on EMP.hims_d_employee_id = U.employee_id`;
     } else {
       strQuery = `select finance_day_end_header_id, transaction_date,    
           ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
           invoice_no, screen_name, ref_no as cheque_no,cheque_date, from_screen,
           ROUND( cheque_amount , ${decimal_places}) as  cheque_amount, narration, 
-          U.username as entered_by, entered_date from finance_day_end_header H 
+          EMP.full_name as entered_by, entered_date from finance_day_end_header H 
           ${joinStr}
           left join  algaeh_d_app_screens S on H.from_screen=S.screen_code
           left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
+          left join hims_d_employee EMP on EMP.hims_d_employee_id = U.employee_id
           where ${strQry}; `;
     }
     _mysql

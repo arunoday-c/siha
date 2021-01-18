@@ -1399,7 +1399,7 @@ export default {
                   })
                   .then((results) => {
                     const result = results[0];
-
+                    debugger;
                     const options = results[1][0];
                     if (result.length > 0) {
                       new Promise((resolve, reject) => {
@@ -1860,6 +1860,7 @@ export default {
                                           invoice_no,
                                         } = BalanceInvoice[b];
                                         let head_amount = result[0]["amount"];
+
                                         if (hasMultiple === "M") {
                                           const oneRecord = subHeaderResult.find(
                                             (f) =>
@@ -1892,15 +1893,17 @@ export default {
                                         //    req.userIdentity.algaeh_d_app_user_id
                                         //  } where finance_voucher_header_id=${finance_voucher_header_id};`;
                                         //     }
-                                        updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
-                                          head_amount
-                                        )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
-                                          head_amount
-                                        )},updated_date='${moment().format(
-                                          "YYYY-MM-DD"
-                                        )}',updated_by=${
-                                          req.userIdentity.algaeh_d_app_user_id
-                                        } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                        //Commented by noor due to multiple time amount update
+                                        // updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
+                                        //   head_amount
+                                        // )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
+                                        //   head_amount
+                                        // )},updated_date='${moment().format(
+                                        //   "YYYY-MM-DD"
+                                        // )}',updated_by=${
+                                        //   req.userIdentity.algaeh_d_app_user_id
+                                        // } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                        //End comment by noor
                                       }
 
                                       // if (hasMultiple === "M") {
