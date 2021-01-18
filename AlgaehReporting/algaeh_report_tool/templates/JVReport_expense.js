@@ -16,7 +16,6 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-
       options.mysql
         .executeQuery({
           query: `SELECT VD.voucher_no,VD.voucher_type,VD.voucher_no,FD.sub_department_id,FD.project_id,PR.project_desc,SD.sub_department_name, 
@@ -43,26 +42,28 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_project PR on PR.hims_d_project_id = FD.project_id
           left join finance_options FO on FO.default_branch_id = FD.hospital_id
           where VD.finance_voucher_header_id=? and payment_type='DR';`,
-          values: [input.voucher_header_id,input.voucher_header_id],
+          values: [input.voucher_header_id, input.voucher_header_id],
           printQuery: true,
         })
-        .then((result) => {         
-          resolve({            
+        .then((result) => {
+          resolve({
             resultHeader: result[0].length > 0 ? result[0][0] : {},
             // subTotal:resultHeader.amount,
             resultInvoice: result[1],
+            totalDr: _.sumBy(result, (s) => parseFloat(s.debit_amount)),
+            totalCr: _.sumBy(result, (s) => parseFloat(s.credit_amount)),
             currency: {
               decimal_places,
               addSymbol: false,
               symbol_position,
-              currency_symbol
+              currency_symbol,
             },
             currencyHeader: {
               decimal_places,
               addSymbol: true,
               symbol_position,
-              currency_symbol
-            }
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {

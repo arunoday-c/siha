@@ -41,24 +41,23 @@
                 <thead>
                   <tr>
                         <th>Sl No.</th>
-                        <th>Invoice No.</th>
-                        <th>Invoice Date</th>
-                        <th>Net Total</th>
-                        <th>Discount</th>
-                        <th>Tax</th>
-                        <th>Net Payable</th>
+                        <th>Invoice Ref. No.</th>
+                        {{!-- <th>Invoice Date</th> --}}
+                        <th>Total Amount</th>
+                        <th>Paid Amount </th>
+                        <th>Balance Amount</th>
+                        {{!-- <th>Net Payable</th> --}}
                     </tr>
                 </thead>
                 <tbody>
                     {{#each resultInvoice}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{inovice_number}}</td>
-                        <td>{{invoice_date}}</td>
-                        <td class="numberFld">{{numberFormating sub_total ../currency}}</td>
-                        <td class="numberFld">{{numberFormating detail_discount ../currency}}</td>
-                        <td class="numberFld">{{numberFormating total_tax ../currency}}</td>
-                        <td class="numberFld">{{numberFormating net_payable ../currency}}</td>
+                        <td>{{invoice_ref_no}}</td>
+                        {{!-- <td>{{invoice_date}}</td> --}}
+                        <td class="numberFld">{{numberFormating opening_amount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating amount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating closing_amount ../currency}}</td>
                     </tr>
                     {{/each }}
 
