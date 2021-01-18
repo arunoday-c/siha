@@ -1555,26 +1555,70 @@ export default {
                 input.auth_status == "R" &&
                 input.voucher_header_id > 0
               ) {
-                _mysql
+                //Update voucher header amount on revert
+
+                mysql
                   .executeQuery({
-                    query:
-                      "update finance_voucher_details set \
-                      auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=? and auth_status='P';",
-
-                    values: [
-                      "R",
-                      req.userIdentity.algaeh_d_app_user_id,
-
-                      new Date(),
-                      input.rejected_reason,
-                      input.voucher_header_id,
-                    ],
-                    printQuery: false,
+                    query: `SELECT invoice_ref_no,amount FROM finance_voucher_sub_header WHERE finance_voucher_header_id =?`,
+                    values: [input.voucher_header_id],
                   })
-                  .then((authResult) => {
-                    _mysql.releaseConnection();
-                    req.records = authResult;
-                    next();
+                  .then((subResponse) => {
+                    let updateHeader = "";
+                    if (subResponse.length === 1) {
+                      updateHeader += _mysql.mysqlQueryFormat(
+                        `
+                  select @invoice_ref_no_h := invoice_ref_no,
+                  @amount_h := amount from finance_voucher_header where
+                  finance_voucher_header_id= ? limit 1;
+                  select @finance_voucher_header_id_h := finance_voucher_header_id
+                  from finance_voucher_header where invoice_no =@invoice_ref_no_h;
+                  update finance_voucher_header set settled_amount =(settled_amount - @amount_h),
+                  settlement_status='P'
+                  where finance_voucher_header_id =@finance_voucher_header_id_h;
+                  `,
+                        [input.voucher_header_id]
+                      );
+                    } else {
+                      for (let sr = 0; sr < subResponse.length; sr++) {
+                        const srItems = subResponse[sr];
+                        updateHeader += _mysql.mysqlQueryFormat(
+                          `
+                    select @finance_voucher_header_id_h := finance_voucher_header_id
+                    from finance_voucher_header where invoice_no =?;
+                    update finance_voucher_header set settled_amount =(settled_amount - ?),
+                    settlement_status='P'
+                    where finance_voucher_header_id =@finance_voucher_header_id_h;
+                    `,
+                          [srItems.invoice_ref_no, srItems.amount]
+                        );
+                      }
+                    }
+
+                    _mysql
+                      .executeQuery({
+                        query: `update finance_voucher_details set 
+                        auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=? and auth_status='P';
+                        ${updateHeader}`,
+
+                        values: [
+                          "R",
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          input.rejected_reason,
+
+                          input.voucher_header_id,
+                        ],
+                        printQuery: true,
+                      })
+                      .then((authResult) => {
+                        _mysql.releaseConnection();
+                        req.records = authResult;
+                        next();
+                      })
+                      .catch((error) => {
+                        _mysql.releaseConnection();
+                        next(error);
+                      });
                   })
                   .catch((error) => {
                     _mysql.releaseConnection();
@@ -2029,26 +2073,69 @@ export default {
                 input.auth_status == "R" &&
                 input.voucher_header_id > 0
               ) {
+                //Update voucher header amount on revert
                 _mysql
                   .executeQuery({
-                    query:
-                      "update finance_voucher_details set \
-                      auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=? and auth_status='P';",
-
-                    values: [
-                      "R",
-                      req.userIdentity.algaeh_d_app_user_id,
-                      new Date(),
-                      input.rejected_reason,
-
-                      input.voucher_header_id,
-                    ],
-                    printQuery: false,
+                    query: `SELECT invoice_ref_no,amount FROM finance_voucher_sub_header WHERE finance_voucher_header_id =?`,
+                    values: [input.voucher_header_id],
                   })
-                  .then((authResult) => {
-                    _mysql.releaseConnection();
-                    req.records = authResult;
-                    next();
+                  .then((subResponse) => {
+                    let updateHeader = "";
+                    if (subResponse.length === 1) {
+                      updateHeader += _mysql.mysqlQueryFormat(
+                        `
+                    select @invoice_ref_no_h := invoice_ref_no,
+                    @amount_h := amount from finance_voucher_header where
+                    finance_voucher_header_id= ? limit 1;
+                    select @finance_voucher_header_id_h := finance_voucher_header_id
+                    from finance_voucher_header where invoice_no =@invoice_ref_no_h;
+                    update finance_voucher_header set settled_amount =(settled_amount - @amount_h),
+                    settlement_status='P'
+                    where finance_voucher_header_id =@finance_voucher_header_id_h;
+                    `,
+                        [input.voucher_header_id]
+                      );
+                    } else {
+                      for (let sr = 0; sr < subResponse.length; sr++) {
+                        const srItems = subResponse[sr];
+                        updateHeader += _mysql.mysqlQueryFormat(
+                          `
+                      select @finance_voucher_header_id_h := finance_voucher_header_id
+                      from finance_voucher_header where invoice_no =?;
+                      update finance_voucher_header set settled_amount =(settled_amount - ?),
+                      settlement_status='P'
+                      where finance_voucher_header_id =@finance_voucher_header_id_h;
+                      `,
+                          [srItems.invoice_ref_no, srItems.amount]
+                        );
+                      }
+                    }
+
+                    _mysql
+                      .executeQuery({
+                        query: `update finance_voucher_details set 
+                          auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=? and auth_status='P';
+                          ${updateHeader}`,
+
+                        values: [
+                          "R",
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          input.rejected_reason,
+
+                          input.voucher_header_id,
+                        ],
+                        printQuery: true,
+                      })
+                      .then((authResult) => {
+                        _mysql.releaseConnection();
+                        req.records = authResult;
+                        next();
+                      })
+                      .catch((error) => {
+                        _mysql.releaseConnection();
+                        next(error);
+                      });
                   })
                   .catch((error) => {
                     _mysql.releaseConnection();
