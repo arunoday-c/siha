@@ -131,6 +131,7 @@ class Allergies extends Component {
                 );
                 this.setState({
                   allSpecificAllergies: filteredAllergies,
+                  addAllergyToMaster: "",
                 });
                 swalMessage({
                   title: "Allergy added successfully",
@@ -364,14 +365,14 @@ class Allergies extends Component {
                         autoComplete: "off",
                       }}
                     />
-                    <div className="col-10 ">
+                    <div className="col-12 ">
                       <label className="style_Label">
                         Select an Allergen <span className="imp">&nbsp;*</span>
                       </label>
                       <Input.Group compact>
                         <>
                           <Select
-                            style={{ width: 240 }}
+                            // style={{ width: 240 }}
                             value={this.state.hims_d_allergy_id}
                             placeholder="Select ..."
                             onChange={this.selectAllergy}
