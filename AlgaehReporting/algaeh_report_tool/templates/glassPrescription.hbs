@@ -1,30 +1,197 @@
-<div>
-    <table border="1">
-        <thead>
-            <tr>
-                <th colspan="2">
+{{{importStyle 'css/algaehReportStyles.css'}}}
+<style>
+   .LensSpec{ width: 19%;
+      border:1px solid #ccc;
+      padding:5px 2px;
+      float: left;
+      line-height: auto;
+      vertical-align: middle;
+      text-align: center;
+   }
+</style>
+<body>
+   <div class="print-body">
 
-                </th>
-                <th>SPHERICAL</th>
-                <th>CYLINDRICAL</th>
-                <th>AXIS</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="2">BCVA</td>
-                <td>DV</td>
-                <td>{{bcva_dv_right_sch}}</td>
-                <td>{{bcva_dv_right_cyl}}</td>
-                <td>{{bcva_dv_left_axis}}</td>
-            </tr>
-            <tr>
-               
-                <td>NV</td>
-                <td>{{bcva_nv_right_sch}}</td>
-                <td>{{bcva_nv_right_cyl}}</td>
-                <td>{{bcva_nv_left_axis}}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+        <section>
+
+
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Patient Name</label>:<span
+                            class="valueText">{{full_name}}</span><label class="textArRht">اسم المريض</label></td>
+                    <td><label class="textEnLft">Visit Date & Time</label>:<span
+                            class="valueText">{{dateTime visit_date "date"}}</span><label class="textArRht">تاريخ
+                            الزيارة</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">MR No</label>:<span
+                            class="valueText">{{patient_code}}</span><label class="textArRht">رقم التسجيل</label>
+                    </td>
+                    <td><label class="textEnLft">Age/Gender</label>:<span
+                            class="valueText">{{age_in_years}}/{{gender}}</span><label
+                            class="textArRht">العمر / الجنس</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Mobile No.</label>:<span
+                            class="valueText">{{contact_number}}</span><label class="textArRht">رقم
+                            الموبايل</label></td>
+                    <td><label class="textEnLft">Nationality</label>:<span
+                            class="valueText">{{nationality}}</span><label class="textArRht">جنسية</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Insurance Co.</label>:<span
+                            class="valueText">{{insurance_provider_name}}</span><label class="textArRht">شركة
+                            التأمين</label></td>
+                    <td><label class="textEnLft">Policy/ Class</label>:<span
+                            class="valueText">{{primary_policy_num}} / {{card_class}}</span><label
+                            class="textArRht">بوليصة / درجة التأمين</label></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                <tr>
+
+
+
+ <td><label class="textEnLft">Doctor</label>:<span
+                            class="valueText">{{provider_name}}</span><label
+                            class="textArRht">طبيب</label></td>
+
+                             <td><label class="textEnLft">Department</label>:<span
+                            class="valueText">{{sub_department_name}}</span><label
+                            class="textArRht">قسم</label></td>
+
+                </tr>
+   {{!-- <tr>
+                    <td colspan="2"><label class="textEnLft">Chief Complaint</label>:<span
+                            class="valueText">{{comment}}</span><label class="textArRht">الشكوى الرئيسية</label></td>
+                    
+                </tr> --}}
+
+   <tr>
+                     <td><label class="textEnLft">ICD Code</label>:<span
+                            class="valueText">{{icd_code}}</span><label class="textArRht">ICD Code</label>
+                    </td>
+                    <td><label class="textEnLft">Diagnosis</label>:<span
+                            class="valueText">{{icd_description}}</span><label class="textArRht">التشخيص</label>
+                    </td>
+                </tr>
+            </table>
+
+
+        </section>
+      <section>
+
+
+
+         <table class="tableForData" cell-padding="0">
+            <thead>
+               <tr>
+                  <th colspan="6">Right Eye</th>
+                  <th colspan="6">Left Eye</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr className="trHighlight">
+                  <td />
+                  <td><b>Sphere</b></td>
+                  <td><b>Cylinder</b></td>
+                  <td><b>Axis</b></td>
+                  <td><b>Prism</b></td>
+                  <td><b>V/A</b></td>
+                  <td><b>Sphere</b></td>
+                  <td><b>Cylinder</b></td>
+                  <td><b>Axis</b></td>
+                  <td><b>Prism</b></td>
+                  <td><b>V/A</b></td>
+                  <td><b>PD</b></td>
+               </tr>
+                <tr className="trHighlight">
+                
+                  <td>Distance</td>
+                 <td class="numberFld">
+                     {{bcva_dv_right_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_axis}}
+                  </td>
+                  <td class="numberFld">{{bcva_dv_right_prism}}</td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_vision}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_axis}}
+                  </td>
+                  <td class="numberFld">{{bcva_dv_left_prism}}</td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_vision}}
+                  </td>
+                  <td class="numberFld"></td>
+               </tr>
+              
+                <tr className="trHighlight">
+                  <td>Near</td>
+                 <td class="numberFld">
+                     {{bcva_nv_right_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_axis}}
+                  </td>
+                  <td class="numberFld">{{bcva_nv_right_prism}}</td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_vision}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_axis}}
+                  </td>
+                  <td class="numberFld">{{bcva_nv_left_prism}}</td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_vision}}
+                  </td>
+                  <td class="numberFld"></td>
+               </tr>
+            </tbody>
+         </table>
+         <h3 style="width:100%; margin-top:15px">Lenses Specification:-</h3>
+         <div style="float: left; width:100%; margin-bottom:15px">
+            <span class="LensSpec">Multi Coated ({{#if multi_coated "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Varilux ({{#if varilux "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Light ({{#if light "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Aspheric ({{#if aspheric "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Bifocal ({{#if bifocal "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Medium ({{#if medium "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Lenticular ({{#if lenticular "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Single Vision ({{#if single_vision "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Dark ({{#if dark "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Safety Thickness ({{#if safety_thickness "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Anti-Reflection Coating ({{#if anti_reflecting_coating "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Photosensitive ({{#if photosensitive "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">High Index ({{#if high_index "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Colored ({{#if colored "Y"}}<span>&#10004;</span>{{/if}})</span>
+            <span class="LensSpec">Anti-Scratch ({{#if anti_scratch "Y"}}<span>&#10004;</span>{{/if}})</span>
+         </div>
+         <h3></h3>
+         <h3></h3>
+         <h3>Remakrs:-</h3>
+        <p> {{remarks}}</p>
+      </section>
+   </div>
+</body>

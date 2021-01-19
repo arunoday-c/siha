@@ -30,6 +30,7 @@ import {
   deleteComment,
   ongridEditRanges,
   eidtRanges,
+  reloadAnalytesMaster,
 } from "./ResultEntryEvents";
 import { ResultInput } from "./ResultInput";
 import AlgaehReport from "../../Wrapper/printReports";
@@ -121,7 +122,6 @@ class ResultEntry extends Component {
     });
   }
 
-
   textAreaEvent(e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -135,14 +135,14 @@ class ResultEntry extends Component {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
-    let test_analytes = this.state.test_analytes
-    const _index = test_analytes.indexOf(row)
+    let test_analytes = this.state.test_analytes;
+    const _index = test_analytes.indexOf(row);
 
     row[name] = value;
-    test_analytes[_index] = row
+    test_analytes[_index] = row;
     this.setState({
-      test_analytes: test_analytes
-    })
+      test_analytes: test_analytes,
+    });
   }
 
   showReport(refBy) {
@@ -281,12 +281,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
                     <div className="col-2">
@@ -311,12 +311,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
 
@@ -342,12 +342,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
 
@@ -373,12 +373,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
                     {/* <div className="col">
@@ -429,10 +429,10 @@ class ResultEntry extends Component {
                                   Validated
                                 </span>
                               ) : (
-                                      <span className="badge badge-light">
-                                        Result Not Entered
-                                      </span>
-                                    );
+                                <span className="badge badge-light">
+                                  Result Not Entered
+                                </span>
+                              );
                             },
                             others: {
                               maxWidth: 150,
@@ -480,8 +480,8 @@ class ResultEntry extends Component {
                               return row.analyte_type === "QU"
                                 ? "Quality"
                                 : row.analyte_type === "QN"
-                                  ? "Quantity"
-                                  : "Text";
+                                ? "Quantity"
+                                : "Text";
                             },
                             others: {
                               resizable: false,
@@ -543,16 +543,16 @@ class ResultEntry extends Component {
                                         }}
                                       />
                                     ) : (
-                                        <ResultInput
-                                          row={row}
-                                          onChange={(e) =>
-                                            onchangegridresult(this, row, e)
-                                          }
-                                        />
-                                      )
+                                      <ResultInput
+                                        row={row}
+                                        onChange={(e) =>
+                                          onchangegridresult(this, row, e)
+                                        }
+                                      />
+                                    )
                                   ) : (
-                                      row.result
-                                    )}
+                                    row.result
+                                  )}
                                 </span>
                               );
                             },
@@ -656,18 +656,18 @@ class ResultEntry extends Component {
                             displayTemplate: (row) => {
                               return !row.critical_type ? null : row.critical_type ===
                                 "N" ? (
-                                  <span className="badge badge-success">
-                                    Normal
+                                <span className="badge badge-success">
+                                  Normal
+                                </span>
+                              ) : row.critical_type === "L" ? (
+                                <span className="badge badge-warning">Low</span>
+                              ) : (
+                                row.critical_type === "H" && (
+                                  <span className="badge badge-danger">
+                                    High
                                   </span>
-                                ) : row.critical_type === "L" ? (
-                                  <span className="badge badge-warning">Low</span>
-                                ) : (
-                                    row.critical_type === "H" && (
-                                      <span className="badge badge-danger">
-                                        High
-                                      </span>
-                                    )
-                                  );
+                                )
+                              );
                             },
                           },
                           {
@@ -678,7 +678,8 @@ class ResultEntry extends Component {
                               />
                             ),
                             displayTemplate: (row) => {
-                              return this.state.edit_range === true && row.analyte_type === "QN" ? (
+                              return this.state.edit_range === true &&
+                                row.analyte_type === "QN" ? (
                                 <AlagehFormGroup
                                   div={{}}
                                   textBox={{
@@ -695,9 +696,8 @@ class ResultEntry extends Component {
                                   }}
                                 />
                               ) : (
-                                  row.normal_low
-
-                                );
+                                row.normal_low
+                              );
                             },
                             others: {
                               resizable: false,
@@ -713,7 +713,8 @@ class ResultEntry extends Component {
                               />
                             ),
                             displayTemplate: (row) => {
-                              return this.state.edit_range === true && row.analyte_type === "QN" ? (
+                              return this.state.edit_range === true &&
+                                row.analyte_type === "QN" ? (
                                 <AlagehFormGroup
                                   div={{}}
                                   textBox={{
@@ -730,9 +731,8 @@ class ResultEntry extends Component {
                                   }}
                                 />
                               ) : (
-                                  row.normal_high
-
-                                );
+                                row.normal_high
+                              );
                             },
                             others: {
                               resizable: false,
@@ -752,23 +752,24 @@ class ResultEntry extends Component {
                                 // normal_qualitative_value
                                 row.normal_qualitative_value === "QU" ? (
                                   row.normal_qualitative_value
+                                ) : this.state.edit_range === true &&
+                                  row.analyte_type === "T" ? (
+                                  <textarea
+                                    value={row.text_value}
+                                    name="text_value"
+                                    onChange={(e) =>
+                                      this.textAreaEventGrid(row, e)
+                                    }
+                                  />
                                 ) : (
-                                    this.state.edit_range === true && row.analyte_type === "T" ? (
-                                      <textarea
-                                        value={row.text_value}
-                                        name="text_value"
-                                        onChange={(e) => this.textAreaEventGrid(row, e)}
-                                      />
-                                    ) : (
-                                        <ul className="analyteTxtUL">
-                                          {row.dis_text_value.length > 0
-                                            ? row.dis_text_value.map((row) => {
-                                              return <li>{row}</li>;
-                                            })
-                                            : "-"}
-                                        </ul>
-                                      )
-                                  )
+                                  <ul className="analyteTxtUL">
+                                    {row.dis_text_value.length > 0
+                                      ? row.dis_text_value.map((row) => {
+                                          return <li>{row}</li>;
+                                        })
+                                      : "-"}
+                                  </ul>
+                                )
                               );
                             },
                             others: {
@@ -808,8 +809,8 @@ class ResultEntry extends Component {
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -850,8 +851,8 @@ class ResultEntry extends Component {
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -893,8 +894,8 @@ class ResultEntry extends Component {
                                   ) : row.amended === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -936,8 +937,8 @@ class ResultEntry extends Component {
                                   ) : row.remarks !== "null" ? (
                                     row.remarks
                                   ) : (
-                                        ""
-                                      )}
+                                    ""
+                                  )}
                                 </span>
                               );
                             },
@@ -1013,22 +1014,22 @@ class ResultEntry extends Component {
                           <ol>
                             {this.state.comment_list.length > 0
                               ? this.state.comment_list.map((row, index) => {
-                                return (
-                                  <React.Fragment key={index}>
-                                    <li key={index}>
-                                      <span>{row}</span>
-                                      <i
-                                        className="fas fa-times"
-                                        onClick={deleteComment.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      ></i>
-                                    </li>
-                                  </React.Fragment>
-                                );
-                              })
+                                  return (
+                                    <React.Fragment key={index}>
+                                      <li key={index}>
+                                        <span>{row}</span>
+                                        <i
+                                          className="fas fa-times"
+                                          onClick={deleteComment.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        ></i>
+                                      </li>
+                                    </React.Fragment>
+                                  );
+                                })
                               : null}
                           </ol>
                         </div>
@@ -1041,17 +1042,42 @@ class ResultEntry extends Component {
           </div>
 
           <div className="popupFooter">
-            <div className="col-lg-12">
-              <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
-                <button
-                  className="btn btn-primary"
-                  onClick={generateLabResultReport.bind(this, this.state)}
-                  disabled={this.state.status === "V" ? false : true}
-                >
-                  Print
-                </button>
-              </AlgaehSecurityComponent>
-              {/* <button
+            <div className="col-12 ">
+              <div className="row">
+                <div className="col-lg-6 leftBtnGroup">
+                  {" "}
+                  <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
+                    <button
+                      className="btn btn-default"
+                      onClick={generateLabResultReport.bind(this, this.state)}
+                      disabled={this.state.status === "V" ? false : true}
+                    >
+                      Print
+                    </button>
+                  </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="EDIT_RANGE_LAB_RES">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      disabled={this.state.status === "V" ? true : false}
+                      onClick={eidtRanges.bind(this, this)}
+                    >
+                      Edit Ranges
+                    </button>
+                  </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="RELOAD_ANALYTES_MAS">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      disabled={this.state.status === "V" ? true : false}
+                      onClick={reloadAnalytesMaster.bind(this, this)}
+                    >
+                      Reload Analytes
+                    </button>
+                  </AlgaehSecurityComponent>
+                </div>
+                <div className="col-lg-6">
+                  {/* <button
                 className="btn btn-primary"
                 onClick={this.showReport.bind(
                   this,
@@ -1064,80 +1090,72 @@ class ResultEntry extends Component {
                 Print
               </button> */}
 
-              <AlgaehSecurityComponent componentCode="RE_RUN_LAB_RES">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={onReRun.bind(this, this)}
-                  disabled={
-                    this.state.entered_by !== null
-                      ? this.state.run_type === 3
-                        ? true
-                        : false
-                      : true
-                  }
-                >
-                  Re-Run
-                </button>
-              </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="VAL_LAB_RES">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={onvalidate.bind(this, this)}
+                      disabled={this.state.status === "V" ? true : false}
+                    >
+                      Validate All
+                    </button>
+                  </AlgaehSecurityComponent>
 
-              <AlgaehSecurityComponent componentCode="VAL_LAB_RES">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={onvalidate.bind(this, this)}
-                  disabled={this.state.status === "V" ? true : false}
-                >
-                  Validate All
-                </button>
-              </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="RE_RUN_LAB_RES">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={onReRun.bind(this, this)}
+                      disabled={
+                        this.state.entered_by !== null
+                          ? this.state.run_type === 3
+                            ? true
+                            : false
+                          : true
+                      }
+                    >
+                      Re-Run
+                    </button>
+                  </AlgaehSecurityComponent>
 
-              <AlgaehSecurityComponent componentCode="CONF_LAB_RES">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={onconfirm.bind(this, this)}
-                  disabled={
-                    this.state.status === "C"
-                      ? true
-                      : this.state.status === "V"
-                        ? true
-                        : false
-                  }
-                >
-                  Confirm All
-                </button>
-              </AlgaehSecurityComponent>
-              <AlgaehSecurityComponent componentCode="SAVE_LAB_RES">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={resultEntryUpdate.bind(this, this)}
-                  disabled={this.state.status === "V" ? true : false}
-                >
-                  Save
-                </button>
-              </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="CONF_LAB_RES">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={onconfirm.bind(this, this)}
+                      disabled={
+                        this.state.status === "C"
+                          ? true
+                          : this.state.status === "V"
+                          ? true
+                          : false
+                      }
+                    >
+                      Confirm All
+                    </button>
+                  </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="SAVE_LAB_RES">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={resultEntryUpdate.bind(this, this)}
+                      disabled={this.state.status === "V" ? true : false}
+                    >
+                      Save
+                    </button>
+                  </AlgaehSecurityComponent>
 
-              <AlgaehSecurityComponent componentCode="EDIT_RANGE_LAB_RES">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={eidtRanges.bind(this, this)}
-                >
-                  Edit Ranges
-                </button>
-              </AlgaehSecurityComponent>
-
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={(e) => {
-                  this.onClose(e);
-                }}
-              >
-                Cancel
-              </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={(e) => {
+                      this.onClose(e);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </AlgaehModalPopUp>

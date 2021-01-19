@@ -1122,7 +1122,7 @@ export default {
           max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name,
           max(if(CL.algaeh_d_app_user_id=LO.confirm_by, EM.full_name,'')) as confirm_by_name,
           max(if(CL.algaeh_d_app_user_id=LO.validate_by, EM.full_name,'')) as validate_by_name,
-          LO.*, LA.description,max(if(LM.formula is not null,LM.formula,null)) as formula,
+          LO.*, LO.text_value as val_text_value, LA.description,max(if(LM.formula is not null,LM.formula,null)) as formula,
           max(if(LM.display_formula is not null,LM.display_formula,null)) as display_formula,
           max(if(LM.decimals is not null,LM.decimals,null)) as decimals  from hims_f_ord_analytes LO
           inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id
@@ -1405,6 +1405,128 @@ export default {
                 });
               });
           }
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  reloadAnalytesMaster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const input = { ...req.body };
+
+      _mysql
+        .executeQueryWithTransaction({
+          query: "select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
+          TIMESTAMPDIFF(day, ?, curdate()) as days,\
+          TIMESTAMPDIFF(month, ?, curdate()) as months,\
+          TIMESTAMPDIFF(year, ?, curdate()) as years from \
+          (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;",
+          values: [
+            input.date_of_birth,
+            input.date_of_birth,
+            input.date_of_birth,
+            input.date_of_birth
+          ],
+          printQuery: true,
+        })
+        .then((results) => {
+          const age_data = results[0];
+          const age_type = age_data["age_type"];
+          let age = "";
+          switch (age_type) {
+            case "D":
+              age = age_data["days"];
+
+              break;
+            case "M":
+              age = age_data["months"];
+              break;
+            case "Y":
+              age = age_data["years"];
+              break;
+          }
+
+          // console.log("age_data", age_data);
+          // console.log("age_type", age_type);
+          // console.log("age", age);
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
+                    R.to_age, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
+                    R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
+                    left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
+                    left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
+                    and (R.gender=? or R.gender='BOTH') and (R.age_type=? or R.age_type='Y') and ? between R.from_age and R.to_age\
+                    where M.test_id in(?);",
+              values: [input.gender, age_type, age, input.test_id],
+              printQuery: true,
+            })
+            .then((all_analytes) => {
+              if (all_analytes.length > 0) {
+                const analyts = [
+                  "order_id",
+                  "analyte_id",
+                  "analyte_type",
+                  "result_unit",
+                  "critical_low",
+                  "critical_high",
+                  "normal_low",
+                  "normal_high",
+                  "text_value",
+                  "normal_qualitative_value",
+                ];
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
+                        ON DUPLICATE KEY UPDATE normal_low=values(normal_low),normal_high=values(normal_high), \
+                        text_value=values(text_value)",
+                    values: all_analytes,
+                    includeValues: analyts,
+                    extraValues: {
+                      created_by: req.userIdentity.algaeh_d_app_user_id,
+                      updated_by: req.userIdentity.algaeh_d_app_user_id,
+                      order_id: input.order_id,
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true,
+                  })
+                  .then((ord_analytes) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = ord_analytes;
+                      next();
+                    });
+                  })
+                  .catch((e) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
+              } else {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = results[0];
+                  next();
+                });
+              }
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+
         })
         .catch((e) => {
           _mysql.rollBackTransaction(() => {
@@ -1802,7 +1924,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {

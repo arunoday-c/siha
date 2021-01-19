@@ -489,6 +489,19 @@ const generatePOReceiptNoPrice = data => {
 };
 
 const PostPOReturnEntry = $this => {
+  if ($this.state.return_ref_no === null || $this.state.return_ref_no === "") {
+    swalMessage({
+      type: "warning",
+      title: "Please Enter Return Reference No."
+    });
+    return;
+  } else if ($this.state.inovice_number === $this.state.return_ref_no) {
+    swalMessage({
+      type: "warning",
+      title: "Invoice number and Return Reference No. can't be same."
+    });
+    return;
+  }
   AlgaehLoader({ show: true });
   let InputObj = $this.state;
   InputObj.transaction_type = "PR";
@@ -561,7 +574,7 @@ const PostPOReturnEntry = $this => {
   InputObj.ScreenCode = "PR0006";
 
   algaehApiCall({
-    uri: "/PurchaseReturnEntry/postPurchaseOrderEntry",
+    uri: "/PurchaseReturnEntry/postPurchaseReturnOrderEntry",
     module: "procurement",
     data: InputObj,
     method: "PUT",

@@ -24,6 +24,11 @@ import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import Options from "../../../Options.json";
+import { Select, Divider, Input } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+
+const { Option } = Select;
+// let index = 0;
 
 class Allergies extends Component {
   constructor(props) {
@@ -35,6 +40,7 @@ class Allergies extends Component {
       patientAllergies: [],
       allSpecificAllergies: [],
       allPatientAllergies: [],
+      addAllergyToMaster: "",
     };
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -94,6 +100,67 @@ class Allergies extends Component {
       //...this.baseState
     });
   }
+  addItem = () => {
+    // ÷
+    console.log("addItem");
+    const { addAllergyToMaster } = this.state;
+    //
+
+    algaehApiCall({
+      uri: "/doctorsWorkBench/addAllergy",
+      data: {
+        allergy_type: this.state.allergy_value,
+        allergy_name: addAllergyToMaster,
+      },
+      onSuccess: (response) => {
+        if (response.data.success === true) {
+          //Handle Successful Add here
+          //
+
+          algaehApiCall({
+            uri: "/doctorsWorkBench/getAllergyDetails",
+            method: "GET",
+            data: { allergy_type: this.state.allergy_value },
+            onSuccess: (response) => {
+              //
+              if (response.data.success === true) {
+                const filteredAllergies = response.data.records.filter(
+                  (item) => {
+                    return item.allergy_type === this.state.allergy_value;
+                  }
+                );
+                this.setState({
+                  allSpecificAllergies: filteredAllergies,
+                  addAllergyToMaster: "",
+                });
+                swalMessage({
+                  title: "Allergy added successfully",
+                  type: "success",
+                });
+              }
+            },
+          });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+    // this.setState({
+    //   allSpecificAllergies: [
+    //     ...allSpecificAllergies,
+    //     {
+    //       allergy_name: addAllergyToMaster,
+    //       allergy_type: "F",
+    //       hims_d_allergy_id: null,
+    //     } || `New item ${index++}`,
+    //   ],
+    //   addAllergyToMaster: "",
+    // });
+  };
 
   addAllergyToPatient(e) {
     e.preventDefault();
@@ -109,6 +176,7 @@ class Allergies extends Component {
       return;
     }
     const { current_patient } = Window.global;
+
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientNewAllergy",
       method: "POST",
@@ -256,7 +324,11 @@ class Allergies extends Component {
       return moment(date).format(Options.dateFormat);
     }
   };
-
+  selectAllergy = (selected) => {
+    this.setState({
+      hims_d_allergy_id: selected,
+    });
+  };
   render() {
     return (
       <React.Fragment>
@@ -274,7 +346,7 @@ class Allergies extends Component {
                 <div className="col-lg-4 popLeftDiv">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-12" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         forceLabel: "Allergy Type",
                         fieldName: "sample",
@@ -293,8 +365,76 @@ class Allergies extends Component {
                         autoComplete: "off",
                       }}
                     />
+                    <div className="col-12 ">
+                      <label className="style_Label">
+                        Select an Allergen <span className="imp">&nbsp;*</span>
+                      </label>
+                      <Input.Group compact>
+                        <>
+                          <Select
+                            className="col-12 form-group"
+                            value={this.state.hims_d_allergy_id}
+                            placeholder="Select ..."
+                            onChange={this.selectAllergy}
+                            showSearch
+                            filterOption={(input, option) => {
+                              return (
+                                option.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            dropdownRender={(menu) => (
+                              <div>
+                                {menu}
+                                <Divider style={{ margin: "4px 0" }} />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    padding: 8,
+                                  }}
+                                >
+                                  <AlagehFormGroup
+                                    className="col-7 "
+                                    textBox={{
+                                      value: this.state.addAllergyToMaster,
+                                      className: "txt-fld",
+                                      name: "addAllergyToMaster",
+                                      events: {
+                                        onChange: this.texthandle.bind(this),
+                                      },
+                                    }}
+                                  />
+                                  <a
+                                    style={{
+                                      flex: "none",
+                                      padding: "8px",
+                                      display: "block",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={this.addItem}
+                                  >
+                                    <PlusOutlined /> Add New Allergy
+                                  </a>
+                                </div>
+                              </div>
+                            )}
+                          >
+                            {this.state.allSpecificAllergies.map((item) => (
+                              <Option
+                                value={item.hims_d_allergy_id}
+                                key={item.hims_d_allergy_id}
+                              >
+                                {item.allergy_name}
+                              </Option>
+                            ))}
+                          </Select>
+                        </>
+                      </Input.Group>
+                    </div>
 
-                    <AlagehAutoComplete
+                    {/* <AlagehAutoComplete
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
                         forceLabel: "Select an Allergen",
@@ -313,7 +453,7 @@ class Allergies extends Component {
                         onChange: this.dropDownHandle.bind(this),
                         autoComplete: "off",
                       }}
-                    />
+                    /> */}
 
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12 margin-top-15" }}

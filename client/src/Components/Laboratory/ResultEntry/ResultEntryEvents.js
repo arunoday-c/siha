@@ -163,6 +163,38 @@ const onvalidate = ($this) => {
   });
 };
 
+
+const reloadAnalytesMaster = ($this) => {
+  AlgaehLoader({ show: true });
+
+  debugger
+  const inputObj = {
+    test_id: $this.state.hims_d_investigation_test_id,
+    date_of_birth: $this.state.date_of_birth,
+    gender: $this.state.gender,
+    order_id: $this.state.hims_f_lab_order_id
+  }
+  algaehApiCall({
+    uri: "/laboratory/reloadAnalytesMaster",
+    module: "laboratory",
+    method: "PUT",
+    data: inputObj,
+    onSuccess: (response) => {
+      if (response.data.success) {
+        getAnalytes($this);
+        AlgaehLoader({ show: false });
+      }
+    },
+    onCatch: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
+
 const getAnalytes = ($this) => {
   AlgaehLoader({ show: true });
   console.time("lab");
@@ -174,23 +206,22 @@ const getAnalytes = ($this) => {
     onSuccess: (response) => {
       // console.timeEnd("lab");
       if (response.data.success) {
-        debugger;
         for (let i = 0; i < response.data.records.length; i++) {
           if (response.data.records[i].analyte_type === "T") {
             response.data.records[i].dis_text_value =
               response.data.records[i].text_value !== null &&
-              response.data.records[i].text_value !== ""
+                response.data.records[i].text_value !== ""
                 ? response.data.records[i].text_value.split("<br/>")
                 : [];
 
             // response.data.records[i].text_value = response.data.records[i].text_value.replace("<br/>", "\n/g")
             response.data.records[i].text_value =
               response.data.records[i].text_value !== null &&
-              response.data.records[i].text_value !== ""
+                response.data.records[i].text_value !== ""
                 ? response.data.records[i].text_value.replace(
-                    new RegExp("<br/>|<br />", "g"),
-                    "\n"
-                  )
+                  new RegExp("<br/>|<br />", "g"),
+                  "\n"
+                )
                 : null;
           } else {
             response.data.records[i].dis_text_value = [];
@@ -645,4 +676,5 @@ export {
   deleteComment,
   ongridEditRanges,
   eidtRanges,
+  reloadAnalytesMaster
 };

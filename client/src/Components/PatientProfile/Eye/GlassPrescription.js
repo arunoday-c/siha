@@ -1476,7 +1476,6 @@ export default class GlassPrescription extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-lg-12">
-                  <PrintGlassPrescription />
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -1493,6 +1492,7 @@ export default class GlassPrescription extends Component {
                   >
                     Cancel
                   </button>
+                  <PrintGlassPrescription />
                 </div>
               </div>
             </div>

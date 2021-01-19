@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./doctor_workbench.scss";
-import { AlgaehDataGrid, AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   cancelRequest,
@@ -13,6 +13,12 @@ import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import sockets from "../../sockets";
+import {
+  AlgaehTable,
+  persistStorageOnRemove,
+  persistStageOnGet,
+  persistStateOnBack,
+} from "algaeh-react-components";
 // import { useHistory } from "react-router-dom";
 
 class DoctorsWorkbench extends Component {
@@ -28,6 +34,7 @@ class DoctorsWorkbench extends Component {
       fromDate: moment()._d,
       toDate: moment()._d,
       activeDateHeader: moment()._d,
+      persistence: null,
     };
 
     // this.moveToEncounterList = this.moveToEncounterList.bind(this);
@@ -254,24 +261,35 @@ class DoctorsWorkbench extends Component {
   }
 
   componentDidMount() {
-    this.loadListofData();
-    this.socket.on("patient_added", (patient) => {
-      const { appointment_date } = patient;
-      const dateCheck = moment(appointment_date).isSame(
-        moment(this.state.activeDateHeader),
-        "days"
-      );
-      // console.log(dateCheck, "date check mwb");
-      if (dateCheck) {
-        this.loadListofData();
-      }
-    });
+    (async () => {
+      const records = await persistStageOnGet();
 
-    this.socket.on("nursing_completed", (response) => {
-      if (response.status === "ok") {
+      if (records) {
+        this.setState({ ...records }, () => {
+          // this.loadListofData();
+        });
+        persistStorageOnRemove();
+      } else {
         this.loadListofData();
+        this.socket.on("patient_added", (patient) => {
+          const { appointment_date } = patient;
+          const dateCheck = moment(appointment_date).isSame(
+            moment(this.state.activeDateHeader),
+            "days"
+          );
+          // console.log(dateCheck, "date check mwb");
+          if (dateCheck) {
+            this.loadListofData();
+          }
+        });
+
+        this.socket.on("nursing_completed", (response) => {
+          if (response.status === "ok") {
+            this.loadListofData();
+          }
+        });
       }
-    });
+    })();
     // this.getAppointmentStatus();
   }
 
@@ -406,6 +424,7 @@ class DoctorsWorkbench extends Component {
     });
     const history = this.props.history;
     setCookie("ScreenName", "PatientProfile");
+    persistStateOnBack(this.state, true);
     history.push({
       pathname: "/PatientProfile",
       state: {
@@ -644,15 +663,14 @@ class DoctorsWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "encounter_list",
-                        returnText: "true",
-                      }}
-                    />
-                  </h3>
+                  <h3 className="caption-subject">Encounter List</h3>
                 </div>
+
+                {/* <div className="caption">
+                  <h3 className="caption-subject">
+                    
+                  </h3>
+                </div> */}
                 <div className="actions rightLabelCount">
                   <AlgaehLabel label={{ forceLabel: "No. of Encounters" }} />
                   <span className="countNo">
@@ -676,7 +694,7 @@ class DoctorsWorkbench extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-lg-12" id="encounter_table">
-                    <AlgaehDataGrid
+                    <AlgaehTable
                       //filter={true}
                       columns={[
                         {
@@ -707,7 +725,7 @@ class DoctorsWorkbench extends Component {
                           displayTemplate: (data) => {
                             return (
                               <span
-                                className="pat-code"
+                                className="pat-code2"
                                 onClick={this.OpenPatientProfile.bind(
                                   this,
                                   data
@@ -807,23 +825,30 @@ class DoctorsWorkbench extends Component {
                         //   )
                         // }
                       ]}
-                      rowClassName={(row) => {
-                        //return "greenCell";
-                      }}
-                      keyId="encounter_code"
-                      dataSource={{
-                        data: Enumerable.from(this.state.data)
-                          .where((w) => w.status !== "V")
-                          .toArray(),
-                      }}
-                      isEditable={false}
-                      filter={true}
-                      paging={{ page: 0, rowsPerPage: 20 }}
-                      events={{
-                        onDelete: (row) => {},
-                        onEdit: (row) => {},
-                        onDone: (row) => {},
-                      }}
+                      // rowClassName={(row) => {
+                      //   //return "greenCell";
+                      // }}
+                      // keyId="encounter_code"
+                      // dataSource={{
+                      //   data: Enumerable.from(this.state.data)
+                      //     .where((w) => w.status !== "V")
+                      //     .toArray(),
+                      // }}
+                      // isEditable={false}
+                      // filter={true}
+                      // paging={{ page: 0, rowsPerPage: 20 }}
+                      // events={{
+                      //   onDelete: (row) => {},
+                      //   onEdit: (row) => {},
+                      //   onDone: (row) => {},
+                      // }}
+                      data={Enumerable.from(this.state.data)
+                        .where((w) => w.status !== "V")
+                        .toArray()}
+                      // height="80vh"
+                      pagination={true}
+                      isFilterable={true}
+                      persistence={this.state.persistence}
                     />
                   </div>
                 </div>

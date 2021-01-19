@@ -4,6 +4,15 @@ const path = require("path");
 
 module.exports = merge(common, {
   mode: "production",
+  output: {
+    path: path.resolve(
+      __dirname,
+      "../Client_Builds/DocumentManagement",
+      "build"
+    ),
+    // path: "/Users/apple/Documents/Client/Build/App/build",
+    filename: "[name].js",
+  },
   // module: {
   //   rules: [
   //     {

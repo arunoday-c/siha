@@ -1,150 +1,348 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
-
 <body>
-    <div class="print-body">
-
-        <section>
-            
-            <table class="tableForLabel" cell-padding="0">
-
-                <tr>
-                    <td><label class="textEnLft">Patient Name</label>:<span
-                            class="valueText">{{header.full_name}}</span><label class="textArRht">
-                            اسم المريض</label></td>
-                    <td><label class="textEnLft">Age</label>:<span class="valueText">{{header.age_in_years}}</span><label
-                            class="textArRht">
-                            عمر</label></td>
-                   
-
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">MR No</label>:<span
-                            class="valueText">{{header.patient_code}}</span><label class="textArRht"> رقم الملف</label>
-                    </td>
-                  
-                    <td><label class="textEnLft">Sex</label>:<span class="valueText">{{header.gender}}</span><label
-                            class="textArRht"> جنس
-                        </label>
-                    </td>
-
-                </tr>
-
-            </table>
-
-
-        </section>
-        <section>
-            <table class="tableForLabel" cell-padding="0">
-                <tbody>
-                    <tr><td valign="bottom" colspan="2" style="text-align: center;"><h2 style="margin:0">Informed Consent</h2></td></tr>
-                  <tr><td valign="bottom" width="40%" >and his/her associates to perform the following procedure/high risk treatment:</td><td valign="bottom" style="text-align:right"></td></tr>
-                   <tr><td valign="bottom">for me including the performance of any additional procedures that in his/her judgment may be advisable and medically necessary for my wellbeing.</td><td valign="bottom" style="text-align:right"></td></tr>
-                   <tr><td valign="bottom" colspan="2" style="text-align: left;">My Treating Physician/Dentist has explained to me the nature of the procedures/treatment:
-
-</td></tr> <tr><td valign="bottom" width="40%" >Potential benefits are:-</td><td valign="bottom" style="text-align:right"></td></tr>
-                   <tr><td valign="bottom">Possible alternatives are:-</td><td valign="bottom" style="text-align:right"></td></tr> <tr><td valign="bottom" width="40%" >Likelihood of successful Procedure/Treatment</td><td valign="bottom" style="text-align:right"></td></tr>
-                   <tr><td valign="bottom">Possible complications:-</td><td valign="bottom" style="text-align:right"></td></tr> <tr><td valign="bottom" width="40%" >Possible results of not doing the Procedure/Treatment:-</td><td valign="bottom" style="text-align:right"></td></tr>
-                   <tr><td valign="bottom">for me including the performance of any additional procedures that in his/her judgment may be advisable and medically necessary for my wellbeing.</td><td valign="bottom" style="text-align:right"></td></tr>
-                  
-                   
-
-                </tbody>
-            </table>
-            <table class="tableNoBorder" cell-padding="0">
+   <div class="print-body" style="
+   page-break-after: always;">
+      <section>
+         <table class="tableForLabel" cell-padding="0">
             <tr>
-            <td valign="top"><small>I have had the opportunity to ask questions and my questions have been answered to my satisfaction, No warranty or guarantee has been given to me. I, therefore, consent for above mentioned Procedure/Treatment.</small></td>
+               <td colspan="3"><label class="textEnLft">Patient Name</label>:<span
+                  class="valueText">{{header.full_name}}</span>
+               </td>
+             
             </tr>
-                    <tr>
-                        <td valign="top">By signing below, I acknowledge that, I have read, understood, and agreed with the above terms and conditions:</td>
-                        <td valign="top" style="text-align:right"> 
-بالتوقيع أدناه، أقر بأنني قد قرأت وفهمت ووافقت على الشروط والأحكام المذكورة أعلاه:
-</td>
-                    </tr>
+            <tr>  <td><label class="textEnLft">DOB & Age</label>:<span class="valueText">{{header.date_of_birth}} /  {{header.age_in_years}}</span>
+               </td>
+               <td><label class="textEnLft">MR No</label>:<span
+                  class="valueText">{{header.patient_code}}</span></td>
+               <td><label class="textEnLft">Sex</label>:<span class="valueText">{{header.gender}}</span>
+               </td>
+            </tr>
+         </table>
+      </section>
+      <section>
+         <table class="tableNoBorder" cell-padding="0">
+            <tbody>
+               <tr>
+                  <td valign="bottom" colspan="3" style="text-align: center;">
+                     <h2 style="margin:0">Informed Consent</h2>
+                  </td>
+               </tr>
+               <tr>
+                   <td style="text-align: center;">(___) <h3>Surgical Procedure</h3></td>
+                   <td style="text-align: center;">(___) <h3>Invasive Procedure</h3></td>
+                   <td style="text-align: center;">(___) <h3>High risk Treatment</h3></td>
+                </tr>
+                <tr><td valign="bottom" colspan="3" style="text-align: center;">(Please Read Carefully Before Signing.)</td></tr>
+            </tbody>
             </table>
-            <table class="tableForLabel" cell-padding="0" style="text-align: right">
-
+            <br> <br>
+               <table class="tableNoBorder" cell-padding="0">
+            <tbody>
+               <tr>
+                  <td valign="bottom" colspan="3" >I <b>{{header.full_name}}</b> authorize Dr.<b>{{header.doctor_name}},</b> and his/her associates to perform the following procedure/high risk treatment:</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="30px" style="border-bottom:0.5px dashed black"></td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3">for me including the performance of any additional procedures that in his/her judgment may be advisable and medically necessary for my wellbeing.
+                  </td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px"><b>My Treating Physician/Dentist has explained to me the nature of the procedures/treatment:</b>
+                  </td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="border-bottom:0.5px dashed black">Potential benefits are:-</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="border-bottom:0.5px dashed black">Possible alternatives are:-</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="border-bottom:0.5px dashed black">Likelihood of successful Procedure/Treatment:-</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="border-bottom:0.5px dashed black">Possible complications:-</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3"  height="40px" style="border-bottom:0.5px dashed black">Possible results of not doing the Procedure/Treatment:-</td>
+               </tr>
                 <tr>
-                     <td>
-                        <p>الوقت:</p>
-                        Time
-                    </td>
-                    <td>
-                        <p>التاريخ:</p>
-                        Date
-                    </td>
-                    <td>
-                        <p>التوقيع :</p>
-                        Signature
-                    </td>
-                    <td>
-                        <p>اسم المريض:</p>
-                        Patient Name
-                    </td>
-                </tr>
-               
-                <tr>
-                    <td>
-                        <p>الوقت:</p>
-                        Time
-                    </td>
-                    <td>
-                        <p>التاريخ:</p>
-                        Date
-                    </td>
-                    <td>
-                        <p>التوقيع :</p>
-                        Signature
-                    </td>
-                    <td>
-                        <p>موظف الاستقبال</p>
-                       Receptionist name
-                    </td>
-                </tr>
-            </table>
-            <table class="tableNoBorder" cell-padding="0">
-                <tr><td  valign="top">If the Patient is not capable of consenting, a representative may sign instead in the following cases:</td><td  valign="top" style="text-align:right">إذا لم يكن المريض قادرًا على الموافقة، فيجوز لمندوبه التوقيع بدلاً من ذلك في الحالات التالية</td></tr>
-                <tr>
-                    <td valign="top">
-                        <p>■ The patient is a minor under 18 years age.</p>
-                        <p>■ If patient is mentally incompetent or unconscious.</p>
-                        <p>■ Other </p>
-                    </td>
-                    <td valign="top" style="text-align:right">
-                        <p>كان المريض قاصرًا دون سن 18 عامًا ■</p>
-                        <p>إذا كان المريض غير كفء عقليًا أو فاقدًا للوعي ■</p>
-                        <p>أخرى ■</p>
-                    </td>
-                </tr>
-            </table>
+                  <td valign="bottom" colspan="3"  height="40px" style="border-bottom:0.5px dashed black"></td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" >I have had the opportunity to ask questions and my questions have been answered to my satisfaction, No warranty or guarantee has been given to me. I, therefore, consent for above mentioned Procedure/Treatment.</td>
+               </tr>
+            </tbody>
+         </table>
+         <br/>
+         <br/>
+         <table class="tableNoBorder" cell-padding="0">
+           
+            <tr>
+               <td valign="top">(__) The consent has been read.  (__) Translated to patient by: </td>
+               <td valign="top" style="text-align:right"> 
+                  Name & Signature:
+               </td>
+            </tr>
+         </table>
+         <br/>
+         <table class="tableForLabel" cell-padding="0" style="text-align: left">
+            <tr>
+               <td height="50px"  valign="top">
+                  Patient Name:
+               </td>
+                <td height="50px"  height="30px" valign="top">
+                  Signature:
+               </td>
+               <td height="50px"  height="30px" valign="top">
+                  Date & Time:
+               </td>
+            </tr>
+            <tr>
+               <td height="50px"  valign="top">
+                  Treating Physician:
+               </td>
+               <td height="50px"  valign="top">
+                  Signature:
+               </td>
+                <td height="50px"  valign="top">
+                  Date & Time:
+               </td>
+            </tr>
+            <tr>
+               <td height="50px"  valign="top">
+                  Witness name:
+               </td>
+               <td height="50px"  valign="top">
+                  Signature:
+               </td>
+                <td height="50px"  valign="top">
+                  Date & Time:
+               </td>
+            </tr>
+         </table>
+         <br>
+         <table class="tableNoBorder" cell-padding="0">
+            <tr>
+               <td valign="bottom" colspan="3" >When the patient is not capable of consenting, a guardian may sign instead because of:</td>
+            </tr>
+            <tr>
+               <td valign="bottom" colspan="3">
+                  <p>■ The patient is a minor under 18 years age.</p>
+                  <p>■ If patient is mentally incompetent or unconscious.</p>
+                  <p>■ Other </p>
+               </td>
+            </tr>
+         </table>
+         <br>
+         <table class="tableForLabel" cell-padding="0" style="text-align: left">
+            <tr>
+               <tr>
+               <td height="50px"  valign="top">
+                  Guardian name:
+               </td><td height="50px" valign="top">
+                  Relation to the patient:
+               </td>
+                <td height="50px"  valign="top">
+                  Signature:
+               </td>
+               <td height="50px"  valign="top">
+                  Date & Time:
+               </td>
+            </tr>
+            </tr>
+         </table>
+         <p style="text-align: center">Informed Consent Is Every Patient’s Right</p>
+      </section>
+   </div>
 
-            <table class="tableForLabel" cell-padding="0" style="text-align: right">
 
-                <tr>
-                     <td>
-                        <p>الوقت:</p>
-                        Time
-                    </td>
-                    <td>
-                        <p>التاريخ:</p>
-                        Date
-                    </td>
+   <div class="print-body" style="direction: rtl;">
+   <br/>
+      <section>
+         {{!-- <table class="tableForLabel" cell-padding="0">
+            <tr>
+               <td colspan="3"><label class="textEnRht">الاسم</label>:<span
+                  class="valueText">{{header.full_name}}</span>
+               </td>
+             
+            </tr>
+            <tr>  <td><label class="textEnRht">تاريخ الميلاد</label>:<span class="valueText">{{header.date_of_birth}} /  {{header.age_in_years}}</span>
+               </td>
+               <td><label class="textEnRht">رقم الملف الطبي</label>:<span
+                  class="valueText">{{header.patient_code}}</span></td>
+               <td><label class="textEnRht">الجنس</label>:<span class="valueText">{{header.gender}}</span>
+               </td>
+            </tr>
+         </table> --}}
 
-                    <td>
-                        <p>التوقيع :</p>
-                        Signature
-                    </td>
-                    <td>
-                        <p>علاقته بالمريضة:</p>
-                        Relation to Patient
-                    </td>
-                    <td>
-                        <p>اسم ولي الامر:</p>
-                        Guardian Name
-                    </td>
-                </tr>
-               
+        <table class="tableForLabel" cell-padding="0">
+            <tr>
+                <td colspan="3">
+                    <span class="valueText">{{header.full_name}}</span>
+                    <label class="textArRht">:اسم المريض</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="valueText">{{header.date_of_birth}} /  {{header.age_in_years}}</span>
+                    <label class="textArRht"> :عمر</label>
+                </td>
+                <td>
+                    <span class="valueText">{{header.patient_code}}</span>
+                    <label class="textArRht"> :رقم الملف</label>
+                </td>
                 
+                <td>
+                    <span class="valueText">{{header.gender}}</span>
+                    <label class="textArRht"> :جنس </label>
+                </td>
+            </tr>
+        </table>
+
+
+      </section>
+      <section>
+         <table class="tableNoBorder" cell-padding="0">
+            <tbody>
+               <tr>
+                  <td valign="bottom" colspan="3" style="text-align: center;">
+                     <h2 style="margin:0" >موافقة مسبقة</h2>
+                  </td>
+               </tr>
+               <tr>
+                   <td style="text-align: center;">(___) <h3>اجراء طبي عالي الخطورة</h3></td>
+                   <td style="text-align: center;">(___) <h3>اجراء طبي تداخلي</h3></td>
+                   <td style="text-align: center;">(___) <h3>عملية جراحية</h3></td>
+                </tr>
+                <tr><td valign="bottom" colspan="3" style="text-align: center;">(يرجى قراءة بعناية قبل التوقيع)</td></tr>
+            </tbody>
             </table>
-        </section>
-    </div>
+            <br> <br>
+               <table class="tableNoBorder" cell-padding="0">
+            <tbody>
+               <tr>
+                  <td valign="bottom" colspan="3" style="text-align:right; font-size:13px;">
+                  
+                 انا المدعو. <b>{{header.full_name}}</b> افوض الدكتور <b>{{header.doctor_name}}</b> ومرافقيه لإجراء الإجراءات التالية / العلاج عالي الخطورة:
+
+                  </td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3"   height="30px" style="  border-bottom:0.5px dashed black; text-align:right; font-size:13px; font-size:13px; font-size:13px;"></td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" style="text-align:right; font-size:13px;" height="40px"><b>بالنسبة لي، بما في ذلك أداء أي إجراءات إضافية قد تكون مستحسنة وضرورية من الناحية الطبية، حسب تقديره.
+شرح لي طبيبي / طبيب الأسنان المعالج طبيعة الإجراءات / العلاج:
+</b>
+                  </td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="  border-bottom:0.5px dashed black; text-align:right; font-size:13px; font-size:13px; font-size:13px;">الفوائد المحتملة</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="   border-bottom:0.5px dashed black; text-align:right; font-size:13px; font-size:13px; font-size:13px;">البدائل الممكنة</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="   border-bottom:0.5px dashed black; text-align:right; font-size:13px; font-size:13px; font-size:13px;">احتمالية نجاح الإجراء / العلاج</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="   border-bottom:0.5px dashed black; text-align:right; font-size:13px; font-size:13px; font-size:13px;">المضاعفات المحتملة</td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3"  height="40px" style="   border-bottom:0.5px dashed black; text-align:right; font-size:13px; font-size:13px; font-size:13px;">النتائج المحتملة لعدم القيام بالإجراء / العلاج</td>
+               </tr>
+                <tr>
+                  <td valign="bottom" colspan="3"  height="40px" style="   border-bottom:0.5px dashed black; text-align:right; font-size:13px; font-size:13px; font-size:13px;"></td>
+               </tr>
+               <tr>
+                  <td valign="bottom" colspan="3" height="40px" style="font-size:13px;" >لقد أتيحت لي الفرصة لطرح الأسئلة وتم الرد على أسئلتي بما يرضي، ولم يتم منحني أي ضمان أو ضمان. لذلك أوافق 
+على الإجراء / العلاج المذكور أعلاه.
+</td>
+               </tr>
+            </tbody>
+         </table>
+         <br/>
+         <br/>
+         <table class="tableNoBorder" cell-padding="0">
+           
+            <tr>
+               <td valign="top">تمت ترجمتها إلى المريض بواسطة (__)     تمت قراءة الموافقة (__) </td>
+               <td valign="top" style="text-align:right"> 
+                  الاسم و التوقيع:
+               </td>
+            </tr>
+         </table>
+         <br/>
+         <table class="tableForLabel" cell-padding="0" style="text-align: right">
+            <tr>
+               <td height="50px"  valign="top">
+                  اسم المريض:
+               </td>
+                <td height="50px"  height="30px" valign="top">
+                  التوقيع:
+               </td>
+               <td height="50px"  height="30px" valign="top">
+                  التاريخ والساعة:
+               </td>
+            </tr>
+            <tr>
+              <td height="50px"  height="30px" valign="top">
+                  الطبيب المعالج:
+               </td>
+                <td height="50px"  height="30px" valign="top">
+                  التوقيع:
+               </td>
+               <td height="50px"  height="30px" valign="top">
+                 التاريخ والساعة:
+               </td>
+            </tr>
+            <tr>
+               <td height="50px"  height="30px" valign="top">
+                  اسم الشاهد:
+               </td>
+                <td height="50px"  height="30px" valign="top">
+                  التوقيع:
+               </td>
+               <td height="50px"  height="30px" valign="top">
+                 التاريخ والساعة:
+               </td>
+            </tr>
+         </table>
+         <br>
+         <table class="tableNoBorder" cell-padding="0">
+            <tr>
+               <td valign="bottom" colspan="3" >عندما لا يكون المريض قادرًا على الموافقة، يجوز لولي الأمر التوقيع بدلاً من ذلك للأسباب التالية:</td>
+            </tr>
+            <tr>
+               <td valign="bottom" colspan="3">
+                  <p>■ المريض قاصر تحت 18 سنة</p>
+                  <p>■ المريض فاقد للوعي أو غير كفء عقلياً</p>
+                  <p>■ أسباب أخرى </p>
+               </td>
+            </tr>
+         </table>
+         <br>
+         <table class="tableForLabel" cell-padding="0" style="text-align: right">
+            <tr>
+               <tr>
+               <td height="50px"  valign="top">
+                 اسم ولي الامر:
+               </td><td height="50px" valign="top">
+                  علاقته بالمريض:
+               </td>
+                <td height="50px"  valign="top">
+                  التوقيع:
+               </td>
+               <td height="50px"  valign="top">
+                  التاريخ والساعة:
+               </td>
+            </tr>
+            </tr>
+         </table>
+      </section>
+         <p style="text-align: center">الموافقة المستنيرة هي حق كل مريض</p>
+   </div>
+
 </body>

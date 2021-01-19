@@ -333,9 +333,10 @@ export default function JournalVoucher() {
                 setJournerList((state) => {
                   const first = state[0];
                   const second = state[1];
-                  first.head_id = defaultAC.head_id;
-                  first.child_id = defaultAC.child_id;
-                  first.sourceName = `${defaultAC.head_id}-${defaultAC.child_id}`;
+                  const veryFirst = _.head(defaultAC?.details);
+                  first.head_id = veryFirst?.head_id;
+                  first.child_id = veryFirst?.child_id;
+                  first.sourceName = `${veryFirst?.head_id}-${veryFirst?.child_id}`;
                   second.head_id = parseInt(head_id, 10);
                   second.child_id = child_id;
                   second.sourceName = `${head_id}-${child_id}`;

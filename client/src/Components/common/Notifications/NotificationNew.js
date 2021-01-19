@@ -79,6 +79,7 @@ export default function Notification({ open, handlePanel }) {
       });
 
       socket.on("notification", (msg) => {
+        console.log("Im executed", msg);
         addToNotiList(msg);
       });
 

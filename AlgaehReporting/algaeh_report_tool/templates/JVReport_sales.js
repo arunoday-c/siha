@@ -34,13 +34,21 @@ const executePDF = function executePDFMethod(options) {
           // console.log("result",result[0].narration_head)
           resolve({
             result: result,
-            narration_header:result[0].narration_head,
+            totalDr: _.sumBy(result, (s) => parseFloat(s.debit_amount)),
+            totalCr: _.sumBy(result, (s) => parseFloat(s.credit_amount)),
+            narration_header: result[0].narration_head,
             currency: {
               decimal_places,
               addSymbol: false,
               symbol_position,
-              currency_symbol
-            }
+              currency_symbol,
+            },
+            currencyHeader: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {

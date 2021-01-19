@@ -106,7 +106,7 @@ export default {
               inputValues.push(input.employee_id);
             }
             strQuery =
-              "select E.hims_d_employee_id as employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
+              "select E.hims_d_employee_id as employee_id, E.sub_department_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
               0 as unpaid_leave, S.hims_f_salary_id,S.salary_processed, S.salary_type, 0 as pending_unpaid_leave from hims_d_employee E left join hims_f_salary as S on  \
               E.hims_d_employee_id = S.employee_id and E.suspend_salary ='N' and S.`year`=? and S.`month` = ? \
               where record_status='A'  and E.hospital_id=?" +
@@ -532,7 +532,7 @@ export default {
                               );
                             });
                             const ls_con_applied = _.filter(
-                              results[19],
+                              results[18],
                               (f) => {
                                 return (
                                   f.employee_id == empResult[i]["employee_id"]
@@ -1155,7 +1155,8 @@ export default {
             enableSuspendEmployee +
             "  \
               S.`year` = ? and S.`month` = ? and emp.hospital_id=? " +
-            _stringData,
+            _stringData +
+            " group by S.employee_id",
           values: [
             inputParam.year,
             inputParam.month,
@@ -3879,7 +3880,7 @@ function getEarningComponents(options) {
             //     : parseFloat(empResult["paid_leave"])) +
             //   first_month_leave_period;
             current_earning_per_day_salary = parseFloat(
-              obj["amount"] / parseFloat(empResult["total_days"])
+              obj["amount"] / parseFloat(cal_total_days)
             );
             current_earning_amt =
               current_earning_per_day_salary * leave_salary_days;

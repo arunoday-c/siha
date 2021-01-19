@@ -1,0 +1,17 @@
+{
+  "xYMrCUmhUZx2": {
+    "name": "Identity_Expiry",
+    "title": "Identity Expiry",
+    "second": "5",
+    "minute": "*",
+    "hour": "*",
+    "dayOfMonth": "*",
+    "month": "*",
+    "dayOfWeek": "*",
+    "moduleType": "Identity_Expiry",
+    "sqlQuery": "SELECT ID.employees_id, EI.employee_id, EI.hims_d_employee_identification_id,ID.identity_document_name,ID.arabic_identity_document_name, DATEDIFF(date(EI.valid_upto),date(now())) as expire_after,E.employee_code, concat(if(T.title is not null,T.title,''),'. ', E.full_name)english_name, concat(if(T.arabic_title is not null,T.arabic_title,''),'. ', E.arabic_name)arabic_name, EI.issue_date,EI.valid_upto FROM hims_d_employee_identification as EI inner join hims_d_identity_document as ID on ID.hims_d_identity_document_id = EI.identity_documents_id inner join hims_d_employee as E on E.hims_d_employee_id =EI.employee_id left join hims_d_title as T on E.title_id = T.his_d_title_id where ID.notify_expiry='Y' and EI.is_notify = 0 and DATEDIFF(date(EI.valid_upto),date(now())) <= ID.notify_before and ID.notify_before is not null and E.record_status='A' and (EI.alert_required is null or EI.alert_required ='Y');",
+    "updateKeyName": "hims_d_employee_identification_id",
+    "updateTable": "hims_d_employee_identification",
+    "templateFile": "identity_expiry"
+  }
+}

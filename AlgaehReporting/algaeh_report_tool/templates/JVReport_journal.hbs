@@ -37,16 +37,21 @@
                         <td>{{inc @index}}</td>
                         <td>{{cost_center_name}}</td>
                         <td>{{ledger_code}}</td>
-                        <td>{{account_name}} > {{child_name}}</td>
-                        <td>{{arabic_account_name}} > {{arabic_child_name}}</td>
-                        <td>{{numberFormating debit_amount ../currency}}</td>
-                        <td>{{numberFormating credit_amount ../currency}}</td>
+                        <td class="txtFld">{{account_name}} > {{child_name}}</td>
+                        <td class="numberFld">{{arabic_account_name}} > {{arabic_child_name}}</td>
+                        <td class="numberFld">{{numberFormating debit_amount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating credit_amount ../currency}}</td>
                         <td>{{payment_type}}</td>
                         <td>{{payment_date}}</td>
-                        <td>{{narration_detail}}</td>
+                        <td class="txtFld">{{narration_detail}}</td>
                     </tr>
                     {{/each }}
-
+ <tr>
+                        <td colspan="5"></td>
+                        <td class="numberFld">{{numberFormating totalDr ./currency}}</td>
+                        <td class="numberFld">{{numberFormating totalCr ./currency}}</td>
+                        <td colspan="3"></td>
+                    </tr>
                 </tbody>
             </table>
             <br>
@@ -55,8 +60,6 @@
                     <td class="txtFld" width="80%" style="vertical-align: top;"><b>Memo:</b>
                     <p>{{resultHeader.narration_head}}</p></td>
                      <td class="numberFld"  style="vertical-align: top;"><p>Total</p><h2>{{numberFormating resultHeader.credit_amount currencyHeader}}</h2></td>
-
-                     
                 </tr>
             </table>
         </section>
