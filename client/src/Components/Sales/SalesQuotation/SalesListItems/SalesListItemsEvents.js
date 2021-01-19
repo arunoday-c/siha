@@ -241,7 +241,7 @@ const AddItems = ($this, context) => {
     let sales_quotation_items = $this.state.sales_quotation_items;
 
     const extended_cost =
-      parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity);
+      (parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)).toFixed($this.state.decimal_place);
     const discount_amount = (
       (parseFloat(extended_cost) *
         parseFloat($this.state.discount_percentage)) /
