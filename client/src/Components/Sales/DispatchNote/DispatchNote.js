@@ -19,6 +19,7 @@ import {
   SaveDispatchNote,
   getCtrlCode,
   generateDispatchReport,
+  AdjustDisptachEntry
   // CancelDispatchNote
 } from "./DispatchNoteEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -31,7 +32,7 @@ class DispatchNote extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hims_f_dispatch_note_id: null,
+      hims_f_dispatch_note_header_id: null,
       dispatch_note_number: null,
       sales_order_id: null,
       sales_order_number: null,
@@ -66,6 +67,10 @@ class DispatchNote extends Component {
       dispatched_quantity: 0,
       inventory_stock_detail: [],
       calcelEnable: true,
+      adjustEnable: true,
+      deleteItem_data: [],
+      delete_dispatch_items: [],
+      invoice_generated: 'N'
     };
     this.baseState = this.state;
   }
@@ -137,8 +142,8 @@ class DispatchNote extends Component {
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -195,8 +200,8 @@ class DispatchNote extends Component {
                 <h6>
                   {this.state.dispatch_note_date
                     ? moment(this.state.dispatch_note_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -215,17 +220,17 @@ class DispatchNote extends Component {
           printArea={
             this.state.dispatch_note_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Dispatch Report",
-                      events: {
-                        onClick: () => {
-                          generateDispatchReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Dispatch Report",
+                    events: {
+                      onClick: () => {
+                        generateDispatchReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -412,12 +417,18 @@ class DispatchNote extends Component {
                 onClick={SaveDispatchNote.bind(this, this)}
                 disabled={this.state.saveEnable}
               >
-                <AlgaehLabel
+                {this.state.deleteItem_data.length > 0 ? <AlgaehLabel
                   label={{
-                    forceLabel: "Dispatch",
+                    forceLabel: "Adjust",
                     returnText: true,
                   }}
-                />
+                /> : <AlgaehLabel
+                    label={{
+                      forceLabel: "Dispatch",
+                      returnText: true,
+                    }}
+                  />}
+
               </button>
 
               <button
@@ -430,19 +441,22 @@ class DispatchNote extends Component {
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
-              {/* <button
-                type="button"
-                className="btn btn-primary"
-                onClick={CancelDispatchNote.bind(this, this)}
-                disabled={this.state.calcelEnable}
-              >
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Cancel Dispatch",
-                    returnText: true,
-                  }}
-                />
-              </button> */}
+              {this.state.invoice_generated === "N" ?
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={AdjustDisptachEntry.bind(this, this)}
+                  disabled={this.state.adjustEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Adjust Dispatch",
+                      returnText: true,
+                    }}
+                  />
+                </button> : null
+              }
+
             </div>
           </div>
         </div>
