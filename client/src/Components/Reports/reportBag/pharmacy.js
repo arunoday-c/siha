@@ -4,6 +4,7 @@ export default function Pharmacy({
   FORMAT_PAYTYPE,
   EXPIRY_STATUS,
   moment,
+  spotlightSearch,
 }) {
   return {
     name: "Pharmacy",
@@ -1278,29 +1279,53 @@ export default function Pharmacy({
           },
           {
             className: "col-3 form-group",
-            type: "dropdown",
+            type: "Autosearch",
             name: "item_id",
-            initialLoad: true,
+            // initialLoad: true,
             isImp: false,
-            label: "Item",
+            // label: "Item",
+            columns: spotlightSearch.Items.Pharmacyitemmaster,
+            searchName: "PurchaseOrderForPharmacy",
+            value: "item_description",
+            label: "Item Name",
+            // link: {
+            //   uri: "/pharmacy/getItemMaster",
+            //   module: "pharmacy",
+            // },
 
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy",
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_inventory_item_master_id",
-              data: undefined,
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
+            // events: {
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //     });
+            //   },
+            // },
           },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "item_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Item",
+
+          //   link: {
+          //     uri: "/pharmacy/getItemMaster",
+          //     module: "pharmacy",
+          //   },
+          //   dataSource: {
+          //     textField: "item_description",
+          //     valueField: "hims_d_item_master_id",
+          //     data: undefined,
+          //   },
+          //   events: {
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //       });
+          //     },
+          //   },
+          // },
           {
             className: "col-3 form-group",
             type: "dropdown",

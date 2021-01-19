@@ -5,6 +5,7 @@ import {
   AlgaehValidation,
 } from "../../utils/GlobalFunctions";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
+import AlgaehAutoSearch from "../Wrapper/autoSearch";
 import {
   algaehApiCall,
   cancelRequest,
@@ -218,29 +219,51 @@ export default class ReportUI extends Component {
             if (item.name !== undefined) {
               let label = item.parentElement.parentElement.querySelector(
                 "label"
-              ).innerText;
-              let labelValue = item.value;
-              let type = item.getAttribute("data_role");
-              let data =
-                type === "dropdownlist"
-                  ? item.getAttribute("referencevalue")
-                  : item.value;
-              if (type === "dropdownlist") {
-                labelValue = item.parentElement.querySelector(".text")
-                  .innerText;
+              )?.innerText;
+
+              if (!label) {
+                let label = item.parentElement.parentElement.parentElement.querySelector(
+                  "label"
+                ).innerText;
+
+                let labelValue = item.value;
+                let data = that.state.parameterCollection.item_id;
+                const filter =
+                  labelValue === ""
+                    ? {}
+                    : {
+                        label: label.replace("*", ""),
+                        labelValue: labelValue,
+                      };
+                parameters.push({
+                  name: item.name,
+                  value: data,
+                  ...filter,
+                });
+              } else {
+                let labelValue = item.value;
+                let type = item.getAttribute("data_role");
+                let data =
+                  type === "dropdownlist"
+                    ? item.getAttribute("referencevalue")
+                    : item.value;
+                if (type === "dropdownlist") {
+                  labelValue = item.parentElement.querySelector(".text")
+                    .innerText;
+                }
+                const filter =
+                  labelValue === ""
+                    ? {}
+                    : {
+                        label: label.replace("*", ""),
+                        labelValue: labelValue,
+                      };
+                parameters.push({
+                  name: item.name,
+                  value: data,
+                  ...filter,
+                });
               }
-              const filter =
-                labelValue === ""
-                  ? {}
-                  : {
-                      label: label.replace("*", ""),
-                      labelValue: labelValue,
-                    };
-              parameters.push({
-                name: item.name,
-                value: data,
-                ...filter,
-              });
             }
           });
 
@@ -432,6 +455,7 @@ export default class ReportUI extends Component {
       }
     } else {
       let _inputText = "";
+
       const _inputBox = document.getElementsByName(e.name);
       if (_inputBox.length !== 0) {
         _inputText = _inputBox[0].value;
@@ -460,7 +484,40 @@ export default class ReportUI extends Component {
       this.setState({ [e]: undefined });
     }
   }
+  itemchangeText(e, ctrl) {
+    let name = ctrl;
+    let value = e.hims_d_item_master_id;
+    const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
+      .where((w) => w.name === name)
+      .firstOrDefault();
+    if (_hasEvents !== undefined) {
+      // let _inputText = "";
+      // const _inputBox = document.getElementsByName(e.name);
+      this.setState({
+        parameterCollection: {
+          ...this.state.parameterCollection,
+          [name]: value,
+          // [name + "_text"]: _inputText,
+        },
+      });
+    }
 
+    // } else {
+    //   let _inputText = "";
+    //   const _inputBox = document.getElementsByName(e.name);
+    //   if (_inputBox.length !== 0) {
+    //     _inputText = _inputBox[0].value;
+    //   }
+
+    //   this.setState({
+    //     parameterCollection: {
+    //       ...this.state.parameterCollection,
+    //       [e.name]: e.value,
+
+    //     },
+    //   });
+    // }
+  }
   searchButton(e) {
     const _name = e.currentTarget.getAttribute("surrounds");
     const _hasSearch = Enumerable.from(this.props.options.plotUI.paramters)
@@ -563,6 +620,7 @@ export default class ReportUI extends Component {
       AlagehFormGroup,
       AlgaehDateHandler,
     } = require("./algaehWrapper");
+    // const { AlgaehAutoSearch } = require("./autoSearch");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
       const _className =
@@ -605,6 +663,63 @@ export default class ReportUI extends Component {
                   onChange: this.dropDownHandle.bind(this),
                   onClear: this.dropDownOnClear.bind(this),
                   ..._param.others,
+                }}
+              />
+            );
+            break;
+          case "Autosearch":
+            // const _data =
+            //   this.state[_param.name + "_list"] === undefined
+            //     ? _param.dataSource.data === undefined
+            //       ? []
+            //       : _param.dataSource.data
+            //     : this.state[_param.name + "_list"];
+
+            _controls.push(
+              <AlgaehAutoSearch
+                div={{ className: _className }}
+                label={{
+                  fieldName: _param.name,
+                  forceLabel: _param.label,
+                  isImp:
+                    _param.isImp === undefined || _param.isImp === false
+                      ? false
+                      : _param.isImp,
+                }}
+                title="Type Item Name Here"
+                id="item_id_search"
+                template={(result) => {
+                  return (
+                    <section className="resultSecStyles">
+                      <div className="row">
+                        <div className="col-8">
+                          <h4 className="title">{result.item_description}</h4>
+                          {/* <small>{result.generic_name}</small> */}
+                          <small>{result.uom_description}</small>
+                        </div>
+                        {/*<div className="col-4">
+                          <h6 className="price">
+                            {getAmountFormart(
+                              result.standard_fee
+                            )}
+                          </h6>
+                        </div>*/}
+                      </div>
+                    </section>
+                  );
+                }}
+                name={_param.name}
+                columns={_param.columns}
+                displayField="item_description"
+                value={this.state.parameterCollection[_param.value]}
+                searchName={_param.searchName}
+                // extraParameters={{
+                //   pharmacy_location_id: pharmacy_location_id,
+                // }}
+                onClick={this.itemchangeText.bind(this)}
+                onClear={this.dropDownOnClear.bind(this)}
+                ref={(attReg) => {
+                  this.attReg = attReg;
                 }}
               />
             );
