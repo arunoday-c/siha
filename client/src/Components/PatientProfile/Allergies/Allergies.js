@@ -346,7 +346,7 @@ class Allergies extends Component {
                 <div className="col-lg-4 popLeftDiv">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-12" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         forceLabel: "Allergy Type",
                         fieldName: "sample",
@@ -372,7 +372,7 @@ class Allergies extends Component {
                       <Input.Group compact>
                         <>
                           <Select
-                            // style={{ width: 240 }}
+                            className="col-12 form-group"
                             value={this.state.hims_d_allergy_id}
                             placeholder="Select ..."
                             onChange={this.selectAllergy}
@@ -395,29 +395,15 @@ class Allergies extends Component {
                                     padding: 8,
                                   }}
                                 >
-                                  {/* <Input
-                              style={{ flex: "auto" }}
-                              name={"Add to Master Allergys"}
-                              value={this.state.addAllergyToMaster}
-                              onChange={this.texthandle.bind(this)}
-                            /> */}
                                   <AlagehFormGroup
-                                    // div={{ className: "col-3 mandatory form-group" }}
-                                    // label={{
-                                    //   forceLabel: "Discount % Elgible",
-                                    //   isImp: false,
-                                    // }}
+                                    className="col-7 "
                                     textBox={{
-                                      // decimal: { allowNegative: false }
                                       value: this.state.addAllergyToMaster,
                                       className: "txt-fld",
                                       name: "addAllergyToMaster",
                                       events: {
                                         onChange: this.texthandle.bind(this),
                                       },
-                                      // others: {
-                                      //   placeholder: "0.00",
-                                      // },
                                     }}
                                   />
                                   <a
@@ -429,7 +415,7 @@ class Allergies extends Component {
                                     }}
                                     onClick={this.addItem}
                                   >
-                                    <PlusOutlined /> Add item
+                                    <PlusOutlined /> Add New Allergy
                                   </a>
                                 </div>
                               </div>

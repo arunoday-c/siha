@@ -35,26 +35,27 @@ const executePDF = function executePDFMethod(options) {
           values: [input.voucher_header_id],
           printQuery: true,
         })
-        .then((result) => {  
-          console.log("resultHeader=",result);       
-          resolve({            
+        .then((result) => {
+          // console.log("resultHeader=", result);
+          resolve({
             resultHeader: result.length > 0 ? result[0] : {},
             // subTotal:resultHeader.amount,
             resultInvoice: result,
+            totalDr: _.sumBy(result, (s) => parseFloat(s.debit_amount)),
+            totalCr: _.sumBy(result, (s) => parseFloat(s.credit_amount)),
             currency: {
               decimal_places,
               addSymbol: false,
               symbol_position,
-              currency_symbol
+              currency_symbol,
             },
             currencyHeader: {
               decimal_places,
               addSymbol: true,
               symbol_position,
-              currency_symbol
-            }
+              currency_symbol,
+            },
           });
-          
         })
         .catch((error) => {
           options.mysql.releaseConnection();

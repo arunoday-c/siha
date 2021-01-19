@@ -32,13 +32,21 @@ const executePDF = function executePDFMethod(options) {
         .then((result) => {
           resolve({
             result: result,
+            totalDr: _.sumBy(result, (s) => parseFloat(s.debit_amount)),
+            totalCr: _.sumBy(result, (s) => parseFloat(s.credit_amount)),
             // no_employees: result.length,
             currency: {
               decimal_places,
               addSymbol: false,
               symbol_position,
-              currency_symbol
-            }
+              currency_symbol,
+            },
+            currencyHeader: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {
