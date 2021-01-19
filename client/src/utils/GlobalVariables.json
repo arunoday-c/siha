@@ -110,17 +110,14 @@
   "DOC_LAB_RESULT": [
     {
       "name": "All",
-
       "value": "A"
     },
     {
       "name": "Seen",
-
       "value": "Y"
     },
     {
       "name": "Unseen",
-
       "value": "N"
     }
   ],
@@ -1719,6 +1716,10 @@
     {
       "name": "Employee PF",
       "value": "EEP"
+    },
+    {
+      "name": "Employer PF",
+      "value": "ERP"
     },
     {
       "name": "Leave Salary",
