@@ -1,0 +1,468 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+<body>
+   <div class="print-body">
+
+        <section>
+
+
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Patient Name</label>:<span
+                            class="valueText">{{full_name}}</span><label class="textArRht">اسم المريض</label></td>
+                    <td><label class="textEnLft">Visit Date & Time</label>:<span
+                            class="valueText">{{dateTime visit_date "date"}}</span><label class="textArRht">تاريخ
+                            الزيارة</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">MR No</label>:<span
+                            class="valueText">{{patient_code}}</span><label class="textArRht">رقم التسجيل</label>
+                    </td>
+                    <td><label class="textEnLft">Age/Gender</label>:<span
+                            class="valueText">{{age_in_years}}/{{gender}}</span><label
+                            class="textArRht">العمر / الجنس</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Mobile No.</label>:<span
+                            class="valueText">{{contact_number}}</span><label class="textArRht">رقم
+                            الموبايل</label></td>
+                    <td><label class="textEnLft">Nationality</label>:<span
+                            class="valueText">{{nationality}}</span><label class="textArRht">جنسية</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Insurance Co.</label>:<span
+                            class="valueText">{{insurance_provider_name}}</span><label class="textArRht">شركة
+                            التأمين</label></td>
+                    <td><label class="textEnLft">Policy/ Class</label>:<span
+                            class="valueText">{{primary_policy_num}} / {{card_class}}</span><label
+                            class="textArRht">بوليصة / درجة التأمين</label></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                <tr>
+
+
+
+ <td><label class="textEnLft">Doctor</label>:<span
+                            class="valueText">{{provider_name}}</span><label
+                            class="textArRht">طبيب</label></td>
+
+                             <td><label class="textEnLft">Department</label>:<span
+                            class="valueText">{{sub_department_name}}</span><label
+                            class="textArRht">قسم</label></td>
+
+                </tr>
+   {{!-- <tr>
+                    <td colspan="2"><label class="textEnLft">Chief Complaint</label>:<span
+                            class="valueText">{{comment}}</span><label class="textArRht">الشكوى الرئيسية</label></td>
+                    
+                </tr> --}}
+
+   <tr>
+                     <td><label class="textEnLft">ICD Code</label>:<span
+                            class="valueText">{{icd_code}}</span><label class="textArRht">ICD Code</label>
+                    </td>
+                    <td><label class="textEnLft">Diagnosis</label>:<span
+                            class="valueText">{{icd_description}}</span><label class="textArRht">التشخيص</label>
+                    </td>
+                </tr>
+            </table>
+
+
+        </section>
+      <section>
+         <table class="tableForData" cell-padding="0">
+            <thead>
+               <tr>
+                  <th />
+                  <th />
+                  <th colspan="4">Right Eye</th>
+                  <th colspan="4">Left Eye</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr className="trHighlight">
+                  <td />
+                  <td />
+                  <td><b>SPH</b></td>
+                  <td><b>CYL</b></td>
+                  <td><b>AXIS</b></td>
+                  <td><b>ADD</b></td>
+                  <td><b>SPH</b></td>
+                  <td><b>CYL</b></td>
+                  <td><b>AXIS</b></td>
+                  <td><b>ADD</b></td>
+               </tr>
+               <tr>
+                  <td rowspan="1" class="txtFld">PGP Power</td>
+                  <td />
+                  <td class="numberFld">
+                     {{pgp_power_right_odsph}}
+                  </td>
+                  <td class="numberFld">
+                     {{pgp_power_right_odcyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{pgp_power_right_odaxis}}
+                  </td>
+                  <td class="numberFld">
+                     {{pgp_power_right_odadd}}
+                  </td>
+                  <td class="numberFld">
+                     {{pgp_power_left_odsph}}
+                  </td>
+                  <td class="numberFld">
+                     {{pgp_power_left_odcyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{pgp_power_left_odaxis}}
+                  </td>
+                  <td class="numberFld">
+                     {{pgp_power_left_odadd}}
+                  </td>
+               </tr>
+               <tr>
+                  <td rowspan="2">
+                     CVA <br>
+                     Specs ({{#if cva_specs "S"}}<span>&#10004;</span>{{/if}})
+                     CL ({{#if cva_specs "C"}}<span>&#10004;</span>{{/if}})
+                  </td>
+                  <td>DV</td>
+                  <td colspan="4">
+                     {{cva_dv_right}}
+                  </td>
+                  <td colspan="4">
+                     {{cva_dv_left}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>NV</td>
+                  <td colspan="4">
+                     {{cva_nv_right}}
+                  </td>
+                  <td colspan="4">
+                     {{cva_nv_left}}
+                  </td>
+               </tr>
+               <tr className="trHighlight">
+                  <td />
+                  <td />
+                  <td><b>SPH</b></td>
+                  <td><b>CYL</b></td>
+                  <td><b>AXIS</b></td>
+                  <td><b>Vision</b></td>
+                  <td><b>SPH</b></td>
+                  <td><b>CYL</b></td>
+                  <td><b>AXIS</b></td>
+                  <td><b>Vision</b></td>
+               </tr>
+               <tr>
+                  <td>Auto Ref.</td>
+                  <td />
+                  <td class="numberFld">
+                     {{auto_ref_right_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{auto_ref_right_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{auto_ref_right_axis}}
+                  </td>
+                  <td />
+                  <td class="numberFld">
+                     {{auto_ref_left_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{auto_ref_left_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{auto_ref_left_axis}}
+                  </td>
+                  <td />
+               </tr>
+               <tr>
+                  <td rowspan="2">BCVA</td>
+                  <td>DV</td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_axis}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_vision}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_axis}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_vision}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>NV</td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_axis}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_vision}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_sch}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_cyl}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_axis}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_vision}}
+                  </td>
+               </tr>
+               <tr className="trHighlight">
+                  <td rowspan="2">K Reading</td>
+                  <td />
+                  <td>K1</td>
+                  <td>K2</td>
+                  <td colspan="2">AXIS</td>
+                  <td>K1</td>
+                  <td>K2</td>
+                  <td colspan="2">AXIS</td>
+               </tr>
+               <tr>
+                  <td />
+                  <td class="numberFld">
+                     {{k1_right}}
+                  </td>
+                  <td class="numberFld">
+                     {{k2_right}}
+                  </td>
+                  <td colspan="2">
+                     {{axis_right}}
+                  </td>
+                  <td class="numberFld">
+                     {{k1_left}}
+                  </td>
+                  <td class="numberFld">
+                     {{k2_left}}
+                  </td>
+                  <td colspan="2">
+                     {{axis_left}}
+                  </td>
+               </tr>
+               <tr className="trHighlight">
+                  <td />
+                  <td />
+                  <td>Prism</td>
+                  <td>BC</td>
+                  <td colspan="2">DIA</td>
+                  <td>Prism</td>
+                  <td>BC</td>
+                  <td colspan="2">DIA</td>
+               </tr>
+               <tr>
+                  <td rowspan="2">BCVA</td>
+                  <td>DV</td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_prism}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_right_bc}}
+                  </td>
+                  <td colspan="2">
+                     {{bcva_dv_right_dia}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_prism}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_dv_left_bc}}
+                  </td>
+                  <td colspan="2">
+                     {{bcva_dv_left_dia}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>NV</td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_prism}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_right_bc}}
+                  </td>
+                  <td colspan="2">
+                     {{bcva_nv_right_dia}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_prism}}
+                  </td>
+                  <td class="numberFld">
+                     {{bcva_nv_left_bc}}
+                  </td>
+                  <td colspan="2">
+                     {{bcva_nv_left_dia}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>Pachy</td>
+                  <td />
+                  <td colspan="4">
+                     {{pachy_right}}
+                  </td>
+                  <td colspan="4">
+                     {{pachy_left}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>W. to W (C.S)</td>
+                  <td />
+                  <td colspan="4">
+                     {{w_wcs_right}}
+                  </td>
+                  <td colspan="4">
+                     {{w_wcs_left}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>AC. Depth</td>
+                  <td />
+                  <td colspan="4">
+                     {{ac_depth_right}}
+                  </td>
+                  <td colspan="4">
+                     {{ac_depth_left}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>IPD</td>
+                  <td />
+                  <td colspan="4">
+                     {{ipd_right}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>Color Vision (SC/CC)</td>
+                  <td>WNL</td>
+                  <td colspan="4">
+                     {{color_vision_wnl_right}}
+                  </td>
+                  <td colspan="4">
+                     {{color_vision_wnl_left}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>Confrontation Fields</td>
+                  <td>Full</td>
+                  <td colspan="4">
+                     {{confrontation_fields_full_right}}
+                  </td>
+                  <td colspan="4">
+                     {{confrontation_fields_full_left}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>PUPILS</td>
+                  <td>ERRL</td>
+                  <td colspan="4">
+                     {{pupils_errl_right}}
+                  </td>
+                  <td colspan="4">
+                     {{pupils_errl_left}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>Cover Test (SC/CC)</td>
+                  <td>Ortho</td>
+                  <td colspan="4">
+                     {{cover_test_ortho_right}}
+                  </td>
+                  <td colspan="4">
+                     {{cover_test_ortho_left}}
+                  </td>
+               </tr>
+               <tr>
+                  <td>Covergence</td>
+                  <td />
+                  <td colspan="4">
+                     {{covergence}}
+                  </td>
+                  <td colspan="4" />
+               </tr>
+               <tr>
+                  <td>SAFE</td>
+                  <td>FESA</td>
+                  <td colspan="4">
+                     {{safe_fesa}}
+                  </td>
+                  <td />
+                  <td />
+                  <td />
+                  <td />
+               </tr>
+               <tr>
+                  <td rowspan="2">Advice</td>
+                  <td />
+                  <td colspan="8">
+                     <div className="customCheckbox">
+                        Multi Coated ({{#if multi_coated "Y"}}<span>&#10004;</span>{{/if}})
+                        Varilux ({{#if varilux "Y"}}<span>&#10004;</span>{{/if}})
+                        Light ({{#if light "Y"}}<span>&#10004;</span>{{/if}})
+                        Aspheric ({{#if aspheric "Y"}}<span>&#10004;</span>{{/if}})
+                        Bifocal ({{#if bifocal "Y"}}<span>&#10004;</span>{{/if}})
+                        Medium ({{#if medium "Y"}}<span>&#10004;</span>{{/if}})
+                        Lenticular ({{#if lenticular "Y"}}<span>&#10004;</span>{{/if}})
+                     </div>
+                  </td>
+               </tr>
+               <tr>
+                  <td />
+                  <td colspan="8">
+                    
+                        Single Vision ({{#if single_vision "Y"}}<span>&#10004;</span>{{/if}})
+                        Dark ({{#if dark "Y"}}<span>&#10004;</span>{{/if}})
+                        Safety Thickness ({{#if safety_thickness "Y"}}<span>&#10004;</span>{{/if}})
+                        Anti-Reflection Coating ({{#if anti_reflecting_coating "Y"}}<span>&#10004;</span>{{/if}})
+                        Photosensitive ({{#if photosensitive "Y"}}<span>&#10004;</span>{{/if}})
+                        High Index ({{#if high_index "Y"}}<span>&#10004;</span>{{/if}})
+                        Colored ({{#if colored "Y"}}<span>&#10004;</span>{{/if}})
+                        Anti-Scratch ({{#if anti_scratch "Y"}}<span>&#10004;</span>{{/if}})
+                     
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="2">CL Type</td>
+                  <td> 
+                     Disposable ({{#if cl_type "D"}}<span>&#10004;</span>{{/if}})
+                     Permanent ({{#if cl_type "P"}}<span>&#10004;</span>{{/if}})
+                  </td>
+               </tr>
+               <tr>
+                  <td colspan="2" rowspan="2">
+                     Remarks
+                  </td>
+                  <td colspan="8" rowspan="2">
+                     {{remarks}}
+                  </td>
+               </tr>
+               <tr />
+            </tbody>
+         </table>
+      </section>
+   </div>
+</body>
