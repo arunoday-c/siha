@@ -732,7 +732,7 @@ export default class ReportUI extends Component {
                   this.setState({
                     parameterCollection: {
                       ...this.state.parameterCollection,
-                      item_id: null,
+                      [_param.name]: null,
                     },
                   });
                 }}
