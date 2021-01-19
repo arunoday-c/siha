@@ -533,11 +533,26 @@
       }
     }
   }
+
   #encounter_table {
-    .ReactTable {
-      max-height: 67vh !important;
+    min-height: 63vh;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 57vh;
+        max-height: 57vh;
+        overflow: auto;
+      }
+      .pageLeft {
+        display: none;
+      }
+    }
+    .pat-code2 {
+      color: navy !important;
+      text-decoration: underline;
+      cursor: pointer;
     }
   }
+
   .bottom-layout {
     padding: 5px;
 

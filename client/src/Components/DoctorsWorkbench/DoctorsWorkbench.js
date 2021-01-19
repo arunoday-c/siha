@@ -663,15 +663,14 @@ class DoctorsWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "encounter_list",
-                        returnText: "true",
-                      }}
-                    />
-                  </h3>
+                  <h3 className="caption-subject">Encounter List</h3>
                 </div>
+
+                {/* <div className="caption">
+                  <h3 className="caption-subject">
+                    
+                  </h3>
+                </div> */}
                 <div className="actions rightLabelCount">
                   <AlgaehLabel label={{ forceLabel: "No. of Encounters" }} />
                   <span className="countNo">
@@ -726,7 +725,7 @@ class DoctorsWorkbench extends Component {
                           displayTemplate: (data) => {
                             return (
                               <span
-                                className="pat-code"
+                                className="pat-code2"
                                 onClick={this.OpenPatientProfile.bind(
                                   this,
                                   data
