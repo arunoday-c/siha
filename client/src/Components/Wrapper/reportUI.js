@@ -486,7 +486,9 @@ export default class ReportUI extends Component {
   }
   itemchangeText(e, ctrl) {
     let name = ctrl;
-    let value = e.hims_d_item_master_id;
+    let value = e.hims_d_item_master_id
+      ? e.hims_d_item_master_id
+      : e.hims_d_inventory_item_master_id;
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
       .where((w) => w.name === name)
       .firstOrDefault();
@@ -518,6 +520,15 @@ export default class ReportUI extends Component {
     //   });
     // }
   }
+  // onClearAutoSearch(e) {
+  //
+  //   const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
+  //     .where((w) => w.name === e)
+  //     .firstOrDefault().events;
+  //   if (_hasEvents !== undefined) {
+  //     this.setState({ [e]: undefined });
+  //   }
+  // }
   searchButton(e) {
     const _name = e.currentTarget.getAttribute("surrounds");
     const _hasSearch = Enumerable.from(this.props.options.plotUI.paramters)
@@ -717,7 +728,14 @@ export default class ReportUI extends Component {
                 //   pharmacy_location_id: pharmacy_location_id,
                 // }}
                 onClick={this.itemchangeText.bind(this)}
-                onClear={this.dropDownOnClear.bind(this)}
+                onClear={(e) => {
+                  this.setState({
+                    parameterCollection: {
+                      ...this.state.parameterCollection,
+                      item_id: null,
+                    },
+                  });
+                }}
                 ref={(attReg) => {
                   this.attReg = attReg;
                 }}
