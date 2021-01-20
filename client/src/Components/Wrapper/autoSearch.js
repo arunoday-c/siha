@@ -202,6 +202,7 @@ export default class AlgaehAutoSearch extends Component {
           {..._fluid}
           onResultSelect={this.onResultSelectHandler.bind(this)}
           value={value}
+          data_role="autosearch"
           name={this.props.name}
           resultRenderer={this.generateTemplate.bind(this)}
           {...this.props.others}

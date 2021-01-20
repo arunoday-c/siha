@@ -226,7 +226,7 @@ class DispatchNoteItems extends Component {
                     >
                       <AlgaehDataGrid
                         id="REQ_dispatchDetailsGrid"
-                        columns={[
+                        columns={this.state.deleteItem_data.concat([
                           {
                             fieldName: "item_description",
                             label: (
@@ -416,7 +416,7 @@ class DispatchNoteItems extends Component {
                             ),
                             disabled: true,
                           },
-                        ]}
+                        ])}
                         keyId="service_type_id"
                         dataSource={{
                           data: this.state.inventory_stock_detail,

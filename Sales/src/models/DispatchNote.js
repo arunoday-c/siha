@@ -485,6 +485,112 @@ export function addDispatchNote(req, res, next) {
   }
 }
 
+export function adjustDispatchNote(req, res, next) {
+  const _mysql = new algaehMysql();
+
+  try {
+    let buffer = "";
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
+
+    req.on("end", () => {
+      let input = JSON.parse(buffer);
+      req.body = input;
+
+      let year = moment().format("YYYY");
+
+      let month = moment().format("MM");
+
+      let period = month;
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_f_sales_dispatch_note_header` set sub_total = ?, discount_amount= ?, net_total = ?, \
+              total_tax = ?, net_payable = ? where hims_f_dispatch_note_header_id=?;",
+          values: [
+            input.sub_total,
+            input.discount_amount,
+            input.net_total,
+            input.total_tax,
+            input.net_payable,
+            input.hims_f_dispatch_note_header_id
+          ],
+          printQuery: true,
+        })
+        .then((headerResult) => {
+          req.body.transaction_id = input.hims_f_dispatch_note_header_id;
+          req.body.year = year;
+          req.body.period = period;
+          req.body.inventory_stock_detail = input.delete_dispatch_items;
+
+          let strQuery = ""
+          // console.log("headerResult: ", headerResult[0].insertId);
+          // console.log("length: ", input.stock_detail.length);
+
+          for (let i = 0; i < input.delete_dispatch_items.length; i++) {
+            strQuery += mysql.format(
+              "DELETE FROM hims_f_sales_dispatch_note_batches where hims_f_sales_dispatch_note_batches_id=?;",
+              [input.delete_dispatch_items[i]["hims_f_sales_dispatch_note_batches_id"]]
+            );
+            // if (i == input.stock_detail.length - 1) {
+
+            //   _mysql
+            //     .executeQuery({
+            //       query: strQuery,
+            //       printQuery: true,
+            //     })
+            //     .then((detailResult) => {
+
+            //     })
+            //     .catch((error) => {
+            //       _mysql.rollBackTransaction(() => {
+            //         next(error);
+            //       });
+            //     });
+
+            // }
+          }
+
+          _mysql
+            .executeQuery({
+              query: strQuery,
+              printQuery: true,
+            })
+            .then((deleteData) => {
+
+              req.connection = {
+                connection: _mysql.connection,
+                isTransactionConnection:
+                  _mysql.isTransactionConnection,
+                pool: _mysql.pool,
+              };
+
+              req.records = deleteData
+              next();
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+
+    });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
+
 export function cancelDispatchNote(req, res, next) {
   const _mysql = new algaehMysql();
 
@@ -599,6 +705,191 @@ export function revertSalesOrder(req, res, next) {
         //     next();
         //   });
         // }
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
+
+export function updateinvSalesOrderDispatchAdjust(req, res, next) {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    let inputParam = { ...req.body };
+
+    // let _sales_order_items_id = []
+    // inputParam.delete_dispatch_items.map((o) => {
+    //   _sales_order_items_id.push(o.sales_order_items_id);
+    // });
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT * FROM hims_f_sales_order_items where sales_order_id = ?;",
+        values: [inputParam.sales_order_id],
+        printQuery: true,
+      })
+      .then((sales_order_result) => {
+
+        let strQuery = "";
+        let sales_order_items = []
+
+        for (let i = 0; i < inputParam.delete_dispatch_items.length; i++) {
+          let sales_order_item = sales_order_result.find(f => f.item_id == inputParam.delete_dispatch_items[i].item_id)
+
+          sales_order_items.push(sales_order_item)
+          const _index = sales_order_result.indexOf(sales_order_item);
+          if (parseFloat(sales_order_item.quantity) === parseFloat(inputParam.delete_dispatch_items[i].dispatch_quantity)) {
+            strQuery += mysql.format(
+              "DELETE FROM hims_f_sales_order_items where hims_f_sales_order_items_id=?;",
+              [sales_order_item.hims_f_sales_order_items_id]
+            );
+            sales_order_result.splice(_index, 1);
+          } else {
+            sales_order_item.quantity = parseFloat(sales_order_item.quantity) - parseFloat(inputParam.delete_dispatch_items[i].dispatch_quantity)
+            // sales_order_item.quantity_outstanding = parseFloat(sales_order_item.quantity_outstanding) > 0 ?
+            //   parseFloat(sales_order_item.quantity) -
+            //   (parseFloat(sales_order_item.quantity_outstanding) + parseFloat(inputParam.delete_dispatch_items[i].dispatch_quantity)) : 0
+
+            if (sales_order_item.quantity === 0) {
+              strQuery += mysql.format(
+                "DELETE FROM hims_f_sales_order_items where hims_f_sales_order_items_id=?;",
+                [sales_order_item.hims_f_sales_order_items_id]
+              );
+              sales_order_result.splice(_index, 1);
+            } else {
+
+              sales_order_item.extended_cost = (parseFloat(sales_order_item.unit_cost) * parseFloat(sales_order_item.quantity)).toFixed(
+                req.userIdentity.decimal_places
+              );
+              sales_order_item.discount_amount = (
+                (parseFloat(sales_order_item.extended_cost) * parseFloat(sales_order_item.discount_percentage)) /
+                100
+              ).toFixed(req.userIdentity.decimal_places);
+              sales_order_item.net_extended_cost = (
+                parseFloat(sales_order_item.extended_cost) - parseFloat(sales_order_item.discount_amount)
+              ).toFixed(req.userIdentity.decimal_places);
+
+              sales_order_item.tax_amount = (
+                (parseFloat(sales_order_item.net_extended_cost) * parseFloat(sales_order_item.tax_percentage)) /
+                100
+              ).toFixed(req.userIdentity.decimal_places);
+
+              sales_order_item.total_amount = (
+                parseFloat(sales_order_item.net_extended_cost) + parseFloat(sales_order_item.tax_amount)
+              ).toFixed(req.userIdentity.decimal_places);
+
+              sales_order_result[_index] = sales_order_item;
+
+              strQuery += mysql.format(
+                "UPDATE hims_f_sales_order_items SET `quantity`=?, extended_cost=?, discount_amount=?, \
+                  net_extended_cost=?, tax_amount=?, total_amount=? where `hims_f_sales_order_items_id`=?;",
+                [
+                  sales_order_item.quantity,
+                  sales_order_item.extended_cost,
+                  sales_order_item.discount_amount,
+                  sales_order_item.net_extended_cost,
+                  sales_order_item.tax_amount,
+                  sales_order_item.total_amount,
+                  sales_order_item.hims_f_sales_order_items_id
+                ]
+              );
+              sales_order_result[_index] = sales_order_item;
+            }
+          }
+        }
+
+        const sub_total = _.sumBy(sales_order_result, (s) =>
+          parseFloat(s.extended_cost)
+        );
+        const discount_amount = _.sumBy(sales_order_result, (s) =>
+          parseFloat(s.discount_amount)
+        );
+
+        const net_total = _.sumBy(sales_order_result, (s) =>
+          parseFloat(s.net_extended_cost)
+        );
+
+        const total_tax = _.sumBy(sales_order_result, (s) => parseFloat(s.tax_amount));
+
+        const net_payable = _.sumBy(sales_order_result, (s) =>
+          parseFloat(s.total_amount)
+        );
+        strQuery += mysql.format(
+          "UPDATE hims_f_sales_order SET sub_total=?, discount_amount=? , net_total=?, total_tax=?, \
+            net_payable=? where hims_f_sales_order_id=?;",
+          [
+            sub_total,
+            discount_amount,
+            net_total,
+            total_tax,
+            net_payable,
+            inputParam.sales_order_id
+          ]
+        );
+        // sales_order_result.splice(_index, 1);
+
+        const IncludeValues = [
+          "sales_order_id",
+          "item_id",
+          "uom_id",
+          "unit_cost",
+          "quantity",
+          "extended_cost",
+          "discount_percentage",
+          "discount_amount",
+          "net_extended_cost",
+          "tax_percentage",
+          "tax_amount",
+          "total_amount",
+          "quantity_outstanding",
+        ];
+
+        _mysql
+          .executeQuery({
+            query: `INSERT INTO hims_f_sales_order_adj_item(??) VALUES ?;` + strQuery,
+            values: sales_order_items,
+            includeValues: IncludeValues,
+            extraValues: {
+              created_by: req.userIdentity.algaeh_d_app_user_id,
+              created_date: new Date(),
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: true,
+          })
+          .then((detailResult) => {
+            next();
+          })
+          .catch((error) => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+        // _mysql
+        //   .executeQueryWithTransaction({
+        //     query: strQuery,
+        //     printQuery: true,
+        //   })
+        //   .then((detailResult) => {
+        //     // _mysql.commitTransaction(() => {
+        //     //   _mysql.releaseConnection();
+        //     // req.records = detailResult;
+        //     next();
+        //     // });
+        //   })
+        //   .catch((e) => {
+        //     _mysql.rollBackTransaction(() => {
+        //       next(e);
+        //     });
+        //   });
+
       })
       .catch((e) => {
         _mysql.rollBackTransaction(() => {

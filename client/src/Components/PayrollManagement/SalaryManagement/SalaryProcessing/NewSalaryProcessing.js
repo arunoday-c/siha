@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./SalaryProcessing.scss";
 
-import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
 import {
@@ -12,10 +12,11 @@ import {
   closeSalaryComponents,
   getOptions,
   generateMonthlyLoanReport,
+
   // generateLevGratReconReport
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
-import { AlgaehSecurityElement, AlgaehDataGrid } from "algaeh-react-components";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 const STATUS = {
   CHECK: true,
   UNCHECK: false,
@@ -425,12 +426,12 @@ class NewSalaryProcessing extends Component {
                               },
                             ]}
                             keyId="algaeh_d_module_id"
-                            // dataSource={{
-                            //   data: this.state.salaryprocess_header,
-                            // }}
-                            data={this.state.salaryprocess_header}
-                            pagination={true}
-                            isFilterable={true}
+                            dataSource={{
+                              data: this.state.salaryprocess_header,
+                            }}
+                            filter={true}
+                            // isEditable={true}
+                            paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
                               onEdit: () => {},
                               onDelete: () => {},

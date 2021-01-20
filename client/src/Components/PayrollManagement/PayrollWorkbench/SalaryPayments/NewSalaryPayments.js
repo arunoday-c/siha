@@ -3,7 +3,7 @@ import "./NewSalaryPayments.scss";
 import {
   // AlagehFormGroup,
   AlgaehLabel,
-  // AlgaehDataGrid,
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import {
   LoadSalaryPayment,
@@ -22,7 +22,7 @@ import moment from "moment";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
 
-import { AlgaehSecurityElement, AlgaehDataGrid } from "algaeh-react-components";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 class NewSalaryPayment extends Component {
   constructor(props) {
     super(props);
@@ -350,12 +350,21 @@ class NewSalaryPayment extends Component {
                               },
                             ]}
                             keyId="algaeh_d_module_id"
+                            dataSource={{
+                              data: this.state.salary_payment,
+                            }}
+                            filter={true}
+                            // isEditable={true}
+                            paging={{ page: 0, rowsPerPage: 10 }}
+                            events={{
+                              onEdit: () => {},
+                              onDelete: () => {},
+                              onDone: () => {},
+                            }}
                             // dataSource={{
                             //   data: this.state.salary_payment,
                             // }}
-                            data={this.state.salary_payment}
-                            pagination={true}
-                            isFilterable={true}
+
                             // filter={true}
                             // isEditable={false}
                             // paging={{ page: 0, rowsPerPage: 10 }}

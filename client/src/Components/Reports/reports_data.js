@@ -31,6 +31,7 @@ import Project from "./reportBag/projectpayroll";
 import Vat from "./reportBag/vat";
 import Clinical from "./reportBag/clinical";
 import Laboratory from "./reportBag/laboratory";
+import spotlightSearch from "../../Search/spotlightSearch.json";
 let allYears = getYears();
 
 export default function loadActiveReports(
@@ -89,6 +90,7 @@ export default function loadActiveReports(
             algaehApiCall,
             EXPIRY_STATUS,
             moment,
+            spotlightSearch,
           });
           break;
         case "patient":
@@ -123,6 +125,7 @@ export default function loadActiveReports(
             FORMAT_PAYTYPE,
             EXPIRY_STATUS,
             moment,
+            spotlightSearch,
           });
           break;
         case "project":

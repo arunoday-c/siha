@@ -3,6 +3,7 @@ export default function Inventory({
   algaehApiCall,
   EXPIRY_STATUS,
   moment,
+  spotlightSearch,
 }) {
   return {
     name: "Inventory",
@@ -754,31 +755,56 @@ export default function Inventory({
               data: undefined,
             },
           },
+
           {
             className: "col-3 form-group",
-            type: "dropdown",
+            type: "Autosearch",
             name: "item_id",
-            initialLoad: true,
+            // initialLoad: true,
             isImp: false,
-            label: "Item",
+            // label: "Item",
+            columns: spotlightSearch.Items.Invitemmaster,
+            searchName: "PurchaseOrderForInventry",
+            value: "item_description",
+            label: "Item Name",
+            // link: {
+            //   uri: "/pharmacy/getItemMaster",
+            //   module: "pharmacy",
+            // },
 
-            link: {
-              uri: "/inventory/getItemMaster",
-              module: "inventory",
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_inventory_item_master_id",
-              data: undefined,
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
+            // events: {
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //     });
+            //   },
+            // },
           },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "item_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Item",
+
+          //   link: {
+          //     uri: "/inventory/getItemMaster",
+          //     module: "inventory",
+          //   },
+          //   dataSource: {
+          //     textField: "item_description",
+          //     valueField: "hims_d_inventory_item_master_id",
+          //     data: undefined,
+          //   },
+          //   events: {
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //       });
+          //     },
+          //   },
+          // },
           {
             className: "col-3 form-group",
             type: "dropdown",
