@@ -6,6 +6,7 @@ import Options from "../../../Options.json";
 import { newAlgaehApi } from "../../../hooks";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import { message } from "algaeh-react-components";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -303,6 +304,39 @@ const Refresh = ($this) => {
   );
 };
 
+const reloadAnalytesMaster = ($this, row) => {
+  AlgaehLoader({ show: true });
+
+  const inputObj = {
+    test_id: row.hims_d_investigation_test_id,
+    date_of_birth: row.date_of_birth,
+    gender: row.gender,
+    order_id: row.hims_f_lab_order_id
+  }
+  algaehApiCall({
+    uri: "/laboratory/reloadAnalytesMaster",
+    module: "laboratory",
+    method: "PUT",
+    data: inputObj,
+    onSuccess: (response) => {
+      if (response.data.success) {
+        swalMessage({
+          title: "Reloaded Succefully...",
+          type: "success",
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onCatch: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
+
 export {
   texthandle,
   PatientSearch,
@@ -312,4 +346,5 @@ export {
   closeResultEntry,
   Refresh,
   closeMicroResultEntry,
+  reloadAnalytesMaster
 };

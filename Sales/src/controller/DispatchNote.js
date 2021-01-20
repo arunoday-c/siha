@@ -6,7 +6,9 @@ import {
     addDispatchNote,
     updateinvSalesOrderOnceDispatch,
     cancelDispatchNote,
-    revertSalesOrder
+    revertSalesOrder,
+    adjustDispatchNote,
+    updateinvSalesOrderDispatchAdjust
 } from "../models/DispatchNote";
 import inventoryModel from "algaeh-inventory/src/models/commonFunction";
 
@@ -41,6 +43,18 @@ export default function SalesOrder() {
         "/addDispatchNote",
         addDispatchNote,
         updateinvSalesOrderOnceDispatch,
+        updateIntoInvItemLocation,
+        (req, res, next) => {
+            res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+                success: true,
+                records: req.records
+            });
+        }
+    );
+    api.post(
+        "/adjustDispatchNote",
+        adjustDispatchNote,
+        updateinvSalesOrderDispatchAdjust,
         updateIntoInvItemLocation,
         (req, res, next) => {
             res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

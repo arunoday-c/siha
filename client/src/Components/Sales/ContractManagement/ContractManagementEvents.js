@@ -16,20 +16,18 @@ export const texthandle = ($this, ctrl, e) => {
       $this.setState({
         [name]: value,
         selected_terms_conditions: e.selected.terms_cond_description,
-        saveEnable: !value,
       });
       break;
     case "project_id":
       $this.setState({
         [name]: value,
         organizations: e.selected.branches,
-        saveEnable: !value,
+
       });
       break;
     default:
       $this.setState({
         [name]: value,
-        saveEnable: !value,
       });
       break;
   }

@@ -20,6 +20,7 @@ import {
   closeMicroResultEntry,
   saveDocumentCheck,
   getSavedDocument,
+  reloadAnalytesMaster
 } from "./ResultEntryListHandaler";
 import { Upload, Modal } from "antd";
 import {
@@ -306,10 +307,10 @@ class ResultEntryList extends Component {
                             </li>
                           ))
                         ) : (
-                          <div className="col-12 noAttachment" key={1}>
-                            <p>No Attachments Available</p>
-                          </div>
-                        )}
+                            <div className="col-12 noAttachment" key={1}>
+                              <p>No Attachments Available</p>
+                            </div>
+                          )}
                       </ul>
                     </div>
                   </div>
@@ -423,8 +424,8 @@ class ResultEntryList extends Component {
                                       row.status === "O"
                                         ? ""
                                         : row.sample_status === "N"
-                                        ? "none"
-                                        : "",
+                                          ? "none"
+                                          : "",
                                   }}
                                   className="fas fa-file-signature"
                                   aria-hidden="true"
@@ -462,12 +463,37 @@ class ResultEntryList extends Component {
                                   }}
                                 />
                               </span>
+                              <span>
+                                <i
+                                  className="fas fa-undo-alt"
+                                  aria-hidden="true"
+                                  onClick={reloadAnalytesMaster.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )}
+                                />
+                              </span>
+                              {/* {row.status === "V" ? null : 
+                              <span>
+                                <i
+                                  className="fas fa-undo-alt"
+                                  aria-hidden="true"
+                                  onClick={reloadAnalytesMaster.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )}
+                                />
+                              </span>
+                              } */}
+
                             </>
                           );
                         },
                         others: {
                           filterable: false,
-                          maxWidth: 100,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" },
                         },
@@ -501,10 +527,10 @@ class ResultEntryList extends Component {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                            <span className="badge badge-secondary">
-                              Routine
-                            </span>
-                          );
+                              <span className="badge badge-secondary">
+                                Routine
+                              </span>
+                            );
                         },
                         disabled: true,
                         others: {
@@ -604,10 +630,10 @@ class ResultEntryList extends Component {
                               Confirmed
                             </span>
                           ) : (
-                            <span className="badge badge-success">
-                              Validated
-                            </span>
-                          );
+                                  <span className="badge badge-success">
+                                    Validated
+                                  </span>
+                                );
                         },
                         disabled: true,
                         others: {

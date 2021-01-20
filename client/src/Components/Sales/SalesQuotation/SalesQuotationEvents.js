@@ -86,6 +86,7 @@ const ClearData = ($this, e) => {
 
 const SaveSalesQuotation = $this => {
   const settings = { header: undefined, footer: undefined };
+  debugger
   if ($this.state.hims_f_sales_quotation_id !== null) {
     if ($this.state.edit_mode === true) {
       AlgaehValidation({
@@ -127,6 +128,16 @@ const SaveSalesQuotation = $this => {
             $this.state.sales_quotation_items.length > 0 ? "G" : "N";
           $this.state.quote_services_status =
             $this.state.sales_quotation_services.length > 0 ? "G" : "N";
+
+          $this.state.quote_validity = moment(
+            $this.state.quote_validity,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD")
+
+          $this.state.delivery_date = $this.state.delivery_date !== null ? moment(
+            $this.state.delivery_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD") : null
 
           $this.state.update_type = "ED"
           AlgaehLoader({ show: true });
