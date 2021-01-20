@@ -428,7 +428,7 @@ export function updateSalesQuotation(req, res, next) {
                     next();
                   });
                 })
-                .catch(error => {
+                .catch(e => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
@@ -461,14 +461,14 @@ export function updateSalesQuotation(req, res, next) {
                     next();
                   });
                 })
-                .catch(error => {
+                .catch(e => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             }
           })
-          .catch(error => {
+          .catch(e => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
