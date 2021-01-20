@@ -37,6 +37,7 @@ let getPatientUCAF = (req, res, next) => {
         if (_input.forceReplace == "true") {
           result[0] = [];
         }
+
         if (result[0].length == 0) {
           _mysql
             .executeQuery({

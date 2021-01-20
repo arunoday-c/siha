@@ -1,6 +1,7 @@
 "use strict";
 
 import algaehMysql from "algaeh-mysql";
+import { parse } from "path";
 import httpStatus from "../utils/httpStatus";
 
 import logUtils from "../utils/logging";
@@ -18,9 +19,9 @@ let getPatientOCAF = (req, res, next) => {
         query:
           "SELECT * FROM `hims_f_ocaf_header` where patient_id=? and visit_id =?;select insured from hims_f_patient_visit where hims_f_patient_visit_id=?; ",
         values: [_input.patient_id, _input.visit_id, _input.visit_id],
-        printQuery: true
+        // printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         const _isInsured = result[1][0]["insured"];
         if (_isInsured == "N") {
           _mysql.releaseConnection();
@@ -76,8 +77,8 @@ let getPatientOCAF = (req, res, next) => {
                 multi_coated,varilux,light,aspheric,bifocal,medium,lenticular,single_vision,dark,\
                 safety_thickness,anti_reflecting_coating,photosensitive,high_index,colored,anti_scratch\
                 from hims_f_glass_prescription where patient_id=? and visit_id=?;\
-                DELETE from hims_f_ocaf_insurance_details where hims_f_ocaf_header_id=?;\
-                DELETE from hims_f_ocaf_header where hims_f_ocaf_header_id=?;",
+                DELETE from hims_f_ocaf_insurance_details where hims_f_ocaf_header_id in (select hims_f_ocaf_header_id from hims_f_ocaf_header where patient_id = ? and visit_id=?) ;",
+              // DELETE from hims_f_ocaf_header where hims_f_ocaf_header_id=?;",
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -87,12 +88,14 @@ let getPatientOCAF = (req, res, next) => {
                 _input.visit_id,
                 _input.patient_id,
                 _input.visit_id,
-                hims_f_ocaf_header_id,
-                hims_f_ocaf_header_id
+                _input.patient_id,
+                _input.visit_id,
+                // hims_f_ocaf_header_id,
+                // hims_f_ocaf_header_id,
               ],
-              printQuery: true
+              // printQuery: true,
             })
-            .then(outputResult => {
+            .then((outputResult) => {
               // let errorString =
               //   outputResult[4].length == 0 ? "Services not yet added \n" : "";
               // errorString +=
@@ -157,24 +160,71 @@ let getPatientOCAF = (req, res, next) => {
                 _fields["anti_scratch"] = _out["anti_scratch"];
               }
 
-              _mysql
-                .executeQueryWithTransaction({
-                  query:
-                    "insert into hims_f_ocaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
-                `new_visit_patient`,`sub_department_name`,`patient_code`,`patient_full_name`,\
-                `eligible_reference_number`, `patient_marital_status`,\
-                `dv_right_sch`,`dv_right_cyl`,`dv_right_axis`,`dv_right_prism`,`dv_right_vision`,\
-                `nv_right_sch`,`nv_right_cyl`,`nv_right_axis`,`nv_right_prism`,`nv_right_vision`,\
-                `dv_left_sch`,`dv_left_cyl`,`dv_left_axis`,`dv_left_prism`,`dv_left_vision`,\
-                `nv_left_sch`,`nv_left_cyl`,`nv_left_axis`,`nv_left_prism`,`nv_left_vision`,\
-                `contact_lense_type`,`patient_gender`,`age_in_years`,multi_coated,varilux,light,\
-                aspheric,bifocal,medium,lenticular,single_vision,dark,safety_thickness,\
-                anti_reflecting_coating,photosensitive,high_index,colored,anti_scratch,\
-                `created_date`,`created_by`,`updated_date`,\
-                `updated_by`,`hospital_id`) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,\
-                  ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
-                  values: [
+              let strHeaderQry = "";
+              if (hims_f_ocaf_header_id > 0) {
+                strHeaderQry = _mysql.mysqlQueryFormat(
+                  "update hims_f_ocaf_header set `patient_marital_status`=?,\
+                `right_bifocal_add`=?,`left_bifocal_add`=?,`vertical_add`=?,\
+                `resgular_lense_type`=?,`multi_coated`=?,`varilux`=?,`light`=?,`aspheric`=?,\
+                `bifocal`=?, `medium`=?, `lenticular`=?, `single_vision`=?, `dark`=?,\
+                `safety_thickness`=?, `anti_reflecting_coating`=?, `photosensitive`=?,\
+                `high_index`=?, `colored`=?, `anti_scratch`=?,`contact_lense_type`=?,\
+                `frames`=?,`no_pairs`=?, `estimated_cost`=?,`lense_cost`=?,`frame_cost`=?,\
+                `eye_pd1`=?, `eye_pd2`=?,\
+                `updated_date`=?,`updated_by`=?\
+                WHERE  `hims_f_ocaf_header_id`=?;",
+                  [
+                    _input.patient_marital_status,
+                    _input.right_bifocal_add,
+                    _input.left_bifocal_add,
+                    _input.vertical_add,
+                    _input.resgular_lense_type,
+                    _input.multi_coated,
+                    _input.varilux,
+                    _input.light,
+                    _input.aspheric,
+                    _input.bifocal,
+                    _input.medium,
+                    _input.lenticular,
+                    _input.single_vision,
+                    _input.dark,
+                    _input.safety_thickness,
+                    _input.anti_reflecting_coating,
+                    _input.photosensitive,
+                    _input.high_index,
+                    _input.colored,
+                    _input.anti_scratch,
+                    _input.contact_lense_type,
+                    _input.frames,
+                    _input.no_pairs,
+                    _input.estimated_cost,
+                    _input.lense_cost,
+                    _input.frame_cost,
+                    _input.eye_pd1,
+                    _input.eye_pd2,
+
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    _input.hims_f_ocaf_header_id,
+                  ]
+                );
+              } else {
+                strHeaderQry = _mysql.mysqlQueryFormat(
+                  "insert into hims_f_ocaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
+                  `new_visit_patient`,`sub_department_name`,`patient_code`,`patient_full_name`,\
+                  `eligible_reference_number`, `patient_marital_status`,\
+                  `dv_right_sch`,`dv_right_cyl`,`dv_right_axis`,`dv_right_prism`,`dv_right_vision`,\
+                  `nv_right_sch`,`nv_right_cyl`,`nv_right_axis`,`nv_right_prism`,`nv_right_vision`,\
+                  `dv_left_sch`,`dv_left_cyl`,`dv_left_axis`,`dv_left_prism`,`dv_left_vision`,\
+                  `nv_left_sch`,`nv_left_cyl`,`nv_left_axis`,`nv_left_prism`,`nv_left_vision`,\
+                  `contact_lense_type`,`patient_gender`,`age_in_years`,multi_coated,varilux,light,\
+                  aspheric,bifocal,medium,lenticular,single_vision,dark,safety_thickness,\
+                  anti_reflecting_coating,photosensitive,high_index,colored,anti_scratch,\
+                  `created_date`,`created_by`,`updated_date`,\
+                  `updated_by`,`hospital_id`) \
+                  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,\
+                    ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                  [
                     _fields.patient_id,
                     _fields.visit_id,
                     _fields.visit_date,
@@ -234,26 +284,38 @@ let getPatientOCAF = (req, res, next) => {
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
-                    req.userIdentity.hospital_id
-                  ],
-                  printQuery: true
+                    req.userIdentity.hospital_id,
+                  ]
+                );
+              }
+              _mysql
+                .executeQueryWithTransaction({
+                  query: strHeaderQry,
+
+                  printQuery: true,
                 })
-                .then(headerResult => {
-                  req["hims_f_ocaf_header_id"] = headerResult["insertId"];
+                .then((headerResult) => {
+                  if (hims_f_ocaf_header_id > 0) {
+                    req["hims_f_ocaf_header_id"] = hims_f_ocaf_header_id;
+                  } else {
+                    req["hims_f_ucaf_header_id"] = headerResult["insertId"];
+                  }
+
                   _mysql
                     .executeQuery({
                       query:
                         "INSERT INTO hims_f_ocaf_insurance_details (??) values ?",
                       values: outputResult[1],
                       extraValues: {
-                        hims_f_ocaf_header_id: headerResult["insertId"]
+                        hims_f_ocaf_header_id:
+                          headerResult["hims_f_ocaf_header_id"],
                       },
-                      bulkInsertOrUpdate: true
+                      bulkInsertOrUpdate: true,
                     })
-                    .then(insuranceResult => {
+                    .then((insuranceResult) => {
                       _getocafDetails(_mysql, req)
-                        .then(allResult => {
-                          _mysql.commitTransaction(error => {
+                        .then((allResult) => {
+                          _mysql.commitTransaction((error) => {
                             _mysql.releaseConnection();
                             if (error) {
                               _mysql.rollBackTransaction(() => {
@@ -265,24 +327,24 @@ let getPatientOCAF = (req, res, next) => {
                           req.records = allResult;
                           next();
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           _mysql.releaseConnection();
                           next(error);
                         });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
@@ -290,18 +352,18 @@ let getPatientOCAF = (req, res, next) => {
         } else {
           req["hims_f_ocaf_header_id"] = result[0][0]["hims_f_ocaf_header_id"];
           _getocafDetails(_mysql, req)
-            .then(allResult => {
+            .then((allResult) => {
               _mysql.releaseConnection();
 
               req.records = allResult;
               next();
             })
-            .catch(error => {
+            .catch((error) => {
               next(error);
             });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -317,17 +379,60 @@ const _getocafDetails = (_mysql, req) => {
       .executeQuery({
         query:
           "select * from hims_f_ocaf_header where hims_f_ocaf_header_id=?; \
-          select * from hims_f_ocaf_insurance_details where hims_f_ocaf_header_id=?;",
-        values: [req.hims_f_ocaf_header_id, req.hims_f_ocaf_header_id],
-        printQuery: true
+          select * from hims_f_ocaf_insurance_details where hims_f_ocaf_header_id=?;\
+          select `bcva_dv_right_sch`,`bcva_dv_right_cyl`,`bcva_dv_right_axis`,`bcva_dv_right_prism`,\
+                `bcva_dv_right_vision`,`bcva_nv_right_sch`,`bcva_nv_right_cyl`,\
+                `bcva_nv_right_axis`,`bcva_nv_right_prism`,`bcva_nv_right_vision`,\
+                `bcva_dv_left_sch`,`bcva_dv_left_cyl`,`bcva_dv_left_axis`,`bcva_dv_left_prism`,\
+                `bcva_dv_left_vision`,`bcva_nv_left_sch`,`bcva_nv_left_cyl`,`bcva_nv_left_axis`,`bcva_nv_left_prism`,\
+                `bcva_nv_left_vision`,`cl_type`,\
+                multi_coated,varilux,light,aspheric,bifocal,medium,lenticular,single_vision,dark,\
+                safety_thickness,anti_reflecting_coating,photosensitive,high_index,colored,anti_scratch\
+                from hims_f_glass_prescription where patient_id=? and visit_id=?;",
+        values: [
+          req.hims_f_ocaf_header_id,
+          req.hims_f_ocaf_header_id,
+          req.query.patient_id,
+          req.query.visit_id,
+        ],
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
+        const _fields = result[0].length > 0 ? { ...result[0][0] } : {};
+
+        for (var i = 0; i < result[2].length; i++) {
+          const _out = result[2][i];
+          _fields["dv_right_sch"] = _out["bcva_dv_right_sch"];
+          _fields["dv_right_cyl"] = _out["bcva_dv_right_cyl"];
+          _fields["dv_right_axis"] = _out["bcva_dv_right_axis"];
+          _fields["dv_right_prism"] = _out["bcva_dv_right_prism"];
+          _fields["dv_right_vision"] = _out["bcva_dv_right_vision"];
+
+          _fields["nv_right_sch"] = _out["bcva_nv_right_sch"];
+          _fields["nv_right_cyl"] = _out["bcva_nv_right_cyl"];
+          _fields["nv_right_axis"] = _out["bcva_nv_right_axis"];
+          _fields["nv_right_prism"] = _out["bcva_nv_right_prism"];
+          _fields["nv_right_vision"] = _out["bcva_nv_right_vision"];
+
+          _fields["dv_left_sch"] = _out["bcva_dv_left_sch"];
+          _fields["dv_left_cyl"] = _out["bcva_dv_left_cyl"];
+          _fields["dv_left_axis"] = _out["bcva_dv_left_axis"];
+          _fields["dv_left_prism"] = _out["bcva_dv_left_prism"];
+          _fields["dv_left_vision"] = _out["bcva_dv_left_vision"];
+
+          _fields["nv_left_sch"] = _out["bcva_nv_left_sch"];
+          _fields["nv_left_cyl"] = _out["bcva_nv_left_cyl"];
+          _fields["nv_left_axis"] = _out["bcva_nv_left_axis"];
+          _fields["nv_left_prism"] = _out["bcva_nv_left_prism"];
+          _fields["nv_left_vision"] = _out["bcva_nv_left_vision"];
+        }
+
         resolve({
-          hims_f_ocaf_header: result[0],
-          hims_f_ocaf_insurance_details: result[1]
+          hims_f_ocaf_header: [_fields],
+          hims_f_ocaf_insurance_details: result[1],
         });
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -357,22 +462,54 @@ const updateOcafDetails = (req, res, next) => {
           WHERE  `hims_f_ocaf_header_id`=?;",
         values: [
           input.patient_marital_status,
-          input.dv_right_sch,
-          input.dv_right_cyl,
-          input.dv_right_axis,
-          input.dv_right_vision,
-          input.nv_right_sch,
-          input.nv_right_cyl,
-          input.nv_right_axis,
-          input.nv_right_vision,
-          input.dv_left_sch,
-          input.dv_left_cyl,
-          input.dv_left_axis,
-          input.dv_left_vision,
-          input.nv_left_sch,
-          input.nv_left_cyl,
-          input.nv_left_axis,
-          input.nv_left_vision,
+          input.dv_right_sch
+            ? parseFloat(input.dv_right_sch).toFixed(2)
+            : input.dv_right_sch,
+          input.dv_right_cyl
+            ? parseFloat(input.dv_right_cyl).toFixed(2)
+            : input.dv_right_cyl,
+          input.dv_right_axis
+            ? input.dv_right_axis.toString()
+            : input.dv_right_axis,
+          input.dv_right_vision
+            ? input.dv_right_vision.toString()
+            : input.dv_right_vision,
+          input.nv_right_sch
+            ? parseFloat(input.nv_right_sch).toFixed(2)
+            : input.nv_right_sch,
+          input.nv_right_cyl
+            ? parseFloat(input.nv_right_cyl).toFixed(2)
+            : input.nv_right_cyl,
+          input.nv_right_axis
+            ? input.nv_right_axis.toString()
+            : input.nv_right_axis,
+          input.nv_right_vision
+            ? input.nv_right_vision.toString()
+            : input.nv_right_vision,
+          input.dv_left_sch
+            ? parseFloat(input.dv_left_sch).toFixed(2)
+            : input.dv_left_sch,
+          input.dv_left_cyl
+            ? parseFloat(input.dv_left_cyl).toFixed(2)
+            : input.dv_left_cyl,
+          input.dv_left_axis
+            ? input.dv_left_axis.toString()
+            : input.dv_left_axis,
+          input.dv_left_vision
+            ? input.dv_left_vision.toString()
+            : input.dv_left_vision,
+          input.nv_left_sch
+            ? parseFloat(input.nv_left_sch).toFixed(2)
+            : input.nv_left_sch,
+          input.nv_left_cyl
+            ? parseFloat(input.nv_left_cyl).toFixed(2)
+            : input.nv_left_cyl,
+          input.nv_left_axis
+            ? input.nv_left_axis.toString()
+            : input.nv_left_axis,
+          input.nv_left_vision
+            ? input.nv_left_vision.toString()
+            : input.nv_left_vision,
           input.resgular_lense_type,
           input.multi_coated,
           input.varilux,
@@ -403,16 +540,16 @@ const updateOcafDetails = (req, res, next) => {
           input.vertical_add,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_f_ocaf_header_id
+          input.hims_f_ocaf_header_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -424,5 +561,5 @@ const updateOcafDetails = (req, res, next) => {
 
 export default {
   getPatientOCAF,
-  updateOcafDetails
+  updateOcafDetails,
 };

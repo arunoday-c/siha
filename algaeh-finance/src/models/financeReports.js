@@ -1357,6 +1357,7 @@ function calcAmount(account_heads, levels, decimal_places) {
       let levels_group = _.chain(account_heads)
         .groupBy((g) => g.account_level)
         .value();
+      // console.log("<<<<<<----levels_group---->>>>>>>", levels_group);
       if (levels_group[max_account_level]) {
         levels_group[max_account_level].map((m) => {
           m["total_debit_amount"] = m["debit_amount"];
@@ -1648,7 +1649,7 @@ function createHierarchy(
         }
 
         //END---calulating Amount
-        console.log("item=============", item);
+
         target.push({
           ...item,
           trans_symbol: trans_symbol,
@@ -2601,13 +2602,13 @@ function getTrialBalanceFunc(
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
-          and date(VD.payment_date) between date(?) and date(?)  where H.root_id=?  group by C.finance_account_child_id;
+          and date(VD.payment_date) < date(?)   where H.root_id=?  group by C.finance_account_child_id;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by H.finance_account_head_id   ; 
+          and date(VD.payment_date) < date(?)  where H.root_id=?  group by H.finance_account_head_id   ; 
 
           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -2631,20 +2632,30 @@ function getTrialBalanceFunc(
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
-          and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id;
+          and date(VD.payment_date) < date(?)  where H.root_id=?  group by C.finance_account_child_id;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and date(VD.payment_date) between date(?) and date(?)  where H.root_id=?  group by H.finance_account_head_id   ;
+          and date(VD.payment_date) < date(?)   where H.root_id=?  group by H.finance_account_head_id   ;
 
-          select max(account_level) as account_level from finance_account_head where root_id=?;  `,
+          select max(account_level) as account_level from finance_account_head where root_id=?;  
+          
+          
+          `,
+          // SELECT child_id,head_id, (sum(debit_amount) - sum(credit_amount)) as d_c_opening_balance
+          // FROM finance_voucher_details where
+          // auth_status='A'  and date(payment_date) <=  date(?)
+          // group by  child_id,head_id;
 
           values: [
             finance_account_head_id,
             options.from_date,
-            options.to_date,
+            // options.to_date,
+            finance_account_head_id,
+            options.from_date,
+            // options.to_date,
             finance_account_head_id,
             options.from_date,
             options.to_date,
@@ -2653,15 +2664,13 @@ function getTrialBalanceFunc(
             options.to_date,
             finance_account_head_id,
             options.from_date,
-            options.to_date,
+            // options.to_date,
             finance_account_head_id,
             options.from_date,
-            options.to_date,
-            finance_account_head_id,
-            options.from_date,
-            options.to_date,
+            // options.to_date,
             finance_account_head_id,
             finance_account_head_id,
+            // options.from_date,
           ],
           printQuery: true,
         })
@@ -2670,14 +2679,14 @@ function getTrialBalanceFunc(
 
           const op_child_data = result[1];
           const ob_heads = result[2];
-
+          // console.log("<<<<<<ob_heads>>>>>>", ob_heads);
           const transaction_child_data = result[3];
           const transaction_heads = result[4];
 
           const cb_child_data = result[5];
           const cb_heads = result[6];
           const levels = result[7];
-
+          // const openingBalanceList = result[8];
           calcAmount(ob_heads, levels, decimal_places)
             .then((op_head_data) => {
               calcAmount(transaction_heads, levels, decimal_places)
@@ -2697,6 +2706,7 @@ function getTrialBalanceFunc(
                         decimal_places,
                         options.drillDownLevel,
                         non_zero
+                        // openingBalanceList
                       );
                       resolve(outputArray[0]);
                     })
@@ -2746,6 +2756,7 @@ function createHierarchyTransactionTB(
   try {
     // const onlyChilds = [];
     //const utilities = new algaehUtilities();
+
     let roots = [],
       children = {};
     const _drillDownLevel =
@@ -2778,6 +2789,7 @@ function createHierarchyTransactionTB(
         //ST---calulating Amount
 
         //ST calculating opening balance of from date-----
+
         const OP_BALANCE = op_child_data.find((f) => {
           return (
             item.finance_account_head_id == f.head_id &&
@@ -2830,62 +2842,6 @@ function createHierarchyTransactionTB(
           }
         }
         ///END calculating opening balance of from date-----
-
-        //ST calculating closing balance on  to date-----
-
-        const CB_BALANCE = cb_child_data.find((f) => {
-          return (
-            item.finance_account_head_id == f.head_id &&
-            item.finance_account_child_id == f.child_id
-          );
-        });
-
-        let cb_amount = default_total;
-        if (CB_BALANCE != undefined) {
-          if (trans_symbol == "Dr") {
-            if (
-              parseFloat(CB_BALANCE.deb_minus_cred) >
-              parseFloat(CB_BALANCE.cred_minus_deb)
-            ) {
-              cb_amount =
-                parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
-                " Dr";
-            } else if (
-              parseFloat(CB_BALANCE.deb_minus_cred) <
-              parseFloat(CB_BALANCE.cred_minus_deb)
-            ) {
-              cb_amount =
-                parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
-                " Cr";
-            } else {
-              cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
-                decimal_places
-              );
-            }
-          } else {
-            if (
-              parseFloat(CB_BALANCE.cred_minus_deb) >
-              parseFloat(CB_BALANCE.deb_minus_cred)
-            ) {
-              cb_amount =
-                parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
-                " Cr";
-            } else if (
-              parseFloat(CB_BALANCE.cred_minus_deb) <
-              parseFloat(CB_BALANCE.deb_minus_cred)
-            ) {
-              cb_amount =
-                parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
-                " Dr";
-            } else {
-              cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
-                decimal_places
-              );
-            }
-          }
-        }
-        //END calculating closing balance on  to date-----
-
         //ST calculating transaction amount between  from_date  and to_date-----
         const TR_BALANCE = transaction_child_data.find((f) => {
           return (
@@ -2900,8 +2856,71 @@ function createHierarchyTransactionTB(
           tr_credit_amount = TR_BALANCE.credit_amount;
         }
         ///END calculating transaction amount between  from_date  and to_date-----
+        //ST calculating closing balance on  to date-----
+        let cb_amount =
+          trans_symbol === "Dr"
+            ? parseFloat(
+                parseFloat(op_amount) +
+                  (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+              ).toFixed(decimal_places)
+            : parseFloat(
+                parseFloat(op_amount) +
+                  (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+              ).toFixed(decimal_places);
+        // const CB_BALANCE = cb_child_data.find((f) => {
+        //   return (
+        //     item.finance_account_head_id == f.head_id &&
+        //     item.finance_account_child_id == f.child_id
+        //   );
+        // });
+        // let cb_amount = default_total;
+        // if (CB_BALANCE) {
+        //   if (trans_symbol == "Dr") {
+        //     if (
+        //       parseFloat(CB_BALANCE.deb_minus_cred) >
+        //       parseFloat(CB_BALANCE.cred_minus_deb)
+        //     ) {
+        //       cb_amount =
+        //         parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+        //         " Dr";
+        //     } else if (
+        //       parseFloat(CB_BALANCE.deb_minus_cred) <
+        //       parseFloat(CB_BALANCE.cred_minus_deb)
+        //     ) {
+        //       cb_amount =
+        //         parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+        //         " Cr";
+        //     } else {
+        //       cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+        //         decimal_places
+        //       );
+        //     }
+        //   } else {
+        //     if (
+        //       parseFloat(CB_BALANCE.cred_minus_deb) >
+        //       parseFloat(CB_BALANCE.deb_minus_cred)
+        //     ) {
+        //       cb_amount =
+        //         parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+        //         " Cr";
+        //     } else if (
+        //       parseFloat(CB_BALANCE.cred_minus_deb) <
+        //       parseFloat(CB_BALANCE.deb_minus_cred)
+        //     ) {
+        //       cb_amount =
+        //         parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+        //         " Dr";
+        //     } else {
+        //       cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+        //         decimal_places
+        //       );
+        //     }
+        //   }
+        // }
+        //END calculating closing balance on  to date-----
 
         //END---calulating Amount
+
         if (nonZeroQuery === "Y") {
           if (
             parseFloat(cb_amount) !== 0 ||
@@ -2913,7 +2932,7 @@ function createHierarchyTransactionTB(
               finance_account_child_id: item["finance_account_child_id"],
               tr_debit_amount: tr_debit_amount,
               tr_credit_amount: tr_credit_amount,
-              cb_amount: cb_amount,
+              cb_amount: `${cb_amount} ${trans_symbol}`,
               op_amount: op_amount,
               title: item.child_name,
               label: item.child_name,
@@ -2929,7 +2948,7 @@ function createHierarchyTransactionTB(
             ledger_code: item.child_ledger_code,
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
-            cb_amount: cb_amount,
+            cb_amount: `${cb_amount} ${trans_symbol}`,
             op_amount: op_amount,
             title: item.child_name,
             label: item.child_name,
@@ -2943,7 +2962,6 @@ function createHierarchyTransactionTB(
         const data = target.find((val) => {
           return val.finance_account_head_id == item.finance_account_head_id;
         });
-
         if (!data) {
           //ST calculating opening balance of from date-----
 
@@ -3000,62 +3018,6 @@ function createHierarchyTransactionTB(
             }
           }
           ///END calculating opening balance of from date-----
-
-          //ST calculating closing balance on  to date-----
-
-          const CB_BALANCE = cb_head_data.find((f) => {
-            return item.finance_account_head_id == f.finance_account_head_id;
-          });
-          let cb_amount = default_total;
-          if (CB_BALANCE != undefined) {
-            if (trans_symbol == "Dr") {
-              if (
-                parseFloat(CB_BALANCE.deb_minus_cred) >
-                parseFloat(CB_BALANCE.cred_minus_deb)
-              ) {
-                cb_amount =
-                  parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
-                    decimal_places
-                  ) + " Dr";
-              } else if (
-                parseFloat(CB_BALANCE.deb_minus_cred) <
-                parseFloat(CB_BALANCE.cred_minus_deb)
-              ) {
-                cb_amount =
-                  parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
-                    decimal_places
-                  ) + " Cr";
-              } else {
-                cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
-                  decimal_places
-                );
-              }
-            } else {
-              if (
-                parseFloat(CB_BALANCE.cred_minus_deb) >
-                parseFloat(CB_BALANCE.deb_minus_cred)
-              ) {
-                cb_amount =
-                  parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
-                    decimal_places
-                  ) + " Cr";
-              } else if (
-                parseFloat(CB_BALANCE.cred_minus_deb) <
-                parseFloat(CB_BALANCE.deb_minus_cred)
-              ) {
-                cb_amount =
-                  parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
-                    decimal_places
-                  ) + " Dr";
-              } else {
-                cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
-                  decimal_places
-                );
-              }
-            }
-          }
-          //END calculating closing balance on  to date-----
-
           //ST calculating transaction amount between  from_date  and to_date-----
           const TR_BALANCE = transaction_head_data.find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
@@ -3067,6 +3029,70 @@ function createHierarchyTransactionTB(
             tr_credit_amount = TR_BALANCE.total_credit_amount;
           }
           ///END calculating transaction amount between  from_date  and to_date-----
+          //ST calculating closing balance on  to date-----
+          let cb_amount =
+            trans_symbol === "Dr"
+              ? parseFloat(
+                  parseFloat(op_amount) +
+                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+                ).toFixed(decimal_places)
+              : parseFloat(
+                  parseFloat(op_amount) +
+                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+                ).toFixed(decimal_places);
+          // const CB_BALANCE = cb_head_data.find((f) => {
+          //   return item.finance_account_head_id == f.finance_account_head_id;
+          // });
+          // let cb_amount = default_total;
+          // if (CB_BALANCE != undefined) {
+          //   if (trans_symbol == "Dr") {
+          //     if (
+          //       parseFloat(CB_BALANCE.deb_minus_cred) >
+          //       parseFloat(CB_BALANCE.cred_minus_deb)
+          //     ) {
+          //       cb_amount =
+          //         parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+          //           decimal_places
+          //         ) + " Dr";
+          //     } else if (
+          //       parseFloat(CB_BALANCE.deb_minus_cred) <
+          //       parseFloat(CB_BALANCE.cred_minus_deb)
+          //     ) {
+          //       cb_amount =
+          //         parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+          //           decimal_places
+          //         ) + " Cr";
+          //     } else {
+          //       cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+          //         decimal_places
+          //       );
+          //     }
+          //   } else {
+          //     if (
+          //       parseFloat(CB_BALANCE.cred_minus_deb) >
+          //       parseFloat(CB_BALANCE.deb_minus_cred)
+          //     ) {
+          //       cb_amount =
+          //         parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+          //           decimal_places
+          //         ) + " Cr";
+          //     } else if (
+          //       parseFloat(CB_BALANCE.cred_minus_deb) <
+          //       parseFloat(CB_BALANCE.deb_minus_cred)
+          //     ) {
+          //       cb_amount =
+          //         parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+          //           decimal_places
+          //         ) + " Dr";
+          //     } else {
+          //       cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+          //         decimal_places
+          //       );
+          //     }
+          //   }
+          // }
+          //END calculating closing balance on  to date-----
+
           if (nonZeroQuery === "Y") {
             if (
               parseFloat(cb_amount) !== 0 ||
@@ -3079,7 +3105,7 @@ function createHierarchyTransactionTB(
 
                 tr_debit_amount: tr_debit_amount,
                 tr_credit_amount: tr_credit_amount,
-                cb_amount: cb_amount,
+                cb_amount: `${cb_amount} ${trans_symbol}`,
                 op_amount: op_amount,
                 title: item.account_name,
                 label: item.account_name,
@@ -3096,7 +3122,7 @@ function createHierarchyTransactionTB(
               // ledger_code: item.header_ledger_code,
               tr_debit_amount: tr_debit_amount,
               tr_credit_amount: tr_credit_amount,
-              cb_amount: cb_amount,
+              cb_amount: `${cb_amount} ${trans_symbol}`,
               op_amount: op_amount,
               title: item.account_name,
               label: item.account_name,
@@ -3114,7 +3140,7 @@ function createHierarchyTransactionTB(
         });
 
         let op_amount = default_total;
-        if (OP_BALANCE != undefined) {
+        if (OP_BALANCE) {
           if (trans_symbol == "Dr") {
             if (
               parseFloat(OP_BALANCE.deb_minus_cred) >
@@ -3157,59 +3183,8 @@ function createHierarchyTransactionTB(
             }
           }
         }
+
         ///END calculating opening balance of from date-----
-
-        //ST calculating closing balance on  to date-----
-
-        const CB_BALANCE = cb_head_data.find((f) => {
-          return item.finance_account_head_id == f.finance_account_head_id;
-        });
-        let cb_amount = default_total;
-        if (CB_BALANCE != undefined) {
-          if (trans_symbol == "Dr") {
-            if (
-              parseFloat(CB_BALANCE.deb_minus_cred) >
-              parseFloat(CB_BALANCE.cred_minus_deb)
-            ) {
-              cb_amount =
-                parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
-                " Dr";
-            } else if (
-              parseFloat(CB_BALANCE.deb_minus_cred) <
-              parseFloat(CB_BALANCE.cred_minus_deb)
-            ) {
-              cb_amount =
-                parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
-                " Cr";
-            } else {
-              cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
-                decimal_places
-              );
-            }
-          } else {
-            if (
-              parseFloat(CB_BALANCE.cred_minus_deb) >
-              parseFloat(CB_BALANCE.deb_minus_cred)
-            ) {
-              cb_amount =
-                parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
-                " Cr";
-            } else if (
-              parseFloat(CB_BALANCE.cred_minus_deb) <
-              parseFloat(CB_BALANCE.deb_minus_cred)
-            ) {
-              cb_amount =
-                parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
-                " Dr";
-            } else {
-              cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
-                decimal_places
-              );
-            }
-          }
-        }
-        //END calculating closing balance on  to date-----
-
         //ST calculating transaction amount between  from_date  and to_date-----
         const TR_BALANCE = transaction_head_data.find((f) => {
           return item.finance_account_head_id == f.finance_account_head_id;
@@ -3222,6 +3197,66 @@ function createHierarchyTransactionTB(
         }
 
         ///END calculating transaction amount between  from_date  and to_date-----
+        //ST calculating closing balance on  to date-----
+        let cb_amount =
+          trans_symbol === "Dr"
+            ? parseFloat(
+                parseFloat(op_amount) +
+                  (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+              ).toFixed(decimal_places)
+            : parseFloat(
+                parseFloat(op_amount) +
+                  (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+              ).toFixed(decimal_places);
+        // const CB_BALANCE = cb_head_data.find((f) => {
+        //   return item.finance_account_head_id == f.finance_account_head_id;
+        // });
+        // let cb_amount = default_total;
+        // if (CB_BALANCE != undefined) {
+        //   if (trans_symbol == "Dr") {
+        //     if (
+        //       parseFloat(CB_BALANCE.deb_minus_cred) >
+        //       parseFloat(CB_BALANCE.cred_minus_deb)
+        //     ) {
+        //       cb_amount =
+        //         parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+        //         " Dr";
+        //     } else if (
+        //       parseFloat(CB_BALANCE.deb_minus_cred) <
+        //       parseFloat(CB_BALANCE.cred_minus_deb)
+        //     ) {
+        //       cb_amount =
+        //         parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+        //         " Cr";
+        //     } else {
+        //       cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+        //         decimal_places
+        //       );
+        //     }
+        //   } else {
+        //     if (
+        //       parseFloat(CB_BALANCE.cred_minus_deb) >
+        //       parseFloat(CB_BALANCE.deb_minus_cred)
+        //     ) {
+        //       cb_amount =
+        //         parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+        //         " Cr";
+        //     } else if (
+        //       parseFloat(CB_BALANCE.cred_minus_deb) <
+        //       parseFloat(CB_BALANCE.deb_minus_cred)
+        //     ) {
+        //       cb_amount =
+        //         parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+        //         " Dr";
+        //     } else {
+        //       cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+        //         decimal_places
+        //       );
+        //     }
+        //   }
+        // }
+        //END calculating closing balance on  to date-----
+
         if (nonZeroQuery === "Y") {
           if (
             parseFloat(cb_amount) !== 0 ||
@@ -3235,7 +3270,7 @@ function createHierarchyTransactionTB(
               ledger_code: item.account_code,
               tr_debit_amount: tr_debit_amount,
               tr_credit_amount: tr_credit_amount,
-              cb_amount: cb_amount,
+              cb_amount: `${cb_amount} ${trans_symbol}`,
               op_amount: op_amount,
               title: item.account_name,
               label: item.account_name,
@@ -3251,7 +3286,7 @@ function createHierarchyTransactionTB(
             ledger_code: item.account_code,
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
-            cb_amount: cb_amount,
+            cb_amount: `${cb_amount} ${trans_symbol}`,
             op_amount: op_amount,
             title: item.account_name,
             label: item.account_name,
