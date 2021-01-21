@@ -588,16 +588,18 @@ export default {
                                 ...rest,
                                 debit_amount:
                                   item.payment_type === "DR"
-                                    ? partial_amount
-                                      ? debit_amount
-                                      : balance_amount
-                                    : 0,
+                                    ? debit_amount
+                                    : // ? partial_amount
+                                      //   ? debit_amount
+                                      //   : balance_amount
+                                      0,
                                 credit_amount:
                                   item.payment_type === "CR"
-                                    ? partial_amount
-                                      ? credit_amount
-                                      : balance_amount
-                                    : 0,
+                                    ? credit_amount
+                                    : // ? partial_amount
+                                      //   ? credit_amount
+                                      //   : balance_amount
+                                      0,
                               });
                             });
                           }
@@ -1399,7 +1401,6 @@ export default {
                   })
                   .then((results) => {
                     const result = results[0];
-                    debugger;
                     const options = results[1][0];
                     if (result.length > 0) {
                       new Promise((resolve, reject) => {

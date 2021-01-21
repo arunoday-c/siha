@@ -13,6 +13,7 @@ export default function Inventory({
         subitem: "Consumption List",
         reportName: "consumptionListInventory",
         requireIframe: true,
+        componentCode: "RPT_INV_CONS_LST",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
@@ -148,6 +149,7 @@ export default function Inventory({
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "portrait", //"landscape",
+        componentCode: "RPT_INV_ITM_CONS",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
@@ -317,6 +319,7 @@ export default function Inventory({
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
+        componentCode: "RPT_INV_ITM_EXP",
         reportParameters: [
           {
             className: "col-3 mandatory form-group",
@@ -626,9 +629,91 @@ export default function Inventory({
       {
         subitem: "Purchase Report",
         reportName: "inventoryPurchaseReport",
+        componentCode: "RPT_INV_PUR",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+            // value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          // {
+          //   className: "col-3 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "location_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Purchase No",
+          //   dataSource: {
+          //     textField: "location_description",
+          //     valueField: "hims_d_inventory_location_id",
+          //     data: []
+          //   }
+          // }
+        ],
+      },
+      {
+        subitem: "Purchase Return Report",
+        reportName: "inventoryPurchaseReturnReport",
         requireIframe: true,
         // pageSize: "A3",
-        // componentCode: "RPT_HR_EMP_DEP",
+        componentCode: "INV_PUR_RTN_RPT",
         // pageOrentation: "landscape",
         reportParameters: [
           {
@@ -711,9 +796,7 @@ export default function Inventory({
         subitem: "Purchase report by item or supplier",
         reportName: "inventoryPurchaseReportItemSupplier",
         requireIframe: true,
-        // pageSize: "A3",
-        // componentCode: "RPT_HR_EMP_DEP",
-        // pageOrentation: "landscape",
+        // componentCode: "RPT_INV_PUR",
         reportParameters: [
           {
             className: "col-3 form-group",
@@ -870,6 +953,7 @@ export default function Inventory({
         subitem: "Transfer Report",
         reportName: "InventoryTransferReport",
         requireIframe: true,
+        componentCode: "RPT_INV_TRAN",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
@@ -951,6 +1035,7 @@ export default function Inventory({
         subitem: "Inventory Aging",
         reportName: "InventoryAgingReport",
         requireIframe: true,
+        componentCode: "RPT_INV_INV_AGI",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",

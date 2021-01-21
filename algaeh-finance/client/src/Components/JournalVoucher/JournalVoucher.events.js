@@ -84,6 +84,7 @@ export function addJurnorLedger(input) {
       if (totalAmount !== pending_amount) {
         input["partial_amount"] = pending_amount;
       }
+
       return addVoucher(input, "/voucher/addVoucher");
     } else {
       return addVoucher(rest, "/voucher/addVoucher");
