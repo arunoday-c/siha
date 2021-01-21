@@ -15,7 +15,7 @@ export default class Eye extends Component {
       openPMT: false,
       openAddIOP: false,
       openGlassPres: false,
-      PrescriptionData: []
+      PrescriptionData: [],
     };
     this.getGlassPrescription();
   }
@@ -26,10 +26,10 @@ export default class Eye extends Component {
       data: {
         patient_id: Window.global["current_patient"],
         encounter_id: Window.global["encounter_id"],
-        episode_id: Window.global["episode_id"]
+        episode_id: Window.global["episode_id"],
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           for (let i = 0; i < data.length; i++) {
@@ -69,44 +69,44 @@ export default class Eye extends Component {
           }
 
           this.setState({
-            PrescriptionData: data
+            PrescriptionData: data,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         // AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   showModal(openModal) {
     if (openModal === "Refraction") {
       this.setState({
-        openRefraction: !this.state.openRefraction
+        openRefraction: !this.state.openRefraction,
       });
     } else if (openModal === "Cyclo") {
       this.setState({
-        openCyclo: !this.state.openCyclo
+        openCyclo: !this.state.openCyclo,
       });
     } else if (openModal === "PMT") {
       this.setState({
-        openPMT: !this.state.openPMT
+        openPMT: !this.state.openPMT,
       });
     } else if (openModal === "AddVision") {
       this.setState({
-        openAddVision: !this.state.openAddVision
+        openAddVision: !this.state.openAddVision,
       });
     } else if (openModal === "AddIOP") {
       this.setState({
-        openAddIOP: !this.state.openAddIOP
+        openAddIOP: !this.state.openAddIOP,
       });
     } else if (openModal === "GlassPres") {
       this.setState({
-        openGlassPres: !this.state.openGlassPres
+        openGlassPres: !this.state.openGlassPres,
       });
       this.getGlassPrescription();
     }
@@ -139,17 +139,17 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">Refraction</h3>
                 </div>
                 <div className="actions">
-                  <button className="btn btn-primary btn-circle active">
-                    <i
-                      className="fas fa-plus"
-                      onClick={this.showModal.bind(this, "Refraction")}
-                    />
-                    <EyeModal
-                      openRefraction={this.state.openRefraction}
-                      onClose={this.showModal.bind(this, "Refraction")}
-                      HeaderCaption="Refraction"
-                    />
-                  </button>
+                  {/* <button className="btn btn-primary btn-circle active"> */}
+                  <i
+                    className="fas fa-plus btn btn-primary btn-circle active"
+                    onClick={this.showModal.bind(this, "Refraction")}
+                  />
+                  <EyeModal
+                    openRefraction={this.state.openRefraction}
+                    onClose={this.showModal.bind(this, "Refraction")}
+                    HeaderCaption="Refraction"
+                  />
+                  {/* </button> */}
                 </div>
               </div>
               <div className="portlet-body">
@@ -169,17 +169,17 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">Cyclo</h3>
                 </div>
                 <div className="actions">
-                  <button className="btn btn-primary btn-circle active">
-                    <i
-                      className="fas fa-plus"
-                      onClick={this.showModal.bind(this, "Cyclo")}
-                    />
-                    <EyeModal
-                      openCyclo={this.state.openCyclo}
-                      onClose={this.showModal.bind(this, "Cyclo")}
-                      HeaderCaption="Cyclo"
-                    />
-                  </button>
+                  {/* <button className="btn btn-primary btn-circle active"> */}
+                  <i
+                    className="fas fa-plus btn btn-primary btn-circle active"
+                    onClick={this.showModal.bind(this, "Cyclo")}
+                  />
+                  <EyeModal
+                    openCyclo={this.state.openCyclo}
+                    onClose={this.showModal.bind(this, "Cyclo")}
+                    HeaderCaption="Cyclo"
+                  />
+                  {/* </button> */}
                 </div>
               </div>
               <div className="portlet-body">
@@ -199,17 +199,17 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">PMT</h3>
                 </div>
                 <div className="actions">
-                  <button className="btn btn-primary btn-circle active">
-                    <i
-                      className="fas fa-plus"
-                      onClick={this.showModal.bind(this, "PMT")}
-                    />
-                    <EyeModal
-                      openPMT={this.state.openPMT}
-                      onClose={this.showModal.bind(this, "PMT")}
-                      HeaderCaption="PMT"
-                    />
-                  </button>
+                  {/* <button className="btn btn-primary btn-circle active"> */}
+                  <i
+                    className="fas fa-plus btn btn-primary btn-circle active"
+                    onClick={this.showModal.bind(this, "PMT")}
+                  />
+                  <EyeModal
+                    openPMT={this.state.openPMT}
+                    onClose={this.showModal.bind(this, "PMT")}
+                    HeaderCaption="PMT"
+                  />
+                  {/* </button> */}
                 </div>
               </div>
               <div className="portlet-body">
@@ -229,17 +229,17 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">Add Vision</h3>
                 </div>
                 <div className="actions">
-                  <button className="btn btn-primary btn-circle active">
-                    <i
-                      className="fas fa-plus"
-                      onClick={this.showModal.bind(this, "AddVision")}
-                    />
-                    <EyeModal
-                      openAddVision={this.state.openAddVision}
-                      onClose={this.showModal.bind(this, "AddVision")}
-                      HeaderCaption="Add Vision"
-                    />
-                  </button>
+                  {/* <button className="btn btn-primary btn-circle active"> */}
+                  <i
+                    className="fas fa-plus btn btn-primary btn-circle active"
+                    onClick={this.showModal.bind(this, "AddVision")}
+                  />
+                  <EyeModal
+                    openAddVision={this.state.openAddVision}
+                    onClose={this.showModal.bind(this, "AddVision")}
+                    HeaderCaption="Add Vision"
+                  />
+                  {/* </button> */}
                 </div>
               </div>
               <div className="portlet-body">
@@ -261,17 +261,17 @@ export default class Eye extends Component {
                   </h3>
                 </div>
                 <div className="actions">
-                  <button className="btn btn-primary btn-circle active">
-                    <i
-                      className="fas fa-plus"
-                      onClick={this.showModal.bind(this, "AddIOP")}
-                    />
-                    <EyeModal
-                      openAddIOP={this.state.openAddIOP}
-                      onClose={this.showModal.bind(this, "AddIOP")}
-                      HeaderCaption="Intraocular Pressure (IOP)"
-                    />
-                  </button>
+                  {/* <button className="btn btn-primary btn-circle active"> */}
+                  <i
+                    className="fas fa-plus btn btn-primary btn-circle active"
+                    onClick={this.showModal.bind(this, "AddIOP")}
+                  />
+                  <EyeModal
+                    openAddIOP={this.state.openAddIOP}
+                    onClose={this.showModal.bind(this, "AddIOP")}
+                    HeaderCaption="Intraocular Pressure (IOP)"
+                  />
+                  {/* </button> */}
                 </div>
               </div>
               <div className="portlet-body">
@@ -291,18 +291,18 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">Glass Prescription</h3>
                 </div>
                 <div className="actions">
-                  <button className="btn btn-primary btn-circle active">
-                    <i
-                      className="fas fa-plus"
-                      onClick={this.showModal.bind(this, "GlassPres")}
-                    />
-                    <GlassPrescription
-                      openGlassPres={this.state.openGlassPres}
-                      onClose={this.showModal.bind(this, "GlassPres")}
-                      HeaderCaption="Glass Prescription"
-                      PrescriptionData={this.state.PrescriptionData}
-                    />
-                  </button>
+                  {/* <button className="btn btn-primary btn-circle active"> */}
+                  <i
+                    className="fas fa-plus btn btn-primary btn-circle active"
+                    onClick={this.showModal.bind(this, "GlassPres")}
+                  />
+                  <GlassPrescription
+                    openGlassPres={this.state.openGlassPres}
+                    onClose={this.showModal.bind(this, "GlassPres")}
+                    HeaderCaption="Glass Prescription"
+                    PrescriptionData={this.state.PrescriptionData}
+                  />
+                  {/* </button> */}
                 </div>
               </div>
               <div className="portlet-body">

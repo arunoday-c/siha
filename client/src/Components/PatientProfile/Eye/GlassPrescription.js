@@ -15,7 +15,7 @@ import PrintGlassPrescription from "./printPrescription";
 export default class GlassPrescription extends Component {
   constructor(props) {
     super(props);
-    this.state = { cva_specs: null };
+    this.state = { cva_specs: "S" };
   }
 
   UNSAFE_componentWillMount() {
