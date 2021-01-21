@@ -50,7 +50,6 @@ const ClearData = ($this) => {
 };
 
 const SaveInvoiceEnrty = ($this) => {
-
   if ($this.state.invoice_date === null) {
     swalMessage({
       type: "warning",
@@ -63,7 +62,10 @@ const SaveInvoiceEnrty = ($this) => {
       title: "Delivery Date - Cannot be empty.",
     });
     return;
-  } else if ($this.state.sales_invoice_mode === "I" && $this.state.cust_good_rec_date === null) {
+  } else if (
+    $this.state.sales_invoice_mode === "I" &&
+    $this.state.cust_good_rec_date === null
+  ) {
     swalMessage({
       type: "warning",
       title: "Goods Recived Date - Cannot be empty.",
@@ -78,9 +80,8 @@ const SaveInvoiceEnrty = ($this) => {
     data: $this.state,
     onSuccess: (response) => {
       if (response.data.success) {
-        getCtrlCode($this, response.data.records.invoice_number);
+        getCtrlCode($this, true, response.data.records.invoice_number);
         // if ($this.state.sales_invoice_files.length) {
-        //
         //   $this.saveDocument();
         // }
         // $this.setState({
@@ -107,7 +108,7 @@ const SaveInvoiceEnrty = ($this) => {
   });
 };
 
-const getCtrlCode = ($this, docNumber) => {
+const getCtrlCode = ($this, saveDocument, docNumber) => {
   AlgaehLoader({ show: true });
 
   let IOputs = SalesInvoiceIO.inputParam();
@@ -150,7 +151,11 @@ const getCtrlCode = ($this, docNumber) => {
           }
 
           $this.setState(data, () => {
-            $this.saveDocument();
+            if (saveDocument) {
+              $this.saveDocument();
+            } else {
+              return;
+            }
           });
           AlgaehLoader({ show: false });
 
@@ -232,7 +237,7 @@ const PostSalesInvoice = ($this) => {
     method: "PUT",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        getCtrlCode($this, $this.state.invoice_number);
+        getCtrlCode($this, false, $this.state.invoice_number);
         swalMessage({
           title: "Posted successfully . .",
           type: "success",
@@ -379,7 +384,7 @@ const RevertSalesInvoice = ($this) => {
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            getCtrlCode($this, $this.state.invoice_number);
+            getCtrlCode($this, false, $this.state.invoice_number);
             swalMessage({
               type: "success",
               title: "Reverted successfully ...",
@@ -460,7 +465,7 @@ const CancelSalesInvoice = ($this) => {
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            getCtrlCode($this, $this.state.invoice_number);
+            getCtrlCode($this, false, $this.state.invoice_number);
             swalMessage({
               type: "success",
               title: "Cancelled successfully ...",
@@ -520,7 +525,6 @@ const SaveDeliveryDate = ($this) => {
     due_date: moment($this.state.delivery_date, "YYYY-MM-DD")
       .add($this.state.payment_terms, "days")
       .format("YYYY-MM-DD"),
-
   };
 
   // Inputobj.posted = "Y";
@@ -539,7 +543,7 @@ const SaveDeliveryDate = ($this) => {
     method: "PUT",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        getCtrlCode($this, $this.state.invoice_number);
+        getCtrlCode($this, false, $this.state.invoice_number);
         swalMessage({
           title: "Saved successfully . .",
           type: "success",
@@ -564,5 +568,5 @@ export {
   SaveNarration,
   datehandle,
   dateValidate,
-  SaveDeliveryDate
+  SaveDeliveryDate,
 };
