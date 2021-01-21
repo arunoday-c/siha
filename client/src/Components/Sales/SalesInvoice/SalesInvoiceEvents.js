@@ -56,12 +56,6 @@ const SaveInvoiceEnrty = ($this) => {
       title: "Invoice Date - Cannot be empty.",
     });
     return;
-  } else if ($this.state.delivery_date === null) {
-    swalMessage({
-      type: "warning",
-      title: "Delivery Date - Cannot be empty.",
-    });
-    return;
   } else if (
     $this.state.sales_invoice_mode === "I" &&
     $this.state.cust_good_rec_date === null

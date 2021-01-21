@@ -39,7 +39,8 @@ export default {
       cancel_visible: false,
       revert_reason: null,
       revert_visible: false,
-      cust_good_rec_date: null
+      cust_good_rec_date: null,
+      is_revert: "N"
     };
     return output;
   },
