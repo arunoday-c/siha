@@ -58,6 +58,8 @@ const {
   getAllPhysicalExamination,
   getVitalsHeaderMaster,
   addPatientHistory,
+  updatePatientHistory,
+  deletePatientHistory,
   getPatientHistory,
   getFollowUp,
   getPatientEpisodeSummary,
@@ -290,7 +292,14 @@ export default () => {
     });
     next();
   });
-
+  api.put("/updatePatientHistory", updatePatientHistory, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
   api.put("/updateAllergy", updateAllergy, (req, res, next) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
@@ -982,6 +991,19 @@ export default () => {
   api.delete(
     "/deleteDietAdvice",
     deleteDietAdvice,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.delete(
+    "/deletePatientHistory",
+    deletePatientHistory,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

@@ -4,13 +4,17 @@ import { AlgaehModalPopUp, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   swalMessage,
-  maxCharactersLeft
+  maxCharactersLeft,
 } from "../../../utils/algaehApiCall";
 import { getPatientHistory } from "../PatientProfileHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import HistoryViewComp from "./HistoryViewComp";
+import Swal from "sweetalert2";
+import { newAlgaehApi } from "../../../hooks";
+import { AlgaehMessagePop } from "algaeh-react-components";
 
 class PatientHistory extends Component {
   constructor(props) {
@@ -22,7 +26,7 @@ class PatientHistory extends Component {
       medical_history: "",
       family_history: "",
       birth_history: "",
-      openAddModal: false
+      openAddModal: false,
     };
     this.socialHistoryMaxLength = 1000;
     this.medicalHistoryMaxLength = 1000;
@@ -52,38 +56,38 @@ class PatientHistory extends Component {
     if (this.state.social_history) {
       his_array.push({
         history_type: "SOH",
-        remarks: this.state.social_history
+        remarks: this.state.social_history,
       });
     }
     if (this.state.surgical_history) {
       his_array.push({
         history_type: "SGH",
-        remarks: this.state.surgical_history
+        remarks: this.state.surgical_history,
       });
     }
     if (this.state.medical_history) {
       his_array.push({
         history_type: "MEH",
-        remarks: this.state.medical_history
+        remarks: this.state.medical_history,
       });
     }
     if (this.state.family_history) {
       his_array.push({
         history_type: "FMH",
-        remarks: this.state.family_history
+        remarks: this.state.family_history,
       });
     }
     if (this.state.birth_history) {
       his_array.push({
         history_type: "BRH",
-        remarks: this.state.birth_history
+        remarks: this.state.birth_history,
       });
     }
 
     if (his_array.length === 0) {
       swalMessage({
         title: "Please Enter History to save",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -91,18 +95,18 @@ class PatientHistory extends Component {
     let send_obj = {
       patient_id: current_patient, //Window.global['current_patient'],
       provider_id: provider_id, //Window.global['provider_id'],
-      patient_history: his_array
+      patient_history: his_array,
     };
 
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientHistory",
       method: "POST",
       data: send_obj,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record added successfully",
-            type: "success"
+            type: "success",
           });
 
           this.setState(
@@ -111,7 +115,7 @@ class PatientHistory extends Component {
               surgical_history: "",
               medical_history: "",
               family_history: "",
-              birth_history: ""
+              birth_history: "",
             },
             () => {
               getPatientHistory(this);
@@ -119,20 +123,56 @@ class PatientHistory extends Component {
           );
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
+      },
+    });
+  }
+  deleteHistory(data) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "History Will Be Removed From The List",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.value) {
+        newAlgaehApi({
+          uri: "/doctorsWorkBench/deletePatientHistory",
+          method: "DELETE",
+
+          data: {
+            hims_f_patient_history_id: data.hims_f_patient_history_id,
+          },
+        })
+          .then((res) => {
+            if (res.data.success) {
+              AlgaehMessagePop({
+                type: "info",
+                display: "Successfully deleted...",
+              });
+              getPatientHistory(this);
+            }
+          })
+          .catch((e) => {
+            AlgaehMessagePop({
+              type: "error",
+              display: e.message,
+            });
+          });
       }
     });
   }
-
   textHandle(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
         patHistory: [],
@@ -140,7 +180,7 @@ class PatientHistory extends Component {
         surgical_history: null,
         medical_history: null,
         family_history: null,
-        birth_history: null
+        birth_history: null,
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -158,7 +198,7 @@ class PatientHistory extends Component {
         openPopup={this.props.openAddModal}
         title={"Patient History"}
         events={{
-          onClose: this.onClose.bind(this)
+          onClose: this.onClose.bind(this),
         }}
       >
         <div className="popupInner">
@@ -172,7 +212,7 @@ class PatientHistory extends Component {
                   <div className="col-12 historySepration">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Social History"
+                        forceLabel: "Social History",
                       }}
                     />
                     <textarea
@@ -193,7 +233,7 @@ class PatientHistory extends Component {
                   <div className="col-12 historySepration">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Medical History"
+                        forceLabel: "Medical History",
                       }}
                     />
                     <textarea
@@ -214,7 +254,7 @@ class PatientHistory extends Component {
                   <div className="col-12 historySepration">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Surgical History"
+                        forceLabel: "Surgical History",
                       }}
                     />
                     <textarea
@@ -235,7 +275,7 @@ class PatientHistory extends Component {
                   <div className="col-12 historySepration">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Family History"
+                        forceLabel: "Family History",
                       }}
                     />
                     <textarea
@@ -256,7 +296,7 @@ class PatientHistory extends Component {
                   <div className="col-12 historySepration">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Birth History"
+                        forceLabel: "Birth History",
                       }}
                     />
                     <textarea
@@ -278,6 +318,8 @@ class PatientHistory extends Component {
               </div>
             </div>
             <div className="col-8" style={{ paddingLeft: 0 }}>
+              {/* <HistoryViewComp history={history} /> */}
+
               <div className="popRightDiv" style={{ paddingLeft: 0 }}>
                 {history.map((item, index) => (
                   <table
@@ -292,13 +334,24 @@ class PatientHistory extends Component {
                     </thead>
                     <tbody>
                       {item.groupDetail.map((data, dIndex) => (
-                        <tr key={dIndex}>
-                          <td>{data.remarks}</td>
-                          <td>
-                            {data.provider_name} on
-                            <small> {data.created_date}</small>
-                          </td>
-                        </tr>
+                        <>
+                          <tr key={dIndex}>
+                            <HistoryViewComp
+                              id={dIndex}
+                              data={data}
+                              remarks={data.remarks}
+                            />
+                            {/* <td>{data.remarks}</td> */}
+                            <td>
+                              {data.provider_name} on
+                              <small> {data.created_date}</small>
+                            </td>
+                          </tr>
+                          <i
+                            className="fas fa-trash"
+                            onClick={this.deleteHistory.bind(this, data)}
+                          ></i>
+                        </>
                       ))}
                     </tbody>
                   </table>
@@ -325,7 +378,7 @@ class PatientHistory extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={e => {
+                onClick={(e) => {
                   this.onClose(e);
                 }}
               >
@@ -341,14 +394,14 @@ class PatientHistory extends Component {
 
 function mapStateToProps(state) {
   return {
-    patient_history: state.patient_history
+    patient_history: state.patient_history,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientHistory: AlgaehActions
+      getPatientHistory: AlgaehActions,
     },
     dispatch
   );
