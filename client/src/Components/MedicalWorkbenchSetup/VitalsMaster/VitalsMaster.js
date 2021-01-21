@@ -69,6 +69,12 @@ class VitalsMaster extends Component {
       // console.log("Mapped Department:", dps);
       return;
     }
+    if (e.target.name === "isDecimal") {
+      this.setState({
+        [e.target.name]: !this.state.isDecimal,
+      });
+      return;
+    }
   }
 
   changeTexts(e) {
@@ -597,7 +603,16 @@ class VitalsMaster extends Component {
                   />
                   <label>Display</label>
                 </div>
-
+                <div className="col" style={{ marginTop: 20 }}>
+                  <input
+                    name="isDecimal"
+                    checked={this.state.isDecimal}
+                    type="checkbox"
+                    style={{ marginRight: "5px" }}
+                    onChange={this.changeChecks.bind(this)}
+                  />
+                  <label>isDecimal</label>
+                </div>
                 <div className="col">
                   <button
                     style={{ marginTop: 20 }}
@@ -798,6 +813,45 @@ class VitalsMaster extends Component {
                                 name: "display",
                                 className: "select-fld",
                                 value: row.display,
+
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO,
+                                },
+                                others: {
+                                  required: true,
+                                  disabled: row.record_status === "I",
+                                },
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
+                              }}
+                            />
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "isDecimal",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "Is Decimal Value" }}
+                          />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>{row.isDecimal === "Y" ? "Yes" : "No"}</span>
+                          );
+                        },
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "isDecimal",
+                                className: "select-fld",
+                                value: row.isDecimal,
 
                                 dataSource: {
                                   textField: "name",
