@@ -19,7 +19,7 @@ import labsock from "./labSocket";
 import selfServiceSocket from "./selfServiceSocket";
 import purchase from "./purchase";
 import pharmacy from "./pharmacy";
-
+import sales from "./sales";
 import generalNotification from "./general";
 const _port = process.env.PORT;
 const exp = express();
@@ -155,7 +155,7 @@ db.once("open", function () {
     appsock(socket);
     labsock(socket);
     selfServiceSocket(socket);
-
+    sales(socket);
     purchase(socket);
     socket.on("disconnect", () => {
       console.log("Client disconnected");
@@ -169,6 +169,7 @@ db.once("open", function () {
 
   pharmacy(io);
   generalNotification(io);
+
   app.listen(_port);
   console.log(`IO Sockets are running on PORT - *${_port}`);
 });

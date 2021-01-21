@@ -360,6 +360,7 @@ const RevertSalesInvoice = ($this) => {
     });
     return;
   }
+
   swal({
     title: "Are you sure you want to Revert ?",
     type: "warning",
@@ -370,6 +371,7 @@ const RevertSalesInvoice = ($this) => {
     cancelButtonText: "No",
   }).then((willDelete) => {
     if (willDelete.value) {
+      const { sales_order_number, sales_person_id } = $this.state;
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/SalesInvoice/revertSalesInvoice",
@@ -385,6 +387,12 @@ const RevertSalesInvoice = ($this) => {
         onSuccess: (response) => {
           if (response.data.success) {
             getCtrlCode($this, false, $this.state.invoice_number);
+            if ($this.context.socket.connected) {
+              $this.context.socket.emit("sales_revet", {
+                sales_order_number,
+                sales_person_id,
+              });
+            }
             swalMessage({
               type: "success",
               title: "Reverted successfully ...",

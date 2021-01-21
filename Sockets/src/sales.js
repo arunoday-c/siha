@@ -1,8 +1,9 @@
 import algaehMysql from "algaeh-mysql";
 import { createNotification } from "./utils";
-export default function sales(sockets) {
+export default function sales(socket) {
   const _mysql = new algaehMysql();
   socket.on("sales_order_auth", async (data) => {
+    console.log("Here is there inside socket");
     try {
       const result = await _mysql.executeQuery({
         query: `SELECT 
@@ -15,8 +16,10 @@ export default function sales(sockets) {
                       algaeh_m_role_user_mappings RU ON MR.role_id = RU.role_id
                          INNER JOIN
                       algaeh_d_app_user AU ON AU.algaeh_d_app_user_id = RU.user_id
+                      INNER JOIN algaeh_d_app_module as M on M.algaeh_d_module_id =  MR.module_id
+                        INNER JOIN algaeh_d_app_screens as S on S.algaeh_app_screens_id = SR.screen_id
                   WHERE
-                  module_code = 'SALES' AND SR.screen_code = 'SAL002'
+                  M.module_code = 'SALES' AND S.screen_code = 'SAL002'
                           AND MR.role_id NOT IN (SELECT 
                               MR.role_id
                           FROM
@@ -29,6 +32,7 @@ export default function sales(sockets) {
                               algaeh_d_app_component CO ON SRM.component_id = CO.algaeh_d_app_component_id
                           WHERE
                               component_code = 'SALE_LST_AUTH1');`,
+        printQuery: true,
       });
       _mysql.releaseConnection();
       const authIds = result.map((item) => item.employee_id);
@@ -119,5 +123,16 @@ export default function sales(sockets) {
     } catch (e) {
       console.error(e);
     }
+  });
+  socket.on("sales_revet", async (data) => {
+    const { sales_person_id, sales_order_number } = data;
+    const msg = `Sales Order number '${sales_order_number}' is Reverted Please check order number for more details.`;
+    console.log("Here Message", msg);
+    const save = await createNotification({
+      message: msg,
+      user_id: sales_person_id,
+      title: "Sales Order Reverted.",
+    });
+    socket.to(`${sales_person_id}`).emit("notification", save);
   });
 }
