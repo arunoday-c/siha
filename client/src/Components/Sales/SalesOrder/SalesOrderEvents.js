@@ -379,7 +379,7 @@ const ClearData = ($this, e) => {
     is_posted: "N",
     is_revert: "N",
     cancelled: "N",
-    is_reject: "N"
+    is_reject: "N",
     // services_required: "N"
   };
 
@@ -467,13 +467,19 @@ const SaveSalesOrderEnrty = ($this, from) => {
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            getCtrlCode($this, response.data.records.sales_order_number);
+            const saveDoc = true;
+            getCtrlCode(
+              $this,
+
+              saveDoc,
+              response.data.records.sales_order_number
+            );
             // if ($this.state.invoice_files.length) {
             //   $this.saveDocument();
             // }
-            if ($this.state.invoice_files.length) {
-              $this.saveDocument();
-            }
+            // if ($this.state.invoice_files.length) {
+            //   $this.saveDocument();
+            // }
             if ($this.context.socket.connected) {
               $this.context.socket.emit("sales_order_auth", {
                 sales_order_number: response.data.records.sales_order_number,
@@ -524,7 +530,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
   });
 };
 
-const getCtrlCode = ($this, docNumber) => {
+const getCtrlCode = ($this, saveDocument, docNumber) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/SalesOrder/getSalesOrder",
@@ -536,7 +542,6 @@ const getCtrlCode = ($this, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
-
         const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 
@@ -596,7 +601,12 @@ const getCtrlCode = ($this, docNumber) => {
         data.organizations = $this.props.hospitaldetails;
 
         $this.setState(data, () => {
-          $this.saveDocument();
+          // console.log("test", test);
+          if (saveDocument) {
+            $this.saveDocument();
+          } else {
+            return;
+          }
         });
       }
       AlgaehLoader({ show: false });
@@ -806,7 +816,7 @@ const AuthorizeOrderEntry = ($this, authorize) => {
           authorize1: authorize1,
           authorize2: authorize2,
         });
-        getCtrlCode($this, $this.state.sales_order_number);
+        getCtrlCode($this, false, $this.state.sales_order_number);
         if (authorize1 === "Y") {
           if ($this.context.socket.connected) {
             $this.context.socket.emit("sales_order_auth_level_one", {
@@ -839,7 +849,6 @@ const AuthorizeOrderEntry = ($this, authorize) => {
   });
 };
 
-
 const RejectSalesServiceOrder = ($this) => {
   if (!$this.state.reject_reason_sales) {
     swalMessage({
@@ -863,7 +872,7 @@ const RejectSalesServiceOrder = ($this) => {
           rejectVisible: false,
           // authBtnEnable: true,
         });
-        getCtrlCode($this, $this.state.sales_order_number);
+        getCtrlCode($this, false, $this.state.sales_order_number);
       }
       AlgaehLoader({ show: false });
     },
@@ -878,7 +887,6 @@ const RejectSalesServiceOrder = ($this) => {
 };
 
 const CancelSalesServiceOrder = ($this) => {
-  debugger
   if (!$this.state.canceled_reason_sales) {
     swalMessage({
       title: "Please add reason for Rejection",
@@ -901,7 +909,7 @@ const CancelSalesServiceOrder = ($this) => {
           rejectVisible: false,
           // authBtnEnable: true,
         });
-        getCtrlCode($this, $this.state.sales_order_number);
+        getCtrlCode($this, false, $this.state.sales_order_number);
       }
       AlgaehLoader({ show: false });
     },
@@ -944,5 +952,5 @@ export {
   CancelSalesServiceOrder,
   getCostCenters,
   ContractSearch,
-  RejectSalesServiceOrder
+  RejectSalesServiceOrder,
 };

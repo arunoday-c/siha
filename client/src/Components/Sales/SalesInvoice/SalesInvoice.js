@@ -29,7 +29,7 @@ import {
   SaveNarration,
   dateValidate,
   datehandle,
-  SaveDeliveryDate
+  SaveDeliveryDate,
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { Upload } from "antd";
@@ -103,7 +103,7 @@ class SalesInvoice extends Component {
 
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("invoice_number")) {
-      getCtrlCode(this, queryParams.get("invoice_number"));
+      getCtrlCode(this, false, queryParams.get("invoice_number"));
     }
   }
 
@@ -301,7 +301,7 @@ class SalesInvoice extends Component {
             value: this.state.invoice_number,
             selectValue: "invoice_number",
             events: {
-              onChange: getCtrlCode.bind(this, this),
+              onChange: getCtrlCode.bind(this, this, false),
             },
             jsonFile: {
               fileName: "spotlightSearch",
@@ -358,8 +358,8 @@ class SalesInvoice extends Component {
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                            <span className="badge badge-success">Posted</span>
-                          )}
+                      <span className="badge badge-success">Posted</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
@@ -378,17 +378,17 @@ class SalesInvoice extends Component {
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Invoice",
-                    events: {
-                      onClick: () => {
-                        generateSalesInvoiceReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Invoice",
+                      events: {
+                        onClick: () => {
+                          generateSalesInvoiceReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -529,8 +529,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-                <InvoiceItemList SALESInvoiceIOputs={this.state} />
-              )}
+              <InvoiceItemList SALESInvoiceIOputs={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="row">
@@ -613,10 +613,10 @@ class SalesInvoice extends Component {
                                 </li>
                               ))
                             ) : (
-                                <div className="col-12 noAttachment" key={1}>
-                                  <p>No Attachments Available</p>
-                                </div>
-                              )}
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Attachments Available</p>
+                              </div>
+                            )}
                           </ul>
                         </div>
                       </div>
@@ -705,7 +705,7 @@ class SalesInvoice extends Component {
                   // disabled={this.state.dateEditable}
                   value={this.state.delivery_date}
                 />
-                {this.state.sales_invoice_mode === "I" ?
+                {this.state.sales_invoice_mode === "I" ? (
                   <AlgaehDateHandler
                     div={{ className: "col-3" }}
                     label={{
@@ -722,7 +722,8 @@ class SalesInvoice extends Component {
                     }}
                     disabled={this.state.dataExitst}
                     value={this.state.cust_good_rec_date}
-                  /> : null}
+                  />
+                ) : null}
 
                 <AlagehFormGroup
                   div={{ className: "col-12 textAreaLeft" }}
@@ -765,7 +766,8 @@ class SalesInvoice extends Component {
                     />
                   </button>
                 ) : null}
-                {this.state.hims_f_sales_invoice_header_id > 0 && this.state.is_posted === "Y" ? (
+                {this.state.hims_f_sales_invoice_header_id > 0 &&
+                this.state.is_posted === "Y" ? (
                   <AlgaehSecurityComponent componentCode="SALE_INV_SAV_DELDATE">
                     <button
                       type="button"
@@ -799,20 +801,20 @@ class SalesInvoice extends Component {
                       />
                     </button>
                   ) : (
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={SaveInvoiceEnrty.bind(this, this)}
-                        disabled={this.state.saveEnable}
-                      >
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Generate",
-                            returnText: true,
-                          }}
-                        />
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={SaveInvoiceEnrty.bind(this, this)}
+                      disabled={this.state.saveEnable}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Generate",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  )}
                 </AlgaehSecurityComponent>
                 <button
                   type="button"
