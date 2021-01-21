@@ -126,6 +126,110 @@ export default {
     }
   },
 
+  POClosed: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.body;
+    try {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "SELECT hims_f_procurement_dn_header_id FROM hims_f_procurement_dn_header where purchase_order_id=?;",
+          values: [input.hims_f_procurement_po_header_id],
+          printQuery: true,
+        })
+        .then((dn_Result) => {
+          if (dn_Result.length === 0) {
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  `UPDATE hims_f_procurement_po_header SET is_completed='Y',receipt_generated='Y', po_close_reason=?, po_closed_by=?, po_closed_date=? \
+                  where hims_f_procurement_po_header_id=?;`,
+                values: [
+                  input.po_close_reason,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  input.hims_f_procurement_po_header_id,
+                ],
+                printQuery: true,
+              })
+              .then((headerResult) => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = headerResult;
+                  next();
+                });
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          } else {
+            let _dn_header_id = []
+            dn_Result.map((o) => {
+              _dn_header_id.push(o.hims_f_procurement_dn_header_id);
+            });
+
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "SELECT dn_header_id from hims_f_procurement_grn_detail where dn_header_id in (?);",
+                values: [_dn_header_id],
+                printQuery: true,
+              })
+              .then((grn_Result) => {
+
+                let strQuery = ""
+                if (dn_Result.length === grn_Result.length) {
+                  strQuery = " receipt_generated='Y',"
+                }
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      `UPDATE hims_f_procurement_po_header SET ${strQuery} is_completed='Y', po_close_reason=?, po_closed_by=?, po_closed_date=? \
+                      where hims_f_procurement_po_header_id=?;`,
+                    values: [
+                      input.po_close_reason,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      input.hims_f_procurement_po_header_id,
+                    ],
+                    printQuery: true,
+                  })
+                  .then((headerResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = headerResult;
+                      next();
+                    });
+                  })
+                  .catch((e) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          }
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+
+
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
   addPurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
