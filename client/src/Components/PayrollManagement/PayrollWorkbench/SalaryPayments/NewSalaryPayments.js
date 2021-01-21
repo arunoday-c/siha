@@ -31,6 +31,7 @@ class NewSalaryPayment extends Component {
 
       year: moment().year(),
       month: moment(new Date()).format("M"),
+      monthName: moment(new Date()).format("MMM"),
       sub_department_id: null,
       salary_type: null,
       employee_name: null,

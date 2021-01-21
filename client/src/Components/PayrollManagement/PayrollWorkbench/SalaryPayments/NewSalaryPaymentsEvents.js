@@ -306,8 +306,8 @@ const selectToGeneratePaySlip = ($this, row, e) => {
 
 const generateLoanReconilationReport = ($this) => {
   algaehApiCall({
-    // uri: "/report",
-    uri: "/excelReport",
+    uri: "/report",
+    // uri: "/excelReport",
     method: "GET",
     module: "reports",
     headers: {
@@ -318,6 +318,11 @@ const generateLoanReconilationReport = ($this) => {
       report: {
         reportName: "loanReconcileReport",
         pageOrentation: "landscape",
+        excelTabName: `${$this.state.inputs.hospital_name} | ${moment(
+          $this.state.inputs.month,
+          "MM"
+        ).format("MMM")}-${$this.state.inputs.year}`,
+        excelHeader: false,
         reportParams: [
           {
             name: "hospital_id",
@@ -356,14 +361,18 @@ const generateLoanReconilationReport = ($this) => {
       },
     },
     onSuccess: (res) => {
+      // const urlBlob = URL.createObjectURL(res.data);
+      // const a = document.createElement("a");
+      // a.href = urlBlob;
+      // a.download = `Loan Reconciliation Report ${moment(
+      //   $this.state.inputs.month,
+      //   "MM"
+      // ).format("MMM")}-${$this.state.inputs.year}.${"xlsx"}`;
+      // a.click();
+
       const urlBlob = URL.createObjectURL(res.data);
-      const a = document.createElement("a");
-      a.href = urlBlob;
-      a.download = `Loan Reconciliation Report ${moment(
-        $this.state.inputs.month,
-        "MM"
-      ).format("MMM")}-${$this.state.inputs.year}.${"xlsx"}`;
-      a.click();
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${$this.state.inputs.hospital_name} Loan Reconciliation Report - ${$this.state.monthName} ${$this.state.inputs.year}`;
+      window.open(origin);
     },
   });
 };
@@ -437,7 +446,7 @@ const generateLeaveReconilationReport = ($this) => {
       // a.click();
 
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave and Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${$this.state.inputs.hospital_name} Leave and Airfare Reconciliation - ${$this.state.monthName} ${$this.state.inputs.year}`;
       window.open(origin);
     },
   });
@@ -490,6 +499,11 @@ const generateGratuityReconilationReport = ($this) => {
             name: "hims_d_employee_id",
             value: $this.state.inputs.hims_d_employee_id,
           },
+
+          {
+            name: "hospital_name",
+            value: $this.state.inputs.hospital_name,
+          },
         ],
         outputFileType: "EXCEL", //"EXCEL", //"PDF",
       },
@@ -506,7 +520,7 @@ const generateGratuityReconilationReport = ($this) => {
       // a.click();
 
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave and Airfare Reconciliation - ${$this.state.inputs.month}/${$this.state.inputs.year}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${$this.state.inputs.hospital_name} Gratuity Reconciliation - ${$this.state.monthName} ${$this.state.inputs.year}`;
       window.open(origin);
     },
   });
