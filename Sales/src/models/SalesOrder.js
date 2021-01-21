@@ -1096,7 +1096,7 @@ export function cancelSalesServiceOrder(req, res, next) {
     _mysql
       .executeQueryWithTransaction({
         query: `UPDATE hims_f_sales_order SET cancelled='Y', authorize1='N', \
-                    authorize2='N',revert_reason=? ,cancelled_date=?, cancelled_by=? 
+                    authorize2='N',canceled_reason_sales=? ,cancelled_date=?, cancelled_by=? 
                     WHERE hims_f_sales_order_id=?;`+ strQuery,
         values: [
           inputParam.canceled_reason_sales,

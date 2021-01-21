@@ -36,6 +36,7 @@ import {
   CancelPOEntry,
   getCostCenters,
   getReportForMail,
+  POClose
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -63,6 +64,7 @@ class PurchaseOrderEntry extends Component {
       body_mail: "",
       send_attachment: true,
       vendorDetails: [],
+      close_pop_visible: false
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
@@ -337,6 +339,26 @@ class PurchaseOrderEntry extends Component {
             </div>
           </div>
         </AlgaehModal>
+
+        <AlgaehModal
+          title={`Reason For Close -${this.state.purchase_number}`}
+          visible={this.state.close_pop_visible}
+          destroyOnClose={true}
+          okText="Proceed"
+          onOk={POClose.bind(this, this)}
+          onCancel={() => {
+            this.setState({ close_pop_visible: false });
+          }}
+        >
+          <div className="col-12">
+            <AlgaehLabel label={{ forceLabel: "Close Reason" }} />
+            <textarea
+              value={this.state.po_close_reason}
+              name="po_close_reason"
+              onChange={texthandle.bind(this, this)}
+            />
+          </div>
+        </AlgaehModal>
         <BreadCrumb
           title={
             <AlgaehLabel
@@ -388,33 +410,32 @@ class PurchaseOrderEntry extends Component {
                     {this.state.cancelled === "Y" ? (
                       <span className="badge badge-danger">Rejected</span>
                     ) : this.state.is_posted === "N" && this.state.is_revert === "N" ? (
-                      <span className="badge badge-danger">Not Posted</span>
+                      <span className="badge badge-danger">Send for Authorization Pending</span>
                     ) : this.state.is_posted === "N" &&
                       this.state.is_revert === "Y" ? (
                             <span className="badge badge-danger">
-                              Not Posted/Re-Generate
+                              Send for Authorization Pending/Re-Generate
                             </span>
                           ) : this.state.receipt_generated === "Y" ? (
                             <span className="badge badge-success">PO Closed</span>
                           ) : this.state.authorize1 === "Y" &&
                             this.state.authorize2 === "Y" && this.state.is_completed === "N" ? (
-                                <span className="badge badge-success">Authorized / Delivery Pending</span>
+                                <span className="badge badge-success"> Delivery Pending</span>
+                              ) : this.state.is_completed === "Y" ? (
+                                <span className="badge badge-success"> Receipt Generation Pending</span>
                               ) : this.state.authorize1 === "Y" &&
-                                this.state.authorize2 === "Y" && this.state.is_completed === "Y" ? (
-                                  <span className="badge badge-success">Delivery Completed / Receipt Pending</span>
-                                ) : this.state.authorize1 === "Y" &&
-                                  this.state.authorize2 === "N" ? (
+                                this.state.authorize2 === "N" ? (
                                     <span className="badge badge-danger">
-                                      Posted/Pending For Authorize
+                                      Pending For Authorize
                                     </span>
                                   ) : this.state.authorize1 === "N" &&
                                     this.state.authorize2 === "N" ? (
                                       <span className="badge badge-danger">
-                                        Posted/Pending For Authorize
+                                        Pending For Authorize
                                       </span>
                                     ) : (
                                       <span className="badge badge-danger">
-                                        Posted/Pending For Authorize
+                                        Pending For Authorize
                                       </span>
                                     )}
                   </h6>
@@ -1075,6 +1096,28 @@ class PurchaseOrderEntry extends Component {
                     }}
                   />
                 </button>
+                {this.state.po_closed === true ?
+                  <AlgaehSecurityComponent componentCode="PO_CLOSE">
+                    <AlgaehButton
+                      loading={this.state.mailSend}
+                      className="btn btn-other"
+                      disabled={this.state.receipt_generated === "Y" || this.state.is_completed === "Y" ? true : false}
+                      onClick={() => {
+                        this.setState({
+                          close_pop_visible: true,
+                        });
+                      }}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "PO Close",
+                          returnText: true,
+                        }}
+                      />
+                    </AlgaehButton>
+                  </AlgaehSecurityComponent>
+                  : null}
+
                 <AlgaehSecurityComponent componentCode="PO_VIA_EMAIL">
                   <AlgaehButton
                     loading={this.state.mailSend}

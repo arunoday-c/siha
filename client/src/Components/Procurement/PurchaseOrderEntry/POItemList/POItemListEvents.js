@@ -978,6 +978,48 @@ const onchangegridcol = ($this, row, e) => {
   }
 };
 
+const onchhangegridUnitPrice = ($this, row, e) => {
+  //
+
+  debugger
+  let sub_discount_amount = 0;
+  let extended_cost = 0;
+  let tax_amount = 0;
+  let extended_price = 0;
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  row[name] = value
+  extended_price = parseFloat(parseFloat(row.total_quantity) * parseFloat(value)).toFixed($this.state.decimal_places);
+
+  sub_discount_amount = parseFloat((parseFloat(extended_price) *
+    parseFloat(row.sub_discount_percentage)) / 100).toFixed($this.state.decimal_places);
+
+  extended_cost = parseFloat(
+    parseFloat(extended_price) - parseFloat(sub_discount_amount)
+  ).toFixed($this.state.decimal_places);
+  row["unit_cost"] =
+    $this.state.hims_f_procurement_po_header_id !== null
+      ? parseFloat(parseFloat(extended_cost) / parseFloat(row.authorize_quantity)).toFixed($this.state.decimal_places)
+      : parseFloat(parseFloat(extended_cost) / parseFloat(row.total_quantity)).toFixed($this.state.decimal_places);
+
+  tax_amount = (
+    (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) /
+    100
+  ).toFixed($this.state.decimal_places);
+
+  row["extended_price"] = extended_price;
+  row["extended_cost"] = extended_cost;
+  row["tax_amount"] =
+    (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100;
+  row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
+  row["sub_discount_amount"] = sub_discount_amount;
+  row["net_extended_cost"] = extended_cost;
+
+  row.update();
+};
+
 const onchhangegriddiscount = ($this, row, e) => {
   //
 
@@ -1197,5 +1239,6 @@ export {
   EditGrid,
   CancelGrid,
   gridNumHandler,
-  extendCostHandle
+  extendCostHandle,
+  onchhangegridUnitPrice
 };

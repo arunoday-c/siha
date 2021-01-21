@@ -20,6 +20,7 @@ const {
   getReportForMail,
   rejectPurchaseOrderEntry,
   releaseDB,
+  POClosed
 } = purchaseModels;
 
 export default () => {
@@ -107,6 +108,16 @@ export default () => {
   api.post(
     "/postPurchaseOrderEntry",
     postPurchaseOrderEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.put(
+    "/POClosed",
+    POClosed,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
