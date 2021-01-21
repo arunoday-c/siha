@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { newAlgaehApi } from "../../../hooks/";
-import { AlgaehMessagePop } from "algaeh-react-components";
+// import { AlgaehMessagePop } from "algaeh-react-components";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 export default function HistoryViewComp({ data, remarks }) {
   const [editable, setEditable] = useState(true);
@@ -22,17 +23,17 @@ export default function HistoryViewComp({ data, remarks }) {
     })
       .then((res) => {
         if (res.data.success) {
-          AlgaehMessagePop({
-            type: "info",
-            display: "Successfully updated...",
+          swalMessage({
+            title: "Successfully Updated.....",
+            type: "success",
           });
           setEditable((pre) => !pre);
         }
       })
       .catch((e) => {
-        AlgaehMessagePop({
+        swalMessage({
           type: "error",
-          display: e.message,
+          title: e.message,
         });
       });
   };
