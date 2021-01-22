@@ -1611,6 +1611,10 @@ export default {
                       printQuery: true,
                     })
                     .then((invoie_result) => {
+                      const firstItem = _.head(invoie_result);
+                      if (firstItem) {
+                        req.hims_f_sales_order_id = firstItem.sales_order_id;
+                      }
                       let strQry = "";
 
                       if (invoie_result[0].sales_invoice_mode === "S") {
@@ -3036,4 +3040,30 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
       });
     }
   });
+}
+
+export function getSalesOrderAndPersonId(req, res, next) {
+  try {
+    if (!req.hims_f_sales_order_id) {
+      next();
+      return;
+    }
+    const _mysql = new algaehMysql();
+    _mysql
+      .executeQuery({
+        query: `SELECT sales_order_number,sales_person_id from hims_f_sales_order where hims_f_sales_order_id=?`,
+        values: [req.hims_f_sales_order_id],
+      })
+      .then((result) => {
+        req.notificationDetails = _.head(result);
+        next();
+      })
+      .catch((error) => {
+        console.error("Error for notification details : ", error);
+        next();
+      });
+  } catch (e) {
+    console.error("Error for notification details : ", e);
+    next();
+  }
 }
