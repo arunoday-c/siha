@@ -183,48 +183,89 @@ class VitalComponent extends Component {
                   }}
                 />
               ) : null}
+              {item.isDecimal === "Y" ? (
+                <AlagehFormGroup
+                  div={{
+                    className: _className,
+                    others: { key: index },
+                  }}
+                  label={{
+                    forceLabel:
+                      item.uom === "C"
+                        ? "°C"
+                        : item.uom === "F"
+                        ? "°F"
+                        : item.vital_short_name +
+                          " (" +
+                          String(item.uom).trim() +
+                          ")",
+                    isImp: item.mandatory === "N" ? false : true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: _name,
+                    ...boxType,
 
-              <AlagehFormGroup
-                div={{
-                  className: _className,
-                  others: { key: index },
-                }}
-                label={{
-                  forceLabel:
-                    item.uom === "C"
-                      ? "°C"
-                      : item.uom === "F"
-                      ? "°F"
-                      : item.vital_short_name +
-                        " (" +
-                        String(item.uom).trim() +
-                        ")",
-                  isImp: item.mandatory === "N" ? false : true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: _name,
-                  ...boxType,
+                    dontAllowKeys: ["-", "e"],
+                    others: {
+                      // pattren: "[0-9]",
+                      min: 0,
+                      ...this.checkMax(item.uom),
+                      disabled: _disable,
+                      vitalid: item.hims_d_vitals_header_id,
+                      formula_value: String(item.uom).trim(),
+                      ..._dependent,
+                      // step: "1",
+                    },
+                    //   dontAllowKeys: ["."],
+                    value: this.props.state[_name],
+                    events: {
+                      onChange: this.props.texthandle,
+                    },
+                  }}
+                />
+              ) : (
+                <AlagehFormGroup
+                  div={{
+                    className: _className,
+                    others: { key: index },
+                  }}
+                  label={{
+                    forceLabel:
+                      item.uom === "C"
+                        ? "°C"
+                        : item.uom === "F"
+                        ? "°F"
+                        : item.vital_short_name +
+                          " (" +
+                          String(item.uom).trim() +
+                          ")",
+                    isImp: item.mandatory === "N" ? false : true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: _name,
+                    ...boxType,
 
-                  dontAllowKeys:
-                    item.isDecimal === "Y" ? ["-", "e"] : ["-", "e", "."],
-                  others: {
-                    // pattren: "[0-9]",
-                    min: 0,
-                    ...this.checkMax(item.uom),
-                    disabled: _disable,
-                    vitalid: item.hims_d_vitals_header_id,
-                    formula_value: String(item.uom).trim(),
-                    ..._dependent,
-                    // step: "1",
-                  },
-                  //   dontAllowKeys: ["."],
-                  value: this.props.state[_name],
-                  events: {
-                    onChange: this.props.texthandle,
-                  },
-                }}
-              />
+                    dontAllowKeys: ["-", "e", "."],
+                    others: {
+                      // pattren: "[0-9]",
+                      min: 0,
+                      ...this.checkMax(item.uom),
+                      disabled: _disable,
+                      vitalid: item.hims_d_vitals_header_id,
+                      formula_value: String(item.uom).trim(),
+                      ..._dependent,
+                      // step: "1",
+                    },
+                    //   dontAllowKeys: ["."],
+                    value: this.props.state[_name],
+                    events: {
+                      onChange: this.props.texthandle,
+                    },
+                  }}
+                />
+              )}
 
               {item.hims_d_vitals_header_id === 4 ? (
                 <AlagehFormGroup
