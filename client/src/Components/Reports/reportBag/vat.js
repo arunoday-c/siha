@@ -138,7 +138,7 @@ export default function Vat({
         reportName: "monthVatReport",
         requireIframe: true,
         pageSize: "A4",
-        pageOrentation: "landscape", //"portrait",
+        pageOrentation: "portrait", //"landscape",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
