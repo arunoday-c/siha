@@ -11,6 +11,7 @@
                         <th width=""  class="txtFld">Date</th>
                         <th width=""  class="txtFld">Voucher Type</th>
                         <th width=""  class="txtFld">Voucher No.</th>
+                        <th width=""  class="txtFld">Narration</th>
                         <th width="" class="numberFld ">Debit Amt</th>
                         <th width="" class="numberFld ">Credit Amt</th>
                         <th width="" class="numberFld ">Closing Balance</th>
@@ -22,7 +23,7 @@
                     </tr> --}}
 
                     <tr class="numberFld ">
-                        <td class="numberFld" colspan="5"></td>
+                        <td class="numberFld" colspan="6"></td>
                         <td class="numberFld"> <small>Opening Balance: </small><b>{{opening_balance}}</b></td>
                     </tr>
                     {{#each details}}
@@ -30,6 +31,7 @@
                         <td  class="txtFld">{{payment_date}}</td>
                         <td  class="txtFld">{{voucher_type}}</td>
                         <td  class="txtFld">{{voucher_no}}</td>
+                        <td  class="txtFld" width="16%"><small>{{narration}}</small></td>
                         <td class="numberFld ">{{debit_amount}}</td>
                         <td class="numberFld ">{{credit_amount}}</td>
                         <td class="numberFld ">{{row_closing_balance}}</td>
@@ -38,7 +40,7 @@
                     {{/each }}
 
                     <tr class="numberFld ">
-                        <td class="numberFld" colspan="3"></td>
+                        <td class="numberFld" colspan="4"></td>
                         <td class="numberFld"><b>{{total_debit}}</b></td>
                         <td class="numberFld"><b>{{total_credit}}</b></td>
                         <td></td>
@@ -49,7 +51,7 @@
                         <td class="numberFld">{{CB_credit_side}}</td>
                     </tr> --}}
                     <tr class="numberFld ">
-                        <td class="numberFld" colspan="5"></td>
+                        <td class="numberFld" colspan="6"></td>
                         <td class="numberFld" ><small>Closing Balance</small>: <b>{{closing_balance}}</b></td>
                     </tr>
                     {{!-- <tr class="numberFld numberFldTotalBottom">
