@@ -36,10 +36,14 @@ export default function Notification({ open, handlePanel }) {
       });
       socket.emit("acknowledge", notobj);
       if (!doNot) {
+        //  notification sound here
         window.audio_feedback.play();
         notification.info({
           message: "Notification",
-          description: notobj.message,
+          description: (
+            <span dangerouslySetInnerHTML={{ __html: notobj.message }}></span>
+          ),
+          // description: notobj.message,
           duration: 6,
           className: "notifySlide",
         });
@@ -145,7 +149,17 @@ export default function Notification({ open, handlePanel }) {
                 actions={[
                   <Button
                     type="ghost"
-                    icon={<i className="fas fa-times" />}
+                    icon={
+                      <i
+                        className="fas fa-times"
+                        onClick={(e) => {
+                          if (e.target.parentElement) {
+                            e.target.parentElement.click();
+                          }
+                          // removeNotification
+                        }}
+                      />
+                    }
                     loading={item.loading}
                     data-current={JSON.stringify(item)}
                     onClick={removeNotification}
@@ -156,7 +170,13 @@ export default function Notification({ open, handlePanel }) {
                   <List.Item.Meta
                     title={item.title || "Title"}
                     avatar={<Avatar icon={<i className="envelope-square" />} />}
-                    description={item.message}
+                    description={
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: item.message,
+                        }}
+                      ></span>
+                    }
                   />
                 </Skeleton>
               </List.Item>
