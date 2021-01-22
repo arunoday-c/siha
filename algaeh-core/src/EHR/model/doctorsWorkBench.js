@@ -2728,15 +2728,15 @@ let getVitalsHeaderMaster = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name,box_type) as \
+          "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,isDecimal,display,mandatory,vital_short_name,box_type) as \
     ( \
-    SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name,box_type FROM hims_d_vitals_header H \
+    SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,isDecimal,display,mandatory,vital_short_name,box_type FROM hims_d_vitals_header H \
      where general='Y' and H.record_status='A' \
       UNION ALL \
-      select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name,box_type from hims_d_vitals_header H,hims_m_department_vital_mapping M \
+      select H.hims_d_vitals_header_id, vitals_name, uom, general,display,isDecimal,mandatory,vital_short_name,box_type from hims_d_vitals_header H,hims_m_department_vital_mapping M \
      where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
     ) \
-    SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name,box_type from vitals",
+    SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,isDecimal,mandatory,vital_short_name,box_type from vitals",
         values: [req.userIdentity.sub_department_id],
         printQuery: true,
       })

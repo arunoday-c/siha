@@ -257,6 +257,7 @@ class DayEndProcess extends Component {
 
   RejectProcess() {
     let selected_data = this.state.selected_data;
+
     swal({
       title:
         "Are you sure you want to Revert " +
@@ -281,6 +282,17 @@ class DayEndProcess extends Component {
           },
           method: "PUT",
           onSuccess: (response) => {
+            const details = response.data.notificationDetails;
+            if (details) {
+              const { sales_order_number, sales_person_id } = details;
+              if (this.context.socket.connected) {
+                this.context.socket.emit("sales_revet", {
+                  sales_order_number,
+                  sales_person_id,
+                });
+              }
+            }
+
             this.getDayEndProcess(this);
             swalMessage({
               title: "Reverted Successfully . .",

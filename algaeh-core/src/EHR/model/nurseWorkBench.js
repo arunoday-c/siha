@@ -464,104 +464,104 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
             reject(e);
           }
         }).then((NCResult) => {
-          try {
-            if (input["patient_vitals"].length > 0) {
-              // const insurtColums = [
-              //   "patient_id",
-              //   "visit_id",
-              //   "visit_date",
-              //   "visit_time",
-              //   "case_type",
-              //   "vital_id",
-              //   "vital_value",
-              //   "vital_value_one",
-              //   "vital_value_two",
-              //   "formula_value",
-              // ];
-              let queryVitals = "";
-              for (let i = 0; i < input["patient_vitals"].length; i++) {
-                const {
-                  vital_value,
-                  patient_id,
-                  visit_id,
-                  visit_date,
-                  visit_time,
-                  case_type,
-                  vital_id,
-                  vital_value_one,
-                  vital_value_two,
-                  formula_value,
-                } = input["patient_vitals"][i];
+          // try {
+          //   if (input["patient_vitals"].length > 0) {
+          //     // const insurtColums = [
+          //     //   "patient_id",
+          //     //   "visit_id",
+          //     //   "visit_date",
+          //     //   "visit_time",
+          //     //   "case_type",
+          //     //   "vital_id",
+          //     //   "vital_value",
+          //     //   "vital_value_one",
+          //     //   "vital_value_two",
+          //     //   "formula_value",
+          //     // ];
+          //     let queryVitals = "";
+          //     for (let i = 0; i < input["patient_vitals"].length; i++) {
+          //       const {
+          //         vital_value,
+          //         patient_id,
+          //         visit_id,
+          //         visit_date,
+          //         visit_time,
+          //         case_type,
+          //         vital_id,
+          //         vital_value_one,
+          //         vital_value_two,
+          //         formula_value,
+          //       } = input["patient_vitals"][i];
 
-                const vital_dateTime = moment(
-                  `${moment(visit_date).format("YYYY-MM-DD")} ${visit_time}`
-                )._d;
-                if (parseFloat(vital_value) !== 0) {
-                  queryVitals += mysql.format(
-                    `INSERT INTO hims_f_patient_vitals(patient_id,visit_id,visit_date,visit_time,case_type,
-                      vital_id,vital_value,vital_value_one,formula_value,hospital_id,created_date,created_by,
-                      updated_date,updated_by) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
-                    [
-                      patient_id,
-                      visit_id,
-                      vital_dateTime, //visit_date,
-                      visit_time,
-                      case_type,
-                      vital_id,
-                      vital_value,
-                      vital_value_one,
-                      formula_value,
-                      req.userIdentity.hospital_id,
-                      new Date(),
-                      req.userIdentity.algaeh_d_app_user_id,
-                      new Date(),
-                      req.userIdentity.algaeh_d_app_user_id,
-                    ]
-                  );
-                }
-              }
+          //       const vital_dateTime = moment(
+          //         `${moment(visit_date).format("YYYY-MM-DD")} ${visit_time}`
+          //       )._d;
+          //       if (parseFloat(vital_value) !== 0) {
+          //         queryVitals += mysql.format(
+          //           `INSERT INTO hims_f_patient_vitals(patient_id,visit_id,visit_date,visit_time,case_type,
+          //             vital_id,vital_value,vital_value_one,formula_value,hospital_id,created_date,created_by,
+          //             updated_date,updated_by) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+          //           [
+          //             patient_id,
+          //             visit_id,
+          //             vital_dateTime, //visit_date,
+          //             visit_time,
+          //             case_type,
+          //             vital_id,
+          //             vital_value,
+          //             vital_value_one,
+          //             formula_value,
+          //             req.userIdentity.hospital_id,
+          //             new Date(),
+          //             req.userIdentity.algaeh_d_app_user_id,
+          //             new Date(),
+          //             req.userIdentity.algaeh_d_app_user_id,
+          //           ]
+          //         );
+          //       }
+          //     }
 
-              const _query = queryVitals !== "" ? queryVitals : "select 1";
+          //     const _query = queryVitals !== "" ? queryVitals : "select 1";
 
-              _mysql
-                .executeQueryWithTransaction({
-                  query: _query,
-                  // query: "INSERT INTO hims_f_patient_vitals (??) VALUES ?",
-                  // values: input.patient_vitals,
-                  // includeValues: insurtColums,
-                  // printQuery: true,
-                  // bulkInsertOrUpdate: true,
-                  // extraValues: {
-                  //   created_date: new Date(),
-                  //   created_by: req.userIdentity.algaeh_d_app_user_id,
-                  //   updated_date: new Date(),
-                  //   updated_by: req.userIdentity.algaeh_d_app_user_id,
-                  //   hospital_id: req.userIdentity.hospital_id,
-                  // },
-                  printQuery: false,
-                })
-                .then((resultVital) => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = result;
-                    next();
-                  });
-                })
-                .catch((e) => {
-                  mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
-            } else {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
-              });
-            }
-          } catch (e) {
-            reject(e);
-          }
+          //     _mysql
+          //       .executeQueryWithTransaction({
+          //         query: _query,
+          //         // query: "INSERT INTO hims_f_patient_vitals (??) VALUES ?",
+          //         // values: input.patient_vitals,
+          //         // includeValues: insurtColums,
+          //         // printQuery: true,
+          //         // bulkInsertOrUpdate: true,
+          //         // extraValues: {
+          //         //   created_date: new Date(),
+          //         //   created_by: req.userIdentity.algaeh_d_app_user_id,
+          //         //   updated_date: new Date(),
+          //         //   updated_by: req.userIdentity.algaeh_d_app_user_id,
+          //         //   hospital_id: req.userIdentity.hospital_id,
+          //         // },
+          //         printQuery: false,
+          //       })
+          //       .then((resultVital) => {
+          //         _mysql.commitTransaction(() => {
+          //           _mysql.releaseConnection();
+          //           req.records = result;
+          //           next();
+          //         });
+          //       })
+          //       .catch((e) => {
+          //         mysql.rollBackTransaction(() => {
+          //           next(e);
+          //         });
+          //       });
+          //   } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+          //   }
+          // } catch (e) {
+          //   reject(e);
+          // }
         });
       })
       .catch((e) => {

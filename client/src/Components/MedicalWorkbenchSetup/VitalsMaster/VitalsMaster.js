@@ -299,6 +299,7 @@ class VitalsMaster extends Component {
         uom: data.uom,
         general: data.general,
         display: data.display,
+        isDecimal: data.isDecimal,
         hims_d_vitals_header_id: data.hims_d_vitals_header_id,
         record_status: data.record_status,
       },

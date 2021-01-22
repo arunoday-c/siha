@@ -14,7 +14,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import HistoryViewComp from "./HistoryViewComp";
 import Swal from "sweetalert2";
 import { newAlgaehApi } from "../../../hooks";
-import { AlgaehMessagePop } from "algaeh-react-components";
+// import { AlgaehMessagePop } from "algaeh-react-components";
 
 class PatientHistory extends Component {
   constructor(props) {
@@ -152,17 +152,17 @@ class PatientHistory extends Component {
         })
           .then((res) => {
             if (res.data.success) {
-              AlgaehMessagePop({
-                type: "info",
-                display: "Successfully deleted...",
+              swalMessage({
+                title: "Record deleted successfully",
+                type: "success",
               });
               getPatientHistory(this);
             }
           })
           .catch((e) => {
-            AlgaehMessagePop({
+            swalMessage({
+              title: e.message,
               type: "error",
-              display: e.message,
             });
           });
       }

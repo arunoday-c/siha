@@ -27,7 +27,7 @@ import config from "../../utils/config.json";
 import {
   getAllChiefComplaints,
   getDepartmentVitals,
-  temperatureConvertion,
+  // temperatureConvertion,
   getFormula,
   datehandle,
   getPatientAllergies,
@@ -47,6 +47,8 @@ import NursesNotes from "../PatientProfile/Examination/NursesNotes";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
 import { debounce } from "lodash";
 import sockets from "../../sockets";
+import VitalComponent from "../../Components/PatientProfile/Vitals/VitalComponent";
+
 class NurseWorkbench extends Component {
   constructor(props) {
     super(props);
@@ -252,7 +254,11 @@ class NurseWorkbench extends Component {
       },
     });
   }
-
+  setstates(name, value) {
+    this.setState({
+      [name]: value,
+    });
+  }
   resetSaveState() {
     this.setState({
       patChiefComp: [],
@@ -402,33 +408,33 @@ class NurseWorkbench extends Component {
       return;
     } else {
       let send_data = {};
-      let bodyArray = [];
-      const _elements = document.querySelectorAll("[vitalid]");
+      // let bodyArray = [];
+      // const _elements = document.querySelectorAll("[vitalid]");
 
-      for (let i = 0; i < _elements.length; i++) {
-        if (_elements[i].value !== "") {
-          const _isDepended = _elements[i].getAttribute("dependent");
-          bodyArray.push({
-            patient_id: this.state.patient_id,
-            visit_id: this.state.visit_id,
-            visit_date: this.state.recorded_date,
-            visit_time: this.state.recorded_time,
-            case_type: this.state.case_type,
-            vital_id: _elements[i].getAttribute("vitalid"),
-            vital_value: _elements[i].children[0].value
-              ? _elements[i].children[0].value
-              : 0.0,
-            vital_value_one:
-              _isDepended !== null
-                ? document.getElementsByName(_isDepended)[0].value
-                : null,
-            formula_value: _elements[i].getAttribute("formula_value"),
-          });
-        }
-      }
+      // for (let i = 0; i < _elements.length; i++) {
+      //   if (_elements[i].value !== "") {
+      // const _isDepended = _elements[i].getAttribute("dependent");
+      // bodyArray.push({
+      //   patient_id: this.state.patient_id,
+      //   visit_id: this.state.visit_id,
+      //   // visit_date: this.state.recorded_date,
+      //   // visit_time: this.state.recorded_time,
+      //   case_type: this.state.case_type,
+      //   // vital_id: _elements[i].getAttribute("vitalid"),
+      //   // vital_value: _elements[i].children[0].value
+      //   //   ? _elements[i].children[0].value
+      //   //   : 0.0,
+      //   // vital_value_one:
+      //   //   _isDepended !== null
+      //   //     ? document.getElementsByName(_isDepended)[0].value
+      //   //     : null,
+      //   // formula_value: _elements[i].getAttribute("formula_value"),
+      // });
+      //   }
+      // }
       send_data.nurse_notes = this.state.nurse_notes;
       send_data.chief_complaints = this.state.patChiefComp;
-      send_data.patient_vitals = bodyArray;
+      // send_data.patient_vitals = bodyArray;
       send_data.hims_f_patient_encounter_id = this.state.encounter_id;
 
       // AlgaehValidation({
@@ -897,7 +903,23 @@ class NurseWorkbench extends Component {
       </div>
     );
   }
+  resetVitalComponent() {
+    const _elements = document.querySelectorAll("[vitalid]");
+    let resetElements = {};
+    for (let i = 0; i < _elements.length; i++) {
+      const inputElement = _elements[i].querySelector("input");
+      const elementName = inputElement.getAttribute("name");
+      resetElements[elementName] = "";
+    }
+    this.setState({
+      ...resetElements,
 
+      temperature_from: "",
+      bp_position: "",
+      recorded_date: new Date(),
+      recorded_time: moment().format(config.formators.time),
+    });
+  }
   loadListofData() {
     algaehLoader({ show: true });
 
@@ -1314,7 +1336,28 @@ class NurseWorkbench extends Component {
                           this.getVitalsRef = r;
                         }}
                       >
-                        {_department_viatals.map((item, index) => {
+                        <VitalComponent
+                          _department_viatals={_department_viatals}
+                          state={this.state}
+                          // setState={this.setState}
+                          texthandle={(e) => this.texthandle(e)}
+                          // handleClose={(e) => this.handleClose(e)}
+                          // editDateHandler={(selectedDate) => this.editDateHandler(selectedDate)}
+                          // editDateValidate={this.editDateValidate}
+
+                          current_patient={this.state.patient_id}
+                          visit_id={this.state.visit_id}
+                          case_type={this.state.case_type}
+                          dropDownHandle={(e) => this.dropDownHandle(e)}
+                          fromNurseWorkBench={true}
+                          resetVitalComponent={() => {
+                            this.resetVitalComponent();
+                          }}
+                          // setstates={(name, value) =>
+                          //   this.setstates(name, value)
+                          // }
+                        />
+                        {/* {_department_viatals.map((item, index) => {
                           const _className =
                             item.hims_d_vitals_header_id === 1
                               ? "col-3"
@@ -1431,11 +1474,11 @@ class NurseWorkbench extends Component {
                                 />
                               ) : null}
                               {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
-                            </React.Fragment>
-                          );
-                        })}
+                        {/* </React.Fragment> */}
+                        {/* ); */}
+                        {/* })} */}
 
-                        <AlgaehDateHandler
+                        {/* <AlgaetexthandlehDateHandler
                           div={{ className: "col-3" }}
                           label={{ fieldName: "rec_date", isImp: true }}
                           textBox={{
@@ -1469,7 +1512,7 @@ class NurseWorkbench extends Component {
                               onChange: this.texthandle.bind(this),
                             },
                           }}
-                        />
+                        /> */}
                       </div>
                     </div>
                   </div>{" "}

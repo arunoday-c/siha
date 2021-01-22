@@ -863,11 +863,18 @@ const RejectSalesServiceOrder = ($this) => {
     data: $this.state,
     method: "PUT",
     onSuccess: (response) => {
+      const { sales_order_number, sales_person_id } = $this.state;
       if (response.data.success === true) {
         swalMessage({
           title: "Rejected successfully . .",
           type: "success",
         });
+        if ($this.context.socket.connected) {
+          $this.context.socket.emit("sales_revet", {
+            sales_order_number,
+            sales_person_id,
+          });
+        }
         $this.setState({
           rejectVisible: false,
           // authBtnEnable: true,
