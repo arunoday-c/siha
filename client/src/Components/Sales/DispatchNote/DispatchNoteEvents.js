@@ -8,6 +8,7 @@ import _ from "lodash";
 import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
+import swal from "sweetalert2";
 
 const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -37,7 +38,7 @@ const SalesOrderSearch = ($this, e) => {
     searchName: "SalesOrder",
     uri: "/gloabelSearch/get",
     inputs:
-      " sales_order_mode = 'I' and is_completed='N' and authorize1='Y' and authorize2='Y'",
+      " sales_order_mode = 'I' and is_completed='N' and cancelled='N' and authorize1='Y' and authorize2='Y'",
 
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
@@ -121,16 +122,16 @@ const ClearData = ($this, e) => {
     adjustEnable: true,
     deleteItem_data: [],
     delete_dispatch_items: [],
-    invoice_generated: 'N'
+    invoice_generated: 'N',
+    adjust_reason: null
   });
 };
 
 const SaveDispatchNote = ($this) => {
   let InputObj = $this.state;
-  AlgaehLoader({ show: true });
 
-  debugger
   if ($this.state.hims_f_dispatch_note_header_id === null) {
+    AlgaehLoader({ show: true });
     InputObj.transaction_type = "SDN";
     InputObj.transaction_date = moment(
       InputObj.dispatch_note_date,
@@ -220,69 +221,70 @@ const SaveDispatchNote = ($this) => {
       },
     });
   } else {
-    debugger
-    InputObj.transaction_type = "SDN";
-    InputObj.transaction_date = moment(
-      new Date(),
-      "YYYY-MM-DD"
-    ).format("YYYY-MM-DD");
+    $this.setState({ dispatch_adjust: true })
+    // debugger
+    // InputObj.transaction_type = "SDN";
+    // InputObj.transaction_date = moment(
+    //   new Date(),
+    //   "YYYY-MM-DD"
+    // ).format("YYYY-MM-DD");
 
-    for (let i = 0; i < InputObj.delete_dispatch_items.length; i++) {
-      InputObj.delete_dispatch_items[i].location_id = InputObj.location_id;
-      InputObj.delete_dispatch_items[i].location_type = InputObj.location_type;
-      InputObj.delete_dispatch_items[i].operation = "+";
+    // for (let i = 0; i < InputObj.delete_dispatch_items.length; i++) {
+    //   InputObj.delete_dispatch_items[i].location_id = InputObj.location_id;
+    //   InputObj.delete_dispatch_items[i].location_type = InputObj.location_type;
+    //   InputObj.delete_dispatch_items[i].operation = "+";
 
-      InputObj.delete_dispatch_items[i].quantity =
-        InputObj.delete_dispatch_items[i].dispatch_quantity;
+    //   InputObj.delete_dispatch_items[i].quantity =
+    //     InputObj.delete_dispatch_items[i].dispatch_quantity;
 
-      InputObj.delete_dispatch_items[i].net_total =
-        InputObj.delete_dispatch_items[i].total_amount;
+    //   InputObj.delete_dispatch_items[i].net_total =
+    //     InputObj.delete_dispatch_items[i].total_amount;
 
-      InputObj.delete_dispatch_items[i].expiry_date =
-        InputObj.delete_dispatch_items[i].expiry_date !== null
-          ? moment(
-            InputObj.delete_dispatch_items[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD")
-          : null;
-    }
+    //   InputObj.delete_dispatch_items[i].expiry_date =
+    //     InputObj.delete_dispatch_items[i].expiry_date !== null
+    //       ? moment(
+    //         InputObj.delete_dispatch_items[i].expiry_date,
+    //         "YYYY-MM-DD"
+    //       ).format("YYYY-MM-DD")
+    //       : null;
+    // }
 
-    const settings = { header: undefined, footer: undefined };
+    // const settings = { header: undefined, footer: undefined };
 
-    algaehApiCall({
-      uri: "/DispatchNote/adjustDispatchNote",
-      module: "sales",
-      skipParse: true,
-      data: Buffer.from(JSON.stringify(InputObj), "utf8"),
-      method: "POST",
-      header: {
-        "content-type": "application/octet-stream",
-        ...settings,
-      },
-      onSuccess: (response) => {
-        if (response.data.success === true) {
-          $this.setState({
-            saveEnable: true,
-            dataExists: true,
-            cannotEdit: true,
-            adjustEnable: true,
-            deleteItem_data: []
-          });
-          swalMessage({
-            title: "Adjusted successfully . .",
-            type: "success",
-          });
-          AlgaehLoader({ show: false });
-        }
-      },
-      onFailure: (error) => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
+    // algaehApiCall({
+    //   uri: "/DispatchNote/adjustDispatchNote",
+    //   module: "sales",
+    //   skipParse: true,
+    //   data: Buffer.from(JSON.stringify(InputObj), "utf8"),
+    //   method: "POST",
+    //   header: {
+    //     "content-type": "application/octet-stream",
+    //     ...settings,
+    //   },
+    //   onSuccess: (response) => {
+    //     if (response.data.success === true) {
+    //       $this.setState({
+    //         saveEnable: true,
+    //         dataExists: true,
+    //         cannotEdit: true,
+    //         adjustEnable: true,
+    //         deleteItem_data: []
+    //       });
+    //       swalMessage({
+    //         title: "Adjusted successfully . .",
+    //         type: "success",
+    //       });
+    //       AlgaehLoader({ show: false });
+    //     }
+    //   },
+    //   onFailure: (error) => {
+    //     AlgaehLoader({ show: false });
+    //     swalMessage({
+    //       title: error.message,
+    //       type: "error",
+    //     });
+    //   },
+    // });
   }
 };
 
@@ -496,6 +498,86 @@ const deleteDispatchItems = ($this, row) => {
   })
 }
 
+const AdjustDispatch = ($this) => {
+  swal({
+    title: "If you adjust sales order also will adjust, Are you sure you want to Adjust ?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willAdjust) => {
+    if (willAdjust.value) {
+      let InputObj = $this.state;
+      AlgaehLoader({ show: true });
+
+      InputObj.transaction_type = "SDN";
+      InputObj.transaction_date = moment(
+        new Date(),
+        "YYYY-MM-DD"
+      ).format("YYYY-MM-DD");
+
+      for (let i = 0; i < InputObj.delete_dispatch_items.length; i++) {
+        InputObj.delete_dispatch_items[i].location_id = InputObj.location_id;
+        InputObj.delete_dispatch_items[i].location_type = InputObj.location_type;
+        InputObj.delete_dispatch_items[i].operation = "+";
+
+        InputObj.delete_dispatch_items[i].quantity =
+          InputObj.delete_dispatch_items[i].dispatch_quantity;
+
+        InputObj.delete_dispatch_items[i].net_total =
+          InputObj.delete_dispatch_items[i].total_amount;
+
+        InputObj.delete_dispatch_items[i].expiry_date =
+          InputObj.delete_dispatch_items[i].expiry_date !== null
+            ? moment(
+              InputObj.delete_dispatch_items[i].expiry_date,
+              "YYYY-MM-DD"
+            ).format("YYYY-MM-DD")
+            : null;
+      }
+
+      const settings = { header: undefined, footer: undefined };
+
+      algaehApiCall({
+        uri: "/DispatchNote/adjustDispatchNote",
+        module: "sales",
+        skipParse: true,
+        data: Buffer.from(JSON.stringify(InputObj), "utf8"),
+        method: "POST",
+        header: {
+          "content-type": "application/octet-stream",
+          ...settings,
+        },
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            $this.setState({
+              saveEnable: true,
+              dataExists: true,
+              cannotEdit: true,
+              adjustEnable: true,
+              dispatch_adjust: false,
+              deleteItem_data: []
+            });
+            swalMessage({
+              title: "Adjusted successfully . .",
+              type: "success",
+            });
+            AlgaehLoader({ show: false });
+          }
+        },
+        onFailure: (error) => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    }
+  });
+}
 export {
   texthandle,
   SalesOrderSearch,
@@ -504,5 +586,6 @@ export {
   getCtrlCode,
   generateDispatchReport,
   CancelDispatchNote,
-  AdjustDisptachEntry
+  AdjustDisptachEntry,
+  AdjustDispatch
 };

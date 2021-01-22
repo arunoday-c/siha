@@ -508,14 +508,20 @@ export function adjustDispatchNote(req, res, next) {
         .executeQuery({
           query:
             "UPDATE `hims_f_sales_dispatch_note_header` set sub_total = ?, discount_amount= ?, net_total = ?, \
-              total_tax = ?, net_payable = ? where hims_f_dispatch_note_header_id=?;",
+              total_tax = ?, net_payable = ? where hims_f_dispatch_note_header_id=?; \
+              INSERT INTO `hims_f_sales_dn_adjust` (dn_header_id, adjust_reason, adjusted_by, adjusted_date) \
+              VALUE(?,?,?,?);",
           values: [
             input.sub_total,
             input.discount_amount,
             input.net_total,
             input.total_tax,
             input.net_payable,
-            input.hims_f_dispatch_note_header_id
+            input.hims_f_dispatch_note_header_id,
+            input.hims_f_dispatch_note_header_id,
+            input.adjust_reason,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
           ],
           printQuery: true,
         })

@@ -2649,6 +2649,72 @@ let updatePatientPhysicalExam = (req, res, next) => {
     next(e);
   }
 };
+let updatePatientHistory = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let input = req.body;
+    debugger;
+    _mysql
+      .executeQuery({
+        query: `UPDATE hims_f_patient_history SET  remarks=?,
+       updated_date=?, updated_by=? WHERE   hims_f_patient_history_id=?;`,
+        values: [
+          input.remarks,
+
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+
+          input.hims_f_patient_history_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let deletePatientHistory = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: `UPDATE hims_f_patient_history SET  
+       updated_date=?, updated_by=? ,  record_status='I' WHERE  record_status='A' and  hims_f_patient_history_id=?;`,
+        values: [
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+
+          input.hims_f_patient_history_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 
 //created by irfan: to get
 let getVitalsHeaderMaster = (req, res, next) => {
@@ -3549,6 +3615,8 @@ export default {
   getAllPhysicalExamination,
   getVitalsHeaderMaster,
   addPatientHistory,
+  updatePatientHistory,
+  deletePatientHistory,
   getPatientHistory,
   getPatientEpisodeSummary,
   getActiveEncounters,

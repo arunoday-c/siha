@@ -23,7 +23,8 @@ import {
   GridAssignData,
   EditGrid,
   CancelGrid,
-  extendCostHandle
+  extendCostHandle,
+  onchhangegridUnitPrice
 } from "./POItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -477,8 +478,38 @@ export default class POItemList extends Component {
                                 );
                               },
                               editorTemplate: (row) => {
-                                return (
-                                  <span>
+                                return (this.state.hims_f_procurement_po_header_id === null ?
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ",",
+                                      },
+                                      value:
+                                        row.unit_price !== ""
+                                          ? parseFloat(row.unit_price)
+                                          : null,
+                                      className: "txt-fld",
+                                      name: "unit_price",
+                                      dontAllowKeys: ["-", "e", "."],
+                                      events: {
+                                        onChange: onchhangegridUnitPrice.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      },
+                                      others: {
+                                        min: 0,
+                                        algaeh_required: "true",
+                                        errormessage:
+                                          "Please enter Unit Price ..",
+                                        checkvalidation:
+                                          "value ==='' || value ==='0'",
+                                      },
+                                    }}
+                                  /> : <span>
                                     {GetAmountFormart(row.unit_price, {
                                       appendSymbol: false,
                                     })}

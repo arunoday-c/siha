@@ -23,7 +23,7 @@
                         <th>Item Code</th>
                         <th>Item Name</th>
                         <th>UOM</th>
-                        <th>Requested Quantity</th>
+                        <th>Requested Qty</th>
                         <th>Unit Price</th>
                         <th>Total Cost</th>
                     </tr>
@@ -34,26 +34,35 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg">PO No.: {{purchase_number}}
-                            <span class="textFloatRight">Total Cost: {{net_total}}</span>
-
+                        <td colspan="4" class="tableSubHdg">{{purchase_number}} / {{po_date}}</td>
+                         <td colspan="3" class="tableSubHdg numberFld">
+                          {{vendor_name}}
+                           {{!-- | <span><b>{{net_total}}</b></span> --}}
                         </td>
+                       
+
                     </tr>
                     {{#each poitems}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{item_code}}</th>
-                        <td>{{item_description}}</th>
+                        <td class="txtFld">{{item_description}}</th>
                         <td>{{uom_description}}</td>
-                        <td>{{authorize_quantity}}</td>
-                        <td>{{unit_cost}}</td>
-                        <td>{{net_extended_cost}}</td>
+                        {{!-- <td class="numberFld">{{numberFormating authorize_quantity ../currencyOnly}}</td> --}}
+                        <td class="numberFld">{{authorize_quantity}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td>
                     </tr>
-                    {{/each }}{{/each }}
+                    {{/each }} <tr class="tableSubHdg2">
+                        <td colspan="6"></td>
+                        <td class="numberFld"><b>{{net_total}}</b></td>
+                    </tr>{{/each }}
+                   
                     {{else}}
                     <tr>
                         <td colspan="7" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
+
                 </tbody>
 
             </table>

@@ -576,9 +576,15 @@ const getCtrlCode = ($this, docNumber) => {
           //   $this.props.purchase_number !== undefined &&
           //   $this.props.purchase_number.length !== 0
           // ) {
+          debugger
           if (queryParams.get("purchase_number")) {
-            data.purchase_auth = true;
-            data.authorizeEnable = false;
+            data.po_closed = true;
+            if (data.receipt_generated === "Y" || data.is_completed === "Y") {
+              data.purchase_auth = false;
+            } else {
+              data.purchase_auth = true;
+            }
+
             data.ItemDisable = true;
             data.ClearDisable = true;
 
@@ -1198,6 +1204,58 @@ const getCostCenters = ($this) => {
   });
 };
 
+const POClose = ($this) => {
+  if (!$this.state.po_close_reason) {
+    swalMessage({
+      title: "Please add reason to Close PO.",
+      type: "warning",
+    });
+    return;
+  }
+  swal({
+    title: "If you close PO you can't take delivery, Are you Sure you want to Close?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willClose) => {
+    if (willClose.value) {
+      algaehApiCall({
+        uri: "/PurchaseOrderEntry/POClosed",
+        module: "procurement",
+        data: {
+          hims_f_procurement_po_header_id: $this.state.hims_f_procurement_po_header_id,
+          po_close_reason: $this.state.po_close_reason
+        },
+        method: "PUT",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            swalMessage({
+              title: "Closed successfully . .",
+              type: "success",
+            });
+            $this.setState({
+              close_pop_visible: false,
+            });
+            getCtrlCode($this, $this.state.purchase_number);
+          }
+          AlgaehLoader({ show: false });
+        },
+        onFailure: (error) => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    }
+  });
+
+};
+
 export {
   texthandle,
   poforhandle,
@@ -1221,4 +1279,5 @@ export {
   CancelPOEntry,
   getCostCenters,
   getReportForMail,
+  POClose
 };
