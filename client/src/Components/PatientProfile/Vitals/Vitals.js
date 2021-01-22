@@ -1,28 +1,29 @@
 import React, { Component } from "react";
 import "./vitals.scss";
 import {
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler,
+  // AlagehFormGroup,
+  // AlagehAutoComplete,
+  // AlgaehDateHandler,
   AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   getVitalHistory,
   getFormula,
-  temperatureConvertion,
+  // temperatureConvertion,
   getDepartmentVitals,
 } from "./VitalsHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+// import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import config from "../../../utils/config.json";
-import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+// import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 // import Enumerable from "linq";
 import moment from "moment";
 import _ from "lodash";
+import VitalComponent from "./VitalComponent";
 class Vitals extends Component {
   constructor(props) {
     super(props);
@@ -102,17 +103,43 @@ class Vitals extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  resetVitals() {
-    const _resetElements = document.getElementById("vitals_recording");
-    const _childs = _resetElements.querySelectorAll("[type='number']");
-    for (let i = 0; i < _childs.length; i++) {
-      let _name = _childs[i].name;
-      this.setState({
-        [_name]: "",
-      });
+  // resetVitals() {
+  //   const _resetElements = document.getElementById("vitals_recording");
+  //   const _childs = _resetElements.querySelectorAll("[type='number']");
+  //   for (let i = 0; i < _childs.length; i++) {
+  //     let _name = _childs[i].name;
+  //     this.setState({
+  //       [_name]: "",
+  //     });
+  //   }
+  // }
+  resetVitalComponent() {
+    const _elements = document.querySelectorAll("[vitalid]");
+    let resetElements = {};
+    for (let i = 0; i < _elements.length; i++) {
+      const inputElement = _elements[i].querySelector("input");
+      const elementName = inputElement.getAttribute("name");
+      resetElements[elementName] = "";
     }
-  }
+    this.setState(
+      {
+        ...resetElements,
 
+        temperature_from: "",
+        bp_position: "",
+        recorded_date: new Date(),
+        recorded_time: moment().format(config.formators.time),
+      },
+      () => {
+        getVitalHistory(this);
+      }
+    );
+  }
+  // setstates(name, value) {
+  //   this.setState({
+  //     [name]: value,
+  //   });
+  // }
   onClose = (e) => {
     this.setState(
       {
@@ -137,70 +164,70 @@ class Vitals extends Component {
     );
   };
 
-  addPatientVitals(e) {
-    e.preventDefault();
+  // addPatientVitals(e) {
+  //   e.preventDefault();
 
-    AlgaehValidation({
-      // querySelector: "id='vitals_recording'",
-      onSuccess: () => {
-        let bodyArray = [];
-        const _elements = document.querySelectorAll("[vitalid]");
-        let resetElements = {};
-        for (let i = 0; i < _elements.length; i++) {
-          const inputElement = _elements[i].querySelector("input");
-          const elementName = inputElement.getAttribute("name");
-          resetElements[elementName] = "";
-          if (_elements[i].value !== "") {
-            const { visit_id, current_patient, case_type } = Window.global;
-            const _isDepended = _elements[i].getAttribute("dependent");
-            bodyArray.push({
-              patient_id: current_patient, //Window.global["current_patient"],
-              visit_id: visit_id, //Window.global["visit_id"],
-              visit_date: this.state.recorded_date,
-              visit_time: moment().format(config.formators.time),
-              case_type: case_type, //Window.global["case_type"],
-              vital_id: _elements[i].getAttribute("vitalid"),
-              vital_value: _elements[i].children[0].value
-                ? _elements[i].children[0].value
-                : 0.0,
-              vital_value_one:
-                _isDepended !== null
-                  ? document.getElementsByName(_isDepended)[0].value
-                  : null,
-              formula_value: _elements[i].getAttribute("formula_value"),
-            });
-          }
-        }
+  //   AlgaehValidation({
+  //     // querySelector: "id='vitals_recording'",
+  //     onSuccess: () => {
+  //       let bodyArray = [];
+  //       const _elements = document.querySelectorAll("[vitalid]");
+  //       let resetElements = {};
+  //       for (let i = 0; i < _elements.length; i++) {
+  //         const inputElement = _elements[i].querySelector("input");
+  //         const elementName = inputElement.getAttribute("name");
+  //         resetElements[elementName] = "";
+  //         if (_elements[i].value !== "") {
+  //           const { visit_id, current_patient, case_type } = Window.global;
+  //           const _isDepended = _elements[i].getAttribute("dependent");
+  //           bodyArray.push({
+  //             patient_id: current_patient, //Window.global["current_patient"],
+  //             visit_id: visit_id, //Window.global["visit_id"],
+  //             visit_date: this.state.recorded_date,
+  //             visit_time: moment().format(config.formators.time),
+  //             case_type: case_type, //Window.global["case_type"],
+  //             vital_id: _elements[i].getAttribute("vitalid"),
+  //             vital_value: _elements[i].children[0].value
+  //               ? _elements[i].children[0].value
+  //               : 0.0,
+  //             vital_value_one:
+  //               _isDepended !== null
+  //                 ? document.getElementsByName(_isDepended)[0].value
+  //                 : null,
+  //             formula_value: _elements[i].getAttribute("formula_value"),
+  //           });
+  //         }
+  //       }
 
-        algaehApiCall({
-          uri: "/doctorsWorkBench/addPatientVitals",
-          method: "POST",
-          data: bodyArray,
-          onSuccess: (response) => {
-            if (response.data.success) {
-              this.setState(
-                {
-                  ...resetElements,
-                  temperature_from: "",
-                  bp_position: "",
-                  recorded_date: new Date(),
-                  recorded_time: moment().format(config.formators.time),
-                },
-                () => {
-                  getVitalHistory(this);
+  //       algaehApiCall({
+  //         uri: "/doctorsWorkBench/addPatientVitals",
+  //         method: "POST",
+  //         data: bodyArray,
+  //         onSuccess: (response) => {
+  //           if (response.data.success) {
+  //             this.setState(
+  //               {
+  //                 ...resetElements,
+  //                 temperature_from: "",
+  //                 bp_position: "",
+  //                 recorded_date: new Date(),
+  //                 recorded_time: moment().format(config.formators.time),
+  //               },
+  //               () => {
+  //                 getVitalHistory(this);
 
-                  swalMessage({
-                    title: "Vitals recorded successfully . .",
-                    type: "success",
-                  });
-                }
-              );
-            }
-          },
-        });
-      },
-    });
-  }
+  //                 swalMessage({
+  //                   title: "Vitals recorded successfully . .",
+  //                   type: "success",
+  //                 });
+  //               }
+  //             );
+  //           }
+  //         },
+  //       });
+  //     },
+  //   });
+  // }
 
   checkMax(uom) {
     const max = uom === "%" ? { max: 100 } : {};
@@ -215,7 +242,7 @@ class Vitals extends Component {
         : this.props.department_vitals;
     const _vitalsGroup =
       this.props.patient_vitals !== undefined ? this.props.patient_vitals : [];
-
+    const { visit_id, current_patient, case_type } = Window.global;
     return (
       <React.Fragment>
         <div className="row">
@@ -282,7 +309,26 @@ class Vitals extends Component {
                     <div className="row">
                       <div className="col-4">
                         <div className="row vitalsAddingSec">
-                          {_department_viatals.map((item, index) => {
+                          <VitalComponent
+                            _department_viatals={_department_viatals}
+                            state={this.state}
+                            // setState={this.setState}
+                            texthandle={(e) => this.texthandle(e)}
+                            handleClose={(e) => this.handleClose(e)}
+                            // editDateHandler={(selectedDate) => this.editDateHandler(selectedDate)}
+                            // editDateValidate={this.editDateValidate}
+                            current_patient={current_patient}
+                            visit_id={visit_id}
+                            case_type={case_type}
+                            dropDownHandle={(e) => this.dropDownHandle(e)}
+                            // setstates={(name, value) =>
+                            //   this.setstates(name, value)
+                            // }
+                            resetVitalComponent={() =>
+                              this.resetVitalComponent()
+                            }
+                          />
+                          {/* {_department_viatals.map((item, index) => {
                             const _className =
                               item.hims_d_vitals_header_id === 1
                                 ? "col-4"
@@ -428,13 +474,13 @@ class Vitals extends Component {
                                       ),
                                     }}
                                   />
-                                ) : null}
-                                {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
-                              </React.Fragment>
+                                ) : null} */}
+                          {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
+                          {/* </React.Fragment>
                             );
-                          })}
+                          })} */}
 
-                          <AlgaehDateHandler
+                          {/* <AlgaehDateHandler
                             div={{ className: "col-4" }}
                             label={{ forceLabel: "Recorded Date", isImp: true }}
                             textBox={{
@@ -487,7 +533,7 @@ class Vitals extends Component {
                             >
                               Clear
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </div>{" "}
                       <div className="col-8 vitalsTimeLineSec">
