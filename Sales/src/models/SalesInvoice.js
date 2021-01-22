@@ -14,7 +14,7 @@ export function getInvoiceEntry(req, res, next) {
           "SELECT SIH.*, C.customer_name, H.hospital_name, SO.sales_order_number, \
                 P.project_desc as project_name, SO.revert_reason, \
                 max(if(U.algaeh_d_app_user_id = SO.reverted_by, E.full_name,'' )) as reverted_name, \
-                max(if(U.algaeh_d_app_user_id = SO.created_by, E.full_name,'' )) as created_name \
+                max(if(U.algaeh_d_app_user_id = SO.created_by, E.full_name,'' )) as created_name,SO.sales_person_id \
                 from hims_f_sales_invoice_header SIH \
                 inner join  hims_f_sales_order SO on  SIH.sales_order_id = SO.hims_f_sales_order_id \
                 inner join  hims_d_customer C on  SIH.customer_id = C.hims_d_customer_id \
@@ -439,7 +439,6 @@ export function postSalesInvoice(req, res, next) {
   }
 }
 
-
 export function saveDeliveryDate(req, res, next) {
   console.log("saveDeliveryDate");
   const _mysql = new algaehMysql();
@@ -459,12 +458,12 @@ export function saveDeliveryDate(req, res, next) {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           inputParam.hims_f_sales_invoice_header_id,
-          inputParam.invoice_number
+          inputParam.invoice_number,
         ],
         printQuery: true,
       })
       .then((headerResult) => {
-        const day_end_detail = headerResult[1][0]
+        const day_end_detail = headerResult[1][0];
         _mysql
           .executeQueryWithTransaction({
             query:
@@ -475,7 +474,7 @@ export function saveDeliveryDate(req, res, next) {
               inputParam.due_date,
               day_end_detail.finance_day_end_header_id,
               inputParam.due_date,
-              day_end_detail.finance_day_end_header_id
+              day_end_detail.finance_day_end_header_id,
             ],
             printQuery: true,
           })
@@ -491,7 +490,6 @@ export function saveDeliveryDate(req, res, next) {
               next(e);
             });
           });
-
       })
       .catch((e) => {
         _mysql.rollBackTransaction(() => {
@@ -797,8 +795,8 @@ export function generateAccountingEntry(req, res, next) {
                         headerResult[0].invoice_number,
                         inputParam.ScreenCode,
                         sales_done +
-                        " Sales done for  " +
-                        headerResult[0].customer_name,
+                          " Sales done for  " +
+                          headerResult[0].customer_name,
                         headerResult[0].invoice_number,
                         inputParam.due_date,
                         new Date(),
@@ -876,8 +874,8 @@ export function generateAccountingEntry(req, res, next) {
                         if (inputParam.sales_invoice_mode === "I") {
                           let waited_avg_cost = utilities.decimalPoints(
                             parseFloat(headerResult[i].dispatch_quantity) *
-                            parseFloat(headerResult[i].conversion_factor) *
-                            parseFloat(headerResult[i].waited_avg_cost),
+                              parseFloat(headerResult[i].conversion_factor) *
+                              parseFloat(headerResult[i].waited_avg_cost),
                             decimal_places
                           );
                           //COGS Entry
