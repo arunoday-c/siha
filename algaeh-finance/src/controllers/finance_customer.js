@@ -2,7 +2,7 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import finance_customer from "../models/finance_customer";
 
-const { getCustomerReceivables, getCustomerInvoiceDetails } = finance_customer;
+const { getCustomerReceivables, getCustomerInvoiceDetails, revrtInvocieBack } = finance_customer;
 
 export default () => {
   const api = Router();
@@ -53,6 +53,15 @@ export default () => {
       }
     }
   );
+  api.put("/revrtInvocieBack", revrtInvocieBack, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records
+      })
+      .end();
+  });
 
   return api;
 };

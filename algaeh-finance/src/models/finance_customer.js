@@ -66,7 +66,7 @@ export default {
     //H.invoice_no is not null
     _mysql
       .executeQuery({
-        query: `select finance_voucher_header_id ,round(amount ,${decimal_places})as invoice_amount,
+        query: `select finance_voucher_header_id, day_end_header_id,round(amount ,${decimal_places})as invoice_amount,
         round(amount-settled_amount,${decimal_places})as balance_amount,
         round(settled_amount,${decimal_places}) as settled_amount,
         invoice_no ,voucher_type,H.narration,H.payment_date as invoice_date,
@@ -122,5 +122,102 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+  revrtInvocieBack: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const { finance_voucher_header_id, day_end_header_id } = req.body;
+    try {
+      _mysql
+        .executeQueryWithTransaction({
+          query: `select * from finance_voucher_header where finance_voucher_header_id=?;
+                select   finance_voucher_id, voucher_header_id, payment_date, month, year, head_id,
+                child_id, debit_amount, payment_type, narration, credit_amount, hospital_id, pl_entry,
+                is_opening_bal, is_new_entry, project_id, sub_department_id 
+                from finance_voucher_details where voucher_header_id=?;`,
+          values: [finance_voucher_header_id, finance_voucher_header_id],
+          printQuery: true,
+        })
+        .then((voucher_result) => {
+          const header_data = voucher_result[0][0]
+          const detail_data = voucher_result[1]
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "INSERT INTO `finance_voucher_revert_header` (finance_voucher_header_id, payment_mode,ref_no,cheque_date,amount, \
+                payment_date, month, year, narration, voucher_no, voucher_type,from_screen,invoice_no,\
+                invoice_ref_no,posted_from, created_by, updated_by, created_date, updated_date)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
+                DELETE from finance_voucher_details where voucher_header_id=?;\
+                DELETE from finance_voucher_header where finance_voucher_header_id=?;\
+                UPDATE finance_day_end_header set posted='N' where finance_day_end_header_id=?;",
+              values: [
+                header_data.finance_voucher_header_id,
+                header_data.payment_mode,
+                header_data.ref_no,
+                header_data.cheque_date,
+                header_data.amount,
+                header_data.payment_date,
+                header_data.month,
+                header_data.year,
+                header_data.narration,
+                header_data.voucher_no,
+                header_data.voucher_type,
+                header_data.from_screen,
+                header_data.invoice_no,
+                header_data.invoice_ref_no,
+                header_data.posted_from,
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                new Date(),
+                finance_voucher_header_id,
+                finance_voucher_header_id,
+                day_end_header_id
+              ],
+              printQuery: true,
+            })
+            .then((result) => {
+              const header_result = result[0]
+              console.log("header_result", header_result)
+              console.log("result", result)
+
+              _mysql
+                .executeQueryWithTransaction({
+                  query: "insert into finance_voucher_revert_details (??) values ?;",
+                  values: detail_data,
+                  bulkInsertOrUpdate: true,
+                  printQuery: true,
+                  // excludeValues: ["disabled", "paytypedisable"],
+                  extraValues: {
+                    revert_header_id: header_result.insertId
+                  },
+                })
+                .then((result2) => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result2;
+                    next();
+                  });
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };

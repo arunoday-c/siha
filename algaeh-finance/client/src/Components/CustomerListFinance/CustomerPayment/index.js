@@ -4,6 +4,8 @@ import {
   AlgaehMessagePop,
   AlgaehTable,
   AlgaehButton,
+  RawSecurityComponent,
+  Tooltip
 } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
@@ -14,6 +16,7 @@ import {
 import { Button, Spin, Checkbox, Modal } from "antd";
 import _ from "lodash";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { newAlgaehApi } from "../../../hooks";
 
 export default memo(function (props) {
   const location = useLocation();
@@ -24,6 +27,7 @@ export default memo(function (props) {
   const [checkAll, setCheckAll] = useState(false);
   const [selectAmount, setSelectedAmount] = useState(0);
   const [childName, setChildName] = useState("");
+  const [revert_option, setRevertOption] = useState([]);
   const [info, setInfo] = useState({
     over_due: "0.00",
     total_receivable: "0.00",
@@ -31,8 +35,43 @@ export default memo(function (props) {
     day_end_pending: "",
   });
   const [loading, setLoading] = useState(false);
+  const { confirm } = Modal;
 
   useEffect(() => {
+    RawSecurityComponent({ componentCode: "REVERT_OPTION" }).then(
+      (result) => {
+        if (result === "show") {
+          setRevertOption([
+            {
+              fieldName: "checked",
+              indeterminate: indeterminate.toString(),
+              label: "Revert",
+              sortable: false,
+              filterable: false,
+              displayTemplate: (row) => {
+                return (
+                  // row.invoice_status === "open" && row.day_end_header_id > 0 ?
+                  <Tooltip title="Revert">
+                    <span
+                      style={{
+                        pointerEvents:
+                          row.invoice_status === "open" && row.day_end_header_id > 0 ? "" : "none",
+                        opacity:
+                          row.invoice_status === "open" && row.day_end_header_id > 0 ? "" : "0.1",
+                      }}
+                      onClick={() => rejectInvoice(row)}>
+                      <i className="fas fa-undo-alt"></i>
+                    </span >
+                  </Tooltip >
+                  // : null
+                );
+              },
+            },
+          ]);
+        }
+      }
+    );
+
     if (location.state) {
       setLoading(true);
       const {
@@ -43,6 +82,7 @@ export default memo(function (props) {
       setChildName(child_name);
       getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
         .then((res) => {
+          debugger
           if (res.data.success) {
             const { result } = res.data;
             setData(result.result);
@@ -64,6 +104,85 @@ export default memo(function (props) {
         });
     }
   }, [location.state]);
+
+
+
+  const rejectInvoice = (row) => {
+    confirm({
+      okText: "Revert",
+      okType: "primary",
+      icon: "",
+      title: "Invoice Revert",
+      content: `Are you sure do you want to rever 
+      Invoice : ${row.invoice_no}`,
+
+      maskClosable: true,
+      onOk: async () => {
+        try {
+          await revrtInvocieBack(row.day_end_header_id, row.finance_voucher_header_id);
+        } catch (e) {
+          AlgaehMessagePop({
+            type: "error",
+            display: e.message,
+          });
+        }
+      },
+    });
+  };
+
+  const revrtInvocieBack = async (day_end_header_id, finance_voucher_header_id) => {
+    try {
+      const res = await newAlgaehApi({
+        uri: "/finance_customer/revrtInvocieBack",
+        method: "PUT",
+        module: "finance",
+        data: {
+          day_end_header_id: day_end_header_id,
+          finance_voucher_header_id: finance_voucher_header_id
+        },
+      });
+      if (res.data.success) {
+        debugger
+        setLoading(true);
+        const {
+          finance_account_child_id,
+          is_opening_bal
+        } = location.state.data;
+        getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
+          .then((res) => {
+
+            if (res.data.success) {
+              const { result } = res.data;
+              setData(result.result);
+              setInfo({
+                over_due: result.over_due,
+                total_receivable: result.total_receivable,
+                past_payments: result.past_payments,
+                day_end_pending: result.day_end_pending,
+              });
+              setLoading(false);
+            }
+          })
+          .catch((e) => {
+            AlgaehMessagePop({
+              type: "Error",
+              display: e.message,
+            });
+            setLoading(false);
+          });
+
+        AlgaehMessagePop({
+          type: "success",
+          display: "Revrted Successfully..",
+        });
+      }
+    } catch (e) {
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
 
   const receive = (row) => {
     return (
@@ -224,7 +343,7 @@ export default memo(function (props) {
                       id="customerDetailGrid_Cntr"
                     >
                       <AlgaehTable
-                        columns={[
+                        columns={revert_option.concat([
                           {
                             fieldName: "checked",
                             indeterminate: indeterminate.toString(),
@@ -339,7 +458,7 @@ export default memo(function (props) {
                             displayTemplate: receive,
                             sortable: false,
                           },
-                        ]}
+                        ])}
                         // minHeight="80vh"
                         // rowUnique="finance_voucher_header_id"
                         isFilterable={true}
