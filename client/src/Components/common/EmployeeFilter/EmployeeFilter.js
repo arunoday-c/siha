@@ -29,6 +29,7 @@ export default function EmployeeFilter(props) {
     emp_name: null,
     inputChanged: false,
     hospital_name: userToken.hospital_name,
+    // sel_hospital_name: hospital_name,
   };
   const [inputs, setInputs] = useState({ ...baseInput });
 
@@ -138,12 +139,11 @@ export default function EmployeeFilter(props) {
 
   function dropDownHandler(e) {
     const { name, value, selected } = e;
-    const hosName =
-      name === "hims_d_hospital_id"
-        ? {
-            hospital_name: selected.hospital_name,
-          }
-        : {};
+    const hosName = name.includes("hospital_id")
+      ? {
+          hospital_name: selected.hospital_name,
+        }
+      : {};
     setInputs((state) => ({
       ...state,
       [name]: value,
@@ -217,7 +217,6 @@ export default function EmployeeFilter(props) {
         callBack(text);
       },
       onRowSelect: (row) => {
-        console.log(row, "emp details");
         // let arr = employees;
         // arr.push(row);
         // getDesignations(row.sub_department_id);
@@ -241,7 +240,6 @@ export default function EmployeeFilter(props) {
   }
 
   function loadFunc() {
-    console.log("inputs==", inputs);
     if (inputs.hospital_id) {
       props.loadFunc(inputs);
     } else {

@@ -28,5 +28,35 @@
     "updateKeyName": "hims_f_contract_management_id",
     "updateTable": "hims_f_contract_management",
     "templateFile": "contract_expiry"
+  },
+  "probationExpiry": {
+    "name": "probation_expiry",
+    "title": "Probation Expiry",
+    "second": "5",
+    "minute": "*",
+    "hour": "*",
+    "dayOfMonth": "*",
+    "month": "*",
+    "dayOfWeek": "*",
+    "moduleType": "probation_expiry",
+    "sqlQuery": "SELECT EM.hims_d_employee_id,EM.employee_code,DATE(EM.probation_date) as probation_date,concat(if(T.title is not null,T.title,''),'. ', EM.full_name) english_name, concat(if(T.arabic_title is not null,T.arabic_title,''),'. ', EM.arabic_name)arabic_name,DATEDIFF(date(EM.probation_date),date(now())) as expire_after, EM.reporting_to_id, (select group_concat(employee_id) from algaeh_d_app_user where user_type='HR') as employees FROM hims_d_employee EM left join hims_d_title as T on T.his_d_title_id = EM.title_id where EM.is_notify = 0 and DATEDIFF(date(EM.probation_date),date(now())) <= (select probation_notify_before from hims_d_hrms_options limit 1);",
+    "updateKeyName": "hims_d_employee_id",
+    "updateTable": "hims_d_employee",
+    "templateFile": "probation_expiry"
+  },
+  "quotationFollowup": {
+    "name": "quotation_Followup",
+    "title": "Quotation Follow up",
+    "second": "5",
+    "minute": "*",
+    "hour": "*",
+    "dayOfMonth": "*",
+    "month": "*",
+    "dayOfWeek": "*",
+    "moduleType": "quotation_Followup",
+    "sqlQuery": "SELECT SQ.hims_f_sales_quotation_id,SQ.sales_quotation_number,SQ.hims_f_sales_quotation_id,SQ.is_notify,SQ.qotation_status,SQ.created_date, SQ.sales_person_id, SQ.no_of_days_followup,concat(if(T.title is not null,T.title,''),'. ', EM.full_name) english_name, concat(if(T.arabic_title is not null,T.arabic_title,''),'. ', EM.arabic_name)arabic_name, DATEDIFF(date(now()),date(SQ.created_date)) as diff_date, CU.customer_name FROM hims_f_sales_quotation SQ inner join hims_d_employee EM on EM.hims_d_employee_id = SQ.sales_person_id inner join hims_d_customer CU on CU.hims_d_customer_id = SQ.customer_id left join hims_d_title as T on T.his_d_title_id = EM.title_id where qotation_status = 'G' and no_of_days_followup >0 and SQ.is_notify = 0 and  (DATEDIFF(date(now()),date(SQ.created_date)) = SQ.no_of_days_followup);",
+    "updateKeyName": "hims_f_sales_quotation_id",
+    "updateTable": "hims_f_sales_quotation",
+    "templateFile": "quotation_Followup"
   }
 }

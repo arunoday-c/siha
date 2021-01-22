@@ -52,40 +52,40 @@ export async function schedulerTask() {
             connection
           );
           if (templateRecords.length > 0) {
-          }
-          let mysqlQuery = `INSERT INTO Notification.notification_collection(primary_user_ids,
-          primary_message,other_message,other_user_ids,created_at,record_inactive,title,module_type) VALUES ?`;
-          let updateBase = "";
-          const values: any[] = [];
-          for (let i = 0; i < templateRecords.length; i++) {
-            const {
-              primary_user_ids,
-              primary_message,
-              other_message,
-              other_user_ids,
-            } = templateRecords[i];
-            values.push([
-              primary_user_ids,
-              primary_message,
-              other_message,
-              other_user_ids,
-              new Date(),
-              0,
-              item.title,
-              item.module_type,
-            ]);
-            if (
-              item.updateKeyName &&
-              item.updateKeyName !== "" &&
-              item.updateTable &&
-              item.updateTable !== ""
-            ) {
-              updateBase += format(
-                `UPDATE ${item.updateTable} set is_notify=1 where ${item.updateKeyName}=?;`,
-                [templateRecords[i][item.updateKeyName]]
-              );
+            let mysqlQuery = `INSERT INTO Notification.notification_collection(primary_user_ids,
+              primary_message,other_message,other_user_ids,created_at,record_inactive,title,module_type) VALUES ?`;
+            let updateBase = "";
+            const values: any[] = [];
+            for (let i = 0; i < templateRecords.length; i++) {
+              const {
+                primary_user_ids,
+                primary_message,
+                other_message,
+                other_user_ids,
+              } = templateRecords[i];
+              values.push([
+                primary_user_ids,
+                primary_message,
+                other_message,
+                other_user_ids,
+                new Date(),
+                0,
+                item.title,
+                item.module_type,
+              ]);
+              if (
+                item.updateKeyName &&
+                item.updateKeyName !== "" &&
+                item.updateTable &&
+                item.updateTable !== ""
+              ) {
+                updateBase += format(
+                  `UPDATE ${item.updateTable} set is_notify=1 where ${item.updateKeyName}=?;`,
+                  [templateRecords[i][item.updateKeyName]]
+                );
+              }
             }
-
+            // console.log("test....", connection.format(mysqlQuery, [values]));
             await connection.query(mysqlQuery, [values]);
             await connection.query(updateBase);
             connection.release();
