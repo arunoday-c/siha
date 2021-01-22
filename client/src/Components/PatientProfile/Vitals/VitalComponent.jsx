@@ -133,6 +133,7 @@ class VitalComponent extends Component {
                   number: {
                     allowNegative: false,
                   },
+                  type: "number",
                 };
           return (
             <React.Fragment key={index}>
@@ -170,6 +171,7 @@ class VitalComponent extends Component {
                   selector={{
                     name: "bp_position",
                     className: "select-fld",
+
                     value: this.props.state.bp_position,
                     dataSource: {
                       textField: "name",
@@ -204,15 +206,19 @@ class VitalComponent extends Component {
                   name: _name,
                   ...boxType,
 
-                  dontAllowKeys: ["-", "e"],
+                  dontAllowKeys:
+                    item.isDecimal === "Y" ? ["-", "e"] : ["-", "e", "."],
                   others: {
+                    // pattren: "[0-9]",
                     min: 0,
                     ...this.checkMax(item.uom),
                     disabled: _disable,
                     vitalid: item.hims_d_vitals_header_id,
                     formula_value: String(item.uom).trim(),
                     ..._dependent,
+                    // step: "1",
                   },
+                  //   dontAllowKeys: ["."],
                   value: this.props.state[_name],
                   events: {
                     onChange: this.props.texthandle,
