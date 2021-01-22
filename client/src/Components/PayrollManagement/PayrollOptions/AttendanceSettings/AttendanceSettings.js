@@ -463,6 +463,24 @@ export default class AttendanceSettings extends Component {
                     </label>
                   </div>
                 </div>
+                <AlagehFormGroup
+                  div={{ className: "col-3 form-group" }}
+                  label={{
+                    forceLabel: "Probation Notify Before",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "probation_notify_before",
+                    value: this.state.probation_notify_before,
+                    events: {
+                      onChange: this.textHandler.bind(this),
+                    },
+                    others: {
+                      type: "number",
+                    },
+                  }}
+                />
                 <div className="col-4 form-group">
                   <label>OT Calculation</label>
                   <div className="customRadio">

@@ -34,7 +34,7 @@ export default {
           "update hims_d_hrms_options set salary_process_date=?, \
             salary_pay_before_end_date=?, payroll_payment_date=?, salary_calendar=?, salary_calendar_fixed_days=?, \
             attendance_type=?, fetch_punch_data_reporting=?, leave_level=?, loan_level=?, leave_encash_level=?, \
-            review_auth_level=?, yearly_working_days=?, advance_deduction=?, overtime_type=?, overtime_payment=?, \
+            review_auth_level=?, yearly_working_days=?,probation_notify_before=?, advance_deduction=?, overtime_type=?, overtime_payment=?, \
             overtime_calculation=?, overtime_hourly_calculation=?, standard_intime=?, standard_outime=?,  \
             standard_working_hours=?, standard_break_hours=?, biometric_database=?, biometric_server_name=?, \
             biometric_port_no=?, biometric_database_name=?, biometric_database_login=?, biometric_database_password=?, \
@@ -54,6 +54,7 @@ export default {
           input.leave_encash_level,
           input.review_auth_level,
           input.yearly_working_days,
+          input.probation_notify_before,
           input.advance_deduction,
           input.overtime_type,
           input.overtime_payment,
@@ -479,7 +480,7 @@ export default {
           "INSERT  INTO hims_d_hrms_options(salary_process_date, \
       salary_pay_before_end_date, payroll_payment_date, salary_calendar, salary_calendar_fixed_days, \
       attendance_type, fetch_punch_data_reporting, leave_level, loan_level, leave_encash_level, \
-      review_auth_level, yearly_working_days, advance_deduction, overtime_type, overtime_payment, \
+      review_auth_level, yearly_working_days,probation_notify_before, advance_deduction, overtime_type, overtime_payment, \
       overtime_calculation, overtime_hourly_calculation, standard_intime, standard_outime,  standard_working_hours, standard_break_hours, biometric_database, biometric_server_name, biometric_port_no, biometric_database_name, \
       biometric_database_login, biometric_database_password, biometric_swipe_id, manual_timesheet_entry, \
       authorization_plan, ot_calculation, external_finance, created_date, created_by,ramzan_timing_req,ramzan_start_date,ramzan_end_date,ramzan_working_hr_per_day,ramzan_eligible_category,working_hour_from) \
@@ -497,6 +498,7 @@ export default {
           input.leave_encash_level,
           input.review_auth_level,
           input.yearly_working_days,
+          input.probation_notify_before,
           input.advance_deduction,
           input.overtime_type,
           input.overtime_payment,
