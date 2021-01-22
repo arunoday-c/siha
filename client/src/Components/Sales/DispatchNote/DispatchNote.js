@@ -19,13 +19,14 @@ import {
   SaveDispatchNote,
   getCtrlCode,
   generateDispatchReport,
-  AdjustDisptachEntry
+  AdjustDisptachEntry,
+  AdjustDispatch
   // CancelDispatchNote
 } from "./DispatchNoteEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
-import { MainContext } from "algaeh-react-components";
+import { MainContext, Modal, AlgaehButton } from "algaeh-react-components";
 import DispatchNoteItems from "./DispatchNoteItems/DispatchNoteItems";
 
 class DispatchNote extends Component {
@@ -70,7 +71,8 @@ class DispatchNote extends Component {
       adjustEnable: true,
       deleteItem_data: [],
       delete_dispatch_items: [],
-      invoice_generated: 'N'
+      invoice_generated: 'N',
+      dispatch_adjust: false
     };
     this.baseState = this.state;
   }
@@ -235,6 +237,36 @@ class DispatchNote extends Component {
           }
           selectedLang={this.state.selectedLang}
         />
+        <Modal
+          title="Dispatch Adjust"
+          visible={this.state.dispatch_adjust}
+          footer={null}
+          onCancel={() => this.setState({ dispatch_adjust: false })}
+          className={`row algaehNewModal invoiceCancellationModal`}
+        >
+          <AlgaehLabel label={{ forceLabel: "Enter reason for Adjustment" }} />
+          <textarea
+            value={this.state.adjust_reason}
+            name="adjust_reason"
+            onChange={texthandle.bind(this, this)}
+          />
+
+
+          <div className="popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-12">
+                  <AlgaehButton
+                    className="btn btn-primary"
+                    onClick={AdjustDispatch.bind(this, this)}
+                  >
+                    Adjust
+                  </AlgaehButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
         <div className="hims-purchase-order-entry">
           <div
             className="row  inner-top-search"
