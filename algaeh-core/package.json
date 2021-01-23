@@ -22,7 +22,9 @@
     "run-prod": "cross-env PORT=3000 NODE_ENV=production pm2 start  -i 1 build/app.js --name 'core'",
     "run-docker": "cross-env PORT=3000 NODE_ENV=production node build/app.js",
     "start": "run-s build run-prod",
-    "start-proxy": "docker-compose -f '../nginx-conf/docker-compose.debug.yml' up --build -d"
+    "start-proxy": "docker-compose -f '../nginx-conf/docker-compose.debug.yml' up --build -d",
+    "client-build-webpack": "webpack --config webpack.prod.js --env=Client_Builds",
+    "bundle": "npm run build --prefix ../client && npm run client-build-webpack"
   },
   "author": "ALGAEH Technologies Pvt Ltd",
   "license": "ISC",
