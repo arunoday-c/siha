@@ -14,6 +14,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import HistoryViewComp from "./HistoryViewComp";
 import Swal from "sweetalert2";
 import { newAlgaehApi } from "../../../hooks";
+import _ from "lodash";
 // import { AlgaehMessagePop } from "algaeh-react-components";
 
 class PatientHistory extends Component {
@@ -212,63 +213,21 @@ class PatientHistory extends Component {
                   <div className="col-12 historySepration">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Social History",
+                        forceLabel: "Birth History",
                       }}
                     />
                     <textarea
                       style={{ height: "17vh" }}
-                      value={this.state.social_history}
-                      name="social_history"
+                      value={this.state.birth_history}
+                      name="birth_history"
                       onChange={this.textHandle.bind(this)}
-                      maxLength={this.socialHistoryMaxLength}
+                      maxLength={this.birthHistoryMaxLength}
                     />
                     <small className="float-right">
-                      Max characters {this.socialHistoryMaxLength}/
+                      Max characters {this.birthHistoryMaxLength}/
                       {maxCharactersLeft(
-                        this.socialHistoryMaxLength,
-                        this.state.social_history
-                      )}
-                    </small>
-                  </div>
-                  <div className="col-12 historySepration">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Medical History",
-                      }}
-                    />
-                    <textarea
-                      style={{ height: "17vh" }}
-                      value={this.state.medical_history}
-                      name="medical_history"
-                      onChange={this.textHandle.bind(this)}
-                      maxLength={this.medicalHistoryMaxLength}
-                    />
-                    <small className="float-right">
-                      Max characters {this.medicalHistoryMaxLength}/
-                      {maxCharactersLeft(
-                        this.medicalHistoryMaxLength,
-                        this.state.medical_history
-                      )}
-                    </small>
-                  </div>
-                  <div className="col-12 historySepration">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Surgical History",
-                      }}
-                    />
-                    <textarea
-                      style={{ height: "17vh" }}
-                      value={this.state.surgical_history}
-                      name="surgical_history"
-                      onChange={this.textHandle.bind(this)}
-                      maxLength={this.surgeryHistoryMaxLength}
-                    />
-                    <small className="float-right">
-                      Max characters {this.surgeryHistoryMaxLength}/
-                      {maxCharactersLeft(
-                        this.surgeryHistoryMaxLength,
-                        this.state.surgical_history
+                        this.birthHistoryMaxLength,
+                        this.state.birth_history
                       )}
                     </small>
                   </div>
@@ -296,21 +255,64 @@ class PatientHistory extends Component {
                   <div className="col-12 historySepration">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Birth History",
+                        forceLabel: "Medical History",
                       }}
                     />
                     <textarea
                       style={{ height: "17vh" }}
-                      value={this.state.birth_history}
-                      name="birth_history"
+                      value={this.state.medical_history}
+                      name="medical_history"
                       onChange={this.textHandle.bind(this)}
-                      maxLength={this.birthHistoryMaxLength}
+                      maxLength={this.medicalHistoryMaxLength}
                     />
                     <small className="float-right">
-                      Max characters {this.birthHistoryMaxLength}/
+                      Max characters {this.medicalHistoryMaxLength}/
                       {maxCharactersLeft(
-                        this.birthHistoryMaxLength,
-                        this.state.birth_history
+                        this.medicalHistoryMaxLength,
+                        this.state.medical_history
+                      )}
+                    </small>
+                  </div>
+                  <div className="col-12 historySepration">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Social History",
+                      }}
+                    />
+                    <textarea
+                      style={{ height: "17vh" }}
+                      value={this.state.social_history}
+                      name="social_history"
+                      onChange={this.textHandle.bind(this)}
+                      maxLength={this.socialHistoryMaxLength}
+                    />
+                    <small className="float-right">
+                      Max characters {this.socialHistoryMaxLength}/
+                      {maxCharactersLeft(
+                        this.socialHistoryMaxLength,
+                        this.state.social_history
+                      )}
+                    </small>
+                  </div>
+
+                  <div className="col-12 historySepration">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Surgical History",
+                      }}
+                    />
+                    <textarea
+                      style={{ height: "17vh" }}
+                      value={this.state.surgical_history}
+                      name="surgical_history"
+                      onChange={this.textHandle.bind(this)}
+                      maxLength={this.surgeryHistoryMaxLength}
+                    />
+                    <small className="float-right">
+                      Max characters {this.surgeryHistoryMaxLength}/
+                      {maxCharactersLeft(
+                        this.surgeryHistoryMaxLength,
+                        this.state.surgical_history
                       )}
                     </small>
                   </div>
@@ -321,10 +323,10 @@ class PatientHistory extends Component {
               {/* <HistoryViewComp history={history} /> */}
 
               <div className="popRightDiv" style={{ paddingLeft: 0 }}>
-                {history.map((item, index) => (
+                {_.orderBy(history, ["groupType"], "asc").map((item, index) => (
                   <table
                     className="table table-sm table-bordered customTable"
-                    key={index}
+                    key={item.groupType}
                   >
                     <thead className="">
                       <tr>
@@ -335,7 +337,7 @@ class PatientHistory extends Component {
                     </thead>
                     <tbody>
                       {item.groupDetail.map((data, dIndex) => (
-                        <tr key={dIndex}>
+                        <tr key={data.hims_f_patient_history_id}>
                           <td>
                             <i
                               className="fas fa-trash-alt"
@@ -343,7 +345,7 @@ class PatientHistory extends Component {
                             ></i>
                           </td>
                           <HistoryViewComp
-                            id={dIndex}
+                            id={data.hims_f_patient_history_id}
                             data={data}
                             remarks={data.remarks}
                           />
