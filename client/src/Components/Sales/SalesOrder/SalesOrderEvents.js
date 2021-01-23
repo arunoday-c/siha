@@ -361,6 +361,8 @@ const ClearData = ($this, e) => {
     addItemButton: true,
     item_description: "",
     addedItem: true,
+    itemAdd: false,
+    serviceAdd: false,
 
     item_id: null,
     quantity: 0,
