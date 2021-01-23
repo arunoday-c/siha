@@ -7,11 +7,12 @@ import { swalMessage } from "../../../utils/algaehApiCall";
 export default function HistoryViewComp({ data, remarks }) {
   const [editable, setEditable] = useState(true);
   // const [historyData, setHistoryData] = useState([]);
-  const { register, errors, handleSubmit } = useForm({
+  const { register, errors, handleSubmit, setValue } = useForm({
     defaultValues: { historyRemarks: remarks },
   });
 
   const updateHistory = (e) => {
+    debugger;
     newAlgaehApi({
       uri: "/doctorsWorkBench/updatePatientHistory",
       method: "PUT",
@@ -36,6 +37,11 @@ export default function HistoryViewComp({ data, remarks }) {
           title: e.message,
         });
       });
+  };
+  const restorePrevState = () => {
+    setValue("historyRemarks", remarks);
+    setEditable((pre) => !pre);
+    return;
   };
   return (
     <td style={{ position: "relative" }}>
@@ -66,8 +72,11 @@ export default function HistoryViewComp({ data, remarks }) {
               style={{ position: "absolute", top: 35, left: -48 }}
             />
             <button
-              type=""
+              type="button"
               className="fas fa-times"
+              onClick={() => {
+                restorePrevState();
+              }}
               style={{ position: "absolute", top: 66, left: -48 }}
             />
           </>
