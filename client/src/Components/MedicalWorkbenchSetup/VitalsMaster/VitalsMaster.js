@@ -502,9 +502,9 @@ class VitalsMaster extends Component {
               {/* <div className="row"> */}
               <div className="row" data-validate="addVitalHdrDiv">
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-4" }}
                   label={{
-                    fieldName: "vitals_name",
+                    forceLabel: "vital Full name",
                     isImp: true,
                   }}
                   textBox={{
@@ -520,9 +520,9 @@ class VitalsMaster extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{
-                    fieldName: "vital short name",
+                    forceLabel: "short name",
                     isImp: true,
                   }}
                   textBox={{
@@ -538,7 +538,7 @@ class VitalsMaster extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{
                     fieldName: "sequence order",
                     isImp: true,
@@ -567,7 +567,7 @@ class VitalsMaster extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{
                     fieldName: "uom",
                     isImp: true,
@@ -584,7 +584,52 @@ class VitalsMaster extends Component {
                     },
                   }}
                 />
-                <div className="col" style={{ marginTop: 20 }}>
+
+                <div className="col-2 form-group">
+                  <label>General Vitals</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="general"
+                        checked={this.state.general}
+                        onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="col-2 form-group">
+                  <label>Show Vitals</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="display"
+                        checked={this.state.display}
+                        onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="col-2 form-group">
+                  <label>Enable Decimal</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="isDecimal"
+                        checked={this.state.isDecimal}
+                        onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* <div className="col-2" style={{ marginTop: 20 }}>
                   <input
                     name="general"
                     checked={this.state.general}
@@ -593,8 +638,8 @@ class VitalsMaster extends Component {
                     onChange={this.changeChecks.bind(this)}
                   />
                   <label>General</label>
-                </div>
-                <div className="col" style={{ marginTop: 20 }}>
+                </div> */}
+                {/* <div className="col-2" style={{ marginTop: 20 }}>
                   <input
                     name="display"
                     checked={this.state.display}
@@ -604,7 +649,7 @@ class VitalsMaster extends Component {
                   />
                   <label>Display</label>
                 </div>
-                <div className="col" style={{ marginTop: 20 }}>
+                <div className="col-2" style={{ marginTop: 20 }}>
                   <input
                     name="isDecimal"
                     checked={this.state.isDecimal}
@@ -613,8 +658,8 @@ class VitalsMaster extends Component {
                     onChange={this.changeChecks.bind(this)}
                   />
                   <label>isDecimal</label>
-                </div>
-                <div className="col">
+                </div> */}
+                <div className="col-2">
                   <button
                     style={{ marginTop: 20 }}
                     onClick={this.addVitalMasterHeader.bind(this)}
