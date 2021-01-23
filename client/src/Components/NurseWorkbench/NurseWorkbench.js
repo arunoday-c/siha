@@ -1330,7 +1330,7 @@ class NurseWorkbench extends Component {
                     </div>
                     <div className="portlet-body" id="vitals_recording">
                       <div
-                        className="row margin-bottom-15"
+                        className=""
                         data-validate="vitalsForm"
                         ref={(r) => {
                           this.getVitalsRef = r;

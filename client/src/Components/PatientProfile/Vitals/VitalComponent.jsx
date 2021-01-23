@@ -103,7 +103,7 @@ class VitalComponent extends Component {
   }
   render() {
     return (
-      <div>
+      <div className="row margin-bottom-15">
         {this.props._department_viatals.map((item, index) => {
           const _className =
             item.hims_d_vitals_header_id === 1

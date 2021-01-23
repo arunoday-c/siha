@@ -308,7 +308,7 @@ class Vitals extends Component {
                   >
                     <div className="row">
                       <div className="col-4">
-                        <div className="row vitalsAddingSec">
+                        <div className=" vitalsAddingSec">
                           <VitalComponent
                             _department_viatals={_department_viatals}
                             state={this.state}
