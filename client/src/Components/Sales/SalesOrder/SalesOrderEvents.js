@@ -852,7 +852,7 @@ const AuthorizeOrderEntry = ($this, authorize) => {
 const RejectSalesServiceOrder = ($this) => {
   if (!$this.state.reject_reason_sales) {
     swalMessage({
-      title: "Please add reason for Rejection",
+      title: "Please add reason for Revert.",
       type: "warning",
     });
     return;
@@ -875,10 +875,6 @@ const RejectSalesServiceOrder = ($this) => {
             sales_person_id,
           });
         }
-        $this.setState({
-          rejectVisible: false,
-          // authBtnEnable: true,
-        });
         getCtrlCode($this, false, $this.state.sales_order_number);
       }
       AlgaehLoader({ show: false });
@@ -896,7 +892,7 @@ const RejectSalesServiceOrder = ($this) => {
 const CancelSalesServiceOrder = ($this) => {
   if (!$this.state.canceled_reason_sales) {
     swalMessage({
-      title: "Please add reason for Rejection",
+      title: "Please add reason for Cancellation",
       type: "warning",
     });
     return;
@@ -911,10 +907,6 @@ const CancelSalesServiceOrder = ($this) => {
         swalMessage({
           title: "Cancelled successfully . .",
           type: "success",
-        });
-        $this.setState({
-          rejectVisible: false,
-          // authBtnEnable: true,
         });
         getCtrlCode($this, false, $this.state.sales_order_number);
       }
