@@ -36,12 +36,13 @@ const executePDF = function executePDFMethod(options) {
           where PD.record_status='A' and   ICD.record_status='A'
           and PD.daignosis_id=ICD.hims_d_icd_id and patient_id=? and episode_id=?;
           -- Vitals (Result - 4)
-          select hims_f_patient_vitals_id, PV.patient_id, visit_id, PV.visit_date, visit_time,
-          case_type, vital_id,PH.vitals_name,vital_short_name,PH.uom, vital_value, vital_value_one,
-          vital_value_two, formula_value from hims_f_patient_vitals PV,hims_d_vitals_header PH,hims_f_patient_visit V
-          where PV.record_status='A' and PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and PV.patient_id=?
-          and visit_id =? and  PH.display='Y' and V.hims_f_patient_visit_id=PV.vital_id and V.hospital_id
-          group by visit_date,vital_id;
+          select PH.sequence_order,hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,
+          case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value,
+          formula_value, PH.sequence_order, PH.display, AU.user_display_name,PH.box_type,PV.created_date from hims_f_patient_vitals PV 
+          inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  
+          left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  
+          where PV.record_status='A' and PH.record_status='A' and PV.patient_id=? and PV.visit_id=?
+          group by PV.created_date, vital_id order by PH.sequence_order asc;
           -- Medication (Result - 5)
           select  hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,
           prescription_date, prescription_status ,
@@ -65,6 +66,25 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_patient_visit V on RO.visit_id = V.hims_f_patient_visit_id
           inner join hims_d_services S on RO.service_id=S.hims_d_services_id
           inner join hims_d_employee  E on RO.provider_id=E.hims_d_employee_id where 1=1 and  V.patient_id=? and RO.visit_id=? order by hims_f_rad_order_id;
+          -- Consumable (Result - 8)
+          SELECT OS.instructions,S.service_code, S.cpt_code, S.service_name, S.arabic_service_name,S.service_desc, S.procedure_type,
+          S.service_status, ST.service_type FROM hims_f_ordered_inventory OS 
+          inner join  hims_d_services S on OS.services_id = S.hims_d_services_id 
+          inner join  hims_d_service_type ST on OS.service_type_id = ST.hims_d_service_type_id 
+          inner join  hims_d_inventory_item_master IM on OS.inventory_item_id = IM.hims_d_inventory_item_master_id 
+          WHERE OS.record_status='A' and visit_id=?;
+          -- Package (Result - 9)
+          select S.service_name from hims_f_package_header H  
+          inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id 
+          inner join hims_d_services S on D.service_id = S.hims_d_services_id 
+          inner join hims_d_service_type ST on D.service_type_id = ST.hims_d_service_type_id 
+          where H.record_status='A'  and H.patient_id=? and H.visit_id=?;
+          -- Examination (Result - 10)
+          SELECT EX.episode_id,EXH.description as ex_desc,EXD.description as ex_type,EXS.description  as ex_severity,EX.comments FROM hims_f_episode_examination EX
+          inner join hims_d_physical_examination_header EXH on EXH.hims_d_physical_examination_header_id=EX.exam_header_id
+          left join hims_d_physical_examination_details EXD on EXD.hims_d_physical_examination_details_id=EX.exam_details_id
+          left join hims_d_physical_examination_subdetails EXS on EXS.hims_d_physical_examination_subdetails_id=EX.exam_subdetails_id
+          where EX.episode_id=? and EX.record_status='A';
           `,
           values: [
             input.patient_id,
@@ -83,6 +103,10 @@ const executePDF = function executePDFMethod(options) {
             input.visit_id,
             input.patient_id,
             input.visit_id,
+            input.visit_id,
+            input.patient_id,
+            input.visit_id,
+            input.episode_id,
           ],
           printQuery: true,
         })
@@ -91,23 +115,30 @@ const executePDF = function executePDFMethod(options) {
           let chief_details = result[1];
           let pat_Encounter = result[2];
           let pat_icd = result[3];
-          // let vital_details = result[4];
+          let vital_details = result[4];
           let medication = result[5];
           let lab = result[6];
           let rad = result[7];
+          let consumableList = result[8];
+          let packageList = result[9];
+          let examinationList = result[10];
           // let rad_details = result[5];
 
           const records = {
             pat_details: _.head(pat_details),
             chief_details: _.head(chief_details),
             pat_Encounter: _.head(pat_Encounter),
+            vital_details,
             pat_icd,
             medication,
             lab,
             rad,
+            consumableList,
+            packageList,
+            examinationList,
           };
           resolve(records);
-          console.log("records = = = ", records);
+          // console.log("records = = = ", records);
         })
         .catch((error) => {
           options.mysql.releaseConnection();
