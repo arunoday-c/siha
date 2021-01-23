@@ -299,7 +299,16 @@ export default class SalesOrdListService extends Component {
                                     row
                                   )}
                                 >
-                                  <i className="fas fa-trash-alt" />
+                                  <i
+                                    style={{
+                                      pointerEvents:
+                                        this.state.from_invoice === true ? "none"
+                                          : "",
+                                      opacity:
+                                        this.state.from_invoice === true ? "0.1"
+                                          : ""
+                                    }}
+                                    className="fas fa-trash-alt" />
                                 </span>
                               );
                             },
