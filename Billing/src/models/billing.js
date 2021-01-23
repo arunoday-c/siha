@@ -3904,15 +3904,17 @@ export default {
                       let vat_charge = (parseFloat(service_charge) * parseFloat(card_data[0].vat_percentage)) / 100
 
                       const final_amount = parseFloat(m.amount) - parseFloat(service_charge) - parseFloat(vat_charge)
-                      EntriesArray.push({
-                        payment_date: new Date(),
-                        head_id: CARD_SETTL.head_id,
-                        child_id: CARD_SETTL.child_id,
-                        debit_amount: final_amount,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id,
-                      });
+                      if (final_amount > 0) {
+                        EntriesArray.push({
+                          payment_date: new Date(),
+                          head_id: CARD_SETTL.head_id,
+                          child_id: CARD_SETTL.child_id,
+                          debit_amount: final_amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
                       if (service_charge > 0) {
                         EntriesArray.push({
                           payment_date: new Date(),
@@ -3937,15 +3939,18 @@ export default {
                       }
                     } else {
                       narration = narration + ",Received By CASH:" + m.amount;
-                      EntriesArray.push({
-                        payment_date: new Date(),
-                        head_id: CIH_OP.head_id,
-                        child_id: CIH_OP.child_id,
-                        debit_amount: m.amount,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id,
-                      });
+
+                      if (parseFloat(m.amount) > 0) {
+                        EntriesArray.push({
+                          payment_date: new Date(),
+                          head_id: CIH_OP.head_id,
+                          child_id: CIH_OP.child_id,
+                          debit_amount: m.amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
                     }
                   });
                 } else if (inputParam.transaction_type == "RF") {
@@ -3956,26 +3961,30 @@ export default {
 
                   // DECREASE PATIENT PAYABLE
 
-                  EntriesArray.push({
-                    payment_date: new Date(),
-                    head_id: OP_DEP.head_id,
-                    child_id: OP_DEP.child_id,
-                    debit_amount: inputParam.total_amount,
-                    payment_type: "DR",
-                    credit_amount: 0,
-                    hospital_id: req.userIdentity.hospital_id,
-                  });
+                  if (inputParam.total_amount > 0) {
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_DEP.head_id,
+                      child_id: OP_DEP.child_id,
+                      debit_amount: inputParam.total_amount,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id,
+                    });
+                  }
 
                   // DECREASE CASH IN HAND
-                  EntriesArray.push({
-                    payment_date: new Date(),
-                    head_id: CIH_OP.head_id,
-                    child_id: CIH_OP.child_id,
-                    debit_amount: 0,
-                    payment_type: "CR",
-                    credit_amount: amount,
-                    hospital_id: req.userIdentity.hospital_id,
-                  });
+                  if (parseFloat(amount) > 0) {
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: CIH_OP.head_id,
+                      child_id: CIH_OP.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: amount,
+                      hospital_id: req.userIdentity.hospital_id,
+                    });
+                  }
                 } else {
                   voucher_type = "sales";
 
@@ -3998,15 +4007,17 @@ export default {
                       parseFloat(s.net_amout)
                     );
 
-                    EntriesArray.push({
-                      payment_date: new Date(),
-                      head_id: curService.head_id,
-                      child_id: curService.child_id,
-                      debit_amount: 0,
-                      payment_type: "CR",
-                      credit_amount: credit_amount,
-                      hospital_id: req.userIdentity.hospital_id,
-                    });
+                    if (credit_amount > 0) {
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: curService.head_id,
+                        child_id: curService.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: credit_amount,
+                        hospital_id: req.userIdentity.hospital_id,
+                      });
+                    }
 
                     // if (parseFloat(bill.patient_tax) > 0) {
                     //   EntriesArray.push({
@@ -4063,18 +4074,20 @@ export default {
                       let service_charge = (parseFloat(m.amount) * parseFloat(card_data[0].service_charge)) / 100
                       let vat_charge = (parseFloat(service_charge) * parseFloat(card_data[0].vat_percentage)) / 100
 
-                      console.log("service_charge", service_charge)
-                      console.log("vat_charge", vat_charge)
+                      // console.log("service_charge", service_charge)
+                      // console.log("vat_charge", vat_charge)
                       const final_amount = parseFloat(m.amount) - parseFloat(service_charge) - parseFloat(vat_charge)
-                      EntriesArray.push({
-                        payment_date: new Date(),
-                        head_id: CARD_SETTL.head_id,
-                        child_id: CARD_SETTL.child_id,
-                        debit_amount: final_amount,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id,
-                      });
+                      if (final_amount > 0) {
+                        EntriesArray.push({
+                          payment_date: new Date(),
+                          head_id: CARD_SETTL.head_id,
+                          child_id: CARD_SETTL.child_id,
+                          debit_amount: final_amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
                       if (service_charge > 0) {
                         EntriesArray.push({
                           payment_date: new Date(),
@@ -4107,16 +4120,18 @@ export default {
                       //   hospital_id: req.userIdentity.hospital_id,
                       // });
                     } else {
-                      narration = narration + ",Received By CASH:" + m.amount;
-                      EntriesArray.push({
-                        payment_date: new Date(),
-                        head_id: CIH_OP.head_id,
-                        child_id: CIH_OP.child_id,
-                        debit_amount: m.amount,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id,
-                      });
+                      if (parseFloat(m.amount) > 0) {
+                        narration = narration + ",Received By CASH:" + m.amount;
+                        EntriesArray.push({
+                          payment_date: new Date(),
+                          head_id: CIH_OP.head_id,
+                          child_id: CIH_OP.child_id,
+                          debit_amount: m.amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
                     }
                   });
 
@@ -4166,91 +4181,93 @@ export default {
                   }
                 }
 
-                let strQuery = "";
+                if (EntriesArray.length > 0) {
+                  let strQuery = "";
 
-                if (
-                  Result[2][0].cost_center_required === "Y" &&
-                  Result[2][0].cost_center_type === "P"
-                ) {
-                  strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                  if (
+                    Result[2][0].cost_center_required === "Y" &&
+                    Result[2][0].cost_center_type === "P"
+                  ) {
+                    strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
                     inner join hims_d_project P on D.project_id=P.hims_d_project_id \
                     inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
                     division_id= ${req.userIdentity.hospital_id} limit 1;`;
-                }
-                _mysql
-                  .executeQueryWithTransaction({
-                    query:
-                      "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                  }
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
                   document_number,from_screen,narration,entered_by,entered_date) \
                   VALUES (?,?,?,?,?,?,?,?,?);" +
-                      strQuery,
-                    values: [
-                      new Date(),
-                      amount,
-                      voucher_type,
-                      inputParam.hims_f_billing_header_id,
-                      inputParam.bill_number,
-                      inputParam.ScreenCode,
-                      narration,
-                      req.userIdentity.algaeh_d_app_user_id,
-                      new Date(),
-                    ],
-                    printQuery: true,
-                  })
-                  .then((header_result) => {
-                    let project_id = null;
+                        strQuery,
+                      values: [
+                        new Date(),
+                        amount,
+                        voucher_type,
+                        inputParam.hims_f_billing_header_id,
+                        inputParam.bill_number,
+                        inputParam.ScreenCode,
+                        narration,
+                        req.userIdentity.algaeh_d_app_user_id,
+                        new Date(),
+                      ],
+                      printQuery: true,
+                    })
+                    .then((header_result) => {
+                      let project_id = null;
 
-                    let headerDayEnd = [];
-                    if (header_result.length > 1) {
-                      headerDayEnd = header_result[0];
-                      project_id = header_result[1][0].project_id;
-                    } else {
-                      headerDayEnd = header_result;
-                    }
+                      let headerDayEnd = [];
+                      if (header_result.length > 1) {
+                        headerDayEnd = header_result[0];
+                        project_id = header_result[1][0].project_id;
+                      } else {
+                        headerDayEnd = header_result;
+                      }
 
-                    const month = moment().format("M");
-                    const year = moment().format("YYYY");
-                    const IncludeValuess = [
-                      "payment_date",
-                      "head_id",
-                      "child_id",
-                      "debit_amount",
-                      "payment_type",
-                      "credit_amount",
-                      "hospital_id",
-                    ];
+                      const month = moment().format("M");
+                      const year = moment().format("YYYY");
+                      const IncludeValuess = [
+                        "payment_date",
+                        "head_id",
+                        "child_id",
+                        "debit_amount",
+                        "payment_type",
+                        "credit_amount",
+                        "hospital_id",
+                      ];
 
-                    _mysql
-                      .executeQueryWithTransaction({
-                        query:
-                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
-                        values: EntriesArray,
-                        includeValues: IncludeValuess,
-                        bulkInsertOrUpdate: true,
-                        extraValues: {
-                          year: year,
-                          month: month,
-                          day_end_header_id: headerDayEnd.insertId,
-                          project_id: project_id,
-                          sub_department_id: req.body.sub_department_id,
-                        },
-                        printQuery: true,
-                      })
-                      .then((subResult) => {
-                        // console.log("FOUR");
-                        next();
-                      })
-                      .catch((error) => {
-                        _mysql.rollBackTransaction(() => {
-                          next(error);
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                          values: EntriesArray,
+                          includeValues: IncludeValuess,
+                          bulkInsertOrUpdate: true,
+                          extraValues: {
+                            year: year,
+                            month: month,
+                            day_end_header_id: headerDayEnd.insertId,
+                            project_id: project_id,
+                            sub_department_id: req.body.sub_department_id,
+                          },
+                          printQuery: true,
+                        })
+                        .then((subResult) => {
+                          // console.log("FOUR");
+                          next();
+                        })
+                        .catch((error) => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
                         });
+                    })
+                    .catch((error) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
                       });
-                  })
-                  .catch((error) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
                     });
-                  });
+                } else { next() }
               })
               .catch((error) => {
                 _mysql.rollBackTransaction(() => {
