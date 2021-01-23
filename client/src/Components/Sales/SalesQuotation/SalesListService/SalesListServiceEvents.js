@@ -225,7 +225,7 @@ const AddSerices = ($this, context) => {
 
         total_service_amount: total_service_amount,
         net_payable:
-          parseFloat($this.state.net_payable) +
+          parseFloat($this.state.total_item_amount) +
           parseFloat(total_service_amount),
       });
     }
@@ -340,6 +340,7 @@ const calculateAmount = ($this, context, row, _index) => {
   const total_service_amount = _.sumBy(sales_quotation_services, (s) =>
     parseFloat(s.total_amount)
   );
+
 
   const net_payable = parseFloat($this.state.total_item_amount) + total_service_amount;
 
