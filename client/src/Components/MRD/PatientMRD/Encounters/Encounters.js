@@ -739,13 +739,18 @@ class Encounters extends Component {
               </div>
             </div>
           </div>
-          <OPEncounterDetails
-            episode_id={this.state.episode_id}
-            encounter_id={this.state.encounter_id}
-            visit_id={this.state.visit_id}
-            patient_id={Window.global["mrd_patient"]}
-            generalInfo={this.state.generalInfo}
-          />
+          <div className="col-8">
+            <div className="row">
+              {" "}
+              <OPEncounterDetails
+                episode_id={this.state.episode_id}
+                encounter_id={this.state.encounter_id}
+                visit_id={this.state.visit_id}
+                patient_id={Window.global["mrd_patient"]}
+                generalInfo={this.state.generalInfo}
+              />
+            </div>
+          </div>
           {/* <PatientAttachments
             visible={this.state.attachmentOpen}
             onClose={this.showAttachments.bind(this)}
