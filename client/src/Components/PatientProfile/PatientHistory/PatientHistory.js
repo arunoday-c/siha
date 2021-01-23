@@ -328,30 +328,31 @@ class PatientHistory extends Component {
                   >
                     <thead className="">
                       <tr>
+                        <th width="20">Action</th>
                         <th>{item.groupName}</th>
                         <th>Recorded By</th>
                       </tr>
                     </thead>
                     <tbody>
                       {item.groupDetail.map((data, dIndex) => (
-                        <>
-                          <tr key={dIndex}>
-                            <HistoryViewComp
-                              id={dIndex}
-                              data={data}
-                              remarks={data.remarks}
-                            />
-                            {/* <td>{data.remarks}</td> */}
-                            <td>
-                              {data.provider_name} on
-                              <small> {data.created_date}</small>
-                            </td>
-                          </tr>
-                          <i
-                            className="fas fa-trash"
-                            onClick={this.deleteHistory.bind(this, data)}
-                          ></i>
-                        </>
+                        <tr key={dIndex}>
+                          <td>
+                            <i
+                              className="fas fa-trash-alt"
+                              onClick={this.deleteHistory.bind(this, data)}
+                            ></i>
+                          </td>
+                          <HistoryViewComp
+                            id={dIndex}
+                            data={data}
+                            remarks={data.remarks}
+                          />
+                          {/* <td>{data.remarks}</td> */}
+                          <td>
+                            {data.provider_name} on
+                            <small> {data.created_date}</small>
+                          </td>
+                        </tr>
                       ))}
                     </tbody>
                   </table>

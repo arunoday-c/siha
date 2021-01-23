@@ -38,12 +38,20 @@ export default function HistoryViewComp({ data, remarks }) {
       });
   };
   return (
-    <div>
+    <td style={{ position: "relative" }}>
       <form onSubmit={handleSubmit(updateHistory)}>
+        <textarea
+          name="historyRemarks"
+          ref={register({ required: true })}
+          disabled={editable}
+          maxLength={160}
+          className="hisTextArea"
+        />
+        {errors.historyRemarks && <p> Required Field</p>}
         {editable ? (
           <i
             // key={index}
-
+            style={{ position: "absolute", top: 35, left: -48 }}
             className="fas fa-pen"
             onClick={() => {
               setEditable(false);
@@ -51,23 +59,20 @@ export default function HistoryViewComp({ data, remarks }) {
             }}
           ></i>
         ) : (
-          <button
-            type="submit"
-            className="fas fa-save"
-            style={{ marginTop: 18 }}
-          />
+          <>
+            <button
+              type="submit"
+              className="fas fa-save"
+              style={{ position: "absolute", top: 35, left: -48 }}
+            />
+            <button
+              type=""
+              className="fas fa-times"
+              style={{ position: "absolute", top: 66, left: -48 }}
+            />
+          </>
         )}
-        <textarea
-          name="historyRemarks"
-          ref={register({ required: true })}
-          // value={data.remarks}
-          // onChange={(e) => setSms(e.target.value)}
-          // name="sms_template"
-          disabled={editable}
-          maxLength={160}
-        />
-        {errors.historyRemarks && <p> Required Field</p>}
       </form>
-    </div>
+    </td>
   );
 }
