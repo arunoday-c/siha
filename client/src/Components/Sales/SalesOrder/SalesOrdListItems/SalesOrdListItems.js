@@ -320,17 +320,21 @@ class SalesOrdListItems extends Component {
                                                                         row
                                                                     )}
                                                                 >
-                                                                    <i style={{
-                                                                        pointerEvents:
-                                                                            this.state.is_revert === "Y"
-                                                                                ? "none"
-                                                                                : "",
-                                                                        opacity:
-                                                                            this.state.is_revert === "Y"
-                                                                                ? "0.1"
-                                                                                : ""
-                                                                    }}
-                                                                        className="fas fa-trash-alt" />
+                                                                    <i
+                                                                        style={{
+                                                                            pointerEvents:
+                                                                                this.state.from_invoice === true ? "none" :
+                                                                                    this.state.is_revert === "Y"
+                                                                                        ? "none"
+                                                                                        : "",
+                                                                            opacity:
+                                                                                this.state.from_invoice === true ? "0.1" :
+                                                                                    this.state.is_revert === "Y"
+                                                                                        ? "0.1"
+                                                                                        : ""
+                                                                        }}
+                                                                        className="fas fa-trash-alt"
+                                                                    />
                                                                 </span>
                                                             );
                                                         }
