@@ -134,7 +134,7 @@ class SalesInvoiceList extends Component {
                                   onClick={() => {
                                     persistStateOnBack(this.state, true);
                                     this.props.history.push(
-                                      `/SalesOrder?sales_order_number=${row.sales_order_number}`
+                                      `/SalesOrder?sales_order_number=${row.sales_order_number}&disable_all=${true}`
                                     );
                                   }}
                                 />
@@ -155,8 +155,8 @@ class SalesInvoiceList extends Component {
                           return row.is_posted === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
+                              <span className="badge badge-danger">No</span>
+                            );
                         },
                         others: {
                           maxWidth: 60,
@@ -183,8 +183,8 @@ class SalesInvoiceList extends Component {
                           return row.is_revert === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
+                              <span className="badge badge-danger">No</span>
+                            );
                         },
                         others: {
                           maxWidth: 60,
@@ -213,8 +213,8 @@ class SalesInvoiceList extends Component {
                           return row.correction === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
+                              <span className="badge badge-danger">No</span>
+                            );
                         },
                         others: {
                           maxWidth: 100,
@@ -347,13 +347,13 @@ class SalesInvoiceList extends Component {
                     pagination={true}
                     isFilterable={true}
                     persistence={this.state.persistence}
-                    // keyId="invoice_number"
-                    // filter={true}
-                    // dataSource={{
-                    //     data: this.state.invoice_list,
-                    // }}
-                    // noDataText="No data available"
-                    // paging={{ page: 0, rowsPerPage: 10 }}
+                  // keyId="invoice_number"
+                  // filter={true}
+                  // dataSource={{
+                  //     data: this.state.invoice_list,
+                  // }}
+                  // noDataText="No data available"
+                  // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>

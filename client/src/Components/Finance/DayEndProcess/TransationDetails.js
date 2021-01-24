@@ -20,7 +20,8 @@ class TransationDetails extends Component {
         this.state = {
             data_entries: [],
             openPopup: false,
-            finance_day_end_header_id: null
+            finance_day_end_header_id: null,
+            posted: "N"
         };
         this.selectedDayEndIds = "";
     }
@@ -46,7 +47,8 @@ class TransationDetails extends Component {
             this.setState({
                 data_entries: InputOutput.popUpRecords.entries,
                 openPopup: InputOutput.openPopup,
-                finance_day_end_header_id: InputOutput.finance_day_end_header_id
+                finance_day_end_header_id: InputOutput.finance_day_end_header_id,
+                posted: InputOutput.posted
             });
         }
     }
@@ -82,7 +84,8 @@ class TransationDetails extends Component {
         this.setState({
             data_entries: [],
             openPopup: false,
-            finance_day_end_header_id: null
+            finance_day_end_header_id: null,
+            posted: "N"
         }, () => {
             this.props.onClose && this.props.onClose(e);
         });
@@ -204,13 +207,14 @@ class TransationDetails extends Component {
                                 >
                                     Cancel
                                 </button>
-                                <button
+
+                                {this.state.posted === "N" ? <button
                                     className="btn btn-primary"
                                     onClick={this.postDayEndProcess.bind(this)}
                                     disabled={this.state.posted === "Y" ? true : false}
                                 >
                                     Post to Finance
-                            </button>
+                            </button> : null}
                             </div>
                         </div>
                     </div>

@@ -449,7 +449,7 @@ class SalesInvoice extends Component {
                       style={{ marginTop: 21 }}
                       onClick={() => {
                         this.props.history.push(
-                          `/SalesOrder?sales_order_number=${this.state.sales_order_number}`
+                          `/SalesOrder?sales_order_number=${this.state.sales_order_number}&disable_all=${true}`
                         );
                       }}
                       disabled={this.state.sales_order_number ? false : true}

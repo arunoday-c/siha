@@ -361,6 +361,8 @@ const ClearData = ($this, e) => {
     addItemButton: true,
     item_description: "",
     addedItem: true,
+    itemAdd: false,
+    serviceAdd: false,
 
     item_id: null,
     quantity: 0,
@@ -548,19 +550,31 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
         data.grid_edit = true;
 
         if (queryParams.get("sales_order_number")) {
-          data.authBtnEnable =
-            data.cancelled === "Y" || data.is_posted === "N" ? true : false;
-          data.ItemDisable = true;
-          data.ClearDisable = true;
-          data.cancelDisable =
-            data.cancelled === "Y" || data.is_posted === "N" ? true : false;
-          data.order_auth = true;
-          // for (let i = 0; i < data.order_detail.length; i++) {
-          //   data.order_detail[i].quantity_outstanding =
-          //     data.order_detail[i].quantity;
-          // }
-          if (data.authorize1 === "N" || data.authorize2 === "N") {
-            data.grid_edit = false;
+
+          debugger
+          if (queryParams.get("disable_all")) {
+            data.authBtnEnable = true;
+            data.ItemDisable = true;
+            data.ClearDisable = true;
+            data.cancelDisable = true;
+            data.order_auth = true;
+            data.grid_edit = true;
+            data.from_invoice = true;
+          } else {
+            data.authBtnEnable =
+              data.cancelled === "Y" || data.is_posted === "N" ? true : false;
+            data.ItemDisable = true;
+            data.ClearDisable = true;
+            data.cancelDisable =
+              data.cancelled === "Y" || data.is_posted === "N" ? true : false;
+            data.order_auth = true;
+            // for (let i = 0; i < data.order_detail.length; i++) {
+            //   data.order_detail[i].quantity_outstanding =
+            //     data.order_detail[i].quantity;
+            // }
+            if (data.authorize1 === "N" || data.authorize2 === "N") {
+              data.grid_edit = false;
+            }
           }
         }
         if (data.sales_order_mode === "I") {
@@ -852,7 +866,7 @@ const AuthorizeOrderEntry = ($this, authorize) => {
 const RejectSalesServiceOrder = ($this) => {
   if (!$this.state.reject_reason_sales) {
     swalMessage({
-      title: "Please add reason for Rejection",
+      title: "Please add reason for Revert.",
       type: "warning",
     });
     return;
@@ -875,10 +889,6 @@ const RejectSalesServiceOrder = ($this) => {
             sales_person_id,
           });
         }
-        $this.setState({
-          rejectVisible: false,
-          // authBtnEnable: true,
-        });
         getCtrlCode($this, false, $this.state.sales_order_number);
       }
       AlgaehLoader({ show: false });
@@ -896,7 +906,7 @@ const RejectSalesServiceOrder = ($this) => {
 const CancelSalesServiceOrder = ($this) => {
   if (!$this.state.canceled_reason_sales) {
     swalMessage({
-      title: "Please add reason for Rejection",
+      title: "Please add reason for Cancellation",
       type: "warning",
     });
     return;
@@ -911,10 +921,6 @@ const CancelSalesServiceOrder = ($this) => {
         swalMessage({
           title: "Cancelled successfully . .",
           type: "success",
-        });
-        $this.setState({
-          rejectVisible: false,
-          // authBtnEnable: true,
         });
         getCtrlCode($this, false, $this.state.sales_order_number);
       }
