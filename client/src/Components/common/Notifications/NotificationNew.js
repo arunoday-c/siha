@@ -202,16 +202,34 @@ export default function Notification({ open, handlePanel }) {
       visible={open}
       className="notifyDrawer"
     >
-      <div className="col">
-        {" "}
-        <Tabs defaultActiveKey="1" type="line" size="default">
-          <TabPane tab="Today" key="1">
-            <NotiList content={today} />
-          </TabPane>
-          <TabPane tab="All Notifications" key="2">
-            <NotiList content={list} />
-          </TabPane>
-        </Tabs>
+      <div className="row">
+        <div className="col-12">
+          {" "}
+          <Tabs defaultActiveKey="1" type="line" size="default">
+            <TabPane tab="Today" key="1">
+              <NotiList content={today} />
+            </TabPane>
+            <TabPane tab="All Notifications" key="2">
+              <NotiList content={list} />
+            </TabPane>
+          </Tabs>
+        </div>
+        <div className="col-12">
+          <button
+            type="button"
+            className="btn btn-default btn-sm"
+            style={{ margin: "10px 0 0 15px", float: "left" }}
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            className="btn btn-default btn-sm"
+            style={{ margin: "10px 15px 0 0", float: "right" }}
+          >
+            Next
+          </button>
+        </div>
       </div>
       <div
         style={{

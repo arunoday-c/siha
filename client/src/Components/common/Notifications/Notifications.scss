@@ -10,8 +10,8 @@
     }
     padding: 0;
     .ant-list-items {
-      min-height: 77vh;
-      max-height: 77vh;
+      min-height: 76vh;
+      max-height: 76vh;
       overflow-y: auto;
       overflow-x: hidden;
 
@@ -29,6 +29,7 @@
   }
   .ant-empty {
     margin-top: 20vh;
+    min-height: 57vh;
   }
 }
 
