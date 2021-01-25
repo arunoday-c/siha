@@ -1,16 +1,56 @@
-import React, { useRef, useState, useLayoutEffect } from "react";
+import React, { useRef, useState } from "react";
 import ReactToPrint from "react-to-print";
-import { AlgaehModal, Tree } from "algaeh-react-components";
+import { AlgaehModal, Tree, AlgaehButton } from "algaeh-react-components";
+import { GenerateExcel } from "../../FinanceReports/printlayout/workers/worker";
+import moment from "moment";
 export default function PrintAccounts({ visible, data, onClose, title }) {
   const [loading, setLoading] = useState(false);
   const treeRef = useRef(undefined);
   const printRef = useRef(undefined);
-  // useLayoutEffect(() => {
-  //   if (visible === true) {
-  //     printRef.current.click();
-  //     onClose();
-  //   }
-  // }, [visible]);
+  function nodeToShow(nodeData) {
+    return (
+      <span>
+        {nodeData.title} / {nodeData.account_code ?? nodeData.ledger_code}
+      </span>
+    );
+  }
+  function handleExcel() {
+    setLoading(true);
+    GenerateExcel({
+      columns: [
+        { label: "Account", fieldName: "title" },
+        { label: "Code", fieldName: "ledger_code" },
+      ],
+      data: data,
+      excelBodyRender: (records, cb) => {
+        records.ledger_code = records.ledger_code ?? records.account_code;
+        cb(records);
+      },
+      sheetName: title,
+    })
+      .then((result) => {
+        setLoading(false);
+        if (typeof result !== "boolean") {
+          const a: HTMLAnchorElement = document.createElement("a");
+          a.style.display = "none";
+          document.body.appendChild(a);
+          const url: string = window.URL.createObjectURL(result);
+          a.href = url;
+          a.download = `${title}-${moment()._d}.xlsx`;
+          a.click();
+
+          window.URL.revokeObjectURL(url);
+
+          if (a && a.parentElement) {
+            a.parentElement.removeChild(a);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error", error);
+        setLoading(false);
+      });
+  }
   return (
     <AlgaehModal
       title={`Chart of Accounts - ${title}`}
@@ -18,15 +58,31 @@ export default function PrintAccounts({ visible, data, onClose, title }) {
       centered
       visible={visible}
       // footer={true}
+      onCancel={onClose}
       closable={true}
       okText="Print"
-      onOk={() => {
-        printRef.current.click();
-      }}
-      okButtonProps={{
-        loading: loading,
-      }}
-      onCancel={onClose}
+      footer={
+        <div>
+          <AlgaehButton type="primary" danger onClick={onClose}>
+            Close
+          </AlgaehButton>
+          <AlgaehButton
+            type="primary"
+            onClick={() => printRef.current.click()}
+            loading={loading}
+          >
+            Print PDF
+          </AlgaehButton>
+          <AlgaehButton
+            type="primary"
+            style={{ backgroundColor: "#00a796" }}
+            loading={loading}
+            onClick={handleExcel}
+          >
+            Print Excel
+          </AlgaehButton>
+        </div>
+      }
       className={`row algaehNewModal`}
     >
       <ReactToPrint
@@ -47,7 +103,6 @@ export default function PrintAccounts({ visible, data, onClose, title }) {
               className={`fas fa-${
                 loading === true ? "spinner fa-spin" : "print"
               }`}
-              // style={{ display: "none" }}
             />
           </button>
         )}
@@ -86,6 +141,7 @@ export default function PrintAccounts({ visible, data, onClose, title }) {
           <Tree
             showLine={true}
             defaultExpandAll={true}
+            titleRender={nodeToShow}
             treeData={data}
             style={{ fontSize: 18, color: "black" }}
           />
