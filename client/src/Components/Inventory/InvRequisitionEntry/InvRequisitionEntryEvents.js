@@ -9,7 +9,13 @@ const requisitionEvent = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState({ [name]: value });
+  $this.setState({
+    [name]: value,
+    to_location_id: null,
+    to_location_type: null,
+    from_location_id: null,
+    from_location_type: null
+  });
 };
 
 const getCtrlCode = ($this, docNumber) => {
@@ -59,7 +65,7 @@ const getCtrlCode = ($this, docNumber) => {
         }
         data.ItemDisable = true;
         data.addedItem = true;
-        $this.setState(data, () => {});
+        $this.setState(data, () => { });
         AlgaehLoader({ show: false });
       },
     });

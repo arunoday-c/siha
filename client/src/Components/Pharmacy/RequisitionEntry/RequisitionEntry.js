@@ -32,7 +32,10 @@ class RequisitionEntry extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      req_warehouse: "N",
+      ware_house_data: []
+    };
   }
 
   UNSAFE_componentWillMount() {
@@ -48,8 +51,13 @@ class RequisitionEntry extends Component {
       module: "pharmacy",
       onSuccess: (res) => {
         if (res.data.success) {
+          debugger
+          const reqlocations = res.data.records[0].req_warehouse === "Y" ? this.props.reqlocations.filter(
+            (f) => f.location_type === "WH") : [];
           this.setState({
-            requisition_auth_level: res.data.records[0].requisition_auth_level,
+            ware_house_data: reqlocations,
+            req_warehouse: res.data.records[0].req_warehouse,
+            requisition_auth_level: res.data.records[0].requisition_auth_level
           });
         }
       },
@@ -66,6 +74,16 @@ class RequisitionEntry extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
 
+    this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
+      method: "GET",
+      data: { git_location: "N", location_status: "A" },
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "reqlocations",
+      },
+    });
     this.props.getItems({
       uri: "/pharmacy/getItemMaster",
       data: { item_status: "A" },
@@ -77,16 +95,7 @@ class RequisitionEntry extends Component {
       },
     });
 
-    this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      module: "pharmacy",
-      method: "GET",
-      data: { git_location: "N", location_status: "A" },
-      redux: {
-        type: "LOCATIOS_GET_DATA",
-        mappingName: "reqlocations",
-      },
-    });
+
 
     this.props.getUserLocationPermission({
       uri: "/pharmacyGlobal/getUserLocationPermission",
@@ -266,6 +275,35 @@ class RequisitionEntry extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-lg-4" }}
+                  label={{ forceLabel: "Requisition Type" }}
+                  selector={{
+                    name: "requistion_type",
+                    className: "select-fld",
+                    value: this.state.requistion_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
+                    },
+                    others: {
+                      disabled: this.state.bothExisits
+                    },
+
+                    onChange: requisitionEvent.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        requistion_type: null,
+                        from_location_id: null,
+                        from_location_type: null,
+                        to_location_id: null,
+                        to_location_type: null
+                      });
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-4" }}
                   label={{ forceLabel: "Requesting From" }}
                   selector={{
                     name: "from_location_id",
@@ -306,30 +344,7 @@ class RequisitionEntry extends Component {
                   </h6>
                 </div>
 
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Requisition Type" }}
-                  selector={{
-                    name: "requistion_type",
-                    className: "select-fld",
-                    value: this.state.requistion_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
-                    },
-                    others: {
-                      disabled: this.state.bothExisits
-                    },
 
-                    onChange: requisitionEvent.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        requistion_type: null
-                      });
-                    }
-                  }}
-                />
               </div>
             </div>
 
@@ -347,7 +362,7 @@ class RequisitionEntry extends Component {
                       dataSource: {
                         textField: "location_description",
                         valueField: "hims_d_pharmacy_location_id",
-                        data: this.props.reqlocations,
+                        data: this.state.req_warehouse === "Y" ? this.state.ware_house_data : this.props.reqlocations,
                       },
                       others: {
                         disabled:

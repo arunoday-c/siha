@@ -1377,7 +1377,7 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: "select * from hims_d_pharmacy_options;",
+          query: "select *, req_warehouse as phar_req_warehouse from hims_d_pharmacy_options;",
           printQuery: false,
         })
         .then((result) => {
@@ -1402,12 +1402,13 @@ export default {
         .executeQuery({
           query:
             "INSERT INTO `hims_d_pharmacy_options` (`notification_before`, `notification_type`, `requisition_auth_level`, \
-            `created_date`, `created_by`, `updated_date`, `updated_by`)\
-            VALUE(?, ?, ?, ?, ?, ?, ?)",
+            `req_warehouse`,`created_date`, `created_by`, `updated_date`, `updated_by`)\
+            VALUE(?, ?, ?, ?, ?, ?, ? ,?)",
           values: [
             input.notification_before,
             input.notification_type,
             input.requisition_auth_level,
+            input.req_warehouse,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -1437,12 +1438,13 @@ export default {
         .executeQuery({
           query:
             "UPDATE `hims_d_pharmacy_options` SET `notification_before`=?, `notification_type`=?, `requisition_auth_level` = ?, \
-                `updated_date`=?, `updated_by`=? \
+            `req_warehouse`=?, `updated_date`=?, `updated_by`=? \
                 WHERE `hims_d_pharmacy_options_id`=? ;",
           values: [
             input.notification_before,
             input.notification_type,
             input.requisition_auth_level,
+            input.req_warehouse,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_pharmacy_options_id,
