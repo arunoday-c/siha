@@ -1212,15 +1212,17 @@ export default {
                     for (let i = 0; i < inputParam.receiptdetails.length; i++) {
                       if (inputParam.receiptdetails[i].pay_type === "CA") {
                         //POS Cash in Hand
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: cash_in_acc.head_id,
-                          child_id: cash_in_acc.child_id,
-                          debit_amount: inputParam.receiptdetails[i].amount,
-                          payment_type: "DR",
-                          credit_amount: 0,
-                          hospital_id: req.userIdentity.hospital_id,
-                        });
+                        if (parseFloat(inputParam.receiptdetails[i].amount) > 0) {
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: cash_in_acc.head_id,
+                            child_id: cash_in_acc.child_id,
+                            debit_amount: inputParam.receiptdetails[i].amount,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: req.userIdentity.hospital_id,
+                          });
+                        }
                       }
                       if (inputParam.receiptdetails[i].pay_type === "CD") {
                         //POS Card
@@ -1232,15 +1234,17 @@ export default {
                         console.log("service_charge", service_charge)
                         console.log("vat_charge", vat_charge)
                         const final_amount = parseFloat(inputParam.receiptdetails[i].amount) - parseFloat(service_charge) - parseFloat(vat_charge)
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: card_settlement_acc.head_id,
-                          child_id: card_settlement_acc.child_id,
-                          debit_amount: final_amount,
-                          payment_type: "DR",
-                          credit_amount: 0,
-                          hospital_id: req.userIdentity.hospital_id,
-                        });
+                        if (parseFloat(final_amount) > 0) {
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: card_settlement_acc.head_id,
+                            child_id: card_settlement_acc.child_id,
+                            debit_amount: final_amount,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: req.userIdentity.hospital_id,
+                          });
+                        }
                         if (service_charge > 0) {
                           insertSubDetail.push({
                             payment_date: new Date(),
@@ -1303,17 +1307,19 @@ export default {
                           parseInt(inputParam.pharmacy_stock_detail[i].item_id)
                       );
 
-                      //Income Entry
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: income_head_id.head_id,
-                        child_id: income_child_id.child_id,
-                        debit_amount: 0,
-                        payment_type: "CR",
-                        credit_amount:
-                          inputParam.pharmacy_stock_detail[i].net_extended_cost,
-                        hospital_id: req.userIdentity.hospital_id,
-                      });
+                      if (parseFloat(inputParam.pharmacy_stock_detail[i].net_extended_cost) > 0) {
+                        //Income Entry
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: income_head_id.head_id,
+                          child_id: income_child_id.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount:
+                            inputParam.pharmacy_stock_detail[i].net_extended_cost,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
 
                       const waited_avg_cost = utilities.decimalPoints(
                         parseFloat(
@@ -1328,26 +1334,30 @@ export default {
                       );
 
                       //COGS Entry
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: cogs_acc_data.head_id,
-                        child_id: cogs_acc_data.child_id,
-                        debit_amount: waited_avg_cost,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id,
-                      });
+                      if (parseFloat(waited_avg_cost) > 0) {
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: cogs_acc_data.head_id,
+                          child_id: cogs_acc_data.child_id,
+                          debit_amount: waited_avg_cost,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id,
+                        });
+                      }
 
                       //Location Wise
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: location_acc[0].head_id,
-                        child_id: location_acc[0].child_id,
-                        debit_amount: 0,
-                        payment_type: "CR",
-                        credit_amount: waited_avg_cost,
-                        hospital_id: location_acc[0].hospital_id,
-                      });
+                      if (parseFloat(waited_avg_cost) > 0) {
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: location_acc[0].head_id,
+                          child_id: location_acc[0].child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: waited_avg_cost,
+                          hospital_id: location_acc[0].hospital_id,
+                        });
+                      }
                     }
 
                     // console.log("insertSubDetail", insertSubDetail)
