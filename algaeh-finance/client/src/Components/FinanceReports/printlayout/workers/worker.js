@@ -1,5 +1,11 @@
 import Excel from "exceljs";
-export function GenerateExcel({ columns, data, excelBodyRender, skipColumns }) {
+export function GenerateExcel({
+  columns,
+  data,
+  excelBodyRender,
+  skipColumns,
+  sheetName,
+}) {
   return new Promise((resolve, reject) => {
     if (data === undefined) {
       resolve(false);
@@ -10,7 +16,7 @@ export function GenerateExcel({ columns, data, excelBodyRender, skipColumns }) {
       workbook.lastModifiedBy = "algaeh technologies";
       workbook.created = new Date();
       workbook.modified = new Date();
-      let worksheet = workbook.addWorksheet("SHEET-1", {
+      let worksheet = workbook.addWorksheet(sheetName ?? "SHEET-1", {
         properties: {
           tabColor: { argb: "FFC0000" },
           defaultColWidth: 20,
