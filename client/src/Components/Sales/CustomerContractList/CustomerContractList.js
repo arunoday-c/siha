@@ -94,7 +94,7 @@ class SalesOrderList extends Component {
         }
       },
 
-      onFailure: (err) => {},
+      onFailure: (err) => { },
     });
   };
 
@@ -248,11 +248,20 @@ class SalesOrderList extends Component {
                                   row
                                 )}
                               />
+
+                              <i
+                                className="fa fa-exchange-alt"
+                                onClick={() => {
+                                  this.props.history.push(
+                                    `/ContractManagement?contract_number=${row.contract_number}`
+                                  );
+                                }}
+                              />
                             </span>
                           );
                         },
                         others: {
-                          maxWidth: 60,
+                          maxWidth: 100,
                           resizable: false,
                           style: { textAlign: "center" },
                           filterable: false,
