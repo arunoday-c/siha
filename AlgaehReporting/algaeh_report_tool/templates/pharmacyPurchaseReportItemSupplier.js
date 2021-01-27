@@ -6,7 +6,11 @@ const executePDF = function executePDFMethod(options) {
     try {
       let input = {};
       let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -38,7 +42,7 @@ const executePDF = function executePDFMethod(options) {
           POH.location_type,VN.vendor_code,ITL.vendor_batchno,VN.vendor_name,POH.vendor_id,
           POH.purchase_order_id,POH.sub_total,POH.detail_discount,POH.net_total,
           POH.total_tax,POH.net_payable,POH.created_by,POH.hospital_id,
-          POD.po_quantity,POD.dn_quantity,POD.free_qty,POD.unit_cost,POD.sales_price,
+          round(POD.po_quantity) as po_quantity,round(POD.dn_quantity) as dn_quantity,round(POD.free_qty) as free_qty,POD.unit_cost,POD.sales_price,
           POD.extended_cost,POD.discount_percentage,POD.discount_amount,POD.net_extended_cost,
           POD.total_amount,PO.purchase_number,PO.po_date
           FROM hims_f_procurement_dn_detail POD
@@ -53,18 +57,39 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
-          if (result.length > 0) {
-            // const unit_cost = parseFloat("unit_cost").toFixed(decimal_places);
-          }
-          // utilities.logger().log("result:", result);
+          // if (result.length > 0) {
+          // }
 
-          //   const sum_purchase = _.sumBy(result, s =>
-          //     parseFloat(s.purchase_amount)
-          //   ).toFixed(decimal_places);
-
+          const net_po_quantity = _.sumBy(result, (s) =>
+            parseFloat(s.po_quantity)
+          );
+          const net_dn_quantity = _.sumBy(result, (s) =>
+            parseFloat(s.dn_quantity)
+          );
+          const net_free_qty = _.sumBy(result, (s) => parseFloat(s.free_qty));
+          const net_unit_cost = _.sumBy(result, (s) => parseFloat(s.unit_cost));
+          const net_sales_price = _.sumBy(result, (s) =>
+            parseFloat(s.sales_price)
+          );
           resolve({
             result: result,
-            // unit_cost: unit_cost,
+            net_po_quantity,
+            net_dn_quantity,
+            net_free_qty,
+            net_unit_cost,
+            net_sales_price,
+            decimalOnly: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyOnly: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {
