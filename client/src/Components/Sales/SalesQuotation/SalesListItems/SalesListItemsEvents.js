@@ -431,10 +431,11 @@ const calculateAmount = ($this, context, row, _index) => {
     parseFloat(s.tax_amount)
   );
 
-  const net_payable = _.sumBy(sales_quotation_items, (s) =>
+  const total_item_amount = _.sumBy(sales_quotation_items, (s) =>
     parseFloat(s.total_amount)
   );
 
+  const net_payable = total_item_amount + parseFloat($this.state.total_service_amount);
   if (context !== undefined) {
     context.updateState({
       sales_quotation_items: sales_quotation_items,
@@ -443,6 +444,7 @@ const calculateAmount = ($this, context, row, _index) => {
       net_total: net_total,
       total_tax: total_tax,
       net_payable: net_payable,
+      total_item_amount: total_item_amount
     });
   }
 };

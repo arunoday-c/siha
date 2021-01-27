@@ -41,7 +41,7 @@ export default class SalesOrdListService extends Component {
       tax_percentage: 0,
       service_frequency: null,
       comments: "",
-      arabic_comments: ""
+      arabic_comments: "",
     };
   }
 
@@ -105,7 +105,7 @@ export default class SalesOrdListService extends Component {
                       searchName="servicetypeservice"
                       onClick={servicechangeText.bind(this, this)}
                       extraParameters={{
-                        service_type_id: 7
+                        service_type_id: 7,
                       }}
                       ref={(attReg) => {
                         this.attReg = attReg;
@@ -186,7 +186,7 @@ export default class SalesOrdListService extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-6", }}
+                      div={{ className: "col-6" }}
                       label={{
                         fieldName: "tax percentage",
                         isImp: this.state.Applicable,
@@ -198,7 +198,7 @@ export default class SalesOrdListService extends Component {
                         value: this.state.tax_percentage,
                         events: {
                           onChange: numberchangeTexts.bind(this, this, context),
-                        }
+                        },
                       }}
                     />
                     {/* <div className="col-6 form-group mandatory">
@@ -235,9 +235,9 @@ export default class SalesOrdListService extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-12", }}
+                      div={{ className: "col-12" }}
                       label={{
-                        fieldName: "Description in English"
+                        fieldName: "Description in English",
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -245,13 +245,13 @@ export default class SalesOrdListService extends Component {
                         value: this.state.comments,
                         events: {
                           onChange: changeTexts.bind(this, this),
-                        }
+                        },
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-12", }}
+                      div={{ className: "col-12" }}
                       label={{
-                        fieldName: "Description in Arabic"
+                        fieldName: "Description in Arabic",
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -259,7 +259,7 @@ export default class SalesOrdListService extends Component {
                         value: this.state.arabic_comments,
                         events: {
                           onChange: changeTexts.bind(this, this),
-                        }
+                        },
                       }}
                     />
 
@@ -292,6 +292,16 @@ export default class SalesOrdListService extends Component {
                             displayTemplate: (row) => {
                               return (
                                 <span
+                                  style={{
+                                    pointerEvents:
+                                      this.state.from_invoice === true
+                                        ? "none"
+                                        : "",
+                                    opacity:
+                                      this.state.from_invoice === true
+                                        ? "0.1"
+                                        : "",
+                                  }}
                                   onClick={deleteSalesDetail.bind(
                                     this,
                                     this,
@@ -325,33 +335,33 @@ export default class SalesOrdListService extends Component {
                               return this.state.dataExists === true ? (
                                 parseFloat(row.quantity)
                               ) : (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      number: {
-                                        allowNegative: false,
-                                        thousandSeparator: ",",
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    number: {
+                                      allowNegative: false,
+                                      thousandSeparator: ",",
+                                    },
+                                    dontAllowKeys: ["-", "e"],
+                                    value: parseFloat(row.quantity),
+                                    className: "txt-fld",
+                                    name: "quantity",
+                                    events: {
+                                      onChange: qtyonchangegridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                    },
+                                    others: {
+                                      onFocus: (e) => {
+                                        e.target.oldvalue = e.target.value;
                                       },
-                                      dontAllowKeys: ["-", "e"],
-                                      value: parseFloat(row.quantity),
-                                      className: "txt-fld",
-                                      name: "quantity",
-                                      events: {
-                                        onChange: qtyonchangegridcol.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
-                                      },
-                                      others: {
-                                        onFocus: (e) => {
-                                          e.target.oldvalue = e.target.value;
-                                        },
-                                      },
-                                    }}
-                                  />
-                                );
+                                    },
+                                  }}
+                                />
+                              );
                             },
                             others: {
                               minWidth: 90,
@@ -414,29 +424,29 @@ export default class SalesOrdListService extends Component {
                               return this.state.dataExists === true ? (
                                 row.discount_percentage
                               ) : (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      decimal: { allowNegative: false },
-                                      value: row.discount_percentage,
-                                      className: "txt-fld",
-                                      name: "discount_percentage",
-                                      events: {
-                                        onChange: onchangegridcol.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    decimal: { allowNegative: false },
+                                    value: row.discount_percentage,
+                                    className: "txt-fld",
+                                    name: "discount_percentage",
+                                    events: {
+                                      onChange: onchangegridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                    },
+                                    others: {
+                                      onFocus: (e) => {
+                                        e.target.oldvalue = e.target.value;
                                       },
-                                      others: {
-                                        onFocus: (e) => {
-                                          e.target.oldvalue = e.target.value;
-                                        },
-                                      },
-                                    }}
-                                  />
-                                );
+                                    },
+                                  }}
+                                />
+                              );
                             },
                           },
                           {

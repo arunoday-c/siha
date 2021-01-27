@@ -12,7 +12,7 @@ import { InvoiceModal } from "./InvoiceModal";
 export function VisitTable({
   loading = false,
   data = [],
-  addToList = () => {},
+  addToList = () => { },
   list = [],
   submitted = false,
 }) {
@@ -225,11 +225,15 @@ export function VisitTable({
                   <h6>
                     {list.length
                       ? list?.reduce((prev, current) => {
-                          return (
-                            parseFloat(prev) +
-                            parseFloat(current?.patient_payable)
-                          ).toFixed(userToken.decimal_places);
-                        }, 0)
+                        debugger
+                        const patient_payable = current?.patient_payable === null ? 0 :
+                          parseFloat(current?.patient_payable)
+
+                        console.log(patient_payable)
+                        return (
+                          parseFloat(prev) + patient_payable
+                        ).toFixed(userToken.decimal_places);
+                      }, 0)
                       : "0.00"}
                   </h6>
                 </div>{" "}
@@ -238,11 +242,11 @@ export function VisitTable({
                   <h6>
                     {list.length
                       ? list?.reduce((prev, current) => {
-                          return (
-                            parseFloat(prev) +
-                            parseFloat(current?.company_payable)
-                          ).toFixed(userToken.decimal_places);
-                        }, 0)
+                        return (
+                          parseFloat(prev) +
+                          parseFloat(current?.company_payable)
+                        ).toFixed(userToken.decimal_places);
+                      }, 0)
                       : "0.00"}
                   </h6>
                 </div>

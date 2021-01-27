@@ -1103,7 +1103,7 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: "select * from hims_d_inventory_options;",
+          query: "select *, req_warehouse as inv_req_warehouse from hims_d_inventory_options;",
           printQuery: false,
         })
         .then((result) => {
@@ -1128,11 +1128,12 @@ export default {
         .executeQuery({
           query:
             "INSERT INTO `hims_d_inventory_options` (`requisition_auth_level`, `trans_ack_required`, \
-            `created_date`, `created_by`, `updated_date`, `updated_by`)\
-            VALUE(?, ?, ?, ?, ?, ?)",
+            req_warehouse, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+            VALUE(?, ?, ?, ?, ?, ?, ?)",
           values: [
             input.requisition_auth_level,
             input.trans_ack_required,
+            input.req_warehouse,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -1162,11 +1163,12 @@ export default {
         .executeQuery({
           query:
             "UPDATE `hims_d_inventory_options` SET `requisition_auth_level` = ?, `trans_ack_required`=?, \
-                `updated_date`=?, `updated_by`=? \
+            `req_warehouse`=?, `updated_date`=?, `updated_by`=? \
                 WHERE `hims_d_inventory_options_id`=? ;",
           values: [
             input.requisition_auth_level,
             input.trans_ack_required,
+            input.req_warehouse,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_inventory_options_id,

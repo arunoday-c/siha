@@ -45,6 +45,9 @@ export default class ERPSettings extends Component {
       hims_d_sales_options_id: null,
       sales_order_auth_level: "1",
       services_required: "N",
+
+      inv_req_warehouse: "N",
+      phar_req_warehouse: "N"
     };
   }
   static contextType = MainContext;
@@ -187,7 +190,33 @@ export default class ERPSettings extends Component {
                         });
                       },
                     }}
-                  />{" "}
+                  />
+
+
+                  <div
+                    className="col-12 customCheckbox"
+                    style={{ marginTop: 23, border: "none" }}
+                  >
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="phar_req_warehouse"
+                        value={this.state.phar_req_warehouse}
+                        checked={
+                          this.state.phar_req_warehouse === "Y" ? true : false
+                        }
+                        onChange={checkBoxEvent.bind(this, this)}
+                      />
+                      <span>
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Item Request Only from Warehouse",
+                          }}
+                        />
+                      </span>
+                    </label>
+                  </div>
+
                   <div className="col-12">
                     <button
                       type="button"
@@ -248,6 +277,29 @@ export default class ERPSettings extends Component {
                       },
                     }}
                   />
+                  <div
+                    className="col-12 customCheckbox"
+                    style={{ marginTop: 23, border: "none" }}
+                  >
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="inv_req_warehouse"
+                        value={this.state.inv_req_warehouse}
+                        checked={
+                          this.state.inv_req_warehouse === "Y" ? true : false
+                        }
+                        onChange={checkBoxEvent.bind(this, this)}
+                      />
+                      <span>
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Item Request Only from Warehouse",
+                          }}
+                        />
+                      </span>
+                    </label>
+                  </div>
                   <div
                     className="col-12 customCheckbox"
                     style={{ marginTop: 23, border: "none" }}

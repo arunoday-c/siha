@@ -96,6 +96,7 @@ export default function BulkClaimGeneration() {
   };
 
   const selectAll = () => {
+    debugger
     if (data?.length === selectedList?.length) {
       setSelectedList([]);
     } else {

@@ -866,7 +866,7 @@ export default {
               AND pv.doctor_id = E.hims_d_employee_id
               AND pv.hospital_id = ${hospitalId}
               AND pv.insured = 'Y'
-              AND BH.invoice_generated = 'N' ${qryStr}
+              AND BH.invoice_generated = 'N' AND BH.cancelled = 'N' ${qryStr}
               group BY pv.hims_f_patient_visit_id,pv.visit_code,date(pv.visit_date),patient_id,hims_f_patient_visit_id,episode_id;`,
           printQuery: true,
         })

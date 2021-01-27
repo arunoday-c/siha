@@ -111,6 +111,7 @@ class SalesOrder extends Component {
 
   static contextType = MainContext;
   componentDidMount() {
+    z;
     getSalesOptions(this);
     const userToken = this.context.userToken;
 
@@ -182,22 +183,17 @@ class SalesOrder extends Component {
 
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("sales_order_number")) {
-      const saveDoc = false;
-      getCtrlCode(this, saveDoc, queryParams.get("sales_order_number"));
-
-      this.getDocuments(queryParams.get("sales_order_number"));
+      getCtrlCode(this, false, queryParams.get("sales_order_number"));
     }
   }
 
-  getDocuments = (number) => {
+  getDocuments = () => {
     newAlgaehApi({
       uri: "/getInvoiceDoc",
       module: "documentManagement",
       method: "GET",
       data: {
-        serial_no: this.state.sales_order_number
-          ? this.state.sales_order_number
-          : number,
+        serial_no: this.state.sales_order_number,
       },
     })
       .then((res) => {
@@ -1036,10 +1032,9 @@ class SalesOrder extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              {(this.state.dataExists &&
-                this.state.docChanged &&
-                this.state.is_completed !== "Y") ||
-              this.state.can ? (
+              {this.state.dataExists &&
+              this.state.docChanged &&
+              this.state.is_completed !== "Y" ? (
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -1144,7 +1139,7 @@ class SalesOrder extends Component {
                           this,
                           this,
                           this.state.authorize1 === "N"
-                            ? "authsaveEnableorize1"
+                            ? "authorize1"
                             : "authorize2"
                         )}
                       >

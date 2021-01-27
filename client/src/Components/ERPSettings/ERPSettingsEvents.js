@@ -14,6 +14,7 @@ const savePharmacyOptions = ($this) => {
         notification_before: $this.state.notification_before,
         notification_type: $this.state.notification_type,
         requisition_auth_level: $this.state.requisition_auth_level,
+        req_warehouse: $this.state.phar_req_warehouse
     }
     if (inputObj.hims_d_pharmacy_options_id !== null) {
         algaehApiCall({
@@ -55,7 +56,8 @@ const saveInventoryOptions = ($this) => {
     let inputObj = {
         hims_d_inventory_options_id: $this.state.hims_d_inventory_options_id,
         requisition_auth_level: $this.state.inv_requisition_auth_level,
-        trans_ack_required: $this.state.trans_ack_required
+        trans_ack_required: $this.state.trans_ack_required,
+        req_warehouse: $this.state.inv_req_warehouse
     }
     if (inputObj.hims_d_inventory_options_id !== null) {
         algaehApiCall({

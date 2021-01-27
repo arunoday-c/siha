@@ -36,7 +36,9 @@
                     <tr>
                         <th>Sl No.</th>
                         <th>Vendor Batch No.</th>
-                        <th>PO Quantity</th>
+                        {{!-- <th>PO Quantity</th> --}}
+                        <th>DN Quantity</th>
+                        <th>Free</th>
                         <th>Unit Cost</th>
                         <th>Sales Price</th>
                         <th>Discount %</th>
@@ -49,7 +51,7 @@
                 <tbody>
                     {{#each details}}
                     <tr>
-                        <td colspan="5" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
+                        <td colspan="6" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
                         <td class="tableSubHdg"><small>Item Code:</small><br> {{item_code}}</td>
                         <td class="tableSubHdg"><small>Purchase UOM:</small><br>{{uom_description}}</td>
                         <td class="tableSubHdg"><small>Req. Qty:</small><br>{{po_quantity}}</td>
@@ -63,7 +65,8 @@
                         <td>{{inc @index}}</td>
 
                         <td>{{batchno}}</td>
-                        <td>{{po_quantity}}</td>
+                        <td>{{dn_quantity}}</td>
+                        <td>{{free_qty}}</td>
 
                         <td class="numberFld">{{unit_cost}}</td>
                         <td class="numberFld">{{sales_price}}</td>
@@ -77,7 +80,7 @@
                     {{/each }}
 
                     {{/each }}<tr class="footerTotalDown">
-                        <td colspan="9" class="numberFld">Total Net Amount</td>
+                        <td colspan="10" class="numberFld">Total Net Amount</td>
                         <td class="numberFld">{{net_payable}}</td>
                     </tr>
                 </tbody>

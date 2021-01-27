@@ -35,7 +35,10 @@ class InvRequisitionEntry extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      req_warehouse: "N",
+      ware_house_data: []
+    };
   }
 
   UNSAFE_componentWillMount() {
@@ -132,8 +135,22 @@ class InvRequisitionEntry extends Component {
       module: "inventory",
       onSuccess: (res) => {
         if (res.data.success) {
+          debugger
+          // let hims_d_inventory_location_id = null
+          // let location_type = null
+          // if (res.data.records[0].req_warehouse === "Y") {
+          //   const inventoryreqlocations = this.props.inventoryreqlocations.find(
+          //     (f) => f.location_type === "WH");
+          //   hims_d_inventory_location_id = inventoryreqlocations.hims_d_inventory_location_id
+          //   location_type = inventoryreqlocations.location_type
+          // }
+          const inventoryreqlocations = res.data.records[0].req_warehouse === "Y" ? this.props.inventoryreqlocations.filter(
+            (f) => f.location_type === "WH") : [];
+
           this.setState({
+            ware_house_data: inventoryreqlocations,
             requisition_auth_level: res.data.records[0].requisition_auth_level,
+            req_warehouse: res.data.records[0].req_warehouse,
           });
         }
       },
@@ -147,12 +164,6 @@ class InvRequisitionEntry extends Component {
   }
 
   render() {
-    // const invuserwiselocations = _.filter(
-    //   this.props.invuserwiselocations,
-    //   f => {
-    //     return f.location_type !== "WH";
-    //   }
-    // );
 
     return (
       <React.Fragment>
@@ -211,8 +222,8 @@ class InvRequisitionEntry extends Component {
                   <h6>
                     {this.state.requistion_date
                       ? moment(this.state.requistion_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -225,17 +236,17 @@ class InvRequisitionEntry extends Component {
                     />
                     <h6>
                       {this.state.authorize1 === "Y" &&
-                      this.state.authorie2 === "Y" ? (
-                        <span className="badge badge-success">Authorized</span>
-                      ) : this.state.authorize1 === "Y" &&
-                        this.state.authorie2 === "N" ? (
-                        <span className="badge badge-danger">Pending</span>
-                      ) : this.state.authorize1 === "N" &&
-                        this.state.authorize2 === "N" ? (
-                        <span className="badge badge-danger">Pending</span>
-                      ) : (
-                        "-------"
-                      )}
+                        this.state.authorie2 === "Y" ? (
+                          <span className="badge badge-success">Authorized</span>
+                        ) : this.state.authorize1 === "Y" &&
+                          this.state.authorie2 === "N" ? (
+                            <span className="badge badge-danger">Pending</span>
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Pending</span>
+                            ) : (
+                              "-------"
+                            )}
                     </h6>
                   </div>
                 ) : null}
@@ -244,53 +255,53 @@ class InvRequisitionEntry extends Component {
             printArea={
               this.state.material_requisition_number !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            generateMaterialReqInv(this.state);
-                          },
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateMaterialReqInv(this.state);
                         },
                       },
-                      // {
-                      //   label: "Print Report",
-                      //   events: {
-                      //     onClick: () => {
-                      //       AlgaehReport({
-                      //         report: {
-                      //           fileName: "Inventory/MaterialRequisition"
-                      //         },
-                      //         data: {
-                      //           requisition_number: this.state
-                      //             .material_requisition_number,
-                      //           requistion_date: moment(
-                      //             this.state.requistion_date
-                      //           ).format(Options.datetimeFormat),
+                    },
+                    // {
+                    //   label: "Print Report",
+                    //   events: {
+                    //     onClick: () => {
+                    //       AlgaehReport({
+                    //         report: {
+                    //           fileName: "Inventory/MaterialRequisition"
+                    //         },
+                    //         data: {
+                    //           requisition_number: this.state
+                    //             .material_requisition_number,
+                    //           requistion_date: moment(
+                    //             this.state.requistion_date
+                    //           ).format(Options.datetimeFormat),
 
-                      //           requistion_type:
-                      //             this.state.requistion_type === "PR"
-                      //               ? "Purchase Requisition"
-                      //               : "Material Requisition",
+                    //           requistion_type:
+                    //             this.state.requistion_type === "PR"
+                    //               ? "Purchase Requisition"
+                    //               : "Material Requisition",
 
-                      //           from_location:
-                      //             from_location_name.length > 0
-                      //               ? from_location_name[0].location_description
-                      //               : "",
-                      //           to_location:
-                      //             to_location_name.length > 0
-                      //               ? to_location_name[0].location_description
-                      //               : [],
+                    //           from_location:
+                    //             from_location_name.length > 0
+                    //               ? from_location_name[0].location_description
+                    //               : "",
+                    //           to_location:
+                    //             to_location_name.length > 0
+                    //               ? to_location_name[0].location_description
+                    //               : [],
 
-                      //           inventory_stock_detail: this.state
-                      //             .inventory_stock_detail
-                      //         }
-                      //       });
-                      //     }
-                      //   }
-                      // }
-                    ],
-                  }
+                    //           inventory_stock_detail: this.state
+                    //             .inventory_stock_detail
+                    //         }
+                    //       });
+                    //     }
+                    //   }
+                    // }
+                  ],
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -303,6 +314,36 @@ class InvRequisitionEntry extends Component {
             {/* Patient code */}
             <div className="col-lg-8">
               <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-4" }}
+                  label={{ forceLabel: "Requisition Type" }}
+                  selector={{
+                    name: "requistion_type",
+                    className: "select-fld",
+                    value: this.state.requistion_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE,
+                    },
+                    others: {
+                      disabled: this.state.bothExisits,
+                      // this.state.from_location_type === "MS" ? false : true
+                    },
+
+                    onChange: requisitionEvent.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        requistion_type: null,
+                        from_location_id: null,
+                        from_location_type: null,
+                        to_location_id: null,
+                        to_location_type: null
+                      });
+                    },
+                  }}
+                />
+
                 <AlagehAutoComplete
                   div={{ className: "col-lg-4" }}
                   label={{ forceLabel: "Location" }}
@@ -339,37 +380,13 @@ class InvRequisitionEntry extends Component {
                       ? this.state.from_location_type === "WH"
                         ? "Warehouse"
                         : this.state.from_location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "From Location Type"}
                   </h6>
                 </div>
 
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Requisition Type" }}
-                  selector={{
-                    name: "requistion_type",
-                    className: "select-fld",
-                    value: this.state.requistion_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE,
-                    },
-                    others: {
-                      disabled: this.state.bothExisits,
-                      // this.state.from_location_type === "MS" ? false : true
-                    },
 
-                    onChange: requisitionEvent.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        requistion_type: null,
-                      });
-                    },
-                  }}
-                />
               </div>
             </div>
             {this.state.requistion_type === "MR" ? (
@@ -385,7 +402,7 @@ class InvRequisitionEntry extends Component {
                       dataSource: {
                         textField: "location_description",
                         valueField: "hims_d_inventory_location_id",
-                        data: this.props.inventoryreqlocations,
+                        data: this.state.req_warehouse === "Y" ? this.state.ware_house_data : this.props.inventoryreqlocations,
                       },
                       others: {
                         disabled:
@@ -397,7 +414,7 @@ class InvRequisitionEntry extends Component {
                       onClear: () => {
                         this.setState({
                           to_location_id: null,
-                          to_location_type: null,
+                          to_location_type: null
                         });
                       },
                     }}
@@ -414,8 +431,8 @@ class InvRequisitionEntry extends Component {
                         ? this.state.to_location_type === "WH"
                           ? "Warehouse"
                           : this.state.to_location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                            ? "Main Store"
+                            : "Sub Store"
                         : "To Location Type"}
                     </h6>
                   </div>
@@ -473,8 +490,8 @@ class InvRequisitionEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" &&
                             this.state.authorie2 === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizeRequisitionEntry.bind(
                         this,
@@ -490,8 +507,8 @@ class InvRequisitionEntry extends Component {
                             this.state.authorize1 === "N"
                               ? "Authorize 1"
                               : this.state.requisition_auth_level === "2"
-                              ? "Authorize 2"
-                              : "Authorize 1",
+                                ? "Authorize 2"
+                                : "Authorize 1",
                           returnText: true,
                         }}
                       />
