@@ -1305,7 +1305,7 @@ export default {
                 }
 
                 let strQry = "";
-                let updateQry = "";
+                // let updateQry = "";
 
                 if (pl_account != "") {
                   strQry += _mysql.mysqlQueryFormat(
@@ -1328,138 +1328,141 @@ export default {
                   );
                 }
 
-                new Promise((resolve, reject) => {
-                  // PAYMENT AGAINST OLD PENDING VOUCHER
-                  if (headRes[0]["invoice_no"] != null) {
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "insert into finance_voucher_header (voucher_type,voucher_no,day_end_header_id,amount,\
+                        payment_date,narration,from_screen,posted_from,year,month,invoice_no,ref_no,cheque_date,cheque_amount,due_date)\
+                        select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
+                        narration,from_screen,'D',year(transaction_date),month(transaction_date), \
+                        invoice_no,ref_no,cheque_date,cheque_amount,due_date\
+                        from finance_day_end_header where finance_day_end_header_id=? ",
+                    values: [input.finance_day_end_header_id],
+                    printQuery: false,
+                  })
+                  .then((headRes) => {
+                    const insertColumns = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "credit_amount",
+                      "payment_type",
+                      "hospital_id",
+                      "year",
+                      "month",
+                      "project_id",
+                      "sub_department_id",
+                    ];
                     _mysql
-                      .executeQuery({
+                      .executeQueryWithTransaction({
                         query:
-                          "select finance_voucher_header_id, voucher_type,amount,settlement_status,settled_amount\
-                          from finance_voucher_header where invoice_no=? and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
-                        values: [headRes[0]["invoice_no"]],
+                          "insert into finance_voucher_details (??) values ?;",
+                        values: result,
+                        includeValues: insertColumns,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          voucher_header_id: headRes.insertId,
+                          auth_status: "A",
+                        },
                         printQuery: false,
                       })
-                      .then((BalanceInvoice) => {
-                        // if (headRes[0]["cancel_transaction"] == "Y") {
-                        //   updateQry = `update finance_voucher_header set settlement_status='C' where finance_voucher_header_id=${BalanceInvoice[0]["finance_voucher_header_id"]};`;
-                        // } else
-                        if (
-                          headRes[0]["voucher_type"] == "credit_note" ||
-                          headRes[0]["voucher_type"] == "debit_note" ||
-                          headRes[0]["voucher_type"] == "payment" ||
-                          headRes[0]["voucher_type"] == "receipt"
-                        ) {
-                          const total_paid_amount =
-                            parseFloat(BalanceInvoice[0]["settled_amount"]) +
-                            parseFloat(headRes[0]["amount"]);
-
-                          if (
-                            parseFloat(BalanceInvoice[0]["amount"]) ==
-                            total_paid_amount
-                          ) {
-                            updateQry = `update finance_voucher_header set settlement_status='S',settled_amount=settled_amount+${parseFloat(
-                              headRes[0]["amount"]
-                            )} where finance_voucher_header_id=${
-                              BalanceInvoice[0]["finance_voucher_header_id"]
-                              };`;
-                          } else {
-                            updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
-                              headRes[0]["amount"]
-                            )} where finance_voucher_header_id=${
-                              BalanceInvoice[0]["finance_voucher_header_id"]
-                              };`;
-                          }
-                        }
-
-                        resolve({});
-                      })
-                      .catch((error) => {
-                        _mysql.releaseConnection();
-                        next(error);
-                      });
-                  } else {
-                    resolve({});
-                  }
-                }).then((Invoc) => {
-                  _mysql
-                    .executeQueryWithTransaction({
-                      query:
-                        "insert into finance_voucher_header (voucher_type,voucher_no,day_end_header_id,amount,\
-                            payment_date,narration,from_screen,posted_from,year,month,invoice_no,ref_no,cheque_date,cheque_amount,due_date)\
-                            select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
-                            narration,from_screen,'D',year(transaction_date),month(transaction_date), \
-                            invoice_no,ref_no,cheque_date,cheque_amount,due_date\
-                            from finance_day_end_header where finance_day_end_header_id=? ",
-                      values: [input.finance_day_end_header_id],
-                      printQuery: false,
-                    })
-                    .then((headRes) => {
-                      const insertColumns = [
-                        "payment_date",
-                        "head_id",
-                        "child_id",
-                        "debit_amount",
-                        "credit_amount",
-                        "payment_type",
-                        "hospital_id",
-                        "year",
-                        "month",
-                        "project_id",
-                        "sub_department_id",
-                      ];
-                      _mysql
-                        .executeQueryWithTransaction({
-                          query:
-                            "insert into finance_voucher_details (??) values ?;",
-                          values: result,
-                          includeValues: insertColumns,
-                          bulkInsertOrUpdate: true,
-                          extraValues: {
-                            voucher_header_id: headRes.insertId,
-                            auth_status: "A",
-                          },
-                          printQuery: false,
-                        })
-                        .then((result2) => {
-                          _mysql
-                            .executeQueryWithTransaction({
-                              query:
-                                " update finance_day_end_header set posted='Y' ,posted_date=CURDATE(),posted_by=? where \
-                                finance_day_end_header_id=?;" +
-                                strQry +
-                                "" +
-                                updateQry,
-                              values: [
-                                req.userIdentity.algaeh_d_app_user_id,
-                                input.finance_day_end_header_id,
-                              ],
-                              printQuery: false,
-                            })
-                            .then((result3) => {
-                              _mysql.commitTransaction(() => {
-                                _mysql.releaseConnection();
-                                req.records = result3;
-                                next();
-                              });
-                            })
-                            .catch((e) => {
-                              _mysql.rollBackTransaction(() => {
-                                next(e);
-                              });
+                      .then((result2) => {
+                        _mysql
+                          .executeQueryWithTransaction({
+                            query:
+                              " update finance_day_end_header set posted='Y' ,posted_date=CURDATE(),posted_by=? where \
+                            finance_day_end_header_id=?;" +
+                              strQry,
+                            values: [
+                              req.userIdentity.algaeh_d_app_user_id,
+                              input.finance_day_end_header_id,
+                            ],
+                            printQuery: true,
+                          })
+                          .then((result3) => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = result3;
+                              next();
                             });
-                        })
-                        .catch((e) => {
-                          _mysql.rollBackTransaction(() => {
-                            next(e);
+                          })
+                          .catch((e) => {
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
+                            });
                           });
+                      })
+                      .catch((e) => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
                         });
-                    })
-                    .catch((e) => {
-                      _mysql.rollBackTransaction(() => {
-                        next(e);
                       });
+                  })
+                  .catch((e) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
                     });
-                });
+                  });
+                // new Promise((resolve, reject) => {
+                //   // PAYMENT AGAINST OLD PENDING VOUCHER
+                //   if (headRes[0]["invoice_no"] != null) {
+                //     _mysql
+                //       .executeQuery({
+                //         query:
+                //           "select finance_voucher_header_id, voucher_type,amount,settlement_status,settled_amount\
+                //           from finance_voucher_header where invoice_no=? and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
+                //         values: [headRes[0]["invoice_no"]],
+                //         printQuery: true,
+                //       })
+                //       .then((BalanceInvoice) => {
+                //         // if (headRes[0]["cancel_transaction"] == "Y") {
+                //         //   updateQry = `update finance_voucher_header set settlement_status='C' where finance_voucher_header_id=${BalanceInvoice[0]["finance_voucher_header_id"]};`;
+                //         // } else
+                //         if (BalanceInvoice.length > 0) {
+                //           if (
+                //             headRes[0]["voucher_type"] == "credit_note" ||
+                //             headRes[0]["voucher_type"] == "debit_note" ||
+                //             headRes[0]["voucher_type"] == "payment" ||
+                //             headRes[0]["voucher_type"] == "receipt"
+                //           ) {
+                //             const total_paid_amount =
+                //               parseFloat(BalanceInvoice[0]["settled_amount"]) +
+                //               parseFloat(headRes[0]["amount"]);
+
+                //             if (
+                //               parseFloat(BalanceInvoice[0]["amount"]) ==
+                //               total_paid_amount
+                //             ) {
+                //               updateQry = `update finance_voucher_header set settlement_status='S',settled_amount=settled_amount+${parseFloat(
+                //                 headRes[0]["amount"]
+                //               )} where finance_voucher_header_id=${
+                //                 BalanceInvoice[0]["finance_voucher_header_id"]
+                //                 };`;
+                //             } else {
+                //               updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
+                //                 headRes[0]["amount"]
+                //               )} where finance_voucher_header_id=${
+                //                 BalanceInvoice[0]["finance_voucher_header_id"]
+                //                 };`;
+                //             }
+                //           }
+                //         } else {
+                //           resolve({});
+                //         }
+
+                //         resolve({});
+                //       })
+                //       .catch((error) => {
+                //         _mysql.releaseConnection();
+                //         next(error);
+                //       });
+                //   } else {
+                //     resolve({});
+                //   }
+                // }).then((Invoc) => {
+
+                // });
               });
 
               //------------------------------------------------
