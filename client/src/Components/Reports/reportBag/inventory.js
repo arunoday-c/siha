@@ -709,6 +709,88 @@ export default function Inventory({
         ],
       },
       {
+        subitem: "Purchase Receipt Report",
+        reportName: "inventoryReceiptReport",
+        componentCode: "RPT_INV_REE",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+            // value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          // {
+          //   className: "col-3 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "location_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Purchase No",
+          //   dataSource: {
+          //     textField: "location_description",
+          //     valueField: "hims_d_inventory_location_id",
+          //     data: []
+          //   }
+          // }
+        ],
+      },
+      {
         subitem: "Purchase Return Report",
         reportName: "inventoryPurchaseReturnReport",
         requireIframe: true,
@@ -996,6 +1078,19 @@ export default function Inventory({
             },
           },
           {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "From Location ",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: [],
+            },
+          },
+          {
             className: "col-3 mandatory  form-group",
             type: "date",
             name: "from_date",
@@ -1014,19 +1109,6 @@ export default function Inventory({
             others: {
               maxDate: new Date(),
               minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "dropdown",
-            name: "location_id",
-            initialLoad: true,
-            isImp: true,
-            label: "From Location ",
-            dataSource: {
-              textField: "location_description",
-              valueField: "hims_d_inventory_location_id",
-              data: [],
             },
           },
         ],
