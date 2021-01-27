@@ -111,7 +111,6 @@ class SalesOrder extends Component {
 
   static contextType = MainContext;
   componentDidMount() {
-    z;
     getSalesOptions(this);
     const userToken = this.context.userToken;
 
@@ -184,16 +183,19 @@ class SalesOrder extends Component {
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("sales_order_number")) {
       getCtrlCode(this, false, queryParams.get("sales_order_number"));
+      this.getDocuments(queryParams.get("sales_order_number"));
     }
   }
 
-  getDocuments = () => {
+  getDocuments = (number) => {
     newAlgaehApi({
       uri: "/getInvoiceDoc",
       module: "documentManagement",
       method: "GET",
       data: {
-        serial_no: this.state.sales_order_number,
+        serial_no: this.state.sales_order_number
+          ? this.state.sales_order_number
+          : number,
       },
     })
       .then((res) => {
