@@ -6,7 +6,12 @@ const executePDF = function executePDFMethod(options) {
     try {
       let input = {};
       let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
+
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -48,22 +53,43 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_procurement_po_header PO on PO.hims_f_procurement_po_header_id = POD.purchase_order_header_id
         where POH.cancelled = 'N' ${str} order by PO.po_date DESC;
           `,
-          //   values: [],
           printQuery: true,
         })
         .then((result) => {
           if (result.length > 0) {
-            // const unit_cost = parseFloat("unit_cost").toFixed(decimal_places);
           }
-          // utilities.logger().log("result:", result);
 
-          //   const sum_purchase = _.sumBy(result, s =>
-          //     parseFloat(s.purchase_amount)
-          //   ).toFixed(decimal_places);
+          const net_po_quantity = _.sumBy(result, (s) =>
+            parseFloat(s.po_quantity)
+          );
+          const net_dn_quantity = _.sumBy(result, (s) =>
+            parseFloat(s.dn_quantity)
+          );
+          const net_free_qty = _.sumBy(result, (s) => parseFloat(s.free_qty));
+          const net_unit_cost = _.sumBy(result, (s) => parseFloat(s.unit_cost));
+          const net_sales_price = _.sumBy(result, (s) =>
+            parseFloat(s.sales_price)
+          );
 
           resolve({
             result: result,
-            // unit_cost: unit_cost,
+            net_po_quantity,
+            net_dn_quantity,
+            net_free_qty,
+            net_unit_cost,
+            net_sales_price,
+            decimalOnly: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyOnly: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {
