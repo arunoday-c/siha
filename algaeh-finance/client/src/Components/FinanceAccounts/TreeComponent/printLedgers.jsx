@@ -19,7 +19,8 @@ export default function PrintAccounts({ visible, data, onClose, title }) {
     GenerateExcel({
       columns: [
         { label: "Code", fieldName: "ledger_code" },
-        { label: "Account", fieldName: "title" },
+        { label: "Account English", fieldName: "title" },
+        { label: "Account Arabic", fieldName: "arabic_account_name" },
       ],
       data: data,
 
