@@ -10,7 +10,7 @@ export default function PrintAccounts({ visible, data, onClose, title }) {
   function nodeToShow(nodeData) {
     return (
       <span>
-        {nodeData.title} / {nodeData.account_code ?? nodeData.ledger_code}
+        {nodeData.title} / {nodeData.group_code ?? nodeData.ledger_code}
       </span>
     );
   }
@@ -18,12 +18,15 @@ export default function PrintAccounts({ visible, data, onClose, title }) {
     setLoading(true);
     GenerateExcel({
       columns: [
-        { label: "Account", fieldName: "title" },
         { label: "Code", fieldName: "ledger_code" },
+        { label: "Account", fieldName: "title" },
       ],
       data: data,
+
       excelBodyRender: (records, cb) => {
-        records.ledger_code = records.ledger_code ?? records.account_code;
+        console.log("records= = ", records);
+
+        records.ledger_code = records.group_code ?? records.ledger_code;
         cb(records);
       },
       sheetName: title,

@@ -2968,7 +2968,7 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
 
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,account_name, arabic_account_name, C.arabic_child_name,\
+          query: `select finance_account_head_id,account_code,group_code,account_name, arabic_account_name, C.arabic_child_name,\
           C.ledger_code,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from,
