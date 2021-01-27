@@ -137,6 +137,40 @@ const generateIdCard = (data) => {
     },
   });
 };
+const generateIdCardBig = (data) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        others: {
+          width: "90mm",
+          height: "50mm",
+          showHeaderFooter: false,
+        },
+        reportName: "patientCardBig",
+        reportParams: [
+          {
+            name: "hims_d_patient_id",
+            value: data?.hims_d_patient_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const reportName = `${data?.patient_code}-ID Card`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
+      window.open(origin);
+    },
+  });
+};
 
 const generateReceipt = (data) => {
   algaehApiCall({
@@ -830,6 +864,16 @@ export function PatientRegistration() {
                       events: {
                         onClick: () => {
                           setShowAdvModal(true);
+                        },
+                      },
+                    },
+                    {
+                      label: "Patient Info Card",
+                      events: {
+                        onClick: () => {
+                          generateIdCardBig(
+                            patientData?.patientRegistration || savedPatient
+                          );
                         },
                       },
                     },
