@@ -24,6 +24,10 @@ import {
 import { setUserPreference, getUserPreferences } from "../Model/userPreference";
 import { getLogs } from "../Model/loggers";
 import { uploadFile, getUploadedFile } from "../files";
+import {
+  getAllNotifications,
+  deleteNotification,
+} from "../Model/notifications";
 const router = express();
 initializedDb((db) => {
   router.use("/Document", documentManagement(db));
@@ -45,5 +49,7 @@ initializedDb((db) => {
 
   router.get("/getReceiptEntryDoc", getReceiptEntryDoc);
   router.delete("/deleteReceiptEntryDoc", deleteReceiptEntryDoc);
+  router.get("/getAllNotifications", getAllNotifications);
+  router.delete("/deleteNotification", deleteNotification);
 });
 export default router;

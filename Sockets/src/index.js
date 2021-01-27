@@ -94,30 +94,30 @@ db.once("open", function () {
 
     socket.on("getAll", () => {
       // console.log("Here in get all");
-      notifiModel
-        .find({
-          user_id: socket.client.user,
-        })
-        .sort({ createdAt: -1 })
-        .exec((err, docs) => {
-          if (!err) {
-            socket.emit("receiveAll", docs);
-          }
-        });
-      notifiModel
-        .find({
-          user_id: socket.client.user,
-          createdAt: {
-            $gt: moment().startOf("day"),
-            $lt: moment().endOf("day"),
-          },
-        })
-        .sort({ createdAt: -1 })
-        .exec((err, docs) => {
-          if (!err) {
-            socket.emit("today", docs);
-          }
-        });
+      // notifiModel
+      //   .find({
+      //     user_id: socket.client.user,
+      //   })
+      //   .sort({ createdAt: -1 })
+      //   .exec((err, docs) => {
+      //     if (!err) {
+      //       socket.emit("receiveAll", docs);
+      //     }
+      //   });
+      // notifiModel
+      //   .find({
+      //     user_id: socket.client.user,
+      //     createdAt: {
+      //       $gt: moment().startOf("day"),
+      //       $lt: moment().endOf("day"),
+      //     },
+      //   })
+      //   .sort({ createdAt: -1 })
+      //   .exec((err, docs) => {
+      //     if (!err) {
+      //       socket.emit("today", docs);
+      //     }
+      //   });
       notifiModel.countDocuments(
         {
           user_id: socket.client.user,
@@ -134,7 +134,7 @@ db.once("open", function () {
     socket.on("delete", (id) => {
       deleteNotification({ id })
         .then((result) => {
-          socket.emit("removed", result);
+          // socket.emit("removed", result);
         })
         .catch((err) => {
           socket.emit("error", err.message);
