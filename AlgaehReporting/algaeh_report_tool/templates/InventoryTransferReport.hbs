@@ -26,7 +26,8 @@
                         <th>Transferred Qty</th>
                         <th>Unit Price</th>
                         <th>Total Cost</th>
-                        <th>To Location</th>
+                        {{!-- <th>From Location</th>
+                        <th>To Location</th> --}}
                     </tr>
                     </tr>
                 </thead>
@@ -35,9 +36,10 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="8" class="tableSubHdg">Transfer No.: {{transfer_number}} | Transfer Date.:
+                        <td colspan="4" class="tableSubHdg">Transfer No.: {{transfer_number}} | Transfer Date.:
                             {{transfer_date}}
                         </td>
+                        <td  colspan="3" class="tableSubHdg numberFld">{{from_location}} > {{to_location}}</td>
                     </tr>
                     {{#each transfer_items}}
                     <tr>
@@ -48,12 +50,13 @@
                         <td class="numberFld">{{quantity_transfer}}</td>
                         <td class="numberFld">{{unit_cost}}</td>
                         <td class="numberFld">{{net_extended_cost}}</td>
-                        <td class="">{{location_description}}</td>
+                        {{!-- <td class="">{{from_location}}</td>
+                        <td class="">{{to_location}}</td> --}}
                     </tr>
                     {{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 
