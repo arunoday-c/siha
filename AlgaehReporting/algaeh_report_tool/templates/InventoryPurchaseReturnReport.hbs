@@ -23,7 +23,8 @@
                         <th>Item Code</th>
                         <th>Item Name</th>
                         <th>UOM</th>
-                        <th>Requested Qty</th>
+                        <th>Expiry Date</th>
+                        <th>Return Qty</th>
                         <th>Unit Price</th>
                         <th>Total Cost</th>
                     </tr>
@@ -33,10 +34,11 @@
                     {{#hasElement result}}
 
                     {{#each result}}
-                    <tr>
-                        <td colspan="4" class="tableSubHdg">{{purchase_return_number}} / {{return_date}}</td>
+                          <tr>
+                        <td colspan="5" class="tableSubHdg">{{purchase_return_number}} / {{return_date}}</td>
                          <td colspan="3" class="tableSubHdg numberFld">
-                          {{vendor_name}} | <span><b>{{net_total}}</b></span>
+                          {{vendor_name}}
+                           {{!-- | <span><b>{{net_total}}</b></span> --}}
                         </td>
                        
 
@@ -47,20 +49,20 @@
                         <td>{{item_code}}</th>
                         <td class="txtFld">{{item_description}}</th>
                         <td>{{uom_description}}</td>
+                        <td>{{expiry_date}}</td>
                         <td class="numberFld">{{return_qty}}</td>
                         <td class="numberFld">{{unit_cost}}</td>
                         <td class="numberFld">{{net_extended_cost}}</td>
                     </tr>
-                    {{/each }}{{/each }}
+                    {{/each }}<tr class="tableSubHdg2">
+                        <td colspan="7"></td>
+                        <td class="numberFld"><b>{{net_total}}</b></td>
+                    </tr>{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                        <td colspan="8" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
 
-                    <tr class="numberFldTotalBottom">
-                        <td colspan="6"></td>
-                        <td class="numberFld">{{net_total}}</td>
-                    </tr>
                 </tbody>
 
             </table>
