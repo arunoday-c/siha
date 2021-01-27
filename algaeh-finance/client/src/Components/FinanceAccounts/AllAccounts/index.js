@@ -219,8 +219,8 @@ function AllAccounts({ title, inDrawer }) {
               {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <i className="fas fa-times" />
               ) : (
-                <i className="fas fa-pen" />
-              )}
+                  <i className="fas fa-pen" />
+                )}
             </li>
 
             <li
@@ -292,8 +292,8 @@ function AllAccounts({ title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-          ? ""
-          : "accGroup",
+            ? ""
+            : "accGroup",
     };
   };
 
@@ -378,7 +378,7 @@ function AllAccounts({ title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                          searchFoundCount
+                        searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}
