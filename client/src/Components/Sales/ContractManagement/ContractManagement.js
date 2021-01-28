@@ -135,12 +135,54 @@ class ContractManagement extends Component {
   }
 
   downloadDoc = (doc) => {
-    const link = document.createElement("a");
-    link.download = doc.filename;
-    link.href = `data:${doc.filetype};base64,${doc.document}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    newAlgaehApi({
+      uri: "/getContractDoc",
+      module: "documentManagement",
+      method: "GET",
+      extraHeaders: {
+        Accept: "blob",
+      },
+      others: {
+        responseType: "blob",
+      },
+      data: {
+        contract_no: doc.contract_no,
+        filename: doc.filename,
+        download: true,
+      },
+    })
+      .then((resp) => {
+        const urlBlob = URL.createObjectURL(resp.data);
+
+        const link = document.createElement("a");
+        link.download = doc.filename;
+        link.href = urlBlob;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // debugger;
+    // const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    // // const link = document.createElement("a");
+    // fetch(fileUrl)
+    //   .then((res) => res.blob())
+    //   .then((fblob) => {
+    //     const newUrl = URL.createObjectURL(fblob);
+    //     window.open(newUrl);
+    //   });
+    // // const urlBlob = URL.createObjectURL(doc);
+    // // window.open(urlBlob);
+    // debugger;
+    // const link = document.createElement("a");
+    // link.download = doc.filename;
+    // link.href = `data:${doc.filetype};base64,${doc.document}`;
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
   };
 
   deleteDoc = (doc) => {
