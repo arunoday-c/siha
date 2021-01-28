@@ -30,7 +30,7 @@ import {
   deleteSubDeptImage,
 } from "../files/subdept";
 
-import { uploadFile, getUploadedFile } from "../files";
+// import { uploadFile, getUploadedFile } from "../files";
 import {
   getAllNotifications,
   deleteNotification,
