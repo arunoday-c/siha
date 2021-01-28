@@ -23,7 +23,13 @@ import {
 } from "../Controller/radiologyDoc";
 import { setUserPreference, getUserPreferences } from "../Model/userPreference";
 import { getLogs } from "../Model/loggers";
-import { uploadFile, getUploadedFile } from "../files";
+import { uploadFile, getUploadedFile } from "../files/index";
+import {
+  uploadSubDeptImg,
+  getUploadedSubFile,
+  deleteSubDeptImage,
+} from "../files/subdept";
+
 const router = express();
 initializedDb((db) => {
   router.use("/Document", documentManagement(db));
@@ -32,7 +38,10 @@ initializedDb((db) => {
   router.use("/getLogs", getLogs);
   router.post("/saveContractDoc", uploadFile); //saveContractDoc);
   router.get("/getContractDoc", getUploadedFile); // getContractDoc);
+  router.post("/uploadSubDeptImg", uploadSubDeptImg);
+  router.get("/getUploadedSubFile", getUploadedSubFile);
   router.delete("/deleteContractDoc", deleteContractDoc);
+  router.delete("/deleteSubDeptImage", deleteSubDeptImage);
   router.post("/saveInvoiceDoc", saveInvoiceDoc);
 
   router.get("/getInvoiceDoc", getInvoiceDoc);
