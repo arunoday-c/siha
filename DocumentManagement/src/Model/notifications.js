@@ -81,7 +81,7 @@ export function getAllNotifications(req, res, next) {
         }
         notificationModel
           .find({ user_id, ...todayNotifications })
-          .select({ _id: "", title: "", message: "", createdAt: new Date() })
+          .select(["_id", "title", "createdAt", "message"])
           .limit(_pageSize)
           .skip(_pageSize * Math.max(0, _page))
           .sort({ createdAt: "desc" })
@@ -93,6 +93,7 @@ export function getAllNotifications(req, res, next) {
               if (require_total_count === "true") {
                 total_records = { total_records: result };
               }
+
               res.status(200).json({
                 success: true,
                 records: details,
