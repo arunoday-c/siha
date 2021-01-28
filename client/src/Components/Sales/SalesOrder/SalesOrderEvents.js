@@ -550,8 +550,6 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
         data.grid_edit = true;
 
         if (queryParams.get("sales_order_number")) {
-
-          debugger
           if (queryParams.get("disable_all")) {
             data.authBtnEnable = true;
             data.ItemDisable = true;

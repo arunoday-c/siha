@@ -148,7 +148,7 @@ export default class DiagramMaster extends Component {
     }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/diagram/deleteDiagram",
+          uri: "/diagram/deleteDiagramDetails",
 
           data: {
             diagram_id: data.diagram_id,

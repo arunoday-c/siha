@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { displayFileFromServer } from "../../utils/GlobalFunctions";
+// import { displayFileFromServer } from "../../utils/GlobalFunctions";
 import "tui-image-editor/dist/tui-image-editor.css";
 import ImageEditor from "@toast-ui/react-image-editor";
 import icona from "tui-image-editor/dist/svg/icon-a.svg";
@@ -15,10 +15,13 @@ export default class AlgaehCanvas extends Component {
     super(props);
     this.state = {
       image:
+        // `${window.location.protocol}//${window.location.hostname}${
+        //   window.location.port === "" ? "/docserver" : `:3006`
+        // }/UPLOAD/${57}/60118524785f6e2591a28d38__ALGAEH__3.png`,
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
       name: "algaeh-image-editor",
       imageLoaded: false,
-      openWebCam: false
+      openWebCam: false,
     };
     this.btnSave = {
       position: "absolute",
@@ -30,7 +33,7 @@ export default class AlgaehCanvas extends Component {
       width: "44px",
       height: "44px",
       fontSize: "1.5rem",
-      textAalign: "center"
+      textAalign: "center",
     };
     this.btnUpLoad = {
       position: "absolute",
@@ -42,7 +45,7 @@ export default class AlgaehCanvas extends Component {
       width: "44px",
       height: "44px",
       fontSize: "1.5rem",
-      textAalign: "center"
+      textAalign: "center",
     };
     this.btnCamera = {
       position: "absolute",
@@ -54,10 +57,10 @@ export default class AlgaehCanvas extends Component {
       width: "44px",
       height: "44px",
       fontSize: "1.5rem",
-      textAalign: "center"
+      textAalign: "center",
     };
     this.btnDiagramCntr = {
-      position: "relative"
+      position: "relative",
     };
   }
 
@@ -79,23 +82,23 @@ export default class AlgaehCanvas extends Component {
           {
             image: props.image,
             name: props.name,
-            imageLoaded: true
+            imageLoaded: true,
           },
           () => {
             this.editor
               .getInstance()
               .loadImageFromURL(props.image, props.name)
-              .then(result => {
+              .then((result) => {
                 this.editor.getInstance().ui.resizeEditor({
                   imageSize: {
                     oldWidth: result.oldWidth,
                     oldHeight: result.oldHeight,
                     newWidth: result.newWidth,
-                    newHeight: result.newHeight
-                  }
+                    newHeight: result.newHeight,
+                  },
                 });
               })
-              .catch(err => {
+              .catch((err) => {
                 console.error("Something went wrong:", err);
               });
           }
@@ -105,41 +108,53 @@ export default class AlgaehCanvas extends Component {
   }
   loadImageFromDB(props) {
     const that = this;
-    props = props || that.props;
-    displayFileFromServer({
-      uri: "/Document/get",
-      module: "documentManagement",
-      fileType: props.fileType,
-      destinationName: props.uniqueID,
-      addDataTag: false,
-      onFileSuccess: data => {
-        that.setState({ image: data }, () => {
-          that.editor
-            .getInstance()
-            .loadImageFromURL(data, "Hello")
-            .then(result => {
-              that.editor.getInstance().ui.resizeEditor({
-                imageSize: {
-                  oldWidth: result.oldWidth,
-                  oldHeight: result.oldHeight,
-                  newWidth: result.newWidth,
-                  newHeight: result.newHeight
-                }
-              });
-            })
-            .catch(err => {
-              console.error("Something went wrong:", err);
+    // props = props || that.props;
+    // displayFileFromServer({
+    //   uri: "/Document/get",
+    //   module: "documentManagement",
+    //   fileType: props.fileType,
+    //   destinationName: props.uniqueID,
+    //   addDataTag: false,
+    //   onFileSuccess: data => {
+    that.setState(
+      {
+        image: `${window.location.protocol}//${window.location.hostname}${
+          window.location.port === "" ? "/docserver" : `:3006`
+        }/UPLOAD/${57}/60118524785f6e2591a28d38__ALGAEH__3.png`,
+      },
+      () => {
+        that.editor
+          .getInstance()
+          .loadImageFromURL(
+            `${window.location.protocol}//${window.location.hostname}${
+              window.location.port === "" ? "/docserver" : `:3006`
+            }/UPLOAD/${57}/60118524785f6e2591a28d38__ALGAEH__3.png`,
+            "Hello"
+          )
+          .then((result) => {
+            that.editor.getInstance().ui.resizeEditor({
+              imageSize: {
+                oldWidth: result.oldWidth,
+                oldHeight: result.oldHeight,
+                newWidth: result.newWidth,
+                newHeight: result.newHeight,
+              },
             });
-        });
+          })
+          .catch((err) => {
+            console.error("Something went wrong:", err);
+          });
       }
-    });
+    );
+    //   }
+    // });
   }
 
   loadImagaing(e) {
     if (this.editor.getInstance().toDataURL() === "data:,") {
       swalMessage({
         type: "warning",
-        title: "no image to process..!"
+        title: "no image to process..!",
       });
       return;
     }
@@ -147,7 +162,7 @@ export default class AlgaehCanvas extends Component {
     if (typeof this.props.onSave === "function") {
       this.props.onSave({
         image: this.editor.getInstance().toDataURL(),
-        name: this.state.name
+        name: this.state.name,
       });
     } else {
       var link = document.createElement("a");
@@ -175,17 +190,17 @@ export default class AlgaehCanvas extends Component {
           that.editor
             .getInstance()
             .loadImageFromURL(_result, _file.name)
-            .then(result => {
+            .then((result) => {
               that.editor.getInstance().ui.resizeEditor({
                 imageSize: {
                   oldWidth: result.oldWidth,
                   oldHeight: result.oldHeight,
                   newWidth: result.newWidth,
-                  newHeight: result.newHeight
-                }
+                  newHeight: result.newHeight,
+                },
               });
             })
-            .catch(err => {
+            .catch((err) => {
               console.error("Something went wrong:", err);
             });
         });
@@ -194,12 +209,12 @@ export default class AlgaehCanvas extends Component {
   }
   openWebCamHandler(e) {
     this.setState({
-      openWebCam: true
+      openWebCam: true,
     });
   }
   webCamCloseHandler(e) {
     this.setState({
-      openWebCam: false
+      openWebCam: false,
     });
   }
   webcamCaptureImage(e) {
@@ -207,13 +222,13 @@ export default class AlgaehCanvas extends Component {
     this.setState(
       {
         image: short,
-        openWebCam: false
+        openWebCam: false,
       },
       () => {
         if (typeof this.props.onAfterCapture === "function") {
           this.props.onAfterCapture({
             image: this.editor.getInstance().toDataURL(),
-            name: this.state.name
+            name: this.state.name,
           });
         }
 
@@ -223,17 +238,17 @@ export default class AlgaehCanvas extends Component {
             short,
             "Webcam_" + moment().format("YYYYMMDDHHmmss")
           )
-          .then(result => {
+          .then((result) => {
             this.editor.getInstance().ui.resizeEditor({
               imageSize: {
                 oldWidth: result.oldWidth,
                 oldHeight: result.oldHeight,
                 newWidth: result.newWidth,
-                newHeight: result.newHeight
-              }
+                newHeight: result.newHeight,
+              },
             });
           })
-          .catch(err => {
+          .catch((err) => {
             console.error("Something went wrong:", err);
           });
       }
@@ -246,7 +261,7 @@ export default class AlgaehCanvas extends Component {
           <Webcam
             className="captureVideo"
             screenshotFormat="image/jpeg"
-            ref={ref => {
+            ref={(ref) => {
               this.webCam = ref;
             }}
           />
@@ -274,13 +289,13 @@ export default class AlgaehCanvas extends Component {
     return (
       <div style={this.btnDiagramCntr}>
         <ImageEditor
-          ref={editor => {
+          ref={(editor) => {
             this.editor = editor;
           }}
           includeUI={{
             loadImage: {
               path: this.state.image,
-              name: this.state.name
+              name: this.state.name,
             },
             theme: {
               "menu.normalIcon.path": icond,
@@ -318,7 +333,7 @@ export default class AlgaehCanvas extends Component {
 
               // colorpicker style
               "colorpicker.button.border": "2px solid #1e1e1e",
-              "colorpicker.title.color": "#fff"
+              "colorpicker.title.color": "#fff",
             },
 
             menu: [
@@ -328,7 +343,7 @@ export default class AlgaehCanvas extends Component {
               "draw",
               "shape",
               // "icon",
-              "text"
+              "text",
               // "mask",
               //  "filter"
             ],
@@ -336,15 +351,15 @@ export default class AlgaehCanvas extends Component {
             // initMenu: "filter",
             uiSize: {
               width: "65vw",
-              height: "65vh"
+              height: "65vh",
             },
-            menuBarPosition: "left"
+            menuBarPosition: "left",
           }}
           cssMaxHeight={500}
           cssMaxWidth={700}
           selectionStyle={{
             cornerSize: 20,
-            rotatingPointOffset: 70
+            rotatingPointOffset: 70,
           }}
           usageStatistics={false}
         />
@@ -357,7 +372,7 @@ export default class AlgaehCanvas extends Component {
           <React.Fragment>
             <span className="d-none">
               <input
-                ref={fileUploader => {
+                ref={(fileUploader) => {
                   this.fileUploader = fileUploader;
                 }}
                 type="file"

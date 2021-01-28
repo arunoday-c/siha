@@ -19,6 +19,10 @@ import swal from "sweetalert2";
 import moment from "moment";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
+import SubImageMasterPopUp from "./subImageMasterPopUp";
+
+// import { getUploadedFile } from "../../../../../DocumentManagement/src/files";
+
 // import { Input, Space } from "antd";
 
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -40,6 +44,7 @@ class DeptMaster extends Component {
       Inventory_Active: false,
       HIMS_Active: false,
       hospital_id: "",
+      UploadImagesModal: false,
     };
 
     this.getLocation();
@@ -114,7 +119,12 @@ class DeptMaster extends Component {
       s_department_type: "N",
     });
   }
-
+  UploadImageModal(data, e) {
+    this.setState({
+      UploadImagesModal: true,
+      currentRow: data,
+    });
+  }
   deleteDepartment(data) {
     swal({
       title: "Delete Department " + data.department_name + "?",
@@ -482,7 +492,11 @@ class DeptMaster extends Component {
       },
     });
   }
-
+  onCloseUploadModal() {
+    this.setState({
+      UploadImagesModal: false,
+    });
+  }
   onClose() {
     this.setState({ showSubDeptModal: false });
   }
@@ -490,6 +504,13 @@ class DeptMaster extends Component {
   render() {
     return (
       <div className="dept">
+        {this.state.UploadImagesModal ? (
+          <SubImageMasterPopUp
+            UploadImagesModal={this.state.UploadImagesModal}
+            onCloseUploadModal={() => this.onCloseUploadModal()}
+            currentRow={this.state.currentRow}
+          />
+        ) : null}
         <AlgaehModalPopUp
           events={{
             onClose: this.onClose.bind(this),
@@ -682,6 +703,33 @@ class DeptMaster extends Component {
                     datavalidate="data-validate='subdepdd'"
                     id="sub_dep_grid"
                     columns={[
+                      {
+                        fieldName: "add_dep",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Sub Dept." }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <i
+                              className="fas fa-plus"
+                              onClick={this.UploadImageModal.bind(this, row)}
+                            />
+                          );
+                        },
+                        editorTemplate: (row) => {
+                          return (
+                            <i
+                              className="fas fa-plus"
+                              onClick={this.UploadImageModal.bind(this, row)}
+                            />
+                          );
+                        },
+                        others: {
+                          style: {
+                            textAlign: "center",
+                          },
+                        },
+                      },
                       {
                         fieldName: "sub_department_code",
                         label: (
