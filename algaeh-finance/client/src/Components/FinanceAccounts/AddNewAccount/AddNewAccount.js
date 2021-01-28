@@ -36,8 +36,8 @@ export default function AddNewAccount({
     accountCode === 1
       ? "DR"
       : accountCode === 2 || accountCode === 3
-      ? "CR"
-      : ""
+        ? "CR"
+        : ""
   );
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
 
@@ -125,6 +125,7 @@ export default function AddNewAccount({
       const input = {
         child_name: account_name,
         arabic_child_name: arabic_account_name,
+        enableOP: enableOP,
         finance_account_child_id: selectedNode.node.finance_account_child_id,
         leaf_node: account_type === "G" ? "N" : "Y",
         insertInVoucherHeader,
@@ -284,13 +285,13 @@ export default function AddNewAccount({
                 },
                 placeholder: " Enter Account Name",
                 autoComplete: false,
-                disabled:
-                  isNewAccount === true
-                    ? false
-                    : selectedNode.node !== undefined &&
-                      selectedNode.node.created_status === "S"
-                    ? true
-                    : false,
+                // disabled:
+                //   isNewAccount === true
+                //     ? false
+                //     : selectedNode.node !== undefined &&
+                //       selectedNode.node.created_status === "S"
+                //     ? true
+                //     : false,
               }}
             />
 
@@ -312,13 +313,13 @@ export default function AddNewAccount({
                 },
                 placeholder: " Enter Account Name",
                 autoComplete: false,
-                disabled:
-                  isNewAccount === true
-                    ? false
-                    : selectedNode.node !== undefined &&
-                      selectedNode.node.created_status === "S"
-                    ? true
-                    : false,
+                // disabled:
+                //   isNewAccount === true
+                //     ? false
+                //     : selectedNode.node !== undefined &&
+                //       selectedNode.node.created_status === "S"
+                //     ? true
+                //     : false,
               }}
             />
           </div>

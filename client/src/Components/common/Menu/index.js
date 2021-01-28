@@ -55,7 +55,10 @@ function NavBars(props) {
       });
     });
     if (socket.connected) {
-      socket.on("count", (res) => setCount(res));
+      socket.on("count", (res) => {
+        // console.log("RES========", res);
+        setCount(res);
+      });
     }
   }, []); //eslint-disable-line
 
@@ -65,7 +68,7 @@ function NavBars(props) {
 
   function showNotification() {
     if (socket.connected && !openNotif) {
-      socket.emit("seen");
+      // socket.emit("seen");
       setCount(null);
     }
     setOpenNotif((state) => !state);

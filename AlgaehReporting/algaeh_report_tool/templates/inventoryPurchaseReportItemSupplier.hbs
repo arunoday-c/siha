@@ -37,18 +37,28 @@
                         <td>{{po_date}}</td>
                         <td>{{delivery_note_number}}</td>
                         <td>{{dn_date}}</td>
-                        <td>{{po_quantity}}</td>
-                        <td>{{dn_quantity}}</td>
-                        <td>{{free_qty}}</td>
-                        <td>{{unit_cost}}</td>
-                        <td>{{sales_price}}</td>
+                        <td class="numberFld">{{po_quantity}}</td>
+                        <td class="numberFld">{{dn_quantity}}</td>
+                        <td class="numberFld">{{free_qty}}</td>
+                        <td class="numberFld">{{numberFormating unit_cost ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating sales_price ../decimalOnly}}</td>
                     </tr>
                     {{/each }}
+                   
+                    <tr class="footerTotalDown">
+                        <td colspan="10"></td>
+                        <td class="numberFld"> {{net_po_quantity}}</td>
+                        <td class="numberFld">{{net_dn_quantity}}</td>
+                        <td class="numberFld">{{net_free_qty}}</td>
+                        <td class="numberFld">{{numberFormating net_unit_cost ./currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_sales_price ./currencyOnly}}</td>
+                    
+                    </tr>
                 </tbody>
             </table>
 
-
-            {{!-- <table class="tableTotal">
+{{!-- 
+            <table class="tableTotal">
 
                 <tr>
                     <td>Total Purchase Amount</td>

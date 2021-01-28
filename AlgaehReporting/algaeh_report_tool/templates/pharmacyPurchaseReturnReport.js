@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
 
           if (result.length > 0) {
             const nationgWiseEmp = _.chain(result)
-              .groupBy((g) => g.hims_f_procurement_po_header_id)
+              .groupBy((g) => g.hims_f_procurement_return_po_header_id)
               .map((m) => {
                 return {
                   purchase_return_number: m[0].purchase_return_number,

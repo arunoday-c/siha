@@ -3,24 +3,30 @@ import "./Notifications.scss";
 import {
   notification,
   Drawer,
-  Button,
-  List,
-  Skeleton,
-  Empty,
-  Avatar,
+  // Button,
+  // List,
+  // Skeleton,
+  // Empty,
+  // Avatar,
   // Icon,
   Switch,
   Tabs,
 } from "antd";
 import { MainContext } from "algaeh-react-components";
-import emptyImage from "./no_data.svg";
+// import emptyImage from "./no_data.svg";
+import NotificationList from "./notificationList";
 const { TabPane } = Tabs;
 
 export default function Notification({ open, handlePanel }) {
-  const base = Array(5).fill({ loading: true, message: "", title: "" });
+  // const base = Array(5).fill({
+  //   loading: true,
+  //   message: "",
+  //   title: "",
+  //   _id: "",
+  // });
   // const base = [];
-  const [list, setList] = useState(base);
-  const [today, setToday] = useState(base);
+  // const [list, setList] = useState(base);
+  // const [today, setToday] = useState(base);
   // const [loading, setLoading] = useState(true);
   const [authed, setAuthed] = useState(false);
   const [doNot, setDoNot] = useState(false);
@@ -30,10 +36,10 @@ export default function Notification({ open, handlePanel }) {
   useEffect(() => {
     const check = Array.isArray(context.userMenu);
     const addToNotiList = (notobj) => {
-      setToday((state) => {
-        state.unshift(notobj);
-        return [...state];
-      });
+      // setToday((state) => {
+      //   state.unshift(notobj);
+      //   return [...state];
+      // });
       socket.emit("acknowledge", notobj);
       if (!doNot) {
         //  notification sound here
@@ -63,27 +69,27 @@ export default function Notification({ open, handlePanel }) {
         socket.emit("getAll");
       });
 
-      socket.on("receiveAll", (data) => {
-        console.log(data);
-        if (data && Array.isArray(data)) {
-          setList(data);
-        } else {
-          setList([]);
-        }
-        // setLoading(false);
-      });
+      // socket.on("receiveAll", (data) => {
+      //   // console.log(data);
+      //   if (data && Array.isArray(data)) {
+      //     setList(data);
+      //   } else {
+      //     setList([]);
+      //   }
+      //   // setLoading(false);
+      // });
 
-      socket.on("today", (data) => {
-        if (data && Array.isArray(data)) {
-          setToday(data);
-        } else {
-          setToday([]);
-        }
-        // setLoading(false);
-      });
+      // socket.on("today", (data) => {
+      //   if (data && Array.isArray(data)) {
+      //     setToday(data);
+      //   } else {
+      //     setToday([]);
+      //   }
+      //   // setLoading(false);
+      // });
 
       socket.on("notification", (msg) => {
-        console.log("Im executed", msg);
+        // console.log("Im executed", msg);
         addToNotiList(msg);
       });
 
@@ -101,24 +107,24 @@ export default function Notification({ open, handlePanel }) {
         addToNotiList(`The following services are ordered: ${serStr}`);
       });
 
-      socket.on("removed", (removed) => {
-        setList((state) => {
-          const current = state.filter((item) => item._id !== removed._id);
-          return [...current];
-        });
-        setToday((state) => {
-          const current = state.filter((item) => item._id !== removed._id);
-          return [...current];
-        });
-      });
+      // socket.on("removed", (removed) => {
+      // setList((state) => {
+      //   const current = state.filter((item) => item._id !== removed._id);
+      //   return [...current];
+      // });
+      // setToday((state) => {
+      //   const current = state.filter((item) => item._id !== removed._id);
+      //   return [...current];
+      // });
+      // });
     }
   }, [socket, userToken]); // eslint-disable-line
 
-  function removeNotification(e) {
-    const { dataset } = e.target;
-    const active = JSON.parse(dataset.current);
-    context.socket.emit("delete", active._id);
-  }
+  // function removeNotification(e) {
+  //   const { dataset } = e.target;
+  //   const active = JSON.parse(dataset.current);
+  //   context.socket.emit("delete", active._id);
+  // }
 
   function changeDisturb() {
     setDoNot((state) => !state);
@@ -133,64 +139,68 @@ export default function Notification({ open, handlePanel }) {
   //   return result[0].module_name;
   // }
 
-  function NotiList({ content }) {
-    return (
-      <>
-        {content.length ? (
-          <List
-            className="demo-loadmore-list"
-            // loading={loading}
-            bordered
-            itemLayout="horizontal"
-            dataSource={content}
-            renderItem={(item) => (
-              <List.Item
-                key={item._id}
-                actions={[
-                  <Button
-                    type="ghost"
-                    icon={
-                      <i
-                        className="fas fa-times"
-                        onClick={(e) => {
-                          if (e.target.parentElement) {
-                            e.target.parentElement.click();
-                          }
-                          // removeNotification
-                        }}
-                      />
-                    }
-                    loading={item.loading}
-                    data-current={JSON.stringify(item)}
-                    onClick={removeNotification}
-                  />,
-                ]}
-              >
-                <Skeleton avatar title={false} loading={item.loading} active>
-                  <List.Item.Meta
-                    title={item.title || "Title"}
-                    avatar={<Avatar icon={<i className="envelope-square" />} />}
-                    description={
-                      <span
-                        dangerouslySetInnerHTML={{
-                          __html: item.message,
-                        }}
-                      ></span>
-                    }
-                  />
-                </Skeleton>
-              </List.Item>
-            )}
-          />
-        ) : (
-          <Empty
-            image={emptyImage}
-            description={"Nothing for you now, Come back later"}
-          />
-        )}
-      </>
-    );
-  }
+  // function NotiList({ content }) {
+  //   return (
+  //     <>
+  //       {content.length ? (
+  //         <List
+  //           className="demo-loadmore-list"
+  //           // loading={loading}
+  //           bordered
+  //           itemLayout="horizontal"
+  //           dataSource={content}
+  //           renderItem={(item) => (
+  //             <List.Item
+  //               key={item._id}
+  //               actions={[
+  //                 <Button
+  //                   type="ghost"
+  //                   icon={
+  //                     <i
+  //                       className="fas fa-times"
+  //                       onClick={(e) => {
+  //                         if (e.target.parentElement) {
+  //                           e.target.parentElement.click();
+  //                         }
+  //                         // removeNotification
+  //                       }}
+  //                     />
+  //                   }
+  //                   loading={item.loading}
+  //                   data-current={JSON.stringify(item)}
+  //                   onClick={removeNotification}
+  //                 />,
+  //               ]}
+  //             >
+  //               <Skeleton avatar title={false} loading={item.loading} active>
+  //                 <List.Item.Meta
+  //                   title={item.title || "Title"}
+  //                   avatar={<Avatar icon={<i className="envelope-square" />} />}
+  //                   description={
+  //                     <span
+  //                       dangerouslySetInnerHTML={{
+  //                         __html: item.message,
+  //                       }}
+  //                     ></span>
+  //                   }
+  //                 />
+  //               </Skeleton>
+  //             </List.Item>
+  //           )}
+  //           pagination={{
+  //             total: 10,
+  //             pageSize: 10,
+  //           }}
+  //         />
+  //       ) : (
+  //         <Empty
+  //           image={emptyImage}
+  //           description={"Nothing for you now, Come back later"}
+  //         />
+  //       )}
+  //     </>
+  //   );
+  // }
 
   return (
     <Drawer
@@ -202,19 +212,32 @@ export default function Notification({ open, handlePanel }) {
       visible={open}
       className="notifyDrawer"
     >
-      <div className="row">
-        <div className="col-12">
-          {" "}
-          <Tabs defaultActiveKey="1" type="line" size="default">
-            <TabPane tab="Today" key="1">
-              <NotiList content={today} />
-            </TabPane>
-            <TabPane tab="All Notifications" key="2">
-              <NotiList content={list} />
-            </TabPane>
-          </Tabs>
-        </div>
-        <div className="col-12">
+      {/* <div className="row"> */}
+      <div className="col-12">
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Today" key="1">
+            <NotificationList
+              isToday={true}
+              userToken={userToken}
+              socket={socket}
+            />
+            {/* <NotiList content={today} /> */}
+          </TabPane>
+          <TabPane tab="All Notifications" key="2">
+            <NotificationList
+              isToday={false}
+              userToken={userToken}
+              socket={socket}
+            />
+            {/* <NotiList content={list} /> */}
+          </TabPane>
+        </Tabs>
+      </div>
+      <div className="col-12">
+        <Switch checked={doNot} onChange={changeDisturb} />
+        <span>Do No Disturb</span>
+      </div>
+      {/* <div className="col-12">
           <button
             type="button"
             className="btn btn-default btn-sm"
@@ -229,9 +252,9 @@ export default function Notification({ open, handlePanel }) {
           >
             Next
           </button>
-        </div>
-      </div>
-      <div
+        </div> */}
+      {/* </div> */}
+      {/* <div
         style={{
           position: "absolute",
           bottom: ".1rem",
@@ -243,7 +266,7 @@ export default function Notification({ open, handlePanel }) {
       >
         <Switch checked={doNot} onChange={changeDisturb} />
         <span>Do No Disturb</span>
-      </div>
+      </div> */}
     </Drawer>
   );
 }

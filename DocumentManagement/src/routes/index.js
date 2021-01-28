@@ -30,6 +30,11 @@ import {
   deleteSubDeptImage,
 } from "../files/subdept";
 
+import { uploadFile, getUploadedFile } from "../files";
+import {
+  getAllNotifications,
+  deleteNotification,
+} from "../Model/notifications";
 const router = express();
 initializedDb((db) => {
   router.use("/Document", documentManagement(db));
@@ -54,5 +59,7 @@ initializedDb((db) => {
 
   router.get("/getReceiptEntryDoc", getReceiptEntryDoc);
   router.delete("/deleteReceiptEntryDoc", deleteReceiptEntryDoc);
+  router.get("/getAllNotifications", getAllNotifications);
+  router.delete("/deleteNotification", deleteNotification);
 });
 export default router;

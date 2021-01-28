@@ -323,6 +323,7 @@ export function getDocuments(contract_no, $this) {
 }
 
 export const getCtrlCode = ($this, docNumber) => {
+  debugger
   AlgaehLoader({ show: true });
   ClearData($this);
   algaehApiCall({

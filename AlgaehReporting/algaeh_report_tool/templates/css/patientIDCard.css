@@ -1,44 +1,50 @@
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Calibri", sans-serif;
+  font-size: 11px;
 }
-.idCardWrapper{
+.idCardWrapper {
   width: 320px;
   height: 210px;
   border: 1px solid #808080;
   float: left;
-  font-size: 11px!important;
+  font-size: 11px !important;
 }
-.idCardLogo{
+.idCardLogo {
   border-bottom: 1px solid gray;
   text-align: center;
   float: left;
   width: 100%;
 }
-.idCardLogo img{
-  height:30px;
+.idCardLogo img {
+  height: 30px;
   width: auto;
-  margin: 10px; 
+  margin: 10px;
 }
 .contentSection {
   width: 55%;
   float: left;
   padding: 10px;
 }
-.contentSection p{padding: 0; margin: 0 0 9px;}
+.contentSection p {
+  padding: 0;
+  margin: 0 0 9px;
+}
 
-.contentSection p:first-child{font-size: 13px}
-.imageSection{
+.contentSection p:first-child {
+  font-size: 13px;
+}
+.imageSection {
   float: right;
 }
-.imageSection img{
+.imageSection img {
   border: 1px solid gray;
-  height:140px;
+  height: 140px;
   width: 100px;
   margin: 5px;
 }
-.barCodeImg img{
+.barCodeImg img {
   border: 1px solid gray;
-  height:40px;
-  width:  100%;
+  height: 40px;
+  width: 100%;
   margin-top: 5px;
 }
