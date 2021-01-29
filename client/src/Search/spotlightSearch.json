@@ -535,30 +535,31 @@
     "POReturnEntry": [
       {
         "fieldName": "purchase_return_number",
-        "label": "PO Number"
+        "label": "PO Return Number"
       },
       {
         "fieldName": "return_date",
-        "label": "PO Date"
+        "label": "PO Return Date"
       },
       {
         "fieldName": "po_return_from",
-        "label": "PO Done For"
+        "label": "PO Return For"
+      },
+      {
+        "fieldName": "purchase_number",
+        "label": "PO Number"
       },
       {
         "fieldName": "grn_number",
-        "label": "Receipt Number",
-        "required": "N"
+        "label": "Receipt Number"
       },
       {
         "fieldName": "loc_description",
-        "label": "Location Name",
-        "required": "N"
+        "label": "Location Name"
       },
       {
         "fieldName": "vendor_name",
-        "label": "Vendor Name",
-        "required": "N"
+        "label": "Vendor Name"
       }
     ],
     "RequestQuotation": [
