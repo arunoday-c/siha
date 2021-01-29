@@ -1,7 +1,7 @@
 import React from "react";
-import "./FinanceOptions.scss";
+// import "./FinanceOptions.scss";
 import { AlgaehFormGroup, AlgaehAutoComplete } from "algaeh-react-components";
-import { AUTH_LEVELS, MONTHS } from "../../data/dropdownList";
+import { AUTH_LEVELS, MONTHS } from "../../../data/dropdownList";
 
 function OptionsComponent({
   options,

@@ -8,7 +8,11 @@ const executePDF = function executePDFMethod(options) {
 
       // const utilities = new algaehUtilities();
       let input = {};
-
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
       const params = options.args.reportParams;
 
       params.forEach((para) => {
@@ -20,7 +24,7 @@ const executePDF = function executePDFMethod(options) {
       let strQuery = "";
 
       if (input.location_id > 0) {
-        strQuery += ` and from_location_id=?= ${input.location_id}`;
+        strQuery += ` and from_location_id= ${input.location_id}`;
       }
 
       options.mysql
@@ -36,8 +40,8 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = D.uom_transferred_id
           inner join hims_d_inventory_location ILF on ILF.hims_d_inventory_location_id = H.from_location_id
           inner join hims_d_inventory_location ILT on ILT.hims_d_inventory_location_id = H.to_location_id 
-          where date(transfer_date)  between date(?) and date(?)  ${strQuery}; `,
-          values: [input.from_date, input.to_date],
+          where date(transfer_date)  between date(?) and date(?) and H.hospital_id=?   ${strQuery}; `,
+          values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,
         })
         .then((result) => {
@@ -54,6 +58,12 @@ const executePDF = function executePDFMethod(options) {
                   transfer_date: moment(m[0].transfer_date).format(
                     "DD/MM/YYYY"
                   ),
+                  // total_net_extended_cost: m[0].net_extended_cost,
+
+                  sum_total_net_extended_cost: options.currencyFormat(
+                    _.sumBy(m, (s) => parseFloat(s.net_extended_cost)),
+                    options.args.crypto
+                  ),
                   transfer_items: m,
                 };
               })
@@ -61,10 +71,12 @@ const executePDF = function executePDFMethod(options) {
 
             resolve({
               result: item_details,
+              // sum_total_net_extended_cost,
             });
           } else {
             resolve({
               result: result,
+              // sum_total_net_extended_cost: 0,
             });
           }
         })

@@ -18,7 +18,6 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                    <tr>
                         <th>Sl No.</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
@@ -29,15 +28,13 @@
                         {{!-- <th>From Location</th>
                         <th>To Location</th> --}}
                     </tr>
-                    </tr>
                 </thead>
                 <tbody>
                     {{#hasElement result}}
 
                     {{#each result}}
                     <tr>
-                        <td colspan="4" class="tableSubHdg">Transfer No.: {{transfer_number}} | Transfer Date.:
-                            {{transfer_date}}
+                        <td colspan="4" class="tableSubHdg">{{transfer_number}} - {{transfer_date}}
                         </td>
                         <td  colspan="3" class="tableSubHdg numberFld">{{from_location}} > {{to_location}}</td>
                     </tr>
@@ -53,7 +50,12 @@
                         {{!-- <td class="">{{from_location}}</td>
                         <td class="">{{to_location}}</td> --}}
                     </tr>
-                    {{/each }}{{/each }}
+                    {{/each }}
+                    <tr class="tableSubHdg2">
+                        <td colspan="6"></td>
+                        <td class="numberFld"><b>{{sum_total_net_extended_cost}}</b></td>
+                    </tr>
+                    {{/each }}
                     {{else}}
                     <tr>
                         <td colspan="7" class="noResultTextReport">No Records Found</td>

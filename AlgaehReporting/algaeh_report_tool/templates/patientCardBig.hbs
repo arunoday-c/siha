@@ -13,37 +13,57 @@
 }
 .print-body .tableNoBorder td {
   border: none;
-  padding: 3px;
+  padding: 4px 3px;
   margin: 0;
-  font-size: 12px;
+  font-size: 10px;
 }
 </style>
 <body>
    <div class="print-body">
-       <table class="tableNoBorder" style="margin-bottom: 10px;">
-    <tbody>
-        <tr style="border-bottom: 1px solid #000;">
-            <td colspan="3" style="text-align: center;"> <img style="height: 50px;" src="{{imageSource 'images/clientLogo.png'}}" /></td>
-        </tr></tbody></table>
-<table class="tableNoBorder">
+       <table class="tableNoBorder" style="margin-bottom:5px;border-bottom: 1px dashed #3d3d3d;">
     <tbody>
         <tr>
-            <td colspan="3">Name: <b>{{header.full_name}}</b></td>
+            <td colspan="3" style="text-align: center;"> <img style="height: 40px;" src="{{imageSource 'images/clientLogo.png'}}" /></td>
+        </tr></tbody></table>
+<table class="tableNoBorder"  style="margin-bottom:5px;padding-bottom:5px;border-bottom: 1px dotted #ccc;">
+    <tbody>
+        <tr>
+            <td colspan="3">Name: <b>{{header.patient_full_name}}</b></td>
         </tr>
          <tr>
               <td>MRN No: <b>{{header.patient_code}}</b></td>
             <td width="5%"></td>
-            <td>Gender: <b>{{header.gender}}</b></td>
-        </tr>
-        <tr>
             <td>{{header.identity_document_name}}: <b>{{header.primary_id_no}}</b></td>
-            <td width="5%"></td>
-            <td>Nationality: <b>{{header.nationality}}</b></td>
+           
         </tr>
         <tr>
-            <td> DOB: <b>{{dateTime header.date_of_birth "date"}}</b></td>
+
+            <td>Nationality: <b>{{header.nationality}}</b></td> 
+            <td width="5%"></td><td>Mobile No: <b>{{header.contact_number}}</b></td>
+        </tr>
+        <tr>
+             <td>Age & Gender: <b>{{header.age_in_years}}/ {{header.gender}}</b></td>
             <td width="5%"></td>
-            <td>Mobile No: <b>{{header.contact_number}}</b></td>
+            <td> DOB: <b>{{dateTime header.date_of_birth "date"}}</b></td>
+           
+        </tr>
+        
+        {{!-- <tr>
+            <td colspan="3"  style="text-align: center;">
+                <img style="height:30px;" src={{barcode "code128" header.patient_code}}  />
+            </td>
+        </tr> --}}
+    </tbody>
+</table>
+<table class="tableNoBorder">
+    <tbody>
+        <tr>
+            <td colspan="3">Doctor Name: <b>{{header.full_name}}</b></td>
+        </tr>
+         <tr>
+              <td>Visit Type: <b>{{header.visit_type_desc}}</b></td>
+            <td width="5%"></td>
+            <td>Visit Date & Time: <b>{{header.visit_date}}</b></td>
         </tr>
         
         {{!-- <tr>
