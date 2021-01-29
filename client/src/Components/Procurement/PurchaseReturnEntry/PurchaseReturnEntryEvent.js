@@ -271,6 +271,12 @@ const getCtrlCode = ($this, docNumber) => {
           let data = response.data.records;
           getData($this, data.po_return_from);
 
+          debugger
+          const queryParams = new URLSearchParams($this.props.location.search);
+          if (queryParams.get("purchase_return_number")) {
+            data.addItemButton = true;
+            data.ClearDisable = true;
+          }
           data.saveEnable = true;
           data.dataExitst = true;
           data.dataFinder = true;

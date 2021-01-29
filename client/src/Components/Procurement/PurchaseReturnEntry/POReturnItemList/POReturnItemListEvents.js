@@ -1,4 +1,4 @@
-import { swalMessage } from "../../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -50,14 +50,14 @@ const discounthandle = ($this, context, ctrl, e) => {
         value === ""
           ? 0
           : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
-            100;
+          100;
     } else {
       sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
         value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
-            100;
+          100;
 
       sub_discount_percentage = sub_discount_percentage.toFixed(3);
     }
@@ -115,44 +115,34 @@ const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  if (value < 0) {
-    swalMessage({
-      title: "Cannot be less than Zero",
-      type: "warning",
-    });
-  } else {
-    let extended_price = 0;
-    if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
-      extended_price = parseFloat(value) * parseFloat($this.state.unit_price);
-    }
-    let unit_cost = extended_price / parseFloat(value);
-    let tax_amount =
-      (extended_price * parseFloat($this.state.tax_percentage)) / 100;
-    let total_amount = tax_amount + extended_price;
-    $this.setState({
-      [name]: value,
-      extended_price: extended_price,
-      extended_cost: extended_price,
-      net_extended_cost: extended_price,
-      unit_cost: unit_cost,
-      tax_amount: tax_amount,
-      total_amount: total_amount,
-    });
-    clearInterval(texthandlerInterval);
-    texthandlerInterval = setInterval(() => {
+  if (name === "quantity") {
+    if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Quantity cannot be less than or equal to Zero",
+        type: "warning",
+      });
+    } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
+      swalMessage({
+        title: "Quantity cannot be greater than Quantity in hand",
+        type: "warning",
+      });
+    } else {
+      $this.setState({ [name]: value });
+
       if (context !== undefined) {
         context.updateState({
           [name]: value,
-          extended_price: extended_price,
-          extended_cost: extended_price,
-          net_extended_cost: extended_price,
-          unit_cost: unit_cost,
-          tax_amount: tax_amount,
-          total_amount: total_amount,
         });
       }
-      clearInterval(texthandlerInterval);
-    }, 500);
+    }
+  } else {
+    $this.setState({ [name]: value });
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value,
+      });
+    }
+
   }
 };
 
@@ -204,81 +194,203 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
   }
 };
 
-const itemchangeText = ($this, context, e) => {
-  let name = e.name || e.target.name;
+const itemchangeText = ($this, context, e, ctrl) => {
+  debugger
+  let name = ctrl;
+
   if (
     $this.state.pharmcy_location_id !== null ||
     $this.state.inventory_location_id !== null
   ) {
     if ($this.state.vendor_id !== null) {
-      let value = e.value || e.target.value;
+      let value = $this.state.po_return_from === "PHR" ? e.hims_d_item_master_id : e.hims_d_inventory_item_master_id;
 
       if ($this.state.po_return_from === "PHR") {
-        $this.setState({
-          [name]: value,
-          phar_item_category: e.selected.category_id,
-          pharmacy_uom_id: e.selected.purchase_uom_id,
-          phar_item_group: e.selected.group_id,
-          unit_price:
-            e.selected.purchase_cost === null
-              ? 0
-              : parseFloat(e.selected.purchase_cost).toFixed(6),
+        algaehApiCall({
+          uri: "/pharmacyGlobal/getUomLocationStock",
+          module: "pharmacy",
+          method: "GET",
+          data: {
+            location_id: $this.state.pharmcy_location_id,
+            item_id: value,
+          },
+          onSuccess: (response) => {
+            if (response.data.success) {
+              let data = response.data.records;
+              if (data.locationResult.length > 0) {
+                const qtyhand = parseFloat(data.locationResult[0].qtyhand)
 
-          addItemButton: false,
+                $this.setState({
+                  [name]: value,
+                  item_category: e.category_id,
+                  uom_id: e.stocking_uom_id,
+                  service_id: e.service_id,
+                  item_group_id: e.group_id,
+                  quantity: 0,
+                  expiry_date: data.locationResult[0].expirydt,
+                  batchno: data.locationResult[0].batchno,
+                  vendor_batchno: data.locationResult[0].vendor_batchno,
+                  qtyhand: qtyhand,
+                  barcode: data.locationResult[0].barcode,
+                  ItemUOM: data.uomResult,
+                  Batch_Items: data.locationResult,
+                  addItemButton: false,
+                  item_description: e.item_description,
+                  sales_uom_id: e.sales_uom_id,
+                  uom_description: e.stk_uom_description,
+                  stocking_uom: e.stocking_uom,
+                  sales_price: e.sale_price,
+                  unit_cost: data.locationResult[0].avgcost
+                });
+
+                if (context !== undefined) {
+                  context.updateState({
+                    [name]: value,
+                    item_category: e.category_id,
+                    uom_id: e.stocking_uom_id,
+                    service_id: e.service_id,
+                    item_group_id: e.group_id,
+                    quantity: 0,
+
+                    expiry_date: data.locationResult[0].expirydt,
+                    batchno: data.locationResult[0].batchno,
+                    vendor_batchno: data.locationResult[0].vendor_batchno,
+                    qtyhand: qtyhand,
+                    barcode: data.locationResult[0].barcode,
+                    ItemUOM: data.uomResult,
+                    Batch_Items: data.locationResult,
+                    addItemButton: false,
+                    item_description: e.item_description,
+                    sales_uom_id: e.sales_uom_id,
+                    uom_description: e.stk_uom_description,
+                    stocking_uom: e.stocking_uom,
+                    sales_price: e.sale_price,
+                    unit_cost: data.locationResult[0].avgcost
+                  });
+                }
+              } else {
+                swalMessage({
+                  title: "No stock available for selected Item.",
+                  type: "warning",
+                });
+                $this.setState({
+                  item_description: $this.state.item_description,
+                  item_id: $this.state.item_id,
+                });
+                if (context !== undefined) {
+                  context.updateState({
+                    item_description: $this.state.item_description,
+                    item_id: $this.state.item_id,
+                  });
+                }
+              }
+            } else {
+              swalMessage({
+                title: response.data.message,
+                type: "error",
+              });
+            }
+          },
+          onFailure: (error) => {
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
         });
-
-        if (context !== undefined) {
-          context.updateState({
-            [name]: value,
-            phar_item_category: e.selected.category_id,
-            pharmacy_uom_id: e.selected.purchase_uom_id,
-            phar_item_group: e.selected.group_id,
-            unit_price:
-              e.selected.purchase_cost === null
-                ? 0
-                : parseFloat(e.selected.purchase_cost).toFixed(6),
-
-            addItemButton: false,
-            order_quantity: 0,
-            extended_price: 0,
-            sub_discount_percentage: 0,
-            sub_discount_amount: 0,
-            extended_cost: 0,
-          });
-        }
       } else {
-        $this.setState({
-          [name]: value,
-          inv_item_category_id: e.selected.category_id,
-          inventory_uom_id: e.selected.purchase_uom_id,
-          inv_item_group_id: e.selected.group_id,
-          unit_price:
-            e.selected.purchase_cost === null
-              ? 0
-              : parseFloat(e.selected.purchase_cost).toFixed(6),
+        algaehApiCall({
+          uri: "/inventoryGlobal/getUomLocationStock",
+          module: "inventory",
+          method: "GET",
+          data: {
+            location_id: $this.state.inventory_location_id,
+            item_id: value,
+          },
+          onSuccess: (response) => {
+            if (response.data.success) {
+              let data = response.data.records;
+              if (data.locationResult.length > 0) {
+                const qtyhand = parseFloat(data.locationResult[0].qtyhand)
 
-          addItemButton: false,
+                $this.setState({
+                  [name]: value,
+                  item_category: e.category_id,
+                  uom_id: e.sales_uom_id,
+                  service_id: e.service_id,
+                  item_group_id: e.group_id,
+                  quantity: 0,
+                  expiry_date: data.locationResult[0].expirydt,
+                  batchno: data.locationResult[0].batchno,
+                  grn_no: data.locationResult[0].grnno,
+                  vendor_batchno: data.locationResult[0].vendor_batchno,
+                  qtyhand: qtyhand,
+                  barcode: data.locationResult[0].barcode,
+                  ItemUOM: data.uomResult,
+                  Batch_Items: data.locationResult,
+                  addItemButton: false,
+                  item_description: e.item_description,
+                  sales_uom_id: e.sales_uom_id,
+                  uom_description: e.uom_description,
+                  stocking_uom: e.stocking_uom,
+                  sales_price: e.sale_price,
+                  unit_cost: data.locationResult[0].avgcost
+                });
+
+                if (context !== undefined) {
+                  context.updateState({
+                    [name]: value,
+                    item_category: e.category_id,
+                    uom_id: e.sales_uom_id,
+                    service_id: e.service_id,
+                    item_group_id: e.group_id,
+                    quantity: 0,
+                    expiry_date: data.locationResult[0].expirydt,
+                    batchno: data.locationResult[0].batchno,
+                    grn_no: data.locationResult[0].grnno,
+                    qtyhand: qtyhand,
+                    barcode: data.locationResult[0].barcode,
+                    ItemUOM: data.uomResult,
+                    Batch_Items: data.locationResult,
+                    addItemButton: false,
+                    item_description: e.item_description,
+                    sales_uom_id: e.sales_uom_id,
+                    uom_description: e.uom_description,
+                    stocking_uom: e.stocking_uom,
+                    sales_price: e.sale_price,
+                    unit_cost: data.locationResult[0].avgcost
+                  });
+                }
+              } else {
+                swalMessage({
+                  title: "No stock available for selected Item.",
+                  type: "warning",
+                });
+                $this.setState({
+                  item_description: $this.state.item_description,
+                  item_id: $this.state.item_id,
+                });
+                if (context !== undefined) {
+                  context.updateState({
+                    item_description: $this.state.item_description,
+                    item_id: $this.state.item_id,
+                  });
+                }
+              }
+            } else {
+              swalMessage({
+                title: response.data.message,
+                type: "error",
+              });
+            }
+          },
+          onFailure: (error) => {
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
         });
-
-        if (context !== undefined) {
-          context.updateState({
-            [name]: value,
-            inv_item_category_id: e.selected.category_id,
-            inventory_uom_id: e.selected.purchase_uom_id,
-            inv_item_group_id: e.selected.group_id,
-            unit_price:
-              e.selected.purchase_cost === null
-                ? 0
-                : parseFloat(e.selected.purchase_cost).toFixed(6),
-
-            addItemButton: false,
-            order_quantity: 0,
-            extended_price: 0,
-            sub_discount_percentage: 0,
-            sub_discount_amount: 0,
-            extended_cost: 0,
-          });
-        }
       }
     } else {
       $this.setState(
@@ -308,72 +420,225 @@ const itemchangeText = ($this, context, e) => {
   }
 };
 
+
 const AddItems = ($this, context) => {
-  if ($this.state.order_quantity === 0) {
+
+  if (parseFloat($this.state.quantity) <= 0) {
     swalMessage({
-      title: "Please enter Quantity Required .",
+      title: "Enter the Quantity",
       type: "warning",
     });
-  } else if ($this.state.unit_price === 0) {
-    swalMessage({
-      title: "Please enter Unit Price .",
-      type: "warning",
-    });
-  } else {
-    let ItemInput = {
-      completed: "N",
-      phar_item_category: $this.state.phar_item_category,
-      phar_item_group: $this.state.phar_item_group,
+    return;
+  }
+
+  debugger
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
+
+  let sub_total = 0;
+  let net_total = 0;
+  let discount_amount = 0;
+  let return_total = 0,
+    tax_amount = 0;
+
+  let BatchExists = []
+  let ItemBatchInput = {}
+  if ($this.state.po_return_from === "PHR") {
+    BatchExists = pharmacy_stock_detail.filter(
+      (f) => f.batchno === $this.state.batchno
+    );
+
+    if (BatchExists.length > 0) {
+      swalMessage({
+        title: "Selected Batch Already Exists",
+        type: "warning",
+      });
+      return;
+    }
+    const extended_cost = parseFloat($this.state.quantity) * parseFloat($this.state.unit_cost)
+
+    ItemBatchInput = {
       phar_item_id: $this.state.phar_item_id,
-      inv_item_category_id: $this.state.inv_item_category_id,
-      inv_item_group_id: $this.state.inv_item_group_id,
-      inv_item_id: $this.state.inv_item_id,
-
-      pharmacy_uom_id: $this.state.pharmacy_uom_id,
-      inventory_uom_id: $this.state.inventory_uom_id,
-
-      order_quantity: $this.state.order_quantity,
-      total_quantity: $this.state.order_quantity,
-      unit_price: $this.state.unit_price,
-      extended_price: $this.state.extended_price,
-      sub_discount_percentage: $this.state.sub_discount_percentage,
-      sub_discount_amount: $this.state.sub_discount_amount,
-      extended_cost: $this.state.extended_cost,
-      discount_percentage: $this.state.discount_percentage,
-      discount_amount: $this.state.discount_amount,
-      net_extended_cost: $this.state.net_extended_cost,
+      phar_item_category: $this.state.item_category,
+      phar_item_group: $this.state.item_group_id,
+      batchno: $this.state.batchno,
+      vendor_batchno: $this.state.vendor_batchno,
+      grnno: $this.state.grn_no,
+      expiry_date: $this.state.expiry_date,
+      barcode: $this.state.barcode,
+      sales_uom: $this.state.sales_uom_id,
       unit_cost: $this.state.unit_cost,
-      expected_arrival_date: $this.state.expected_date,
-      authorize_quantity: $this.state.authorize_quantity,
-      quantity_outstanding: 0,
-      rejected_quantity: $this.state.rejected_quantity,
-      pharmacy_requisition_id: $this.state.pharmacy_requisition_id,
-      inventory_requisition_id: $this.state.inventory_requisition_id,
-      tax_percentage: $this.state.tax_percentage,
-      tax_amount: $this.state.tax_amount,
-      total_amount: $this.state.total_amount,
-      item_type: $this.state.item_type,
+      pharmacy_uom_id: $this.state.uom_id,
+      item_description: $this.state.item_description,
+      qtyhand: $this.state.qtyhand,
+      return_qty: $this.state.quantity,
+      dn_quantity: 0,
+      extended_cost: extended_cost,
+      discount_percentage: 0,
+      discount_amount: 0,
+      net_extended_cost: extended_cost,
+      tax_percentage: 0,
+      tax_amount: 0,
+      total_amount: extended_cost
     };
+    pharmacy_stock_detail.push(ItemBatchInput);
+    if (pharmacy_stock_detail.length > 0) {
+      sub_total = Enumerable.from(pharmacy_stock_detail).sum((s) =>
+        parseFloat(s.extended_cost)
+      );
 
-    if ($this.state.po_return_from === "PHR") {
-      let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-      pharmacy_stock_detail.push(ItemInput);
-      assignDataandclear(
-        $this,
-        context,
-        pharmacy_stock_detail,
-        "pharmacy_stock_detail"
+      discount_amount = Enumerable.from(pharmacy_stock_detail).sum((s) =>
+        parseFloat(s.discount_amount)
+      );
+
+      net_total = Enumerable.from(pharmacy_stock_detail).sum((s) =>
+        parseFloat(s.net_extended_cost)
+      );
+
+      tax_amount = Enumerable.from(pharmacy_stock_detail).sum((s) =>
+        parseFloat(s.tax_amount)
+      );
+
+      return_total = Enumerable.from(pharmacy_stock_detail).sum((s) =>
+        parseFloat(s.total_amount)
       );
     } else {
-      let inventory_stock_detail = $this.state.inventory_stock_detail;
-      inventory_stock_detail.push(ItemInput);
-      assignDataandclear(
-        $this,
-        context,
-        inventory_stock_detail,
-        "inventory_stock_detail"
-      );
+      sub_total = 0;
+      discount_amount = 0;
+      net_total = 0;
+      tax_amount = 0;
+      return_total = 0;
     }
+  } else {
+    BatchExists = inventory_stock_detail.filter(
+      (f) => f.batchno === $this.state.batchno
+    );
+
+    if (BatchExists.length > 0) {
+      swalMessage({
+        title: "Selected Batch Already Exists",
+        type: "warning",
+      });
+      return;
+    }
+
+    const extended_cost = parseFloat($this.state.quantity) * parseFloat($this.state.unit_cost)
+
+    ItemBatchInput = {
+      inv_item_id: $this.state.inv_item_id,
+      inv_item_category_id: $this.state.item_category,
+      inv_item_group_id: $this.state.item_group_id,
+      batchno: $this.state.batchno,
+      vendor_batchno: $this.state.vendor_batchno,
+      grnno: $this.state.grn_no,
+      expiry_date: $this.state.expiry_date,
+      barcode: $this.state.barcode,
+      sales_uom: $this.state.sales_uom_id,
+      unit_cost: $this.state.unit_cost,
+      inventory_uom_id: $this.state.uom_id,
+      item_description: $this.state.item_description,
+      qtyhand: $this.state.qtyhand,
+      return_qty: $this.state.quantity,
+      dn_quantity: 0,
+      extended_cost: extended_cost,
+      discount_percentage: 0,
+      discount_amount: 0,
+      net_extended_cost: extended_cost,
+      tax_percentage: 0,
+      tax_amount: 0,
+      total_amount: extended_cost
+    };
+    inventory_stock_detail.push(ItemBatchInput);
+    if (inventory_stock_detail.length > 0) {
+      sub_total = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.extended_cost)
+      );
+
+      discount_amount = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.discount_amount)
+      );
+
+      net_total = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.net_extended_cost)
+      );
+
+      tax_amount = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.tax_amount)
+      );
+
+      return_total = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.total_amount)
+      );
+    } else {
+      sub_total = 0;
+      discount_amount = 0;
+      net_total = 0;
+      tax_amount = 0;
+      return_total = 0;
+    }
+  }
+
+
+
+
+
+
+
+  $this.setState({
+    pharmacy_stock_detail: pharmacy_stock_detail,
+    item_id: null,
+    item_category: null,
+    uom_id: null,
+    item_group_id: null,
+    quantity: 0,
+
+    expiry_date: null,
+    batchno: null,
+    grn_no: null,
+    qtyhand: null,
+    barcode: null,
+    ItemUOM: [],
+    Batch_Items: [],
+    addItemButton: true,
+    item_description: "",
+    saveEnable: false,
+    uom_description: null,
+
+    sub_total: sub_total,
+    discount_amount: discount_amount,
+    net_total: net_total,
+    tax_amount: tax_amount,
+    return_total: return_total,
+  });
+
+
+  if (context !== undefined) {
+    context.updateState({
+      pharmacy_stock_detail: pharmacy_stock_detail,
+      item_id: null,
+      item_category: null,
+      uom_id: null,
+      item_group_id: null,
+      quantity: 0,
+
+      expiry_date: null,
+      batchno: null,
+      grn_no: null,
+      qtyhand: null,
+      barcode: null,
+      ItemUOM: [],
+      Batch_Items: [],
+      addItemButton: true,
+      item_description: "",
+      saveEnable: false,
+      uom_description: null,
+
+      sub_total: sub_total,
+      discount_amount: discount_amount,
+      net_total: net_total,
+      tax_amount: tax_amount,
+      return_total: return_total,
+    });
   }
 };
 
@@ -848,6 +1113,105 @@ const gridNumHandler = ($this, row, e) => {
   }
 };
 
+
+const ShowItemBatch = ($this, e) => {
+  $this.setState({
+    ...$this.state,
+    selectBatch: !$this.state.selectBatch,
+  });
+};
+
+
+const CloseItemBatch = ($this, context, e) => {
+  let batchno =
+    e !== undefined
+      ? e.selected === true
+        ? e.batchno
+        : $this.state.batchno
+      : $this.state.batchno;
+  let expiry_date =
+    e !== undefined
+      ? e.selected === true
+        ? moment(e.expirydt)._d
+        : $this.state.expiry_date
+      : $this.state.expiry_date;
+
+  let grn_no =
+    e !== undefined
+      ? e.selected === true
+        ? e.grnno
+        : $this.state.grn_no
+      : $this.state.grn_no;
+  let qtyhand =
+    e !== undefined
+      ? e.selected === true
+        ? e.qtyhand
+        : $this.state.qtyhand
+      : $this.state.qtyhand;
+
+  let sale_price =
+    e !== undefined
+      ? e.selected === true
+        ? e.sale_price
+        : $this.state.unit_cost
+      : $this.state.unit_cost;
+  let uom_description =
+    e !== undefined
+      ? e.selected === true
+        ? e.uom_description
+        : $this.state.uom_description
+      : $this.state.uom_description;
+
+  let uom_id =
+    e !== undefined
+      ? e.selected === true
+        ? e.sales_uom
+        : $this.state.uom_id
+      : $this.state.uom_id;
+
+  let average_cost =
+    e !== undefined
+      ? e.selected === true
+        ? e.avgcost
+        : $this.state.average_cost
+      : $this.state.average_cost;
+
+  let quantity =
+    e !== undefined
+      ? e.selected === true
+        ? 0
+        : $this.state.quantity
+      : $this.state.quantity;
+
+  $this.setState({
+    ...$this.state,
+    selectBatch: !$this.state.selectBatch,
+    batchno: batchno,
+    expiry_date: expiry_date,
+    grn_no: grn_no,
+    qtyhand: qtyhand,
+    uom_id: uom_id,
+    unit_cost: sale_price,
+    uom_description: uom_description,
+    average_cost: average_cost,
+    quantity: quantity,
+  });
+
+  if (context !== null) {
+    context.updateState({
+      batchno: batchno,
+      expiry_date: expiry_date,
+      grn_no: grn_no,
+      qtyhand: qtyhand,
+      uom_id: uom_id,
+      unit_cost: sale_price,
+      uom_description: uom_description,
+      average_cost: average_cost,
+      quantity: quantity,
+    });
+  }
+};
+
 export {
   texthandle,
   discounthandle,
@@ -863,4 +1227,6 @@ export {
   AssignData,
   GridAssignData,
   gridNumHandler,
+  ShowItemBatch,
+  CloseItemBatch
 };

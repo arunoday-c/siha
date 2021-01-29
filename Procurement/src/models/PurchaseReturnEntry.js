@@ -10,7 +10,7 @@ export default {
         .executeQuery({
           query:
             "SELECT PH.*, GRN.grn_number, GRN.inovice_number from  hims_f_procurement_po_return_header PH  \
-            inner join hims_f_procurement_grn_header GRN on GRN.hims_f_procurement_grn_header_id=PH.grn_header_id\
+            left join hims_f_procurement_grn_header GRN on GRN.hims_f_procurement_grn_header_id=PH.grn_header_id\
             where purchase_return_number=?",
           values: [req.query.purchase_return_number],
           printQuery: true
@@ -180,15 +180,16 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_procurement_po_return_header` (purchase_return_number, grn_header_id, return_date, \
-                  po_return_from, pharmcy_location_id, inventory_location_id, location_type, vendor_id, payment_terms, \
+                  po_return_from, return_type, pharmcy_location_id, inventory_location_id, location_type, vendor_id, payment_terms, \
                   comment, sub_total, discount_amount, net_total, tax_amount, receipt_net_total, receipt_net_payable, \
                   return_total, hospital_id, return_ref_no) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
               values: [
                 purchase_return_number,
                 input.grn_header_id,
                 new Date(),
                 input.po_return_from,
+                input.return_type,
                 input.pharmcy_location_id,
                 input.inventory_location_id,
                 input.location_type,
@@ -396,7 +397,8 @@ export default {
       let inputParam = { ...req.body };
       _mysql
         .executeQuery({
-          query: "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+          query: "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
+          printQuery: true
         })
         .then(org_data => {
 
@@ -410,7 +412,8 @@ export default {
                   "select head_id, child_id from finance_accounts_maping where account in ('INPUT_TAX');\
                   select hims_d_sub_department_id from hims_d_sub_department where department_type='I';\
                   select hims_d_sub_department_id from hims_d_sub_department where department_type='PH';\
-                  select cost_center_type, cost_center_required from finance_options limit 1;"
+                  select cost_center_type, cost_center_required from finance_options limit 1;",
+                printQuery: true
               })
               .then(result => {
                 const input_tax_acc = result[0][0]
@@ -422,7 +425,7 @@ export default {
                   GH.inovice_number, RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id, PL.hospital_id,V.head_id as v_head_id, \
                   V.child_id as v_child_id, V.vendor_name\
                   from hims_f_procurement_po_return_header RH \
-                  inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
+                  left join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
                   inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = RH.pharmcy_location_id\
                   inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
                   where hims_f_procurement_return_po_header_id=?;"
@@ -433,8 +436,8 @@ export default {
                   RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id,PL.hospital_id, V.head_id as v_head_id, \
                   V.child_id as v_child_id, V.vendor_name\
                   from hims_f_procurement_po_return_header RH \
-                  inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
-                  inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = GH.inventory_location_id\
+                  left join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
+                  inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = RH.inventory_location_id\
                   inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
                   where hims_f_procurement_return_po_header_id=?;"
                   sub_department_id = result[1].length > 0 ? result[1][0].hims_d_sub_department_id : null

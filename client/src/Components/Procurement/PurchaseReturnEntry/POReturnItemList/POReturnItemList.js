@@ -11,14 +11,22 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
-
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import {
   dateFormater,
   deletePOReturnDetail,
   onchangegridcol,
+  AddItems,
+  ShowItemBatch,
+  numberchangeTexts,
+  itemchangeText,
+  CloseItemBatch
 } from "./POReturnItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
-
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import Options from "../../../../Options.json";
+import moment from "moment";
+import ItemBatchs from "../ItemBatchs/ItemBatchs"
 class POReturnItemList extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +49,201 @@ class POReturnItemList extends Component {
           {(context) => (
             <div className="hims-purchase-order-entry">
               <div className="row">
+                {this.state.return_type === "D" ?
+                  <div className="col-lg-12">
+                    <div className="portlet portlet-bordered margin-bottom-15">
+                      <div className="row">
+                        <AlgaehAutoSearch
+                          div={{ className: "col-3" }}
+                          label={{ forceLabel: "Item Name" }}
+                          title="Type Item Name Here"
+                          id="item_id_search"
+                          template={(result) => {
+                            return (
+                              <section className="resultSecStyles">
+                                <div className="row">
+                                  <div className="col-8">
+                                    <h4 className="title">
+                                      {result.item_description}
+                                    </h4>
+                                    <small>{result.generic_name}</small>
+                                    <small>{result.uom_description}</small>
+                                  </div>
+                                </div>
+                              </section>
+                            );
+                          }}
+                          name={this.state.po_return_from === "PHR" ? "phar_item_id" : "inv_item_id"}
+                          columns={this.state.po_return_from === "PHR" ? spotlightSearch.pharmacy.itemmaster : spotlightSearch.Items.InvItems}
+                          displayField="item_description"
+                          value={this.state.item_description}
+                          searchName={this.state.po_return_from === "PHR" ? "itemmaster" : "tranitemmaster"}
+                          extraParameters={
+                            this.state.po_return_from === "PHR" ? {
+                              pharmacy_location_id: this.state.pharmcy_location_id,
+                            } : {
+                                inventory_location_id: this.state.inventory_location_id,
+                              }}
+                          onClick={itemchangeText.bind(this, this, context)}
+                          onClear={() => {
+                            context.updateState({
+                              item_id: null,
+                              item_category: null,
+                              uom_id: null,
+                              service_id: null,
+                              item_group_id: null,
+                              quantity: 0,
+                              expiry_date: null,
+                              batchno: null,
+                              grn_no: null,
+                              qtyhand: null,
+                              barcode: null,
+                              ItemUOM: [],
+                              Batch_Items: [],
+                              addItemButton: true,
+                              item_description: null,
+                              sales_uom_id: null,
+                              sales_conversion_factor: null,
+                              uom_description: null,
+                              stocking_uom: null,
+                              conversion_factor: null,
+                              sales_qtyhand: null,
+                              stocking_uom_id: null,
+                              average_cost: null,
+                              unit_cost: 0,
+                              Real_unit_cost: 0,
+                            });
+                          }}
+                          ref={(attReg) => {
+                            this.attReg = attReg;
+                          }}
+                        />
+
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Batch No.",
+                            }}
+                          />
+                          <h6>
+                            {this.state.batchno
+                              ? this.state.batchno
+                              : "-----------"}
+                          </h6>
+                        </div>
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Expiry Date",
+                            }}
+                          />
+                          <h6>
+                            {this.state.expiry_date
+                              ? moment(this.state.expiry_date).format(
+                                Options.dateFormat
+                              )
+                              : "-----------"}
+                          </h6>
+                        </div>
+
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Quantity In Hand",
+                            }}
+                          />
+                          <h6>
+                            {this.state.qtyhand
+                              ? this.state.qtyhand +
+                              " " +
+                              this.state.stocking_uom
+                              : "-----------"}
+                          </h6>
+                        </div>
+
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            forceLabel: "Quantity",
+                          }}
+                          textBox={{
+                            number: {
+                              allowNegative: false,
+                              thousandSeparator: ",",
+                            },
+                            className: "txt-fld",
+                            name: "quantity",
+                            value: this.state.quantity,
+                            dontAllowKeys: ["-", "e", "."],
+                            events: {
+                              onChange: numberchangeTexts.bind(
+                                this,
+                                this,
+                                context
+                              ),
+                            },
+                            others: {
+                              disabled: this.state.dataExitst,
+                              tabIndex: "3",
+                            },
+                          }}
+                        />
+
+
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Unit Cost",
+                            }}
+                          />
+                          <h6>
+                            {this.state.unit_cost
+                              ? GetAmountFormart(this.state.unit_cost)
+                              : "-----------"}
+                          </h6>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-12 subFooter-btn">
+                        <button
+                          className="btn btn-primary"
+                          onClick={AddItems.bind(this, this, context)}
+                          disabled={this.state.addItemButton}
+                          tabIndex="5"
+                        >
+                          Add Item
+                        </button>
+
+                        <button
+                          className="btn btn-default"
+                          onClick={ShowItemBatch.bind(this, this)}
+                          disabled={this.state.addItemButton}
+                        >
+                          Select Batch
+                        </button>
+
+                        {this.state.Batch_Items.length > 1 ? (
+                          <span
+                            className="badge badge-warning animated flash slower"
+                            style={{ marginTop: 9, float: "right" }}
+                          >
+                            More Batch Available
+                          </span>
+                        ) : null}
+
+                        <ItemBatchs
+                          show={this.state.selectBatch}
+                          onClose={CloseItemBatch.bind(this, this, context)}
+                          inputsparameters={{
+                            item_id: this.state.item_id,
+                            location_id: this.state.location_id,
+                            Batch_Items: this.state.Batch_Items,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div> : null}
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
@@ -59,25 +262,25 @@ class POReturnItemList extends Component {
                                 minWidth: 150,
                               },
                             },
-                            {
-                              fieldName: "category_desc",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Item Category" }}
-                                />
-                              ),
-                              others: {
-                                minWidth: 250,
-                              },
-                            },
-                            {
-                              fieldName: "group_description",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Item Group" }}
-                                />
-                              ),
-                            },
+                            // {
+                            //   fieldName: "category_desc",
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Item Category" }}
+                            //     />
+                            //   ),
+                            //   others: {
+                            //     minWidth: 250,
+                            //   },
+                            // },
+                            // {
+                            //   fieldName: "group_description",
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Item Group" }}
+                            //     />
+                            //   ),
+                            // },
 
                             {
                               fieldName: "dn_quantity",
@@ -170,20 +373,11 @@ class POReturnItemList extends Component {
                                           row
                                         ),
                                       },
-                                      // others: {
-                                      //   disabled: this.state.authorizeEnable,
-                                      //   min: 0,
-                                      //   algaeh_required: "true",
-                                      //   errormessage:
-                                      //     "Please enter Authorized Quantity ..",
-                                      //   checkvalidation:
-                                      //     "value ==='' || value ==='0'"
-                                      // }
                                     }}
                                   />
                                 ) : (
-                                  parseFloat(row.return_qty)
-                                );
+                                    parseFloat(row.return_qty)
+                                  );
                               },
                             },
                             {
@@ -309,7 +503,7 @@ class POReturnItemList extends Component {
                           }}
                           isEditable={
                             this.state.purchase_return_number !== null &&
-                            this.state.purchase_return_number !== ""
+                              this.state.purchase_return_number !== ""
                               ? false
                               : true
                           }
@@ -324,72 +518,15 @@ class POReturnItemList extends Component {
                               this,
                               context
                             ),
-                            onEdit: (row) => {},
-                            onDone: (row) => {},
+                            onEdit: (row) => { },
+                            onDone: (row) => { },
                           }}
                         />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-12">
-                  <div className="row" style={{ textAlign: "right" }}>
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Receipt Net Payable",
-                        }}
-                      />
-                      <h6>
-                        {GetAmountFormart(this.state.receipt_net_payable)}
-                      </h6>
-                    </div>
 
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Return Sub Total",
-                        }}
-                      />
-                      <h6>{GetAmountFormart(this.state.sub_total)}</h6>
-                    </div>
-
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Discount Amount",
-                        }}
-                      />
-                      <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
-                    </div>
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Return Net Total",
-                        }}
-                      />
-                      <h6>{GetAmountFormart(this.state.net_total)}</h6>
-                    </div>
-
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Tax Amount",
-                        }}
-                      />
-                      <h6>{GetAmountFormart(this.state.tax_amount)}</h6>
-                    </div>
-
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Return Total",
-                        }}
-                      />
-                      <h6>{GetAmountFormart(this.state.return_total)}</h6>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           )}

@@ -33,12 +33,14 @@ import {
   AlgaehSecurityComponent,
   RawSecurityComponent,
 } from "algaeh-react-components";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class PurchaseReturnEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
       decimal_places: null,
+      selectBatch: false
     };
     getVendorMaster(this, this);
 
@@ -220,8 +222,38 @@ class PurchaseReturnEntry extends Component {
                     },
                   }}
                 />
+
+                <div className="col-2">
+                  <label>Return Type</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="R"
+                        name="return_type"
+                        checked={this.state.return_type === "R" ? true : false}
+                        onChange={texthandle.bind(this, this)}
+                        disabled={this.state.dataExists}
+                      />
+                      <span>Receipt</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="D"
+                        name="return_type"
+                        checked={this.state.return_type === "D" ? true : false}
+                        onChange={texthandle.bind(this, this)}
+                        disabled={this.state.dataExists}
+                      />
+                      <span>Direct</span>
+                    </label>
+                  </div>
+                </div>
+
+
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-3" }}
                   label={{ forceLabel: "Location Code" }}
                   selector={{
                     name:
@@ -256,7 +288,7 @@ class PurchaseReturnEntry extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-3" }}
                   label={{ forceLabel: "Vendor Name" }}
                   selector={{
                     name: "vendor_id",
@@ -278,27 +310,8 @@ class PurchaseReturnEntry extends Component {
                     },
                   }}
                 />
-
-                <div className={"col-2 globalSearchCntr" + class_finder}>
-                  <AlgaehLabel label={{ forceLabel: "Search Receipt No." }} />
-                  <h6 onClick={ReceiptSearch.bind(this, this)}>
-                    {this.state.grn_number
-                      ? this.state.grn_number
-                      : "Receipt No."}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
-
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Invoice Number" }} />
-                  <h6>
-                    {this.state.inovice_number
-                      ? this.state.inovice_number
-                      : "------"}
-                  </h6>
-                </div>
                 <AlagehFormGroup
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Return Reference No..",
                     isImp: true,
@@ -316,6 +329,31 @@ class PurchaseReturnEntry extends Component {
                     },
                   }}
                 />
+                {this.state.return_type === "R" ?
+                  <div className="col-6">
+                    <div className="row">
+                      <div className={"col-6 globalSearchCntr" + class_finder}>
+                        <AlgaehLabel label={{ forceLabel: "Search Receipt No." }} />
+                        <h6 onClick={ReceiptSearch.bind(this, this)}>
+                          {this.state.grn_number
+                            ? this.state.grn_number
+                            : "Receipt No."}
+                          <i className="fas fa-search fa-lg"></i>
+                        </h6>
+                      </div>
+
+                      <div className="col-6">
+                        <AlgaehLabel label={{ forceLabel: "Invoice Number" }} />
+                        <h6>
+                          {this.state.inovice_number
+                            ? this.state.inovice_number
+                            : "------"}
+                        </h6>
+                      </div>
+                    </div>
+                  </div> : null}
+
+
 
                 {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}
@@ -396,6 +434,128 @@ class PurchaseReturnEntry extends Component {
             <POReturnItemList POReturnEntry={this.state} />
           </MyContext.Provider>
         </div>
+
+        <div className="row">
+          <div className="col-lg-12">
+            <div style={{ marginBottom: 73, textAlign: "right" }}>
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Receipt Net Payable",
+                    }}
+                  />
+                  <h6>
+                    {GetAmountFormart(this.state.receipt_net_payable)}
+                  </h6>
+                </div>
+
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Return Sub Total",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.sub_total)}</h6>
+                </div>
+
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Discount Amount",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Return Net Total",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.net_total)}</h6>
+                </div>
+
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Tax Amount",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.tax_amount)}</h6>
+                </div>
+
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Return Total",
+                    }}
+                  />
+                  <h6>{GetAmountFormart(this.state.return_total)}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="col-lg-12">
+          <div className="row" style={{ textAlign: "right" }}>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Receipt Net Payable",
+                }}
+              />
+              <h6>
+                {GetAmountFormart(this.state.receipt_net_payable)}
+              </h6>
+            </div>
+
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Return Sub Total",
+                }}
+              />
+              <h6>{GetAmountFormart(this.state.sub_total)}</h6>
+            </div>
+
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Discount Amount",
+                }}
+              />
+              <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Return Net Total",
+                }}
+              />
+              <h6>{GetAmountFormart(this.state.net_total)}</h6>
+            </div>
+
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Tax Amount",
+                }}
+              />
+              <h6>{GetAmountFormart(this.state.tax_amount)}</h6>
+            </div>
+
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Return Total",
+                }}
+              />
+              <h6>{GetAmountFormart(this.state.return_total)}</h6>
+            </div>
+          </div>
+        </div> */}
 
         <div className="hptl-phase1-footer">
           <div className="row">

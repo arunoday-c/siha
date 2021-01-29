@@ -15,12 +15,15 @@ export default {
              hims_m_item_uom ITU,hims_d_pharmacy_uom PU where ITU.record_status='A' and \
              ITU.uom_id = PU.hims_d_pharmacy_uom_id and \
              ITU.item_master_id=? ;\
-             SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, \
-             expirydt,barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, item_type, \
-             grn_id, grnno, sale_price, mrp_price, sales_uom,PU.uom_description, git_qty \
-             from hims_m_item_location IL,hims_d_pharmacy_uom PU, hims_d_item_master IM where\
-             IL.sales_uom = PU.hims_d_pharmacy_uom_id and IL.item_id = IM.hims_d_item_master_id and \
-             IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
+             SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, vendor_batchno,  \
+             expirydt,barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, item_type, IM.stocking_uom_id,\
+             grn_id, grnno, sale_price, mrp_price, sales_uom,PU.uom_description, git_qty, item_description, \
+             SPU.uom_description as stk_uom_description \
+             from hims_m_item_location IL \
+             inner join hims_d_pharmacy_uom PU on IL.sales_uom = PU.hims_d_pharmacy_uom_id \
+             inner join hims_d_item_master IM on IL.item_id = IM.hims_d_item_master_id  \
+             inner join hims_d_pharmacy_uom SPU on IM.stocking_uom_id = PU.hims_d_pharmacy_uom_id \
+             where IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
              and (date(expirydt) > date(CURDATE())|| exp_date_required='N') order by date(expirydt);",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true,

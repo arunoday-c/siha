@@ -7,7 +7,7 @@ export default {
       receipt_header_id: null,
       purchase_return_number: null,
       grn_number: null,
-
+      inovice_number: null,
       return_date: new Date(),
       po_return_from: null,
       pharmcy_location_id: null,
@@ -38,6 +38,8 @@ export default {
       saveEnable: true,
       dataExitst: false,
       ReqData: true,
+      return_type: "R",
+      Batch_Items: []
     };
     return output;
   }
