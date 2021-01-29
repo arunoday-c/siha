@@ -5,6 +5,7 @@ export default function Pharmacy({
   EXPIRY_STATUS,
   moment,
   spotlightSearch,
+  FORMAT_YESNO,
 }) {
   return {
     name: "Pharmacy",
@@ -1297,6 +1298,32 @@ export default function Pharmacy({
               minDate: null,
             },
           },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "posted_status",
+            initialLoad: true,
+            isImp: false,
+            label: "Posted",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_YESNO,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "return_status",
+            initialLoad: true,
+            isImp: false,
+            label: "Return",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_YESNO,
+            },
+          },
           // {
           //   className: "col-3 form-group mandatory",
           //   type: "dropdown",
@@ -1597,11 +1624,11 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "From Location ",
             link: {
               uri: "/pharmacy/getPharmacyLocation",

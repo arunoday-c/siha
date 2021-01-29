@@ -21,13 +21,26 @@ const executePDF = function executePDFMethod(options) {
       // utilities.logger().log("input: ", input);
 
       let strQuery = "";
+      if (input.return_status == "Y") {
+        strQuery += ` and REH.return_done='Y'`;
+      } else if (input.return_status == "N") {
+        strQuery += ` and REH.return_done='N'`;
+      }
+
+      if (input.posted_status == "Y") {
+        strQuery += ` and REH.posted='Y'`;
+      } else if (input.posted_status == "N") {
+        strQuery += ` and REH.posted='N'`;
+      }
 
       options.mysql
         .executeQuery({
           query: `
           SELECT REH.hims_f_procurement_grn_header_id,REH.vendor_id,REH.grn_number,REH.grn_date,POH.purchase_number,
           VN.vendor_name, DN.delivery_note_number, DN.dn_date,REH.sub_total,REH.detail_discount,REH.net_total,REH.total_tax,
-          REH.net_payable,EM.full_name as created_user,REH.created_by,REH.inovice_number,REH.invoice_date
+          REH.net_payable,EM.full_name as created_user,REH.created_by,REH.inovice_number,REH.invoice_date,
+          case when REH.return_done='Y' then 'Yes' else 'No' end as return_done,
+          case when REH.posted='Y' then 'Yes' else 'No' end as is_posted
           FROM hims_f_procurement_grn_header REH
           inner join  hims_f_procurement_grn_detail RED on RED.grn_header_id = REH.hims_f_procurement_grn_header_id
           inner join hims_f_procurement_po_header POH on POH.hims_f_procurement_po_header_id = REH.po_id and POH.po_from = 'PHR'
@@ -35,7 +48,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_procurement_dn_header DN on DN.hims_f_procurement_dn_header_id=RED.dn_header_id
           inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id = REH.created_by
           inner join hims_d_employee EM on EM.hims_d_employee_id=USR.employee_id
-          where REH.return_done='N' and REH.posted='Y' and date(REH.grn_date)  between date(?) and date(?) and REH.hospital_id=? ${strQuery}; `,
+          where date(REH.grn_date)  between date(?) and date(?) and REH.hospital_id=? ${strQuery}; `,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,
         })
@@ -55,6 +68,8 @@ const executePDF = function executePDFMethod(options) {
                   inovice_number: m[0].inovice_number,
                   invoice_date: m[0].invoice_date,
                   created_user: m[0].created_user,
+                  return_done: m[0].return_done,
+                  is_posted: m[0].is_posted,
                   net_total: m[0].net_total,
                   poitems: m,
                 };
@@ -71,7 +86,7 @@ const executePDF = function executePDFMethod(options) {
           } else {
             resolve({
               result: result,
-              total_net_total,
+              total_net_total: 0,
               decimalOnly: {
                 decimal_places,
                 addSymbol: false,

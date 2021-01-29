@@ -4,6 +4,7 @@ export default function Inventory({
   EXPIRY_STATUS,
   moment,
   spotlightSearch,
+  FORMAT_YESNO,
 }) {
   return {
     name: "Inventory",
@@ -773,6 +774,32 @@ export default function Inventory({
             others: {
               maxDate: new Date(),
               minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "posted_status",
+            initialLoad: true,
+            isImp: false,
+            label: "Posted",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_YESNO,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "return_status",
+            initialLoad: true,
+            isImp: false,
+            label: "Return",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_YESNO,
             },
           },
           // {

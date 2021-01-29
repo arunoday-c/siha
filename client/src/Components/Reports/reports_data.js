@@ -91,6 +91,7 @@ export default function loadActiveReports(
             EXPIRY_STATUS,
             moment,
             spotlightSearch,
+            FORMAT_YESNO,
           });
           break;
         case "patient":
@@ -126,6 +127,7 @@ export default function loadActiveReports(
             EXPIRY_STATUS,
             moment,
             spotlightSearch,
+            FORMAT_YESNO,
           });
           break;
         case "project":
