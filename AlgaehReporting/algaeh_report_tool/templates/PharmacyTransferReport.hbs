@@ -17,43 +17,48 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                    <tr>
-                    <tr>
+                   <tr>
                         <th>Sl No.</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
                         <th>UOM</th>
-                        <th>Transferred Quantity</th>
-                        {{!-- <th>Unit Price</th>
-                        <th>Total Cost</th> --}}
-                        <th>To Location</th>
-                    </tr>
+                        <th>Transferred Qty</th>
+                        <th>Unit Price</th>
+                        <th>Total Cost</th>
+                        {{!-- <th>From Location</th>
+                        <th>To Location</th> --}}
                     </tr>
                 </thead>
                 <tbody>
                     {{#hasElement result}}
 
                     {{#each result}}
-                    <tr>
-                        <td colspan="8" class="tableSubHdg">Transfer No.: {{transfer_number}} | Transfer Date.:
-                            {{transfer_date}}
+                     <tr>
+                        <td colspan="4" class="tableSubHdg">{{transfer_number}} - {{transfer_date}}
                         </td>
+                        <td  colspan="3" class="tableSubHdg numberFld">{{from_location}} > {{to_location}}</td>
                     </tr>
                     {{#each transfer_items}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{item_code}}</th>
-                        <td>{{item_description}}</th>
+                        <td class="txtFld">{{item_description}}</th>
                         <td>{{uom_description}}</td>
-                        <td>{{quantity_transferred}}</td>
-                        {{!-- <td>{{unit_cost}}</td>
-                        <td>{{net_extended_cost}}</td> --}}
-                        <td>{{location_description}}</td>
+                        <td class="numberFld">{{quantity_transfer}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td>
+                        {{!-- <td class="">{{from_location}}</td>
+                        <td class="">{{to_location}}</td> --}}
                     </tr>
-                    {{/each }}{{/each }}
+                    {{/each }}
+                         <tr class="tableSubHdg2">
+                        <td colspan="6"></td>
+                        <td class="numberFld"><b>{{sum_total_net_extended_cost}}</b></td>
+                    </tr>
+                    {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 
