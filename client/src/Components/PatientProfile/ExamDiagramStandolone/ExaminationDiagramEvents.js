@@ -1,12 +1,20 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  getCookie,
+  swalMessage,
+} from "../../../utils/algaehApiCall";
 import _ from "lodash";
+// import { newAlgaehApi } from "../../../hooks";
 export default function examination() {
   return {
-    getMaster: (that, props) => {
+    getMaster: (that, props, hims_d_sub_department_id) => {
       return new Promise((resolve, reject) => {
         algaehApiCall({
-          uri: "/examinationDiagram/getMaster",
+          uri: "/diagram/getSavedSubSpecialityDiagram",
           method: "GET",
+          data: {
+            sub_department_id: hims_d_sub_department_id,
+          },
           onSuccess: (response) => {
             console.log("response", response);
             if (response.data.success) {
@@ -16,6 +24,66 @@ export default function examination() {
             }
           },
         });
+        // algaehApiCall({
+        //   uri: "/examinationDiagram/getMaster",
+        //   method: "GET",
+        //   onSuccess: (response) => {
+        //     console.log("response", response);
+        //     if (response.data.success) {
+        //       resolve(response.data.records);
+        //     } else {
+        //       reject(response);
+        //     }
+        //   },
+        // });
+      });
+    },
+    saveFileOnServer: (options) => {
+      const _pageName = getCookie("ScreenName").replace("/", "");
+      const _splitter = options.file.split(",");
+      algaehApiCall({
+        uri: "/Document/save",
+        method: "POST",
+        data: _splitter[1],
+        module: "documentManagement",
+        header: {
+          "content-type": "application/octet-stream",
+          // "content-type": "multipart/form-data",
+          "x-file-details": JSON.stringify({
+            pageName: _pageName,
+            destinationName: options.uniqueID,
+            fileType: options.fileType,
+            fileExtention: options.fileExtention,
+          }),
+        },
+        others: {
+          onUploadProgress: (progressEvent) => {
+            let percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            if (percentCompleted >= 100) {
+              if (typeof options.afterSave === "function") options.afterSave();
+            } else {
+              if (typeof options.showProcess === "function")
+                options.showProcess();
+            }
+          },
+        },
+        onSuccess: (result) => {
+          if (result.data.success) {
+            if (options.showSuccessMessage === undefined) {
+              swalMessage({
+                croppingDone: false,
+                title: "File Uploaded Successfully",
+                type: "success",
+              });
+            } else {
+              if (typeof options.showSuccessMessage === "function") {
+                options.showSuccessMessage(result);
+              }
+            }
+          }
+        },
       });
     },
     getExistingHeader: (that, props) => {

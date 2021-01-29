@@ -25,26 +25,61 @@ let addDiagram = (req, res, next) => {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
-          ]
+            new Date(),
+          ],
           // printQuery: true
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         invalidInput: true,
-        message: "provide valid input"
+        message: "provide valid input",
       };
       next();
     }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let addDiagramFromMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_d_speciality_wise_diagrams` (image_desc,sub_department_id,unique_id,created_by,created_date,update_by,update_date)\
+                VALUE(?,?,?,?,?,?,?)",
+        values: [
+          input.image_desc,
+          input.sub_department_id,
+          input.unique_id,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+        ],
+        // printQuery: true
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -60,15 +95,38 @@ let getDiagrams = (req, res, next) => {
         query:
           "select diagram_id,image_desc,image_link,\
             D.hims_d_employee_speciality_id,speciality_name from hims_d_speciality_wise_diagrams D\
-            inner join hims_d_employee_speciality S on D.hims_d_employee_speciality_id=S.hims_d_employee_speciality_id"
+            inner join hims_d_employee_speciality S on D.hims_d_employee_speciality_id=S.hims_d_employee_speciality_id",
         // printQuery: true
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let getSavedSubSpecialityDiagram = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query: `select * from hims_d_speciality_wise_diagrams where sub_department_id =?`,
+        values: [req.query.sub_department_id],
+        // printQuery: true
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -96,23 +154,23 @@ let updateDiagram = (req, res, next) => {
             input.hims_d_employee_speciality_id,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            input.diagram_id
-          ]
+            input.diagram_id,
+          ],
           // printQuery: true
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         invalidInput: true,
-        message: "provide valid input"
+        message: "provide valid input",
       };
       next();
     }
@@ -131,22 +189,22 @@ let deleteDiagram = (req, res, next) => {
         .executeQuery({
           query:
             "delete from hims_d_speciality_wise_diagrams where diagram_id=?",
-          values: [input.diagram_id]
+          values: [input.diagram_id],
           // printQuery: true
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         invalidInput: true,
-        message: "provide valid input"
+        message: "provide valid input",
       };
       next();
     }
@@ -155,4 +213,39 @@ let deleteDiagram = (req, res, next) => {
     next(e);
   }
 };
-export default { addDiagram, getDiagrams, updateDiagram, deleteDiagram };
+let deleteDiagramDetails = (req, res, next) => {
+  debugger;
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+    debugger;
+    _mysql
+      .executeQuery({
+        query: "delete from hims_d_speciality_wise_diagrams where unique_id=?",
+        values: [input.unique_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+export default {
+  addDiagram,
+  getDiagrams,
+  updateDiagram,
+  addDiagramFromMaster,
+  deleteDiagram,
+  getSavedSubSpecialityDiagram,
+  deleteDiagramDetails,
+};

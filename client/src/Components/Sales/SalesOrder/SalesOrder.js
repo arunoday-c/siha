@@ -224,33 +224,37 @@ class SalesOrder extends Component {
   };
 
   saveDocument = (files = [], number, id) => {
-    if (this.state.is_completed !== "Y") {
-      const formData = new FormData();
-      formData.append("serial_no", number || this.state.sales_order_number);
-      formData.append("invoice_id", id || this.state.hims_f_sales_order_id);
-      if (files.length) {
-        files.forEach((file, index) => {
-          formData.append(`file_${index}`, file, file.name);
-        });
+    if (files.length > 0 || this.state.invoice_files.length > 0) {
+      if (this.state.is_completed !== "Y" || this.state.is_revert === "Y") {
+        const formData = new FormData();
+        formData.append("serial_no", number || this.state.sales_order_number);
+        formData.append("invoice_id", id || this.state.hims_f_sales_order_id);
+        if (files.length) {
+          files.forEach((file, index) => {
+            formData.append(`file_${index}`, file, file.name);
+          });
+        } else {
+          this.state.invoice_files.forEach((file, index) => {
+            formData.append(`file_${index}`, file, file.name);
+          });
+        }
+        newAlgaehApi({
+          uri: "/saveInvoiceDoc",
+          data: formData,
+          extraHeaders: { "Content-Type": "multipart/form-data" },
+          method: "POST",
+          module: "documentManagement",
+        })
+          .then((value) => this.getDocuments(number))
+          .catch((e) => console.log(e));
       } else {
-        this.state.invoice_files.forEach((file, index) => {
-          formData.append(`file_${index}`, file, file.name);
+        swalMessage({
+          title: "Can't upload attachments for completed orders",
+          type: "error",
         });
       }
-      newAlgaehApi({
-        uri: "/saveInvoiceDoc",
-        data: formData,
-        extraHeaders: { "Content-Type": "multipart/form-data" },
-        method: "POST",
-        module: "documentManagement",
-      })
-        .then((value) => this.getDocuments(number))
-        .catch((e) => console.log(e));
     } else {
-      swalMessage({
-        title: "Can't upload attachments for completed orders",
-        type: "error",
-      });
+      return;
     }
   };
 

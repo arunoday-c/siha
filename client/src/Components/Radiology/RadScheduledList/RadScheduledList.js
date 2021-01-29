@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import ModalMedicalRecord from "../../DoctorsWorkbench/ModalForMedicalRecordPat";
 import RadResultEntry from "../RadResultEntry/RadResultEntry";
+import { setGlobal } from "../../../utils/GlobalFunctions";
 
 import "./RadScheduledList.scss";
 import "./../../../styles/site.scss";
@@ -58,6 +59,7 @@ class RadScheduledList extends Component {
       attached_docs: [],
       hims_f_rad_order_id: null,
       visit_id: null,
+      openMrdModal: false,
     };
   }
 
@@ -223,6 +225,11 @@ class RadScheduledList extends Component {
   CloseCollectionModel(e) {
     this.setState({
       isOpen: !this.state.isOpen,
+    });
+  }
+  onClose(e) {
+    this.setState({
+      openMrdModal: !this.state.openMrdModal,
     });
   }
 
@@ -554,6 +561,30 @@ class RadScheduledList extends Component {
                                   }}
                                 />
                               </span>
+                              <i
+                                // style={{
+                                //   pointerEvents:
+                                //     row.status === "O"
+                                //       ? ""
+                                //       : row.sample_status === "N"
+                                //       ? "none"
+                                //       : "",
+                                // }}
+                                className="fas fa-info"
+                                aria-hidden="true"
+                                onClick={(e) => {
+                                  setGlobal({
+                                    mrd_patient: row.patient_id,
+                                    patient_code: row.patient_code,
+                                  });
+                                  this.setState({
+                                    openMrdModal: true,
+                                    visit_id: row.visit_id,
+                                    patient_id: row.patient_id,
+                                    patient_code: row.patient_code,
+                                  });
+                                }}
+                              />
                             </>
                           );
                         },
@@ -744,6 +775,16 @@ class RadScheduledList extends Component {
               </div>
             </div>
           </div>
+
+          {this.state.patient_id ? (
+            <ModalMedicalRecord
+              visit_id={this.state.visit_id}
+              patient_id={this.state.patient_id}
+              patient_code={this.state.patient_code}
+              openMrdModal={this.state.openMrdModal}
+              onClose={(e) => this.onClose(e)}
+            />
+          ) : null}
           <RadResultEntry
             open={this.state.resultEntry}
             onClose={closeResultEntry.bind(this, this)}

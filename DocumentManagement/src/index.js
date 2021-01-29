@@ -7,6 +7,9 @@ import router from "./routes";
 import translation from "./routes/translation";
 import utils from "./Utils/logging";
 import busboy from "connect-busboy";
+import mime from "mime-types";
+import path from "path";
+// import { authentication } from "algaeh-utilities/authentication";
 const { logger } = utils;
 const app = exxpress();
 const portNumber = process.env.PORT; //keys.port;
@@ -31,6 +34,21 @@ if (process.env.ENABLE_I18N) {
   console.log(pathUI);
   app.use(exxpress.static(pathUI));
 }
+// console.log("CWD", process.cwd());
+app.use(
+  "/UPLOAD",
+  (req, res, next) => {
+    const isType = mime.contentType(path.extname(req.originalUrl));
+
+    console.log("UPLOAD======", isType);
+    if (isType.includes("image")) {
+      next();
+    } else {
+      res.write("No access to content");
+    }
+  },
+  exxpress.static(`${process.cwd()}/UPLOAD`)
+);
 
 process.env.MYSQL_KEYS = JSON.stringify(keys.default);
 //api routeres v1
