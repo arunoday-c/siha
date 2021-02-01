@@ -579,7 +579,7 @@ const getCtrlCode = ($this, docNumber) => {
           debugger
           if (queryParams.get("purchase_number")) {
             data.po_closed = true;
-            if (data.receipt_generated === "Y" || data.is_completed === "Y") {
+            if ((data.receipt_generated === "Y" || data.is_completed === "Y") && data.is_revert === "N") {
               data.purchase_auth = false;
             } else {
               data.purchase_auth = true;
