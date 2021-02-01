@@ -29,11 +29,11 @@ function OptionsComponent({
       <div className="row">
         <div className="col margin-top-15">
           <div className="portlet portlet-bordered  transactionSettings">
-            <div className="portlet-title">
+            {/* <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Finance Settings</h3>
               </div>
-            </div>
+            </div> */}
             <div className="portlet-body">
               <div className="row">
                 <AlgaehAutoComplete
