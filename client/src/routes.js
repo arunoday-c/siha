@@ -240,6 +240,9 @@ const DayEndProcess = React.lazy(() =>
 const AppointmentSetup = React.lazy(() =>
   retry(() => import("./Components/AppointmentSetup/AppointmentSetup"))
 );
+const AdmissionSetup = React.lazy(() =>
+  retry(() => import("./Components/AdmissionSetup/AdmissionSetup"))
+);
 const EmployeeMasterIndex = React.lazy(() =>
   retry(() =>
     import(
@@ -692,6 +695,11 @@ const privateRoutes = [
     path: "/AppointmentSetup",
     isExactPath: true,
     component: <AppointmentSetup />,
+  },
+  {
+    path: "/AdmissionSetup",
+    isExactPath: true,
+    component: <AdmissionSetup />,
   },
   {
     path: "/LabSetup",

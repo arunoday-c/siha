@@ -147,7 +147,7 @@ class Formula extends Component {
       <div className="formulas">
         <div className="row inner-top-search margin-bottom-15">
           <AlagehFormGroup
-            div={{ className: "col-1 form-group mandatory" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "formula id",
               isImp: true,
@@ -162,7 +162,7 @@ class Formula extends Component {
             }}
           />
           <AlagehFormGroup
-            div={{ className: "col-1 form-group mandatory" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Formula For",
               isImp: true,
