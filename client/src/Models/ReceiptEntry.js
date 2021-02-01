@@ -59,7 +59,8 @@ export default {
       hospital_name: null,
       project_desc: null,
       revert_visible: false,
-      is_revert: "N"
+      is_revert: "N",
+      dataRevert: true
     };
     return output;
   },
