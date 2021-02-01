@@ -416,7 +416,8 @@ const RequisitionSearch = ($this, e) => {
           getRequisitionDetails(
             $this,
             row.hims_f_inventory_material_header_id,
-            $this.state.from_location_id
+            $this.state.from_location_id,
+            row["FPL.location_description"]
           );
         } else {
           swalMessage({
@@ -437,7 +438,8 @@ const RequisitionSearch = ($this, e) => {
 const getRequisitionDetails = (
   $this,
   hims_f_inventory_material_header_id,
-  from_location_id
+  from_location_id,
+  to_location_description
 ) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
@@ -461,6 +463,7 @@ const getRequisitionDetails = (
         data.to_location_id = from_location_id;
         data.from_location_type = data.to_location_type;
         data.to_location_type = from_location_type;
+        data.to_location_description = to_location_description;
 
         data.dataExitst = true;
 
