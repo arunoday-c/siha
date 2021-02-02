@@ -44,8 +44,6 @@ const getHospotalServices = ($this) => {
 };
 
 const downloadHospitalService = ($this) => {
-  debugger;
-
   algaehApiCall({
     uri: "/report",
     // uri: "/excelReport",

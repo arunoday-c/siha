@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import { MainContext } from "algaeh-react-components";
 import Enumerable from "linq";
 import "./HospitalServiceSetup.scss";
 import "../../styles/site.scss";
@@ -48,12 +48,14 @@ class HospitalServiceSetup extends Component {
       // ServiceNames: []
     };
   }
-
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
       selectedLang: prevLang,
+      hospital_id: userToken.hospital_id,
     });
 
     this.props.getServices({
@@ -139,7 +141,6 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    debugger;
     if (row.cpt_code) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
@@ -218,6 +219,7 @@ class HospitalServiceSetup extends Component {
         };
       })
       .toArray();
+
     return (
       <div className="hims_hospitalservices">
         <div
