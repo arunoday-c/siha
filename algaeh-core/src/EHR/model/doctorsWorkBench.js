@@ -2494,13 +2494,14 @@ let addReferalDoctor = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_f_patient_referral` (`patient_id`, `episode_id`,`referral_type`, `sub_department_id`, \
+          "INSERT INTO `hims_f_patient_referral` (`patient_id`, `episode_id`,`referral_type`, `visit_id`,`sub_department_id`, \
         `doctor_id` ,`hospital_name`, `reason`, `created_by` ,`created_date`,`hospital_id`,`updated_by`,`updated_date`,`external_doc_name`) \
-        VALUES (  ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?);",
+        VALUES (  ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?);",
         values: [
           inputParam.patient_id,
           inputParam.episode_id,
           inputParam.referral_type,
+          inputParam.visit_id,
           inputParam.sub_department_id,
           inputParam.doctor_id,
           inputParam.hospital_name,
@@ -2516,6 +2517,35 @@ let addReferalDoctor = (req, res, next) => {
       })
       .then((result) => {
         _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let getPatientReferralDoc = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  let input = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query: `SELECT PR.hims_f_patient_referral_id,PR.patient_id,PR.episode_id,PR.visit_id,PR.referral_type,PR.sub_department_id,PR.doctor_id,PR.hospital_name,PR.external_doc_name,PR.reason,PR.created_date,PR.hospital_id, case when PR.referral_type='E' then external_doc_name else E.full_name end as doctor_name, case when PR.referral_type='E' then 'External' else 'Internal' end as referral_type_text, SD.sub_department_name
+        FROM hims_f_patient_referral as PR
+        left join hims_d_sub_department SD on SD.hims_d_sub_department_id = PR.sub_department_id
+        left join hims_d_employee E on E.hims_d_employee_id = PR.doctor_id where  patient_id=?;`,
+        values: [input.patient_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
         req.records = result;
         next();
       })
@@ -3633,4 +3663,5 @@ export default {
   checkFollowUPofVisit,
   updateSameFollowUp,
   getAllPatientFollowUp,
+  getPatientReferralDoc,
 };

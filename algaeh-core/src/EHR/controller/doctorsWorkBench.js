@@ -77,6 +77,7 @@ const {
   checkFollowUPofVisit,
   updateSameFollowUp,
   getAllPatientFollowUp,
+  getPatientReferralDoc,
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -132,6 +133,19 @@ export default () => {
   api.get(
     "/getPhysicalExamination/get",
     getPhysicalExamination,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.get(
+    "/getPatientReferralDoc",
+    getPatientReferralDoc,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
