@@ -7,3 +7,18 @@
     border-right: 1px solid #e6e6e6;
   }
 }
+.PatientFollowups {
+  margin-top: 15px;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 30vh;
+      max-height: 30vh;
+      overflow: auto;
+    }
+    .paginationCntr {
+      .pageLeft {
+        display: none;
+      }
+    }
+  }
+}

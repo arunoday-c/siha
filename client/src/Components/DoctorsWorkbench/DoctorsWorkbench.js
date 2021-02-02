@@ -735,9 +735,9 @@ class DoctorsWorkbench extends Component {
                               </span>
                             );
                           },
-                          className: (row) => {
-                            return "greenCell";
-                          },
+                          // className: (row) => {
+                          //   return "greenCell";
+                          // },
                           others: {
                             width: 130,
                             style: { textAlign: "center" },

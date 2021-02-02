@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
-import { AlgaehDataGrid } from "algaeh-react-components";
+import { AlgaehTable, AlgaehLabel } from "algaeh-react-components";
 import {
   AlagehFormGroup,
   AlgaehDateHandler,
@@ -180,13 +180,12 @@ class FollowUp extends Component {
             )}
           </div>
         </div>
-        <div className="portlet-body">
-          <AlgaehDataGrid
-            className="PatientFollowups"
+        <div className="portlet-body PatientFollowups">
+          <AlgaehTable
             columns={[
               {
                 fieldName: "followup_type",
-                label: "FollowUP type",
+                label: <AlgaehLabel label={{ fieldName: "Type" }} />,
                 sortable: true,
                 displayTemplate: (row) => {
                   return row.followup_type === "OP"
@@ -196,38 +195,36 @@ class FollowUp extends Component {
               },
               {
                 fieldName: "reason",
-                label: "Reason",
+                label: <AlgaehLabel label={{ fieldName: "Reason" }} />,
                 sortable: true,
               },
               {
                 fieldName: "followup_date",
-                label: "Follow Up date",
+                label: <AlgaehLabel label={{ fieldName: "Date" }} />,
                 sortable: true,
               },
 
               {
                 fieldName: "employee_name",
-                label: "Doctor Name",
+                label: <AlgaehLabel label={{ fieldName: "Doctor" }} />,
                 sortable: true,
               },
               {
                 fieldName: "followup_status",
-                label: "Follow up Status ",
+                label: <AlgaehLabel label={{ fieldName: "Status" }} />,
                 sortable: true,
                 displayTemplate: (row) => {
                   return row.followup_status === "P" ? "Pending" : "Visited";
                 },
               },
             ]}
-            loading={false}
-            // isEditable="onlyDelete"
-            height="34vh"
+            // loading={false}
             data={
               this.state.patientFollowUps ? this.state.patientFollowUps : []
             }
             rowUnique="hims_f_patient_followup_id"
-            events={{}}
-            others={{}}
+            pagination={true}
+            isFilterable={true}
           />
         </div>
       </div>

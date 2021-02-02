@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 import { Upload, Modal } from "antd";
 import { newAlgaehApi } from "../../../hooks";
 
@@ -259,7 +258,7 @@ export default class SubImageMasterPopUp extends Component {
         {this.props.UploadImagesModal ? (
           <AlgaehModal
             className=""
-            title={"Upload Sub Department Images"}
+            title={"Upload Clinical Diagrams"}
             visible={this.props.UploadImagesModal}
             // onOk={() =>
             // {this.uploadImages.bind(this)}
@@ -272,6 +271,7 @@ export default class SubImageMasterPopUp extends Component {
             footer={[
               <div>
                 <button
+                  className="btn btn-primary btn-sm"
                   onClick={() => {
                     this.uploadImages(
                       this.state.sub_img_files,
@@ -290,137 +290,138 @@ export default class SubImageMasterPopUp extends Component {
             }}
             className={`row algaehNewModal JVModalDetail`}
           >
-            <div className="row">
-              <div className="col-12">
-                <Dragger
-                  accept=".jpg,.png"
-                  name="contract_file"
-                  data={(file) => {
-                    this.setState({
-                      fileName: file.name,
-                      fileToEdit: file,
-                    });
-                  }}
-                  onRemove={(file) => {
-                    this.setState((state) => {
-                      return {
-                        sub_img_files: [],
-                      };
-                    });
-                  }}
-                  beforeUpload={(file) => {
-                    this.setState((state) => ({
-                      sub_img_files: [file],
-                      saveEnable: false,
-                      fileName: file.name,
-                      fileToEdit: file,
-                    }));
-                    return false;
-                  }}
-                  // multiple={true}
-                  fileList={this.state.sub_img_files}
-                  onPreview={(file) => {
-                    const urlBlob = URL.createObjectURL(file);
-                    window.open(urlBlob);
-                  }}
-                >
-                  <p className="upload-drag-icon">
-                    <i className="fas fa-file-upload"></i>
-                  </p>
-                  <p className="ant-upload-text">
-                    {this.state.contract_file
-                      ? `Click or Drag a file to replace the current file`
-                      : `Click or Drag a file to this area to upload`}
-                  </p>
-                </Dragger>
-              </div>{" "}
-              <div className="col-6">
-                <div className="row">
-                  <div className="col-12">
-                    <ul className="patientAttachmentList">
-                      {this.state.diagramsDataBase.length ? (
-                        this.state.diagramsDataBase.map((doc) => (
-                          <li>
-                            <img
-                              src={`${window.location.protocol}//${
-                                window.location.hostname
-                              }${
-                                window.location.port === ""
-                                  ? "/docserver"
-                                  : `:3006`
-                              }/UPLOAD/${
-                                this.props.currentRow.hims_d_sub_department_id
-                              }/thumbnail/${doc.unique_id}`}
-                            />
-                            <b>
-                              {" "}
-                              {doc.unique_id.split("__ALGAEH__").length === 0
-                                ? doc.unique_id
-                                : doc.unique_id.split("__ALGAEH__")[1]}{" "}
-                            </b>
-                            <span>
-                              <a
-                                href={`${window.location.protocol}//${
-                                  window.location.hostname
-                                }${
-                                  window.location.port === ""
-                                    ? "/docserver"
-                                    : `:3006`
-                                }/UPLOAD/${
-                                  this.props.currentRow.hims_d_sub_department_id
-                                }/${doc.unique_id}`}
-                                target="_blank"
-                              >
-                                <i className="fas fa-eye"></i>
-                              </a>
-
-                              <i
-                                className="fas fa-trash"
-                                onClick={() => {
-                                  const docSplit = doc.unique_id.split(
-                                    "__ALGAEH__"
-                                  );
-                                  const fileName =
-                                    docSplit.length === 0
-                                      ? docSplit.unique_id
-                                      : docSplit[1];
-                                  const uniqueID = docSplit[0];
-                                  this.deleteDoc({
-                                    fileName,
-                                    unique_id: uniqueID,
-                                  });
-                                }}
-                              ></i>
-                              <p>{doc.image_desc}</p>
-                            </span>
-                          </li>
-                        ))
-                      ) : (
-                        <div className="col-12 noAttachment" key={1}>
-                          <p>No Attachments Available</p>
-                        </div>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              </div>
+            <div className="col-12" style={{ padding: 15 }}>
               <div className="row">
-                <div className="col-lg-12">
-                  <div className="row margin-top-15">
-                    {this.state.sub_img_files.length > 0 ? (
-                      <div className="col-12">
-                        <AlgaehLabel
-                          label={{ forceLabel: "Image Description" }}
-                        />
-                        <textarea
-                          value={this.state.image_desc}
-                          name="image_desc"
-                          onChange={(e) => this.textHandle(e)}
-                        />
-                      </div>
-                    ) : null}
+                <div className="col-3">
+                  <Dragger
+                    accept=".jpg,.png"
+                    name="contract_file"
+                    data={(file) => {
+                      this.setState({
+                        fileName: file.name,
+                        fileToEdit: file,
+                      });
+                    }}
+                    onRemove={(file) => {
+                      this.setState((state) => {
+                        return {
+                          sub_img_files: [],
+                        };
+                      });
+                    }}
+                    beforeUpload={(file) => {
+                      this.setState((state) => ({
+                        sub_img_files: [file],
+                        saveEnable: false,
+                        fileName: file.name,
+                        fileToEdit: file,
+                      }));
+                      return false;
+                    }}
+                    // multiple={true}
+                    fileList={this.state.sub_img_files}
+                    onPreview={(file) => {
+                      const urlBlob = URL.createObjectURL(file);
+                      window.open(urlBlob);
+                    }}
+                  >
+                    <p className="upload-drag-icon">
+                      <i className="fas fa-file-upload"></i>
+                    </p>
+                    <p className="ant-upload-text">
+                      {this.state.contract_file
+                        ? `Click or Drag a file to replace the current file`
+                        : `Click or Drag a file to this area to upload`}
+                    </p>
+                  </Dragger>
+                </div>{" "}
+                <div className="col-9">
+                  <div className="row">
+                    <div className="col-12">
+                      <ul className="departmentDiagramList">
+                        {this.state.diagramsDataBase.length ? (
+                          this.state.diagramsDataBase.map((doc) => (
+                            <li>
+                              <span className="imgPreview">
+                                <img
+                                  src={`${window.location.protocol}//${
+                                    window.location.hostname
+                                  }${
+                                    window.location.port === ""
+                                      ? "/docserver"
+                                      : `:3006`
+                                  }/UPLOAD/${
+                                    this.props.currentRow
+                                      .hims_d_sub_department_id
+                                  }/thumbnail/${doc.unique_id}`}
+                                />
+                              </span>
+                              <span className="textActionSec">
+                                <p>{doc.image_desc}</p>
+                                <small>
+                                  {" "}
+                                  {doc.unique_id.split("__ALGAEH__").length ===
+                                  0
+                                    ? doc.unique_id
+                                    : doc.unique_id.split("__ALGAEH__")[1]}{" "}
+                                </small>
+                                <p className="diagramActions">
+                                  <a
+                                    href={`${window.location.protocol}//${
+                                      window.location.hostname
+                                    }${
+                                      window.location.port === ""
+                                        ? "/docserver"
+                                        : `:3006`
+                                    }/UPLOAD/${
+                                      this.props.currentRow
+                                        .hims_d_sub_department_id
+                                    }/${doc.unique_id}`}
+                                    target="_blank"
+                                  >
+                                    <i className="fas fa-eye"></i>
+                                  </a>
+
+                                  <i
+                                    className="fas fa-trash"
+                                    onClick={() => {
+                                      const docSplit = doc.unique_id.split(
+                                        "__ALGAEH__"
+                                      );
+                                      const fileName =
+                                        docSplit.length === 0
+                                          ? docSplit.unique_id
+                                          : docSplit[1];
+                                      const uniqueID = docSplit[0];
+                                      this.deleteDoc({
+                                        fileName,
+                                        unique_id: uniqueID,
+                                      });
+                                    }}
+                                  ></i>
+                                </p>
+                              </span>
+                            </li>
+                          ))
+                        ) : (
+                          <div className="col-12 noAttachment" key={1}>
+                            <p>No Attachments Available</p>
+                          </div>
+                        )}
+                      </ul>
+                    </div>
                   </div>
                 </div>
+                {this.state.sub_img_files.length > 0 ? (
+                  <div className="col-12">
+                    <AlgaehLabel label={{ forceLabel: "Image Description" }} />
+                    <textarea
+                      value={this.state.image_desc}
+                      name="image_desc"
+                      onChange={(e) => this.textHandle(e)}
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           </AlgaehModal>
