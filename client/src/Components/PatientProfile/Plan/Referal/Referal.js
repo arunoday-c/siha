@@ -6,6 +6,7 @@ import "../../../../styles/site.scss";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
 import { texthandle, addReferal, radioChange } from "./ReferalEvents";
+import { AlgaehTable, AlgaehLabel } from "algaeh-react-components";
 
 class Referal extends PureComponent {
   constructor(props) {
@@ -38,8 +39,8 @@ class Referal extends PureComponent {
   render() {
     return (
       <div className="hptl-referal-doctor-form" data-validate="referalValidate">
-        <div className="col-lg-12">
-          <div className="row">
+        <div className="row">
+          <div className="col-12">
             <div className="customRadio">
               <label className="radio inline">
                 <input
@@ -63,11 +64,9 @@ class Referal extends PureComponent {
               </label>
             </div>
           </div>
-        </div>
-        <div className="row" style={{ paddingBottom: "10px" }}>
           {this.state.radio ? (
             <AlgaehAutoSearch
-              div={{ className: "col-lg-10 form-group mandatory" }}
+              div={{ className: "col-6 mandatory" }}
               label={{ forceLabel: "Physician / Department", isImp: true }}
               title="Search by physician / department"
               name="doctor_department"
@@ -118,7 +117,7 @@ class Referal extends PureComponent {
             />
           ) : (
             <AlagehFormGroup
-              div={{ className: "col-lg-10 form-group mandatory" }}
+              div={{ className: "col-6 mandatory" }}
               label={{
                 forceLabel: "Physician Details",
                 isImp: true,
@@ -134,20 +133,8 @@ class Referal extends PureComponent {
             />
           )}
 
-          <div className="actions" style={{ paddingTop: "3.5vh" }}>
-            <button
-              // href="javascript"
-              className="btn btn-primary btn-circle active"
-              onClick={addReferal.bind(this, this)}
-            >
-              <i className="fas fa-plus" />
-            </button>
-          </div>
-        </div>
-
-        <div className="row">
           <AlagehFormGroup
-            div={{ className: "col form-group mandatory" }}
+            div={{ className: "col-6 mandatory" }}
             label={{
               forceLabel: "Hospital Name",
               isImp: true,
@@ -164,8 +151,11 @@ class Referal extends PureComponent {
               },
             }}
           />
+        </div>
+
+        <div className="row">
           <AlagehFormGroup
-            div={{ className: "col form-group mandatory" }}
+            div={{ className: "col-9 mandatory" }}
             label={{
               forceLabel: "Reason",
               isImp: true,
@@ -178,6 +168,51 @@ class Referal extends PureComponent {
                 onChange: texthandle.bind(this, this),
               },
             }}
+          />{" "}
+          <div className="col" style={{ paddingTop: 21 }}>
+            <button
+              // href="javascript"
+              className="btn btn-primary btn-sm"
+              onClick={addReferal.bind(this, this)}
+            >
+              Add to List
+            </button>
+          </div>
+        </div>
+        <div className="portlet-body ReferalTable">
+          <AlgaehTable
+            columns={[
+              {
+                fieldName: "referral_type",
+                label: <AlgaehLabel label={{ fieldName: "Reason" }} />,
+                sortable: true,
+              },
+              {
+                fieldName: "external_doc_name",
+                label: <AlgaehLabel label={{ fieldName: "Doctor Name" }} />,
+                sortable: true,
+              },
+              {
+                fieldName: "hospital_name",
+                label: <AlgaehLabel label={{ fieldName: "Hospital Name" }} />,
+                sortable: true,
+              },
+              {
+                fieldName: "reason",
+                label: <AlgaehLabel label={{ fieldName: "Reason" }} />,
+                sortable: true,
+              },
+              {
+                fieldName: "created_date",
+                label: <AlgaehLabel label={{ fieldName: "Referred Date" }} />,
+                sortable: true,
+              },
+            ]}
+            // loading={false}
+            data=""
+            rowUnique=""
+            pagination={true}
+            isFilterable={true}
           />
         </div>
       </div>
