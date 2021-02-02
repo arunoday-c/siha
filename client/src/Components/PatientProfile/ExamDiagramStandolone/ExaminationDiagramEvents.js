@@ -39,51 +39,58 @@ export default function examination() {
       });
     },
     saveFileOnServer: (options) => {
-      const _pageName = getCookie("ScreenName").replace("/", "");
-      const _splitter = options.file.split(",");
-      algaehApiCall({
-        uri: "/Document/save",
-        method: "POST",
-        data: _splitter[1],
-        module: "documentManagement",
-        header: {
-          "content-type": "application/octet-stream",
-          // "content-type": "multipart/form-data",
-          "x-file-details": JSON.stringify({
-            pageName: _pageName,
-            destinationName: options.uniqueID,
-            fileType: options.fileType,
-            fileExtention: options.fileExtention,
-          }),
-        },
-        others: {
-          onUploadProgress: (progressEvent) => {
-            let percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            if (percentCompleted >= 100) {
-              if (typeof options.afterSave === "function") options.afterSave();
-            } else {
-              if (typeof options.showProcess === "function")
-                options.showProcess();
-            }
+      return new Promise((resolve, reject) => {
+        const _pageName = getCookie("ScreenName").replace("/", "");
+        const _splitter = options.file.split(",");
+        algaehApiCall({
+          uri: "/Document/save",
+          method: "POST",
+          data: _splitter[1],
+          module: "documentManagement",
+          header: {
+            "content-type": "application/octet-stream",
+            // "content-type": "multipart/form-data",
+            "x-file-details": JSON.stringify({
+              pageName: _pageName,
+              destinationName: options.uniqueID,
+              fileType: options.fileType,
+              fileExtention: options.fileExtention,
+            }),
           },
-        },
-        onSuccess: (result) => {
-          if (result.data.success) {
-            if (options.showSuccessMessage === undefined) {
-              swalMessage({
-                croppingDone: false,
-                title: "File Uploaded Successfully",
-                type: "success",
-              });
-            } else {
-              if (typeof options.showSuccessMessage === "function") {
-                options.showSuccessMessage(result);
+          others: {
+            onUploadProgress: (progressEvent) => {
+              let percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              if (percentCompleted >= 100) {
+                if (typeof options.afterSave === "function")
+                  options.afterSave();
+              } else {
+                if (typeof options.showProcess === "function")
+                  options.showProcess();
+              }
+            },
+          },
+          onSuccess: (result) => {
+            if (result.data.success) {
+              if (options.showSuccessMessage === undefined) {
+                swalMessage({
+                  croppingDone: false,
+                  title: "File Uploaded Successfully",
+                  type: "success",
+                });
+              } else {
+                if (typeof options.showSuccessMessage === "function") {
+                  options.showSuccessMessage(result);
+                }
               }
             }
-          }
-        },
+            resolve();
+          },
+          onCatch: (error) => {
+            reject(error);
+          },
+        });
       });
     },
     getExistingHeader: (that, props) => {
@@ -94,6 +101,7 @@ export default function examination() {
           data: { patient_id: Window.global["current_patient"] },
           onSuccess: (response) => {
             if (response.data.success) {
+              console.log("response.data.records", response.data.records);
               resolve(response.data.records);
             } else {
               reject(response);
