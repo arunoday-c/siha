@@ -337,7 +337,7 @@ export default class BranchMaster extends Component {
                         return {
                           ...sub,
                           checked: isChecked === undefined ? false : true,
-                          hims_m_branch_dept_map_id: hasDepartment.hims_m_branch_dept_map_id
+                          hims_m_branch_dept_map_id: isChecked === undefined ? undefined : isChecked.hims_m_branch_dept_map_id
                         };
                       });
 
@@ -481,7 +481,7 @@ export default class BranchMaster extends Component {
     const filterData = allDepartments.find(
       (f) => f.hims_d_department_id === data.hims_d_department_id
     );
-    const mainStateIndex = allDepartments.indexOf[filterData];
+    const mainStateIndex = allDepartments.indexOf(filterData);
     sub.checked = _status;
     const subData = data.subDepts.find(
       (f) => f.hims_d_sub_department_id === sub.hims_d_sub_department_id
@@ -579,7 +579,7 @@ export default class BranchMaster extends Component {
   }
 
   assignDepartments() {
-    //To build delete inputs
+    //To build delete inputs    
     let inputObj = {};
     const remove_sub = [];
     const add_new_sub = [];
@@ -1053,7 +1053,6 @@ export default class BranchMaster extends Component {
                       {departments.map((data, index) => {
                         return (
                           <li key={data.hims_d_department_id}>
-                            {" "}
                             <Checkbox
                               className="depCheck"
                               indeterminate={data.indeterminate}
