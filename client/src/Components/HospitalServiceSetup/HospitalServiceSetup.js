@@ -8,12 +8,13 @@ import "./HospitalServiceSetup.scss";
 import "../../styles/site.scss";
 import {
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlagehAutoComplete,
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import HospitalServices from "./HospitalServices/HospitalServices";
 
+import { AlgaehDataGrid } from "algaeh-react-components";
 import moment from "moment";
 import Options from "../../Options.json";
 
@@ -23,7 +24,11 @@ import {
   swalMessage,
 } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
-import { texthandle, getHospotalServices } from "./HospitalServiceSetupEvents";
+import {
+  texthandle,
+  getHospotalServices,
+  downloadHospitalService,
+} from "./HospitalServiceSetupEvents";
 
 //TODO
 //Algaeh Validations
@@ -38,7 +43,7 @@ class HospitalServiceSetup extends Component {
       sub_department_id: null,
       hospital_id: null,
       service_type_id: null,
-
+      accound_id_assigned: false,
       service_name: null,
       // ServiceNames: []
     };
@@ -134,7 +139,7 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    debugger
+    debugger;
     if (row.cpt_code) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
@@ -362,9 +367,10 @@ class HospitalServiceSetup extends Component {
                         );
                       },
                       others: {
-                        maxWidth: 55,
-                        filterable: false,
+                        Width: 50,
+                        style: { textAlign: "center" },
                       },
+                      filterable: false,
                     },
                     {
                       fieldName: "service_code",
@@ -372,14 +378,20 @@ class HospitalServiceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "service_code" }} />
                       ),
                       others: {
-                        maxWidth: 200,
+                        Width: 150,
+                        style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "service_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_name" }} />
                       ),
+                      others: {
+                        style: { textAlign: "left" },
+                      },
+                      filterable: true,
                     },
                     {
                       fieldName: "service_type_id",
@@ -391,10 +403,10 @@ class HospitalServiceSetup extends Component {
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
-                              (f) =>
-                                f.hims_d_service_type_id ===
-                                row.service_type_id
-                            );
+                                (f) =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                         return (
                           <span>
@@ -407,17 +419,22 @@ class HospitalServiceSetup extends Component {
                         );
                       },
                       others: {
-                        maxWidth: 150,
+                        Width: 150,
+                        style: { textAlign: "center" },
                       },
-                    },
-                    {
-                      fieldName: "standard_fee",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "standard_fee" }} />
-                      ),
-                      others: {
-                        maxWidth: 150,
-                      },
+                      filterable: true,
+                      filterType: "choices",
+                      choices:
+                        this.props.servicetype === undefined
+                          ? []
+                          : this.props?.servicetype?.map(
+                              ({ hims_d_service_type_id, service_type }) => {
+                                return {
+                                  name: service_type,
+                                  value: hims_d_service_type_id,
+                                };
+                              }
+                            ),
                     },
                     {
                       fieldName: "vat_applicable",
@@ -428,8 +445,10 @@ class HospitalServiceSetup extends Component {
                         return row.vat_applicable === "Y" ? "Yes" : "No";
                       },
                       others: {
-                        maxWidth: 150,
+                        Width: 130,
+                        style: { textAlign: "center" },
                       },
+                      filterable: true,
                     },
                     {
                       fieldName: "vat_percent",
@@ -437,20 +456,65 @@ class HospitalServiceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "vat_percent" }} />
                       ),
                       others: {
-                        maxWidth: 150,
+                        Width: 110,
+                        style: { textAlign: "right" },
                       },
+                      filterable: true,
+                    },
+                    {
+                      fieldName: "standard_fee",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "standard_fee" }} />
+                      ),
+                      others: {
+                        Width: 120,
+                        style: { textAlign: "right" },
+                      },
+                      filterable: true,
                     },
                   ]}
                   keyId="service_code"
-                  dataSource={{
-                    data:
-                      this.props.hospitalservices === undefined
-                        ? []
-                        : this.props.hospitalservices,
-                  }}
-                  filter={true}
-                  paging={{ page: 0, rowsPerPage: 20 }}
+                  data={
+                    this.props.hospitalservices === undefined
+                      ? []
+                      : this.props.hospitalservices
+                  }
+                  isFilterable={true}
+                  pagination={true}
+                  isFilterable={true}
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-4">
+              <button
+                className="btn btn-default"
+                onClick={downloadHospitalService.bind(this, this)}
+              >
+                Print
+              </button>
+            </div>{" "}
+            <div className="col">
+              {/* <label>Show Non Account Linked Service</label> */}
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    value="Y"
+                    name=""
+                    checked={this.state.accound_id_assigned ? true : false}
+                    onChange={() => {
+                      this.setState({
+                        accound_id_assigned: !this.state.accound_id_assigned,
+                      });
+                    }}
+                  />
+                  <span>Yes</span>
+                </label>
               </div>
             </div>
           </div>
