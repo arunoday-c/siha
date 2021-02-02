@@ -146,7 +146,7 @@ export default function ({ checkChronicExists, updateChronic }) {
           ) : (
             <tbody>
               <tr>
-                <td colspan="4">No Chronic Conditions Found</td>
+                <td colspan="5">No Chronic Conditions Found</td>
               </tr>
             </tbody>
           )}
