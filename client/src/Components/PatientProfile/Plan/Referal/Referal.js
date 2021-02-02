@@ -7,7 +7,10 @@ import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
 import { texthandle, addReferal, radioChange } from "./ReferalEvents";
 import { AlgaehTable, AlgaehLabel } from "algaeh-react-components";
-
+import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import Options from "../../../../Options.json";
+import moment from "moment";
 class Referal extends PureComponent {
   constructor(props) {
     super(props);
@@ -20,7 +23,11 @@ class Referal extends PureComponent {
       reason: "",
       radio: true,
       external_doc_name: "",
+      referralData: [],
     };
+  }
+  componentDidMount() {
+    this.getPatientReferralDoc();
   }
   doctorDepartmentChangeHandler(item) {
     this.setState({
@@ -34,6 +41,34 @@ class Referal extends PureComponent {
     this.setState({
       sub_department_id: undefined,
       doctor_id: undefined,
+    });
+  }
+  dateFormater(value) {
+    if (value !== null) {
+      return moment(value).format(Options.dateFormat);
+    }
+  }
+  getPatientReferralDoc() {
+    const { current_patient } = Window.global;
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientReferralDoc",
+      data: { patient_id: current_patient },
+      method: "GET",
+      onSuccess: (response) => {
+        if (response.data.success) {
+          this.setState({
+            referralData: response.data.records,
+          });
+          return;
+        }
+      },
+      onFailure: (error) => {
+        successfulMessage({
+          message: error.message,
+          title: "Error",
+          icon: "error",
+        });
+      },
     });
   }
   render() {
@@ -92,16 +127,16 @@ class Referal extends PureComponent {
                       {_.startCase(_.toLower(row.sex))}
                     </small>
                     <small>
-                      <strong> ,Hospital :</strong>{" "}
+                      <strong> ,BRANCH :</strong>{" "}
                       {_.startCase(_.toLower(row.hospital_name))}{" "}
                     </small>
-                    <span
+                    {/* <span
                       className={
                         row.hosital_status === "Active" ? "green_A" : "red_I"
                       }
                     >
                       {row.hosital_status}
-                    </span>
+                    </span> */}
                   </div>
                 );
               }}
@@ -183,12 +218,30 @@ class Referal extends PureComponent {
           <AlgaehTable
             columns={[
               {
-                fieldName: "referral_type",
-                label: <AlgaehLabel label={{ fieldName: "Reason" }} />,
+                fieldName: "actions",
+                label: <AlgaehLabel label={{ fieldName: "Action" }} />,
+
+                sortable: true,
+                displayTemplate: (row) => {
+                  return (
+                    <button
+                      className="btn btn-default btn-circle active"
+                      onClick={() => {
+                        // this.printReferral(row);
+                      }}
+                    >
+                      <i className="fas fa-print" />
+                    </button>
+                  );
+                },
+              },
+              {
+                fieldName: "referral_type_text",
+                label: <AlgaehLabel label={{ fieldName: "Referral Type" }} />,
                 sortable: true,
               },
               {
-                fieldName: "external_doc_name",
+                fieldName: "doctor_name",
                 label: <AlgaehLabel label={{ fieldName: "Doctor Name" }} />,
                 sortable: true,
               },
@@ -205,11 +258,14 @@ class Referal extends PureComponent {
               {
                 fieldName: "created_date",
                 label: <AlgaehLabel label={{ fieldName: "Referred Date" }} />,
+                displayTemplate: (row) => {
+                  return <span>{this.dateFormater(row.created_date)}</span>;
+                },
                 sortable: true,
               },
             ]}
             // loading={false}
-            data=""
+            data={this.state.referralData}
             rowUnique=""
             pagination={true}
             isFilterable={true}

@@ -19,7 +19,7 @@ const addReferal = ($this) => {
     querySelector: "data-validate='referalValidate'",
     alertTypeIcon: "warning",
     onSuccess: () => {
-      const { current_patient, episode_id } = Window.global;
+      const { current_patient, episode_id, visit_id } = Window.global;
       if (
         $this.state.referral_type === "I" &&
         $this.state.doctor_id === undefined
@@ -39,6 +39,7 @@ const addReferal = ($this) => {
           hospital_name: $this.state.hospital_name,
           reason: $this.state.reason,
           external_doc_name: $this.state.external_doc_name,
+          visit_id: visit_id,
         };
         algaehApiCall({
           uri: "/doctorsWorkBench/addReferalDoctor",
@@ -53,14 +54,19 @@ const addReferal = ($this) => {
               });
             }
 
-            $this.setState({
-              doctor_id: undefined,
-              sub_department_id: undefined,
-              hospital_name: "",
-              reason: "",
-              external_doc_name: "",
-              doctor_department: "",
-            });
+            $this.setState(
+              {
+                doctor_id: undefined,
+                sub_department_id: undefined,
+                hospital_name: "",
+                reason: "",
+                external_doc_name: "",
+                doctor_department: "",
+              },
+              () => {
+                $this.getPatientReferralDoc();
+              }
+            );
           },
           onFailure: (error) => {
             successfulMessage({
