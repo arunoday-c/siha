@@ -68,7 +68,8 @@ export default {
       fromReq: false,
       stock_enable: false,
       ackTran: true,
-      ack_tran: false
+      ack_tran: false,
+      to_location_description: null
     };
     return output;
   }

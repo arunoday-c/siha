@@ -67,7 +67,7 @@ export default function FinanceFragment(props) {
     return <ReqComp hello="this is from hims" />;
   }
   if (err) {
-    return <div>Error occured</div>;
+    return <div>Error occurred in loading finance</div>;
   }
 
   return null;

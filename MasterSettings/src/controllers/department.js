@@ -37,11 +37,11 @@ export default () => {
 
   api.post(
     "/addDepartment",
+    addDepartment,
     (req, res, next) => {
       deleteCacheMaster("departments");
       next();
     },
-    addDepartment,
     (req, res, next) => {
       let result = req.records;
       res
@@ -74,11 +74,11 @@ export default () => {
   });
   api.put(
     "/updateDepartment",
+    updateDepartment,
     (req, res, next) => {
       deleteCacheMaster("departments");
       next();
     },
-    updateDepartment,
     (req, res, next) => {
       let result = req.records;
       res
@@ -378,11 +378,11 @@ export default () => {
   );
   api.put(
     "/makeDepartmentInActive",
+    makeDepartmentInActive,
     (req, res, next) => {
       deleteCacheMaster("departments");
       next();
     },
-    makeDepartmentInActive,
     (req, res, next) => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
