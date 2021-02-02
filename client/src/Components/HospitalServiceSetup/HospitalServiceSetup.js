@@ -24,11 +24,7 @@ import {
   swalMessage,
 } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
-import {
-  texthandle,
-  getHospotalServices,
-  downloadHospitalService,
-} from "./HospitalServiceSetupEvents";
+import { texthandle, getHospotalServices } from "./HospitalServiceSetupEvents";
 
 //TODO
 //Algaeh Validations
@@ -43,7 +39,6 @@ class HospitalServiceSetup extends Component {
       sub_department_id: null,
       hospital_id: null,
       service_type_id: null,
-      accound_id_assigned: false,
       service_name: null,
       // ServiceNames: []
     };
@@ -485,38 +480,6 @@ class HospitalServiceSetup extends Component {
                   pagination={true}
                   isFilterable={true}
                 />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-4">
-              <button
-                className="btn btn-default"
-                onClick={downloadHospitalService.bind(this, this)}
-              >
-                Print
-              </button>
-            </div>{" "}
-            <div className="col">
-              {/* <label>Show Non Account Linked Service</label> */}
-              <div className="customCheckbox">
-                <label className="checkbox inline">
-                  <input
-                    type="checkbox"
-                    value="Y"
-                    name=""
-                    checked={this.state.accound_id_assigned ? true : false}
-                    onChange={() => {
-                      this.setState({
-                        accound_id_assigned: !this.state.accound_id_assigned,
-                      });
-                    }}
-                  />
-                  <span>Yes</span>
-                </label>
               </div>
             </div>
           </div>
