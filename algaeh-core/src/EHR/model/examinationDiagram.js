@@ -12,9 +12,9 @@ const examinationDiagramMasterGetter = (req, res, next) => {
          hims_d_employee_speciality ES on SWD.hims_d_employee_speciality_id = ES.hims_d_employee_speciality_id \
          where ES.sub_department_id=? or SWD.hims_d_employee_speciality_id is null \
           and SWD.record_status='A' and ES.speciality_status='A' or ES.speciality_status is null",
-        values: [req.userIdentity.sub_department_id]
+        values: [req.userIdentity.sub_department_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -43,11 +43,11 @@ const saveExaminationDiagrams = (req, res, next) => {
           _req.sub_department_id,
           input.header_datetime,
           req.userIdentity.hospital_id,
-          new Date()
+          new Date(),
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         const _hims_f_examination_diagram_header_id =
           input.hims_f_examination_diagram_header_id != null
             ? input.hims_f_examination_diagram_header_id
@@ -73,10 +73,10 @@ const saveExaminationDiagrams = (req, res, next) => {
               _req.algaeh_d_app_user_id,
               new Date(),
               _req.algaeh_d_app_user_id,
-              new Date()
-            ]
+              new Date(),
+            ],
           })
-          .then(data => {
+          .then((data) => {
             _mysql.commitTransaction((error, resu) => {
               if (error) {
                 _mysql.rollBackTransaction();
@@ -85,18 +85,18 @@ const saveExaminationDiagrams = (req, res, next) => {
                 _mysql.releaseConnection();
                 req.records = {
                   hims_f_examination_diagram_header_id: _hims_f_examination_diagram_header_id,
-                  ...data
+                  ...data,
                 };
                 next();
               }
             });
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction();
             next(error);
           });
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.rollBackTransaction();
         next(error);
       });
@@ -116,14 +116,15 @@ const existingHeaderDiagramsGetter = (req, res, next) => {
           "SELECT hims_f_examination_diagram_header_id,diagram_desc,diagram_id,patient_id,header_datetime,\
       provider_id,hims_d_sub_department_id,last_update from hims_f_examination_diagram_header \
       where record_status='A' and provider_id=? and hims_d_sub_department_id=? and patient_id=?",
-        values: [_req.employee_id, _req.sub_department_id, _getPatientId]
+        values: [_req.employee_id, _req.sub_department_id, _getPatientId],
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -144,9 +145,10 @@ const existingDetailDiagramGetter = (req, res, next) => {
           concat(diagram_id,'_',patient_id,'_',provider_id,'_',H.hims_f_examination_diagram_header_id,'_',examination_diagrams_id) as image  from hims_f_examination_diagram_header H,hims_f_examination_diagrams_detail D \
           where H.hims_f_examination_diagram_header_id = D.hims_f_examination_diagram_header_id and record_status='A' \
           and H.hims_f_examination_diagram_header_id = ?",
-        values: [req.query.hims_f_examination_diagram_header_id]
+        values: [req.query.hims_f_examination_diagram_header_id],
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -164,9 +166,9 @@ const deleteExaminationDiagramDetailDelete = (req, res, next) => {
       .executeQuery({
         query:
           "delete from hims_f_examination_diagrams_detail where examination_diagrams_id =?",
-        values: [req.body.examination_diagrams_id]
+        values: [req.body.examination_diagrams_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -181,5 +183,5 @@ export default {
   saveExaminationDiagrams,
   existingHeaderDiagramsGetter,
   existingDetailDiagramGetter,
-  deleteExaminationDiagramDetailDelete
+  deleteExaminationDiagramDetailDelete,
 };

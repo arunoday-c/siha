@@ -1,15 +1,15 @@
 import React, { Component } from "react";
-
+import SaveExaminationDiagramPop from "./SaveExaminationDiagramPop";
 import {
   AlagehAutoComplete,
-  AlagehFormGroup,
+  // AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
 import "./ExamDiagramStandolone.scss";
 import AlgaehCanvas from "../../Wrapper/algaehCanvas";
 import examination from "./ExaminationDiagramEvents";
 import {
   AlgaehValidation,
-  saveFileOnServer,
+  // saveFileOnServer,
 } from "../../../utils/GlobalFunctions";
 // import addNew from "../../../assets/images/add-new-diagram.jpg";
 import { swalMessage } from "../../../utils/algaehApiCall";
@@ -108,9 +108,7 @@ export default class ExaminationDiagram extends Component {
                     window.location.hostname
                   }${
                     window.location.port === "" ? "/docserver" : `:3006`
-                  }/UPLOAD/${item.sub_department_id}/thumbnail/${
-                    item.unique_id
-                  }`}
+                  }/UPLOAD/${item.sub_department_id}/${item.unique_id}`}
                 />
                 {/* <b>
               {item.unique_id.split("__ALGAEH__").length === 0
@@ -192,6 +190,7 @@ export default class ExaminationDiagram extends Component {
               name={"attach_" + _unique}
               accept="image/*"
               showActions={false}
+              forceRefreshed={true}
               noImage="noDiagram"
               serviceParameters={{
                 uniqueID: _unique,
@@ -304,13 +303,33 @@ export default class ExaminationDiagram extends Component {
     });
   }
   onChangeSaveAsHandler(e) {
-    this.setState({
-      saveAsChecked: e.currentTarget.value,
-    });
+    if (e.target.value === "new") {
+      this.setState({
+        saveAsChecked: e.currentTarget.value,
+        // diagram_desc: "",
+        // diagram_id: null,
+        // hims_f_examination_diagram_header_id: null,
+      });
+    } else {
+      this.setState({
+        saveAsChecked: e.currentTarget.value,
+      });
+    }
   }
   onChangeTextBoxHandler(e) {
     this.setState({
       [e.currentTarget.name]: e.currentTarget.value,
+    });
+  }
+  clearExisting() {
+    this.setState({
+      exittingDetails: [],
+      showUpload: false,
+      showCam: false,
+      showSave: false,
+      diagram_desc: undefined,
+      diagram_id: undefined,
+      hims_f_examination_diagram_header_id: undefined,
     });
   }
   onChangeExistingDiagramHandler(item) {
@@ -397,28 +416,15 @@ export default class ExaminationDiagram extends Component {
     AlgaehValidation({
       querySelector: "id='savePopUP'",
       alertTypeIcon: "warning",
-      onSuccess: () => {
+      onSuccess: async () => {
         if (that.state.remarks !== "") {
-          examination()
-            .saveDiagramHandler(that.state, that.props)
-            .then((result) => {
-              if (that.state.saveAsChecked === "new") {
-                saveFileOnServer({
-                  file: that.refs.imageSaver.editor.getInstance().toDataURL(),
-                  uniqueID:
-                    that.state.diagram_id +
-                    "_" +
-                    Window.global["current_patient"] +
-                    "_" +
-                    Window.global["provider_id"] +
-                    "_" +
-                    result.hims_f_examination_diagram_header_id,
-                  fileType: "DepartmentImages",
-                  fileExtention: "webp",
-                  showSuccessMessage: false,
-                });
-              }
-              examination().saveFileOnServer({
+          const resultOfHeader = await examination().saveDiagramHandler(
+            that.state,
+            that.props
+          );
+          if (that.state.saveAsChecked === "new") {
+            await examination()
+              .saveFileOnServer({
                 file: that.refs.imageSaver.editor.getInstance().toDataURL(),
                 uniqueID:
                   that.state.diagram_id +
@@ -427,66 +433,178 @@ export default class ExaminationDiagram extends Component {
                   "_" +
                   Window.global["provider_id"] +
                   "_" +
-                  result.hims_f_examination_diagram_header_id +
+                  resultOfHeader.hims_f_examination_diagram_header_id +
                   "_" +
-                  result.insertId,
+                  resultOfHeader.insertId,
                 fileType: "DepartmentImages",
                 fileExtention: "webp",
-                showSuccessMessage: () => {
-                  //Fetching Existing diagram dropdownlist
-                  examination()
-                    .getExistingHeader(that.state, that.props)
-                    .then((result) => {
-                      let resultData = [];
-                      for (let i = 0; i < result.length; i++) {
-                        resultData.push(
-                          that.templateForExistingDiagramHeader(result[i])
-                        );
-                      }
-                      Promise.all(resultData).then((data) => {
-                        that.setState({ existingDiagram: data });
-                      });
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                    });
-                },
+                showSuccessMessage: false,
+              })
+              .catch((error) => {
+                throw error;
               });
-              swalMessage({
-                title: "Success",
-                type: "success",
-              });
-
-              //Fetching Existing diagram dropdownlist
-              examination()
-                .getExistingDetail(
-                  this.state.hims_f_examination_diagram_header_id
-                )
-                .then((result) => {
-                  this.setState({
-                    exittingDetails: result,
-                    showUpload: true,
-                    showCam: true,
-                    showSave: true,
-                    showSavePopup: false,
-                    remarks: undefined,
-                    diagram_desc: undefined,
-                  });
-                })
-                .catch((error) => {
-                  console.error(error);
-                });
-            })
-            .catch((error) => {
-              const errorI = error.request;
-              swalMessage({
-                title:
-                  errorI !== undefined
-                    ? error.responseText
-                    : JSON.stringify(errorI),
-                type: "error",
-              });
+          } else {
+            await examination().saveFileOnServer({
+              file: that.refs.imageSaver.editor.getInstance().toDataURL(),
+              uniqueID:
+                that.state.diagram_id +
+                "_" +
+                Window.global["current_patient"] +
+                "_" +
+                Window.global["provider_id"] +
+                "_" +
+                resultOfHeader.hims_f_examination_diagram_header_id +
+                "_" +
+                resultOfHeader.insertId,
+              fileType: "DepartmentImages",
+              fileExtention: "webp",
             });
+          }
+
+          const resultOfExisting = await examination().getExistingHeader(
+            that.state,
+            that.props
+          );
+          let resultData = [];
+          for (let i = 0; i < resultOfExisting.length; i++) {
+            resultData.push(
+              that.templateForExistingDiagramHeader(resultOfExisting[i])
+            );
+          }
+
+          //
+          const allResult = await examination().getExistingDetail(
+            resultOfHeader.hims_f_examination_diagram_header_id
+          );
+          Promise.all(allResult).then((data) => {
+            that.setState({
+              exittingDetails: data,
+              showUpload: true,
+              showCam: true,
+              showSave: true,
+              showSavePopup: false,
+              remarks: undefined,
+              diagram_desc: undefined,
+            });
+          });
+
+          // .then((result) => {
+          // if (that.state.saveAsChecked === "new") {
+          //   examination().saveFileOnServer({
+          //     file: that.refs.imageSaver.editor.getInstance().toDataURL(),
+          //     uniqueID:
+          //       that.state.diagram_id +
+          //       "_" +
+          //       Window.global["current_patient"] +
+          //       "_" +
+          //       Window.global["provider_id"] +
+          //       "_" +
+          //       result.hims_f_examination_diagram_header_id,
+          //     fileType: "DepartmentImages",
+          //     fileExtention: "webp",
+          //     showSuccessMessage: false,
+          //   });
+          // }
+          // examination().saveFileOnServer({
+          //   file: that.refs.imageSaver.editor.getInstance().toDataURL(),
+          //   uniqueID:
+          //     that.state.diagram_id +
+          //     "_" +
+          //     Window.global["current_patient"] +
+          //     "_" +
+          //     Window.global["provider_id"] +
+          //     "_" +
+          //     result.hims_f_examination_diagram_header_id +
+          //     "_" +
+          //     result.insertId,
+          //   fileType: "DepartmentImages",
+          //   fileExtention: "webp",
+          // showSuccessMessage: () => {
+
+          //Fetching Existing diagram dropdownlist
+          // examination()
+          //   .getExistingHeader(that.state, that.props)
+          // .then((resultOfExisting) => {
+
+          // let resultData = [];
+          // for (let i = 0; i < resultOfExisting.length; i++) {
+          //   resultData.push(
+          //     that.templateForExistingDiagramHeader(
+          //       resultOfExisting[i]
+          //     )
+          //   );
+          // }
+          //
+          // examination()
+          //   .getExistingDetail(
+          //     result.hims_f_examination_diagram_header_id
+          //   )
+          //   .then((result) => {
+          //
+          //     Promise.all(result).then((data) => {
+          //
+          //       that.setState({ existingDiagram: data });
+          //     });
+          //   })
+          //   .catch((error) => {
+          //     console.error(error);
+          //   });
+          // // })
+          // .catch((error) => {
+          //   console.error(error);
+          // });
+          // },
+          // });
+
+          swalMessage({
+            title: "Success",
+            type: "success",
+          });
+          //
+          //   //Fetching Existing diagram dropdownlist
+          //   examination()
+          //     .getExistingHeader(that.state, that.props)
+          //     .then((resultOf) => {
+          //
+          //       let resultData = [];
+          //       for (let i = 0; i < resultOf.length; i++) {
+          //         resultData.push(
+          //           that.templateForExistingDiagramHeader(resultOf[i])
+          //         );
+          //       }
+          //       examination()
+          //         .getExistingDetail(
+          //           result.hims_f_examination_diagram_header_id
+          //         )
+          //         .then((result) => {
+          //           that.setState({
+          //             exittingDetails: result,
+          //             showUpload: true,
+          //             showCam: true,
+          //             showSave: true,
+          //             showSavePopup: false,
+          //             remarks: undefined,
+          //             diagram_desc: undefined,
+          //           });
+          //         })
+          //         .catch((error) => {
+          //           console.error(error);
+          //         });
+          //     })
+          //     .catch((error) => {
+          //       console.error(error);
+          //     });
+          // })
+          // .catch((error) => {
+          //   const errorI = error.request;
+          //   swalMessage({
+          //     title:
+          //       errorI !== undefined
+          //         ? error.responseText
+          //         : JSON.stringify(errorI),
+          //     type: "error",
+          //   });
+          // });
         } else {
           swalMessage({
             title: "Remarks can't blank",
@@ -703,111 +821,25 @@ export default class ExaminationDiagram extends Component {
     return (
       <div className="row">
         {this.state.showSavePopup ? (
-          <div id="savePopUP" className="saveWrapper">
-            <div className="col saveWindow">
-              <div className="row saveHeader">
-                <div className="col">
-                  <h5>Save</h5>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-6 form-group">
-                  <label>Save As</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="new"
-                        name="diagramSaveAs"
-                        checked={
-                          this.state.saveAsChecked === "new" ? true : false
-                        }
-                        onChange={this.onChangeSaveAsHandler.bind(this)}
-                      />
-                      <span>New</span>
-                    </label>
-
-                    <label className="radio inline" style={{ marginRight: 5 }}>
-                      <input
-                        type="radio"
-                        onChange={this.onChangeSaveAsHandler.bind(this)}
-                        value="existing"
-                        name="diagramSaveAs"
-                        {..._disable}
-                        checked={
-                          this.state.saveAsChecked === "existing" ? true : false
-                        }
-                      />
-                      <span>Existing</span>
-                    </label>
-                  </div>
-                </div>
-                {this.state.saveAsChecked === "new" ? (
-                  <AlagehFormGroup
-                    div={{ className: "col-6 form-group" }}
-                    label={{
-                      forceLabel: "Enter Treatment Name",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "diagram_desc",
-                      value: this.state.diagram_desc,
-                      events: {
-                        onChange: this.onChangeTextBoxHandler.bind(this),
-                      },
-                    }}
-                  />
-                ) : (
-                  <AlagehAutoComplete
-                    div={{ className: "col-6 form-group" }}
-                    label={{
-                      forceLabel: "Select Existing Treatment",
-                      isImp: true,
-                    }}
-                    selector={{
-                      name: "hims_f_examination_diagram_header_id",
-                      className: "select-fld",
-                      dataSource: {
-                        data: this.state.existingDiagram,
-                        textField: "diagram_desc",
-                        valueField: "hims_f_examination_diagram_header_id",
-                      },
-                      value: this.state.hims_f_examination_diagram_header_id,
-                      onChange: this.onChangeExistingDiagramHandler.bind(this),
-                    }}
-                  />
-                )}
-
-                <div className="col form-group">
-                  <label>Enter Remarks</label>
-                  <textarea
-                    className="textAreaRemarks"
-                    name="remarks"
-                    value={this.state.remarks}
-                    onChange={this.onChangeTextBoxHandler.bind(this)}
-                  />
-                </div>
-              </div>
-
-              <div className="row saveFooter">
-                <div className="col">
-                  <button
-                    className="btn btn-primary"
-                    onClick={this.onChangeSaveDiagram.bind(this)}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="btn btn-default"
-                    onClick={this.closeSavePopUp.bind(this)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SaveExaminationDiagramPop
+            state={this.state}
+            _disable={_disable}
+            onChangeSaveAsHandler={(e) => {
+              this.onChangeSaveAsHandler(e);
+            }}
+            onChangeTextBoxHandler={(e) => {
+              this.onChangeTextBoxHandler(e);
+            }}
+            onChangeExistingDiagramHandler={(e) => {
+              this.onChangeExistingDiagramHandler(e);
+            }}
+            onChangeSaveDiagram={(e) => {
+              this.onChangeSaveDiagram(e);
+            }}
+            closeSavePopUp={(e) => {
+              this.closeSavePopUp(e);
+            }}
+          />
         ) : null}
         {this.state.showZoomImage ? (
           <div className="canvasImgPreviewWindowWrapper">
@@ -925,16 +957,18 @@ export default class ExaminationDiagram extends Component {
                 },
                 value: this.state.hims_f_examination_diagram_header_id,
                 onChange: this.onChangeExistingDiagramHandler.bind(this),
+                onClear: this.clearExisting.bind(this),
               }}
             />
           </div>
-          <div className="row diagramList">
+          <div className="row   ">
             {this.state.exittingDetails.map((item, index) => (
               <div className="col-12 eachDiagram" key={index}>
                 <AlgaehFile
                   name={"attach_" + index}
                   accept="image/*"
                   noImage={true}
+                  forceRefreshed={true}
                   showActions={false}
                   serviceParameters={{
                     uniqueID: item.image,
