@@ -26,9 +26,14 @@
     font-weight: normal;
   }
 }
-.JLVoucherListGrid {
-  min-height: 50vh !important;
-  max-height: 50vh !important;
+#JLVoucherListGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
+    }
+  }
 }
 .textArea {
   textarea {

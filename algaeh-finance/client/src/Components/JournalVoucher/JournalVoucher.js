@@ -13,6 +13,7 @@ import {
   AlgaehDataGrid,
   AlgaehTreeSearch,
   AlgaehMessagePop,
+  AlgaehLabel,
   // AlgaehFormGroupGrid,
   AlgaehButton,
 } from "algaeh-react-components";
@@ -123,7 +124,7 @@ export default function JournalVoucher() {
               // setcostCenterdata(center.cost_centers);
               setCostCenterField({
                 fieldName: "cost_center_id",
-                label: "Cost Center",
+                label: <AlgaehLabel label={{ forceLabel: "Cost Center" }} />,
                 displayTemplate: (row) => {
                   const valueRow =
                     options["default_branch_id"] !== undefined &&
@@ -1079,11 +1080,11 @@ export default function JournalVoucher() {
               </div>
               <div className="portlet-body" id="JLVoucherListGrid">
                 <AlgaehDataGrid
-                  className="JLVoucherListGrid"
+                  // className="JLVoucherListGrid"
                   columns={[
                     {
                       fieldName: "slno",
-                      label: "Sl No.",
+                      label: <AlgaehLabel label={{ forceLabel: "Sl No." }} />,
                       sortable: true,
                       others: {
                         width: 80,
@@ -1100,13 +1101,16 @@ export default function JournalVoucher() {
                     // },
                     {
                       fieldName: "sourceName",
-                      label: "Account",
+
+                      label: <AlgaehLabel label={{ forceLabel: "Account" }} />,
                       // align: "left",
                       displayTemplate: gridTree,
                     },
                     {
                       fieldName: "payment_type",
-                      label: "Payment Type ",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
+                      ),
                       // filtered: true,
                       displayTemplate: PaymentInput,
                       others: {
@@ -1115,7 +1119,7 @@ export default function JournalVoucher() {
                     },
                     {
                       fieldName: "amount",
-                      label: "Amount",
+                      label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                       displayTemplate: AmountInput,
                       others: {
                         width: 100,
@@ -1123,7 +1127,9 @@ export default function JournalVoucher() {
                     },
                     {
                       fieldName: "narration",
-                      label: "Narration",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                      ),
                       displayTemplate: NarrationBox,
                       others: {
                         width: 200,
@@ -1131,7 +1137,6 @@ export default function JournalVoucher() {
                     },
                   ]}
                   loading={false}
-                  height="34vh"
                   data={journerList}
                   isEditable={"deleteOnly"}
                   // isEditable={true}
