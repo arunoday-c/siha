@@ -44,8 +44,6 @@ const getHospotalServices = ($this) => {
 };
 
 const downloadHospitalService = ($this) => {
-  debugger;
-
   algaehApiCall({
     uri: "/report",
     // uri: "/excelReport",
@@ -65,10 +63,10 @@ const downloadHospitalService = ($this) => {
         // ).format("MMM")}-${$this.state.inputs.year}`,
         excelHeader: false,
         reportParams: [
-          // {
-          //   name: "hospital_id",
-          //   value: $this.state.inputs.hospital_id,
-          // },
+          {
+            name: "hospital_id",
+            value: $this.state.hospital_id,
+          },
           {
             name: "accound_id_assigned",
             value: $this.state.accound_id_assigned ? "Y" : "N",
