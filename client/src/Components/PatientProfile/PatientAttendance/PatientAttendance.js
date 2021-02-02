@@ -99,7 +99,7 @@ class PatientAttendance extends Component {
       },
       onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sick Leave`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Patient Attendence`;
         window.open(origin);
         // window.document.title = "";
       },

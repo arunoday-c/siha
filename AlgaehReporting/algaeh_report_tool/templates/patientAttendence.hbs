@@ -10,18 +10,18 @@
 
                 <tr>
                     <td><label class="textEnLft">Patient Name</label>:<span
-                            class="valueText">{{header.patient_full_name}}</span></span><label class="textArRht">
+                            class="valueText">{{patient_full_name}}</span></span><label class="textArRht">
                             الإسم</label></td>
                     <td><label class="textEnLft">Visit Date</label>:<span
-                            class="valueText">{{dateTime header.visit_date "date"}}</span>
+                            class="valueText">{{dateTime visit_date "date"}}</span>
                         <label class="textArRht"> موعد زيارة</label></td>
                 </tr>
                 <tr>
                     <td><label class="textEnLft">MR No</label>:<span
-                            class="valueText">{{header.patient_code}}</span><label class="textArRht"> رقم الملف</label>
+                            class="valueText">{{patient_code}}</span><label class="textArRht"> رقم الملف</label>
                     </td>
                     <td><label class="textEnLft">Reg. Date</label>:<span
-                            class="valueText">{{dateTime header.registration_date "date"}}</span><label
+                            class="valueText">{{dateTime registration_date "date"}}</span><label
                             class="textArRht"> تاريخ التسجيل</label></td>
                 </tr>
                 <tr>
@@ -29,10 +29,10 @@
                 </tr>
                 <tr>
                     <td><label class="textEnLft">Doctor</label>:<span
-                            class="valueText">{{header.full_name}}</span><label class="textArRht"> إسم الطبيب</label>
+                            class="valueText">{{full_name}}</span><label class="textArRht"> إسم الطبيب</label>
                     </td>
                     <td><label class="textEnLft">Department</label>:<span
-                            class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label>
+                            class="valueText">{{sub_department_name}}</span><label class="textArRht">قسم</label>
                     </td>
                 </tr>
 
@@ -46,13 +46,13 @@
 
                     <tr>
                         <td style="width: 15%"><label class="">Clinical Examination</label>:</td>
-                        <td><span class="valueTextSick">{{header.comment}}</span></td>
+                        <td><span class="valueTextSick">{{comment}}</span></td>
                         <td style="width: 15%;text-align:right"><label class="">الفحص
                                 الاكلينيكي</label></td>
                     </tr>
                     <tr>
                         <td><label class="">Diagnosis</label>:</td>
-                        <td><span class="valueTextSick">{{header.icd_description}}</span></td>
+                        <td><span class="valueTextSick">{{icd_description}}</span></td>
                         <td style="text-align:right"><label class="">التشخيص</label></td>
                     </tr>
                     <tr>
@@ -63,13 +63,13 @@
                     <tr>
                         <td><label class="">From Time</label>:
                         </td>
-                        <td><span class="valueTextSick">{{header.from_time}}</span>
+                        <td><span class="valueTextSick">{{from_time}}</span>
                         </td>
                         <td style="text-align:right"><label class="">من وقت</label></td>
                     </tr>
                     <tr>
                         <td><label class="">To Time</label>:</td>
-                        <td><span class="valueTextSick">{{header.to_time}}</span>
+                        <td><span class="valueTextSick">{{to_time}}</span>
                         </td>
                         <td style="text-align:right"><label class="">الى وقت</label></td>
                     </tr>
