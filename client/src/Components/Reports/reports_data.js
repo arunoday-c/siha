@@ -31,6 +31,7 @@ import Project from "./reportBag/projectpayroll";
 import Vat from "./reportBag/vat";
 import Clinical from "./reportBag/clinical";
 import Laboratory from "./reportBag/laboratory";
+import misReport from "./reportBag/misReport";
 import spotlightSearch from "../../Search/spotlightSearch.json";
 let allYears = getYears();
 
@@ -147,6 +148,13 @@ export default function loadActiveReports(
             allYears,
             MONTHS,
             algaehApiCall,
+          });
+          break;
+        case "misReport":
+          result = misReport({
+            hospital_id: hims_d_hospital_id,
+            algaehApiCall,
+            FORMAT_YESNO,
           });
           break;
         default:
