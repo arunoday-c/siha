@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import App from "./App";
+import AdmissionSetup from "./Components/AdmissionSetup";
 const Routing = [
   {
     path: "/",
     component: (props: any) => <App {...props} />,
   },
   {
-    path: "/testing",
-    component: (props: any) => <h1>Here in Testing Page111</h1>,
+    path: "/admissionSetup",
+    // component: (props: any) => <h1>Here in Testing Page111</h1>,
+    component: (props: any) => <AdmissionSetup {...props} />,
   },
 ];
 interface interRouter {
