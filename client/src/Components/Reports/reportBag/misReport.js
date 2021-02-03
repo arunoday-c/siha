@@ -12,8 +12,7 @@ export default function misReport({
       {
         subitem: "Hospital Service List",
         reportName: "hospitalServiceReport",
-        // reportQuery: "subDepartmentIncome",
-        // componentCode: "RPT_INC_DEPT",
+        componentCode: "RPT_MIS_SER",
         requireIframe: true,
         reportParameters: [
           {
@@ -67,8 +66,7 @@ export default function misReport({
       {
         subitem: "Branch Wise Department List",
         reportName: "branchDepartmentReport",
-        // reportQuery: "subDepartmentIncome",
-        // componentCode: "RPT_INC_DEPT",
+        componentCode: "RPT_MIS_DEP",
         requireIframe: true,
         reportParameters: [
           {
