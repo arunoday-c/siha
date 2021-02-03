@@ -5,8 +5,13 @@ import "./Referal.scss";
 import "../../../../styles/site.scss";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
-import { texthandle, addReferal, radioChange } from "./ReferalEvents";
-import { AlgaehTable, AlgaehLabel } from "algaeh-react-components";
+import {
+  texthandle,
+  addReferal,
+  radioChange,
+  printReferral,
+} from "./ReferalEvents";
+import { AlgaehLabel, AlgaehDataGrid } from "algaeh-react-components";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import Options from "../../../../Options.json";
@@ -215,53 +220,71 @@ class Referal extends PureComponent {
           </div>
         </div>
         <div className="portlet-body ReferalTable">
-          <AlgaehTable
+          <AlgaehDataGrid
             columns={[
               {
                 fieldName: "actions",
                 label: <AlgaehLabel label={{ fieldName: "Action" }} />,
-
-                sortable: true,
                 displayTemplate: (row) => {
                   return (
-                    <button
-                      className="btn btn-default btn-circle active"
-                      onClick={() => {
-                        // this.printReferral(row);
-                      }}
-                    >
-                      <i className="fas fa-print" />
-                    </button>
+                    <i
+                      className="fas fa-print"
+                      onClick={printReferral.bind(this, this, row)}
+                    ></i>
                   );
                 },
+                others: {
+                  width: 50,
+                  style: { textAlign: "center" },
+                },
+                sortable: false,
               },
               {
                 fieldName: "referral_type_text",
                 label: <AlgaehLabel label={{ fieldName: "Referral Type" }} />,
-                sortable: true,
+                others: {
+                  width: 50,
+                  style: { textAlign: "center" },
+                },
+                sortable: false,
               },
               {
                 fieldName: "doctor_name",
                 label: <AlgaehLabel label={{ fieldName: "Doctor Name" }} />,
-                sortable: true,
+                others: {
+                  Width: 150,
+                  style: { textAlign: "center" },
+                },
+                sortable: false,
               },
               {
                 fieldName: "hospital_name",
                 label: <AlgaehLabel label={{ fieldName: "Hospital Name" }} />,
-                sortable: true,
+                others: {
+                  width: 50,
+                  style: { textAlign: "center" },
+                },
+                sortable: false,
               },
               {
                 fieldName: "reason",
                 label: <AlgaehLabel label={{ fieldName: "Reason" }} />,
-                sortable: true,
+                others: {
+                  style: { textAlign: "center" },
+                },
+                sortable: false,
               },
               {
                 fieldName: "created_date",
                 label: <AlgaehLabel label={{ fieldName: "Referred Date" }} />,
+                others: {
+                  width: 50,
+                  style: { textAlign: "center" },
+                },
                 displayTemplate: (row) => {
                   return <span>{this.dateFormater(row.created_date)}</span>;
                 },
-                sortable: true,
+                sortable: false,
               },
             ]}
             // loading={false}
