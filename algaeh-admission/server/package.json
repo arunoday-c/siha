@@ -37,6 +37,8 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "fs-extra": "^9.1.0"
+    "express": "^4.17.1",
+    "fs-extra": "^9.1.0",
+    "module-alias": "^2.2.2"
   }
 }

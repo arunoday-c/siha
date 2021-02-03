@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
 import Router from "./router";
-const APP_ID = "DayCare";
+const APP_ID = "Admission";
 // @ts-ignore
 window[`mount_${APP_ID}`] = ({
   history,

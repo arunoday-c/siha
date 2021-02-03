@@ -240,9 +240,9 @@ const DayEndProcess = React.lazy(() =>
 const AppointmentSetup = React.lazy(() =>
   retry(() => import("./Components/AppointmentSetup/AppointmentSetup"))
 );
-const AdmissionSetup = React.lazy(() =>
-  retry(() => import("./Components/AdmissionSetup/AdmissionSetup"))
-);
+// const AdmissionSetup = React.lazy(() =>
+//   retry(() => import("./Components/AdmissionSetup/AdmissionSetup"))
+// );
 const EmployeeMasterIndex = React.lazy(() =>
   retry(() =>
     import(
@@ -604,8 +604,8 @@ function LoadComponent({ path, noSecurityCheck, children }) {
     </Layout>
   );
 }
-const DayCare = ({ history, pathName }) => {
-  return <MicroUI history={history} host="daycare" path={pathName} />;
+const Admission = ({ history, pathName }) => {
+  return <MicroUI history={history} host="admission" path={pathName} />;
 };
 const publicRoutes = [
   {
@@ -701,7 +701,8 @@ const privateRoutes = [
   {
     path: "/AdmissionSetup",
     isExactPath: true,
-    component: <AdmissionSetup />,
+    // component: <AdmissionSetup />
+    component: <Admission pathName="/" />,
   },
   {
     path: "/LabSetup",
@@ -1452,16 +1453,12 @@ const privateRoutes = [
     isExactPath: true,
     component: <UserPreferences />,
   },
-  {
-    path: "/daycare",
-    isExactPath: true,
-    component: <DayCare pathName="/" />,
-  },
-  {
-    path: "/daycarelink2",
-    isExactPath: true,
-    component: <DayCare pathName="/testing" />,
-  },
+  // {
+  //   path: "/daycare",
+  //   isExactPath: true,
+  //   component: <DayCare pathName="/" />,
+  // },
+
   {
     path: "*",
     component: <DefaultLandingPage />,
