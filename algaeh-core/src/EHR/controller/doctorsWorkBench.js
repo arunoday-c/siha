@@ -78,6 +78,8 @@ const {
   updateSameFollowUp,
   getAllPatientFollowUp,
   getPatientReferralDoc,
+  addICDMaster,
+  getICDMaster
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -146,6 +148,18 @@ export default () => {
   api.get(
     "/getPatientReferralDoc",
     getPatientReferralDoc,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.get(
+    "/getICDMaster", getICDMaster,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -299,6 +313,14 @@ export default () => {
   );
   // created by irfan : add Allergy
   api.post("/addAllergy", addAllergy, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.post("/addICDMaster", addICDMaster, (req, res, next) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Allergies.scss";
+// import "./Allergies.scss";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -13,40 +13,39 @@ import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
     changeTexts,
-    onchangegridcol,
-    insertAllergy,
-    updateAllergy,
-    deleteAllergy
-} from "./AllergiesEvent";
+    // onchangegridcol,
+    insertICDMaster,
+    // updateICDS,
+    // deleteICDS
+} from "./ICDMasterEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
 
-class Allergies extends Component {
+class ICDMaster extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            hims_d_allergy_id: "",
-            allergy_type: "",
-            allergy_name: null,
-            description_error: false,
-            description_error_txt: ""
+            hims_d_icd_id: null,
+            icd_code: null,
+            icd_description: null,
+            icd_type: ""
         };
         this.baseState = this.state;
     }
 
     componentDidMount() {
         if (
-            this.props.allallergies === undefined ||
-            this.props.allallergies.length === 0
+            this.props.allIcds === undefined ||
+            this.props.allIcds.length === 0
         ) {
-            this.props.getAllergyDetails({
-                uri: "/doctorsWorkBench/getAllergyDetails",
+            this.props.getICDMaster({
+                uri: "/doctorsWorkBench/getICDMaster",
                 method: "GET",
-                cancelRequestId: "getAllergyDetails",
+                cancelRequestId: "getICDMaster",
                 redux: {
-                    type: "ALL_ALLERGIES",
-                    mappingName: "allallergies"
+                    type: "ALL_ICDS",
+                    mappingName: "allIcds"
                 }
             });
         }
@@ -76,44 +75,60 @@ class Allergies extends Component {
             <div className="lab_section">
                 <div className="row inner-top-search margin-bottom-15">
 
-                    <AlagehAutoComplete
-                        div={{ className: "col-2 form-group mandatory" }}
-                        label={{
-                            forceLabel: "Allergy Type",
-                            isImp: true
-                        }}
-                        selector={{
-                            name: "allergy_type",
-                            className: "select-fld",
-                            value: this.state.allergy_type,
-                            dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.ALLERGY_TYPES
-                            },
-                            onChange: changeTexts.bind(this, this)
-                        }}
-                    />
-
                     <AlagehFormGroup
                         div={{ className: "col-3 form-group mandatory" }}
                         label={{
-                            forceLabel: "Allergy Name",
+                            forceLabel: "ICD COde",
                             isImp: true
                         }}
                         textBox={{
                             className: "txt-fld",
-                            name: "allergy_name",
-                            value: this.state.allergy_name,
+                            name: "icd_code",
+                            value: this.state.icd_code,
                             events: {
                                 onChange: changeTexts.bind(this, this)
                             }
                         }}
                     />
 
+                    <AlagehFormGroup
+                        div={{ className: "col-3 form-group mandatory" }}
+                        label={{
+                            forceLabel: "ICD Description",
+                            isImp: true
+                        }}
+                        textBox={{
+                            className: "txt-fld",
+                            name: "icd_description",
+                            value: this.state.icd_description,
+                            events: {
+                                onChange: changeTexts.bind(this, this)
+                            }
+                        }}
+                    />
+
+                    <AlagehAutoComplete
+                        div={{ className: "col-2 form-group mandatory" }}
+                        label={{
+                            forceLabel: "ICD Type",
+                            isImp: true
+                        }}
+                        selector={{
+                            name: "icd_type",
+                            className: "select-fld",
+                            value: this.state.icd_type,
+                            dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.ICD_TYPES
+                            },
+                            onChange: changeTexts.bind(this, this)
+                        }}
+                    />
+
                     <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
                         <button
-                            onClick={insertAllergy.bind(this, this)}
+                            onClick={insertICDMaster.bind(this, this)}
                             className="btn btn-primary"
                         >
                             Add to List
@@ -124,19 +139,35 @@ class Allergies extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-body">
                         <div className="row" data-validate="analyteDiv">
-                            <div className="col" id="labAnalyteGrid_Cntr">
+                            <div className="col" id="ICDMasterGrid_Cntr">
                                 <AlgaehDataGrid
                                     datavalidate="data-validate='analyteDiv'"
-                                    id="labAnalyteGrid"
+                                    id="ICDMasterGrid"
                                     columns={[
                                         {
-                                            fieldName: "allergy_type",
+                                            fieldName: "icd_code",
                                             label: (
-                                                <AlgaehLabel label={{ fieldName: "allergy_type" }} />
+                                                <AlgaehLabel
+                                                    label={{ forceLabel: "ICD Code" }}
+                                                />
+                                            )
+                                        },
+                                        {
+                                            fieldName: "icd_description",
+                                            label: (
+                                                <AlgaehLabel
+                                                    label={{ forceLabel: "ICD Description" }}
+                                                />
+                                            )
+                                        },
+                                        {
+                                            fieldName: "icd_type",
+                                            label: (
+                                                <AlgaehLabel label={{ forceLabel: "ICD Type" }} />
                                             ),
                                             displayTemplate: row => {
-                                                let display = GlobalVariables.ALLERGY_TYPES.filter(
-                                                    f => f.value === row.allergy_type
+                                                let display = GlobalVariables.ICD_TYPES.filter(
+                                                    f => f.value === row.icd_type
                                                 );
 
                                                 return (
@@ -147,54 +178,28 @@ class Allergies extends Component {
                                                     </span>
                                                 );
                                             },
-                                            editorTemplate: row => {
-                                                return (
-                                                    <AlagehAutoComplete
-                                                        div={{}}
-                                                        selector={{
-                                                            name: "allergy_type",
-                                                            className: "select-fld",
-                                                            value: row.allergy_type,
-                                                            dataSource: {
-                                                                textField: "name",
-                                                                valueField: "value",
-                                                                data: GlobalVariables.ALLERGY_TYPES
-                                                            },
-                                                            onChange: onchangegridcol.bind(this, this, row),
-                                                            others: {
-                                                                errormessage: "Analyte Type - cannot be blank",
-                                                                required: true
-                                                            }
-                                                        }}
-                                                    />
-                                                );
-                                            }
-                                        },
-                                        {
-                                            fieldName: "allergy_name",
-                                            label: (
-                                                <AlgaehLabel
-                                                    label={{ forceLabel: "Allergy Name" }}
-                                                />
-                                            ),
-                                            editorTemplate: row => {
-                                                return (
-                                                    <AlagehFormGroup
-                                                        textBox={{
-                                                            value: row.allergy_name,
-                                                            className: "txt-fld",
-                                                            name: "allergy_name",
-                                                            events: {
-                                                                onChange: onchangegridcol.bind(this, this, row)
-                                                            },
-                                                            others: {
-                                                                errormessage: "Allergy Name - cannot be blank",
-                                                                required: true
-                                                            }
-                                                        }}
-                                                    />
-                                                );
-                                            }
+                                            // editorTemplate: row => {
+                                            //     return (
+                                            //         <AlagehAutoComplete
+                                            //             div={{}}
+                                            //             selector={{
+                                            //                 name: "icd_type",
+                                            //                 className: "select-fld",
+                                            //                 value: row.icd_type,
+                                            //                 dataSource: {
+                                            //                     textField: "name",
+                                            //                     valueField: "value",
+                                            //                     data: GlobalVariables.ICD_TYPES
+                                            //                 },
+                                            //                 onChange: onchangegridcol.bind(this, this, row),
+                                            //                 others: {
+                                            //                     errormessage: "ICD Type - Cannot be blank",
+                                            //                     required: true
+                                            //                 }
+                                            //             }}
+                                            //         />
+                                            //     );
+                                            // }
                                         },
                                         {
                                             fieldName: "created_by",
@@ -255,20 +260,20 @@ class Allergies extends Component {
                                             others: { maxWidth: 100 }
                                         }
                                     ]}
-                                    keyId="hims_d_allergy_id"
+                                    keyId="hims_d_icd_id"
                                     dataSource={{
                                         data:
-                                            this.props.allallergies === undefined
+                                            this.props.allIcds === undefined
                                                 ? []
-                                                : this.props.allallergies
+                                                : this.props.allIcds
                                     }}
-                                    isEditable={true}
+                                    isEditable={false}
                                     filter={true}
                                     paging={{ page: 0, rowsPerPage: 10 }}
                                     events={{
-                                        onDelete: deleteAllergy.bind(this, this),
-                                        onEdit: row => { },
-                                        onDone: updateAllergy.bind(this, this)
+                                        // onDelete: deleteAllergy.bind(this, this),
+                                        // onEdit: row => { },
+                                        // onDone: updateAllergy.bind(this, this)
                                     }}
                                 />
                             </div>
@@ -282,7 +287,7 @@ class Allergies extends Component {
 
 function mapStateToProps(state) {
     return {
-        allallergies: state.allallergies,
+        allIcds: state.allIcds,
         userdrtails: state.userdrtails
     };
 }
@@ -290,7 +295,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(
         {
-            getAllergyDetails: AlgaehActions,
+            getICDMaster: AlgaehActions,
             getUserDetails: AlgaehActions
         },
         dispatch
@@ -298,5 +303,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(Allergies)
+    connect(mapStateToProps, mapDispatchToProps)(ICDMaster)
 );

@@ -434,6 +434,16 @@
       "value": "A"
     }
   ],
+  "ICD_TYPES": [
+    {
+      "name": "Examination",
+      "value": "E"
+    },
+    {
+      "name": "Procedure",
+      "value": "P"
+    }
+  ],
   "FORMAT_PACK_CAL_POLICY": [
     {
       "name": "Actual Amount",

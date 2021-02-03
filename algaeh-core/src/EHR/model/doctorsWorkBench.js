@@ -733,6 +733,65 @@ let deleteAllergy = (req, res, next) => {
   }
 };
 
+
+let addICDMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_icd(icd_code, icd_description, long_icd_description, \
+            icd_type, created_by, created_date, updated_by, updated_date) values(?,?,?,?,?,?,?,?)",
+        values: [
+          input.icd_code,
+          input.icd_description,
+          input.icd_description,
+          input.icd_type,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date()
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+let getICDMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT * FROM hims_d_icd where record_status='A' order by hims_d_icd_id desc",
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 //created by irfan:  to add chronical conditions
 let addChronicalConditions = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -2870,14 +2929,14 @@ let getPatientHistory = (req, res, next) => {
                 key == "SOH"
                   ? "Social History"
                   : key === "MEH"
-                  ? "Medical History"
-                  : key === "SGH"
-                  ? "Surgical History"
-                  : key === "FMH"
-                  ? "Family History"
-                  : key === "BRH"
-                  ? "Birth History"
-                  : "",
+                    ? "Medical History"
+                    : key === "SGH"
+                      ? "Surgical History"
+                      : key === "FMH"
+                        ? "Family History"
+                        : key === "BRH"
+                          ? "Birth History"
+                          : "",
               groupDetail: detail,
             };
           })
@@ -3133,8 +3192,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-          ? ","
-          : "";
+            ? ","
+            : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs,
       ]);
@@ -3145,10 +3204,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-          ? ","
-          : inputData.significant_signs != null
-          ? ","
-          : "";
+            ? ","
+            : inputData.significant_signs != null
+              ? ","
+              : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs,
       ]);
@@ -3664,4 +3723,6 @@ export default {
   updateSameFollowUp,
   getAllPatientFollowUp,
   getPatientReferralDoc,
+  addICDMaster,
+  getICDMaster
 };

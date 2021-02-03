@@ -6,6 +6,7 @@ import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import ReviewofSystems from "./ReviewofSystems/ReviewofSystems";
 import VitalsMaster from "./VitalsMaster/VitalsMaster";
 import Allergies from "./Allergies/Allergies";
+import ICDMaster from "./ICDMaster/ICDMaster";
 
 class MedicalWorkbenchSetup extends Component {
   constructor(props) {
@@ -78,6 +79,20 @@ class MedicalWorkbenchSetup extends Component {
                 }
               </li>
 
+              <li
+                algaehtabs={"ICDMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "ICD Master"
+                    }}
+                  />
+                }
+              </li>
+
 
               {/* <li
                 algaehtabs={"ReviewofSystems"}
@@ -104,6 +119,8 @@ class MedicalWorkbenchSetup extends Component {
             <VitalsMaster />
           ) : this.state.pageDisplay === "Allergies" ? (
             <Allergies />
+          ) : this.state.pageDisplay === "ICDMaster" ? (
+            <ICDMaster />
           ) : null}
         </div>
       </div>
