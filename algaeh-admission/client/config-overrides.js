@@ -26,13 +26,13 @@ module.exports = {
     return config;
   },
   devServer: function (configFunction) {
-    return function (proxy, allowedHost) {
-      const config = configFunction(proxy, allowedHost);
-      // Allow cors for loading assets from different origins
-      config.headers = {
-        "Access-Control-Allow-Origin": "*",
-      };
-      return config;
-    };
+    // return function (proxy, allowedHost) {
+    //   const config = configFunction(proxy, allowedHost);
+    //   // Allow cors for loading assets from different origins
+    //   config.headers = {
+    //     "Access-Control-Allow-Origin": "*",
+    //   };
+    return configFunction;
+    // };
   },
 };

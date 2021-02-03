@@ -6,6 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node build/app.js",
     "dev:client": "npm run dev:watch --prefix ../client",
+    "dev:ui": "npm run start --prefix ../client",
     "dev:watch": "tsc -w",
     "dev:nodemon": "nodemon build/index.js",
     "dev": "NODE_ENV=development run-p  dev:*",
