@@ -26,12 +26,18 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_procurement_grn_header IVH on IVH.inovice_number = VD.invoice_ref_no
           inner join hims_d_vendor VN on VN.hims_d_vendor_id = IVH.vendor_id
           where VD.finance_voucher_header_id=?;
-          select FH.amount as opening_amount,FSH.amount, (FH.amount - FSH.amount) as closing_amount, FSH.invoice_ref_no
+          select FH.amount as opening_amount,FSH.amount,  coalesce(FVH.amount,0) as previous_amount, 
+          (FH.amount - coalesce(FVH.amount,0) - FSH.amount) as closing_amount, FSH.invoice_ref_no
           from finance_voucher_sub_header FSH
           inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)
+          left join finance_voucher_header FVH on FVH.finance_voucher_header_id<? and FVH.invoice_ref_no in ( FSH.invoice_ref_no)
           -- inner join hims_f_procurement_grn_header IVH on IVH.inovice_number = FH.invoice_ref_no
           -- inner join hims_d_vendor VN on VN.hims_d_vendor_id = IVH.vendor_id
-          where FSH.finance_voucher_header_id=?;
+          where FSH.finance_voucher_header_id=? and FH.voucher_type='purchase';   
+          select FH.voucher_type,FH.amount as opening_amount,FSH.amount, FSH.amount, 
+          (FH.amount - FSH.amount) as closing_amount, FSH.invoice_ref_no from finance_voucher_sub_header FSH
+          inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)           
+          where FSH.finance_voucher_header_id=? and FH.voucher_type='debit_note';           
           -- select IVH.grn_number,DATE(IVH.invoice_date) as invoice_date, IVH.inovice_number,
           -- DATE(IVH.grn_date) as grn_date,IVH.po_id,IVH.sub_total,IVH.net_total,IVH.detail_discount,IVH.total_tax,IVH.net_payable,IVH.hospital_id, FSH.amount
           -- from finance_voucher_sub_header FSH
@@ -40,15 +46,21 @@ const executePDF = function executePDFMethod(options) {
           -- inner join hims_d_vendor VN on VN.hims_d_vendor_id = IVH.vendor_id
           -- where FSH.finance_voucher_header_id=?;
           `,
-          values: [input.voucher_header_id, input.voucher_header_id],
+          values: [input.voucher_header_id, input.voucher_header_id, input.voucher_header_id, input.voucher_header_id, input.voucher_header_id],
           printQuery: true,
         })
         .then((result) => {
-          // console.log(subTotal);
+          // console.log(subTotal);          
+          const totalNetPayable = _.sumBy(result[1], (s) => parseFloat(s.amount));
+          const totalDebit_Amt = _.sumBy(result[2], (s) => parseFloat(s.amount));
+
           resolve({
             resultHeader: result[0].length > 0 ? result[0][0] : {},
             resultInvoice: result[1],
-            totalNetPayable: _.sumBy(result[1], (s) => parseFloat(s.amount)),
+            resultDebit_note: result[2],
+            totalNetPayable: totalNetPayable,
+            totalDebit_Amt: totalDebit_Amt,
+            totalpaid_amt: totalNetPayable - totalDebit_Amt,
             currency: {
               decimal_places,
               addSymbol: false,

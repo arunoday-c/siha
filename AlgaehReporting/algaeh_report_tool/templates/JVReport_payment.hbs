@@ -1,50 +1,61 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
-<div class="print-body">
-    <section>
-        <table class="tableNoBorder" cell-padding="0">
-        <tr>
-            <td colspan="2"><h1 class="voucherHdg">Payment Voucher</h1></td>
-        <tr>
-            
-        <tr style="vertical-align: bottom;">
-             <td width="55%">
-                <table class="tableNoBorder">
-                    <tr>
-                        <td  class="txtFld">
-                            <p>Payment To:</p>
-                            <p><b>{{resultHeader.vendor_code}} - {{resultHeader.vendor_name}}</b></p>
-                            <p>Mob: {{resultHeader.contact_number}}</p>
-                            <p>Address: {{resultHeader.address}}</p>
-                            <p>Vat No.: {{resultHeader.vat_number}}</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-           
-              <td width="55%">
-                <table class="tableNoBorder">
-                    <tr>
-                        <td  class="numberFld"><p>Date: <b>{{resultHeader.payment_date}}</b></p></td>
-                    </tr>
-                     <tr>
-                        <td  class="numberFld"><p>Reference No: <b>{{resultHeader.voucher_no}}</b></p></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        </table>
-    </section>
+    <div class="print-body">
         <section>
+            <table class="tableNoBorder" cell-padding="0">
+                <tr>
+                    <td colspan="2">
+                        <h1 class="voucherHdg">Payment Voucher</h1>
+                    </td>
+                <tr>
+
+                <tr style="vertical-align: bottom;">
+                    <td width="55%">
+                        <table class="tableNoBorder">
+                            <tr>
+                                <td class="txtFld">
+                                    <p>Payment To:</p>
+                                    <p><b>{{resultHeader.vendor_code}} - {{resultHeader.vendor_name}}</b></p>
+                                    <p>Mob: {{resultHeader.contact_number}}</p>
+                                    <p>Address: {{resultHeader.address}}</p>
+                                    <p>Vat No.: {{resultHeader.vat_number}}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td width="55%">
+                        <table class="tableNoBorder">
+                            <tr>
+                                <td class="numberFld">
+                                    <p>Date: <b>{{resultHeader.payment_date}}</b></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="numberFld">
+                                    <p>Reference No: <b>{{resultHeader.voucher_no}}</b></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </section>
+        <section>
+            <td class="txtFld">
+                <p><b> Payment List </b></p>
+            </td>
+
             <table class="tableForData" cell-padding="0">
                 <thead>
-                  <tr>
+                    <tr>
                         <th>Sl No.</th>
                         <th>Invoice Ref. No.</th>
                         {{!-- <th>Invoice Date</th> --}}
                         <th>Total Amount</th>
                         <th>Paid Amount </th>
+                        <th>Prevoius Paid Amount </th>
                         <th>Balance Amount</th>
                         {{!-- <th>Net Payable</th> --}}
                     </tr>
@@ -57,19 +68,65 @@
                         {{!-- <td>{{invoice_date}}</td> --}}
                         <td class="numberFld">{{numberFormating opening_amount ../currency}}</td>
                         <td class="numberFld">{{numberFormating amount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating previous_amount ../currency}}</td>
                         <td class="numberFld">{{numberFormating closing_amount ../currency}}</td>
                     </tr>
                     {{/each }}
 
                 </tbody>
             </table>
+            <table class="tableNoBorder">
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Invoice: </td>
+                    <td class="numberFld">{{numberFormating totalNetPayable currencyHeader}}</td>
+                </tr>
+            </table>
+            <br>
+            {{#ifCond resultDebit_note.length '>' 0 }}
+            <td class="txtFld">
+                <p><b> Debit Note List </b></p>
+            </td>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Ref. No.</th>
+                        {{!-- <th>Invoice Date</th> --}}
+                        <th>Total Amount</th>
+                        <th>Paid Amount </th>
+                        <th>Balance Amount</th>
+                        {{!-- <th>Net Payable</th> --}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each resultDebit_note}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{invoice_ref_no}}</td>
+                        {{!-- <td>{{invoice_date}}</td> --}}
+                        <td class="numberFld">{{numberFormating opening_amount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating amount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating closing_amount ../currency}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+            <table class="tableNoBorder">
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Debit: </td>
+                    <td class="numberFld">{{numberFormating totalDebit_Amt currencyHeader}}</td>
+                </tr>
+            </table>
+            {{/ifCond}}
             <br>
             <table class="tableNoBorder">
                 <tr class="footerTotalUp">
                     <td class="txtFld" width="60%" rowspan="3"><b>Memo:</b>
-                    <p>{{resultHeader.narration}}</p></td>
+                        <p>{{resultHeader.narration}}</p>
+                    </td>
                     <td class="numberFld">Total Net Payable: </td>
-                     <td class="numberFld">{{numberFormating totalNetPayable currencyHeader}}</td>
+                    <td class="numberFld">{{numberFormating totalpaid_amt currencyHeader}}</td>
                 </tr>
             </table>
         </section>
