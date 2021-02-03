@@ -1,0 +1,161 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+<body>
+   <div class="print-body">
+      <section>
+         <p>To: </p>
+         <p style="line-height: 15px;">
+            <span style="float: right;">Date: {{dateTime refferal_details.referral_date}}</span>
+            <b>Dr. {{refferal_details.ref_doctor_name}}</b> <br/>
+            <small>{{refferal_details.hospital_name}} <br/>
+            {{refferal_details.sub_department_name}}</small>
+         </p>
+         <p>Refferal Reason: {{refferal_details.reason}}</p>
+      </section>
+      <section>
+         <h3>Patient DETAILS:-</h3>
+         <table class="tableForLabel" cell-padding="0">
+            <tr>
+               <td><label>Patient Code</label></td>
+               <td> <span>{{pat_details.patient_code}}</span></td>
+               <td><label>Name</label></td>
+               <td><span>{{pat_details.full_name}} / {{pat_details.arabic_name}}</span></td>
+            </tr>
+            <tr>
+               <td><label>Age & DOB</label></td>
+               <td><span>{{pat_details.gender}}/{{pat_details.date_of_birth}}</span></td>
+               <td><label>Mobile No.</label></td>
+               <td> <span>{{pat_details.tel_code}} {{pat_details.contact_number}}</span></td>
+            </tr>
+         </table>
+      </section>
+      <section>
+         <h3>SOAP DETAILS:-</h3>
+         <table class="tableForLabel" cell-padding="0">
+            <tr>
+               <td><label>Chief Complaint Code</label></td>
+               <td> <span>{{chief_details.comment}}</span></td>
+            </tr>
+            <tr>
+               <td><label>Significant Signs</label></td>
+               <td> <span>{{pat_Encounter.significant_signs}}</span></td>
+            </tr>
+            <tr>
+               <td><label>Others</label></td>
+               <td> <span>{{pat_Encounter.other_signs}}</span></td>
+            </tr>
+         </table>
+      </section>
+      <section>
+         <h3>VITALS DETAILS:-</h3>
+         <table class="tableForLabel" cell-padding="1" cell-padding="1">
+            <tr>
+               {{#each vital_details }}
+               <td  class="txtFld">
+                  <small><b>{{vitals_name}}</b></small>
+                  <p style="margin: 3px 0 0; font-size:13px"><b>{{vital_value}}</b></p>
+                  <small>{{formula_value}}</small>
+               </td>
+               {{/each }}
+            </tr>
+         </table>
+      </section>
+       <section >
+         <h3>Allergy:-</h3>
+         <table class="tableForData" cell-padding="0">
+            <thead>
+               <tr>
+                  <th  style="width: 40px;">SL No.</th>
+                  <th>Type</th>
+                  <th>Name</th>
+                  <th>Onset</th>
+                  <th>Severity</th>
+               </tr>
+            </thead>
+            <tbody>
+               {{#each allergyList }}
+               <tr>
+                  <td>{{inc @index}}</td>
+                  <td >{{allergy_type}}</td>
+                  <td>{{allergy_name}}</td>
+                  <td>{{onset}}</td>
+                  <td>{{severity}}</td>
+               </tr>
+               {{/each }}
+            </tbody>
+         </table>
+      </section>
+
+       <section >
+         <h3>History:-</h3>
+         <table class="tableForData" cell-padding="0">
+            <thead>
+               <tr>
+                  <th  style="width: 40px;">SL No.</th>
+                  <th>Type</th>
+                  <th>Comments</th>
+               </tr>
+            </thead>
+            <tbody>
+               {{#each historyList }}
+               <tr>
+                  <td>{{inc @index}}</td>
+                  <td >{{history_type}}</td>
+                  <td class="txtFld">{{remarks}}</td>
+               </tr>
+               {{/each }}
+            </tbody>
+         </table>
+      </section>
+      <section>
+         <h3>Diagnosis:-</h3>
+         <table class="tableForData" cell-padding="0">
+            <thead>
+               <tr>
+                  <th >SL No.</th>
+                  <th>ICD Code</th>
+                  <th>Diagnosis Type</th>
+                  <th>Diagnosis Description</th>
+               </tr>
+            </thead>
+            <tbody>
+               {{#each pat_icd }}
+               <tr>
+                  <td width="20px">{{inc @index}}</td>
+                  <td>{{daignosis_code}}</td>
+                  <td>{{diagnosis_type}}</td>
+                  <td class="txtFld">{{daignosis_description}}</td>
+               </tr>
+               {{/each }}
+            </tbody>
+         </table>
+      </section>
+      <section >
+         <h3>Physical Examination:-</h3>
+         <table class="tableForData" cell-padding="0">
+            <thead>
+               <tr>
+                  <th  style="width: 40px;">SL No.</th>
+                  <th>DESCRIPTION</th>
+                  <th>TYPE</th>
+                  <th>Severity</th>
+                  <th>Comments</th>
+               </tr>
+            </thead>
+            <tbody>
+               {{#each examinationList }}
+               <tr>
+                  <td>{{inc @index}}</td>
+                  <td class="txtFld">{{ex_desc}}</td>
+                  <td>{{ex_type}}</td>
+                  <td>{{ex_severity}}</td>
+                  <td class="txtFld">{{comments}}</td>
+               </tr>
+               {{/each }}
+            </tbody>
+         </table>
+      </section>
+      {{!-- 
+      <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
+      --}}
+   </div>
+</body>
