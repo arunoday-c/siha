@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/charts": "^0.9.13",
+    "@ant-design/icons": "^4.4.0",
     "@craco/craco": "^5.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
@@ -24,6 +25,7 @@
     "js2xmlparser": "^3.0.0",
     "jsbarcode": "^3.9.0",
     "linq": "^3.1.0",
+    "loadjs": "^4.2.0",
     "localforage": "^1.7.3",
     "lodash": "^4.17.20",
     "moment": "^2.24.0",

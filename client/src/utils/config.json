@@ -108,6 +108,12 @@
       "url": "",
       "path": "/sockets",
       "name": "Sales"
+    },
+    "admission": {
+      "port": 3023,
+      "url": "",
+      "path": "/admission",
+      "name": "Admission"
     }
   },
   "apiAuth": {
