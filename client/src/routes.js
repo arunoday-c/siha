@@ -11,7 +11,7 @@ import { newAlgaehApi } from "./hooks";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { ConfirmAuth } from "./confirm-auth";
 import { MainContext } from "algaeh-react-components";
-
+const MicroUI = React.lazy(() => import("./Components/MicroUI"));
 const HISDashboard = React.lazy(() =>
   retry(() => import("./Components/Dashboard/Dashboard"))
 );
@@ -604,7 +604,9 @@ function LoadComponent({ path, noSecurityCheck, children }) {
     </Layout>
   );
 }
-
+const DayCare = ({ history, pathName }) => {
+  return <MicroUI history={history} host="daycare" path={pathName} />;
+};
 const publicRoutes = [
   {
     path: "/",
@@ -1451,6 +1453,16 @@ const privateRoutes = [
     component: <UserPreferences />,
   },
   {
+    path: "/daycare",
+    isExactPath: true,
+    component: <DayCare pathName="/" />,
+  },
+  {
+    path: "/daycarelink2",
+    isExactPath: true,
+    component: <DayCare pathName="/testing" />,
+  },
+  {
     path: "*",
     component: <DefaultLandingPage />,
   },
@@ -1517,7 +1529,10 @@ function Routes() {
               exact={routeItem.isExactPath}
               strict={true}
               render={(params) => {
-                return routeItem.component;
+                // return routeItem.component;
+                return typeof routeItem.component === "function"
+                  ? routeItem.component(params)
+                  : routeItem.component;
               }}
             />
           );
@@ -1539,7 +1554,9 @@ function Routes() {
                       path={path}
                       noSecurityCheck={noSecurityCheck}
                     >
-                      {routeItem.component}
+                      {typeof routeItem.component === "function"
+                        ? routeItem.component(params)
+                        : routeItem.component}
                     </LoadComponent>
                   );
                 }}

@@ -108,6 +108,12 @@
       "url": "",
       "path": "/sockets",
       "name": "Sales"
+    },
+    "daycare": {
+      "port": 3023,
+      "url": "",
+      "path": "/daycare",
+      "name": "DayCare"
     }
   },
   "apiAuth": {
