@@ -270,6 +270,7 @@ export default memo(function (props) {
           merdge: merdgeData,
           filterDebitNotes,
           type: "supplier",
+          debitNoteTotal: debitNoteTotal > 0 ? debitNoteTotal : null,
         });
       },
     });
