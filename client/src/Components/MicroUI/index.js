@@ -2,6 +2,8 @@ import React, { useEffect, useContext } from "react";
 import { MainContext } from "algaeh-react-components";
 import loadMicroFrontend from "./MicroFrontendService";
 import Config from "../../utils/config.json";
+import globalVariables from "../../utils/GlobalVariables.json";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 const MicroFrontend = ({ history, host, path }) => {
   const mainCtx = useContext(MainContext);
   const _cnf = Config.routersAndPorts[host];
@@ -18,6 +20,8 @@ const MicroFrontend = ({ history, host, path }) => {
         elementId,
         path,
         mainContext: mainCtx,
+        globalVariables,
+        algaehApiCall,
       });
     });
 

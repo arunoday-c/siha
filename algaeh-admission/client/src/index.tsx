@@ -3,19 +3,23 @@ import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
 import Router from "./router";
 const APP_ID = "Admission";
-console.log("`mount_${APP_ID}`", `mount_${APP_ID}`);
+
 // @ts-ignore
 window[`mount_${APP_ID}`] = ({
   history,
   elementId,
   path,
   mainContext,
+  globalVariables,
+  algaehApiCall,
 }: any) => {
   ReactDOM.render(
     <Router
       history={history || createBrowserHistory()}
       path={path}
       mainContext={mainContext}
+      globalVariables={globalVariables}
+      algaehApiCall={algaehApiCall}
     />,
     document.getElementById(elementId)
   );

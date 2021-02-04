@@ -1,6 +1,8 @@
 import React from "react";
 import "./AdmissionSetup.scss";
-import { AlgaehLabel, AlgaehTabs } from "algaeh-react-components";
+import BedStatus from "../BedStatus/BedStatus";
+// import WardBedSetup from "../WardBedSetup/WardBedSetup";
+import { AlgaehTabs } from "algaeh-react-components";
 
 export default function AdmissionSetup(props: any) {
   return (
@@ -9,27 +11,28 @@ export default function AdmissionSetup(props: any) {
         removeCommonSection={true}
         content={[
           {
-            title: (
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Ward & Bed Setup2",
-                }}
-              />
-            ),
-            children: <h1>Ward SetUp</h1>,
+            title: "Ward & Bed Setup",
+            // (
+            //   <AlgaehLabel
+            //     label={{
+            //       forceLabel: "Ward & Bed Setup",
+            //     }}
+            //   />
+            // )
+            children: <BedStatus {...props} />,
             componentCode: "ADM_WRD_BED_STP",
           },
-          {
-            title: (
-              <AlgaehLabel
-                label={{
-                  forceLabel: "appointment clinics",
-                }}
-              />
-            ),
-            children: <h1>App Clinics</h1>,
-            componentCode: "APP_CLINICS",
-          },
+          // {
+          //   title: (
+          //     <AlgaehLabel
+          //       label={{
+          //         forceLabel: "appointment clinics",
+          //       }}
+          //     />
+          //   ),
+          //   children: <WardBedSetup />,
+          //   componentCode: "APP_CLINICS",
+          // },
         ]}
         renderClass="appoSetupSection"
       />

@@ -1,0 +1,10 @@
+#WardSetupGrid,
+#BedSetupGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 52vh;
+      max-height: 52vh;
+      overflow: auto;
+    }
+  }
+}
