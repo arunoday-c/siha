@@ -131,7 +131,7 @@ export default {
       default:
         voucher_type = input.voucher_type.toUpperCase();
     }
-    const { merdgeRecords, partial_amount } = input;
+    const { merdgeRecords, partial_amount, debitNoteTotal } = input;
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
@@ -281,18 +281,7 @@ export default {
           }).then((res) => {
             let credit_amount = 0;
             let debit_amount = 0;
-            // input.details.forEach((item) => {
-            //   if (item.payment_type == "CR") {
-            //     credit_amount =
-            //       parseFloat(credit_amount) + parseFloat(item.amount);
-            //     item["credit_amount"] = item.amount;
-            //     item["debit_amount"] = 0;
-            //   } else if (item.payment_type == "DR") {
-            //     debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
-            //     item["credit_amount"] = 0;
-            //     item["debit_amount"] = item.amount;
-            //   }
-            // });
+
             credit_amount = _.chain(input.details)
               .filter((f) => f.payment_type === "CR")
               .sumBy((s) => {
@@ -458,21 +447,12 @@ export default {
                       })
                       .then((result) => {
                         const finance_voucher_header_id = result.insertId;
-                        // const IncludeValues = ["amount", "payment_mode"];
-                        // const insertColumns = [
-                        //   "head_id",
-                        //   "child_id",
-                        //   "debit_amount",
-                        //   "credit_amount",
-                        //   "payment_type",
-                        //   "hospital_id",
-                        //   "project_id",
-                        //   "sub_department_id"
-                        // ];
+
                         let arrCounter = [];
                         let updateQry = "";
                         if (isMultipleInvoices === "M") {
                           let queryString = "";
+                          debugger;
                           for (let i = 0; i < merdgeRecords.length; i++) {
                             const {
                               balance_amount,
@@ -499,52 +479,13 @@ export default {
                               input["voucher_type"] == "payment" ||
                               input["voucher_type"] == "receipt"
                             ) {
-                              // for (
-                              //   let b = 0;
-                              //   b < BalanceInvoice.length;
-                              //   b++
-                              // ) {
-                              // const {
-                              //   finance_voucher_header_id,
-                              //   // voucher_no,
-                              //   invoice_no,
-                              //   balance_amount,
-                              // } = merdgeRecords[i];
                               let head_amount = partial_amount
                                 ? partial_amount
                                 : balance_amount;
-                              // if (hasMultiple === "M") {
-                              //   const oneRecord = subHeaderResult.find(
-                              //     (f) =>
-                              //       f.invoice_ref_no === voucher_no ||
-                              //       f.invoice_ref_no === invoice_no
-                              //   );
+                              if (debitNoteTotal) {
+                                head_amount = head_amount + debitNoteTotal;
+                              }
 
-                              //   head_amount = oneRecord.amount;
-                              // }
-                              //     const total_paid_amount =
-                              //       parseFloat(settled_amount) +
-                              //       parseFloat(head_amount);
-
-                              //     if (
-                              //       parseFloat(head_amount) ==
-                              //       total_paid_amount
-                              //     ) {
-                              //       updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
-                              //         head_amount
-                              //       )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
-                              //         head_amount
-                              //       )} where finance_voucher_header_id=${finance_voucher_header_id};`;
-                              //     } else {
-                              //       updateQry += `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
-                              //         head_amount
-                              //       )}, updated_date='${moment().format(
-                              //         "YYYY-MM-DD"
-                              //       )}',
-                              //  updated_by= ${
-                              //    req.userIdentity.algaeh_d_app_user_id
-                              //  } where finance_voucher_header_id=${finance_voucher_header_id};`;
-                              //     }
                               updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
                                 head_amount
                               )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
@@ -554,57 +495,36 @@ export default {
                               )}',updated_by=${
                                 req.userIdentity.algaeh_d_app_user_id
                               } where finance_voucher_header_id=${finance_voucher_header_id};`;
-                              // }
-
-                              // if (hasMultiple === "M") {
-                              //   updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount
-                              //   where finance_voucher_header_id=${input.voucher_header_id};`;
-                              // }
                             }
-
-                            // if (resul[0].auth_level === "N") {
-                            //   queryString += _mysql.mysqlQueryFormat(
-                            //     `insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,
-                            //     amount,voucher_type) value(?,?,?,?);`,
-                            //     [
-                            //       result.insertId,
-                            //       invoice_no,
-                            //       balance_amount,
-                            //       voucher_type,
-                            //     ]
-                            //   );
-                            // } else {
-
-                            // }
-
-                            newDetails.forEach((item) => {
-                              const {
-                                amount,
-                                debit_amount,
-                                credit_amount,
-                                ...rest
-                              } = item;
-
-                              arrCounter.push({
-                                ...rest,
-                                debit_amount:
-                                  item.payment_type === "DR"
-                                    ? debit_amount
-                                    : // ? partial_amount
-                                      //   ? debit_amount
-                                      //   : balance_amount
-                                      0,
-                                credit_amount:
-                                  item.payment_type === "CR"
-                                    ? credit_amount
-                                    : // ? partial_amount
-                                      //   ? credit_amount
-                                      //   : balance_amount
-                                      0,
-                              });
-                            });
                           }
 
+                          // newDetails.forEach((item) => {
+                          //   const {
+                          //     amount,
+                          //     debit_amount,
+                          //     credit_amount,
+                          //     ...rest
+                          //   } = item;
+
+                          //   arrCounter.push({
+                          //     ...rest,
+                          //     debit_amount:
+                          //       item.payment_type === "DR"
+                          //         ? debit_amount
+                          //         : // ? partial_amount
+                          //           //   ? debit_amount
+                          //           //   : balance_amount
+                          //           0,
+                          //     credit_amount:
+                          //       item.payment_type === "CR"
+                          //         ? credit_amount
+                          //         : // ? partial_amount
+                          //           //   ? credit_amount
+                          //           //   : balance_amount
+                          //           0,
+                          //   });
+                          // });
+                          // debugger;
                           _mysql
                             .executeQueryWithTransaction({
                               query: `${queryString}${updateQry}`,
@@ -622,7 +542,12 @@ export default {
                         } else {
                           arrCounter = newDetails;
                         }
-
+                        //===== Here it included ====
+                        // _mysql.rollBackTransaction(() => {
+                        //   throw new Error("Testing blocked");
+                        // });
+                        // debugger;
+                        // return;
                         _mysql
                           .executeQueryWithTransaction({
                             query:

@@ -193,7 +193,7 @@ const executePDF = function executePDFMethod(options) {
                       index++;
                     })
                     .value();
-
+                  //    console.log("===outputArray====", outputArray);
                   resolve({
                     details: outputArray,
                     account_name: result[0]["child_name"],
