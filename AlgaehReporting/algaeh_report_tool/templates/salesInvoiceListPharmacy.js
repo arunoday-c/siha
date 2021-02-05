@@ -25,7 +25,7 @@ const executePDF = function executePDFMethod(options) {
           PD.item_id,ITM.item_code,ITM.item_description, PD.quantity,PD.expiry_date,PD.qtyhand,PD.quantity,PD.batchno,PD.insurance_yesno,
           PD.patient_responsibility as PD_patient_responsibility,PD.patient_tax as PD_patient_tax,PD.patient_payable as PD_patient_payable,
           PD.company_responsibility as PD_company_responsibility,PD.company_tax as PD_company_tax,PD.company_payable as PD_company_payable,
-          PD.net_extended_cost as PD_net_extended_cost, (COALESCE(PD.patient_payable,0) + COALESCE(PD.company_payable,0)) as PD_net_payable
+          PD.net_extended_cost as PD_net_extended_cost, COALESCE(PD.patient_payable,0) as PD_net_payable
           from hims_f_pharmacy_pos_detail PD
           left join hims_f_pharmacy_pos_header PH on PD.pharmacy_pos_header_id = PH.hims_f_pharmacy_pos_header_id
           left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id
