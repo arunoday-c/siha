@@ -189,7 +189,7 @@ export default function JournalVoucher() {
                   );
                 },
                 others: {
-                  width: 300,
+                  width: 200,
                 },
               });
               const costCenterId = center.cost_centers.find(
@@ -817,8 +817,11 @@ export default function JournalVoucher() {
   const NarrationBox = (row, records) => {
     return (
       <AlgaehFormGroup
+        div={{
+          className: "cusTextArea",
+        }}
         multiline={true}
-        no_of_lines={2}
+        no_of_lines={6}
         textBox={{
           type: "text",
           className: "form-control",
@@ -1090,131 +1093,131 @@ export default function JournalVoucher() {
                   </button>
                 </div>
               </div>
-              <div className="portlet-body" id="JLVoucherListGrid">
-                <AlgaehDataGrid
-                  // className="JLVoucherListGrid"
-                  columns={[
-                    {
-                      fieldName: "slno",
-                      label: <AlgaehLabel label={{ forceLabel: "Sl No." }} />,
-                      sortable: true,
-                      others: {
-                        width: 80,
+              <div className="row portlet-body" id="JLVoucherListGrid">
+                <div className="col-12">
+                  <AlgaehDataGrid
+                    // className="JLVoucherListGrid"
+                    columns={[
+                      // {
+                      //   fieldName: "slno",
+                      //   label: <AlgaehLabel label={{ forceLabel: "Sl No." }} />,
+                      //   sortable: false,
+                      //   others: {
+                      //     width: 50,
+                      //     maxWidth: 50,
+                      //   },
+                      // },
+                      costCenterField,
+                      {
+                        fieldName: "sourceName",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Account" }} />
+                        ),
+                        // align: "left",
+                        displayTemplate: gridTree,
+                        others: {
+                          width: 300,
+                        },
                       },
-                    },
-                    costCenterField,
-                    // {
-                    //   fieldName: "cost_center_id",
-                    //   label: "Cost Center",
-                    //   displayTemplate: costcenterInput,
-                    //   others: {
-                    //     width: 300,
-                    //   },
-                    // },
-                    {
-                      fieldName: "sourceName",
-
-                      label: <AlgaehLabel label={{ forceLabel: "Account" }} />,
-                      // align: "left",
-                      displayTemplate: gridTree,
-                    },
-                    {
-                      fieldName: "payment_type",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
-                      ),
-                      // filtered: true,
-                      displayTemplate: PaymentInput,
-                      others: {
-                        width: 150,
+                      {
+                        fieldName: "payment_type",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
+                        ),
+                        // filtered: true,
+                        displayTemplate: PaymentInput,
+                        others: {
+                          width: 100,
+                        },
                       },
-                    },
-                    {
-                      fieldName: "amount",
-                      label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
-                      displayTemplate: AmountInput,
-                      others: {
-                        width: 100,
+                      {
+                        fieldName: "amount",
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                        displayTemplate: AmountInput,
+                        others: {
+                          width: 100,
+                        },
                       },
-                    },
-                    {
-                      fieldName: "narration",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                      ),
-                      displayTemplate: NarrationBox,
-                      others: {
-                        width: 200,
+                      {
+                        fieldName: "narration",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                        ),
+                        displayTemplate: NarrationBox,
+                        others: {
+                          width: 350,
+                        },
                       },
-                    },
-                  ]}
-                  loading={false}
-                  data={journerList}
-                  isEditable={"deleteOnly"}
-                  // isEditable={true}
-                  rowUnique="slno"
-                  // xaxis={1500}
-                  events={{
-                    onDelete: (result) => {
-                      const { disabled } = result;
-                      if (disabled) {
-                        AlgaehMessagePop({
-                          type: "error",
-                          display: "Can't delete the record",
-                        });
-                        return;
-                      }
-                      setJournerList((data) => {
-                        const otherDetals = data
-                          .filter((f) => f.slno !== result["slno"])
-                          .map((m, i) => {
-                            return { ...m, slno: i + 1 };
+                    ]}
+                    loading={false}
+                    data={journerList}
+                    isEditable={"deleteOnly"}
+                    // isEditable={true}
+                    rowUnique="slno"
+                    // xaxis={1500}
+                    events={{
+                      onDelete: (result) => {
+                        const { disabled } = result;
+                        if (disabled) {
+                          AlgaehMessagePop({
+                            type: "error",
+                            display: "Can't delete the record",
                           });
-                        return [...otherDetals];
+                          return;
+                        }
+                        setJournerList((data) => {
+                          const otherDetals = data
+                            .filter((f) => f.slno !== result["slno"])
+                            .map((m, i) => {
+                              return { ...m, slno: i + 1 };
+                            });
+                          return [...otherDetals];
+                        });
+                      },
+                    }}
+                    others={{
+                      id: "voucher_table",
+                    }}
+                  />
+                </div>
+                <div className="col-12" style={{ marginTop: 10 }}>
+                  <button
+                    disabled={disableAmount}
+                    className="btn btn-primary btn-small"
+                    onClick={() => {
+                      setJournerList((result) => {
+                        const serialNo = result.length + 1;
+                        const disabledPaymentType =
+                          voucherType === "expense_voucher"
+                            ? { paytypedisable: true, payment_type: "DR" }
+                            : {};
+                        result.push({
+                          child_id: undefined,
+                          head_id: undefined,
+                          slno: serialNo,
+                          ...disabledPaymentType,
+                        });
+                        return [...result];
                       });
-                    },
-                  }}
-                  others={{
-                    id: "voucher_table",
-                  }}
-                />
+                    }}
+                  >
+                    Add New Entry
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-          <div className="col-3">
-            <button
-              disabled={disableAmount}
-              className="btn btn-primary btn-small"
-              onClick={() => {
-                setJournerList((result) => {
-                  const serialNo = result.length + 1;
-                  const disabledPaymentType =
-                    voucherType === "expense_voucher"
-                      ? { paytypedisable: true, payment_type: "DR" }
-                      : {};
-                  result.push({
-                    child_id: undefined,
-                    head_id: undefined,
-                    slno: serialNo,
-                    ...disabledPaymentType,
-                  });
-                  return [...result];
-                });
-              }}
-            >
-              Add New Entry
-            </button>
-          </div>
+
           <AlgaehFormGroup
             div={{
-              className: "col form-group algaeh-text-fld textArea",
+              className: "col-12 form-group algaeh-text-fld textArea",
             }}
             label={{
               forceLabel: "Narration",
               isImp: false,
             }}
             multiline={true}
-            no_of_lines={3}
+            no_of_lines={6}
             textBox={{
               type: "text",
               className: "form-control",

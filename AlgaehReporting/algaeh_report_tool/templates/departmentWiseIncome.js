@@ -10,15 +10,21 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
+      if (input.sub_department_id > 0) {
+        str += ` and SD.hims_d_sub_department_id= ${input.sub_department_id}`;
+      }
+
       options.mysql
         .executeQuery({
-          query: `select EM.full_name,SD.hims_d_sub_department_id,SD.sub_department_name,SD.sub_department_code,BH.bill_number,
+          query:
+            `select EM.full_name,SD.hims_d_sub_department_id,SD.sub_department_name,SD.sub_department_code,BH.bill_number,
           BD.patient_resp,BD.comapany_resp, sum(BD.patient_resp + BD.comapany_resp) as net_income from hims_f_billing_details as BD
           inner join hims_f_billing_header BH on BH.hims_f_billing_header_id = BD.hims_f_billing_header_id
           inner join hims_d_employee EM on EM.hims_d_employee_id = BH.incharge_or_provider
           inner join hims_d_sub_department SD on SD.hims_d_sub_department_id = EM.sub_department_id
-          where BH.hospital_id=? and BD.cancel_yes_no <> 'Y' and date(BH.bill_date) between date(?) and date(?) 
-          group by SD.hims_d_sub_department_id  order by SD.hims_d_sub_department_id ASC;`,
+          where BH.hospital_id=? and BD.cancel_yes_no <> 'Y' and date(BH.bill_date) between date(?) and date(?) ` +
+            str +
+            ` group by SD.hims_d_sub_department_id  order by SD.hims_d_sub_department_id ASC;`,
           values: [input.hospital_id, input.from_date, input.to_date],
           printQuery: true,
         })
