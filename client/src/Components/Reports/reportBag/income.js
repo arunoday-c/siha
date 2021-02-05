@@ -33,6 +33,41 @@ export default function Income({
             },
           },
           {
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Department",
+            link: {
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              module: "masterSettings",
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records.departmets,
+              });
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "sub_department_id",
+              data: undefined,
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                reportState.setState({
+                  sub_department_id: currentEvent.value,
+                  provider_id_list: currentEvent.selected.doctors,
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  provider_id_list: [],
+                });
+              },
+            },
+          },
+          {
             className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
