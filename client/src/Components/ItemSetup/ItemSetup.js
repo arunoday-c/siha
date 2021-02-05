@@ -454,6 +454,18 @@ class ItemSetup extends Component {
               </div>
             </div>
           </div>
+        </div>{" "}
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button type="button" className="btn btn-default">
+                Export as PDF
+              </button>
+              <button type="button" className="btn btn-default">
+                Export as Excel
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
