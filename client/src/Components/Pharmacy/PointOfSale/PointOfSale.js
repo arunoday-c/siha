@@ -8,7 +8,7 @@ import {
   AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
-// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
+import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   ClearData,
@@ -26,8 +26,9 @@ import {
   getPosEntry,
   getDrilDownData,
   generatePOSReceiptSmall,
+  getCtrlCode
 } from "./PointOfSaleEvents";
-// getCtrlCode,
+// ,
 import "./PointOfSale.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -200,6 +201,48 @@ class PointOfSale extends Component {
     return (
       <React.Fragment>
         <div onKeyPress={this.onKeyPress}>
+          <BreadCrumb
+            title={
+              <AlgaehLabel
+                label={{ forceLabel: "Point Of Sale", align: "ltr" }}
+              />
+            }
+            breadStyle={this.props.breadStyle}
+            soptlightSearch={{
+              label: (
+                <AlgaehLabel
+                  label={{ forceLabel: "POS Number", returnText: true }}
+                />
+              ),
+              value: this.state.pos_number,
+              selectValue: "pos_number",
+              events: {
+                onChange: getCtrlCode.bind(this, this),
+              },
+              jsonFile: {
+                fileName: "spotlightSearch",
+                fieldName: "pointofsaleEntry.POSEntry",
+              },
+              searchName: "POSEntry",
+            }}
+            userArea={
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "POS Date",
+                    }}
+                  />
+                  <h6>
+                    {this.state.pos_date
+                      ? moment(this.state.pos_date).format(Options.dateFormat)
+                      : Options.dateFormat}
+                  </h6>
+                </div>
+              </div>
+            }
+          // selectedLang={this.state.selectedLang}
+          />
           <div className="row  inner-top-search" style={{ paddingBottom: 10 }}>
             {/* Patient code */}
             <div className="col-3">
@@ -333,114 +376,114 @@ class PointOfSale extends Component {
                       {this.state.mode_of_pay === "1"
                         ? "Self"
                         : this.state.mode_of_pay === "2"
-                        ? "Insurance"
-                        : "-----------"}
+                          ? "Insurance"
+                          : "-----------"}
                     </h6>
                   </div>
                 </div>
               ) : (
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Patient Name",
-                      // isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "patient_name",
-                      value: this.state.patient_name,
-                      events: {
-                        onChange: changeTexts.bind(this, this),
-                      },
-                      others: {
-                        disabled: this.state.OTItemAddDis,
-                      },
-                    }}
-                  />
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Patient Name",
+                        // isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "patient_name",
+                        value: this.state.patient_name,
+                        events: {
+                          onChange: changeTexts.bind(this, this),
+                        },
+                        others: {
+                          disabled: this.state.OTItemAddDis,
+                        },
+                      }}
+                    />
 
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Prescribed Doctor",
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "referal_doctor",
-                      value: this.state.referal_doctor,
-                      events: {
-                        onChange: changeTexts.bind(this, this),
-                      },
-                      others: {
-                        disabled: this.state.OTItemAddDis,
-                      },
-                    }}
-                  />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Prescribed Doctor",
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "referal_doctor",
+                        value: this.state.referal_doctor,
+                        events: {
+                          onChange: changeTexts.bind(this, this),
+                        },
+                        others: {
+                          disabled: this.state.OTItemAddDis,
+                        },
+                      }}
+                    />
 
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Mobile Number",
-                      // isImp: true
-                    }}
-                    textBox={{
-                      number: {
-                        allowNegative: false,
-                      },
-                      dontAllowKeys: ["-", "e", "."],
-                      className: "txt-fld",
-                      name: "mobile_number",
-                      value: this.state.mobile_number,
-                      events: {
-                        onChange: changeTexts.bind(this, this),
-                      },
-                      others: {
-                        disabled: this.state.OTItemAddDis,
-                      },
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Nationality",
-                      // isImp: true
-                    }}
-                    selector={{
-                      name: "nationality_id",
-                      className: "select-fld",
-                      value: this.state.nationality_id,
-                      dataSource: {
-                        textField: "nationality",
-                        valueField: "hims_d_nationality_id",
-                        data: this.props.nationalities,
-                      },
-                      onChange: nationalityhandle.bind(this, this),
-                      others: {
-                        disabled: this.state.OTItemAddDis,
-                      },
-                    }}
-                  />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Mobile Number",
+                        // isImp: true
+                      }}
+                      textBox={{
+                        number: {
+                          allowNegative: false,
+                        },
+                        dontAllowKeys: ["-", "e", "."],
+                        className: "txt-fld",
+                        name: "mobile_number",
+                        value: this.state.mobile_number,
+                        events: {
+                          onChange: changeTexts.bind(this, this),
+                        },
+                        others: {
+                          disabled: this.state.OTItemAddDis,
+                        },
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Nationality",
+                        // isImp: true
+                      }}
+                      selector={{
+                        name: "nationality_id",
+                        className: "select-fld",
+                        value: this.state.nationality_id,
+                        dataSource: {
+                          textField: "nationality",
+                          valueField: "hims_d_nationality_id",
+                          data: this.props.nationalities,
+                        },
+                        onChange: nationalityhandle.bind(this, this),
+                        others: {
+                          disabled: this.state.OTItemAddDis,
+                        },
+                      }}
+                    />
 
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Mode of Payment" }}
-                    selector={{
-                      name: "mode_of_pay",
-                      className: "select-fld",
-                      value: this.state.mode_of_pay,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.MODE_OF_PAY,
-                      },
-                      onChange: changeTexts.bind(this, this),
-                      others: {
-                        disabled: this.state.OTItemAddDis,
-                      },
-                    }}
-                  />
-                </div>
-              )}
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "Mode of Payment" }}
+                      selector={{
+                        name: "mode_of_pay",
+                        className: "select-fld",
+                        value: this.state.mode_of_pay,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.MODE_OF_PAY,
+                        },
+                        onChange: changeTexts.bind(this, this),
+                        others: {
+                          disabled: this.state.OTItemAddDis,
+                        },
+                      }}
+                    />
+                  </div>
+                )}
             </div>
             <PrescribedItemList
               show={this.state.prescribed_item}
