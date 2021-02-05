@@ -702,7 +702,7 @@ const privateRoutes = [
     path: "/AdmissionSetup",
     isExactPath: true,
     // component: <AdmissionSetup />
-    component: <Admission pathName="/" />,
+    component: <Admission pathName="/admissionSetup" />,
   },
   {
     path: "/LabSetup",
