@@ -10,7 +10,6 @@ import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 
 import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
-// import { getItems, EditItemMaster } from "./ItemSetupEvent";
 import ItemSetupEvent from "./ItemSetupEvent";
 import ItemLocationReorder from "./ItemLocationReorder";
 import { MainContext } from "algaeh-react-components";
@@ -458,10 +457,26 @@ class ItemSetup extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={() => {
+                  this.setState({ exportAsPdf: "Y" }, () => {
+                    ItemSetupEvent().generateReports(this, this);
+                  });
+                }}
+              >
                 Export as PDF
               </button>
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={() => {
+                  this.setState({ exportAsPdf: "N" }, () => {
+                    ItemSetupEvent().generateReports(this, this);
+                  });
+                }}
+              >
                 Export as Excel
               </button>
             </div>
