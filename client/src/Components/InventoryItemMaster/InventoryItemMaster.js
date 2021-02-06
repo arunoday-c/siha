@@ -407,10 +407,26 @@ class InventoryItemMaster extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={() => {
+                  this.setState({ exportAsPdf: "Y" }, () => {
+                    InvItemSetupEvent().generateReports(this, this);
+                  });
+                }}
+              >
                 Export as PDF
               </button>
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={() => {
+                  this.setState({ exportAsPdf: "N" }, () => {
+                    InvItemSetupEvent().generateReports(this, this);
+                  });
+                }}
+              >
                 Export as Excel
               </button>
             </div>

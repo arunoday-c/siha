@@ -39,79 +39,41 @@ export default function InvItemSetupEvent() {
         },
       });
     },
+    generateReports: ($this) => {
+      // console.log("abcd");
+      algaehApiCall({
+        uri: $this.state.exportAsPdf === "Y" ? "/report" : "/excelReport",
+        // uri: "/excelReport",
+        method: "GET",
+        module: "reports",
+        headers: {
+          Accept: "blob",
+        },
+        others: { responseType: "blob" },
+        data: {
+          report: {
+            reportName: "invMastrReport",
+            pageOrentation: "landscape",
+            // excelTabName: ,
+            excelHeader: false,
+            reportParams: [],
+            // outputFileType: "EXCEL", //"EXCEL", //"PDF",
+          },
+        },
+        onSuccess: (res) => {
+          if ($this.state.exportAsPdf === "Y") {
+            const urlBlob = URL.createObjectURL(res.data);
+            const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Inventory Item Master`;
+            window.open(origin);
+          } else {
+            const urlBlob = URL.createObjectURL(res.data);
+            const a = document.createElement("a");
+            a.href = urlBlob;
+            a.download = `Inventory Item Master.${"xlsx"}`;
+            a.click();
+          }
+        },
+      });
+    },
   };
 }
-
-// const generateLeaveReconilationReport = ($this) => {
-//   // console.log("abcd");
-//   algaehApiCall({
-//     uri: "/report",
-//     // uri: "/excelReport",
-//     method: "GET",
-//     module: "reports",
-//     headers: {
-//       Accept: "blob",
-//     },
-//     others: { responseType: "blob" },
-//     data: {
-//       report: {
-//         reportName: "leave_gratuity_reconcil_Report",
-//         pageOrentation: "landscape",
-//         excelTabName: `${$this.state.inputs.hospital_name} | ${moment(
-//           $this.state.inputs.month,
-//           "MM"
-//         ).format("MMM")}-${$this.state.inputs.year}`,
-//         excelHeader: false,
-//         reportParams: [
-//           {
-//             name: "hospital_id",
-//             value: $this.state.inputs.hospital_id,
-//           },
-//           {
-//             name: "year",
-//             value: $this.state.inputs.year,
-//           },
-//           {
-//             name: "month",
-//             value: $this.state.inputs.month,
-//           },
-//           {
-//             name: "department_id",
-//             value: $this.state.inputs.department_id,
-//           },
-//           {
-//             name: "sub_department_id",
-//             value: $this.state.inputs.sub_department_id,
-//           },
-//           {
-//             name: "designation_id",
-//             value: $this.state.inputs.designation_id,
-//           },
-//           {
-//             name: "group_id",
-//             value: $this.state.inputs.group_id,
-//           },
-//           {
-//             name: "hims_d_employee_id",
-//             value: $this.state.inputs.hims_d_employee_id,
-//           },
-//         ],
-//         // outputFileType: "EXCEL", //"EXCEL", //"PDF",
-//       },
-//     },
-//     onSuccess: (res) => {
-//       // const urlBlob = URL.createObjectURL(res.data);
-//       // const a = document.createElement("a");
-//       // a.href = urlBlob;
-//       // a.download = `Leave & Airfare Reconciliation Report ${moment(
-//       //   $this.state.inputs.month,
-//       //   "MM"
-//       // ).format("MMM")}-${$this.state.inputs.year}.${"xlsx"}`;
-//       // a.click();
-
-//       const urlBlob = URL.createObjectURL(res.data);
-//       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${$this.state.inputs.hospital_name} Leave and Airfare Reconciliation - ${$this.state.monthName} ${$this.state.inputs.year}`;
-//       window.open(origin);
-//     },
-//   });
-// };
