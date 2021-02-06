@@ -22,29 +22,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-            [name]: value,
-            mode_of_pay: "1",
-            OTItemAddDis: false,
-          })
+          [name]: value,
+          mode_of_pay: "1",
+          OTItemAddDis: false,
+        })
         : $this.setState({
-            [name]: value,
-            mode_of_pay: "",
-            OTItemAddDis: false,
-          });
+          [name]: value,
+          mode_of_pay: "",
+          OTItemAddDis: false,
+        });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-            [name]: value,
-            insurance_yesno: "N",
-            insured: "N",
-          })
+          [name]: value,
+          insurance_yesno: "N",
+          insured: "N",
+        })
         : $this.setState({
-            [name]: value,
-            insurance_yesno: "Y",
-            insured: "Y",
-          });
+          [name]: value,
+          insurance_yesno: "Y",
+          insured: "Y",
+        });
       break;
 
     default:
@@ -182,7 +182,6 @@ const getPosEntry = ($this, pos_number) => {
 
         data.hims_d_insurance_network_office_id = data.network_office_id;
 
-        debugger;
         if (data.receiptdetails.length > 0) {
           for (let i = 0; i < data.receiptdetails.length; i++) {
             data.Cashchecked =
@@ -262,57 +261,109 @@ const POSSearch = ($this) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getPosEntry({
+  ClearData($this);
+  algaehApiCall({
     uri: "/posEntry/getPosEntry",
-    // module:"pharmacy",
+    module: "pharmacy",
     method: "GET",
-    printInput: true,
     data: { pos_number: docNumber },
-    redux: {
-      type: "POS_ENTRY_GET_DATA",
-      mappingName: "posentry",
-    },
-    afterSuccess: (data) => {
-      data.saveEnable = true;
-      data.patient_payable_h = data.patient_payable;
-      data.pos_customer_type = "OT";
-      if (data.posted === "Y") {
-        data.postEnable = true;
-        data.InvoiceEnable = true;
-      } else {
-        data.postEnable = false;
-      }
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        let data = response.data.records;
 
-      if (data.cancelled === "Y") {
-        data.posCancelled = true;
-      } else {
-        data.posCancelled = false;
-      }
-      if (data.visit_id !== null) {
-        data.pos_customer_type = "OP";
-      }
-      data.dataExitst = true;
-
-      if (data.receiptdetails.length !== 0) {
-        for (let i = 0; i < data.receiptdetails.length; i++) {
-          if (data.receiptdetails[i].pay_type === "CA") {
-            data.Cashchecked = true;
-            data.cash_amount = data.receiptdetails[i].amount;
-          }
-
-          if (data.receiptdetails[i].pay_type === "CD") {
-            data.Cardchecked = true;
-            data.card_amount = data.receiptdetails[i].amount;
-          }
-
-          if (data.receiptdetails[i].pay_type === "CH") {
-            data.Checkchecked = true;
-            data.cheque_amount = data.receiptdetails[i].amount;
-          }
+        if (
+          $this.state.userToken !== undefined &&
+          $this.state.userToken.local_vat_applicable === "N" &&
+          $this.state.userToken.default_nationality === data.nationality_id
+        ) {
+          data.vat_applicable = "N";
+        } else {
+          data.vat_applicable = "Y";
         }
+
+        data.patient_payable_h = data.patient_payable;
+        data.pos_customer_type = "OT";
+        if (data.posted === "Y") {
+          data.postEnable = true;
+          data.saveEnable = true;
+          data.posCancelled = false;
+          data.InvoiceEnable = true;
+          data.dataExitst = true;
+        } else if (data.cancelled === "Y") {
+          data.postEnable = true;
+          data.posCancelled = true;
+          data.saveEnable = true;
+          data.InvoiceEnable = true;
+        } else {
+          data.postEnable = false;
+          data.saveEnable = false;
+          data.InvoiceEnable = false;
+        }
+        if (data.visit_id !== null) {
+          data.pos_customer_type = "OP";
+        }
+        data.dataExitst = false;
+        data.OTItemAddDis = true;
+
+        data.insured = data.insurance_yesno;
+        data.mode_of_pay = data.insurance_yesno === "Y" ? "2" : "1";
+
+        data.hims_d_insurance_network_office_id = data.network_office_id;
+
+        if (data.receiptdetails.length > 0) {
+          for (let i = 0; i < data.receiptdetails.length; i++) {
+            data.Cashchecked =
+              data.receiptdetails[i].pay_type === "CA" ? true : false;
+            data.cash_amount =
+              data.receiptdetails[i].pay_type === "CA"
+                ? data.receiptdetails[i].amount
+                : 0;
+
+            data.Cardchecked =
+              data.receiptdetails[i].pay_type === "CD" ? true : false;
+            data.card_amount =
+              data.receiptdetails[i].pay_type === "CD"
+                ? data.receiptdetails[i].amount
+                : 0;
+            data.card_check_number =
+              data.receiptdetails[i].pay_type === "CD"
+                ? data.receiptdetails[i].card_check_number
+                : null;
+            data.selectedCard =
+              data.receiptdetails[i].pay_type === "CD"
+                ? { hims_d_bank_card_id: data.receiptdetails[i].bank_card_id }
+                : null;
+            // if (data.receiptdetails[i].pay_type === "CA") {
+            //   data.Cashchecked = true;
+            //   data.cash_amount = data.receiptdetails[i].amount;
+            // }
+
+            // if (data.receiptdetails[i].pay_type === "CD") {
+            //   data.Cardchecked = true;
+            //   data.card_amount = data.receiptdetails[i].amount;
+            // }
+
+            // if (data.receiptdetails[i].pay_type === "CH") {
+            //   data.Checkchecked = true;
+            //   data.cheque_amount = data.receiptdetails[i].amount;
+            //   data.cheque_amount = data.receiptdetails[i].amount;
+            // }
+          }
+        } else {
+          data.Cashchecked = true;
+          data.cash_amount = data.receiveable_amount;
+          data.total_amount = data.receiveable_amount;
+        }
+        $this.setState(data);
+        AlgaehLoader({ show: false });
       }
-      $this.setState(data);
+    },
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
     },
   });
 };

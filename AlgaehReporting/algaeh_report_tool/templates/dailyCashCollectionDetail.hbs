@@ -1,0 +1,68 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Cashier Name</th>
+                        <th>Expected Cash Amt.</th>
+                        <th>Expected Card Amt.</th>
+                        <th>Expected cheque Amt.</th>
+                        <th>Total Expected Amt.</th>
+                        <th>Total Collected Amt.</th>
+                        <th>Total Diff in Amt.</th>
+                        <th>Status</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each detail}}
+                    <tr>
+                        <td colspan="11" class="tableSubHdg">Collection Date:{{daily_handover_date}}</td>
+                    </tr>
+                        {{#each detailList}}
+                            <tr>
+                                <td>{{inc @index}}</td>
+                                <td class="txtFld">{{user_display_name}}</td>
+                                <td class="numberFld">{{expected_cash}}</td>
+                                <td class="numberFld">{{expected_card}}</td>
+                                <td class="numberFld">{{expected_cheque}}</td>
+                                <td class="numberFld">{{total_expected}}</td>
+                                <td class="numberFld">{{total_collected}}</td>
+                                <td class="numberFld">{{total_diff}}</td>
+                                <td>{{status}}</td>
+                            </tr>
+                        {{/each }}
+                         <tr class="numberFldTotal">
+                        <td colspan="2"></td>
+
+                        <td class="numberFld">{{numberFormating total_expected_cash ../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating total_expected_card ../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating total_expected_cheque ../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_total_expected ../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_total_collected ../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_total_diff ../currencyOnly}}</td>
+                        <td colspan=""></td>
+
+                    </tr>
+                    {{/each }}
+                      <tr class="numberFldTotalBottom">
+                        <td colspan="2"></td>
+                        <td class="numberFld">{{numberFormating ftr_total_expected_cash ./currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating ftr_total_expected_card ./currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating ftr_total_expected_cheque ./currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating ftr_net_total_expected ./currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating ftr_net_total_collected ./currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating ftr_net_total_diff ./currencyOnly}}</td>
+                        <td colspan=""></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

@@ -104,6 +104,7 @@ export default function JournalVoucher() {
   const [bankAmount, setBankAmount] = useState("0.00");
   const [fromBank, setFromBank] = useState("");
   const [debitNoteTotal, setDebitNoteTotal] = useState(null);
+  const [debitNoteList, setDebitNoteList] = useState([]);
   useEffect(() => {
     getCostCentersForVoucher().then((result) => {
       setbranchData(result);
@@ -251,10 +252,16 @@ export default function JournalVoucher() {
     }
 
     if (location.state) {
-      const { type, data, merdge, debitNoteTotal } = location.state;
-      debugger;
-      console.log("debitNoteTotal", debitNoteTotal);
+      const {
+        type,
+        data,
+        merdge,
+        debitNoteTotal,
+        filterDebitNotes,
+      } = location.state;
+
       setDebitNoteTotal(debitNoteTotal);
+      setDebitNoteList(filterDebitNotes);
       setDisableFiled(true);
       if (type === "Adjust") {
         const credit_data = _.filter(data, (f) => {
@@ -563,6 +570,7 @@ export default function JournalVoucher() {
       merdgeRecords,
       finance_voucher_header_id: finance_voucher_header_id,
       debitNoteTotal,
+      debitNoteList,
     })
       .then((result) => {
         setLoading(false);

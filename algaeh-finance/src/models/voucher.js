@@ -131,7 +131,12 @@ export default {
       default:
         voucher_type = input.voucher_type.toUpperCase();
     }
-    const { merdgeRecords, partial_amount, debitNoteTotal } = input;
+    const {
+      merdgeRecords,
+      partial_amount,
+      debitNoteTotal,
+      debitNoteList,
+    } = input;
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
@@ -452,7 +457,7 @@ export default {
                         let updateQry = "";
                         if (isMultipleInvoices === "M") {
                           let queryString = "";
-                          debugger;
+
                           for (let i = 0; i < merdgeRecords.length; i++) {
                             const {
                               balance_amount,
@@ -482,8 +487,12 @@ export default {
                               let head_amount = partial_amount
                                 ? partial_amount
                                 : balance_amount;
+
                               if (debitNoteTotal) {
-                                head_amount = head_amount + debitNoteTotal;
+                                head_amount =
+                                  head_amount === debitNoteTotal
+                                    ? head_amount
+                                    : head_amount + debitNoteTotal;
                               }
 
                               updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
@@ -495,6 +504,14 @@ export default {
                               )}',updated_by=${
                                 req.userIdentity.algaeh_d_app_user_id
                               } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                            }
+                          }
+                          let updateDebitNoteQuery = "";
+                          if (debitNoteTotal) {
+                            for (let dk = 0; dk < debitNoteList.length; dk++) {
+                              updateDebitNoteQuery += `update finance_voucher_header set settlement_status='S',
+                              settled_amount=${debitNoteList[dk]["balance_amount"]} where finance_voucher_header_id=${debitNoteList[dk]["finance_voucher_header_id"]};
+                              `;
                             }
                           }
 
@@ -524,10 +541,10 @@ export default {
                           //           0,
                           //   });
                           // });
-                          // debugger;
+
                           _mysql
                             .executeQueryWithTransaction({
-                              query: `${queryString}${updateQry}`,
+                              query: `${queryString}${updateQry}${updateDebitNoteQuery}`,
                               printQuery: true,
                             })
                             .then((resultsubheader) => {
@@ -542,12 +559,10 @@ export default {
                         } else {
                           arrCounter = newDetails;
                         }
-                        //===== Here it included ====
-                        // _mysql.rollBackTransaction(() => {
-                        //   throw new Error("Testing blocked");
-                        // });
-                        // debugger;
-                        // return;
+                        if (arrCounter.length === 0) {
+                          arrCounter = newDetails;
+                        }
+
                         _mysql
                           .executeQueryWithTransaction({
                             query:
