@@ -823,6 +823,7 @@ export default function JournalVoucher() {
         multiline={true}
         no_of_lines={6}
         textBox={{
+          updateInternally: true,
           type: "text",
           className: "form-control",
           placeholder: "Enter Narration ex:- Electricity Bill",
