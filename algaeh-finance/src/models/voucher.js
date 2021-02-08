@@ -489,21 +489,22 @@ export default {
                                 : balance_amount;
 
                               if (debitNoteTotal) {
-                                head_amount =
-                                  head_amount === debitNoteTotal
-                                    ? head_amount
-                                    : head_amount + debitNoteTotal;
+                                updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount,updated_date='${moment().format(
+                                  "YYYY-MM-DD"
+                                )}',updated_by=${
+                                  req.userIdentity.algaeh_d_app_user_id
+                                } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                              } else {
+                                updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
+                                  head_amount
+                                )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
+                                  head_amount
+                                )},updated_date='${moment().format(
+                                  "YYYY-MM-DD"
+                                )}',updated_by=${
+                                  req.userIdentity.algaeh_d_app_user_id
+                                } where finance_voucher_header_id=${finance_voucher_header_id};`;
                               }
-
-                              updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
-                                head_amount
-                              )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
-                                head_amount
-                              )},updated_date='${moment().format(
-                                "YYYY-MM-DD"
-                              )}',updated_by=${
-                                req.userIdentity.algaeh_d_app_user_id
-                              } where finance_voucher_header_id=${finance_voucher_header_id};`;
                             }
                           }
                           let updateDebitNoteQuery = "";
@@ -514,7 +515,7 @@ export default {
                               `;
                             }
                           }
-
+                          // debugger;
                           // newDetails.forEach((item) => {
                           //   const {
                           //     amount,
@@ -541,7 +542,8 @@ export default {
                           //           0,
                           //   });
                           // });
-
+                          // _mysql.rollBackTransaction();
+                          // return;
                           _mysql
                             .executeQueryWithTransaction({
                               query: `${queryString}${updateQry}${updateDebitNoteQuery}`,
