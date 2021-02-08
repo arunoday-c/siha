@@ -23,6 +23,7 @@ function OptionsComponent({
     auth1_limit,
     allow_negative_balance,
     grni_required,
+    cr_dr_required,
   } = options;
   return (
     <div className="FinanceOptions">
@@ -276,6 +277,36 @@ function OptionsComponent({
                     onChange: handleChange,
                   }}
                 />
+                <div className="col-2">
+                  <label>Required CR || DR in report ?</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        onChange={handleChange}
+                        name="cr_dr_required"
+                        checked={
+                          cr_dr_required === "Y" || cr_dr_required === undefined
+                            ? true
+                            : false
+                        }
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        onChange={handleChange}
+                        name="cr_dr_required"
+                        checked={cr_dr_required === "N"}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
