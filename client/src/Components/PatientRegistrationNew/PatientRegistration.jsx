@@ -156,8 +156,8 @@ const generateIdCardBig = (data) => {
         reportName: "patientCardBig",
         reportParams: [
           {
-            name: "hims_f_billing_header_id",
-            value: data?.hims_f_billing_header_id,
+            name: "visit_id",
+            value: data?.visit_id,
           },
         ],
         outputFileType: "PDF",
@@ -867,16 +867,19 @@ export function PatientRegistration() {
                         },
                       },
                     },
-                    // {
-                    //   label: "Patient Info Card",
-                    //   events: {
-                    //     onClick: () => {
-                    //       generateIdCardBig(
-                    //         patientData?.patientRegistration || savedPatient
-                    //       );
-                    //     },
-                    //   },
-                    // },
+
+                    // Suhail Print Sticker
+
+                    {
+                      label: "Patient Info Card",
+                      events: {
+                        onClick: () => {
+                          generateIdCardBig(
+                            patientData?.patientRegistration || savedPatient
+                          );
+                        },
+                      },
+                    },
                   ],
                 }
               : ""
@@ -1120,13 +1123,6 @@ export function PatientRegistration() {
                             onClick={() => generateIdCard(savedPatient)}
                           >
                             Print Card
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-default"
-                            onClick={() => generateIdCardBig(savedPatient)}
-                          >
-                            Print Sticker
                           </button>
                         </div>
                       </div>
