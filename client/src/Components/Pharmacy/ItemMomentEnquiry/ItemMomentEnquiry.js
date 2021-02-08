@@ -18,7 +18,7 @@ import {
   datehandle,
   ProcessItemMoment,
   dateValidate,
-  DrillDownScree
+  DrillDownScree,
 } from "./ItemMomentEnquiryEvents";
 import "./ItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
@@ -27,7 +27,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 import {
   // AlgaehTable,
-  Tooltip
+  Tooltip,
 } from "algaeh-react-components";
 
 class ItemMomentEnquiry extends Component {
@@ -124,10 +124,7 @@ class ItemMomentEnquiry extends Component {
           /> */}
 
           <div className="hptl-phase1-item-moment-enquiry-form">
-            <div
-              className="row inner-top-search"
-              style={{ paddingBottom: 10 }}
-            >
+            <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
               <div className="col-lg-12">
                 <div className="row">
                   <AlgaehDateHandler
@@ -249,7 +246,6 @@ class ItemMomentEnquiry extends Component {
             </div>
           </div> */}
               <div className="portlet-body" id="initialStock_Cntr">
-
                 {/* <AlgaehTable
                   id="initial_stock"
                   columns={[
@@ -494,12 +490,9 @@ class ItemMomentEnquiry extends Component {
                   columns={[
                     {
                       fieldName: "select_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Select" }} />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                       displayTemplate: (row) => (
                         <>
-
                           <Tooltip title="DrillDown">
                             <i
                               className="fa fa-exchange-alt"
@@ -509,7 +502,6 @@ class ItemMomentEnquiry extends Component {
                               }}
                             ></i>
                           </Tooltip>
-
                         </>
                       ),
 
@@ -530,32 +522,32 @@ class ItemMomentEnquiry extends Component {
                         return row.transaction_type === "MR"
                           ? "Material Requisition"
                           : row.transaction_type === "ST"
-                            ? "Stock Transfer"
-                            : row.transaction_type === "POS"
-                              ? "Point of Sale"
-                              : row.transaction_type === "SRT"
-                                ? "Sales Return"
-                                : row.transaction_type === "INT"
-                                  ? "Opening Stock"
-                                  : row.transaction_type === "CS"
-                                    ? "Consumption"
-                                    : row.transaction_type === "REC"
-                                      ? "Receipt"
-                                      : row.transaction_type === "PO"
-                                        ? "Purchase Order"
-                                        : row.transaction_type === "DNA"
-                                          ? "Delivery Note"
-                                          : row.transaction_type === "ACK"
-                                            ? "Transfer Acknowledge"
-                                            : row.transaction_type === "PR"
-                                              ? "Purchase Return"
-                                              : row.transaction_type === "AD"
-                                                ? "Stock Adjustment"
-                                                : "";
+                          ? "Stock Transfer"
+                          : row.transaction_type === "POS"
+                          ? "Point of Sale"
+                          : row.transaction_type === "SRT"
+                          ? "Sales Return"
+                          : row.transaction_type === "INT"
+                          ? "Opening Stock"
+                          : row.transaction_type === "CS"
+                          ? "Consumption"
+                          : row.transaction_type === "REC"
+                          ? "Receipt"
+                          : row.transaction_type === "PO"
+                          ? "Purchase Order"
+                          : row.transaction_type === "DNA"
+                          ? "Delivery Note"
+                          : row.transaction_type === "ACK"
+                          ? "Transfer Acknowledge"
+                          : row.transaction_type === "PR"
+                          ? "Purchase Return"
+                          : row.transaction_type === "AD"
+                          ? "Stock Adjustment"
+                          : "";
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "transaction_date",
@@ -571,7 +563,7 @@ class ItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "from_location_id",
@@ -581,10 +573,10 @@ class ItemMomentEnquiry extends Component {
                           this.props.locations === undefined
                             ? []
                             : this.props.locations.filter(
-                              (f) =>
-                                f.hims_d_pharmacy_location_id ===
-                                row.from_location_id
-                            );
+                                (f) =>
+                                  f.hims_d_pharmacy_location_id ===
+                                  row.from_location_id
+                              );
 
                         return (
                           <span>
@@ -596,7 +588,7 @@ class ItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "item_code_id",
@@ -608,9 +600,9 @@ class ItemMomentEnquiry extends Component {
                           this.props.itemlist === undefined
                             ? []
                             : this.props.itemlist.filter(
-                              (f) =>
-                                f.hims_d_item_master_id === row.item_code_id
-                            );
+                                (f) =>
+                                  f.hims_d_item_master_id === row.item_code_id
+                              );
 
                         return (
                           <span>
@@ -623,13 +615,13 @@ class ItemMomentEnquiry extends Component {
                                   row.operation === "+"
                                     ? "fas fa-arrow-up green"
                                     : row.operation === "-"
-                                      ? "fas fa-arrow-down red"
-                                      : ""
+                                    ? "fas fa-arrow-down red"
+                                    : ""
                                 }
                               />
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </span>
                         );
                       },
@@ -646,10 +638,10 @@ class ItemMomentEnquiry extends Component {
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                              (f) =>
-                                f.hims_d_pharmacy_uom_id ===
-                                row.transaction_uom
-                            );
+                                (f) =>
+                                  f.hims_d_pharmacy_uom_id ===
+                                  row.transaction_uom
+                              );
 
                         return (
                           <span>
@@ -661,12 +653,14 @@ class ItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "vendor_batchno",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Vendor Batch No." }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Vendor Batch No." }}
+                        />
                       ),
                     },
                     {
@@ -685,7 +679,7 @@ class ItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "transaction_qty",
@@ -695,18 +689,22 @@ class ItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "qtyhand",
-                      label: <AlgaehLabel label={{ forceLabel: "After Transation Quantity" }} />,
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "After Transation Quantity" }}
+                        />
+                      ),
                       displayTemplate: (row) => {
                         return parseFloat(row.qtyhand);
                       },
                       others: {
                         filterable: false,
-                      }
-                    }
+                      },
+                    },
                     // {
                     //   fieldName: "average_cost",
                     //   label: (
@@ -730,6 +728,34 @@ class ItemMomentEnquiry extends Component {
                   }}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
+              </div>
+            </div>
+          </div>
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  // onClick={() => {
+                  //   this.setState({ exportAsPdf: "Y" }, () => {
+                  //     InvItemSetupEvent().generateReports(this, this);
+                  //   });
+                  // }}
+                >
+                  Export as PDF
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  // onClick={() => {
+                  //   this.setState({ exportAsPdf: "N" }, () => {
+                  //     InvItemSetupEvent().generateReports(this, this);
+                  //   });
+                  // }}
+                >
+                  Export as Excel
+                </button>
               </div>
             </div>
           </div>

@@ -12,6 +12,259 @@ export default function Pharmacy({
     excel: "true",
     submenu: [
       {
+        subitem: "Consumption List",
+        reportName: "consumptionListPharmacy",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Location",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              method: "GET",
+              data: { hospital_id: hospital_id },
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id",
+              data: [],
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy",
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined,
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "stockUsed",
+
+            isImp: true,
+            label: "Show for last",
+
+            dataSource: {
+              textField: "stockUsed",
+              valueField: "stockUsedValue",
+              data: [
+                {
+                  stockUsed: "1 months",
+                  stockUsedValue: moment()
+                    .add(-1, "months")
+                    .format("YYYY-MM-DD"),
+                },
+                {
+                  stockUsed: "2 months",
+                  stockUsedValue: moment()
+                    .add(-2, "months")
+                    .format("YYYY-MM-DD"),
+                },
+                {
+                  stockUsed: "3 months",
+                  stockUsedValue: moment()
+                    .add(-3, "months")
+                    .format("YYYY-MM-DD"),
+                },
+              ],
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Items Consumption Report",
+        reportName: "itemsConsumptionPharmacy",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait", //"landscape",
+        componentCode: "RPT_PHR_ITM_CONS",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id",
+              data: [],
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy",
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
         subitem: "List of Receipts",
         reportName: "salesReceiptListPharmacy",
         requireIframe: true,
@@ -557,151 +810,6 @@ export default function Pharmacy({
               textField: "item_description",
               valueField: "hims_d_item_master_id",
               data: undefined,
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
-          },
-        ],
-      },
-      {
-        subitem: "Consumption List",
-        reportName: "consumptionListPharmacy",
-        requireIframe: true,
-        reportParameters: [
-          {
-            className: "col-3 form-group mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "branch",
-            link: {
-              uri: "/organization/getOrganizationByUser",
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getPharmacyLocation",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: (result) => {
-                    reportState.setState({
-                      location_id_list: result.data.records,
-                    });
-                  },
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: [],
-                });
-              },
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined,
-            },
-          },
-
-          {
-            className: "col-3 form-group mandatory",
-            type: "dropdown",
-            name: "location_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Location",
-            link: {
-              uri: "/pharmacy/getPharmacyLocation",
-              module: "pharmacy",
-              method: "GET",
-              data: { hospital_id: hospital_id },
-            },
-            manupulation: (response, reportState, stateProperty) => {
-              reportState.setState({
-                [stateProperty]: response.records,
-              });
-            },
-            dataSource: {
-              textField: "location_description",
-              valueField: "hims_d_pharmacy_location_id",
-              data: [],
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
-          },
-
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
-            name: "item_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Item",
-
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy",
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined,
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
-          },
-          {
-            className: "col-3 form-group mandatory",
-            type: "dropdown",
-            name: "stockUsed",
-
-            isImp: true,
-            label: "Show for last",
-
-            dataSource: {
-              textField: "stockUsed",
-              valueField: "stockUsedValue",
-              data: [
-                {
-                  stockUsed: "1 months",
-                  stockUsedValue: moment()
-                    .add(-1, "months")
-                    .format("YYYY-MM-DD"),
-                },
-                {
-                  stockUsed: "2 months",
-                  stockUsedValue: moment()
-                    .add(-2, "months")
-                    .format("YYYY-MM-DD"),
-                },
-                {
-                  stockUsed: "3 months",
-                  stockUsedValue: moment()
-                    .add(-3, "months")
-                    .format("YYYY-MM-DD"),
-                },
-              ],
             },
             events: {
               onClear: (reportState, currentName) => {
