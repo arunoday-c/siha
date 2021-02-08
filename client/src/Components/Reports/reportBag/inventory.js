@@ -232,57 +232,6 @@ export default function Inventory({
               },
             },
           },
-          // {
-          //   className: "col-3 form-group",
-          //   type: "dropdown",
-          //   name: "sub_department_id",
-          //   initialLoad: true,
-          //   isImp: false,
-          //   label: "Department",
-          //   link: {
-          //     //uri: "/department/get/subdepartment"
-          //     uri: "/department/get/get_All_Doctors_DepartmentWise",
-          //     module: "masterSettings",
-          //   },
-          //   manupulation: (response, reportState, stateProperty) => {
-          //     reportState.setState({
-          //       [stateProperty]: response.records.departmets,
-          //     });
-          //   },
-          //   dataSource: {
-          //     textField: "sub_department_name",
-          //     valueField: "sub_department_id",
-          //     data: undefined,
-          //   },
-          //   events: {
-          //     onChange: (reportState, currentEvent) => {
-          //       //provider_id_list CONTROL NAME AND APPEND BY _LIST
-          //       reportState.setState({
-          //         sub_department_id: currentEvent.value,
-          //         provider_id_list: currentEvent.selected.doctors,
-          //       });
-          //     },
-          //     onClear: (reportState, currentName) => {
-          //       reportState.setState({
-          //         [currentName]: undefined,
-          //         provider_id_list: [],
-          //       });
-          //     },
-          //   },
-          // },
-          // {
-          //   className: "col-3 form-group",
-          //   type: "dropdown",
-          //   name: "provider_id",
-          //   initialLoad: true,
-          //   isImp: false,
-          //   label: "Filter by Doctor",
-          //   dataSource: {
-          //     textField: "full_name",
-          //     valueField: "employee_id",
-          //     data: undefined,
-          //   },
-          // },
           {
             className: "col-3 form-group",
             type: "dropdown",
@@ -303,17 +252,6 @@ export default function Inventory({
           },
         ],
       },
-
-      // {
-      //   subitem: "Items Issued Report",
-      //   template_name: "asset_war_exp",
-      //   reportParameters: []
-      // },
-      // {
-      //   subitem: "Items Received Report",
-      //   template_name: "asset_war_exp",
-      //   reportParameters: []
-      // },
       {
         subitem: "Item Expiry Report",
         reportName: "itemExpiryInventory",

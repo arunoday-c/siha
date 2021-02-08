@@ -1,6 +1,6 @@
 //const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
       //  const utilities = new algaehUtilities();
@@ -9,7 +9,7 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       let params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -36,31 +36,27 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_inventory_item_master IM on  D.item_id=IM.hims_d_inventory_item_master_id
           inner join hims_d_inventory_location INV on H.location_id = INV.hims_d_inventory_location_id
           where H.hospital_id=?  and  date(H.consumption_date) between date(?) and date(?) ${str};`,
-          values: [
-            input.hospital_id,
-            input.from_date,
-            input.to_date
-          ],
-          printQuery: true
+          values: [input.hospital_id, input.from_date, input.to_date],
+          printQuery: true,
         })
-        .then(results => {
+        .then((results) => {
           // utilities.logger().log("results: ", results);
           const result = _.chain(results)
-            .groupBy(g => g.provider_id)
-            .map(function(item) {
+            .groupBy((g) => g.provider_id)
+            .map(function (item) {
               const total_cost = _.chain(item)
-                .sumBy(s => parseFloat(s.extended_cost))
+                .sumBy((s) => parseFloat(s.extended_cost))
                 .value()
                 .toFixed(decimal_places);
               return {
                 doctor: item[0]["full_name"],
                 detailList: item,
-                total_cost: total_cost
+                total_cost: total_cost,
               };
             })
             .value();
           const grandTotal = _.chain(result)
-            .sumBy(s => parseFloat(s.total_cost))
+            .sumBy((s) => parseFloat(s.total_cost))
             .value()
             .toFixed(decimal_places);
 
@@ -69,9 +65,8 @@ const executePDF = function executePDFMethod(options) {
           //   .logger()
           //   .log("results: ", { detail: result, grandTotal: grandTotal });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
-          
         });
     } catch (e) {
       reject(e);
