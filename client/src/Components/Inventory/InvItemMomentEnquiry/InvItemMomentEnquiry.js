@@ -18,7 +18,7 @@ import {
   datehandle,
   ProcessItemMoment,
   dateValidate,
-  DrillDownScree
+  DrillDownScree,
 } from "./InvItemMomentEnquiryEvents";
 import "./InvItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
@@ -26,7 +26,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   // AlgaehTable,
-  Tooltip
+  Tooltip,
 } from "algaeh-react-components";
 
 class InvItemMomentEnquiry extends Component {
@@ -115,10 +115,7 @@ class InvItemMomentEnquiry extends Component {
             className="hptl-phase1-item-moment-enquiry-form"
             data-validate="itemMoment"
           >
-            <div
-              className="row inner-top-search"
-              style={{ paddingBottom: 10 }}
-            >
+            <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
               <div className="col-lg-12">
                 <div className="row">
                   <AlgaehDateHandler
@@ -239,12 +236,9 @@ class InvItemMomentEnquiry extends Component {
                   columns={[
                     {
                       fieldName: "select_id",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Select" }} />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                       displayTemplate: (row) => (
                         <>
-
                           <Tooltip title="DrillDown">
                             <i
                               className="fa fa-exchange-alt"
@@ -254,7 +248,6 @@ class InvItemMomentEnquiry extends Component {
                               }}
                             ></i>
                           </Tooltip>
-
                         </>
                       ),
 
@@ -275,32 +268,32 @@ class InvItemMomentEnquiry extends Component {
                         return row.transaction_type === "MR"
                           ? "Material Requisition"
                           : row.transaction_type === "ST"
-                            ? "Stock Transfer"
-                            : row.transaction_type === "POS"
-                              ? "Point of Sale"
-                              : row.transaction_type === "SRT"
-                                ? "Sales Return"
-                                : row.transaction_type === "INT"
-                                  ? "Opening Stock"
-                                  : row.transaction_type === "CS"
-                                    ? "Consumption"
-                                    : row.transaction_type === "CSN"
-                                      ? "Consumption Cancel"
-                                      : row.transaction_type === "REC"
-                                        ? "Receipt"
-                                        : row.transaction_type === "PO"
-                                          ? "Purchase Order"
-                                          : row.transaction_type === "DNA"
-                                            ? "Delivery Note"
-                                            : row.transaction_type === "ACK"
-                                              ? "Transfer Acknowledge"
-                                              : row.transaction_type === "PR"
-                                                ? "Purchase Return"
-                                                : row.transaction_type === "AD"
-                                                  ? "Stock Adjustment"
-                                                  : row.transaction_type === "SDN"
-                                                    ? "Sales Dispatch Note"
-                                                    : "";
+                          ? "Stock Transfer"
+                          : row.transaction_type === "POS"
+                          ? "Point of Sale"
+                          : row.transaction_type === "SRT"
+                          ? "Sales Return"
+                          : row.transaction_type === "INT"
+                          ? "Opening Stock"
+                          : row.transaction_type === "CS"
+                          ? "Consumption"
+                          : row.transaction_type === "CSN"
+                          ? "Consumption Cancel"
+                          : row.transaction_type === "REC"
+                          ? "Receipt"
+                          : row.transaction_type === "PO"
+                          ? "Purchase Order"
+                          : row.transaction_type === "DNA"
+                          ? "Delivery Note"
+                          : row.transaction_type === "ACK"
+                          ? "Transfer Acknowledge"
+                          : row.transaction_type === "PR"
+                          ? "Purchase Return"
+                          : row.transaction_type === "AD"
+                          ? "Stock Adjustment"
+                          : row.transaction_type === "SDN"
+                          ? "Sales Dispatch Note"
+                          : "";
                       },
                       others: {
                         filterable: false,
@@ -320,7 +313,7 @@ class InvItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "from_location_id",
@@ -330,10 +323,10 @@ class InvItemMomentEnquiry extends Component {
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                              (f) =>
-                                f.hims_d_inventory_location_id ===
-                                row.from_location_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.from_location_id
+                              );
 
                         return (
                           <span>
@@ -345,7 +338,7 @@ class InvItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "item_code_id",
@@ -357,10 +350,10 @@ class InvItemMomentEnquiry extends Component {
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                              (f) =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.item_code_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_item_master_id ===
+                                  row.item_code_id
+                              );
 
                         return (
                           <span>
@@ -373,13 +366,13 @@ class InvItemMomentEnquiry extends Component {
                                   row.operation === "+"
                                     ? "fas fa-arrow-up green"
                                     : row.operation === "-"
-                                      ? "fas fa-arrow-down red"
-                                      : ""
+                                    ? "fas fa-arrow-down red"
+                                    : ""
                                 }
                               />
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </span>
                         );
                       },
@@ -396,10 +389,10 @@ class InvItemMomentEnquiry extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              (f) =>
-                                f.hims_d_inventory_uom_id ===
-                                row.transaction_uom
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id ===
+                                  row.transaction_uom
+                              );
 
                         return (
                           <span>
@@ -411,13 +404,15 @@ class InvItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
 
                     {
                       fieldName: "vendor_batchno",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Vendor Batch No." }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Vendor Batch No." }}
+                        />
                       ),
                     },
                     {
@@ -436,7 +431,7 @@ class InvItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "transaction_qty",
@@ -446,18 +441,22 @@ class InvItemMomentEnquiry extends Component {
                       },
                       others: {
                         filterable: false,
-                      }
+                      },
                     },
                     {
                       fieldName: "qtyhand",
-                      label: <AlgaehLabel label={{ forceLabel: "After Transation Quantity" }} />,
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "After Transation Quantity" }}
+                        />
+                      ),
                       displayTemplate: (row) => {
                         return parseFloat(row.qtyhand);
                       },
                       others: {
                         filterable: false,
-                      }
-                    }
+                      },
+                    },
                     // {
                     //   fieldName: "average_cost",
                     //   label: (
@@ -481,6 +480,34 @@ class InvItemMomentEnquiry extends Component {
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
+              </div>
+            </div>
+          </div>
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  // onClick={() => {
+                  //   this.setState({ exportAsPdf: "Y" }, () => {
+                  //     InvItemSetupEvent().generateReports(this, this);
+                  //   });
+                  // }}
+                >
+                  Export as PDF
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  // onClick={() => {
+                  //   this.setState({ exportAsPdf: "N" }, () => {
+                  //     InvItemSetupEvent().generateReports(this, this);
+                  //   });
+                  // }}
+                >
+                  Export as Excel
+                </button>
               </div>
             </div>
           </div>
