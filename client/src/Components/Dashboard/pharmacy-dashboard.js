@@ -21,9 +21,9 @@ const AdmissionsReadmissionData = {
       borderColor: "#71B37C",
       hoverBackgroundColor: "#71B37C",
       hoverBorderColor: "#71B37C",
-      yAxisID: "y-axis-1"
-    }
-  ]
+      yAxisID: "y-axis-1",
+    },
+  ],
 };
 
 const AdmissionsReadmissionDataOptions = {
@@ -31,26 +31,26 @@ const AdmissionsReadmissionDataOptions = {
   legend: {
     position: "bottom",
     labels: {
-      boxWidth: 10
-    }
+      boxWidth: 10,
+    },
   },
   tooltips: {
-    mode: "label"
+    mode: "label",
   },
   elements: {
     line: {
-      fill: false
-    }
+      fill: false,
+    },
   },
   scales: {
     xAxes: [
       {
         display: true,
         gridLines: {
-          display: false
+          display: false,
         },
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
-      }
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+      },
     ],
     yAxes: [
       {
@@ -59,14 +59,14 @@ const AdmissionsReadmissionDataOptions = {
         position: "left",
         id: "y-axis-1",
         gridLines: {
-          display: false
+          display: false,
         },
         labels: {
-          show: true
-        }
-      }
-    ]
-  }
+          show: true,
+        },
+      },
+    ],
+  },
 };
 
 // const OutpatientsInpatientsData = {
@@ -195,9 +195,9 @@ const DistributionbySales = {
       borderColor: "rgba(255,99,132,1)",
       borderWidth: 1,
       hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)"
-    }
-  ]
+      hoverBorderColor: "rgba(255,99,132,1)",
+    },
+  ],
 };
 
 // const RevenuebyService = {
@@ -291,7 +291,7 @@ const PieData = {
     "Livial 2.5 mg Tablets 28's",
     "Nevanac 0.1% Eye Drops 5 ml",
     "Pholcodine 5 mg/5 ml Linctus (200 ml)",
-    "Pyrazinamide 500 mg Tablets 20'S (10'S X 2)"
+    "Pyrazinamide 500 mg Tablets 20'S (10'S X 2)",
   ],
   datasets: [
     {
@@ -302,10 +302,10 @@ const PieData = {
         "#DCAC66",
         "#EC932F",
         "#673ab7",
-        "#009688"
-      ]
-    }
-  ]
+        "#009688",
+      ],
+    },
+  ],
 };
 
 // const CostPayerTypeData = {
@@ -381,13 +381,13 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       sidBarOpen: true,
-      showDetails: "d-none"
+      showDetails: "d-none",
     };
   }
 
   showDetailHandler(event) {
     this.setState({
-      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block"
+      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block",
     });
   }
 
@@ -417,7 +417,7 @@ class Dashboard extends Component {
   // }
   SideMenuBarOpen(sidOpen) {
     this.setState({
-      sidBarOpen: sidOpen
+      sidBarOpen: sidOpen,
     });
   }
 
@@ -436,7 +436,7 @@ class Dashboard extends Component {
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Todays Customer Served</p>
+                    <p>Today's Customer Served</p>
                     124
                   </div>
                 </div>
@@ -619,14 +619,14 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
     },
     dispatch
   );
