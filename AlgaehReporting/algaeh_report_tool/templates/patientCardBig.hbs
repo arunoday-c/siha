@@ -28,23 +28,23 @@
 <table class="tableNoBorder"  style="margin-bottom:5px;padding-bottom:5px;border-bottom: 1px dotted #ccc;">
     <tbody>
         <tr>
-            <td colspan="3">Name: <b>{{header.patient_full_name}}</b></td>
+            <td colspan="3">Name: <b>{{patient_full_name}}</b></td>
         </tr>
          <tr>
-              <td>MRN No: <b>{{header.patient_code}}</b></td>
+              <td>MRN No: <b>{{patient_code}}</b></td>
             <td width="5%"></td>
-            <td>{{header.identity_document_name}}: <b>{{header.primary_id_no}}</b></td>
+            <td>{{identity_document_name}}: <b>{{primary_id_no}}</b></td>
            
         </tr>
         <tr>
 
-            <td>Nationality: <b>{{header.nationality}}</b></td> 
-            <td width="5%"></td><td>Mobile No: <b>{{header.contact_number}}</b></td>
+            <td>Nationality: <b>{{nationality}}</b></td> 
+            <td width="5%"></td><td>Mobile No: <b>{{contact_number}}</b></td>
         </tr>
         <tr>
-             <td>Age & Gender: <b>{{header.age_in_years}}/ {{header.gender}}</b></td>
+             <td>Age & Gender: <b>{{age_in_years}}/ {{gender}}</b></td>
             <td width="5%"></td>
-            <td> DOB: <b>{{dateTime header.date_of_birth "date"}}</b></td>
+            <td> DOB: <b>{{date_of_birth }}</b></td>
            
         </tr>
         
@@ -58,12 +58,12 @@
 <table class="tableNoBorder">
     <tbody>
         <tr>
-            <td colspan="3">Doctor Name: <b>{{header.full_name}}</b></td>
+            <td colspan="3">Doctor Name: <b>{{full_name}}</b></td>
         </tr>
          <tr>
-              <td>Visit Type: <b>{{header.visit_type_desc}}</b></td>
+              <td>Visit Type: <b>{{visit_type_desc}}</b></td>
             <td width="5%"></td>
-            <td>Visit Date & Time: <b>{{header.visit_date}}</b></td>
+            <td>Visit Date & Time: <b>{{visit_date}}</b></td>
         </tr>
         
         {{!-- <tr>
