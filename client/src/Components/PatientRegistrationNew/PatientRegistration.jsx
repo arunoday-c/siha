@@ -157,7 +157,7 @@ const generateIdCardBig = (data) => {
         reportParams: [
           {
             name: "visit_id",
-            value: data?.visit_id,
+            value: data?.patient_visit_id,
           },
         ],
         outputFileType: "PDF",
@@ -165,7 +165,7 @@ const generateIdCardBig = (data) => {
     },
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data?.patient_code}-ID Card`;
+      const reportName = `${data?.patient_code}-${data.full_name}-ID Card`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
     },
@@ -846,7 +846,7 @@ export function PatientRegistration() {
             },
           }}
           printArea={
-            !!patient_code || !!savedPatient
+            !!savedPatient?.patient_visit_id
               ? {
                   menuitems: [
                     {
@@ -867,22 +867,43 @@ export function PatientRegistration() {
                         },
                       },
                     },
-
                     // Suhail Print Sticker
 
                     {
                       label: "Patient Info Card",
                       events: {
                         onClick: () => {
-                          generateIdCardBig(
-                            patientData?.patientRegistration || savedPatient
-                          );
+                          generateIdCardBig({
+                            ...savedPatient,
+                            ...patientData?.patientRegistration,
+                          });
                         },
                       },
                     },
                   ],
                 }
-              : ""
+              : {
+                  menuitems: [
+                    {
+                      label: "ID Card",
+                      events: {
+                        onClick: () => {
+                          generateIdCard(
+                            patientData?.patientRegistration || savedPatient
+                          );
+                        },
+                      },
+                    },
+                    {
+                      label: "Advance/Refund Receipt",
+                      events: {
+                        onClick: () => {
+                          setShowAdvModal(true);
+                        },
+                      },
+                    },
+                  ],
+                }
           }
           selectedLang={userLanguage}
         />
@@ -918,6 +939,7 @@ export function PatientRegistration() {
                   trigger={trigger}
                   setValue={setValue}
                   visits={patientData?.visitDetails}
+                  patientData={patientData}
                   packages={packages}
                   errors={errors}
                 />

@@ -11,10 +11,12 @@ import {
   AlgaehTreeSearch,
   AlgaehDataGrid,
   Spin,
+  Tooltip,
 } from "algaeh-react-components";
 import { useLangFieldName } from "./patientHooks";
 import { newAlgaehApi, useQueryParams } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
+import { algaehApiCall } from "./../../utils/algaehApiCall";
 // import GenericData from "../../utils/GlobalVariables.json";
 const { TabPane } = Tabs;
 
@@ -44,9 +46,13 @@ export function VisitDetails({
   errors,
   visits = [],
   packages = [],
+  patientData,
 }) {
   const queryParams = useQueryParams();
   const appointment_id = queryParams.get("appointment_id");
+
+  const patient_code = queryParams.get("patient_code");
+
   const { fieldNameFn } = useLangFieldName();
   const { setVisitType } = useContext(MainContext);
   const { setServiceInfo, setConsultationInfo, disabled } = useContext(
@@ -94,6 +100,40 @@ export function VisitDetails({
   }, [visit_type, visitTypes]);
 
   const insured = !!primary_insurance_provider_id;
+  const generateIdCardBig = (data) => {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          others: {
+            width: "90mm",
+            height: "50mm",
+            showHeaderFooter: false,
+          },
+          reportName: "patientCardBig",
+          reportParams: [
+            {
+              name: "visit_id",
+              value: data?.hims_f_patient_visit_id,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const reportName = `${patient_code}-${patientData?.patientRegistration?.full_name}-ID Card`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
+        window.open(origin);
+      },
+    });
+  };
 
   return (
     <Spin spinning={isLoading}>
@@ -176,7 +216,6 @@ export function VisitDetails({
                                 disableHeader: true,
                                 treeDefaultExpandAll: true,
                                 onChange: (selected) => {
-                                  debugger
                                   if (selected) {
                                     setServiceInfo(selected);
                                   } else {
@@ -218,12 +257,12 @@ export function VisitDetails({
                                       type="checkbox"
                                       name="existing_plan"
                                       value="Y"
-                                    // checked={this.state.checked_existing_plan}
-                                    // onChange={radioChange.bind(
-                                    //   this,
-                                    //   this,
-                                    //   context
-                                    // )}
+                                      // checked={this.state.checked_existing_plan}
+                                      // onChange={radioChange.bind(
+                                      //   this,
+                                      //   this,
+                                      //   context
+                                      // )}
                                     />
                                     <span>{fieldNameFn("Yes", "نعم")}</span>
                                   </label>
@@ -276,12 +315,12 @@ export function VisitDetails({
                                       type="checkbox"
                                       name="eligible"
                                       value="Y"
-                                    //   checked={this.state.checked_eligible}
-                                    //   onChange={radioChange.bind(
-                                    //     this,
-                                    //     this,
-                                    //     context
-                                    //   )}
+                                      //   checked={this.state.checked_eligible}
+                                      //   onChange={radioChange.bind(
+                                      //     this,
+                                      //     this,
+                                      //     context
+                                      //   )}
                                     />
                                     <span>{fieldNameFn("Yes", "نعم")}</span>
                                   </label>
@@ -323,6 +362,26 @@ export function VisitDetails({
                       <AlgaehDataGrid
                         className="pastVisitGrid"
                         columns={[
+                          {
+                            fieldName: "Print_sticker",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Print Sticker" }}
+                              />
+                            ),
+                            displayTemplate: (row) => {
+                              return (
+                                <Tooltip title="Revert">
+                                  <i
+                                    className="fas fa-print"
+                                    onClick={() => {
+                                      generateIdCardBig(row);
+                                    }}
+                                  />
+                                </Tooltip>
+                              );
+                            },
+                          },
                           {
                             fieldName: "visit_code",
                             label: (
