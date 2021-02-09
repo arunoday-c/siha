@@ -2793,7 +2793,9 @@ function getTrialBalanceFunc(
                         // openingBalanceList
                         finance_account_head_id,
                         options.current_year,
-                        options.cr_dr_required
+                        options.cr_dr_required,
+                        options.from_date,
+                        options.to_date
                       );
                       resolve(outputArray[0]);
                     })
@@ -2843,7 +2845,9 @@ function createHierarchyTransactionTB(
   current_to_date,
   finance_account_head_id,
   current_year,
-  cr_dr_required
+  cr_dr_required,
+  from_date,
+  to_date
 ) {
   try {
     // const onlyChilds = [];
@@ -2881,82 +2885,114 @@ function createHierarchyTransactionTB(
         //ST---calulating Amount
 
         //ST calculating opening balance of from date-----
+        // console.log(
+        //   "opening Balance",
+        //   item.finance_account_head_id,
+        //   " - ",
+        //   item.finance_account_child_id,
+        //   _.chain(op_child_data)
+        //     .filter(
+        //       (f) =>
+        //         f.head_id === item.finance_account_head_id &&
+        //         f.child_id === item.finance_account_child_id
+        //     )
+        //     .sumBy((s) => parseFloat(s.deb_minus_cred))
+        //     .value()
+        // );
+        let OP_BALANCE = undefined;
+        const SUM_DEB_CREDIT = _.chain(op_child_data)
+          .filter(
+            (f) =>
+              f.head_id === item.finance_account_head_id &&
+              f.child_id === item.finance_account_child_id
+          )
+          .sumBy((s) => parseFloat(s.deb_minus_cred))
+          .value();
 
-        const OP_BALANCE = op_child_data.find((f) => {
-          return (
-            item.finance_account_head_id == f.head_id &&
-            item.finance_account_child_id == f.child_id
-          );
-        });
+        const SUM_CREDIT_DEBIT = _.chain(op_child_data)
+          .filter(
+            (f) =>
+              f.head_id === item.finance_account_head_id &&
+              f.child_id === item.finance_account_child_id
+          )
+          .sumBy((s) => parseFloat(s.cred_minus_deb))
+          .value();
+
+        // op_child_data.find((f) => {
+        //   return (
+        //     item.finance_account_head_id == f.head_id &&
+        //     item.finance_account_child_id == f.child_id
+        //   );
+        // });
         // console.log("======= OP_BALANCE ====", OP_BALANCE);
         let op_amount = default_total;
 
-        if (OP_BALANCE != undefined) {
-          const execute = () => {
-            if (trans_symbol == "Dr") {
-              if (
-                parseFloat(OP_BALANCE.deb_minus_cred) >
-                parseFloat(OP_BALANCE.cred_minus_deb)
-              ) {
-                op_amount =
-                  parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                    decimal_places
-                  ) + " Dr";
-              } else if (
-                parseFloat(OP_BALANCE.deb_minus_cred) <
-                parseFloat(OP_BALANCE.cred_minus_deb)
-              ) {
-                op_amount =
-                  parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                    decimal_places
-                  ) + " Cr";
-              } else {
-                op_amount = parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                  decimal_places
-                );
-              }
-            } else {
-              if (
-                parseFloat(OP_BALANCE.cred_minus_deb) >
-                parseFloat(OP_BALANCE.deb_minus_cred)
-              ) {
-                op_amount =
-                  parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                    decimal_places
-                  ) + " Cr";
-              } else if (
-                parseFloat(OP_BALANCE.cred_minus_deb) <
-                parseFloat(OP_BALANCE.deb_minus_cred)
-              ) {
-                op_amount =
-                  parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                    decimal_places
-                  ) + " Dr";
-              } else {
-                op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                  decimal_places
-                );
-              }
-            }
-          };
-          if (finance_account_head_id === 4 || finance_account_head_id === 5) {
+        // if (OP_BALANCE != undefined) {
+        const execute = () => {
+          if (trans_symbol == "Dr") {
             if (
-              parseInt(moment().format("YYYY")) === current_year &&
-              parseInt(
-                moment(OP_BALANCE.payment_date, "YYYY-MM-DD").format("YYYYMMDD")
-              ) >= parseInt(current_from_date) &&
-              parseInt(
-                moment(OP_BALANCE.payment_date, "YYYY-MM-DD").format("YYYYMMDD")
-              ) <= parseInt(current_to_date)
+              // parseFloat(OP_BALANCE.deb_minus_cred) >
+              // parseFloat(OP_BALANCE.cred_minus_deb)
+              SUM_DEB_CREDIT > SUM_CREDIT_DEBIT
             ) {
-              execute();
+              op_amount =
+                // parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places) + " Dr";
+            } else if (
+              SUM_DEB_CREDIT < SUM_CREDIT_DEBIT
+              // parseFloat(OP_BALANCE.deb_minus_cred) <
+              // parseFloat(OP_BALANCE.cred_minus_deb)
+            ) {
+              op_amount =
+                // parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places) + " Cr";
             } else {
-              op_amount = 0;
+              op_amount =
+                // parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places);
             }
           } else {
-            execute();
+            if (
+              SUM_CREDIT_DEBIT > SUM_DEB_CREDIT
+              // parseFloat(OP_BALANCE.cred_minus_deb) >
+              // parseFloat(OP_BALANCE.deb_minus_cred)
+            ) {
+              op_amount =
+                // parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places) + " Cr";
+            } else if (
+              SUM_CREDIT_DEBIT < SUM_DEB_CREDIT
+              // parseFloat(OP_BALANCE.cred_minus_deb) <
+              // parseFloat(OP_BALANCE.deb_minus_cred)
+            ) {
+              op_amount =
+                // parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places) + " Dr";
+            } else {
+              op_amount = parseFloat(SUM_CREDIT_DEBIT).toFixed(
+                //  parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
           }
+        };
+        if (finance_account_head_id === 4 || finance_account_head_id === 5) {
+          if (
+            parseInt(moment(to_date, "YYYY-MM-DD").format("YYYY")) ===
+              current_year &&
+            parseInt(moment(from_date, "YYYY-MM-DD").format("YYYYMMDD")) >=
+              parseInt(current_from_date) &&
+            parseInt(moment(to_date, "YYYY-MM-DD").format("YYYYMMDD")) <=
+              parseInt(current_to_date)
+          ) {
+            execute();
+          } else {
+            op_amount = 0;
+          }
+        } else {
+          execute();
         }
+        // }
         ///END calculating opening balance of from date-----
         //ST calculating transaction amount between  from_date  and to_date-----
         const TR_BALANCE = transaction_child_data.find((f) => {
@@ -3085,11 +3121,31 @@ function createHierarchyTransactionTB(
                       finance_account_head_id === 1 ||
                       finance_account_head_id === 5
                         ? String(op_amount).includes("Cr")
-                          ? -Math.abs(parseFloat(op_amount))
-                          : op_amount
+                          ? `${
+                              cr_dr_required === undefined ||
+                              cr_dr_required === "Y"
+                                ? op_amount
+                                : -Math.abs(parseFloat(op_amount))
+                            }`
+                          : `${
+                              cr_dr_required === undefined ||
+                              cr_dr_required === "Y"
+                                ? op_amount
+                                : -Math.abs(parseFloat(op_amount))
+                            }`
                         : String(op_amount).includes("Dr")
-                        ? -Math.abs(parseFloat(op_amount))
-                        : op_amount
+                        ? `${
+                            cr_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
+                        : `${
+                            r_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
                     }`,
               title: item.child_name,
               label: item.child_name,
@@ -3117,11 +3173,29 @@ function createHierarchyTransactionTB(
                     finance_account_head_id === 1 ||
                     finance_account_head_id === 5
                       ? String(op_amount).includes("Cr")
-                        ? -Math.abs(parseFloat(op_amount))
-                        : op_amount
+                        ? `${
+                            cr_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
+                        : `${
+                            cr_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
                       : String(op_amount).includes("Dr")
-                      ? -Math.abs(parseFloat(op_amount))
-                      : op_amount
+                      ? `${
+                          cr_dr_required === undefined || cr_dr_required === "Y"
+                            ? op_amount
+                            : -Math.abs(parseFloat(op_amount))
+                        }`
+                      : `${
+                          r_dr_required === undefined || cr_dr_required === "Y"
+                            ? op_amount
+                            : -Math.abs(parseFloat(op_amount))
+                        }`
                   }`,
             title: item.child_name,
             label: item.child_name,
@@ -3138,94 +3212,102 @@ function createHierarchyTransactionTB(
         if (!data) {
           //ST calculating opening balance of from date-----
 
-          const OP_BALANCE = op_head_data.find((f) => {
-            return item.finance_account_head_id == f.finance_account_head_id;
-          });
+          let OP_BALANCE = undefined;
+          // OP_BALANCE = op_head_data.find((f) => {
+          //   return item.finance_account_head_id == f.finance_account_head_id;
+          // });
+          // console.log("Here it is =====", OP_BALANCE);
+          const SUM_DEB_CREDIT = _.chain(op_head_data)
+            .filter(
+              (f) => f.finance_account_head_id === item.finance_account_head_id
+            )
+            .sumBy((s) => parseFloat(s.deb_minus_cred))
+            .value();
+          const SUM_CREDIT_DEBIT = _.chain(op_head_data)
+            .filter(
+              (f) => f.finance_account_head_id === item.finance_account_head_id
+            )
+            .sumBy((s) => parseFloat(s.cred_minus_deb))
+            .value();
 
           let op_amount = default_total;
-          if (OP_BALANCE != undefined) {
-            const execute = () => {
-              if (trans_symbol == "Dr") {
-                if (
-                  parseFloat(OP_BALANCE.deb_minus_cred) >
-                  parseFloat(OP_BALANCE.cred_minus_deb)
-                ) {
-                  op_amount =
-                    parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                      decimal_places
-                    ) +
-                    `${
-                      cr_dr_required === undefined || cr_dr_required === "Y"
-                        ? " Dr"
-                        : ""
-                    }`;
-                } else if (
-                  parseFloat(OP_BALANCE.deb_minus_cred) <
-                  parseFloat(OP_BALANCE.cred_minus_deb)
-                ) {
-                  op_amount =
-                    parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                      decimal_places
-                    ) +
-                    `${
-                      cr_dr_required === undefined || cr_dr_required === "Y"
-                        ? " Cr"
-                        : ""
-                    }`;
-                } else {
-                  op_amount = parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                    decimal_places
-                  );
-                }
-              } else {
-                if (
-                  parseFloat(OP_BALANCE.cred_minus_deb) >
-                  parseFloat(OP_BALANCE.deb_minus_cred)
-                ) {
-                  op_amount =
-                    parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                      decimal_places
-                    ) + " Cr";
-                } else if (
-                  parseFloat(OP_BALANCE.cred_minus_deb) <
-                  parseFloat(OP_BALANCE.deb_minus_cred)
-                ) {
-                  op_amount =
-                    parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                      decimal_places
-                    ) + " Dr";
-                } else {
-                  op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                    decimal_places
-                  );
-                }
-              }
-            };
-            if (
-              finance_account_head_id === 4 ||
-              finance_account_head_id === 5
-            ) {
+          // if (OP_BALANCE != undefined) {
+          const execute = () => {
+            if (trans_symbol == "Dr") {
               if (
-                parseInt(moment().format("YYYY")) === current_year &&
-                parseInt(
-                  moment(OP_BALANCE.payment_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )
-                ) >= parseInt(current_from_date) &&
-                parseInt(
-                  moment(OP_BALANCE.payment_date, "YYYY-MM-DD").format(
-                    "YYYYMMDD"
-                  )
-                ) <= parseInt(current_to_date)
+                SUM_DEB_CREDIT > SUM_CREDIT_DEBIT
+                // parseFloat(OP_BALANCE.deb_minus_cred) >
+                // parseFloat(OP_BALANCE.cred_minus_deb)
               ) {
-                execute();
+                op_amount =
+                  // parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                  parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places) +
+                  `${
+                    cr_dr_required === undefined || cr_dr_required === "Y"
+                      ? " Dr"
+                      : ""
+                  }`;
+              } else if (
+                SUM_DEB_CREDIT < SUM_CREDIT_DEBIT
+                // parseFloat(OP_BALANCE.deb_minus_cred) <
+                // parseFloat(OP_BALANCE.cred_minus_deb)
+              ) {
+                op_amount =
+                  // parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                  parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places) +
+                  `${
+                    cr_dr_required === undefined || cr_dr_required === "Y"
+                      ? " Cr"
+                      : ""
+                  }`;
               } else {
-                op_amount = 0;
+                op_amount = parseFloat(SUM_DEB_CREDIT).toFixed(
+                  // parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
               }
             } else {
-              execute();
+              if (
+                SUM_CREDIT_DEBIT > SUM_DEB_CREDIT
+                // parseFloat(OP_BALANCE.cred_minus_deb) >
+                // parseFloat(OP_BALANCE.deb_minus_cred)
+              ) {
+                op_amount =
+                  // parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                  parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places) + " Cr";
+              } else if (
+                SUM_CREDIT_DEBIT < SUM_DEB_CREDIT
+                // parseFloat(OP_BALANCE.cred_minus_deb) <
+                // parseFloat(OP_BALANCE.deb_minus_cred)
+              ) {
+                op_amount =
+                  // parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                  parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places) + " Dr";
+              } else {
+                op_amount = parseFloat(SUM_CREDIT_DEBIT).toFixed(
+                  // parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              }
             }
+          };
+          if (finance_account_head_id === 4 || finance_account_head_id === 5) {
+            if (
+              parseInt(moment(to_date, "YYYY-MM-DD").format("YYYY")) ===
+                current_year &&
+              parseInt(moment(from_date, "YYYY-MM-DD").format("YYYYMMDD")) >=
+                parseInt(current_from_date) &&
+              parseInt(moment(to_date, "YYYY-MM-DD").format("YYYYMMDD")) <=
+                parseInt(current_to_date)
+            ) {
+              execute();
+            } else {
+              op_amount = 0;
+            }
+          } else {
+            execute();
           }
+          // }
           ///END calculating opening balance of from date-----
           //ST calculating transaction amount between  from_date  and to_date-----
           const TR_BALANCE = transaction_head_data.find((f) => {
@@ -3356,11 +3438,31 @@ function createHierarchyTransactionTB(
                         finance_account_head_id === 1 ||
                         finance_account_head_id === 5
                           ? String(op_amount).includes("Cr")
-                            ? -Math.abs(parseFloat(op_amount))
-                            : op_amount
+                            ? `${
+                                cr_dr_required === undefined ||
+                                cr_dr_required === "Y"
+                                  ? op_amount
+                                  : -Math.abs(parseFloat(op_amount))
+                              }`
+                            : `${
+                                cr_dr_required === undefined ||
+                                cr_dr_required === "Y"
+                                  ? op_amount
+                                  : -Math.abs(parseFloat(op_amount))
+                              }`
                           : String(op_amount).includes("Dr")
-                          ? -Math.abs(parseFloat(op_amount))
-                          : op_amount
+                          ? `${
+                              cr_dr_required === undefined ||
+                              cr_dr_required === "Y"
+                                ? op_amount
+                                : -Math.abs(parseFloat(op_amount))
+                            }`
+                          : `${
+                              r_dr_required === undefined ||
+                              cr_dr_required === "Y"
+                                ? op_amount
+                                : -Math.abs(parseFloat(op_amount))
+                            }`
                       }`,
                 title: item.account_name,
                 label: item.account_name,
@@ -3389,11 +3491,31 @@ function createHierarchyTransactionTB(
                       finance_account_head_id === 1 ||
                       finance_account_head_id === 5
                         ? String(op_amount).includes("Cr")
-                          ? -Math.abs(parseFloat(op_amount))
-                          : op_amount
+                          ? `${
+                              cr_dr_required === undefined ||
+                              cr_dr_required === "Y"
+                                ? op_amount
+                                : -Math.abs(parseFloat(op_amount))
+                            }`
+                          : `${
+                              cr_dr_required === undefined ||
+                              cr_dr_required === "Y"
+                                ? op_amount
+                                : -Math.abs(parseFloat(op_amount))
+                            }`
                         : String(op_amount).includes("Dr")
-                        ? -Math.abs(parseFloat(op_amount))
-                        : op_amount
+                        ? `${
+                            cr_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
+                        : `${
+                            r_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
                     }`,
               title: item.account_name,
               label: item.account_name,
@@ -3601,11 +3723,31 @@ function createHierarchyTransactionTB(
                       finance_account_head_id === 1 ||
                       finance_account_head_id === 5
                         ? String(op_amount).includes("Cr")
-                          ? -Math.abs(parseFloat(op_amount))
-                          : op_amount
+                          ? `${
+                              cr_dr_required === undefined ||
+                              cr_dr_required === "Y"
+                                ? op_amount
+                                : -Math.abs(parseFloat(op_amount))
+                            }`
+                          : `${
+                              cr_dr_required === undefined ||
+                              cr_dr_required === "Y"
+                                ? op_amount
+                                : -Math.abs(parseFloat(op_amount))
+                            }`
                         : String(op_amount).includes("Dr")
-                        ? -Math.abs(parseFloat(op_amount))
-                        : op_amount
+                        ? `${
+                            cr_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
+                        : `${
+                            r_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
                     }`,
               title: item.account_name,
               label: item.account_name,
@@ -3633,11 +3775,29 @@ function createHierarchyTransactionTB(
                     finance_account_head_id === 1 ||
                     finance_account_head_id === 5
                       ? String(op_amount).includes("Cr")
-                        ? -Math.abs(parseFloat(op_amount))
-                        : op_amount
+                        ? `${
+                            cr_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
+                        : `${
+                            cr_dr_required === undefined ||
+                            cr_dr_required === "Y"
+                              ? op_amount
+                              : -Math.abs(parseFloat(op_amount))
+                          }`
                       : String(op_amount).includes("Dr")
-                      ? -Math.abs(parseFloat(op_amount))
-                      : op_amount
+                      ? `${
+                          cr_dr_required === undefined || cr_dr_required === "Y"
+                            ? op_amount
+                            : -Math.abs(parseFloat(op_amount))
+                        }`
+                      : `${
+                          r_dr_required === undefined || cr_dr_required === "Y"
+                            ? op_amount
+                            : -Math.abs(parseFloat(op_amount))
+                        }`
                   }`,
             title: item.account_name,
             label: item.account_name,
