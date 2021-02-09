@@ -1,0 +1,89 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+<div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Transaction Type</th>
+                        <th>transaction date</th>
+                         <th>location</th>
+                        <th>Item Name</th>
+                       
+                        <th>Unit of Measure</th>
+                        <th>Vendor Batch No.</th>
+                        <th>Batch No.</th>
+                        {{!-- <th>Type</th> --}}
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th> After Transation Quantity</th>
+                       
+                        {{!-- <th width="25%">Narration</th> --}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                   <tr>
+                        <td>{{inc @index}}</td>
+                        <td> {{#if transaction_type "MR"}}
+                            <span>Material Requisition</span>
+                            {{/if}} {{#if transaction_type "ST"}}
+                            <span>Stock Transfer</span>
+                             {{/if}} {{#if transaction_type  "POS"}}
+                            <span>Point of Sale</span>
+                            {{/if}} {{#if transaction_type "SRT"}}
+                            <span>Sales Return</span>
+                            {{/if}} {{#if transaction_type "INT"}}
+                            <span>Opening Stock</span>
+                            {{/if}} {{#if transaction_type "CS"}}
+                            <span>Consumption</span>
+                             {{/if}} {{#if transaction_type "CSN"}}
+                            <span>Consumption Cancel</span>
+                             {{/if}} {{#if transaction_type "REC"}}
+                            <span>Receipt</span>
+                             {{/if}} {{#if transaction_type "PO"}}
+                            <span>Purchase Order</span>
+                            {{/if}} {{#if transaction_type "DNA"}}
+                            <span>Delivery Note</span>
+                           {{/if}} {{#if transaction_type "ACK"}}
+                            <span>Transfer Acknowledge</span>
+                           {{/if}} {{#if transaction_type "PR"}}
+                            <span>Purchase Return</span>
+
+                            {{/if}} {{#if transaction_type "AD"}}
+                            <span>Stock Adjustment</span>
+                            {{/if}} {{#if transaction_type "SDN"}}
+                            <span>Sales Dispatch Note</span>
+                           
+                            {{/if}}</td>
+                        <td>{{transaction_date}}</td>
+                       
+                        <td>{{location_description}}</td> {{!--{{account_name}} >  --}}
+                        <td>{{item_description}} 
+
+                        {{#if operation "+"}} <i class="fas fa-arrow-up green" />
+                        {{else}} <i class="fas fa-arrow-down red" />{{/if}}
+                        </td> {{!--{{arabic_account_name}} >  --}}
+                       
+                        {{!-- <td>{{payment_type}}</td> --}}
+                        <td>{{uom_description}}</td>
+                         <td>{{vendor_batchno}}</td>
+                          <td>{{batchno}}</td>
+                             <td>{{expiry_date}}</td>
+                                <td>{{transaction_qty}}</td>
+                                   <td>{{qtyhand}}</td>
+                                   
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+         
+      
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
