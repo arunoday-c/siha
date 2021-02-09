@@ -3,6 +3,7 @@ import FrontDesk from "../../Search/FrontDesk.json";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import Enumerable from "linq";
 import _ from "lodash";
+import moment from "moment";
 
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
@@ -107,10 +108,36 @@ const CloseVisits = $this => {
     }
   });
 };
+
+
+const updateExpiryDate = ($this, row) => {
+  debugger
+  algaehApiCall({
+    uri: "/visit/updateExpiryDate",
+    module: "frontDesk",
+    method: "POST",
+    data: { hims_f_patient_visit_id: row.hims_f_patient_visit_id, visit_expiery_date: moment(row.visit_expiery_date).format("YYYY-MM-DD") },
+    onSuccess: response => {
+      if (response.data.success) {
+        swalMessage({
+          title: "Updated Succesfully...",
+          type: "success"
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
 export {
   PatientSearch,
   getVisitDetails,
   SelectVisitToClose,
   ClearData,
-  CloseVisits
+  CloseVisits,
+  updateExpiryDate
 };

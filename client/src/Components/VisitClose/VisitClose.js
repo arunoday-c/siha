@@ -5,24 +5,28 @@ import { bindActionCreators } from "redux";
 
 import "./VisitClose.scss";
 import "../../styles/site.scss";
-import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehDataGrid, AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../actions/algaehActions";
 import {
   PatientSearch,
   SelectVisitToClose,
   ClearData,
-  CloseVisits
+  CloseVisits,
+  updateExpiryDate
 } from "./VisitCloseEvent";
 import moment from "moment";
 import Options from "../../Options.json";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 class VisitClose extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visitDetails: [],
-      saveEnable: true
+      saveEnable: true,
+      action_details: [],
+      edit_option: false
     };
   }
 
@@ -56,6 +60,42 @@ class VisitClose extends Component {
         }
       });
     }
+
+    RawSecurityComponent({ componentCode: "EDIT_OPTION" }).then((result) => {
+      if (result === "show") {
+        this.setState({
+          edit_option: true,
+          action_details: [{
+            fieldName: "action",
+            label: <AlgaehLabel label={{ forceLabel: "Update Expiry Date" }} />,
+            displayTemplate: row => {
+              return (
+                <span>
+                  <i
+                    onClick={updateExpiryDate.bind(this, this, row)}
+                    className="fas fa-check"
+                  />
+                </span>
+              );
+            },
+            others: {
+              maxWidth: 140,
+              filterable: false
+            }
+          }]
+        })
+      }
+    });
+  }
+
+  griddatehandle(row, ctrl, e) {
+
+    let visitDetails = this.state.visitDetails
+    const _index = visitDetails.indexOf(row)
+
+    row[e] = moment(ctrl)._d;
+    visitDetails[_index] = row
+    this.setState({ visitDetails: visitDetails })
   }
 
   DisplayDateFormat = date => {
@@ -121,7 +161,7 @@ class VisitClose extends Component {
               <div className="col-lg-12" id="VisitCloseGrid_Cntr">
                 <AlgaehDataGrid
                   id="VisitCloseGrid"
-                  columns={[
+                  columns={this.state.action_details.concat([
                     {
                       fieldName: "close",
                       label: <AlgaehLabel label={{ forceLabel: "Close" }} />,
@@ -156,6 +196,30 @@ class VisitClose extends Component {
                         return (
                           <span>{this.DisplayDateFormat(row.visit_date)}</span>
                         );
+                      }
+                    },
+                    {
+                      fieldName: "visit_expiery_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Visit Expiry" }} />
+                      ),
+                      displayTemplate: row => {
+                        return this.state.edit_option === false ? (
+                          <span>{this.DisplayDateFormat(row.visit_expiery_date)}</span>
+                        ) : <AlgaehDateHandler
+                            div={{ className: "col" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "visit_expiery_date",
+                            }}
+                            events={{
+                              onChange: this.griddatehandle.bind(
+                                this,
+                                row
+                              ),
+                            }}
+                            value={row.visit_expiery_date}
+                          />;
                       }
                     },
                     {
@@ -204,7 +268,7 @@ class VisitClose extends Component {
                       },
                       disabled: true
                     }
-                  ]}
+                  ])}
                   keyId="hims_f_patient_visit_id"
                   dataSource={{
                     data: this.state.visitDetails
