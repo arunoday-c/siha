@@ -19,6 +19,7 @@ import {
   ProcessItemMoment,
   dateValidate,
   DrillDownScree,
+  generateReports,
 } from "./ItemMomentEnquiryEvents";
 import "./ItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
@@ -737,22 +738,22 @@ class ItemMomentEnquiry extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  // onClick={() => {
-                  //   this.setState({ exportAsPdf: "Y" }, () => {
-                  //     InvItemSetupEvent().generateReports(this, this);
-                  //   });
-                  // }}
+                  onClick={() => {
+                    this.setState({ exportAsPdf: "Y" }, () => {
+                      generateReports(this, this);
+                    });
+                  }}
                 >
                   Export as PDF
                 </button>
                 <button
                   type="button"
                   className="btn btn-default"
-                  // onClick={() => {
-                  //   this.setState({ exportAsPdf: "N" }, () => {
-                  //     InvItemSetupEvent().generateReports(this, this);
-                  //   });
-                  // }}
+                  onClick={() => {
+                    this.setState({ exportAsPdf: "N" }, () => {
+                      generateReports(this, this);
+                    });
+                  }}
                 >
                   Export as Excel
                 </button>
