@@ -3097,6 +3097,18 @@ function createHierarchyTransactionTB(
         //END calculating closing balance on  to date-----
 
         //END---calulating Amount
+        let OPENING_BALANCE = op_amount;
+        if (cr_dr_required === "N") {
+          if (finance_account_head_id === 1 || finance_account_head_id === 5) {
+            if (String(op_amount).includes("Cr")) {
+              OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+            }
+          } else {
+            if (String(op_amount).includes("Dr")) {
+              OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+            }
+          }
+        }
 
         if (nonZeroQuery === "Y") {
           if (
@@ -3114,39 +3126,7 @@ function createHierarchyTransactionTB(
                   ? `${Math.abs(cb_amount)} ${trans_symbol} `
                   : cb_amount
               }`,
-              op_amount:
-                cr_dr_required === undefined || cr_dr_required === "Y"
-                  ? op_amount
-                  : `${
-                      finance_account_head_id === 1 ||
-                      finance_account_head_id === 5
-                        ? String(op_amount).includes("Cr")
-                          ? `${
-                              cr_dr_required === undefined ||
-                              cr_dr_required === "Y"
-                                ? op_amount
-                                : -Math.abs(parseFloat(op_amount))
-                            }`
-                          : `${
-                              cr_dr_required === undefined ||
-                              cr_dr_required === "Y"
-                                ? op_amount
-                                : -Math.abs(parseFloat(op_amount))
-                            }`
-                        : String(op_amount).includes("Dr")
-                        ? `${
-                            cr_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                        : `${
-                            r_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                    }`,
+              op_amount: OPENING_BALANCE,
               title: item.child_name,
               label: item.child_name,
               ledger_code: item.child_ledger_code,
@@ -3166,37 +3146,7 @@ function createHierarchyTransactionTB(
                 ? `${Math.abs(cb_amount)} ${trans_symbol} `
                 : cb_amount
             }`,
-            op_amount:
-              cr_dr_required === undefined || cr_dr_required === "Y"
-                ? op_amount
-                : `${
-                    finance_account_head_id === 1 ||
-                    finance_account_head_id === 5
-                      ? String(op_amount).includes("Cr")
-                        ? `${
-                            cr_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                        : `${
-                            cr_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                      : String(op_amount).includes("Dr")
-                      ? `${
-                          cr_dr_required === undefined || cr_dr_required === "Y"
-                            ? op_amount
-                            : -Math.abs(parseFloat(op_amount))
-                        }`
-                      : `${
-                          r_dr_required === undefined || cr_dr_required === "Y"
-                            ? op_amount
-                            : -Math.abs(parseFloat(op_amount))
-                        }`
-                  }`,
+            op_amount: OPENING_BALANCE,
             title: item.child_name,
             label: item.child_name,
             head_id: item["head_id"],
@@ -3241,12 +3191,7 @@ function createHierarchyTransactionTB(
               ) {
                 op_amount =
                   // parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                  parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Dr"
-                      : ""
-                  }`;
+                  parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places) + " Dr";
               } else if (
                 SUM_DEB_CREDIT < SUM_CREDIT_DEBIT
                 // parseFloat(OP_BALANCE.deb_minus_cred) <
@@ -3254,12 +3199,7 @@ function createHierarchyTransactionTB(
               ) {
                 op_amount =
                   // parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                  parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Cr"
-                      : ""
-                  }`;
+                  parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places) + " Cr";
               } else {
                 op_amount = parseFloat(SUM_DEB_CREDIT).toFixed(
                   // parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
@@ -3413,6 +3353,21 @@ function createHierarchyTransactionTB(
           //   }
           // }
           //END calculating closing balance on  to date-----
+          let OPENING_BALANCE = op_amount;
+          if (cr_dr_required === "N") {
+            if (
+              finance_account_head_id === 1 ||
+              finance_account_head_id === 5
+            ) {
+              if (String(op_amount).includes("Cr")) {
+                OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+              }
+            } else {
+              if (String(op_amount).includes("Dr")) {
+                OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+              }
+            }
+          }
 
           if (nonZeroQuery === "Y") {
             if (
@@ -3431,39 +3386,7 @@ function createHierarchyTransactionTB(
                     ? `${Math.abs(cb_amount)} ${trans_symbol}`
                     : cb_amount
                 }`,
-                op_amount:
-                  cr_dr_required === undefined || cr_dr_required === "Y"
-                    ? op_amount
-                    : `${
-                        finance_account_head_id === 1 ||
-                        finance_account_head_id === 5
-                          ? String(op_amount).includes("Cr")
-                            ? `${
-                                cr_dr_required === undefined ||
-                                cr_dr_required === "Y"
-                                  ? op_amount
-                                  : -Math.abs(parseFloat(op_amount))
-                              }`
-                            : `${
-                                cr_dr_required === undefined ||
-                                cr_dr_required === "Y"
-                                  ? op_amount
-                                  : -Math.abs(parseFloat(op_amount))
-                              }`
-                          : String(op_amount).includes("Dr")
-                          ? `${
-                              cr_dr_required === undefined ||
-                              cr_dr_required === "Y"
-                                ? op_amount
-                                : -Math.abs(parseFloat(op_amount))
-                            }`
-                          : `${
-                              r_dr_required === undefined ||
-                              cr_dr_required === "Y"
-                                ? op_amount
-                                : -Math.abs(parseFloat(op_amount))
-                            }`
-                      }`,
+                op_amount: OPENING_BALANCE,
                 title: item.account_name,
                 label: item.account_name,
                 arabic_name: item.arabic_account_name,
@@ -3484,39 +3407,7 @@ function createHierarchyTransactionTB(
                   ? `${Math.abs(cb_amount)} ${trans_symbol} `
                   : cb_amount
               }`,
-              op_amount:
-                cr_dr_required === undefined || cr_dr_required === "Y"
-                  ? op_amount
-                  : `${
-                      finance_account_head_id === 1 ||
-                      finance_account_head_id === 5
-                        ? String(op_amount).includes("Cr")
-                          ? `${
-                              cr_dr_required === undefined ||
-                              cr_dr_required === "Y"
-                                ? op_amount
-                                : -Math.abs(parseFloat(op_amount))
-                            }`
-                          : `${
-                              cr_dr_required === undefined ||
-                              cr_dr_required === "Y"
-                                ? op_amount
-                                : -Math.abs(parseFloat(op_amount))
-                            }`
-                        : String(op_amount).includes("Dr")
-                        ? `${
-                            cr_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                        : `${
-                            r_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                    }`,
+              op_amount: OPENING_BALANCE,
               title: item.account_name,
               label: item.account_name,
               arabic_name: item.arabic_account_name,
@@ -3527,78 +3418,80 @@ function createHierarchyTransactionTB(
         }
       } else {
         //ST calculating opening balance of from date-----
-
-        const OP_BALANCE = op_head_data.find((f) => {
-          return item.finance_account_head_id == f.finance_account_head_id;
-        });
-
+        let OP_BALANCE = undefined;
+        // const OP_BALANCE = op_head_data.find((f) => {
+        //   return item.finance_account_head_id == f.finance_account_head_id;
+        // });
+        const SUM_DEB_CREDIT = _.chain(op_head_data)
+          .filter(
+            (f) => f.finance_account_head_id === item.finance_account_head_id
+          )
+          .sumBy((s) => parseFloat(s.deb_minus_cred))
+          .value();
+        const SUM_CREDIT_DEBIT = _.chain(op_head_data)
+          .filter(
+            (f) => f.finance_account_head_id === item.finance_account_head_id
+          )
+          .sumBy((s) => parseFloat(s.cred_minus_deb))
+          .value();
         let op_amount = default_total;
-        if (OP_BALANCE) {
-          const execute = () => {
-            if (trans_symbol == "Dr") {
-              if (
-                parseFloat(OP_BALANCE.deb_minus_cred) >
-                parseFloat(OP_BALANCE.cred_minus_deb)
-              ) {
-                op_amount =
-                  parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                    decimal_places
-                  ) + " Dr";
-              } else if (
-                parseFloat(OP_BALANCE.deb_minus_cred) <
-                parseFloat(OP_BALANCE.cred_minus_deb)
-              ) {
-                op_amount =
-                  parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                    decimal_places
-                  ) + " Cr";
-              } else {
-                op_amount = parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                  decimal_places
-                );
-              }
-            } else {
-              if (
-                parseFloat(OP_BALANCE.cred_minus_deb) >
-                parseFloat(OP_BALANCE.deb_minus_cred)
-              ) {
-                op_amount =
-                  parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                    decimal_places
-                  ) + " Cr";
-              } else if (
-                parseFloat(OP_BALANCE.cred_minus_deb) <
-                parseFloat(OP_BALANCE.deb_minus_cred)
-              ) {
-                op_amount =
-                  parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
-                    decimal_places
-                  ) + " Dr";
-              } else {
-                op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
-                  decimal_places
-                );
-              }
-            }
-          };
-          if (finance_account_head_id === 4 || finance_account_head_id === 5) {
+        //if (OP_BALANCE) {
+        const execute = () => {
+          if (trans_symbol == "Dr") {
             if (
-              parseInt(moment().format("YYYY")) === current_year &&
-              parseInt(
-                moment(OP_BALANCE.payment_date, "YYYY-MM-DD").format("YYYYMMDD")
-              ) >= parseInt(current_from_date) &&
-              parseInt(
-                moment(OP_BALANCE.payment_date, "YYYY-MM-DD").format("YYYYMMDD")
-              ) <= parseInt(current_to_date)
+              SUM_DEB_CREDIT > SUM_CREDIT_DEBIT
+              // parseFloat(OP_BALANCE.deb_minus_cred) >
+              // parseFloat(OP_BALANCE.cred_minus_deb)
             ) {
-              execute();
+              op_amount =
+                parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places) + " Dr";
+            } else if (
+              SUM_DEB_CREDIT < SUM_CREDIT_DEBIT
+              // parseFloat(OP_BALANCE.deb_minus_cred) <
+              // parseFloat(OP_BALANCE.cred_minus_deb)
+            ) {
+              op_amount =
+                parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places) + " Cr";
             } else {
-              op_amount = 0;
+              op_amount = parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places);
             }
           } else {
-            execute();
+            if (
+              SUM_CREDIT_DEBIT > SUM_DEB_CREDIT
+              // parseFloat(OP_BALANCE.cred_minus_deb) >
+              // parseFloat(OP_BALANCE.deb_minus_cred)
+            ) {
+              op_amount =
+                parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places) + " Cr";
+            } else if (
+              SUM_CREDIT_DEBIT < SUM_DEB_CREDIT
+              // parseFloat(OP_BALANCE.cred_minus_deb) <
+              // parseFloat(OP_BALANCE.deb_minus_cred)
+            ) {
+              op_amount =
+                parseFloat(SUM_DEB_CREDIT).toFixed(decimal_places) + " Dr";
+            } else {
+              op_amount = parseFloat(SUM_CREDIT_DEBIT).toFixed(decimal_places);
+            }
           }
+        };
+        if (finance_account_head_id === 4 || finance_account_head_id === 5) {
+          if (
+            parseInt(moment(to_date, "YYYY-MM-DD").format("YYYY")) ===
+              current_year &&
+            parseInt(moment(from_date, "YYYY-MM-DD").format("YYYYMMDD")) >=
+              parseInt(current_from_date) &&
+            parseInt(moment(to_date, "YYYY-MM-DD").format("YYYYMMDD")) <=
+              parseInt(current_to_date)
+          ) {
+            execute();
+          } else {
+            op_amount = 0;
+          }
+        } else {
+          execute();
         }
+        //}
 
         ///END calculating opening balance of from date-----
         //ST calculating transaction amount between  from_date  and to_date-----
@@ -3697,7 +3590,18 @@ function createHierarchyTransactionTB(
         //   }
         // }
         //END calculating closing balance on  to date-----
-
+        let OPENING_BALANCE = op_amount;
+        if (cr_dr_required === "N") {
+          if (finance_account_head_id === 1 || finance_account_head_id === 5) {
+            if (String(op_amount).includes("Cr")) {
+              OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+            }
+          } else {
+            if (String(op_amount).includes("Dr")) {
+              OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+            }
+          }
+        }
         if (nonZeroQuery === "Y") {
           if (
             parseFloat(cb_amount) !== 0 ||
@@ -3716,39 +3620,7 @@ function createHierarchyTransactionTB(
                   ? `${Math.abs(cb_amount)} ${trans_symbol} `
                   : cb_amount
               }`,
-              op_amount:
-                cr_dr_required === undefined || cr_dr_required === "Y"
-                  ? op_amount
-                  : `${
-                      finance_account_head_id === 1 ||
-                      finance_account_head_id === 5
-                        ? String(op_amount).includes("Cr")
-                          ? `${
-                              cr_dr_required === undefined ||
-                              cr_dr_required === "Y"
-                                ? op_amount
-                                : -Math.abs(parseFloat(op_amount))
-                            }`
-                          : `${
-                              cr_dr_required === undefined ||
-                              cr_dr_required === "Y"
-                                ? op_amount
-                                : -Math.abs(parseFloat(op_amount))
-                            }`
-                        : String(op_amount).includes("Dr")
-                        ? `${
-                            cr_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                        : `${
-                            r_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                    }`,
+              op_amount: OPENING_BALANCE,
               title: item.account_name,
               label: item.account_name,
               arabic_name: item.arabic_account_name,
@@ -3768,37 +3640,7 @@ function createHierarchyTransactionTB(
                 ? `${Math.abs(cb_amount)} ${trans_symbol} `
                 : cb_amount
             }`,
-            op_amount:
-              cr_dr_required === undefined || cr_dr_required === "Y"
-                ? op_amount
-                : `${
-                    finance_account_head_id === 1 ||
-                    finance_account_head_id === 5
-                      ? String(op_amount).includes("Cr")
-                        ? `${
-                            cr_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                        : `${
-                            cr_dr_required === undefined ||
-                            cr_dr_required === "Y"
-                              ? op_amount
-                              : -Math.abs(parseFloat(op_amount))
-                          }`
-                      : String(op_amount).includes("Dr")
-                      ? `${
-                          cr_dr_required === undefined || cr_dr_required === "Y"
-                            ? op_amount
-                            : -Math.abs(parseFloat(op_amount))
-                        }`
-                      : `${
-                          r_dr_required === undefined || cr_dr_required === "Y"
-                            ? op_amount
-                            : -Math.abs(parseFloat(op_amount))
-                        }`
-                  }`,
+            op_amount: OPENING_BALANCE,
             title: item.account_name,
             label: item.account_name,
             arabic_name: item.arabic_account_name,
