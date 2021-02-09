@@ -319,7 +319,7 @@ class Dashboard extends Component {
 
               <div className="col-12">
                 <div className="card animated fadeInUp faster">
-                  <h6>Todays Patients</h6>
+                  <h6>Today's Patients</h6>
                   <div className="col-12" id="patientIncomingcategoryCntr">
                     <AlgaehDataGrid
                       className="dashboardGrd"
@@ -412,7 +412,7 @@ class Dashboard extends Component {
               <div className="col-12">
                 <div className="card animated fadeInUp faster">
                   <h6>
-                    Todays Order Services Status{" "}
+                    Today's Order Services Status{" "}
                     <span className="portletTopAction">
                       <AlgaehDateHandler
                         type={"week"}
