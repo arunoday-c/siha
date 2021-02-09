@@ -281,12 +281,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
                     <div className="col-2">
@@ -311,12 +311,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
 
@@ -342,12 +342,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
 
@@ -373,12 +373,12 @@ class ResultEntry extends Component {
                             )}
                           </small>
                         ) : (
-                            <small
-                              style={{ display: "block", fontStyle: "italic" }}
-                            >
-                              -------
-                            </small>
-                          )}
+                          <small
+                            style={{ display: "block", fontStyle: "italic" }}
+                          >
+                            -------
+                          </small>
+                        )}
                       </h6>
                     </div>
                     {/* <div className="col">
@@ -429,10 +429,10 @@ class ResultEntry extends Component {
                                   Validated
                                 </span>
                               ) : (
-                                      <span className="badge badge-light">
-                                        Result Not Entered
-                                      </span>
-                                    );
+                                <span className="badge badge-light">
+                                  Result Not Entered
+                                </span>
+                              );
                             },
                             others: {
                               maxWidth: 150,
@@ -480,8 +480,8 @@ class ResultEntry extends Component {
                               return row.analyte_type === "QU"
                                 ? "Quality"
                                 : row.analyte_type === "QN"
-                                  ? "Quantity"
-                                  : "Text";
+                                ? "Quantity"
+                                : "Text";
                             },
                             others: {
                               resizable: false,
@@ -543,16 +543,16 @@ class ResultEntry extends Component {
                                         }}
                                       />
                                     ) : (
-                                        <ResultInput
-                                          row={row}
-                                          onChange={(e) =>
-                                            onchangegridresult(this, row, e)
-                                          }
-                                        />
-                                      )
+                                      <ResultInput
+                                        row={row}
+                                        onChange={(e) =>
+                                          onchangegridresult(this, row, e)
+                                        }
+                                      />
+                                    )
                                   ) : (
-                                      row.result
-                                    )}
+                                    row.result
+                                  )}
                                 </span>
                               );
                             },
@@ -656,18 +656,18 @@ class ResultEntry extends Component {
                             displayTemplate: (row) => {
                               return !row.critical_type ? null : row.critical_type ===
                                 "N" ? (
-                                  <span className="badge badge-success">
-                                    Normal
+                                <span className="badge badge-success">
+                                  Normal
+                                </span>
+                              ) : row.critical_type === "L" ? (
+                                <span className="badge badge-warning">Low</span>
+                              ) : (
+                                row.critical_type === "H" && (
+                                  <span className="badge badge-danger">
+                                    High
                                   </span>
-                                ) : row.critical_type === "L" ? (
-                                  <span className="badge badge-warning">Low</span>
-                                ) : (
-                                    row.critical_type === "H" && (
-                                      <span className="badge badge-danger">
-                                        High
-                                      </span>
-                                    )
-                                  );
+                                )
+                              );
                             },
                           },
                           {
@@ -680,24 +680,24 @@ class ResultEntry extends Component {
                             displayTemplate: (row) => {
                               return this.state.edit_range === true &&
                                 row.analyte_type === "QN" ? (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.normal_low,
-                                      className: "txt-fld",
-                                      name: "normal_low",
-                                      events: {
-                                        onChange: ongridEditRanges.bind(
-                                          this,
-                                          this,
-                                          row
-                                        ),
-                                      },
-                                    }}
-                                  />
-                                ) : (
-                                  row.normal_low
-                                );
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.normal_low,
+                                    className: "txt-fld",
+                                    name: "normal_low",
+                                    events: {
+                                      onChange: ongridEditRanges.bind(
+                                        this,
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                  }}
+                                />
+                              ) : (
+                                row.normal_low
+                              );
                             },
                             others: {
                               resizable: false,
@@ -715,24 +715,24 @@ class ResultEntry extends Component {
                             displayTemplate: (row) => {
                               return this.state.edit_range === true &&
                                 row.analyte_type === "QN" ? (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.normal_high,
-                                      className: "txt-fld",
-                                      name: "normal_high",
-                                      events: {
-                                        onChange: ongridEditRanges.bind(
-                                          this,
-                                          this,
-                                          row
-                                        ),
-                                      },
-                                    }}
-                                  />
-                                ) : (
-                                  row.normal_high
-                                );
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.normal_high,
+                                    className: "txt-fld",
+                                    name: "normal_high",
+                                    events: {
+                                      onChange: ongridEditRanges.bind(
+                                        this,
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                  }}
+                                />
+                              ) : (
+                                row.normal_high
+                              );
                             },
                             others: {
                               resizable: false,
@@ -754,22 +754,22 @@ class ResultEntry extends Component {
                                   row.normal_qualitative_value
                                 ) : this.state.edit_range === true &&
                                   row.analyte_type === "T" ? (
-                                      <textarea
-                                        value={row.text_value}
-                                        name="text_value"
-                                        onChange={(e) =>
-                                          this.textAreaEventGrid(row, e)
-                                        }
-                                      />
-                                    ) : (
-                                      <ul className="analyteTxtUL">
-                                        {row.dis_text_value.length > 0
-                                          ? row.dis_text_value.map((row) => {
-                                            return <li>{row}</li>;
-                                          })
-                                          : "-"}
-                                      </ul>
-                                    )
+                                  <textarea
+                                    value={row.text_value}
+                                    name="text_value"
+                                    onChange={(e) =>
+                                      this.textAreaEventGrid(row, e)
+                                    }
+                                  />
+                                ) : (
+                                  <ul className="analyteTxtUL">
+                                    {row.dis_text_value.length > 0
+                                      ? row.dis_text_value.map((row) => {
+                                          return <li>{row}</li>;
+                                        })
+                                      : "-"}
+                                  </ul>
+                                )
                               );
                             },
                             others: {
@@ -809,8 +809,8 @@ class ResultEntry extends Component {
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -851,8 +851,8 @@ class ResultEntry extends Component {
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -894,8 +894,8 @@ class ResultEntry extends Component {
                                   ) : row.amended === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -937,8 +937,8 @@ class ResultEntry extends Component {
                                   ) : row.remarks !== "null" ? (
                                     row.remarks
                                   ) : (
-                                        ""
-                                      )}
+                                    ""
+                                  )}
                                 </span>
                               );
                             },
@@ -1014,22 +1014,22 @@ class ResultEntry extends Component {
                           <ol>
                             {this.state.comment_list.length > 0
                               ? this.state.comment_list.map((row, index) => {
-                                return (
-                                  <React.Fragment key={index}>
-                                    <li key={index}>
-                                      <span>{row}</span>
-                                      <i
-                                        className="fas fa-times"
-                                        onClick={deleteComment.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      ></i>
-                                    </li>
-                                  </React.Fragment>
-                                );
-                              })
+                                  return (
+                                    <React.Fragment key={index}>
+                                      <li key={index}>
+                                        <span>{row}</span>
+                                        <i
+                                          className="fas fa-times"
+                                          onClick={deleteComment.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        ></i>
+                                      </li>
+                                    </React.Fragment>
+                                  );
+                                })
                               : null}
                           </ol>
                         </div>
@@ -1101,6 +1101,33 @@ class ResultEntry extends Component {
                     </button>
                   </AlgaehSecurityComponent>
 
+                  <AlgaehSecurityComponent componentCode="CONF_LAB_RES">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={onconfirm.bind(this, this)}
+                      disabled={
+                        this.state.status === "C"
+                          ? true
+                          : this.state.status === "V"
+                          ? true
+                          : false
+                      }
+                    >
+                      Confirm All
+                    </button>
+                  </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="SAVE_LAB_RES">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={resultEntryUpdate.bind(this, this)}
+                      disabled={this.state.status === "V" ? true : false}
+                    >
+                      Save
+                    </button>
+                  </AlgaehSecurityComponent>
+
                   <AlgaehSecurityComponent componentCode="RE_RUN_LAB_RES">
                     <button
                       type="button"
@@ -1117,34 +1144,6 @@ class ResultEntry extends Component {
                       Re-Run
                     </button>
                   </AlgaehSecurityComponent>
-
-                  <AlgaehSecurityComponent componentCode="CONF_LAB_RES">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={onconfirm.bind(this, this)}
-                      disabled={
-                        this.state.status === "C"
-                          ? true
-                          : this.state.status === "V"
-                            ? true
-                            : false
-                      }
-                    >
-                      Confirm All
-                    </button>
-                  </AlgaehSecurityComponent>
-                  <AlgaehSecurityComponent componentCode="SAVE_LAB_RES">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={resultEntryUpdate.bind(this, this)}
-                      disabled={this.state.status === "V" ? true : false}
-                    >
-                      Save
-                    </button>
-                  </AlgaehSecurityComponent>
-
                   <button
                     type="button"
                     className="btn btn-default"
