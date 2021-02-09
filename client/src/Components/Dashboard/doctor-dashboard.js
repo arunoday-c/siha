@@ -254,23 +254,8 @@ class Dashboard extends Component {
                         }}
                         // maxDate={new date()}
                         events={{
-                          onChange: (dateSelected) => {
-                            // const months = moment(dateSelected[1]).diff(
-                            //   dateSelected[0],
-                            //   "months"
-                            // );
-                            // if (months <= 11) {
-                            // this.setState(
-                            //   { dateRange: dateSelected },
-                            //   () => {
-                            //     dashEvents.getDocumentExpiryCurrentMonth(this);
-                            //   }
-                            // );
-                          },
+                          onChange: (dateSelected) => {},
                         }}
-                        // others={{
-                        //   ...format,
-                        // }}
                       />
                     </span>
                   </h6>
@@ -350,22 +335,14 @@ class Dashboard extends Component {
                         },
                         {
                           fieldName: "patient_code",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "Patient Code" }}
-                            />
-                          ),
+                          label: <AlgaehLabel label={{ fieldName: "Code" }} />,
                           others: {
                             width: 80,
                           },
                         },
                         {
                           fieldName: "patient_code",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "Patient Name" }}
-                            />
-                          ),
+                          label: <AlgaehLabel label={{ fieldName: "Name" }} />,
                           // others: {
                           //   minWidth: 150,
                           // },
@@ -389,9 +366,7 @@ class Dashboard extends Component {
                         {
                           fieldName: "valid_upto",
                           label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "Appointment Type" }}
-                            />
+                            <AlgaehLabel label={{ fieldName: "Appo. Type" }} />
                           ),
                           others: {
                             width: 110,
@@ -412,20 +387,7 @@ class Dashboard extends Component {
                       data=""
                     />
 
-                    {/* <table className="table table-bordered table-sm table-striped">
-                      <thead>
-                        <tr>
-                          <th>Patient Code</th>
-                          <th>Patient Name</th>
-                          <th>Gender</th>
-                          <th>Age</th>
-                          <th>Appointment Type</th>
-                          <th>Visit Type</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-
-                        {this.state.today_list.map((patient_data, index) => (
+                    {/*  {this.state.today_list.map((patient_data, index) => (
                           <tr key={index}>
                             <td>{patient_data.patient_code}</td>
                             <td>{patient_data.full_name}</td>
@@ -442,79 +404,120 @@ class Dashboard extends Component {
                                 : "Follow Up"}
                             </td>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table> */}
+                        ))} */}
                   </div>
                 </div>
               </div>
 
               <div className="col-12">
                 <div className="card animated fadeInUp faster">
-                  <h6>Ordered Service Status</h6>
-                  <div className="dashboardGridCntr table-responsive">
-                    <table className="table table-bordered table-sm table-striped">
-                      <thead>
-                        <tr>
-                          <th>Patient Code</th>
-                          <th>Patient Name</th>
-                          <th>Service Ordered</th>
-                          <th>Ordered Date</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>PAT-A-0000693</td>
-                          <td>Gulam Mustafa</td>
-                          <td>Acetylcholine receptor antibody</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000691</td>
-                          <td>Kamalnath Singh</td>
-                          <td>CBC</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000682</td>
-                          <td>Rehmat Fatima</td>
-                          <td>Activated Protein C Resistance (APCR)</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000654</td>
-                          <td>Syed Al-Hameed</td>
-                          <td>Acute Hepatitis Panel</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000682</td>
-                          <td>Rehmat Fatima</td>
-                          <td>Acid Fast Bacilli (AFB) Smear</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000682</td>
-                          <td>Hakeem Usmani</td>
-                          <td>17-Ketosteroids</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <h6>
+                    Todays Order Services Status{" "}
+                    <span className="portletTopAction">
+                      <AlgaehDateHandler
+                        type={"week"}
+                        size={"small"}
+                        label={
+                          {
+                            // forceLabel: "View for Last ",
+                          }
+                        }
+                        textBox={{
+                          name: "selectRange",
+                          value: this.state.dateRange,
+                        }}
+                        // maxDate={new date()}
+                        events={{
+                          onChange: (dateSelected) => {},
+                        }}
+                      />
+                    </span>
+                  </h6>
+                  <div className="col-12" id="patientIncomingcategoryCntr">
+                    <AlgaehDataGrid
+                      className="dashboardGrd"
+                      columns={[
+                        {
+                          fieldName: "row_num",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Sl No." }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: <AlgaehLabel label={{ fieldName: "Code" }} />,
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: <AlgaehLabel label={{ fieldName: "Name" }} />,
+                          // others: {
+                          //   minWidth: 150,
+                          // },
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Gender" }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "identity_document_name",
+                          label: <AlgaehLabel label={{ fieldName: "Age" }} />,
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Appo. Type" }} />
+                          ),
+                          others: {
+                            width: 110,
+                          },
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Visit Type" }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                      ]}
+                      // height="40vh"
+                      rowUnique="identity_documents_id"
+                      data=""
+                    />
+
+                    {/*  {this.state.today_list.map((patient_data, index) => (
+                          <tr key={index}>
+                            <td>{patient_data.patient_code}</td>
+                            <td>{patient_data.full_name}</td>
+                            <td>{patient_data.gender}</td>
+                            <td>{patient_data.age}</td>
+                            <td>
+                              {patient_data.appointment_patient === "N"
+                                ? "Walk In"
+                                : "Appoinment"}
+                            </td>
+                            <td>
+                              {patient_data.new_visit_patient === "Y"
+                                ? "New Visit"
+                                : "Follow Up"}
+                            </td>
+                          </tr>
+                        ))} */}
                   </div>
                 </div>
               </div>
