@@ -176,7 +176,8 @@ class OPBillAdjustment extends Component {
     if (!err) {
       if (this.state.unbalanced_amount === 0) {
         swal({
-          title: "Are you sure you want to Adjust Selected Bill Number " + this.state.bill_number + " ?",
+          title: "Adjust Bill?",
+          text: "No.: " + this.state.bill_number,
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes",
