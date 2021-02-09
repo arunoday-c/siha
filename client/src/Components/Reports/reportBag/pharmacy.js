@@ -88,32 +88,55 @@ export default function Pharmacy({
               },
             },
           },
-
           {
             className: "col-3 form-group",
-            type: "dropdown",
+            type: "Autosearch",
             name: "item_id",
-            initialLoad: true,
+            // initialLoad: true,
             isImp: false,
-            label: "Item",
+            // label: "Item",
+            columns: spotlightSearch.Items.Pharmacyitemmaster,
+            searchName: "PurchaseOrderForPharmacy",
+            value: "item_description",
+            label: "Item Name",
+            // link: {
+            //   uri: "/pharmacy/getItemMaster",
+            //   module: "pharmacy",
+            // },
 
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy",
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined,
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
+            // events: {
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //     });
+            //   },
+            // },
           },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "item_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Item",
+
+          //   link: {
+          //     uri: "/pharmacy/getItemMaster",
+          //     module: "pharmacy",
+          //   },
+          //   dataSource: {
+          //     textField: "item_description",
+          //     valueField: "hims_d_item_master_id",
+          //     data: undefined,
+          //   },
+          //   events: {
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //       });
+          //     },
+          //   },
+          // },
           {
             className: "col-3 form-group mandatory",
             type: "dropdown",
@@ -246,22 +269,46 @@ export default function Pharmacy({
           },
           {
             className: "col-3 form-group",
-            type: "dropdown",
+            type: "Autosearch",
             name: "item_id",
-            initialLoad: true,
+            // initialLoad: true,
             isImp: false,
-            label: "Item",
+            // label: "Item",
+            columns: spotlightSearch.Items.Pharmacyitemmaster,
+            searchName: "PurchaseOrderForPharmacy",
+            value: "item_description",
+            label: "Item Name",
+            // link: {
+            //   uri: "/pharmacy/getItemMaster",
+            //   module: "pharmacy",
+            // },
 
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy",
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined,
-            },
+            // events: {
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //     });
+            //   },
+            // },
           },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "item_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Item",
+
+          //   link: {
+          //     uri: "/pharmacy/getItemMaster",
+          //     module: "pharmacy",
+          //   },
+          //   dataSource: {
+          //     textField: "item_description",
+          //     valueField: "hims_d_item_master_id",
+          //     data: undefined,
+          //   },
+          // },
         ],
       },
       {
@@ -793,32 +840,55 @@ export default function Pharmacy({
           //     },
           //   },
           // },
-
           {
             className: "col-3 form-group",
-            type: "dropdown",
+            type: "Autosearch",
             name: "item_id",
-            initialLoad: true,
+            // initialLoad: true,
             isImp: false,
-            label: "Item",
+            // label: "Item",
+            columns: spotlightSearch.Items.Pharmacyitemmaster,
+            searchName: "PurchaseOrderForPharmacy",
+            value: "item_description",
+            label: "Item Name",
+            // link: {
+            //   uri: "/pharmacy/getItemMaster",
+            //   module: "pharmacy",
+            // },
 
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy",
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined,
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
+            // events: {
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //     });
+            //   },
+            // },
           },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "item_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Item",
+
+          //   link: {
+          //     uri: "/pharmacy/getItemMaster",
+          //     module: "pharmacy",
+          //   },
+          //   dataSource: {
+          //     textField: "item_description",
+          //     valueField: "hims_d_item_master_id",
+          //     data: undefined,
+          //   },
+          //   events: {
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //       });
+          //     },
+          //   },
+          // },
         ],
       },
       {
@@ -1061,23 +1131,47 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 form-group mandatory",
-            type: "dropdown",
+            className: "col-3 form-group",
+            type: "Autosearch",
             name: "item_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Item",
+            // initialLoad: true,
+            isImp: false,
+            // label: "Item",
+            columns: spotlightSearch.Items.Pharmacyitemmaster,
+            searchName: "PurchaseOrderForPharmacy",
+            value: "item_description",
+            label: "Item Name",
+            // link: {
+            //   uri: "/pharmacy/getItemMaster",
+            //   module: "pharmacy",
+            // },
 
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy",
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined,
-            },
+            // events: {
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //     });
+            //   },
+            // },
           },
+          // {
+          //   className: "col-3 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "item_id",
+          //   initialLoad: true,
+          //   isImp: true,
+          //   label: "Item",
+
+          //   link: {
+          //     uri: "/pharmacy/getItemMaster",
+          //     module: "pharmacy",
+          //   },
+          //   dataSource: {
+          //     textField: "item_description",
+          //     valueField: "hims_d_item_master_id",
+          //     data: undefined,
+          //   },
+          // },
         ],
       },
       {
