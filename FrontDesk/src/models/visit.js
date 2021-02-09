@@ -52,6 +52,34 @@ export default {
     }
   },
 
+
+  updateExpiryDate: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const inputParam = req.body;
+
+      _mysql
+        .executeQuery({
+          query: "UPDATE `hims_f_patient_visit` SET visit_expiery_date=? WHERE hims_f_patient_visit_id=?;",
+          values: [inputParam.visit_expiery_date, inputParam.hims_f_patient_visit_id],
+          printQuery: true,
+        })
+        .then((visit_update) => {
+          _mysql.releaseConnection();
+          req.records = visit_update;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   checkVisitExists: (req, res, next) => {
     const _mysql = new algaehMysql();
 
