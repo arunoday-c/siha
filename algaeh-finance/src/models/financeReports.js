@@ -2901,12 +2901,7 @@ function createHierarchyTransactionTB(
                 op_amount =
                   parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
                     decimal_places
-                  ) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Dr"
-                      : ""
-                  }`;
+                  ) + " Dr";
               } else if (
                 parseFloat(OP_BALANCE.deb_minus_cred) <
                 parseFloat(OP_BALANCE.cred_minus_deb)
@@ -2914,12 +2909,7 @@ function createHierarchyTransactionTB(
                 op_amount =
                   parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
                     decimal_places
-                  ) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Cr"
-                      : ""
-                  }`;
+                  ) + " Cr";
               } else {
                 op_amount = parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
                   decimal_places
@@ -2933,12 +2923,7 @@ function createHierarchyTransactionTB(
                 op_amount =
                   parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
                     decimal_places
-                  ) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Cr"
-                      : ""
-                  }`;
+                  ) + " Cr";
               } else if (
                 parseFloat(OP_BALANCE.cred_minus_deb) <
                 parseFloat(OP_BALANCE.deb_minus_cred)
@@ -2946,12 +2931,7 @@ function createHierarchyTransactionTB(
                 op_amount =
                   parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
                     decimal_places
-                  ) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Dr"
-                      : ""
-                  }`;
+                  ) + " Dr";
               } else {
                 op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
                   decimal_places
@@ -2993,16 +2973,41 @@ function createHierarchyTransactionTB(
         }
         ///END calculating transaction amount between  from_date  and to_date-----
         //ST calculating closing balance on  to date-----
-        let cb_amount =
-          trans_symbol === "Dr"
-            ? parseFloat(
-                parseFloat(op_amount) +
-                  (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
-              ).toFixed(decimal_places)
-            : parseFloat(
-                parseFloat(op_amount) +
-                  (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
-              ).toFixed(decimal_places);
+        let cb_amount = 0;
+        let minusAmount = false;
+        if (finance_account_head_id === 1 || finance_account_head_id === 5) {
+          if (String(op_amount).includes("Cr")) {
+            minusAmount = true;
+          }
+        } else {
+          if (String(op_amount).includes("Dr")) {
+            minusAmount = true;
+          }
+        }
+        if (minusAmount) {
+          cb_amount =
+            trans_symbol === "Dr"
+              ? parseFloat(
+                  parseFloat(op_amount) -
+                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+                ).toFixed(decimal_places)
+              : parseFloat(
+                  parseFloat(op_amount) -
+                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+                ).toFixed(decimal_places);
+        } else {
+          cb_amount =
+            trans_symbol === "Dr"
+              ? parseFloat(
+                  parseFloat(op_amount) +
+                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+                ).toFixed(decimal_places)
+              : parseFloat(
+                  parseFloat(op_amount) +
+                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+                ).toFixed(decimal_places);
+        }
+
         // const CB_BALANCE = cb_child_data.find((f) => {
         //   return (
         //     item.finance_account_head_id == f.head_id &&
@@ -3068,12 +3073,24 @@ function createHierarchyTransactionTB(
               finance_account_child_id: item["finance_account_child_id"],
               tr_debit_amount: tr_debit_amount,
               tr_credit_amount: tr_credit_amount,
-              cb_amount: `${cb_amount} ${
+              cb_amount: ` ${
                 cr_dr_required === undefined || cr_dr_required === "Y"
-                  ? trans_symbol
-                  : ""
+                  ? `${Math.abs(cb_amount)} ${trans_symbol} `
+                  : cb_amount
               }`,
-              op_amount: op_amount,
+              op_amount:
+                cr_dr_required === undefined || cr_dr_required === "Y"
+                  ? op_amount
+                  : `${
+                      finance_account_head_id === 1 ||
+                      finance_account_head_id === 5
+                        ? String(op_amount).includes("Cr")
+                          ? -Math.abs(parseFloat(op_amount))
+                          : op_amount
+                        : String(op_amount).includes("Dr")
+                        ? -Math.abs(parseFloat(op_amount))
+                        : op_amount
+                    }`,
               title: item.child_name,
               label: item.child_name,
               ledger_code: item.child_ledger_code,
@@ -3088,12 +3105,24 @@ function createHierarchyTransactionTB(
             ledger_code: item.child_ledger_code,
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
-            cb_amount: `${cb_amount} ${
+            cb_amount: ` ${
               cr_dr_required === undefined || cr_dr_required === "Y"
-                ? trans_symbol
-                : ""
+                ? `${Math.abs(cb_amount)} ${trans_symbol} `
+                : cb_amount
             }`,
-            op_amount: op_amount,
+            op_amount:
+              cr_dr_required === undefined || cr_dr_required === "Y"
+                ? op_amount
+                : `${
+                    finance_account_head_id === 1 ||
+                    finance_account_head_id === 5
+                      ? String(op_amount).includes("Cr")
+                        ? -Math.abs(parseFloat(op_amount))
+                        : op_amount
+                      : String(op_amount).includes("Dr")
+                      ? -Math.abs(parseFloat(op_amount))
+                      : op_amount
+                  }`,
             title: item.child_name,
             label: item.child_name,
             head_id: item["head_id"],
@@ -3156,12 +3185,7 @@ function createHierarchyTransactionTB(
                   op_amount =
                     parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
                       decimal_places
-                    ) +
-                    `${
-                      cr_dr_required === undefined || cr_dr_required === "Y"
-                        ? " Cr"
-                        : ""
-                    }`;
+                    ) + " Cr";
                 } else if (
                   parseFloat(OP_BALANCE.cred_minus_deb) <
                   parseFloat(OP_BALANCE.deb_minus_cred)
@@ -3169,12 +3193,7 @@ function createHierarchyTransactionTB(
                   op_amount =
                     parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
                       decimal_places
-                    ) +
-                    `${
-                      cr_dr_required === undefined || cr_dr_required === "Y"
-                        ? " Dr"
-                        : ""
-                    }`;
+                    ) + " Dr";
                 } else {
                   op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
                     decimal_places
@@ -3220,16 +3239,46 @@ function createHierarchyTransactionTB(
           }
           ///END calculating transaction amount between  from_date  and to_date-----
           //ST calculating closing balance on  to date-----
-          let cb_amount =
-            trans_symbol === "Dr"
-              ? parseFloat(
-                  parseFloat(op_amount) +
-                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
-                ).toFixed(decimal_places)
-              : parseFloat(
-                  parseFloat(op_amount) +
-                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
-                ).toFixed(decimal_places);
+
+          let cb_amount = 0;
+          let minusAmount = false;
+          if (finance_account_head_id === 1 || finance_account_head_id === 5) {
+            if (String(op_amount).includes("Cr")) {
+              minusAmount = true;
+            }
+          } else {
+            if (String(op_amount).includes("Dr")) {
+              minusAmount = true;
+            }
+          }
+          if (minusAmount) {
+            cb_amount =
+              trans_symbol === "Dr"
+                ? parseFloat(
+                    parseFloat(op_amount) -
+                      (parseFloat(tr_debit_amount) -
+                        parseFloat(tr_credit_amount))
+                  ).toFixed(decimal_places)
+                : parseFloat(
+                    parseFloat(op_amount) -
+                      (parseFloat(tr_credit_amount) -
+                        parseFloat(tr_debit_amount))
+                  ).toFixed(decimal_places);
+          } else {
+            cb_amount =
+              trans_symbol === "Dr"
+                ? parseFloat(
+                    parseFloat(op_amount) +
+                      (parseFloat(tr_debit_amount) -
+                        parseFloat(tr_credit_amount))
+                  ).toFixed(decimal_places)
+                : parseFloat(
+                    parseFloat(op_amount) +
+                      (parseFloat(tr_credit_amount) -
+                        parseFloat(tr_debit_amount))
+                  ).toFixed(decimal_places);
+          }
+
           // const CB_BALANCE = cb_head_data.find((f) => {
           //   return item.finance_account_head_id == f.finance_account_head_id;
           // });
@@ -3295,12 +3344,24 @@ function createHierarchyTransactionTB(
 
                 tr_debit_amount: tr_debit_amount,
                 tr_credit_amount: tr_credit_amount,
-                cb_amount: `${cb_amount} ${
+                cb_amount: ` ${
                   cr_dr_required === undefined || cr_dr_required === "Y"
-                    ? trans_symbol
-                    : ""
+                    ? `${Math.abs(cb_amount)} ${trans_symbol}`
+                    : cb_amount
                 }`,
-                op_amount: op_amount,
+                op_amount:
+                  cr_dr_required === undefined || cr_dr_required === "Y"
+                    ? op_amount
+                    : `${
+                        finance_account_head_id === 1 ||
+                        finance_account_head_id === 5
+                          ? String(op_amount).includes("Cr")
+                            ? -Math.abs(parseFloat(op_amount))
+                            : op_amount
+                          : String(op_amount).includes("Dr")
+                          ? -Math.abs(parseFloat(op_amount))
+                          : op_amount
+                      }`,
                 title: item.account_name,
                 label: item.account_name,
                 arabic_name: item.arabic_account_name,
@@ -3316,12 +3377,24 @@ function createHierarchyTransactionTB(
               // ledger_code: item.header_ledger_code,
               tr_debit_amount: tr_debit_amount,
               tr_credit_amount: tr_credit_amount,
-              cb_amount: `${cb_amount} ${
+              cb_amount: ` ${
                 cr_dr_required === undefined || cr_dr_required === "Y"
-                  ? trans_symbol
-                  : ""
+                  ? `${Math.abs(cb_amount)} ${trans_symbol} `
+                  : cb_amount
               }`,
-              op_amount: op_amount,
+              op_amount:
+                cr_dr_required === undefined || cr_dr_required === "Y"
+                  ? op_amount
+                  : `${
+                      finance_account_head_id === 1 ||
+                      finance_account_head_id === 5
+                        ? String(op_amount).includes("Cr")
+                          ? -Math.abs(parseFloat(op_amount))
+                          : op_amount
+                        : String(op_amount).includes("Dr")
+                        ? -Math.abs(parseFloat(op_amount))
+                        : op_amount
+                    }`,
               title: item.account_name,
               label: item.account_name,
               arabic_name: item.arabic_account_name,
@@ -3348,12 +3421,7 @@ function createHierarchyTransactionTB(
                 op_amount =
                   parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
                     decimal_places
-                  ) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Dr"
-                      : ""
-                  }`;
+                  ) + " Dr";
               } else if (
                 parseFloat(OP_BALANCE.deb_minus_cred) <
                 parseFloat(OP_BALANCE.cred_minus_deb)
@@ -3361,12 +3429,7 @@ function createHierarchyTransactionTB(
                 op_amount =
                   parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
                     decimal_places
-                  ) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Cr"
-                      : ""
-                  }`;
+                  ) + " Cr";
               } else {
                 op_amount = parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
                   decimal_places
@@ -3380,12 +3443,7 @@ function createHierarchyTransactionTB(
                 op_amount =
                   parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
                     decimal_places
-                  ) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Cr"
-                      : ""
-                  }`;
+                  ) + " Cr";
               } else if (
                 parseFloat(OP_BALANCE.cred_minus_deb) <
                 parseFloat(OP_BALANCE.deb_minus_cred)
@@ -3393,12 +3451,7 @@ function createHierarchyTransactionTB(
                 op_amount =
                   parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
                     decimal_places
-                  ) +
-                  `${
-                    cr_dr_required === undefined || cr_dr_required === "Y"
-                      ? " Dr"
-                      : ""
-                  }`;
+                  ) + " Dr";
               } else {
                 op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
                   decimal_places
@@ -3439,16 +3492,41 @@ function createHierarchyTransactionTB(
 
         ///END calculating transaction amount between  from_date  and to_date-----
         //ST calculating closing balance on  to date-----
-        let cb_amount =
-          trans_symbol === "Dr"
-            ? parseFloat(
-                parseFloat(op_amount) +
-                  (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
-              ).toFixed(decimal_places)
-            : parseFloat(
-                parseFloat(op_amount) +
-                  (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
-              ).toFixed(decimal_places);
+        let cb_amount = 0;
+        let minusAmount = false;
+        if (finance_account_head_id === 1 || finance_account_head_id === 5) {
+          if (String(op_amount).includes("Cr")) {
+            minusAmount = true;
+          }
+        } else {
+          if (String(op_amount).includes("Dr")) {
+            minusAmount = true;
+          }
+        }
+        if (minusAmount) {
+          cb_amount =
+            trans_symbol === "Dr"
+              ? parseFloat(
+                  parseFloat(op_amount) -
+                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+                ).toFixed(decimal_places)
+              : parseFloat(
+                  parseFloat(op_amount) -
+                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+                ).toFixed(decimal_places);
+        } else {
+          cb_amount =
+            trans_symbol === "Dr"
+              ? parseFloat(
+                  parseFloat(op_amount) +
+                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+                ).toFixed(decimal_places)
+              : parseFloat(
+                  parseFloat(op_amount) +
+                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+                ).toFixed(decimal_places);
+        }
+
         // const CB_BALANCE = cb_head_data.find((f) => {
         //   return item.finance_account_head_id == f.finance_account_head_id;
         // });
@@ -3511,12 +3589,24 @@ function createHierarchyTransactionTB(
               ledger_code: item.account_code,
               tr_debit_amount: tr_debit_amount,
               tr_credit_amount: tr_credit_amount,
-              cb_amount: `${cb_amount} ${
+              cb_amount: ` ${
                 cr_dr_required === undefined || cr_dr_required === "Y"
-                  ? trans_symbol
-                  : ""
+                  ? `${Math.abs(cb_amount)} ${trans_symbol} `
+                  : cb_amount
               }`,
-              op_amount: op_amount,
+              op_amount:
+                cr_dr_required === undefined || cr_dr_required === "Y"
+                  ? op_amount
+                  : `${
+                      finance_account_head_id === 1 ||
+                      finance_account_head_id === 5
+                        ? String(op_amount).includes("Cr")
+                          ? -Math.abs(parseFloat(op_amount))
+                          : op_amount
+                        : String(op_amount).includes("Dr")
+                        ? -Math.abs(parseFloat(op_amount))
+                        : op_amount
+                    }`,
               title: item.account_name,
               label: item.account_name,
               arabic_name: item.arabic_account_name,
@@ -3531,12 +3621,24 @@ function createHierarchyTransactionTB(
             ledger_code: item.account_code,
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
-            cb_amount: `${cb_amount} ${
+            cb_amount: ` ${
               cr_dr_required === undefined || cr_dr_required === "Y"
-                ? trans_symbol
-                : ""
+                ? `${Math.abs(cb_amount)} ${trans_symbol} `
+                : cb_amount
             }`,
-            op_amount: op_amount,
+            op_amount:
+              cr_dr_required === undefined || cr_dr_required === "Y"
+                ? op_amount
+                : `${
+                    finance_account_head_id === 1 ||
+                    finance_account_head_id === 5
+                      ? String(op_amount).includes("Cr")
+                        ? -Math.abs(parseFloat(op_amount))
+                        : op_amount
+                      : String(op_amount).includes("Dr")
+                      ? -Math.abs(parseFloat(op_amount))
+                      : op_amount
+                  }`,
             title: item.account_name,
             label: item.account_name,
             arabic_name: item.arabic_account_name,
