@@ -56,7 +56,7 @@ const UpdateLabOrder = ($this, value, status) => {
     value[0].critical_status = "Y";
   }
   AlgaehLoader({ show: true });
-  debugger;
+  // debugger;
 
   for (let k = 0; k < value.length; k++) {
     if (value[k].analyte_type === "T" && $this.state.edit_range) {
@@ -70,6 +70,7 @@ const UpdateLabOrder = ($this, value, status) => {
           : [];
     }
   }
+  // debugger
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     module: "laboratory",
@@ -126,25 +127,42 @@ const UpdateLabOrder = ($this, value, status) => {
 const onvalidate = ($this) => {
   console.time("valid");
   let test_analytes = $this.state.test_analytes;
-
+  let intNoofAnalytes = 0
   let strTitle = "Are you sure want to Validate?";
 
   for (let k = 0; k < test_analytes.length; k++) {
-    if (test_analytes[k].confirm === "N") {
+    if (test_analytes[k].result === null || test_analytes[k].result === "") {
       strTitle =
         "Are you sure want to Validate, for few Analytes no Result Entered?";
+      intNoofAnalytes = intNoofAnalytes + 1;
+
+      test_analytes[k].status = "V";
+      test_analytes[k].validate = "Y";
+      test_analytes[k].isre_run = false;
       // swalMessage({
       //   type: "warning",
       //   title: "Please confirm result for all the Analytes",
       // });
 
       // return;
-    } else {
-      test_analytes[k].status = "V";
-      test_analytes[k].validate = "Y";
-      test_analytes[k].isre_run = false;
     }
+    // else {
+    //   test_analytes[k].status = "V";
+    //   test_analytes[k].validate = "Y";
+    //   test_analytes[k].isre_run = false;
+    // }
+    test_analytes[k].status = "V";
+    test_analytes[k].validate = "Y";
+    test_analytes[k].isre_run = false;
     test_analytes[k].comments = $this.state.comments;
+  }
+
+  if (test_analytes.length === intNoofAnalytes) {
+    swalMessage({
+      type: "warning",
+      title: "Atleast one Analyte result to be entered.",
+    });
+    return;
   }
 
   swal({
@@ -167,7 +185,7 @@ const onvalidate = ($this) => {
 const reloadAnalytesMaster = ($this) => {
   AlgaehLoader({ show: true });
 
-  debugger
+  // debugger
   const inputObj = {
     test_id: $this.state.hims_d_investigation_test_id,
     date_of_birth: $this.state.date_of_birth,
@@ -381,6 +399,8 @@ const resultEntryUpdate = ($this) => {
 const onconfirm = ($this) => {
   let test_analytes = $this.state.test_analytes;
 
+  let intNoofAnalytes = 0;
+
   let strTitle = "Are you sure want to Confirm?";
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result === null || test_analytes[k].result === "") {
@@ -391,12 +411,22 @@ const onconfirm = ($this) => {
       //   title: "Please enter result for all the Analytes.",
       // });
       // return;
+      intNoofAnalytes = intNoofAnalytes + 1;
     } else {
       test_analytes[k].status = "C";
       test_analytes[k].confirm = "Y";
       test_analytes[k].isre_run = false;
     }
     test_analytes[k].comments = $this.state.comments;
+  }
+  // debugger
+
+  if (test_analytes.length === intNoofAnalytes) {
+    swalMessage({
+      type: "warning",
+      title: "Atleast one Analyte result to be entered.",
+    });
+    return;
   }
 
   swal({

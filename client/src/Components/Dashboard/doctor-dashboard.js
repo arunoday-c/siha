@@ -1,102 +1,181 @@
 import React, { Component } from "react";
 import "./dashboard.scss";
-// import { Bar } from "react-chartjs-2";
-import { HorizontalBar } from "react-chartjs-2";
-import { Doughnut } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
+// import { HorizontalBar } from "react-chartjs-2";
+// import { Doughnut } from "react-chartjs-2";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
-import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
-const DoctorExplained = {
-  labels: [
-    "Fully Agree",
-    "Rather Agree",
-    "Rather Disagree",
-    "Fully Disagree",
-    "Don't Know"
-  ],
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import {
+  AlgaehDataGrid,
+  AlgaehDateHandler,
+  // AlgaehMessagePop,
+} from "algaeh-react-components";
+
+const patientIncomingHistory = {
   datasets: [
     {
-      data: [65, 59, 80, 81, 56, 55, 45],
-      backgroundColor: "rgba(255,99,132,0.2)",
-      borderColor: "rgba(255,99,132,1)",
-      borderWidth: 1,
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)"
-    }
-  ]
+      type: "line",
+      label: "Patient Count",
+      data: [12, 8, 17, 21, 20, 28],
+      fill: false,
+      backgroundColor: "#71B37C",
+      borderColor: "#71B37C",
+      hoverBackgroundColor: "#71B37C",
+      hoverBorderColor: "#71B37C",
+      yAxisID: "y-axis-1",
+    },
+  ],
 };
 
-const DoctorExplainedDataOptions = {
+const patientIncomingHistoryOptions = {
   responsive: true,
   legend: {
-    display: false
-  }
+    position: "bottom",
+    labels: {
+      boxWidth: 10,
+    },
+  },
+  tooltips: {
+    mode: "label",
+  },
+  elements: {
+    line: {
+      fill: false,
+    },
+  },
+  scales: {
+    xAxes: [
+      {
+        display: true,
+        gridLines: {
+          display: false,
+        },
+        labels: [
+          "Day 1",
+          " Day 2",
+          "Day 3",
+          "Day 4",
+          "Day 5",
+          "Day 6",
+          "Day 7",
+        ],
+      },
+    ],
+    yAxes: [
+      {
+        type: "linear",
+        display: true,
+        position: "left",
+        id: "y-axis-1",
+        gridLines: {
+          display: false,
+        },
+        labels: {
+          show: true,
+        },
+      },
+    ],
+  },
 };
 
-const TreatingPhysician = {
-  labels: [
-    "Fully Agree",
-    "Rather Agree",
-    "Rather Disagree",
-    "Fully Disagree",
-    "Don't Know"
-  ],
+const patientIncomingcategory = {
   datasets: [
     {
-      data: [65, 59, 80, 81, 56, 55, 45],
-      backgroundColor: "rgba(255,99,132,0.2)",
-      borderColor: "rgba(255,99,132,1)",
-      borderWidth: 1,
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)"
-    }
-  ]
+      type: "bar",
+      label: "New Patient",
+      data: [12, 8, 17, 21, 20, 28],
+      fill: false,
+      backgroundColor: "#71B37C",
+      borderColor: "#71B37C",
+      hoverBackgroundColor: "#71B37C",
+      hoverBorderColor: "#71B37C",
+      yAxisID: "y-axis-1",
+    },
+    {
+      type: "bar",
+      label: "Follow Up",
+      data: [12, 8, 17, 21, 20, 28],
+      fill: false,
+      backgroundColor: "#EC932F",
+      borderColor: "#EC932F",
+      hoverBackgroundColor: "#EC932F",
+      hoverBorderColor: "#EC932F",
+      yAxisID: "y-axis-1",
+    },
+  ],
 };
 
-const TreatingPhysicianDataOptions = {
+const patientIncomingcategoryOptions = {
   responsive: true,
   legend: {
-    display: false
-  }
+    position: "bottom",
+    labels: {
+      boxWidth: 10,
+    },
+  },
+  tooltips: {
+    mode: "label",
+  },
+  elements: {
+    line: {
+      fill: false,
+    },
+  },
+  scales: {
+    xAxes: [
+      {
+        stacked: true,
+        display: true,
+        gridLines: {
+          display: false,
+        },
+        labels: [
+          "Day 1",
+          " Day 2",
+          "Day 3",
+          "Day 4",
+          "Day 5",
+          "Day 6",
+          "Day 7",
+        ],
+      },
+    ],
+    yAxes: [
+      {
+        stacked: true,
+        type: "linear",
+        display: true,
+        position: "left",
+        id: "y-axis-1",
+        gridLines: {
+          display: false,
+        },
+        labels: {
+          show: true,
+        },
+      },
+    ],
+  },
 };
-// const plugins = [
-//   {
-//     afterDraw: (chartInstance, easing) => {
-//       const ctx = chartInstance.chart.ctx;
-//       ctx.fillText("This text drawn by a plugin", 100, 100);
-//     }
-//   }
-// ];
-
-const PieData = {
-  labels: ["Excellent", "Good", "Neutral/Negative"],
-  datasets: [
-    {
-      data: [24, 40, 35],
-      backgroundColor: ["#34b8bc", "#DCAC66", "#EC932F"],
-      hoverBackgroundColor: ["#34b8bc", "#DCAC66", "#EC932F"]
-    }
-  ]
-};
-
 class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       sidBarOpen: true,
       showDetails: "d-none",
-      today_list: []
+      today_list: [],
     };
     this.loadListofData();
   }
 
   showDetailHandler(event) {
     this.setState({
-      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block"
+      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block",
     });
   }
 
@@ -105,166 +184,210 @@ class Dashboard extends Component {
       uri: "/doctorsWorkBench/getMyDay",
       data: {
         fromDate: new Date(),
-        toDate: new Date()
+        toDate: new Date(),
       },
       method: "GET",
       cancelRequestId: "getMyDay",
-      onSuccess: response => {
+      onSuccess: (response) => {
         console.log("getMyday");
         if (response.data.success) {
           if (Array.isArray(response.data.records)) {
             this.setState({
-              today_list: response.data.records
+              today_list: response.data.records,
             });
           } else {
             this.setState({
-              today_list: []
+              today_list: [],
             });
           }
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   SideMenuBarOpen(sidOpen) {
     this.setState({
-      sidBarOpen: sidOpen
+      sidBarOpen: sidOpen,
     });
   }
 
   render() {
     return (
-      <div className="dashboard ">
-        <div className="row card-deck">
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-calendar-check" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Today's Appointments</p>4
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-award" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>New Visit</p>4
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-walking" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Follow Up</p>0
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-hand-holding-usd" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Commission</p>
-
-                    {GetAmountFormart("1378.00")}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <div className="dashboard doc-dash">
         <div className="row">
-          <div className="col-lg-4 col-md-12">
-            <div className="row" />
-            <div className="row">
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Overall Patient Satisfacation</h6>
-                  <div className="dashboardChartsCntr">
-                    <Doughnut
-                      data={PieData}
-                      //options={AdmissionsReadmissionDataOptions}
-                    />
-                  </div>
-                  <hr />
-                  <div className="dashboardChartsCntr">
-                    <p>The doctor explained the treatment understandably.</p>
-                    <HorizontalBar
-                      data={DoctorExplained}
-                      options={DoctorExplainedDataOptions}
-                    />
-                  </div>
-                  <hr />
-
-                  <div className="dashboardChartsCntr">
-                    <p>I had confidence and trust in the treating physician.</p>
-                    <HorizontalBar
-                      data={TreatingPhysician}
-                      options={TreatingPhysicianDataOptions}
-                    />
+          <div className="col-lg-8 col-md-12">
+            <div className="row card-deck">
+              <div className="card animated fadeInUp faster hedrName">
+                <div className="content">
+                  <div className="row">
+                    <div className="col-12">
+                      <h2>Hello, Dr. JALAL ABDULLA SALMAN KAMAL</h2>
+                      <p>Here your important tasks and reports.</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-lg-8 col-md-12">
             <div className="row">
+              <div className="col-6">
+                <div className="card animated fadeInUp faster">
+                  <h6>
+                    Patient Incoming History{" "}
+                    <span className="portletTopAction">
+                      <AlgaehDateHandler
+                        type={"week"}
+                        size={"small"}
+                        label={
+                          {
+                            // forceLabel: "View for Last ",
+                          }
+                        }
+                        textBox={{
+                          name: "selectRange",
+                          value: this.state.dateRange,
+                        }}
+                        // maxDate={new date()}
+                        events={{
+                          onChange: (dateSelected) => {},
+                        }}
+                      />
+                    </span>
+                  </h6>
+
+                  <div className="dashboardChartsCntr">
+                    <Bar
+                      data={patientIncomingHistory}
+                      options={patientIncomingHistoryOptions}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="card animated fadeInUp faster">
+                  <h6>
+                    New Patient vs Follow Up
+                    <span className="portletTopAction">
+                      <AlgaehDateHandler
+                        type={"week"}
+                        size={"small"}
+                        label={
+                          {
+                            // forceLabel: "View for Last ",
+                          }
+                        }
+                        textBox={{
+                          name: "selectRange",
+                          value: this.state.dateRange,
+                        }}
+                        // maxDate={new date()}
+                        events={{
+                          onChange: (dateSelected) => {
+                            // const months = moment(dateSelected[1]).diff(
+                            //   dateSelected[0],
+                            //   "months"
+                            // );
+                            // if (months <= 11) {
+                            // this.setState(
+                            //   { dateRange: dateSelected },
+                            //   () => {
+                            //     dashEvents.getDocumentExpiryCurrentMonth(this);
+                            //   }
+                            // );
+                          },
+                        }}
+                        // others={{
+                        //   ...format,
+                        // }}
+                      />
+                    </span>
+                  </h6>
+
+                  <div className="dashboardChartsCntr">
+                    <Bar
+                      data={patientIncomingcategory}
+                      options={patientIncomingcategoryOptions}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="col-12">
                 <div className="card animated fadeInUp faster">
                   <h6>Todays Patients</h6>
-                  <div className="dashboardGridCntr table-responsive">
-                    <table className="table table-bordered table-sm table-striped">
-                      <thead>
-                        <tr>
-                          <th>Patient Code</th>
-                          <th>Patient Name</th>
-                          <th>Gender</th>
-                          <th>Age</th>
-                          <th>Appointment Type</th>
-                          <th>Visit Type</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {/* today_list */}
+                  <div className="col-12" id="patientIncomingcategoryCntr">
+                    <AlgaehDataGrid
+                      className="dashboardGrd"
+                      columns={[
+                        {
+                          fieldName: "row_num",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Sl No." }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: <AlgaehLabel label={{ fieldName: "Code" }} />,
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: <AlgaehLabel label={{ fieldName: "Name" }} />,
+                          // others: {
+                          //   minWidth: 150,
+                          // },
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Gender" }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "identity_document_name",
+                          label: <AlgaehLabel label={{ fieldName: "Age" }} />,
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Appo. Type" }} />
+                          ),
+                          others: {
+                            width: 110,
+                          },
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Visit Type" }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                      ]}
+                      // height="40vh"
+                      rowUnique="identity_documents_id"
+                      data=""
+                    />
 
-                        {this.state.today_list.map((patient_data, index) => (
+                    {/*  {this.state.today_list.map((patient_data, index) => (
                           <tr key={index}>
                             <td>{patient_data.patient_code}</td>
                             <td>{patient_data.full_name}</td>
@@ -281,80 +404,179 @@ class Dashboard extends Component {
                                 : "Follow Up"}
                             </td>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        ))} */}
                   </div>
                 </div>
               </div>
 
               <div className="col-12">
                 <div className="card animated fadeInUp faster">
-                  <h6>Ordered Service Status</h6>
-                  <div className="dashboardGridCntr table-responsive">
-                    <table className="table table-bordered table-sm table-striped">
-                      <thead>
-                        <tr>
-                          <th>Patient Code</th>
-                          <th>Patient Name</th>
-                          <th>Service Ordered</th>
-                          <th>Ordered Date</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>PAT-A-0000693</td>
-                          <td>Gulam Mustafa</td>
-                          <td>Acetylcholine receptor antibody</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000691</td>
-                          <td>Kamalnath Singh</td>
-                          <td>CBC</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000682</td>
-                          <td>Rehmat Fatima</td>
-                          <td>Activated Protein C Resistance (APCR)</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000654</td>
-                          <td>Syed Al-Hameed</td>
-                          <td>Acute Hepatitis Panel</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000682</td>
-                          <td>Rehmat Fatima</td>
-                          <td>Acid Fast Bacilli (AFB) Smear</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                        <tr>
-                          <td>PAT-A-0000682</td>
-                          <td>Hakeem Usmani</td>
-                          <td>17-Ketosteroids</td>
-                          <td>19-04-2018</td>
-                          <td>Pending</td>
-                          <td>-</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <h6>
+                    Todays Order Services Status{" "}
+                    <span className="portletTopAction">
+                      <AlgaehDateHandler
+                        type={"week"}
+                        size={"small"}
+                        label={
+                          {
+                            // forceLabel: "View for Last ",
+                          }
+                        }
+                        textBox={{
+                          name: "selectRange",
+                          value: this.state.dateRange,
+                        }}
+                        // maxDate={new date()}
+                        events={{
+                          onChange: (dateSelected) => {},
+                        }}
+                      />
+                    </span>
+                  </h6>
+                  <div className="col-12" id="patientIncomingcategoryCntr">
+                    <AlgaehDataGrid
+                      className="dashboardGrd"
+                      columns={[
+                        {
+                          fieldName: "row_num",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Sl No." }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: <AlgaehLabel label={{ fieldName: "Code" }} />,
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: <AlgaehLabel label={{ fieldName: "Name" }} />,
+                          // others: {
+                          //   minWidth: 150,
+                          // },
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Gender" }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "identity_document_name",
+                          label: <AlgaehLabel label={{ fieldName: "Age" }} />,
+                          others: {
+                            width: 80,
+                          },
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Appo. Type" }} />
+                          ),
+                          others: {
+                            width: 110,
+                          },
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Visit Type" }} />
+                          ),
+                          others: {
+                            width: 80,
+                          },
+                        },
+                      ]}
+                      // height="40vh"
+                      rowUnique="identity_documents_id"
+                      data=""
+                    />
+
+                    {/*  {this.state.today_list.map((patient_data, index) => (
+                          <tr key={index}>
+                            <td>{patient_data.patient_code}</td>
+                            <td>{patient_data.full_name}</td>
+                            <td>{patient_data.gender}</td>
+                            <td>{patient_data.age}</td>
+                            <td>
+                              {patient_data.appointment_patient === "N"
+                                ? "Walk In"
+                                : "Appoinment"}
+                            </td>
+                            <td>
+                              {patient_data.new_visit_patient === "Y"
+                                ? "New Visit"
+                                : "Follow Up"}
+                            </td>
+                          </tr>
+                        ))} */}
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-12">
+            <div className="row">
+              <div className="col-12">
+                <div className="card animated fadeInUp faster">
+                  <div className="doc-section">
+                    <img className="docImg"></img>
+                    <h5>Dr. JALAL ABDULLA SALMAN KAMAL</h5>
+                    <small>Medical Director, Family Medicine</small>
+                  </div>
+                  <hr />
+                  <div className="pat-info-section">
+                    <div className="row">
+                      <div className="col-6">
+                        <h5>2000</h5>
+                        <small>Appoinment</small>
+                      </div>
+                      <div className="col-6">
+                        <h5>2000</h5>
+                        <small>Walk-In</small>
+                      </div>
+                      <div className="col-6">
+                        <h5>2000</h5>
+                        <small>New Patients</small>
+                      </div>
+                      <div className="col-6">
+                        <h5>2000</h5>
+                        <small>Follow Up</small>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <hr />
+                  <h6>Overall Patient Satisfacation</h6>
+                  <div className="dashboardChartsCntr">
+                    <Doughnut
+                      data={PieData}
+                      //options={patientIncomingHistoryOptions}
+                    />
+                  </div>
+                  <hr />
+                  <div className="dashboardChartsCntr">
+                    <p>The doctor explained the treatment understandably.</p>
+                    <HorizontalBar
+                      data={DoctorExplained}
+                      options={DoctorExplainedDataOptions}
+                    />
+                  </div>
+                  <hr />
+                  <div className="dashboardChartsCntr">
+                    <p>I had confidence and trust in the treating physician.</p>
+                    <HorizontalBar
+                      data={TreatingPhysician}
+                      options={TreatingPhysicianDataOptions}
+                    />
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -367,14 +589,14 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
     },
     dispatch
   );

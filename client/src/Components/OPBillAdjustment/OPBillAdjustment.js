@@ -188,6 +188,7 @@ class OPBillAdjustment extends Component {
             this.GenerateReciept(($this) => {
               let Inputobj = $this.state;
 
+              delete Inputobj.doctors;
               Inputobj.patient_payable = $this.state.patient_payable_h;
               Inputobj.insurance_yesno = $this.state.insured;
               Inputobj.ScreenCode = "BL0001";
