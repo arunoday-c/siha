@@ -253,7 +253,7 @@ export default function Income({
       {
         subitem: "Income by Cashier - POS",
         reportName: "userWiseBillPos",
-        // componentCode: "RPT_INC_CASH_POS",
+        componentCode: "RPT_INC_CASH_POS",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "portrait", //"portrait",
@@ -808,7 +808,7 @@ export default function Income({
         subitem: "Daily Transaction",
         reportName: "DailyTransaction",
         directEcel: true,
-        componentCode: "RPT_DAILY_TRANSACTION",
+        componentCode: "RPT_INC_DLY_TRAN",
         hideButtons: ["preview", "downloadpdf"],
         requireIframe: true,
         reportParameters: [
