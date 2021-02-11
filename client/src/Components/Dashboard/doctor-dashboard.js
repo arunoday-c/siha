@@ -735,20 +735,7 @@ export default function Dashboard() {
                       />
                     </Spin>
 
-                    {/* <table className="table table-bordered table-sm table-striped">
-                      <thead>
-                        <tr>
-                          <th>Patient Code</th>
-                          <th>Patient Name</th>
-                          <th>Gender</th>
-                          <th>Age</th>
-                          <th>Appointment Type</th>
-                          <th>Visit Type</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-
-                        {this.state.today_list.map((patient_data, index) => (
+                    {/*  {this.state.today_list.map((patient_data, index) => (
                           <tr key={index}>
                             <td>{patient_data.patient_code}</td>
                             <td>{patient_data.full_name}</td>
@@ -765,9 +752,7 @@ export default function Dashboard() {
                                 : "Follow Up"}
                             </td>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table> */}
+                        ))} */}
                   </div>
                 </div>
               </div>

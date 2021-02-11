@@ -1425,7 +1425,8 @@ export default {
 
       _mysql
         .executeQueryWithTransaction({
-          query: "select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
+          query:
+            "select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
           TIMESTAMPDIFF(day, ?, curdate()) as days,\
           TIMESTAMPDIFF(month, ?, curdate()) as months,\
           TIMESTAMPDIFF(year, ?, curdate()) as years from \
@@ -1434,7 +1435,7 @@ export default {
             input.date_of_birth,
             input.date_of_birth,
             input.date_of_birth,
-            input.date_of_birth
+            input.date_of_birth,
           ],
           printQuery: true,
         })
@@ -1489,7 +1490,7 @@ export default {
                   .executeQuery({
                     query:
                       "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
-                        ON DUPLICATE KEY UPDATE normal_low=values(normal_low),normal_high=values(normal_high), \
+                        ON DUPLICATE KEY UPDATE analyte_type=values(analyte_type), normal_low=values(normal_low),normal_high=values(normal_high), \
                         text_value=values(text_value)",
                     values: all_analytes,
                     includeValues: analyts,
@@ -1526,7 +1527,6 @@ export default {
                 next(e);
               });
             });
-
         })
         .catch((e) => {
           _mysql.rollBackTransaction(() => {
@@ -1924,7 +1924,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Lab
+              appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {

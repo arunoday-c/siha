@@ -5,7 +5,7 @@
   .card {
     border-radius: 6px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
-    background-color: #ffffff;
+    background: none !important;
     color: #252422;
     margin-bottom: 20px;
     position: relative;
@@ -123,9 +123,19 @@
     .table {
       margin-bottom: 0;
     }
+    .table-scroll {
+      background: none;
+      border-radius: 4px;
+      th {
+        background: none !important;
+      }
+    }
   }
   hr {
     margin: 0 !important;
+  }
+  .chartjs-render-monitor {
+    height: 100% !important;
   }
 }
 .hr-dash {
@@ -180,7 +190,7 @@
       to left,
       rgba(228, 171, 89, 0.76) 0%,
       darken($primary-color, 5%) 100%
-    );
+    ) !important;
     color: #fff;
     border: none;
     h2 {
@@ -196,7 +206,7 @@
   }
 
   .portletTopAction {
-    width: 40%;
+    width: 150px;
     float: right;
   }
 
@@ -250,5 +260,70 @@
         overflow: auto;
       }
     }
+  }
+}
+
+.lab-dash {
+  .portletTopAction {
+    width: 150px;
+    float: right;
+  }
+
+  .doc-section {
+    margin-top: 15px;
+    text-align: center;
+    h5 {
+      margin-bottom: 0px;
+    }
+    small {
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+    .docImg {
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      width: 110px;
+      height: 110px;
+      border-radius: 4px;
+    }
+  }
+  .pat-info-section {
+    padding: 15px 0 0;
+    .col-6 {
+      padding: 0 30px 15px;
+      h5 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      small {
+        margin: 0;
+        padding: 0;
+        text-transform: uppercase;
+      }
+    }
+  }
+  .dashboardGrd {
+    width: 100%;
+    min-height: 250px !important;
+    max-height: 250px !important;
+    overflow: auto;
+  }
+
+  #patientIncomingcategoryCntr {
+    margin-bottom: 15px;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 280px;
+        min-height: 280px;
+        overflow: auto;
+      }
+    }
+  }
+}
+.front-dash {
+  .portletTopAction {
+    width: 150px;
+    float: right;
   }
 }

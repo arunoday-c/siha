@@ -1072,7 +1072,10 @@ export default function OPEncounterDetails({
                   {patientDiagnosis.map((data, index) => (
                     <h6 className="danger">
                       {data.diagnosis_type === "P"
-                        ? "Primary: " + data.daignosis_description
+                        ? "Primary: " +
+                          data.daignosis_code +
+                          " - " +
+                          data.daignosis_description
                         : ""}
                     </h6>
                   ))}
@@ -1082,7 +1085,10 @@ export default function OPEncounterDetails({
                   {patientDiagnosis.map((data, index) => (
                     <h6 className="">
                       {data.diagnosis_type === "S"
-                        ? "Secondary: " + data.daignosis_description
+                        ? "Secondary: " +
+                          data.daignosis_code +
+                          " - " +
+                          data.daignosis_description
                         : ""}
                     </h6>
                   ))}
