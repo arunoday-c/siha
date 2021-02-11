@@ -521,6 +521,7 @@ export default function Income({
             },
           },
           {
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -556,6 +557,7 @@ export default function Income({
             },
           },
           {
+            className: "col-3 form-group",
             type: "dropdown",
             name: "provider_id",
             initialLoad: true,
@@ -619,7 +621,7 @@ export default function Income({
         subitem: "Daily Cash Collection - Detail",
         // template_name: "Income/dailyCashCollection",
         reportName: "dailyCashCollectionDetail",
-        // componentCode: "RPT_INC_CASH_COLL_DTL",
+        componentCode: "RPT_INC_CASH_COLL_DTL",
         requireIframe: true,
         reportParameters: [
           {
