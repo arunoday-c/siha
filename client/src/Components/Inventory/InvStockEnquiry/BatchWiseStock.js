@@ -24,7 +24,7 @@ import "./InvStockEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class BatchWiseStock extends Component {
   constructor(props) {
@@ -71,10 +71,11 @@ class BatchWiseStock extends Component {
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
                             />
-                            <i
+                            {this.props.trans_required === true ? <i
                               className="fa fa-exchange-alt"
                               onClick={openExchangePopup.bind(this, this, row)}
-                            />
+                            /> : null}
+
                           </span>
                         );
                       },
@@ -326,7 +327,7 @@ class BatchWiseStock extends Component {
           </div>
         </AlgaehModalPopUp>
         < AlgaehModalPopUp
-          title="Exchange Option"
+          title="Transation Option"
           openPopup={this.state.open_exchange}
           class={"MultiTransationModal"}
           onClose={() => {
@@ -341,6 +342,30 @@ class BatchWiseStock extends Component {
         >
           <div className="col-12 popupInner margin-top-15">
             <div className="row">
+              <div className="col-6">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Selected Location",
+                  }}
+                />
+                <h6>
+                  {this.props.location_description
+                    ? this.props.location_description
+                    : "--------"}
+                </h6>
+              </div>
+              <div className="col-6">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Location Type",
+                  }}
+                />
+                <h6>
+                  {this.props.location_type
+                    ? this.props.location_type
+                    : "--------"}
+                </h6>
+              </div>
               <div className="col-6">
                 <AlgaehLabel
                   label={{
@@ -375,7 +400,29 @@ class BatchWiseStock extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: GlobalVariables.TRANS_TYPE,
+                    data: this.props.location_type === "WH" ? [
+                      {
+                        "name": "Consume",
+                        "value": "C"
+                      },
+                      {
+                        "name": "Transfer",
+                        "value": "T"
+                      },
+                      {
+                        "name": "Purchase Request",
+                        "value": "PR"
+                      }
+                    ] : [
+                        {
+                          "name": "Consume",
+                          "value": "C"
+                        },
+                        {
+                          "name": "Transfer",
+                          "value": "T"
+                        }
+                      ],
                   },
 
                   onChange: changeEvent.bind(this, this),
