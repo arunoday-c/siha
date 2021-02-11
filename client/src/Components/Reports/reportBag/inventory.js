@@ -11,6 +11,100 @@ export default function Inventory({
     excel: "true",
     submenu: [
       {
+        subitem: "Items Stock Report",
+        reportName: "itemsStockInventory",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait", //"landscape",
+        componentCode: "RPT_INV_ITM_STK",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: [],
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "Autosearch",
+            name: "item_id",
+            // initialLoad: true,
+            isImp: false,
+            // label: "Item",
+            columns: spotlightSearch.Items.Invitemmaster,
+            searchName: "PurchaseOrderForInventry",
+            value: "item_description",
+            label: "Item Name",
+            // link: {
+            //   uri: "/pharmacy/getItemMaster",
+            //   module: "pharmacy",
+            // },
+
+            // events: {
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //     });
+            //   },
+            // },
+          },
+        ],
+      },
+      {
         subitem: "Consumption List",
         reportName: "consumptionListInventory",
         requireIframe: true,
