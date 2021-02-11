@@ -28,6 +28,7 @@ import BatchWiseStock from "./BatchWiseStock";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import { RawSecurityComponent, } from "algaeh-react-components";
 
 class InvStockEnquiry extends Component {
   constructor(props) {
@@ -50,7 +51,8 @@ class InvStockEnquiry extends Component {
       item_description: null,
       total_quantity: 0,
       reorder_qty: "N",
-      trans_ack_required: "N"
+      trans_ack_required: "N",
+      trans_required: false
     };
     getInventoryOptions(this)
   }
@@ -104,6 +106,17 @@ class InvStockEnquiry extends Component {
         mappingName: "git_locations",
       },
     });
+
+
+    RawSecurityComponent({ componentCode: "TRANS_OPTION" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState({
+            trans_required: true
+          })
+        }
+      }
+    );
   }
 
   render() {
@@ -415,6 +428,9 @@ class InvStockEnquiry extends Component {
           location_id={this.state.location_id}
           location_type={this.state.location_type}
           trans_ack_required={this.state.trans_ack_required}
+          requisition_auth_level={this.state.requisition_auth_level}
+          trans_required={this.state.trans_required}
+          location_description={this.state.location_description}
         />
       </React.Fragment>
     );

@@ -10,7 +10,11 @@ const changeTexts = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState({ [name]: value, location_type: e.selected.location_type }, () => {
+  $this.setState({
+    [name]: value,
+    location_type: e.selected.location_type,
+    location_description: e.selected.location_description
+  }, () => {
     getItemLocationStock($this);
   });
 };
@@ -31,7 +35,7 @@ const changeEvent = ($this, ctrl, e) => {
       });
       break;
     case "quantity":
-      if (parseFloat(value) > parseFloat($this.state.item_details.qtyhand)) {
+      if ((parseFloat(value) > parseFloat($this.state.item_details.qtyhand)) && $this.state.trans_type !== "PR") {
         swalMessage({
           title: "Selected QTY cannot be greated than QTY in hand",
           type: "warning",
@@ -430,7 +434,74 @@ const onClickProcess = ($this) => {
             AlgaehLoader({ show: false });
             if (response.data.success === true) {
               swalMessage({
-                title: "Consumed successfully . .",
+                title: "Transferred Successfully . .",
+                type: "success",
+              });
+              $this.setState({
+                open_exchange: false,
+                trans_type: null,
+                quantity: 0,
+                to_location_id: null
+              });
+            }
+          },
+          onFailure: (err) => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: err.message,
+              type: "error",
+            });
+          },
+        });
+      }
+    });
+  } else if (inputOb.trans_type === "PR") {
+    debugger
+    swal({
+      title: "Are you sure you want to Raise Purchase Request ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willTransfer) => {
+      if (willTransfer.value) {
+
+
+
+        inputOb.authorize1 = $this.props.requisition_auth_level === "N" ? "Y" : "N";
+        inputOb.authorie2 = $this.props.requisition_auth_level === "N" ? "Y" : "N";
+
+
+        inputOb.item_details.quantity_required = inputOb.quantity;
+        inputOb.item_details.quantity_outstanding = $this.props.requisition_auth_level === "N" ? inputOb.quantity : 0;
+        inputOb.item_details.quantity_authorized = $this.props.requisition_auth_level === "N" ? inputOb.quantity : 0;
+
+        inputOb.item_details.from_qtyhand = inputOb.item_details.qtyhand;
+        inputOb.item_details.item_uom = inputOb.item_details.stocking_uom_id;
+
+        inputOb.from_location_id = $this.props.location_id;
+        inputOb.from_location_type = $this.props.location_type;
+        inputOb.is_completed = "N";
+        inputOb.cancelled = "N";
+        inputOb.requistion_type = "PR";
+        inputOb.status = "PEN";
+        inputOb.no_of_transfers = 0;
+        inputOb.no_of_po = 0;
+
+        inputOb.inventory_stock_detail = [inputOb.item_details];
+
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/inventoryrequisitionEntry/addinventoryrequisitionEntry",
+          module: "inventory",
+          data: inputOb,
+          onSuccess: (response) => {
+            AlgaehLoader({ show: false });
+            if (response.data.success === true) {
+              swalMessage({
+                title: "Requested Successfully . .",
                 type: "success",
               });
               $this.setState({
@@ -464,6 +535,7 @@ const getInventoryOptions = ($this) => {
       if (res.data.success) {
         $this.setState({
           trans_ack_required: res.data.records[0].trans_ack_required,
+          requisition_auth_level: res.data.records[0].requisition_auth_level
         });
       }
     },
