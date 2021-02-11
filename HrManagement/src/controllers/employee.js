@@ -63,6 +63,7 @@ const {
   getAllEmployeesForDropDown,
   getEmployeePayrollDetails,
   getEmployeeRulesDetails,
+  getEmployeeSubDeptName,
 } = empModels;
 
 export default () => {
@@ -117,6 +118,16 @@ export default () => {
   api.get(
     "/getEmployeePersonalDetails",
     getEmployeePersonalDetails,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/getEmployeeSubDeptName",
+    getEmployeeSubDeptName,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

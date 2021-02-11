@@ -79,7 +79,10 @@ const {
   getAllPatientFollowUp,
   getPatientReferralDoc,
   addICDMaster,
-  getICDMaster
+  getICDMaster,
+  getPatientCount,
+  getAllPatientFollowUpDash,
+  getDoctorDashboardData,
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -146,6 +149,45 @@ export default () => {
     releaseConnection
   );
   api.get(
+    "/getPatientCount",
+    getPatientCount,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.get(
+    "/getAllPatientFollowUpDash",
+    getAllPatientFollowUpDash,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.get(
+    "/getDoctorDashboardData",
+    getDoctorDashboardData,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.get(
     "/getPatientReferralDoc",
     getPatientReferralDoc,
     (req, res, next) => {
@@ -159,7 +201,8 @@ export default () => {
     releaseConnection
   );
   api.get(
-    "/getICDMaster", getICDMaster,
+    "/getICDMaster",
+    getICDMaster,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
