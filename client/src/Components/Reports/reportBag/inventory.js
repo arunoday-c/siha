@@ -87,7 +87,7 @@ export default function Inventory({
             // label: "Item",
             columns: spotlightSearch.Items.Invitemmaster,
             searchName: "PurchaseOrderForInventry",
-            value: "item_description",
+            value: null, //"item_description",
             label: "Item Name",
             // link: {
             //   uri: "/pharmacy/getItemMaster",

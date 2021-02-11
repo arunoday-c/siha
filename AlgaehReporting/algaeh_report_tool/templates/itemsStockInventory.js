@@ -17,10 +17,18 @@ const executePDF = function executePDFMethod(options) {
       let current_date = moment().format("YYYY-MM-DD");
 
       //   console.log("item_id: ", input.item_id);
-      if (input.location_id !== null && input.location_id !== undefined) {
+      if (
+        input.location_id !== null &&
+        input.location_id !== undefined &&
+        input.location_id !== ""
+      ) {
         str += ` and IL.inventory_location_id = ${input.location_id}`;
       }
-      if (input.item_id !== null && input.item_id !== undefined) {
+      if (
+        input.item_id !== null &&
+        input.item_id !== undefined &&
+        input.item_id !== ""
+      ) {
         str += ` and IL.item_id = ${input.item_id}`;
       }
 
@@ -51,8 +59,40 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((results) => {
-          _.chain(results).resolve({
-            details: results,
+          const getTable = results.find((f) => Array.isArray(f));
+          const {
+            item_description,
+            inventory_location_id,
+            qtyhand,
+            hims_d_inventory_item_master_id,
+            batchno,
+            ...others
+          } = _.head(getTable);
+          const columns = Object.keys(others).map((item) => {
+            return item;
+          });
+
+          let report = [];
+          _.chain(getTable)
+            .groupBy((g) => g.hims_d_inventory_item_master_id)
+            .forEach((details, key) => {
+              const { item_description: desc } = _.head(details);
+              let innerObject = { item_description: desc };
+
+              for (let i = 0; i < columns.length; i++) {
+                innerObject[columns[i]] = _.sumBy(details, (s) =>
+                  parseFloat(s[columns[i]] ?? 0)
+                );
+              }
+
+              report.push(innerObject);
+            })
+            .value();
+
+          // console.log("<<<< results >>>>", report);
+          resolve({
+            columns,
+            details: report,
           });
         })
         .catch((error) => {
