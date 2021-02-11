@@ -2,6 +2,8 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
 import { getAccountHeadsFunc } from "./finance";
+import voucher from "./voucher";
+const { addVoucher } = voucher;
 export async function getYearEndingDetails(req, res, next) {
   const _mysql = new algaehMysql();
   try {
@@ -106,15 +108,7 @@ export async function getYearEndData(req, res, next) {
   try {
     const resultSum = await _mysql
       .executeQueryWithTransaction({
-        query: `SELECT coalesce(SUM(A.credit_sum) - SUM(A.debit_sum),0) as credit_minus_debit
-      FROM (
-      SELECT if(payment_type='CR',SUM(credit_amount),0) as credit_sum,
-      if(payment_type='DR',SUM(debit_amount),0) as debit_sum 
-      FROM finance_voucher_details  where head_id=3  and child_id=1
-      and 
-       payment_date between Date('2020-01-01') and Date('2020-12-31') and 
-      hospital_id=1 and is_deleted ='N' and auth_status='A'
-       GROUP BY payment_type,credit_amount,debit_amount) as A;`,
+        query: `select `,
       })
       .catch((error) => {
         _mysql.rollBackTransaction();
@@ -227,6 +221,14 @@ export async function processYearEnd(req, res, next) {
     next();
   } catch (error) {
     _mysql.releaseConnection();
+    const body = req.body;
+    let details = body.details;
+    for (let i = 0; i < details.length; i++) {
+      details[i]["payment_type"] =
+        details[i]["payment_type"] === "CR" ? "DR" : "CR";
+    }
+    req.body = { ...body, voucher_type: "year_end_rev", details };
+    addVoucher(req, res, next);
     next(error);
   }
 }
