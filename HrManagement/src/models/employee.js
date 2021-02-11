@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => { },
+          printQuery: (query) => {},
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -53,13 +53,35 @@ export default {
       next(e);
     });
   },
+  getEmployeeSubDeptName: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const { sub_department_id } = req.query;
+
+    try {
+      _mysql
+        .executeQuery({
+          query: `
+        select sub_department_name from hims_d_sub_department where hims_d_sub_department_id=?;`,
+          values: [sub_department_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getEmployee: (req, res, next) => {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
       try {
         const utilities = new algaehUtilities();
         let _strAppend = "";
-        debugger;
+
         if (req.query.isdoctor != null) {
           _strAppend += " and isdoctor='Y'";
         }
@@ -157,7 +179,7 @@ export default {
       try {
         const utilities = new algaehUtilities();
         let _strAppend = "";
-        debugger;
+
         if (req.query.isdoctor != null) {
           _strAppend += " and isdoctor='Y'";
         }
@@ -277,7 +299,7 @@ export default {
   getEmployeeOfficialDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     const { employee_id } = req.query;
-    debugger;
+
     try {
       _mysql
         .executeQuery({

@@ -2449,3 +2449,9 @@ input.autoselect-input:disabled {
   font-size: 0.8rem;
   margin-right: 10px;
 }
+.ant-select-tree-node-content-wrapper-open {
+  font-weight: bold !important;
+  color: $primary-color !important;
+  font-size: 11px;
+  font-style: italic;
+}

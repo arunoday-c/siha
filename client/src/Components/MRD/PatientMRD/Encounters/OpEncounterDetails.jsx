@@ -12,11 +12,12 @@ import Options from "../../../../Options.json";
 import { Dimmer, Loader } from "semantic-ui-react";
 import {
   // AlgaehDataGrid,
-  AlgaehModal,
+  // AlgaehModal,
   AlgaehDataGrid,
   AlgaehLabel,
 } from "algaeh-react-components";
-import { newAlgaehApi } from "../../../../hooks";
+import { ViewAttachmentsModal } from "./viewAttachmentsModal";
+// import { newAlgaehApi } from "../../../../hooks";
 
 export default function OPEncounterDetails({
   episode_id,
@@ -55,6 +56,7 @@ export default function OPEncounterDetails({
   const [patientPakages, setPatientPakages] = useState([]);
   const [consumableorderedList, setConsumableorderedList] = useState([]);
   const [nursingNotes, setNursingNotes] = useState([]);
+  const [currentRow, setCurrentRow] = useState({});
   // const [patientProcedures, setPatientProcedures] = useState([]);
   const [patientVital, setPatientVital] = useState([]);
   const [loaderChiefComp, setLoaderChiefComp] = useState(false);
@@ -64,7 +66,7 @@ export default function OPEncounterDetails({
   ] = useState(false);
   const [loaderVitals, setLoaderVitals] = useState(false);
   const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
-  const [attached_docs, setAttached_docs] = useState([]);
+  // const [attached_docs, setAttached_docs] = useState([]);
   const [significant_signs, setSignificant_signs] = useState("");
   const [attachmentOpen, setattachmentOpen] = useState(false);
   //       patientComplaints: [],
@@ -728,114 +730,118 @@ export default function OPEncounterDetails({
   const showAttachments = () => {
     setattachmentOpen((pre) => !pre);
   };
+  const showAttachmentsOfServices = (row, attachment_type) => {
+    setOpenAttachmentsModal((pre) => !pre);
+    setCurrentRow({ ...row, attach_type: attachment_type });
+  };
 
-  const downloadDoc = (doc, isPreview) => {
-    if (doc.fromPath === true) {
-      // this.setState({ pdfLoading: true }, () => {
-      newAlgaehApi({
-        uri: "/getContractDoc",
-        module: "documentManagement",
-        method: "GET",
-        extraHeaders: {
-          Accept: "blon",
-        },
-        others: {
-          responseType: "blob",
-        },
-        data: {
-          contract_no: doc.contract_no,
-          filename: doc.filename,
-          download: true,
-        },
-      })
-        .then((resp) => {
-          const urlBlob = URL.createObjectURL(resp.data);
-          if (isPreview) {
-            window.open(urlBlob);
-          } else {
-            const link = document.createElement("a");
-            link.download = doc.filename;
-            link.href = urlBlob;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-          // this.setState({ pdfLoading: false });
-        })
-        .catch((error) => {
-          console.log(error);
-          // this.setState({ pdfLoading: false });
-        });
-      // });
-    } else {
-      const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-      const link = document.createElement("a");
-      if (!isPreview) {
-        link.download = doc.filename;
-        link.href = fileUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        fetch(fileUrl)
-          .then((res) => res.blob())
-          .then((fblob) => {
-            const newUrl = URL.createObjectURL(fblob);
-            window.open(newUrl);
-          });
-      }
-    }
-  };
-  const getSavedDocument = (row) => {
-    newAlgaehApi({
-      uri: "/getContractDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        contract_no: row.lab_id_number,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          setAttached_docs(data);
-          //   attached_docs: data,
-          // });
-        }
-      })
-      .catch((e) => {
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-      });
-  };
-  const getDocuments = (row) => {
-    newAlgaehApi({
-      uri: "/getRadiologyDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        hims_f_rad_order_id: row.hims_f_rad_order_id,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
-          setAttached_docs(data);
-          // this.setState({
-          //   attached_docs: data,
-          // });
-        }
-      })
-      .catch((e) => {
-        // AlgaehLoader({ show: false });
-        swalMessage({
-          title: e.message,
-          type: "error",
-        });
-      });
-  };
+  // const downloadDoc = (doc, isPreview) => {
+  //   if (doc.fromPath === true) {
+  //     // this.setState({ pdfLoading: true }, () => {
+  //     newAlgaehApi({
+  //       uri: "/getContractDoc",
+  //       module: "documentManagement",
+  //       method: "GET",
+  //       extraHeaders: {
+  //         Accept: "blon",
+  //       },
+  //       others: {
+  //         responseType: "blob",
+  //       },
+  //       data: {
+  //         contract_no: doc.contract_no,
+  //         filename: doc.filename,
+  //         download: true,
+  //       },
+  //     })
+  //       .then((resp) => {
+  //         const urlBlob = URL.createObjectURL(resp.data);
+  //         if (isPreview) {
+  //           window.open(urlBlob);
+  //         } else {
+  //           const link = document.createElement("a");
+  //           link.download = doc.filename;
+  //           link.href = urlBlob;
+  //           document.body.appendChild(link);
+  //           link.click();
+  //           document.body.removeChild(link);
+  //         }
+  //         // this.setState({ pdfLoading: false });
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         // this.setState({ pdfLoading: false });
+  //       });
+  //     // });
+  //   } else {
+  //     const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+  //     const link = document.createElement("a");
+  //     if (!isPreview) {
+  //       link.download = doc.filename;
+  //       link.href = fileUrl;
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       document.body.removeChild(link);
+  //     } else {
+  //       fetch(fileUrl)
+  //         .then((res) => res.blob())
+  //         .then((fblob) => {
+  //           const newUrl = URL.createObjectURL(fblob);
+  //           window.open(newUrl);
+  //         });
+  //     }
+  //   }
+  // };
+  // const getSavedDocument = (row) => {
+  //   newAlgaehApi({
+  //     uri: "/getContractDoc",
+  //     module: "documentManagement",
+  //     method: "GET",
+  //     data: {
+  //       contract_no: row.lab_id_number,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         let { data } = res.data;
+  //         setAttached_docs(data);
+  //         //   attached_docs: data,
+  //         // });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       swalMessage({
+  //         title: e.message,
+  //         type: "error",
+  //       });
+  //     });
+  // };
+  // const getDocuments = (row) => {
+  //   newAlgaehApi({
+  //     uri: "/getRadiologyDoc",
+  //     module: "documentManagement",
+  //     method: "GET",
+  //     data: {
+  //       hims_f_rad_order_id: row.hims_f_rad_order_id,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         let { data } = res.data;
+  //         setAttached_docs(data);
+  //         // this.setState({
+  //         //   attached_docs: data,
+  //         // });
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       // AlgaehLoader({ show: false });
+  //       swalMessage({
+  //         title: e.message,
+  //         type: "error",
+  //       });
+  //     });
+  // };
   return (
     <div className="col componentRenderArea" style={{ margin: 0 }}>
       <PatientAttachments
@@ -1260,9 +1266,9 @@ export default function OPEncounterDetails({
                                   className="fas fa-paperclip"
                                   aria-hidden="true"
                                   onClick={() => {
-                                    setOpenAttachmentsModal(true);
+                                    showAttachmentsOfServices(row, "LAB");
 
-                                    getSavedDocument(row);
+                                    // getSavedDocument(row);
                                   }}
                                 />
                               </span>
@@ -1273,9 +1279,9 @@ export default function OPEncounterDetails({
                                   className="fas fa-paperclip"
                                   aria-hidden="true"
                                   onClick={(e) => {
-                                    setOpenAttachmentsModal(true);
+                                    showAttachmentsOfServices(row, "RAD");
 
-                                    getDocuments(row);
+                                    // getDocuments(row);
                                   }}
                                 />
                               </span>
@@ -1368,7 +1374,15 @@ export default function OPEncounterDetails({
               </div>
             </div>
           ) : null}
-          <AlgaehModal
+          {openAttachmentsModal ? (
+            <ViewAttachmentsModal
+              rowData={currentRow}
+              visible={openAttachmentsModal}
+              onClose={showAttachmentsOfServices}
+            />
+          ) : null}
+
+          {/* <AlgaehModal
             title="View Attachments"
             visible={openAttachmentsModal}
             mask={true}
@@ -1428,7 +1442,7 @@ export default function OPEncounterDetails({
                 </div>
               </div>
             </div>
-          </AlgaehModal>
+          </AlgaehModal> */}
           {patientPakages.length !== 0 ? (
             <div className="row investigation">
               <div className="col-lg-12">

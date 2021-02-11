@@ -12,6 +12,7 @@ import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 import _ from "lodash";
 import { resolveTxt } from "dns";
+import { debug } from "console";
 
 const { decryption } = cryptoUtils;
 const { debugFunction, debugLog } = logUtils;
@@ -733,7 +734,6 @@ let deleteAllergy = (req, res, next) => {
   }
 };
 
-
 let addICDMaster = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   let input = req.body;
@@ -751,7 +751,7 @@ let addICDMaster = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          new Date()
+          new Date(),
         ],
       })
       .then((result) => {
@@ -923,6 +923,168 @@ let getEncounterReview = (req, res, next) => {
       })
       .then((result) => {
         _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let getPatientCount = (req, res, next) => {
+  const _mysql = new algaehMysql();
+  try {
+    let _stringData = "";
+    const input = req.query;
+
+    if (input.from_date != null) {
+      _stringData +=
+        "doctor_id=" +
+        input.doctor_id +
+        " and  date(visit_date) between date('" +
+        input.from_date +
+        "') AND date('" +
+        input.to_date +
+        "')";
+    }
+
+    _mysql
+      .executeQuery({
+        query: `  SELECT new_visit_patient,visit_date FROM hims_f_patient_visit  where   
+        ${_stringData}  `,
+
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
+        const arrangedData = _.chain(result)
+          .groupBy((g) => moment(g.visit_date).format("YYYY-MM-DD"))
+          .map((details, key) => {
+            const { visit_date } = _.head(details);
+
+            console.log("details===", details);
+            return {
+              date: visit_date,
+              detailsOfPatient: details,
+              // resultFor: result,
+            };
+          })
+          .value();
+        console.log("arrangedData===", arrangedData);
+        req.records = arrangedData;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let getAllPatientFollowUpDash = (req, res, next) => {
+  const _mysql = new algaehMysql();
+  try {
+    let _stringData = "";
+    const input = req.query;
+
+    if (input.from_date != null) {
+      _stringData +=
+        "doctor_id=" +
+        input.doctor_id +
+        " and  date(visit_date) between date('" +
+        input.from_date +
+        "') AND date('" +
+        input.to_date +
+        "')";
+    }
+
+    _mysql
+      .executeQuery({
+        query: `  SELECT new_visit_patient,visit_date FROM hims_f_patient_visit  where   
+        ${_stringData}  `,
+
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
+        const arrangedData = _.chain(result)
+          .groupBy((g) => moment(g.visit_date).format("YYYY-MM-DD"))
+          .map((details, key) => {
+            const { visit_date } = _.head(details);
+
+            return {
+              date: visit_date,
+              detailsOf: _.chain(details)
+                .groupBy((it) => it.new_visit_patient)
+                .map((detail, index) => {
+                  const { new_visit_patient } = _.head(detail);
+                  return {
+                    visit_type: new_visit_patient,
+                    detail: detail,
+                  };
+                })
+                .value(),
+            };
+          })
+          .value();
+        // const arrangeData=
+        // arrangedData.map((item)=>{
+        //   _.chain(item)
+        //   .groupBy((g) => [g.new_visit_patient, g.new_visit_patient])
+        //   .map((details, key) => {
+        //     const { visit_date } = _.head(details);
+
+        //     return {
+        //       date: visit_date,
+        //       detailsOf: details,
+        //     };
+        //   })
+        //   .value();
+
+        //   const newPat = details.filter((item) => {
+        //     return item.new_visit_patient === "Y";
+        //   });
+        //   const followUpPat = details.filter((item) => {
+        //     return item.new_visit_patient === "N";
+        //   });
+        // })
+
+        req.records = arrangedData;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let getDoctorDashboardData = (req, res, next) => {
+  const _mysql = new algaehMysql();
+  try {
+    // let _stringData = "";
+    const input = req.query;
+
+    _mysql
+      .executeQuery({
+        query: `  SELECT new_visit_patient,appointment_patient FROM hims_f_patient_visit   where   
+          doctor_id=? ;`,
+        values: [input.doctor_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
         req.records = result;
         next();
       })
@@ -2743,7 +2905,7 @@ let updatePatientHistory = (req, res, next) => {
 
   try {
     let input = req.body;
-    debugger;
+
     _mysql
       .executeQuery({
         query: `UPDATE hims_f_patient_history SET  remarks=?,
@@ -2929,14 +3091,14 @@ let getPatientHistory = (req, res, next) => {
                 key == "SOH"
                   ? "Social History"
                   : key === "MEH"
-                    ? "Medical History"
-                    : key === "SGH"
-                      ? "Surgical History"
-                      : key === "FMH"
-                        ? "Family History"
-                        : key === "BRH"
-                          ? "Birth History"
-                          : "",
+                  ? "Medical History"
+                  : key === "SGH"
+                  ? "Surgical History"
+                  : key === "FMH"
+                  ? "Family History"
+                  : key === "BRH"
+                  ? "Birth History"
+                  : "",
               groupDetail: detail,
             };
           })
@@ -3192,8 +3354,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : "";
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs,
       ]);
@@ -3204,10 +3366,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : inputData.significant_signs != null
-              ? ","
-              : "";
+          ? ","
+          : inputData.significant_signs != null
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs,
       ]);
@@ -3724,5 +3886,8 @@ export default {
   getAllPatientFollowUp,
   getPatientReferralDoc,
   addICDMaster,
-  getICDMaster
+  getICDMaster,
+  getPatientCount,
+  getAllPatientFollowUpDash,
+  getDoctorDashboardData,
 };
