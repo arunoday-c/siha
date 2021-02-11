@@ -18,7 +18,8 @@ import {
   downloadInvStockDetails,
   closeBatchWise,
   itemchangeText,
-  checkBoxEvent
+  checkBoxEvent,
+  getInventoryOptions
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.scss";
 import "../../../styles/site.scss";
@@ -48,8 +49,10 @@ class InvStockEnquiry extends Component {
       openBatchWise: false,
       item_description: null,
       total_quantity: 0,
-      reorder_qty: "N"
+      reorder_qty: "N",
+      trans_ack_required: "N"
     };
+    getInventoryOptions(this)
   }
 
   componentDidMount() {
@@ -91,6 +94,16 @@ class InvStockEnquiry extends Component {
         },
       });
     }
+    this.props.getGITLocation({
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
+      data: { git_location: "Y" },
+      method: "GET",
+      redux: {
+        type: "GIT_LOCATIOS_GET_DATA",
+        mappingName: "git_locations",
+      },
+    });
   }
 
   render() {
@@ -399,6 +412,9 @@ class InvStockEnquiry extends Component {
           batch_wise_item={this.state.batch_wise_item}
           item_description={this.state.item_description}
           total_quantity={this.state.total_quantity}
+          location_id={this.state.location_id}
+          location_type={this.state.location_type}
+          trans_ack_required={this.state.trans_ack_required}
         />
       </React.Fragment>
     );
@@ -410,6 +426,7 @@ function mapStateToProps(state) {
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
     inventoryitemuom: state.inventoryitemuom,
+    git_locations: state.git_locations
   };
 }
 
@@ -418,6 +435,7 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
+      getGITLocation: AlgaehActions,
       getItemUOM: AlgaehActions,
     },
     dispatch
