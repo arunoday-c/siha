@@ -2241,19 +2241,19 @@ export default {
                 if (data.debit_amount != input.opening_balance) {
                   voucherStr = `update finance_voucher_details set ${
                     input.type === "CR" ? "credit_amount" : "debit_amount"
-                    }=${input.opening_balance},
+                  }=${input.opening_balance},
                 payment_type ='${input.type === "CR" ? "CR" : "DR"}',${
                     input.type === "CR" ? "debit_amount" : "credit_amount"
-                    }=0  where finance_voucher_id=${data.finance_voucher_id};`;
+                  }=0  where finance_voucher_id=${data.finance_voucher_id};`;
                 }
               } else if (data.root_id == 2 || data.root_id == 3) {
                 if (data.credit_amount != input.opening_balance) {
                   voucherStr = `update finance_voucher_details set ${
                     input.type === "DR" ? "debit_amount" : "credit_amount"
-                    }=${input.opening_balance},
+                  }=${input.opening_balance},
                 payment_type ='${input.type === "DR" ? "DR" : "CR"}',${
                     input.type === "DR" ? "credit_amount" : "debit_amount"
-                    }=0 where finance_voucher_id=${data.finance_voucher_id};`;
+                  }=0 where finance_voucher_id=${data.finance_voucher_id};`;
                 }
               }
               executeFunction();
@@ -2850,11 +2850,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-            parseFloat(item["total_debit_amount"])
+              parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-            parseFloat(item["total_credit_amount"])
+              parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;
@@ -2961,7 +2961,7 @@ function createHierarchyForDropdown(arry) {
 }
 
 //created by irfan:
-function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
+export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
   // const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
 

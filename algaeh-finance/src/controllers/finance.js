@@ -1,7 +1,17 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import finance, { getSalesOrderAndPersonId } from "../models/finance";
-
+import {
+  getYearEndData,
+  getAccountsForYearEnd,
+  getYearEndingDetails,
+  getSelectedAccountDetails,
+  processYearEnd,
+  validateYearEndProcess,
+} from "../models/finance_year_ending";
+//Add voucher for YearEnd
+import voucher from "../models/voucher";
+const { addVoucher } = voucher;
 const {
   getAccountHeads,
   addAccountHeads,
@@ -321,6 +331,55 @@ export default () => {
         .end();
     }
   });
-
+  api.get("/getAccountsForYearEnd", getAccountsForYearEnd, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        records: req.records,
+      })
+      .end();
+  });
+  api.get("/getYearEndingDetails", getYearEndingDetails, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        ...req.records,
+      })
+      .end();
+  });
+  api.get(
+    "/getSelectedAccountDetails",
+    getSelectedAccountDetails,
+    (req, res) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          ...req.records,
+        })
+        .end();
+    }
+  );
+  api.post(
+    "/processYearEnd",
+    validateYearEndProcess,
+    addVoucher,
+    processYearEnd,
+    (req, res) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          ...req.records,
+        })
+        .end();
+    }
+  );
+  api.post("/getYearEndData", getYearEndData, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        ...req.records,
+      })
+      .end();
+  });
   return api;
 };
