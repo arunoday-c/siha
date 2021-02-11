@@ -182,7 +182,7 @@ export default function Dashboard() {
     return result?.data?.records;
   }
   const {
-    data: patientCount,
+    // data: patientCount,
     isLoading: patCount,
     refetch: refetchForPatCount,
   } = useQuery("getPatientCount", getPatientCount, {
@@ -192,7 +192,6 @@ export default function Dashboard() {
           return item.detailsOfPatient.length;
         })
       );
-      console.log("patientCount", patientCount);
       let currentDate = getValues().income_range;
       let weekStart = currentDate.clone().startOf("isoWeek");
 
@@ -200,7 +199,7 @@ export default function Dashboard() {
 
       let days = [];
 
-      for (var i = 0; i <= 6; i++) {
+      for (var i = 0; i <= 7; i++) {
         days.push(moment(weekStart).add(i, "days").format("MMMM Do"));
       }
       setXAxisOfIncoming(days);
@@ -271,6 +270,7 @@ export default function Dashboard() {
       data: {
         from_date: moment(startOfWeek).format("YYYY-MM-DD"),
         to_date: moment(endOfWeek).format("YYYY-MM-DD"),
+        doctor_id: userToken.employee_id,
       },
       method: "GET",
     });
@@ -286,6 +286,7 @@ export default function Dashboard() {
       data: {
         from_date: moment(startOfWeek).format("YYYY-MM-DD"),
         to_date: moment(endOfWeek).format("YYYY-MM-DD"),
+        doctor_id: userToken.employee_id,
       },
       method: "GET",
     });
@@ -607,61 +608,64 @@ export default function Dashboard() {
 
               <div className="col-12">
                 <div className="card animated fadeInUp faster">
-                  <Controller
-                    control={control}
-                    name="today_date_patients"
-                    rules={{ required: "Please Select DOB" }}
-                    render={({ onChange, value }) => (
-                      <AlgaehDateHandler
-                        size={"small"}
-                        div={{
-                          className: "col mandatory",
-                          tabIndex: "5",
-                        }}
-                        error={errors}
-                        label={{}}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "today_date_patients",
-                          value,
-                          others: {
-                            tabIndex: "4",
-                          },
-                        }}
-                        // others={{ disabled }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: (mdate) => {
-                            if (mdate) {
-                              onChange(mdate._d);
-                              refetchForPat();
-                            } else {
-                              onChange(undefined);
-                            }
-                          },
-                          onClear: () => {
-                            onChange(undefined);
-                          },
-                        }}
+                  <h6>
+                    Todays Patients{" "}
+                    <span className="portletTopAction">
+                      <Controller
+                        control={control}
+                        name="today_date_patients"
+                        rules={{ required: "Please Select DOB" }}
+                        render={({ onChange, value }) => (
+                          <AlgaehDateHandler
+                            size={"small"}
+                            div={{
+                              className: "col mandatory",
+                              tabIndex: "5",
+                            }}
+                            error={errors}
+                            label={{}}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "today_date_patients",
+                              value,
+                              others: {
+                                tabIndex: "4",
+                              },
+                            }}
+                            // others={{ disabled }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: (mdate) => {
+                                if (mdate) {
+                                  onChange(mdate._d);
+                                  refetchForPat();
+                                } else {
+                                  onChange(undefined);
+                                }
+                              },
+                              onClear: () => {
+                                onChange(undefined);
+                              },
+                            }}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  <h6>Todays Patients</h6>
+                    </span>
+                  </h6>
 
-                  <div className="col-12" id="patientIncomingcategoryCntr">
+                  <div className="col-12" id="todayPatGrid">
                     <Spin spinning={pdLoading}>
                       <AlgaehDataGrid
-                        className="dashboardGrd"
                         columns={[
-                          {
-                            fieldName: "row_num",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "Sl No." }} />
-                            ),
-                            others: {
-                              width: 80,
-                            },
-                          },
+                          // {
+                          //   fieldName: "row_num",
+                          //   label: (
+                          //     <AlgaehLabel label={{ fieldName: "Sl No." }} />
+                          //   ),
+                          //   others: {
+                          //     width: 80,
+                          //   },
+                          // },
                           {
                             fieldName: "patient_code",
                             label: (
@@ -701,28 +705,33 @@ export default function Dashboard() {
                             },
                           },
                           {
-                            fieldName: "visit_type_desc",
+                            fieldName: "new_visit_patient",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "Appointment Type" }}
                               />
                             ),
+                            displayTemplate: (row) => {
+                              return row.appointment_patient === "Y"
+                                ? "Appointment"
+                                : "Walk-In";
+                            },
                             others: {
                               width: 110,
                             },
                           },
                           {
-                            fieldName: "visit_type_desc",
+                            fieldName: "new_visit_patient",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "Visit Type" }}
                               />
                             ),
-                            // displayTemplate: (row) => {
-                            //   return row.new_visit_patient === "Y"
-                            //     ? "New Visit"
-                            //     : "FollowUP Visit";
-                            // },
+                            displayTemplate: (row) => {
+                              return row.new_visit_patient === "Y"
+                                ? "New Visit"
+                                : "FollowUP Visit";
+                            },
                             others: {
                               width: 80,
                             },
@@ -734,79 +743,71 @@ export default function Dashboard() {
                         data={todayPatients?.length > 0 ? todayPatients : []}
                       />
                     </Spin>
-
-                    {/*  {this.state.today_list.map((patient_data, index) => (
-                          <tr key={index}>
-                            <td>{patient_data.patient_code}</td>
-                            <td>{patient_data.full_name}</td>
-                            <td>{patient_data.gender}</td>
-                            <td>{patient_data.age}</td>
-                            <td>
-                              {patient_data.appointment_patient === "N"
-                                ? "Walk In"
-                                : "Appoinment"}
-                            </td>
-                            <td>
-                              {patient_data.new_visit_patient === "Y"
-                                ? "New Visit"
-                                : "Follow Up"}
-                            </td>
-                          </tr>
-                        ))} */}
                   </div>
                 </div>
               </div>
 
               <div className="col-12">
                 <div className="card animated fadeInUp faster">
-                  <Controller
-                    control={control}
-                    name="services_date"
-                    rules={{ required: "Please Select DOB" }}
-                    render={({ onChange, value }) => (
-                      <AlgaehDateHandler
-                        size={"small"}
-                        div={{
-                          className: "col mandatory",
-                          tabIndex: "5",
-                        }}
-                        error={errors}
-                        label={{}}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "services_date",
-                          value,
-                          others: {
-                            tabIndex: "4",
-                          },
-                        }}
-                        // others={{ disabled }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: (mdate) => {
-                            if (mdate) {
-                              onChange(mdate._d);
-                              refetchForService();
-                            } else {
-                              onChange(undefined);
-                            }
-                          },
-                          onClear: () => {
-                            onChange(undefined);
-                          },
-                        }}
-                      />
-                    )}
-                  />{" "}
-                  <h6>Ordered Service Status</h6>
-                  <div className="dashboardGridCntr table-responsive">
+                  <h6>
+                    Ordered Service Status{" "}
+                    <span className="portletTopAction">
+                      <Controller
+                        control={control}
+                        name="services_date"
+                        rules={{ required: "Please Select DOB" }}
+                        render={({ onChange, value }) => (
+                          <AlgaehDateHandler
+                            size={"small"}
+                            div={{
+                              className: "col mandatory",
+                              tabIndex: "5",
+                            }}
+                            error={errors}
+                            label={{}}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "services_date",
+                              value,
+                              others: {
+                                tabIndex: "4",
+                              },
+                            }}
+                            // others={{ disabled }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: (mdate) => {
+                                if (mdate) {
+                                  onChange(mdate._d);
+                                  refetchForService();
+                                } else {
+                                  onChange(undefined);
+                                }
+                              },
+                              onClear: () => {
+                                onChange(undefined);
+                              },
+                            }}
+                          />
+                        )}
+                      />{" "}
+                    </span>
+                  </h6>
+                  <div
+                    className="col-12 dashboardGrd"
+                    id="todayOrderServiceGrid"
+                  >
                     <Spin spinning={InvestigationLoad}>
                       <AlgaehDataGrid
                         id="investigation-grid"
                         columns={[
                           {
                             fieldName: "service_type_id",
-                            label: "Service Type",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "Service Type" }}
+                              />
+                            ),
                             displayTemplate: (row) => {
                               return row.service_type_id === 5 ? (
                                 <span>Lab</span>
@@ -817,7 +818,11 @@ export default function Dashboard() {
                           },
                           {
                             fieldName: "service_name",
-                            label: "Service Name",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "Service Name" }}
+                              />
+                            ),
                           },
                           // {
                           //   fieldName: "lab_ord_status",
@@ -854,7 +859,9 @@ export default function Dashboard() {
 
                           {
                             fieldName: "hims_f_ordered_services_id",
-                            label: "Status",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "Status" }} />
+                            ),
                             displayTemplate: (row) => {
                               return row.service_type_id === 5 ? (
                                 <span>
@@ -926,29 +933,53 @@ export default function Dashboard() {
                           // },
                           {
                             fieldName: "hims_f_ordered_services_id",
-                            label: "Internal Report",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "Internal Report" }}
+                              />
+                            ),
                             displayTemplate: (row) => {
                               return row.service_type_id === 5 &&
                                 row.lab_ord_status === "V" ? (
-                                <span
-                                  className="pat-code"
-                                  style={{ color: "#006699" }}
-                                  onClick={() => {
-                                    generateReport(row, "LAB");
-                                  }}
-                                >
-                                  View Report
+                                // <span
+                                //   className="pat-code"
+                                //   style={{ color: "#006699" }}
+                                //   onClick={() => {
+                                //     generateReport(row, "LAB");
+                                //   }}
+                                // >
+                                //   View Report
+                                // </span>
+
+                                <span>
+                                  <i
+                                    className="fas fa-paperclip"
+                                    aria-hidden="true"
+                                    onClick={() => {
+                                      generateReport(row, "LAB");
+                                    }}
+                                  />
                                 </span>
                               ) : row.service_type_id === 11 &&
                                 row.rad_ord_status === "RA" ? (
-                                <span
-                                  className="pat-code"
-                                  style={{ color: "#006699" }}
-                                  onClick={() => {
-                                    generateReport(row, "RAD");
-                                  }}
-                                >
-                                  View Report
+                                // <span
+                                //   className="pat-code"
+                                //   style={{ color: "#006699" }}
+                                //   onClick={() => {
+                                //     generateReport(row, "RAD");
+                                //   }}
+                                // >
+                                //   View Report
+                                // </span>
+
+                                <span>
+                                  <i
+                                    className="fas fa-paperclip"
+                                    aria-hidden="true"
+                                    onClick={() => {
+                                      generateReport(row, "RAD");
+                                    }}
+                                  />
                                 </span>
                               ) : null;
                             },
@@ -956,7 +987,11 @@ export default function Dashboard() {
 
                           {
                             fieldName: "hims_f_ordered_services_id",
-                            label: "External Report",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "External Report" }}
+                              />
+                            ),
                             displayTemplate: (row) => {
                               return row.service_type_id === 5 &&
                                 row.lab_ord_status === "V" ? (

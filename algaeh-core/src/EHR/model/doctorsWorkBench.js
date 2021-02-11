@@ -943,7 +943,9 @@ let getPatientCount = (req, res, next) => {
 
     if (input.from_date != null) {
       _stringData +=
-        "  date(visit_date) between date('" +
+        "doctor_id=" +
+        input.doctor_id +
+        " and  date(visit_date) between date('" +
         input.from_date +
         "') AND date('" +
         input.to_date +
@@ -965,14 +967,15 @@ let getPatientCount = (req, res, next) => {
           .map((details, key) => {
             const { visit_date } = _.head(details);
 
+            console.log("details===", details);
             return {
               date: visit_date,
               detailsOfPatient: details,
-              resultFor: result,
+              // resultFor: result,
             };
           })
           .value();
-
+        console.log("arrangedData===", arrangedData);
         req.records = arrangedData;
         next();
       })
@@ -993,7 +996,9 @@ let getAllPatientFollowUpDash = (req, res, next) => {
 
     if (input.from_date != null) {
       _stringData +=
-        "  date(visit_date) between date('" +
+        "doctor_id=" +
+        input.doctor_id +
+        " and  date(visit_date) between date('" +
         input.from_date +
         "') AND date('" +
         input.to_date +
