@@ -169,23 +169,6 @@ export default function JournalVoucher() {
                         },
                       }}
                     />
-                    // <AlgaehAutoComplete
-                    //   selector={{
-                    //     updateInternally: true,
-                    //     dataSource: {
-                    //       data: center.cost_centers,
-                    //       valueField: "cost_center_id",
-                    //       textField: "cost_center",
-                    //     },
-                    //     value: row["cost_center_id"],
-                    //     onChange: (details) => {
-                    //       row["cost_center_id"] = details["cost_center_id"];
-                    //     },
-                    //     onClear: () => {
-                    //       row["cost_center_id"] = null;
-                    //     },
-                    //   }}
-                    // />
                   );
                 },
                 others: {
