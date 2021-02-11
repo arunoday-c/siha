@@ -148,7 +148,7 @@ export default function Filters({ activeTransaction }) {
       <AlgaehDateHandler
         type="range"
         div={{
-          className: "col-2 form-group",
+          className: "col-3 form-group",
         }}
         label={{
           forceLabel: "Selected Date",
@@ -164,7 +164,7 @@ export default function Filters({ activeTransaction }) {
         }}
       />
       <AlgaehTreeSearch
-        div={{ className: "col-2" }}
+        div={{ className: "col-3" }}
         label={{
           forceLabel: "Select Account",
           isImp: true,
@@ -198,15 +198,15 @@ export default function Filters({ activeTransaction }) {
       />
       <div className="col">
         <label>Year End Total</label>
-        <h6>{state.credit_minus_debit}</h6>
+        <h6>{state.credit_minus_debit ?? "0.00"}</h6>
       </div>
       <div className="col">
         <label>Current Amount</label>
-        <h6>{state.current_account}</h6>
+        <h6>{state.current_account ?? "0.00"}</h6>
       </div>
       <div className="col">
         <label>New Amount</label>
-        <h6>{state.new_amount}</h6>
+        <h6>{state.new_amount ?? "0.00"}</h6>
       </div>
       <div className="col" style={{ marginTop: 21 }}>
         <AlgaehButton
