@@ -59,9 +59,18 @@ export default function Filters({ activeTransaction }) {
       pushToState({ account: "" });
       return;
     }
+
     if (state.current_year && state.selectRange) {
       pushToState({ account: value });
       const delta = value.split("-");
+      if (isNaN(delta[0]) || isNaN(delta[1])) {
+        AlgaehMessagePop({
+          type: "warning",
+          display: "Can not process for Unknown Accounts",
+        });
+        pushToState({ account: "" });
+        return;
+      }
       getSelectedAccountDetails({
         head_id: delta[0],
         child_id: delta[1],
@@ -173,25 +182,17 @@ export default function Filters({ activeTransaction }) {
           treeDefaultExpandAll: true,
           // updateInternally: true,
           data: accounts,
-          // disableHeader: true,
+          disableHeader: true,
           textField: "full_name",
-          valueField: "head_id",
-          children: {
-            node: "children",
-            textField: "full_name",
-            valueField: (node) => {
-              const {
-                finance_account_child_id,
-                finance_account_head_id,
-                head_id,
-              } = node;
-              if (finance_account_child_id === undefined) {
-                return finance_account_head_id;
-              } else {
-                return `${head_id}-${finance_account_child_id}`;
-              }
-            },
+          disabled: false,
+          valueField: (node) => {
+            if (node?.finance_account_child_id) {
+              return `${node?.head_id}-${node?.finance_account_child_id}-${node?.account_code}`;
+            } else {
+              return `${node?.finance_account_head_id}-${node?.account_code}`;
+            }
           },
+
           value: state.account,
           onChange: OnChangeTreeValue,
         }}

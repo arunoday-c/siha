@@ -61,12 +61,20 @@ export async function getAccountsForYearEnd(req, res, next) {
       }
     );
     collection.push(liability);
-    const income = await getAccountHeadsFunc(decimal_places, 4).catch(
+    const capital = await getAccountHeadsFunc(decimal_places, 3).catch(
       (error) => {
         throw e;
       }
     );
-    collection.push(income);
+    const { children, ...others } = capital;
+    const removePandL = capital?.children.filter(
+      (f) => f.ledger_code !== "3-1"
+    );
+    // console.log("capital", capital);
+    collection.push({
+      ...others,
+      children: removePandL.length === 0 ? [{}] : removePandL,
+    });
     req.records = collection;
     next();
   } catch (e) {
