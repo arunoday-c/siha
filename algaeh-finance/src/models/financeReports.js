@@ -3010,39 +3010,40 @@ function createHierarchyTransactionTB(
         ///END calculating transaction amount between  from_date  and to_date-----
         //ST calculating closing balance on  to date-----
         let cb_amount = 0;
-        let minusAmount = false;
-        if (finance_account_head_id === 1 || finance_account_head_id === 5) {
-          if (String(op_amount).includes("Cr")) {
-            minusAmount = true;
-          }
-        } else {
-          if (String(op_amount).includes("Dr")) {
-            minusAmount = true;
-          }
-        }
-        if (minusAmount) {
-          cb_amount =
-            trans_symbol === "Dr"
-              ? parseFloat(
-                  Math.abs(parseFloat(op_amount)) -
-                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
-                ).toFixed(decimal_places)
-              : parseFloat(
-                  Math.abs(parseFloat(op_amount)) -
-                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
-                ).toFixed(decimal_places);
-        } else {
-          cb_amount =
-            trans_symbol === "Dr"
-              ? parseFloat(
-                  parseFloat(op_amount) +
-                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
-                ).toFixed(decimal_places)
-              : parseFloat(
-                  parseFloat(op_amount) +
-                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
-                ).toFixed(decimal_places);
-        }
+        // let minusAmount = false;
+        // if (finance_account_head_id === 1 || finance_account_head_id === 5) {
+        //   if (String(op_amount).includes("Cr")) {
+        //     minusAmount = true;
+        //   }
+        // } else {
+        //   if (String(op_amount).includes("Dr")) {
+        //     minusAmount = true;
+        //   }
+        // }
+        // if (minusAmount) {
+        cb_amount =
+          finance_account_head_id === 1 || finance_account_head_id === 5
+            ? parseFloat(
+                parseFloat(op_amount) +
+                  (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+              ).toFixed(decimal_places)
+            : parseFloat(
+                parseFloat(op_amount) +
+                  (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+              ).toFixed(decimal_places);
+
+        // } else {
+        //   cb_amount =
+        //     trans_symbol === "Dr"
+        //       ? parseFloat(
+        //           parseFloat(op_amount) +
+        //             (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+        //         ).toFixed(decimal_places)
+        //       : parseFloat(
+        //           parseFloat(op_amount) +
+        //             (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+        //         ).toFixed(decimal_places);
+        // }
 
         // const CB_BALANCE = cb_child_data.find((f) => {
         //   return (
@@ -3102,12 +3103,17 @@ function createHierarchyTransactionTB(
           if (finance_account_head_id === 1 || finance_account_head_id === 5) {
             if (String(op_amount).includes("Cr")) {
               OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+            } else {
+              OPENING_BALANCE = parseFloat(op_amount);
             }
           } else {
             if (String(op_amount).includes("Dr")) {
               OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+            } else {
+              OPENING_BALANCE = parseFloat(op_amount);
             }
           }
+          OPENING_BALANCE = OPENING_BALANCE.toFixed(decimal_places);
         }
 
         if (nonZeroQuery === "Y") {
@@ -3263,43 +3269,53 @@ function createHierarchyTransactionTB(
           //ST calculating closing balance on  to date-----
 
           let cb_amount = 0;
-          let minusAmount = false;
-          if (finance_account_head_id === 1 || finance_account_head_id === 5) {
-            if (String(op_amount).includes("Cr")) {
-              minusAmount = true;
-            }
-          } else {
-            if (String(op_amount).includes("Dr")) {
-              minusAmount = true;
-            }
-          }
-          if (minusAmount) {
-            cb_amount =
-              trans_symbol === "Dr"
-                ? parseFloat(
-                    Math.abs(parseFloat(op_amount)) -
-                      (parseFloat(tr_debit_amount) -
-                        parseFloat(tr_credit_amount))
-                  ).toFixed(decimal_places)
-                : parseFloat(
-                    Math.abs(parseFloat(op_amount)) -
-                      (parseFloat(tr_credit_amount) -
-                        parseFloat(tr_debit_amount))
-                  ).toFixed(decimal_places);
-          } else {
-            cb_amount =
-              trans_symbol === "Dr"
-                ? parseFloat(
-                    parseFloat(op_amount) +
-                      (parseFloat(tr_debit_amount) -
-                        parseFloat(tr_credit_amount))
-                  ).toFixed(decimal_places)
-                : parseFloat(
-                    parseFloat(op_amount) +
-                      (parseFloat(tr_credit_amount) -
-                        parseFloat(tr_debit_amount))
-                  ).toFixed(decimal_places);
-          }
+          cb_amount =
+            finance_account_head_id === 1 || finance_account_head_id === 5
+              ? parseFloat(
+                  parseFloat(op_amount) +
+                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+                ).toFixed(decimal_places)
+              : parseFloat(
+                  parseFloat(op_amount) +
+                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+                ).toFixed(decimal_places);
+          // let minusAmount = false;
+          // if (finance_account_head_id === 1 || finance_account_head_id === 5) {
+          //   if (String(op_amount).includes("Cr")) {
+          //     minusAmount = true;
+          //   }
+          // } else {
+          //   if (String(op_amount).includes("Dr")) {
+          //     minusAmount = true;
+          //   }
+          // }
+          // if (minusAmount) {
+          //   cb_amount =
+          //     trans_symbol === "Dr"
+          //       ? parseFloat(
+          //           Math.abs(parseFloat(op_amount)) -
+          //             (parseFloat(tr_debit_amount) -
+          //               parseFloat(tr_credit_amount))
+          //         ).toFixed(decimal_places)
+          //       : parseFloat(
+          //           Math.abs(parseFloat(op_amount)) -
+          //             (parseFloat(tr_credit_amount) -
+          //               parseFloat(tr_debit_amount))
+          //         ).toFixed(decimal_places);
+          // } else {
+          //   cb_amount =
+          //     trans_symbol === "Dr"
+          //       ? parseFloat(
+          //           parseFloat(op_amount) +
+          //             (parseFloat(tr_debit_amount) -
+          //               parseFloat(tr_credit_amount))
+          //         ).toFixed(decimal_places)
+          //       : parseFloat(
+          //           parseFloat(op_amount) +
+          //             (parseFloat(tr_credit_amount) -
+          //               parseFloat(tr_debit_amount))
+          //         ).toFixed(decimal_places);
+          // }
 
           // const CB_BALANCE = cb_head_data.find((f) => {
           //   return item.finance_account_head_id == f.finance_account_head_id;
@@ -3361,12 +3377,17 @@ function createHierarchyTransactionTB(
             ) {
               if (String(op_amount).includes("Cr")) {
                 OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+              } else {
+                OPENING_BALANCE = parseFloat(op_amount);
               }
             } else {
               if (String(op_amount).includes("Dr")) {
                 OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+              } else {
+                OPENING_BALANCE = parseFloat(op_amount);
               }
             }
+            OPENING_BALANCE = OPENING_BALANCE.toFixed(decimal_places);
           }
 
           if (nonZeroQuery === "Y") {
@@ -3508,40 +3529,50 @@ function createHierarchyTransactionTB(
         ///END calculating transaction amount between  from_date  and to_date-----
         //ST calculating closing balance on  to date-----
         let cb_amount = 0;
-        let minusAmount = false;
-        if (finance_account_head_id === 1 || finance_account_head_id === 5) {
-          if (String(op_amount).includes("Cr")) {
-            minusAmount = true;
-          }
-        } else {
-          if (String(op_amount).includes("Dr")) {
-            minusAmount = true;
-          }
-        }
+        cb_amount =
+          finance_account_head_id === 1 || finance_account_head_id === 5
+            ? parseFloat(
+                parseFloat(op_amount) +
+                  (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+              ).toFixed(decimal_places)
+            : parseFloat(
+                parseFloat(op_amount) +
+                  (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+              ).toFixed(decimal_places);
+        // let minusAmount = false;
+        // if (finance_account_head_id === 1 || finance_account_head_id === 5) {
+        //   if (String(op_amount).includes("Cr")) {
+        //     minusAmount = true;
+        //   }
+        // } else {
+        //   if (String(op_amount).includes("Dr")) {
+        //     minusAmount = true;
+        //   }
+        // }
 
-        if (minusAmount) {
-          cb_amount =
-            trans_symbol === "Dr"
-              ? parseFloat(
-                  Math.abs(parseFloat(op_amount)) -
-                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
-                ).toFixed(decimal_places)
-              : parseFloat(
-                  Math.abs(parseFloat(op_amount)) -
-                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
-                ).toFixed(decimal_places);
-        } else {
-          cb_amount =
-            trans_symbol === "Dr"
-              ? parseFloat(
-                  parseFloat(op_amount) +
-                    (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
-                ).toFixed(decimal_places)
-              : parseFloat(
-                  parseFloat(op_amount) +
-                    (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
-                ).toFixed(decimal_places);
-        }
+        // if (minusAmount) {
+        //   cb_amount =
+        //     trans_symbol === "Dr"
+        //       ? parseFloat(
+        //           Math.abs(parseFloat(op_amount)) -
+        //             (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+        //         ).toFixed(decimal_places)
+        //       : parseFloat(
+        //           Math.abs(parseFloat(op_amount)) -
+        //             (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+        //         ).toFixed(decimal_places);
+        // } else {
+        //   cb_amount =
+        //     trans_symbol === "Dr"
+        //       ? parseFloat(
+        //           parseFloat(op_amount) +
+        //             (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+        //         ).toFixed(decimal_places)
+        //       : parseFloat(
+        //           parseFloat(op_amount) +
+        //             (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+        //         ).toFixed(decimal_places);
+        // }
 
         // const CB_BALANCE = cb_head_data.find((f) => {
         //   return item.finance_account_head_id == f.finance_account_head_id;
@@ -3596,13 +3627,19 @@ function createHierarchyTransactionTB(
           if (finance_account_head_id === 1 || finance_account_head_id === 5) {
             if (String(op_amount).includes("Cr")) {
               OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+            } else {
+              OPENING_BALANCE = parseFloat(op_amount);
             }
           } else {
             if (String(op_amount).includes("Dr")) {
               OPENING_BALANCE = -Math.abs(parseFloat(op_amount));
+            } else {
+              OPENING_BALANCE = parseFloat(op_amount);
             }
           }
+          OPENING_BALANCE = OPENING_BALANCE.toFixed(decimal_places);
         }
+
         if (nonZeroQuery === "Y") {
           if (
             parseFloat(cb_amount) !== 0 ||
