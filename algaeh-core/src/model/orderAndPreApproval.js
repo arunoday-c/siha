@@ -2065,7 +2065,7 @@ let getPatientPackage = (req, res, next) => {
               actual_utilize_amount, actual_amount, utilize_amount, closed,closed_type,closed_remarks,\
               H.package_type,H.package_visit_type,PM.advance_amount as collect_advance, H.hospital_id,\
               PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy, \
-              PM.cancellation_amount as can_amt, PM.package_code, ST.service_type, S.service_name \
+              PM.cancellation_amount as can_amt, PM.package_code, ST.service_type, S.service_name, PM.advance_percentage \
               from hims_f_package_header H \
               inner join hims_d_package_header PM on PM.hims_d_package_header_id = H.package_id \
               inner join hims_f_patient P on H.patient_id = P.hims_d_patient_id \
