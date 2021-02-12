@@ -7,27 +7,36 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
-
 import {
-  // changeTexts,
+  changeEvent,
   dateFormater,
   updateStockDetils,
   datehandle,
   texthandle,
-  printBarcode
+  printBarcode,
+  openExchangePopup,
+  onClickProcess
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
+// import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class BatchWiseStock extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      trans_type: null,
+      quantity: 0,
+      to_location_id: null,
+      open_exchange: false,
+      item_details: {}
+    };
   }
 
   onClose = e => {
@@ -36,6 +45,8 @@ class BatchWiseStock extends Component {
   render() {
     return (
       <React.Fragment>
+
+
         <AlgaehModalPopUp
           events={{
             onClose: this.onClose.bind(this)
@@ -60,6 +71,11 @@ class BatchWiseStock extends Component {
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
                             />
+                            {this.props.trans_required === true ? <i
+                              className="fa fa-exchange-alt"
+                              onClick={openExchangePopup.bind(this, this, row)}
+                            /> : null}
+
                           </span>
                         );
                       },
@@ -310,7 +326,193 @@ class BatchWiseStock extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
-      </React.Fragment>
+        < AlgaehModalPopUp
+          title="Transation Option"
+          openPopup={this.state.open_exchange}
+          class={"MultiTransationModal"}
+          onClose={() => {
+            this.setState({
+              open_exchange: false,
+              trans_type: null,
+              quantity: 0,
+              to_location_id: null
+            });
+          }
+          }
+        >
+          <div className="col-12 popupInner margin-top-15">
+            <div className="row">
+              <div className="col-6">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Selected Location",
+                  }}
+                />
+                <h6>
+                  {this.props.location_description
+                    ? this.props.location_description
+                    : "--------"}
+                </h6>
+              </div>
+              <div className="col-6">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Location Type",
+                  }}
+                />
+                <h6>
+                  {this.props.location_type
+                    ? this.props.location_type
+                    : "--------"}
+                </h6>
+              </div>
+              <div className="col-6">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Selected Item",
+                  }}
+                />
+                <h6>
+                  {this.state.item_details
+                    ? this.state.item_details.item_description
+                    : "--------"}
+                </h6>
+              </div>
+              <div className="col-6">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "QTY In Hand",
+                  }}
+                />
+                <h6>
+                  {this.state.item_details
+                    ? parseFloat(this.state.item_details.qtyhand)
+                    : "--------"}
+                </h6>
+              </div>
+              <AlagehAutoComplete
+                div={{ className: "col form-group" }}
+                label={{ forceLabel: "Transation Type", isImp: true }}
+                selector={{
+                  name: "trans_type",
+                  className: "select-fld",
+                  value: this.state.trans_type,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: this.props.location_type === "WH" ? [
+                      {
+                        "name": "Consume",
+                        "value": "C"
+                      },
+                      {
+                        "name": "Transfer",
+                        "value": "T"
+                      },
+                      {
+                        "name": "Purchase Request",
+                        "value": "PR"
+                      }
+                    ] : [
+                        {
+                          "name": "Consume",
+                          "value": "C"
+                        },
+                        {
+                          "name": "Transfer",
+                          "value": "T"
+                        }
+                      ],
+                  },
+
+                  onChange: changeEvent.bind(this, this),
+                  onClear: () => {
+                    this.setState({
+                      trans_type: null
+                    });
+                  },
+                  autoComplete: "off",
+                }}
+              />
+              {this.state.trans_type === "T" ?
+                <AlagehAutoComplete
+                  div={{ className: "col form-group" }}
+                  label={{ forceLabel: "To Location", isImp: true }}
+                  selector={{
+                    name: "to_location_id",
+                    className: "select-fld",
+                    value: this.state.to_location_id,
+                    dataSource: {
+                      textField: "location_description",
+                      valueField: "hims_d_inventory_location_id",
+                      data: this.props.inventorylocations,
+                    },
+
+                    onChange: changeEvent.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        to_location_id: null
+                      });
+                    },
+                    autoComplete: "off",
+                  }}
+                /> : null}
+
+              <AlagehFormGroup
+                div={{ className: "col form-group" }}
+                label={{
+                  forceLabel: "Quantity",
+                  isImp: true
+                }}
+                textBox={{
+                  number: {
+                    allowNegative: false,
+                    thousandSeparator: ",",
+                  },
+                  className: "txt-fld",
+                  name: "quantity",
+                  value: this.state.quantity,
+                  events: {
+                    onChange: changeEvent.bind(this, this),
+                  },
+                }}
+              />
+            </div>
+          </div>
+
+
+          <div className=" popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={onClickProcess.bind(this, this)}
+                  >
+                    Save
+                        </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={(e) => {
+                      this.setState({
+                        open_exchange: false,
+                        trans_type: null,
+                        quantity: 0,
+                        to_location_id: null
+                      });
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </AlgaehModalPopUp >
+      </React.Fragment >
     );
   }
 }
@@ -319,7 +521,8 @@ function mapStateToProps(state) {
   return {
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
-    inventoryitemuom: state.inventoryitemuom
+    inventoryitemuom: state.inventoryitemuom,
+    git_locations: state.git_locations
   };
 }
 
@@ -328,6 +531,7 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
+      getGITLocation: AlgaehActions,
       getItemUOM: AlgaehActions
     },
     dispatch

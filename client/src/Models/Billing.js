@@ -102,7 +102,9 @@ export default {
       bank_card_id: null,
       card_check_number: null,
       insured: "N",
-      promo_code: null
+      promo_code: null,
+      pack_advance_amount: 0,
+      pack_advance_adjust: 0
     };
     return output;
   }

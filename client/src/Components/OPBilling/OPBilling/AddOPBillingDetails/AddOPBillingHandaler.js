@@ -67,7 +67,12 @@ const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (parseFloat(e.target.value) > 0) {
-    if (parseFloat(e.target.value) > parseFloat($this.state.advance_amount)) {
+    if (e.target.name === "advance_adjust" && parseFloat(e.target.value) > parseFloat($this.state.advance_amount)) {
+      swalMessage({
+        title: "Adjusted amount cannot be greater than Advance amount",
+        type: "warning",
+      });
+    } else if (e.target.name === "pack_advance_adjust" && parseFloat(e.target.value) > parseFloat($this.state.pack_advance_amount)) {
       swalMessage({
         title: "Adjusted amount cannot be greater than Advance amount",
         type: "warning",
@@ -190,6 +195,7 @@ const billheaderCalculation = ($this, context, e) => {
         ? 0
         : parseFloat($this.state.sheet_discount_amount),
     advance_adjust: parseFloat($this.state.advance_adjust),
+    pack_advance_adjust: parseFloat($this.state.pack_advance_adjust),
     gross_total: parseFloat($this.state.gross_total),
     credit_amount:
       $this.state.credit_amount === ""
@@ -236,8 +242,7 @@ const onchangegridcol = ($this, row, e) => {
 const ondiscountgridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  // let oldvalue = e.oldvalue || e.target.oldvalue;
-  debugger
+  // let oldvalue = e.oldvalue || e.target.oldvalue;  
   let billdetails = $this.state.billdetails;
   let _index = billdetails.indexOf(row);
   // if (value === undefined) {
@@ -432,7 +437,8 @@ const calculateAmount = ($this, context, row, e) => {
       discount_percentage:
         e.target.name === "discount_amout" ? 0 : row.discount_percentage,
 
-      insured: $this.state.insured,
+      // insured: $this.state.insured,
+      insured: row.insurance_yesno,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
       primary_network_id: $this.state.network_id,
@@ -569,7 +575,6 @@ const ApplyPromo = ($this, context) => {
     method: "POST",
     data: serviceInput,
     onSuccess: (response) => {
-      debugger
       if (response.data.success) {
         let existingservices = response.data.records.billdetails;
 

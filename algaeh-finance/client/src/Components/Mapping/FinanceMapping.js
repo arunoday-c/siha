@@ -101,9 +101,9 @@ export default function Mapping(props) {
       className=" FinanceMappingScreen"
       style={{ marginTop: 20, marginBottom: 75 }}
     >
-      <div class="row">
-        {mappings.map((item) => (
-          <div class="col-12">
+      <div className="row">
+        {mappings.map((item, index) => (
+          <div className="col-12" key={index}>
             <div className="card">
               <div className="card-header">
                 <b>{item.mapping_group}</b>

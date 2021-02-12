@@ -56,3 +56,12 @@
     max-height: 65vh !important;
   }
 }
+
+.MultiTransationModal {
+  .algaeh-modal {
+    width: 55vw;
+    .popupInner{
+      height:50vh
+    }
+  }
+}

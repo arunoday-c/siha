@@ -210,9 +210,11 @@ export default {
           query:
             "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, \
             batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, IL.item_type, grn_id,\
-            grnno, sale_price, mrp_price, sales_uom, git_qty, IM.stocking_uom_id, vendor_batchno, IM.item_description from \
-            hims_m_inventory_item_location IL inner join hims_d_inventory_item_master IM on item_id = IM.hims_d_inventory_item_master_id \
-            where  (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and IL.record_status='A' and qtyhand>0" +
+            grnno, sale_price, mrp_price, sales_uom, git_qty, IM.stocking_uom_id, vendor_batchno, \
+            category_id as item_category_id, group_id as item_group_id, \
+            IM.item_description, IM.waited_avg_cost from hims_m_inventory_item_location IL \
+            inner join hims_d_inventory_item_master IM on item_id = IM.hims_d_inventory_item_master_id \
+            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and IL.record_status='A' and qtyhand>0" +
             strAppend +
             "order by date(expirydt)",
           values: intValues,
@@ -418,7 +420,7 @@ export default {
           query:
             "SELECT IM.item_code,IM.item_description, IM.stocking_uom_id,coalesce(ILR.reorder_qty, IM.reorder_qty,0) as reorder_qty, \
             hims_m_inventory_item_location_id, IL.item_id, inventory_location_id, item_location_status, \
-            batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, \
+            batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost, waited_avg_cost, last_purchase_cost, \
             grn_id, grnno, sale_price, mrp_price, sales_uom, uom_description as stock_uom,ILO.location_description,\
             CASE WHEN sum(qtyhand)<=coalesce(ILR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder \
             from hims_d_inventory_item_master IM \

@@ -1151,10 +1151,11 @@ let load_orders_for_bill = (req, res, next) => {
           OS.`updated_by`, OS.`updated_date`, OS.`record_status`,S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, \
           S.`service_name`, S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, \
           S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, \
-          S.`vat_applicable`, S.`vat_percent`, S.`service_status`, S.`physiotherapy_service`, ST.`service_type` \
-          FROM `hims_f_ordered_services` OS \
+          S.`vat_applicable`, S.`vat_percent`, S.`service_status`, S.`physiotherapy_service`, ST.`service_type`, \
+          PD.package_header_id as ordered_package_id FROM `hims_f_ordered_services` OS \
           inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
           inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
+          left join  `hims_f_package_detail` PD on OS.trans_package_detail_id = PD.hims_f_package_detail_id  \
           WHERE visit_id=? AND OS.`billed`='N'; \
             SELECT  OS.`hims_f_ordered_inventory_id` as ordered_inventory_id, OS.`patient_id`, OS.`visit_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`trans_package_detail_id`,\
@@ -2064,7 +2065,7 @@ let getPatientPackage = (req, res, next) => {
               actual_utilize_amount, actual_amount, utilize_amount, closed,closed_type,closed_remarks,\
               H.package_type,H.package_visit_type,PM.advance_amount as collect_advance, H.hospital_id,\
               PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy, \
-              PM.cancellation_amount as can_amt, PM.package_code, ST.service_type, S.service_name \
+              PM.cancellation_amount as can_amt, PM.package_code, ST.service_type, S.service_name, PM.advance_percentage \
               from hims_f_package_header H \
               inner join hims_d_package_header PM on PM.hims_d_package_header_id = H.package_id \
               inner join hims_f_patient P on H.patient_id = P.hims_d_patient_id \

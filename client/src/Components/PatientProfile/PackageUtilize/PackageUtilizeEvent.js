@@ -167,6 +167,7 @@ export default function PackageSetupEvent() {
         cancelButtonText: "No"
       }).then(willDelete => {
         if (willDelete.value) {
+          debugger
           $this.setState({ loading_UtilizeService: true }, () => {
             for (let i = 0; i < InputObj.package_details.length; i++) {
               InputObj.package_details[i].utilized_qty =
@@ -208,7 +209,7 @@ export default function PackageSetupEvent() {
               InputObj.balance_amount =
                 parseFloat(InputObj.advance_amount) -
                 parseFloat(InputObj.utilize_amount);
-              if (parseFloat(InputObj.balance_amount) <= 0) {
+              if (parseFloat(InputObj.advance_percentage) < 0 && parseFloat(InputObj.balance_amount) <= 0) {
                 swalMessage({
                   title:
                     "Advance not sufficient to utilize these services.Please collect the advance",
@@ -260,6 +261,13 @@ export default function PackageSetupEvent() {
                 }
               });
             } else {
+              for (let i = 0; i < InputObj.package_details.length; i++) {
+                InputObj.package_details[i].unit_cost = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].gross_amount = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].net_amout = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].patient_resp = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].patient_payable = parseFloat(InputObj.package_details[i].appropriate_amount);
+              }
               algaehApiCall({
                 uri: "/billing/updatePatientPackage",
                 module: "billing",

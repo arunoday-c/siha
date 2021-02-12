@@ -145,7 +145,7 @@ const Validations = ($this) => {
     });
 
     return isError;
-  } else if (parseFloat($this.state.pack_balance_amount) < 0) {
+  } else if (parseFloat($this.state.pack_advance_percentage) > 0 && parseFloat($this.state.pack_balance_amount) < 0) {
     isError = true;
     swalMessage({
       type: "warning",
@@ -523,9 +523,12 @@ const getPatientDetails = ($this, patient_code) => {
             mappingName: "PatientPackageList",
           },
           afterSuccess: (data) => {
+            debugger
             if (data.length !== 0 || data.length === undefined) {
               $this.setState({
                 pack_balance_amount: data[0].balance_amount,
+                pack_advance_amount: data[0].advance_amount,
+                pack_advance_percentage: data[0].advance_percentage
               });
             }
           },
@@ -597,9 +600,12 @@ const ClosePackageUtilize = ($this) => {
           mappingName: "PatientPackageList",
         },
         afterSuccess: (data) => {
+          debugger
           if (data.length !== 0 || data.length === undefined) {
             $this.setState({
               pack_balance_amount: data[0].balance_amount,
+              pack_advance_amount: data[0].advance_amount,
+              pack_advance_percentage: data[0].advance_percentage
             });
           }
         },
