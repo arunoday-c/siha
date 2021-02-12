@@ -3024,11 +3024,11 @@ function createHierarchyTransactionTB(
           cb_amount =
             trans_symbol === "Dr"
               ? parseFloat(
-                  parseFloat(op_amount) -
+                  Math.abs(parseFloat(op_amount)) -
                     (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
                 ).toFixed(decimal_places)
               : parseFloat(
-                  parseFloat(op_amount) -
+                  Math.abs(parseFloat(op_amount)) -
                     (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
                 ).toFixed(decimal_places);
         } else {
@@ -3277,12 +3277,12 @@ function createHierarchyTransactionTB(
             cb_amount =
               trans_symbol === "Dr"
                 ? parseFloat(
-                    parseFloat(op_amount) -
+                    Math.abs(parseFloat(op_amount)) -
                       (parseFloat(tr_debit_amount) -
                         parseFloat(tr_credit_amount))
                   ).toFixed(decimal_places)
                 : parseFloat(
-                    parseFloat(op_amount) -
+                    Math.abs(parseFloat(op_amount)) -
                       (parseFloat(tr_credit_amount) -
                         parseFloat(tr_debit_amount))
                   ).toFixed(decimal_places);
@@ -3518,15 +3518,16 @@ function createHierarchyTransactionTB(
             minusAmount = true;
           }
         }
+
         if (minusAmount) {
           cb_amount =
             trans_symbol === "Dr"
               ? parseFloat(
-                  parseFloat(op_amount) -
+                  Math.abs(parseFloat(op_amount)) -
                     (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
                 ).toFixed(decimal_places)
               : parseFloat(
-                  parseFloat(op_amount) -
+                  Math.abs(parseFloat(op_amount)) -
                     (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
                 ).toFixed(decimal_places);
         } else {
