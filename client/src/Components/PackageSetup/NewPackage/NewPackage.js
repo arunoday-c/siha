@@ -606,10 +606,11 @@ export default class NewPackage extends PureComponent {
                                 }}
                                 label={{
                                   forceLabel: "Adv. Percent",
-                                  isImp:
-                                    this.state.package_visit_type === "M"
-                                      ? true
-                                      : false,
+                                  isImp: false
+                                  // isImp:
+                                  //   this.state.package_visit_type === "M"
+                                  //     ? true
+                                  //     : false,
                                 }}
                                 textBox={{
                                   decimal: { allowNegative: false },

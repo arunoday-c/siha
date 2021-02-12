@@ -131,7 +131,7 @@ export default function NewPackageEvent() {
         $this.setState({
           PakageDetail: PakageDetail,
           // s_service_type: null,
-          S_service_name: "",
+          s_service_name: "",
           s_service: null,
           s_service_amount: null,
           total_service_amount: total_service_amount,
@@ -238,17 +238,19 @@ export default function NewPackageEvent() {
               });
               document.querySelector("[name='expiry_days']").focus();
               return;
-            } else if (
-              InputObj.advance_type === "P" &&
-              parseFloat(InputObj.advance_percentage) === 0
-            ) {
-              swalMessage({
-                type: "warning",
-                title: "Enter The Advance Percentage",
-              });
-              document.querySelector("[name='advance_percentage']").focus();
-              return;
-            } else if (
+            }
+            // else if (
+            //   InputObj.advance_type === "P" &&
+            //   parseFloat(InputObj.advance_percentage) === 0
+            // ) {
+            //   swalMessage({
+            //     type: "warning",
+            //     title: "Enter The Advance Percentage",
+            //   });
+            //   document.querySelector("[name='advance_percentage']").focus();
+            //   return;
+            // } 
+            else if (
               InputObj.advance_type === "A" &&
               parseFloat(InputObj.advance_amount) === 0
             ) {

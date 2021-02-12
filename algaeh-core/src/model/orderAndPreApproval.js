@@ -1151,10 +1151,11 @@ let load_orders_for_bill = (req, res, next) => {
           OS.`updated_by`, OS.`updated_date`, OS.`record_status`,S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, \
           S.`service_name`, S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, \
           S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, \
-          S.`vat_applicable`, S.`vat_percent`, S.`service_status`, S.`physiotherapy_service`, ST.`service_type` \
-          FROM `hims_f_ordered_services` OS \
+          S.`vat_applicable`, S.`vat_percent`, S.`service_status`, S.`physiotherapy_service`, ST.`service_type`, \
+          PD.package_header_id as ordered_package_id FROM `hims_f_ordered_services` OS \
           inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
           inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
+          left join  `hims_f_package_detail` PD on OS.trans_package_detail_id = PD.hims_f_package_detail_id  \
           WHERE visit_id=? AND OS.`billed`='N'; \
             SELECT  OS.`hims_f_ordered_inventory_id` as ordered_inventory_id, OS.`patient_id`, OS.`visit_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`trans_package_detail_id`,\

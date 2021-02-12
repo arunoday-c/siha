@@ -260,6 +260,13 @@ export default function PackageSetupEvent() {
                 }
               });
             } else {
+              for (let i = 0; i < InputObj.package_details.length; i++) {
+                InputObj.package_details[i].unit_cost = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].gross_amount = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].net_amout = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].patient_resp = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].patient_payable = parseFloat(InputObj.package_details[i].appropriate_amount);
+              }
               algaehApiCall({
                 uri: "/billing/updatePatientPackage",
                 module: "billing",

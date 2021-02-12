@@ -194,13 +194,14 @@ export default {
         .executeQuery({
           query:
             "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,receipt_header_id,\
-              incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
-              , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
+              incharge_or_provider, bill_date, advance_amount,advance_adjust, pack_advance_adjust, \
+              pack_advance_amount, discount_amount, sub_total_amount, total_tax,  billing_status, \
+              sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
               , patient_tax, s_patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
               balance_credit, from_bill_id, shift_id, created_by, created_date, updated_by, updated_date, copay_amount,\
               deductable_amount,hospital_id)\
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -210,6 +211,8 @@ export default {
             new Date(),
             inputParam.advance_amount,
             inputParam.advance_adjust === "" ? 0 : inputParam.advance_adjust,
+            inputParam.pack_advance_adjust,
+            inputParam.pack_advance_amount === "" ? 0 : inputParam.pack_advance_amount,
             inputParam.discount_amount === "" ? 0 : inputParam.discount_amount,
             inputParam.sub_total_amount,
             inputParam.total_tax,
@@ -587,7 +590,7 @@ export default {
 
           if (inputParam.sheet_discount_amount > 0) {
             sendingObject.sheet_discount_percentage =
-              (inputParam.sheet_discount_amount / inputParam.patient_payable) * 100;
+              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
             sendingObject.sheet_discount_percentage = parseFloat(
               parseFloat(sendingObject.sheet_discount_percentage).toFixed(3)
             );
@@ -611,8 +614,11 @@ export default {
             decimal_places
           );
 
+          console.log("sendingObject", sendingObject);
+          console.log("inputParam", inputParam);
+
           sendingObject.net_amount =
-            parseFloat(inputParam.patient_payable) -
+            parseFloat(inputParam.gross_total) -
             sendingObject.sheet_discount_amount;
 
           sendingObject.net_amount = utilities.decimalPoints(
@@ -621,14 +627,32 @@ export default {
           );
 
           if (inputParam.credit_amount > 0) {
-            sendingObject.receiveable_amount =
-              sendingObject.net_amount -
-              parseFloat(inputParam.advance_adjust) -
-              parseFloat(inputParam.credit_amount);
+            if (inputParam.pack_advance_adjust > 0) {
+              sendingObject.receiveable_amount =
+                sendingObject.net_amount -
+                parseFloat(inputParam.advance_adjust) -
+                parseFloat(inputParam.credit_amount) - parseFloat(inputParam.pack_advance_adjust);
+            } else {
+              sendingObject.receiveable_amount =
+                sendingObject.net_amount -
+                parseFloat(inputParam.advance_adjust) -
+                parseFloat(inputParam.credit_amount);
+            }
+
           } else {
-            sendingObject.receiveable_amount =
-              sendingObject.net_amount - parseFloat(inputParam.advance_adjust);
+            if (inputParam.pack_advance_adjust > 0) {
+              sendingObject.receiveable_amount =
+                sendingObject.net_amount - parseFloat(inputParam.advance_adjust) - parseFloat(inputParam.pack_advance_adjust);
+            }
+            else {
+              sendingObject.receiveable_amount =
+                sendingObject.net_amount - parseFloat(inputParam.advance_adjust);
+            }
           }
+
+          console.log("sendingObject", sendingObject);
+
+
 
           sendingObject.receiveable_amount = utilities.decimalPoints(
             sendingObject.receiveable_amount,
@@ -1924,6 +1948,7 @@ export default {
                     collected_cash += parseFloat(result[0].collected_cash);
                     expected_cheque += parseFloat(result[0].expected_cheque);
                     no_of_cheques += parseFloat(result[0].no_of_cheques);
+                    console.log("12345")
                     _mysql
                       .executeQueryWithTransaction({
                         query:
@@ -1948,7 +1973,8 @@ export default {
                         printQuery: true,
                       })
                       .then((updateResult) => {
-                        // console.log("last :");
+                        console.log("last :", req.adv_refnd);
+                        console.log("last 1 :", req.connection);
                         if (req.connection == null || req.adv_refnd == "Y") {
                           // console.log("BOOSSS :");
                           _mysql.commitTransaction(() => {
@@ -2079,6 +2105,7 @@ export default {
       } else if (inputParam.pay_type == "P") {
         Module_Name = "REFUND";
       }
+      req["adv_refnd"] = "Y";
 
       _mysql
         .generateRunningNumber({
@@ -2087,6 +2114,7 @@ export default {
           table_name: "hims_f_app_numgen",
         })
         .then((generatedNumbers) => {
+          req.body["bill_number"] = generatedNumbers[Module_Name];
           _mysql
             .executeQuery({
               query:
@@ -2108,6 +2136,12 @@ export default {
               printQuery: true,
             })
             .then((headerRcptResult) => {
+              req.connection = {
+                connection: _mysql.connection,
+                isTransactionConnection: _mysql.isTransactionConnection,
+                pool: _mysql.pool,
+              };
+
               if (
                 headerRcptResult.insertId != null &&
                 headerRcptResult.insertId != ""
@@ -2202,14 +2236,19 @@ export default {
                             printQuery: true,
                           })
                           .then((update_advance) => {
-                            _mysql.commitTransaction(() => {
-                              _mysql.releaseConnection();
-                              req.records = {
-                                receipt_number: generatedNumbers[Module_Name],
-                                total_advance_amount: inputParam.advance_amount,
-                              };
-                              next();
-                            });
+                            // _mysql.commitTransaction(() => {
+                            //   _mysql.releaseConnection();
+                            //   req.records = {
+                            //     receipt_number: generatedNumbers[Module_Name],
+                            //     total_advance_amount: inputParam.advance_amount,
+                            //   };
+                            //   next();
+                            // });
+                            req.records = {
+                              receipt_number: generatedNumbers[Module_Name],
+                              total_advance_amount: inputParam.advance_amount,
+                            };
+                            next();
                           })
                           .catch((error) => {
                             _mysql.rollBackTransaction(() => {
@@ -2337,6 +2376,7 @@ export default {
                       );
                     }
                   );
+
                   const _inv_services = _.filter(
                     inputParam.package_details,
                     (f) => {
@@ -2673,6 +2713,9 @@ export default {
                   servicesDetails.insured == undefined
                     ? "N"
                     : servicesDetails.insured;
+
+                console.log("servicesDetails.insured", servicesDetails.insured)
+                console.log("insured", insured)
 
                 // let sec_insured =
                 //   servicesDetails.sec_insured == undefined
@@ -4048,6 +4091,22 @@ export default {
                       hospital_id: req.userIdentity.hospital_id,
                     });
                   }
+
+                  if (inputParam.pack_advance_adjust > 0) {
+                    // narration =
+                    //   narration +
+                    //   ", Adjusting Advance  Amount of " +
+                    //   inputParam.pack_advance_amount;
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_DEP.head_id,
+                      child_id: OP_DEP.child_id,
+                      debit_amount: inputParam.pack_advance_adjust,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id,
+                    });
+                  }
                   //PROVIDING OP SERVICE ON CREDIT
                   if (inputParam.credit_amount > 0) {
                     narration =
@@ -5154,6 +5213,11 @@ function insertOrderServices(options) {
           "service_type_id",
           "services_id",
           "trans_package_detail_id",
+          "unit_cost",
+          "gross_amount",
+          "net_amout",
+          "patient_resp",
+          "patient_payable",
         ];
 
         _mysql
@@ -5163,12 +5227,8 @@ function insertOrderServices(options) {
             includeValues: IncludeValues,
             extraValues: {
               quantity: 1,
-              unit_cost: 0,
-
-              gross_amount: 0,
               discount_amout: 0,
               discount_percentage: 0,
-              net_amout: 0,
               copay_percentage: 0,
               copay_amount: 0,
               deductable_amount: 0,
@@ -5177,8 +5237,6 @@ function insertOrderServices(options) {
               patient_tax: 0,
               company_tax: 0,
               total_tax: 0,
-              patient_resp: 0,
-              patient_payable: 0,
               comapany_resp: 0,
               company_payble: 0,
               sec_deductable_percentage: 0,

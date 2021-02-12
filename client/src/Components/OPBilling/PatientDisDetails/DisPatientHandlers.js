@@ -75,8 +75,15 @@ const selectVisit = ($this, context, e) => {
         afterSuccess: (data) => {
           if (data.length !== 0 || data.length === undefined) {
             $this.setState({
-              pack_balance_amount: data[0].balance_amount
+              pack_balance_amount: data[0].balance_amount,
+              pack_advance_amount: data[0].advance_amount
             });
+            if (context !== null) {
+              context.updateState({
+                pack_balance_amount: data[0].balance_amount,
+                pack_advance_amount: data[0].advance_amount
+              });
+            }
           }
         },
       });
