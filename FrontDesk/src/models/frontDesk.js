@@ -214,6 +214,248 @@ export default {
       });
     }
   },
+  getCashForDashBoard: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.query;
+      _mysql
+        .executeQuery({
+          query: `SELECT USR.user_display_name,CSH.daily_handover_date,CSD.cash_handover_header_id,
+          coalesce(CSD.expected_cash,0) as expected_cash,
+          coalesce(CSD.expected_card,0) as expected_card,
+          coalesce(CSD.expected_cheque,0) as expected_cheque
+         
+          FROM hims_f_cash_handover_detail as CSD
+          inner join hims_f_cash_handover_header CSH on CSH.hims_f_cash_handover_header_id=CSD.cash_handover_header_id
+          left join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=CSD.casher_id
+          where CSD.hospital_id=? and CSH.record_status = 'A' and CSD.record_status = 'A' and date(CSH.daily_handover_date) between date(?) and date(?) and CSD.casher_id=?;`,
+          values: [
+            input.hospital_id,
+            input.today_date,
+            input.today_date,
+            input.casher_id,
+          ],
+          printQuery: true,
+        })
+        .then((cash_handover) => {
+          _mysql.releaseConnection();
+          req.records = cash_handover;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getFrontDeskDataForEmployee: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.today_date != null) {
+        _stringData +=
+          "created_by=" +
+          input.created_by +
+          " and  date(visit_date) between date('" +
+          input.today_date +
+          "') AND date('" +
+          input.today_date +
+          "')";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `  SELECT appointment_patient,visit_date FROM hims_f_patient_visit  where   
+            ${_stringData}  `,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getFrontDeskDataForWeek: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.from_date != null) {
+        _stringData +=
+          "created_by=" +
+          input.created_by +
+          " and  date(visit_date) between date('" +
+          input.from_date +
+          "') AND date('" +
+          input.to_date +
+          "')";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `  SELECT appointment_patient,visit_date FROM hims_f_patient_visit  where   
+            ${_stringData}  `,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          const arrangedData = _.chain(result)
+            .groupBy((g) => moment(g.visit_date).format("YYYY-MM-DD"))
+            .map((details, key) => {
+              const { visit_date } = _.head(details);
+
+              return {
+                date: visit_date,
+                detailsOf: _.chain(details)
+                  .groupBy((it) => it.appointment_patient)
+                  .map((detail, index) => {
+                    console.log("detail====", detail);
+                    const { appointment_patient, visit_date } = _.head(detail);
+                    return {
+                      appointment_patient: appointment_patient,
+                      detail: detail,
+                      date: visit_date,
+                    };
+                  })
+                  .value(),
+              };
+            })
+            .value();
+          req.records = arrangedData;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getFrontDeskDashboardForSubdept: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.today_date != null) {
+        _stringData +=
+          "PV.created_by=" +
+          input.created_by +
+          " and  date(visit_date) between date('" +
+          input.today_date +
+          "') AND date('" +
+          input.today_date +
+          "')";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `  SELECT PV.sub_department_id,PV.visit_date,SD.hims_d_sub_department_id,SD.sub_department_name
+          FROM hims_f_patient_visit PV 
+           left join hims_d_sub_department SD on PV.sub_department_id=SD.hims_d_sub_department_id  where   
+            ${_stringData}  `,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          const arrangedData = _.chain(result)
+            .groupBy((g) => g.sub_department_name)
+            .map((details, key) => {
+              const { sub_department_name } = _.head(details);
+
+              return {
+                sub_department_name: sub_department_name,
+                detailsOf: details,
+              };
+            })
+            .value();
+          req.records = arrangedData;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getFrontDeskDashboardDoctor: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.today_date != null) {
+        _stringData +=
+          "PV.created_by=" +
+          input.created_by +
+          " and  date(visit_date) between date('" +
+          input.today_date +
+          "') AND date('" +
+          input.today_date +
+          "')";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `  SELECT PV.sub_department_id,PV.visit_date,E.full_name
+          FROM hims_f_patient_visit PV 
+           left join hims_d_employee E on PV.doctor_id=E.hims_d_employee_id  where   
+            ${_stringData}  `,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          const arrangedData = _.chain(result)
+            .groupBy((g) => g.full_name)
+            .map((details, key) => {
+              const { full_name } = _.head(details);
+
+              return {
+                full_name: full_name,
+                detailsOf: details,
+              };
+            })
+            .value();
+          req.records = arrangedData;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getCashHandoverDetailsBACKUP: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

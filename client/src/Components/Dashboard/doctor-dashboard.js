@@ -64,20 +64,16 @@ const getDoctorDashboardData = async (key, { employee_id }) => {
 export default function Dashboard() {
   const { userToken } = useContext(MainContext);
   console.log("userToken", userToken);
-  // const [income_range, setIncome_range] = useState([
-  //   moment().startOf("week"),
-  //   moment().endOf("week"),
-  // ]);
-  // const { todayPatients, setTodaysPatients } = useState([]);
+
   const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
-  // const [idDetails, setIdDetails] = useState([]);
+  const [followupNewVisit, setFollowupNewVisit] = useState({
+    followUp: [],
+    newVisit: [],
+  });
   const [countOfIncoming, setCountOfIncoming] = useState([]);
   const [currentRow, setCurrentRow] = useState({});
   const [xAxisOfIncoming, setXAxisOfIncoming] = useState([]);
   const [axisOfFollowUpAndIncome, setaxisOffollowUpAndincome] = useState([]);
-  const [newPatientVsFollowUPData, setNewPatientVsFollowUPData] = useState([]);
-  const [newPatient, setNewPatient] = useState([]);
-  // const [dependentDetails, setDependentDetails] = useState([]);
 
   const {
     control,
@@ -128,10 +124,6 @@ export default function Dashboard() {
     ["doctorData", { employee_id: userToken.employee_id }],
     getDoctorDashboardData,
     {
-      // enabled: !!EmpMasterIOputs,
-      // initialStale: true,
-      // refetch: false,
-
       onError: (err) => {
         AlgaehMessagePop({
           display: err?.message,
@@ -193,13 +185,13 @@ export default function Dashboard() {
         })
       );
       let currentDate = getValues().income_range;
-      let weekStart = currentDate.clone().startOf("isoWeek");
+      let weekStart = currentDate.startOf("week").toDate();
 
       // var weekEnd = currentDate.clone().endOf('isoWeek');
 
       let days = [];
 
-      for (var i = 0; i <= 7; i++) {
+      for (var i = 0; i <= 6; i++) {
         days.push(moment(weekStart).add(i, "days").format("MMMM Do"));
       }
       setXAxisOfIncoming(days);
@@ -217,34 +209,66 @@ export default function Dashboard() {
     refetch: refetchForPatFollow,
   } = useQuery("getAllPatientFollowUp", getAllPatientFollowUp, {
     onSuccess: (data) => {
-      setNewPatientVsFollowUPData(
-        data.map((item) => {
-          let newPatient = item.detailsOf.filter((newP) => {
-            return newP.visit_type === "Y";
-          });
-
-          return newPatient[0]?.detail.length ? newPatient[0].detail.length : 0;
-        })
-      );
-      setNewPatient(
-        data.map((item) => {
-          let newPatient = item.detailsOf.filter((newP) => {
-            return newP.visit_type === "N";
-          });
-          return newPatient[0]?.detail.length ? newPatient[0].detail.length : 0;
-        })
-      );
+      debugger;
+      console.log("datat", data);
       let currentDate = getValues().new_followup_range;
-      let weekStart = currentDate.clone().startOf("isoWeek");
-
-      // var weekEnd = currentDate.clone().endOf('isoWeek');
+      let weekStart = currentDate.startOf("week").toDate();
 
       let days = [];
-
+      let newVisit = [];
+      let followUpVisit = [];
       for (var i = 0; i <= 6; i++) {
-        days.push(moment(weekStart).add(i, "days").format("MMMM Do"));
+        let weeDay = moment(weekStart).add(i, "days");
+        const patients = data.find(
+          (f) =>
+            moment(f.date).format("YYYYMMDD") ===
+            weeDay.clone().format("YYYYMMDD")
+        );
+        if (patients) {
+          const hasVisitPatient = patients.detailsOf.find(
+            (f) => f.visit_type === "Y"
+          );
+          if (hasVisitPatient) {
+            newVisit.push(hasVisitPatient.detail.length);
+          } else {
+            newVisit.push(0);
+          }
+          const hasFollowPatient = patients.detailsOf.find(
+            (f) => f.visit_type === "N"
+          );
+          if (hasFollowPatient) {
+            followUpVisit.push(hasFollowPatient.detail.length);
+          } else {
+            followUpVisit.push(0);
+          }
+        } else {
+          newVisit.push(0);
+          followUpVisit.push(0);
+        }
+        days.push(weeDay.clone().format("MMMM Do"));
       }
+      setFollowupNewVisit((prev) => {
+        return { ...prev, followUp: followUpVisit, newVisit: newVisit };
+      });
       setaxisOffollowUpAndincome(days);
+      // setNewPatientVsFollowUPData(
+      //   data.map((item) => {
+      //     let newPatient = item.detailsOf.filter((newP) => {
+      //       return newP.visit_type === "Y";
+      //     });
+
+      //     return newPatient[0]?.detail.length ? newPatient[0].detail.length : 0;
+      //   })
+      // );
+      // setNewPatient(
+      //   data.map((item) => {
+      //     let newPatient = item.detailsOf.filter((newP) => {
+      //       return newP.visit_type === "N";
+      //     });
+      //     return newPatient[0]?.detail.length ? newPatient[0].detail.length : 0;
+      //   })
+      // );
+
       // setCountOfIncoming(
       //   data.map((item) => {
       //     return item.detailsOfPatient.length;
@@ -415,7 +439,7 @@ export default function Dashboard() {
       {
         type: "bar",
         label: "New Patient",
-        data: newPatientVsFollowUPData,
+        data: followupNewVisit.newVisit,
         fill: false,
         backgroundColor: "#71B37C",
         borderColor: "#71B37C",
@@ -426,7 +450,7 @@ export default function Dashboard() {
       {
         type: "bar",
         label: "Follow Up",
-        data: newPatient,
+        data: followupNewVisit.followUp,
         fill: false,
         backgroundColor: "#EC932F",
         borderColor: "#EC932F",
@@ -824,38 +848,6 @@ export default function Dashboard() {
                               />
                             ),
                           },
-                          // {
-                          //   fieldName: "lab_ord_status",
-                          //   label: "Lab Order Status",
-                          //   displayTemplate: (row) => {
-                          //     return (
-                          //       <span>
-                          //         {row.lab_ord_status === "O"
-                          //           ? "Ordered"
-                          //           : row.lab_ord_status === "CL"
-                          //           ? "Specimen Collected"
-                          //           : row.lab_ord_status === "CN"
-                          //           ? "Test Cancelled"
-                          //           : row.lab_ord_status === "CF"
-                          //           ? "Result Confirmed "
-                          //           : row.lab_ord_status === "V"
-                          //           ? "Result Validated"
-                          //           : "----"}
-                          //       </span>
-                          //     );
-                          //   },
-                          // },
-                          // {
-                          //   fieldName: "lab_billed",
-                          //   label: "Lab Billed",
-                          //   displayTemplate: (row) => {
-                          //     return (
-                          //       <span>
-                          //         {row.lab_billed === "Y" ? "Yes" : "----"}
-                          //       </span>
-                          //     );
-                          //   },
-                          // },
 
                           {
                             fieldName: "hims_f_ordered_services_id",
@@ -897,40 +889,6 @@ export default function Dashboard() {
                             },
                           },
 
-                          // {
-                          //   fieldName: "rad_ord_status",
-                          //   label: "Radiology Order Status",
-                          //   displayTemplate: (row) => {
-                          //     return (
-                          //       <span>
-                          //         {row.rad_ord_status === "O"
-                          //           ? "Ordered"
-                          //           : row.rad_ord_status === "S"
-                          //           ? "Scheduled"
-                          //           : row.rad_ord_status === "UP"
-                          //           ? "Under Process"
-                          //           : row.rad_ord_status === "CN"
-                          //           ? "Cancelled"
-                          //           : row.rad_ord_status === "RC"
-                          //           ? "Result Confirmed"
-                          //           : row.rad_ord_status === "RA"
-                          //           ? "Result Available"
-                          //           : "----"}
-                          //       </span>
-                          //     );
-                          //   },
-                          // },
-                          // {
-                          //   fieldName: "rad_billed",
-                          //   label: "Radiology Billed",
-                          //   displayTemplate: (row) => {
-                          //     return (
-                          //       <span>
-                          //         {row.rad_billed === "Y" ? "Yes" : "----"}
-                          //       </span>
-                          //     );
-                          //   },
-                          // },
                           {
                             fieldName: "hims_f_ordered_services_id",
                             label: (
@@ -941,16 +899,6 @@ export default function Dashboard() {
                             displayTemplate: (row) => {
                               return row.service_type_id === 5 &&
                                 row.lab_ord_status === "V" ? (
-                                // <span
-                                //   className="pat-code"
-                                //   style={{ color: "#006699" }}
-                                //   onClick={() => {
-                                //     generateReport(row, "LAB");
-                                //   }}
-                                // >
-                                //   View Report
-                                // </span>
-
                                 <span>
                                   <i
                                     className="fas fa-paperclip"
@@ -962,16 +910,6 @@ export default function Dashboard() {
                                 </span>
                               ) : row.service_type_id === 11 &&
                                 row.rad_ord_status === "RA" ? (
-                                // <span
-                                //   className="pat-code"
-                                //   style={{ color: "#006699" }}
-                                //   onClick={() => {
-                                //     generateReport(row, "RAD");
-                                //   }}
-                                // >
-                                //   View Report
-                                // </span>
-
                                 <span>
                                   <i
                                     className="fas fa-paperclip"
@@ -1018,75 +956,6 @@ export default function Dashboard() {
                               ) : null;
                             },
                           },
-                          // {
-                          //   fieldName: "action",
-                          //   label: "Attachments",
-                          //   displayTemplate: (row) => {
-                          //     return row.lab_billed === "Y" ? (
-                          //       <span>
-                          //         <i
-                          //           className="fas fa-paperclip"
-                          //           aria-hidden="true"
-                          //           onClick={() => {
-                          //             this.setState(
-                          //               {
-                          //                 openAttachmentsModal: true,
-                          //                 // currentRow: row,
-                          //                 // lab_id_number: row.lab_id_number,
-                          //               },
-
-                          //               this.getSavedDocument.bind(
-                          //                 this,
-                          //                 row
-                          //               )
-                          //             );
-                          //           }}
-                          //         />
-                          //       </span>
-                          //     ) : (
-                          //       "----"
-                          //     );
-                          //   },
-                          // },
-                          // {
-                          //   fieldName: "radiology_attachments",
-                          //   label: (
-                          //     <AlgaehLabel
-                          //       label={{
-                          //         forceLabel: "Radiology Attachments",
-                          //       }}
-                          //     />
-                          //   ),
-                          //   displayTemplate: (row) => {
-                          //     return row.rad_billed === "Y" ? (
-                          //       <span>
-                          //         <i
-                          //           // style={{
-                          //           //   pointerEvents:
-                          //           //     row.status === "O"
-                          //           //       ? ""
-                          //           //       : row.sample_status === "N"
-                          //           //       ? "none"
-                          //           //       : "",
-                          //           // }}
-                          //           className="fas fa-paperclip"
-                          //           aria-hidden="true"
-                          //           onClick={(e) => {
-                          //             this.setState(
-                          //               {
-                          //                 openAttachmentsModal: true,
-                          //               },
-
-                          //               this.getDocuments.bind(this, row)
-                          //             );
-                          //           }}
-                          //         />
-                          //       </span>
-                          //     ) : (
-                          //       "----"
-                          //     );
-                          //   },
-                          // },
                         ]}
                         keyId="index"
                         data={
@@ -1109,68 +978,6 @@ export default function Dashboard() {
                         onClose={showAttachmentsOfServices}
                       />
                     ) : null}
-                    {/* <table className="table table-bordered table-sm table-striped">
-                    <thead>
-                      <tr>
-                        <th>Patient Code</th>
-                        <th>Patient Name</th>
-                        <th>Service Ordered</th>
-                        <th>Ordered Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>PAT-A-0000693</td>
-                        <td>Gulam Mustafa</td>
-                        <td>Acetylcholine receptor antibody</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000691</td>
-                        <td>Kamalnath Singh</td>
-                        <td>CBC</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Rehmat Fatima</td>
-                        <td>Activated Protein C Resistance (APCR)</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000654</td>
-                        <td>Syed Al-Hameed</td>
-                        <td>Acute Hepatitis Panel</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Rehmat Fatima</td>
-                        <td>Acid Fast Bacilli (AFB) Smear</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Hakeem Usmani</td>
-                        <td>17-Ketosteroids</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                    </tbody>
-                  </table> */}
                   </div>
                 </div>
               </div>

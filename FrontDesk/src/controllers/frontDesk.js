@@ -19,7 +19,12 @@ const {
   addFrontDesk,
   updateFrontDesk,
   getCashHandoverDetails,
+  getCashForDashBoard,
+  getFrontDeskDataForEmployee,
   updateCashHandoverDetails,
+  getFrontDeskDataForWeek,
+  getFrontDeskDashboardForSubdept,
+  getFrontDeskDashboardDoctor,
 } = frontModels;
 
 const {
@@ -156,6 +161,52 @@ export default () => {
   api.get(
     "/getCashHandoverDetails",
     getCashHandoverDetails,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get("/getCashForDashBoard", getCashForDashBoard, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.get(
+    "/getFrontDeskDataForEmployee",
+    getFrontDeskDataForEmployee,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/getFrontDeskDataForWeek",
+    getFrontDeskDataForWeek,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/getFrontDeskDashboardForSubdept",
+    getFrontDeskDashboardForSubdept,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/getFrontDeskDashboardDoctor",
+    getFrontDeskDashboardDoctor,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
