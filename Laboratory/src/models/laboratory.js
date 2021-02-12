@@ -292,8 +292,6 @@ export default {
         ),
       ];
 
-      console.log("labServices", labServices);
-
       const IncludeValues = [
         "ordered_services_id",
         "ordered_package_id",
@@ -1111,6 +1109,152 @@ export default {
       });
     }
   },
+  getOrderByTestCategory: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.from_date != null) {
+        _stringData +=
+          "  date(LO.ordered_date) between date('" +
+          input.from_date +
+          "') AND date('" +
+          input.to_date +
+          "')";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `  SELECT L.category_id,T.category_name,L.description FROM hims_f_lab_order as LO
+          inner join hims_d_investigation_test L on L.hims_d_investigation_test_id=LO.test_id
+          inner join hims_d_test_category T on T.hims_d_test_category_id=L.category_id
+          where ${_stringData}`,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          const arrangedData = _.chain(result)
+            .groupBy((g) => g.category_id)
+            .map((details, key) => {
+              const { category_name } = _.head(details);
+
+              return {
+                category_name: category_name,
+                detailsOf: details,
+              };
+            })
+            .value();
+          req.records = arrangedData;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getSendInAndSendOutTestDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.from_date != null) {
+        _stringData +=
+          "  date(ordered_date) between date('" +
+          input.from_date +
+          "') AND date('" +
+          input.to_date +
+          "')";
+      }
+
+      _mysql
+        .executeQuery({
+          query: ` SELECT ordered_date,send_out_test,hims_f_lab_order_id FROM hims_f_lab_order where ${_stringData} ;`,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          const arrangedData = _.chain(result)
+            .groupBy((g) => moment(g.ordered_date).format("YYYY-MM-DD"))
+            .map((details, key) => {
+              const { ordered_date } = _.head(details);
+
+              return {
+                date: ordered_date,
+                detailsOf: _.chain(details)
+                  .groupBy((it) => it.send_out_test)
+                  .map((detail, index) => {
+                    const { send_out_test, ordered_date } = _.head(detail);
+                    return {
+                      send_out_test: send_out_test,
+                      detail: detail,
+                      date: ordered_date,
+                    };
+                  })
+                  .value(),
+              };
+            })
+            .value();
+          req.records = arrangedData;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  top10LabOrders: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let _stringData = "";
+      const input = req.query;
+
+      if (input.from_date != null) {
+        _stringData +=
+          "  date(ordered_date) between date('" +
+          input.from_date +
+          "') AND date('" +
+          input.to_date +
+          "')";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `SELECT LO.service_id,S.service_name, count(LO.service_id) as service_count FROM hims_f_lab_order as LO
+          inner join hims_d_services S on S.hims_d_services_id=LO.service_id
+          where ${_stringData} group by LO.service_id order by service_count DESC limit 0,10;`,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 
   getTestAnalytes: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -1545,7 +1689,6 @@ export default {
     const utilities = new algaehUtilities();
     try {
       let inputParam = req.body;
-      console.log(req.body, "body");
 
       let status_C = new LINQ(inputParam)
         .Where((w) => w.status == "C")

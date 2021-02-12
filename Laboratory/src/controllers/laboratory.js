@@ -20,7 +20,10 @@ const {
   getInvestigationResult,
   generateBarCode,
   updateLabOrderServiceForDoc,
-  reloadAnalytesMaster
+  reloadAnalytesMaster,
+  getOrderByTestCategory,
+  getSendInAndSendOutTestDetails,
+  top10LabOrders,
 } = labModels;
 
 export default () => {
@@ -42,6 +45,32 @@ export default () => {
       });
     }
   );
+  api.get(
+    "/getOrderByTestCategory",
+    getOrderByTestCategory,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/getSendInAndSendOutTestDetails",
+    getSendInAndSendOutTestDetails,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get("/top10LabOrders", top10LabOrders, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.put(
     "/updateLabOrderServiceForDoc",
     updateLabOrderServiceForDoc,

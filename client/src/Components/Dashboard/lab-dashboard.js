@@ -1,252 +1,485 @@
-import React, { Component } from "react";
-import "./dashboard.scss";
+import React, { useState, useContext } from "react";
 import { Bar, HorizontalBar } from "react-chartjs-2";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { AlgaehActions } from "../../actions/algaehActions";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
+// import { swalMessage } from "../../../../../utils/algaehApiCall";
+import "./dashboard.scss";
+import moment from "moment";
 
-import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+// import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
+
 import {
-  AlgaehDataGrid,
   AlgaehDateHandler,
-  // AlgaehMessagePop,
+  AlgaehDataGrid,
+  AlgaehLabel,
+  AlgaehMessagePop,
+  Spin,
+  MainContext,
+  DatePicker,
 } from "algaeh-react-components";
+// import { algaehApiCall } from "../../utils/algaehApiCall";
 
-const patientIncomingHistory = {
-  datasets: [
-    {
-      type: "line",
-      label: "Patient Count",
-      data: [12, 8, 17, 21, 20, 28],
-      fill: false,
-      backgroundColor: "#71B37C",
-      borderColor: "#71B37C",
-      hoverBackgroundColor: "#71B37C",
-      hoverBorderColor: "#71B37C",
-      yAxisID: "y-axis-1",
+import { useForm, Controller } from "react-hook-form";
+import Enumerable from "linq";
+import { newAlgaehApi } from "../../hooks";
+import { useQuery } from "react-query";
+// import _ from "lodash";
+// import { number } from "algaeh-react-components/node_modules/@types/prop-types";
+import Options from "../../Options.json";
+export default function Dashboard() {
+  const { userToken } = useContext(MainContext);
+  console.log("userToken", userToken);
+
+  const [sendInAndOutData, setSendInAndSendOutData] = useState({
+    send_in: [],
+    send_out: [],
+  });
+  const [axisForSendInAndSendOut, setAxisForSendInAndSendOut] = useState([]);
+
+  const {
+    control,
+    errors,
+    // register,
+    // reset,
+    // handleSubmit,
+    // // setValue,
+    getValues,
+    // watch,
+  } = useForm({
+    defaultValues: {
+      today_date_orderStatus: new Date(),
+      today_date_Top_10: new Date(),
+      order_category: moment(new Date()),
+      sendIn_sendOut: moment(new Date()),
     },
-  ],
-};
+  });
 
-const patientIncomingHistoryOptions = {
-  responsive: true,
-  legend: {
-    position: "bottom",
-    labels: {
-      boxWidth: 10,
-    },
-  },
-  tooltips: {
-    mode: "label",
-  },
-  elements: {
-    line: {
-      fill: false,
-    },
-  },
-  scales: {
-    xAxes: [
-      {
-        display: true,
-        gridLines: {
-          display: false,
-        },
-        labels: [
-          "Day 1",
-          " Day 2",
-          "Day 3",
-          "Day 4",
-          "Day 5",
-          "Day 6",
-          "Day 7",
-        ],
-      },
-    ],
-    yAxes: [
-      {
-        type: "linear",
-        display: true,
-        position: "left",
-        id: "y-axis-1",
-        gridLines: {
-          display: false,
-        },
-        labels: {
-          show: true,
-        },
-      },
-    ],
-  },
-};
+  async function getSendInAndSendOutTestDetails(key) {
+    let objData = getValues().sendIn_sendOut;
+    var startOfWeek = objData.startOf("week").toDate();
+    var endOfWeek = objData.endOf("week").toDate();
 
-const patientIncomingcategory = {
-  datasets: [
-    {
-      type: "bar",
-      label: "New Patient",
-      data: [12, 8, 17, 21, 20, 28],
-      fill: false,
-      backgroundColor: "#71B37C",
-      borderColor: "#71B37C",
-      hoverBackgroundColor: "#71B37C",
-      hoverBorderColor: "#71B37C",
-      yAxisID: "y-axis-1",
-    },
-    {
-      type: "bar",
-      label: "Follow Up",
-      data: [12, 8, 17, 21, 20, 28],
-      fill: false,
-      backgroundColor: "#EC932F",
-      borderColor: "#EC932F",
-      hoverBackgroundColor: "#EC932F",
-      hoverBorderColor: "#EC932F",
-      yAxisID: "y-axis-1",
-    },
-  ],
-};
-
-const patientIncomingcategoryOptions = {
-  responsive: true,
-  legend: {
-    position: "bottom",
-    labels: {
-      boxWidth: 10,
-    },
-  },
-  tooltips: {
-    mode: "label",
-  },
-  elements: {
-    line: {
-      fill: false,
-    },
-  },
-  scales: {
-    xAxes: [
-      {
-        stacked: true,
-        display: true,
-        gridLines: {
-          display: false,
-        },
-        labels: [
-          "Day 1",
-          " Day 2",
-          "Day 3",
-          "Day 4",
-          "Day 5",
-          "Day 6",
-          "Day 7",
-        ],
-      },
-    ],
-    yAxes: [
-      {
-        stacked: true,
-        type: "linear",
-        display: true,
-        position: "left",
-        id: "y-axis-1",
-        gridLines: {
-          display: false,
-        },
-        labels: {
-          show: true,
-        },
-      },
-    ],
-  },
-};
-
-const RevenuebyDepartment = {
-  labels: [
-    "Surgery",
-    "Gynaecology",
-    "Dermatology",
-    "Neurology",
-    "Oncology",
-    "Orthopedics",
-    "Cardiology",
-  ],
-  datasets: [
-    {
-      data: [95, 80, 73, 64, 56, 50, 48],
-      label: "Revenue",
-      backgroundColor: "rgba(255,99,132,0.2)",
-      borderColor: "rgba(255,99,132,1)",
-      borderWidth: 1,
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)",
-    },
-  ],
-};
-
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sidBarOpen: true,
-      showDetails: "d-none",
-      sample_collection: [],
-    };
-    // DashBoardEvents().getSampleCollectionDetails(this);
-  }
-
-  showDetailHandler(event) {
-    this.setState({
-      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block",
-    });
-  }
-
-  showDetailHandler(event) {
-    this.setState({
-      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block",
-    });
-  }
-
-  loadListofData() {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getMyDay",
-      data: {
-        fromDate: new Date(),
-        toDate: new Date(),
-      },
+    const result = await newAlgaehApi({
+      uri: "/laboratory/getSendInAndSendOutTestDetails",
       method: "GET",
-      cancelRequestId: "getMyDay",
-      onSuccess: (response) => {
-        console.log("getMyday");
-        if (response.data.success) {
-          if (Array.isArray(response.data.records)) {
-            this.setState({
-              today_list: response.data.records,
-            });
-          } else {
-            this.setState({
-              today_list: [],
-            });
-          }
-        }
+      module: "laboratory",
+      data: {
+        from_date: moment(startOfWeek).format("YYYY-MM-DD"),
+        to_date: moment(endOfWeek).format("YYYY-MM-DD"),
       },
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
+    });
+    return result?.data?.records;
+  }
+  const {
+    // data: send,
+    isLoading: sendInOutLoad,
+    refetch: refetchForSendInAndSendOut,
+  } = useQuery(
+    "getSendInAndSendOutTestDetails",
+    getSendInAndSendOutTestDetails,
+    {
+      onSuccess: (data) => {
+        //
+
+        let currentDate = getValues().sendIn_sendOut;
+        let weekStart = currentDate.startOf("week").toDate();
+
+        let days = [];
+        let send_in = [];
+        let send_out = [];
+        for (var i = 0; i <= 6; i++) {
+          let weeDay = moment(weekStart).add(i, "days");
+          const patients = data.find(
+            (f) =>
+              moment(f.date).format("YYYYMMDD") ===
+              weeDay.clone().format("YYYYMMDD")
+          );
+          if (patients) {
+            const hasVisitPatient = patients.detailsOf.find(
+              (f) => f.send_out_test === "Y"
+            );
+            if (hasVisitPatient) {
+              send_out.push(hasVisitPatient.detail.length);
+            } else {
+              send_out.push(0);
+            }
+            const hasFollowPatient = patients.detailsOf.find(
+              (f) => f.send_out_test === "N"
+            );
+            if (hasFollowPatient) {
+              send_in.push(hasFollowPatient.detail.length);
+            } else {
+              send_in.push(0);
+            }
+          } else {
+            send_out.push(0);
+            send_in.push(0);
+          }
+          days.push(weeDay.clone().format("MMMM Do"));
+        }
+        setSendInAndSendOutData((prev) => {
+          return { ...prev, send_in: send_in, send_out: send_out };
+        });
+        setAxisForSendInAndSendOut(days);
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
           type: "error",
         });
       },
+    }
+  );
+  async function top10LabOrders(key) {
+    let objData = getValues().today_date_Top_10;
+
+    const result = await newAlgaehApi({
+      uri: "/laboratory/top10LabOrders",
+      method: "GET",
+      module: "laboratory",
+      data: {
+        from_date: moment(objData).format("YYYY-MM-DD"),
+        to_date: moment(objData).format("YYYY-MM-DD"),
+      },
     });
+    return result?.data?.records;
+  }
+  const {
+    data: orderByTestCatData,
+    isLoading: loadingOrderCategory,
+    refetch: refetchForPatCount,
+  } = useQuery("getOrderByTestCategory", getOrderByTestCategory, {
+    onError: (err) => {
+      AlgaehMessagePop({
+        display: err?.message,
+        type: "error",
+      });
+    },
+  });
+  const { data: labOrderServicesData } = useQuery(
+    "getLabOrderedServices",
+    getLabOrderedServices,
+    {
+      // onSuccess: (data) => {
+      //
+      // },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+      },
+    }
+  );
+  const {
+    data: labOrderServicesDataForReportView,
+    refetch: refetchForOrderStatus,
+  } = useQuery(
+    "getLabOrderServicesDataForReportView",
+    getLabOrderServicesDataForReportView,
+    {
+      // onSuccess: (data) => {
+      //
+      // },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+      },
+    }
+  );
+  const { data: top10Orders, refetch: top10OrderRefetch } = useQuery(
+    "top10LabOrders",
+    top10LabOrders,
+    {
+      onSuccess: (data) => {},
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+      },
+    }
+  );
+
+  async function getOrderByTestCategory(key) {
+    let objData = getValues().order_category;
+    var startOfWeek = objData.startOf("week").toDate();
+    var endOfWeek = objData.endOf("week").toDate();
+
+    const result = await newAlgaehApi({
+      uri: "/laboratory/getOrderByTestCategory",
+      method: "GET",
+      module: "laboratory",
+      data: {
+        from_date: moment(startOfWeek).format("YYYY-MM-DD"),
+        to_date: moment(endOfWeek).format("YYYY-MM-DD"),
+      },
+    });
+    return result?.data?.records;
+  }
+  async function getLabOrderedServices(key) {
+    const result = await newAlgaehApi({
+      uri: "/laboratory/getLabOrderedServices",
+      module: "laboratory",
+      method: "GET",
+    });
+    return result?.data?.records;
   }
 
-  SideMenuBarOpen(sidOpen) {
-    this.setState({
-      sidBarOpen: sidOpen,
+  async function getLabOrderServicesDataForReportView(key) {
+    const date = getValues().today_date_orderStatus;
+    const result = await newAlgaehApi({
+      uri: "/laboratory/getLabOrderedServices",
+      module: "laboratory",
+      method: "GET",
+      data: {
+        from_date: moment(date).format("YYYY-MM-DD"),
+        to_date: moment(date).format("YYYY-MM-DD"),
+      },
     });
+    return result?.data?.records;
   }
+  const OrderBYTestCategory = {
+    labels: orderByTestCatData?.map((item) => {
+      return item.category_name;
+    }),
+    datasets: [
+      {
+        data: orderByTestCatData?.map((item) => {
+          return item.detailsOf.length;
+        }),
+        label: "Total Booking",
 
-  render() {
-    return (
+        backgroundColor: "rgba(255,99,132,0.2)",
+        borderColor: "rgba(255,99,132,1)",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgba(255,99,132,0.4)",
+        hoverBorderColor: "rgba(255,99,132,1)",
+      },
+    ],
+  };
+  const RevenuebyDoctor = {
+    labels: top10Orders?.map((item) => {
+      return item.service_name;
+    }),
+    datasets: [
+      {
+        data: top10Orders?.map((item) => {
+          return item.service_count;
+        }),
+        label: "Total Booking",
+
+        backgroundColor: "rgba(255,99,132,0.2)",
+        borderColor: "rgba(255,99,132,1)",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgba(255,99,132,0.4)",
+        hoverBorderColor: "rgba(255,99,132,1)",
+      },
+    ],
+  };
+  // const patientIncomingHistory = {
+  //   datasets: [
+  //     {
+  //       type: "line",
+  //       label: "Patient Count",
+  //       data: countOfIncoming,
+  //       fill: false,
+  //       backgroundColor: "#71B37C",
+  //       borderColor: "#71B37C",
+  //       hoverBackgroundColor: "#71B37C",
+  //       hoverBorderColor: "#71B37C",
+  //       yAxisID: "y-axis-1",
+  //     },
+  //   ],
+  // };
+
+  // const patientIncomingHistoryOptions = {
+  //   responsive: true,
+  //   legend: {
+  //     position: "bottom",
+  //     labels: {
+  //       boxWidth: 10,
+  //     },
+  //   },
+  //   tooltips: {
+  //     mode: "label",
+  //   },
+  //   elements: {
+  //     line: {
+  //       fill: false,
+  //     },
+  //   },
+  //   scales: {
+  //     xAxes: [
+  //       {
+  //         display: true,
+  //         gridLines: {
+  //           display: false,
+  //         },
+  //         labels: xAxisOfIncoming,
+  //       },
+  //     ],
+  //     yAxes: [
+  //       {
+  //         type: "linear",
+  //         display: true,
+  //         position: "left",
+  //         id: "y-axis-1",
+  //         gridLines: {
+  //           display: false,
+  //         },
+  //         labels: {
+  //           show: true,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // };
+
+  // const patientIncomingcategory = {
+  //   datasets: [
+  //     {
+  //       type: "bar",
+  //       label: "New Patient",
+  //       data: followupNewVisit.newVisit,
+  //       fill: false,
+  //       backgroundColor: "#71B37C",
+  //       borderColor: "#71B37C",
+  //       hoverBackgroundColor: "#71B37C",
+  //       hoverBorderColor: "#71B37C",
+  //       yAxisID: "y-axis-1",
+  //     },
+  //     {
+  //       type: "bar",
+  //       label: "Follow Up",
+  //       data: followupNewVisit.followUp,
+  //       fill: false,
+  //       backgroundColor: "#EC932F",
+  //       borderColor: "#EC932F",
+  //       hoverBackgroundColor: "#EC932F",
+  //       hoverBorderColor: "#EC932F",
+  //       yAxisID: "y-axis-1",
+  //     },
+  //   ],
+  // };
+
+  // const patientIncomingcategoryOptions = {
+  //   responsive: true,
+  //   legend: {
+  //     position: "bottom",
+  //     labels: {
+  //       boxWidth: 10,
+  //     },
+  //   },
+  //   tooltips: {
+  //     mode: "label",
+  //   },
+  //   elements: {
+  //     line: {
+  //       fill: false,
+  //     },
+  //   },
+  //   scales: {
+  //     xAxes: [
+  //       {
+  //         stacked: true,
+  //         display: true,
+  //         gridLines: {
+  //           display: false,
+  //         },
+  //         labels: axisOfFollowUpAndIncome,
+  //       },
+  //     ],
+  //     yAxes: [
+  //       {
+  //         stacked: true,
+  //         type: "linear",
+  //         display: true,
+  //         position: "left",
+  //         id: "y-axis-1",
+  //         gridLines: {
+  //           display: false,
+  //         },
+  //         labels: {
+  //           show: true,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // };
+  const AppoWalkInDataOptions = {
+    responsive: true,
+    legend: {
+      position: "bottom",
+      labels: {
+        boxWidth: 10,
+      },
+    },
+    tooltips: {
+      mode: "label",
+    },
+    elements: {
+      line: {
+        fill: false,
+      },
+    },
+    scales: {
+      xAxes: [
+        {
+          stacked: true,
+          display: true,
+          gridLines: {
+            display: false,
+          },
+          labels: axisForSendInAndSendOut,
+        },
+      ],
+      yAxes: [
+        {
+          stacked: true,
+          type: "linear",
+          display: true,
+          position: "left",
+          id: "y-axis-1",
+          gridLines: {
+            display: false,
+          },
+          labels: {
+            show: true,
+          },
+        },
+      ],
+    },
+  };
+  const AppoWalkInData = {
+    datasets: [
+      {
+        type: "bar",
+        label: "Send-In",
+        data: sendInAndOutData.send_in,
+        fill: false,
+        backgroundColor: "#71B37C",
+        borderColor: "#71B37C",
+        // hoverBackgroundColor: "#71B37C",
+        // hoverBorderColor: "#71B37C",
+        yAxisID: "y-axis-1",
+      },
+      {
+        type: "bar",
+        label: "Send Out",
+        data: sendInAndOutData.send_out,
+        fill: false,
+        backgroundColor: "#34b8bc",
+        borderColor: "#34b8bc",
+        // hoverBackgroundColor: "#34b8bc",
+        // hoverBorderColor: "#34b8bc",
+        yAxisID: "y-axis-1",
+      },
+    ],
+  };
+  // render() {
+  return (
+    <>
       <div className="dashboard lab-dash">
         <div className="row card-deck">
           <div className="card animated fadeInUp faster">
@@ -260,7 +493,7 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Ordered</p>
-                    0.00
+                    {labOrderServicesData?.length}
                   </div>
                 </div>
               </div>
@@ -277,7 +510,11 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Collected</p>
-                    0.00
+                    {
+                      labOrderServicesData?.filter((f) => {
+                        return f.status === "CL";
+                      }).length
+                    }
                   </div>
                 </div>
               </div>
@@ -294,7 +531,11 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Confirmed</p>
-                    0.00
+                    {
+                      labOrderServicesData?.filter((f) => {
+                        return f.status === "CF";
+                      }).length
+                    }
                   </div>
                 </div>
               </div>
@@ -311,7 +552,11 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Rejected</p>
-                    0.00
+                    {
+                      labOrderServicesData?.filter((f) => {
+                        return f.status === "CN";
+                      }).length
+                    }
                   </div>
                 </div>
               </div>
@@ -328,241 +573,386 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Validated</p>
-                    0.00
+                    {
+                      labOrderServicesData?.filter((f) => {
+                        return f.status === "V";
+                      }).length
+                    }
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-12 col-md-12">
-            <div className="row">
-              <div className="col-4">
-                <div className="card animated fadeInUp faster">
-                  <h6>
-                    Order by Test Category{" "}
-                    <span className="portletTopAction">
-                      <AlgaehDateHandler
-                        type={"week"}
-                        size={"small"}
-                        label={
-                          {
-                            // forceLabel: "View for Last ",
-                          }
-                        }
-                        textBox={{
-                          name: "selectRange",
-                          value: this.state.dateRange,
-                        }}
-                        // maxDate={new date()}
-                        events={{
-                          onChange: (dateSelected) => {},
-                        }}
-                      />
-                    </span>
-                  </h6>
 
-                  <div className="dashboardChartsCntr">
+          <div className="row">
+            <div className="col-6">
+              <div className="card animated fadeInUp faster">
+                <h6>
+                  Order by Test Category{" "}
+                  <span className="portletTopAction">
+                    <Controller
+                      control={control}
+                      name="order_category"
+                      rules={{ required: "Please Select " }}
+                      render={({ onChange, value }) => (
+                        <div className="col mandatory " tabIndex="5">
+                          <label
+                            htmlFor="order_category"
+                            className="style_Label "
+                          />
+
+                          <DatePicker
+                            name="order_category"
+                            value={value}
+                            onChange={(date) => {
+                              if (date) {
+                                onChange(date);
+                                refetchForPatCount();
+                              } else {
+                                onChange(undefined);
+                              }
+                            }}
+                            onClear={() => {
+                              onChange(undefined);
+                            }}
+                            picker="week"
+                            size={"small"}
+                            maxDate={new Date()}
+                          />
+                        </div>
+                      )}
+                    />
+                  </span>
+                </h6>
+
+                <div className="dashboardChartsCntr">
+                  <Spin spinning={loadingOrderCategory}>
+                    <HorizontalBar data={OrderBYTestCategory} />
+                  </Spin>
+                </div>
+              </div>
+            </div>
+            <div className="col-6">
+              <div className="card animated fadeInUp faster">
+                <h6>
+                  Send-In vs Send Out
+                  <span className="portletTopAction">
+                    <Controller
+                      control={control}
+                      name="sendIn_sendOut"
+                      rules={{ required: "Please Select DOB" }}
+                      render={({ onChange, value }) => (
+                        <div className="col mandatory " tabIndex="5">
+                          <label
+                            htmlFor="sendIn_sendOut"
+                            className="style_Label "
+                          />
+
+                          <DatePicker
+                            name="sendIn_sendOut"
+                            value={value}
+                            onChange={(date) => {
+                              if (date) {
+                                onChange(date);
+                                refetchForSendInAndSendOut();
+                              } else {
+                                onChange(undefined);
+                              }
+                            }}
+                            onClear={() => {
+                              onChange(undefined);
+                            }}
+                            picker="week"
+                            size={"small"}
+                            maxDate={new Date()}
+                          />
+                        </div>
+                      )}
+                    />
+                  </span>
+                </h6>
+                <div className="dashboardChartsCntr">
+                  <Spin spinning={sendInOutLoad}>
                     <Bar
-                      data={patientIncomingHistory}
-                      options={patientIncomingHistoryOptions}
+                      data={AppoWalkInData}
+                      options={AppoWalkInDataOptions}
                     />
-                  </div>
+                  </Spin>
                 </div>
-              </div>
-              <div className="col-4">
                 <div className="card animated fadeInUp faster">
                   <h6>
-                    Send-In vs Send Out
+                    Today Top 10 Orders
                     <span className="portletTopAction">
-                      <AlgaehDateHandler
-                        type={"week"}
-                        size={"small"}
-                        label={
-                          {
-                            // forceLabel: "View for Last ",
-                          }
-                        }
-                        textBox={{
-                          name: "selectRange",
-                          value: this.state.dateRange,
-                        }}
-                        // maxDate={new date()}
-                        events={{
-                          onChange: (dateSelected) => {
-                            // const months = moment(dateSelected[1]).diff(
-                            //   dateSelected[0],
-                            //   "months"
-                            // );
-                            // if (months <= 11) {
-                            // this.setState(
-                            //   { dateRange: dateSelected },
-                            //   () => {
-                            //     dashEvents.getDocumentExpiryCurrentMonth(this);
-                            //   }
-                            // );
-                          },
-                        }}
-                        // others={{
-                        //   ...format,
-                        // }}
+                      <Controller
+                        control={control}
+                        name="today_date_Top_10"
+                        rules={{ required: "Please Select DOB" }}
+                        render={({ onChange, value }) => (
+                          <AlgaehDateHandler
+                            size={"small"}
+                            div={{
+                              className: "col mandatory",
+                              tabIndex: "5",
+                            }}
+                            error={errors}
+                            label={{}}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "today_date_Top_10",
+                              value,
+                              others: {
+                                tabIndex: "4",
+                              },
+                            }}
+                            // others={{ disabled }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: (mdate) => {
+                                if (mdate) {
+                                  onChange(mdate._d);
+                                  top10OrderRefetch();
+                                } else {
+                                  onChange(undefined);
+                                }
+                              },
+                              onClear: () => {
+                                onChange(undefined);
+                              },
+                            }}
+                          />
+                        )}
                       />
                     </span>
                   </h6>
-
                   <div className="dashboardChartsCntr">
-                    <Bar
-                      data={patientIncomingcategory}
-                      options={patientIncomingcategoryOptions}
-                    />
+                    <Spin spinning={false}>
+                      <HorizontalBar data={RevenuebyDoctor} />
+                    </Spin>
                   </div>
                 </div>
               </div>
-              <div className="col-4">
-                <div className="card animated fadeInUp faster">
-                  <h6>Today Top 10 Orders</h6>
-                  <div className="dashboardChartsCntr">
-                    <HorizontalBar data={RevenuebyDepartment} />
-                  </div>
-                </div>
-              </div>
+            </div>
+          </div>
 
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>
-                    Today's Order Status{" "}
-                    <span className="portletTopAction">
+          <div className="col-12">
+            <div className="card animated fadeInUp faster">
+              <h6>
+                Today's Order Status{" "}
+                <span className="portletTopAction">
+                  <Controller
+                    control={control}
+                    name="today_date_orderStatus"
+                    rules={{ required: "Please Select" }}
+                    render={({ onChange, value }) => (
                       <AlgaehDateHandler
-                        type={"week"}
                         size={"small"}
-                        label={
-                          {
-                            // forceLabel: "View for Last ",
-                          }
-                        }
-                        textBox={{
-                          name: "selectRange",
-                          value: this.state.dateRange,
+                        div={{
+                          className: "col mandatory",
+                          tabIndex: "5",
                         }}
-                        // maxDate={new date()}
+                        error={errors}
+                        label={{}}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "today_date_orderStatus",
+                          value,
+                          others: {
+                            tabIndex: "4",
+                          },
+                        }}
+                        // others={{ disabled }}
+                        maxDate={new Date()}
                         events={{
-                          onChange: (dateSelected) => {},
+                          onChange: (mdate) => {
+                            if (mdate) {
+                              onChange(mdate._d);
+                              refetchForOrderStatus();
+                            } else {
+                              onChange(undefined);
+                            }
+                          },
+                          onClear: () => {
+                            onChange(undefined);
+                          },
                         }}
                       />
-                    </span>
-                  </h6>
-                  <div className="col-12" id="patientIncomingcategoryCntr">
-                    <AlgaehDataGrid
-                      className="dashboardGrd"
-                      columns={[
-                        {
-                          fieldName: "row_num",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "Sl No." }} />
-                          ),
-                          others: {
-                            width: 80,
-                          },
-                        },
-                        {
-                          fieldName: "patient_code",
-                          label: <AlgaehLabel label={{ fieldName: "Code" }} />,
-                          others: {
-                            width: 80,
-                          },
-                        },
-                        {
-                          fieldName: "patient_code",
-                          label: <AlgaehLabel label={{ fieldName: "Name" }} />,
-                          // others: {
-                          //   minWidth: 150,
-                          // },
-                        },
-                        {
-                          fieldName: "full_name",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "Gender" }} />
-                          ),
-                          others: {
-                            width: 80,
-                          },
-                        },
-                        {
-                          fieldName: "identity_document_name",
-                          label: <AlgaehLabel label={{ fieldName: "Age" }} />,
-                          others: {
-                            width: 80,
-                          },
-                        },
-                        {
-                          fieldName: "valid_upto",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "Appo. Type" }} />
-                          ),
-                          others: {
-                            width: 110,
-                          },
-                        },
-                        {
-                          fieldName: "valid_upto",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "Visit Type" }} />
-                          ),
-                          others: {
-                            width: 80,
-                          },
-                        },
-                      ]}
-                      // height="40vh"
-                      rowUnique="identity_documents_id"
-                      data=""
-                    />
+                    )}
+                  />
+                </span>
+              </h6>
+              <div className="portlet-body ResultViewForDocGrid">
+                <AlgaehDataGrid
+                  id="samplecollection_grid"
+                  columns={[
+                    {
+                      fieldName: "ordered_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        if (row.ordered_date != null) {
+                          return moment(row.ordered_date).format(
+                            Options.datetimeFormat
+                          );
+                        } else {
+                          return "--";
+                        }
+                        // <span>
+                        //   {this.changeDateFormat(row.ordered_date)}
+                        // </span>
+                      },
+                      disabled: true,
 
-                    {/*  {this.state.today_list.map((patient_data, index) => (
-                          <tr key={index}>
-                            <td>{patient_data.patient_code}</td>
-                            <td>{patient_data.full_name}</td>
-                            <td>{patient_data.gender}</td>
-                            <td>{patient_data.age}</td>
-                            <td>
-                              {patient_data.appointment_patient === "N"
-                                ? "Walk In"
-                                : "Appoinment"}
-                            </td>
-                            <td>
-                              {patient_data.new_visit_patient === "Y"
-                                ? "New Visit"
-                                : "Follow Up"}
-                            </td>
-                          </tr>
-                        ))} */}
-                  </div>
-                </div>
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "test_type",
+                      label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
+                      displayTemplate: (row) => {
+                        return row.test_type === "S" ? (
+                          <span className="badge badge-danger">Stat</span>
+                        ) : (
+                          <span className="badge badge-secondary">Routine</span>
+                        );
+                      },
+                      disabled: true,
+                      others: {
+                        maxWidth: 90,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "sample_status",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Specimen Status" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return row.sample_status === "N" ? (
+                          <span className="badge badge-light">Not Done</span>
+                        ) : row.sample_status === "A" ? (
+                          <span className="badge badge-success">Accepted</span>
+                        ) : row.sample_status === "R" ? (
+                          <span className="badge badge-danger">Rejected</span>
+                        ) : null;
+                      },
+                      disabled: true,
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "lab_id_number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
+                      ),
+                      disabled: true,
+                      others: {
+                        maxWidth: 130,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "patient_code",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                      ),
+                      disabled: false,
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                      ),
+                      disabled: true,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "left" },
+                      },
+                    },
+                    {
+                      fieldName: "service_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Test Name" }} />
+                      ),
+
+                      disabled: true,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "status",
+                      label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                      displayTemplate: (row) => {
+                        return row.status === "CL" ? (
+                          <span className="badge badge-secondary">
+                            Collected
+                          </span>
+                        ) : row.status === "CN" ? (
+                          <span className="badge badge-danger">Cancelled</span>
+                        ) : row.status === "CF" ? (
+                          <span className="badge badge-primary">Confirmed</span>
+                        ) : (
+                          <span className="badge badge-success">Validated</span>
+                        );
+                      },
+                      disabled: true,
+                      others: {
+                        maxWidth: 130,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    // {
+                    //   fieldName: "critical_status",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "Critical Result" }}
+                    //     />
+                    //   ),
+                    //   displayTemplate: (row) => {
+                    //     return row.critical_status === "N" ? (
+                    //       <span className="badge badge-primary">No</span>
+                    //     ) : (
+                    //       <span className="badge badge-danger">Yes</span>
+                    //     );
+                    //   },
+                    //   disabled: true,
+                    //   others: {
+                    //     maxWidth: 130,
+                    //     resizable: false,
+                    //     style: { textAlign: "center" },
+                    //   },
+                    // },
+                  ]}
+                  keyId="patient_code"
+                  data={Enumerable.from(labOrderServicesDataForReportView)
+                    .where((w) => w.sample_status === "A")
+                    .toArray()}
+                  filterable={true}
+                  pagination={true}
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
-    );
-  }
-}
-
-function mapStateToProps(state) {
-  return {
-    hospitaldetails: state.hospitaldetails,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getHospitalDetails: AlgaehActions,
-    },
-    dispatch
+    </>
   );
 }
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Dashboard)
-);
