@@ -1306,28 +1306,28 @@ export default {
 
                 let strQry = "";
                 // let updateQry = "";
-
-                if (pl_account != "") {
-                  strQry += _mysql.mysqlQueryFormat(
-                    "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
-                        payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
-                    [
-                      pl_account.payment_date,
-                      pl_account.head_id,
-                      pl_account.child_id,
-                      pl_account.debit_amount,
-                      pl_account.credit_amount,
-                      pl_account.payment_type,
-                      pl_account.hospital_id,
-                      pl_account.year,
-                      pl_account.month,
-                      "Y",
-                      req.userIdentity.algaeh_d_app_user_id,
-                      "A",
-                    ]
-                  );
-                }
-
+                //Commented by noor coz voucher header id is not showing in pandl accounts this code moved down
+                // if (pl_account != "") {
+                //   strQry += _mysql.mysqlQueryFormat(
+                //     "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                //         payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
+                //     [
+                //       pl_account.payment_date,
+                //       pl_account.head_id,
+                //       pl_account.child_id,
+                //       pl_account.debit_amount,
+                //       pl_account.credit_amount,
+                //       pl_account.payment_type,
+                //       pl_account.hospital_id,
+                //       pl_account.year,
+                //       pl_account.month,
+                //       "Y",
+                //       req.userIdentity.algaeh_d_app_user_id,
+                //       "A",
+                //     ]
+                //   );
+                // }
+                //End commented by noor
                 _mysql
                   .executeQueryWithTransaction({
                     query:
@@ -1368,6 +1368,27 @@ export default {
                         printQuery: false,
                       })
                       .then((result2) => {
+                        if (pl_account != "") {
+                          strQry += _mysql.mysqlQueryFormat(
+                            "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                                payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status,voucher_header_id)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                            [
+                              pl_account.payment_date,
+                              pl_account.head_id,
+                              pl_account.child_id,
+                              pl_account.debit_amount,
+                              pl_account.credit_amount,
+                              pl_account.payment_type,
+                              pl_account.hospital_id,
+                              pl_account.year,
+                              pl_account.month,
+                              "Y",
+                              req.userIdentity.algaeh_d_app_user_id,
+                              "A",
+                              headRes.insertId,
+                            ]
+                          );
+                        }
                         _mysql
                           .executeQueryWithTransaction({
                             query:
