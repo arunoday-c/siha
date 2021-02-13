@@ -104,7 +104,7 @@ class Algaeh extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "ReportMaster",
+                    forceLabel: "Report Master",
                   }}
                 />
               ),
