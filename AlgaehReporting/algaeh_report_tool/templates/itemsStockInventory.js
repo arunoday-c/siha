@@ -81,7 +81,7 @@ const executePDF = function executePDFMethod(options) {
 
               for (let i = 0; i < columns.length; i++) {
                 innerObject[columns[i]] = _.sumBy(details, (s) =>
-                  parseFloat(s[columns[i]] ?? 0)
+                  parseFloat(s[columns[i]] ? s[columns[i]] : 0)
                 );
               }
 
@@ -89,7 +89,6 @@ const executePDF = function executePDFMethod(options) {
             })
             .value();
 
-          // console.log("<<<< results >>>>", report);
           resolve({
             columns,
             details: report,
