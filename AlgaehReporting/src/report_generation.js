@@ -310,6 +310,9 @@ hbs.registerHelper("commentBreakUp", function (comment_data) {
     return comment_data.split("<br/>");
   }
 });
+hbs.registerHelper("dynamic", (records, key) => {
+  return records[key];
+});
 
 const groupBy = (data, groupby) => {
   const groupBy = _.chain(data)
