@@ -172,7 +172,7 @@ export default function JournalVoucher() {
                   );
                 },
                 others: {
-                  width: 200,
+                  width: 250,
                 },
               });
               const costCenterId = center.cost_centers.find(
@@ -773,11 +773,11 @@ export default function JournalVoucher() {
     //   : {};
     return (
       <AlgaehFormGroup
-        type="number"
         textBox={{
           disabled: disableAmount,
           updateInternally: true,
           value: row,
+          type: "number",
           onChange: (e) => {
             records["amount"] = e.target.value === "" ? "" : e.target.value;
             const credit_data = _.filter(journerList, (f) => {
@@ -1100,7 +1100,7 @@ export default function JournalVoucher() {
                         // align: "left",
                         displayTemplate: gridTree,
                         others: {
-                          width: 300,
+                          width: 250,
                         },
                       },
                       {
@@ -1111,7 +1111,7 @@ export default function JournalVoucher() {
                         // filtered: true,
                         displayTemplate: PaymentInput,
                         others: {
-                          width: 100,
+                          width: 120,
                         },
                       },
                       {
@@ -1128,9 +1128,6 @@ export default function JournalVoucher() {
                           <AlgaehLabel label={{ forceLabel: "Narration" }} />
                         ),
                         displayTemplate: NarrationBox,
-                        others: {
-                          width: 350,
-                        },
                       },
                     ]}
                     loading={false}

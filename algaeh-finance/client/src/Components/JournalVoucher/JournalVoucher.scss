@@ -32,15 +32,38 @@
       min-height: 55vh;
       max-height: 55vh;
       overflow: auto;
+      tbody {
+        td {
+          div {
+            display: block !important;
+            .ant-tree-select {
+              text-align: left;
+              min-width: 250px !important;
+              max-width: 250px !important;
+              .ant-select-selection-item {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+                display: inline-block;
+              }
+            }
+            input[type="number"] {
+              text-align: right;
+            }
+          }
+        }
+        .cusTextArea {
+          textarea {
+            min-height: 100px;
+            min-width: 500px !important;
+          }
+        }
+      }
     }
   }
 }
-.cusTextArea {
-  textarea {
-    min-height: 100px;
-    min-width: 300px !important;
-  }
-}
+
 .textArea {
   margin-bottom: 70px;
   textarea {
