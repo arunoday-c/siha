@@ -12,7 +12,6 @@ import {
   Spin,
   MainContext,
   DatePicker,
-  AlgaehDateHandler,
 } from "algaeh-react-components";
 
 import { useForm, Controller } from "react-hook-form";
@@ -39,10 +38,15 @@ import { useQuery } from "react-query";
 // };
 
 const getFrontDeskDataForEmployee = async (key, { created_by }) => {
+  let objData = moment(new Date());
+  var startOfWeek = objData.startOf("week").toDate();
+  var endOfWeek = objData.endOf("week").toDate();
+
   const result = await newAlgaehApi({
     uri: "/frontDesk/getFrontDeskDataForEmployee",
     data: {
-      today_date: moment(new Date()).format("YYYY-MM-DD"),
+      from_date: moment(startOfWeek).format("YYYY-MM-DD"),
+      to_date: moment(endOfWeek).format("YYYY-MM-DD"),
       created_by: created_by,
     },
     method: "GET",
@@ -77,7 +81,7 @@ export default function Dashboard() {
 
   const {
     control,
-    errors,
+
     // register,
     // reset,
     // handleSubmit,
@@ -87,8 +91,8 @@ export default function Dashboard() {
   } = useForm({
     defaultValues: {
       appointment_walk: moment(new Date()),
-      booking_dept: new Date(),
-      today_date_doctor_visit: new Date(),
+      booking_dept: moment(new Date()),
+      today_date_doctor_visit: moment(new Date()),
     },
   });
   // const {
@@ -104,7 +108,7 @@ export default function Dashboard() {
   //   },
   // });
   const { data: appointmentDetails } = useQuery(
-    ["appointmentDetails", { created_by: userToken.employee_id }],
+    ["appointmentDetails", { created_by: userToken.algaeh_d_app_user_id }],
     getFrontDeskDataForEmployee,
     {
       // enabled: !!EmpMasterIOputs,
@@ -139,12 +143,16 @@ export default function Dashboard() {
   // );
   async function getFrontDeskDashboardForSubdept(key) {
     const objData = getValues().booking_dept;
+
+    var startOfWeek = objData.startOf("week").toDate();
+    var endOfWeek = objData.endOf("week").toDate();
+
     const result = await newAlgaehApi({
       uri: "/frontDesk/getFrontDeskDashboardForSubdept",
       data: {
-        today_date: moment(objData).format("YYYY-MM-DD"),
-
-        created_by: userToken.employee_id,
+        from_date: moment(startOfWeek).format("YYYY-MM-DD"),
+        to_date: moment(endOfWeek).format("YYYY-MM-DD"),
+        created_by: userToken.algaeh_d_app_user_id,
       },
       method: "GET",
       module: "frontDesk",
@@ -183,12 +191,15 @@ export default function Dashboard() {
   );
   async function getFrontDeskDashboardDoctor(key) {
     const objData = getValues().today_date_doctor_visit;
+    var startOfWeek = objData.startOf("week").toDate();
+    var endOfWeek = objData.endOf("week").toDate();
+
     const result = await newAlgaehApi({
       uri: "/frontDesk/getFrontDeskDashboardDoctor",
       data: {
-        today_date: moment(objData).format("YYYY-MM-DD"),
-
-        created_by: userToken.employee_id,
+        from_date: moment(startOfWeek).format("YYYY-MM-DD"),
+        to_date: moment(endOfWeek).format("YYYY-MM-DD"),
+        created_by: userToken.algaeh_d_app_user_id,
       },
       method: "GET",
       module: "frontDesk",
@@ -305,11 +316,16 @@ export default function Dashboard() {
   });
 
   async function getCashForDashBoard(key) {
+    // let objData = moment(new Date());
+    // var startOfWeek = objData.startOf("week").toDate();
+    // var endOfWeek = objData.endOf("week").toDate();
+
     const result = await newAlgaehApi({
       uri: "/frontDesk/getCashForDashBoard",
       data: {
-        today_date: moment(new Date()).format("YYYY-MM-DD"),
-        casher_id: userToken.employee_id,
+        from_date: moment(new Date()).format("YYYY-MM-DD"),
+        to_date: moment(new Date()).format("YYYY-MM-DD"),
+        casher_id: userToken.algaeh_d_app_user_id,
         hospital_id: userToken.hospital_id,
       },
       method: "GET",
@@ -327,7 +343,7 @@ export default function Dashboard() {
       data: {
         from_date: moment(startOfWeek).format("YYYY-MM-DD"),
         to_date: moment(endOfWeek).format("YYYY-MM-DD"),
-        created_by: userToken.employee_id,
+        created_by: userToken.algaeh_d_app_user_id,
       },
       method: "GET",
       module: "frontDesk",
@@ -415,7 +431,7 @@ export default function Dashboard() {
         data: subDeptData?.map((item) => {
           return item.detailsOf.length;
         }),
-        label: "Total Booking",
+        label: "Total Walk-In Count",
 
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
@@ -435,7 +451,7 @@ export default function Dashboard() {
         data: doctorDataForVisits?.map((item) => {
           return item.detailsOf.length;
         }),
-        label: "Total Booking",
+        label: "Total Walk-In Count",
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
         borderWidth: 1,
@@ -448,8 +464,8 @@ export default function Dashboard() {
   // render() {
   return (
     <div className="dashboard front-dash">
-      <div className="row card-deck">
-        <Spin spinning={amountPlot}>
+      <Spin spinning={amountPlot}>
+        <div className="row card-deck">
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
@@ -460,7 +476,7 @@ export default function Dashboard() {
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Today's Appointments</p>
+                    <p>WTD Appointments</p>
                     {
                       appointmentDetails?.filter((item) => {
                         return item.appointment_patient === "Y";
@@ -481,7 +497,7 @@ export default function Dashboard() {
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Today's Walk-In</p>
+                    <p>WTD Walk-In</p>
                     {
                       appointmentDetails?.filter((item) => {
                         return item.appointment_patient === "N";
@@ -497,12 +513,12 @@ export default function Dashboard() {
               <div className="row">
                 <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-hand-holding-usd" />
+                    <i className="fas fa-money-bill" />
                   </div>
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Today Received by Cash</p>
+                    <p>Today's Received by Cash</p>
 
                     {GetAmountFormart(
                       amountToPLot?.length > 0
@@ -520,12 +536,12 @@ export default function Dashboard() {
               <div className="row">
                 <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-hand-holding-usd" />
+                    <i className="fas fa-credit-card" />
                   </div>
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Today Received by Card</p>
+                    <p>Today's Received by Card</p>
                     {GetAmountFormart(
                       amountToPLot?.length > 0
                         ? amountToPLot[0].expected_card
@@ -536,8 +552,8 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </Spin>
-      </div>
+        </div>
+      </Spin>
 
       <div className="row">
         <div className="col-4">
@@ -586,45 +602,35 @@ export default function Dashboard() {
         <div className="col-4">
           <div className="card animated fadeInUp faster">
             <h6>
-              Patients Booking by Department
+              Patients Walk-In by Department
               <span className="portletTopAction">
                 <Controller
                   control={control}
                   name="booking_dept"
-                  rules={{ required: "Please Select DOB" }}
+                  rules={{ required: "Please Select " }}
                   render={({ onChange, value }) => (
-                    <AlgaehDateHandler
-                      size={"small"}
-                      div={{
-                        className: "col mandatory",
-                        tabIndex: "5",
-                      }}
-                      error={errors}
-                      label={{}}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "booking_dept",
-                        value,
-                        others: {
-                          tabIndex: "4",
-                        },
-                      }}
-                      // others={{ disabled }}
-                      maxDate={new Date()}
-                      events={{
-                        onChange: (mdate) => {
-                          if (mdate) {
-                            onChange(mdate._d);
+                    <div className="col mandatory " tabIndex="5">
+                      <label htmlFor="income_range" className="style_Label " />
+
+                      <DatePicker
+                        name="booking_dept"
+                        value={value}
+                        onChange={(date) => {
+                          if (date) {
+                            onChange(date);
                             refetchForBookingByDept();
                           } else {
                             onChange(undefined);
                           }
-                        },
-                        onClear: () => {
+                        }}
+                        onClear={() => {
                           onChange(undefined);
-                        },
-                      }}
-                    />
+                        }}
+                        picker="week"
+                        size={"small"}
+                        maxDate={new Date()}
+                      />
+                    </div>
                   )}
                 />
               </span>
@@ -642,40 +648,30 @@ export default function Dashboard() {
                 <Controller
                   control={control}
                   name="today_date_doctor_visit"
-                  rules={{ required: "Please Select DOB" }}
+                  rules={{ required: "Please Select " }}
                   render={({ onChange, value }) => (
-                    <AlgaehDateHandler
-                      size={"small"}
-                      div={{
-                        className: "col mandatory",
-                        tabIndex: "5",
-                      }}
-                      error={errors}
-                      label={{}}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "today_date_doctor_visit",
-                        value,
-                        others: {
-                          tabIndex: "4",
-                        },
-                      }}
-                      // others={{ disabled }}
-                      maxDate={new Date()}
-                      events={{
-                        onChange: (mdate) => {
-                          if (mdate) {
-                            onChange(mdate._d);
+                    <div className="col mandatory " tabIndex="5">
+                      <label htmlFor="income_range" className="style_Label " />
+
+                      <DatePicker
+                        name="today_date_doctor_visit"
+                        value={value}
+                        onChange={(date) => {
+                          if (date) {
+                            onChange(date);
                             refetchForDoctor();
                           } else {
                             onChange(undefined);
                           }
-                        },
-                        onClear: () => {
+                        }}
+                        onClear={() => {
                           onChange(undefined);
-                        },
-                      }}
-                    />
+                        }}
+                        picker="week"
+                        size={"small"}
+                        maxDate={new Date()}
+                      />
+                    </div>
                   )}
                 />
               </span>

@@ -63,7 +63,7 @@ const getDoctorDashboardData = async (key, { employee_id }) => {
 };
 export default function Dashboard() {
   const { userToken } = useContext(MainContext);
-  console.log("userToken", userToken);
+  // console.log("userToken", userToken);
 
   const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
   const [followupNewVisit, setFollowupNewVisit] = useState({
@@ -204,13 +204,13 @@ export default function Dashboard() {
     },
   });
   const {
-    data: followupAndNewPatient,
+    // data: followupAndNewPatient,
     isLoading: followup,
     refetch: refetchForPatFollow,
   } = useQuery("getAllPatientFollowUp", getAllPatientFollowUp, {
     onSuccess: (data) => {
       debugger;
-      console.log("datat", data);
+      // console.log("datat", data);
       let currentDate = getValues().new_followup_range;
       let weekStart = currentDate.startOf("week").toDate();
 
@@ -274,7 +274,7 @@ export default function Dashboard() {
       //     return item.detailsOfPatient.length;
       //   })
       // );
-      console.log("patientCount", followupAndNewPatient);
+      // console.log("patientCount", followupAndNewPatient);
     },
     onError: (err) => {
       AlgaehMessagePop({
@@ -509,7 +509,7 @@ export default function Dashboard() {
     setOpenAttachmentsModal((pre) => !pre);
     setCurrentRow({ ...row, attach_type: attachment_type });
   };
-  console.log("todayPatients", todayPatients);
+  // console.log("todayPatients", todayPatients);
   // render() {
   return (
     <>
@@ -521,7 +521,7 @@ export default function Dashboard() {
                 <div className="content">
                   <div className="row">
                     <div className="col-12">
-                      <h2>Hello, Dr.{userToken.full_name}</h2>
+                      <h2>Hello, Dr. {userToken.full_name}</h2>
                       <p>Here your important tasks and reports.</p>
                     </div>
                   </div>
@@ -722,7 +722,7 @@ export default function Dashboard() {
                             },
                           },
                           {
-                            fieldName: "age",
+                            fieldName: "age_in_years",
                             label: <AlgaehLabel label={{ fieldName: "Age" }} />,
                             others: {
                               width: 80,
@@ -1001,7 +1001,7 @@ export default function Dashboard() {
                       }}
                     />
                     {/* <img className="docImg"></img> */}
-                    <h5>Dr.{userToken.full_name}</h5>
+                    <h5>Dr. {userToken.full_name}</h5>
 
                     <small>
                       {userToken.role_name},

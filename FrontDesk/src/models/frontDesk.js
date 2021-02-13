@@ -42,7 +42,7 @@ export default {
            WHERE `record_status`='A'" +
             _stringData,
           values: inputValues,
-          printQuery: true,
+          // printQuery: true,
         })
         .then((patient_details) => {
           if (patient_details[1].length > 0) {
@@ -86,7 +86,7 @@ export default {
                   _string_Data +
                   "  ORDER BY hims_f_patient_visit_id desc",
                 values: input_Values,
-                printQuery: true,
+                // // printQuery: true,
               })
               .then((visit_detsils) => {
                 req.connection = {
@@ -149,7 +149,6 @@ export default {
       if (req.body.consultation === "Y") {
         numGens.push("PAT_BILL", "RECEIPT");
       }
-      console.log("numGens", numGens);
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -231,11 +230,11 @@ export default {
           where CSD.hospital_id=? and CSH.record_status = 'A' and CSD.record_status = 'A' and date(CSH.daily_handover_date) between date(?) and date(?) and CSD.casher_id=?;`,
           values: [
             input.hospital_id,
-            input.today_date,
-            input.today_date,
+            input.from_date,
+            input.to_date,
             input.casher_id,
           ],
-          printQuery: true,
+          // printQuery: true,
         })
         .then((cash_handover) => {
           _mysql.releaseConnection();
@@ -258,14 +257,14 @@ export default {
       let _stringData = "";
       const input = req.query;
 
-      if (input.today_date != null) {
+      if (input.from_date != null) {
         _stringData +=
           "created_by=" +
           input.created_by +
           " and  date(visit_date) between date('" +
-          input.today_date +
+          input.from_date +
           "') AND date('" +
-          input.today_date +
+          input.to_date +
           "')";
       }
 
@@ -274,7 +273,7 @@ export default {
           query: `  SELECT appointment_patient,visit_date FROM hims_f_patient_visit  where   
             ${_stringData}  `,
 
-          printQuery: true,
+          // printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -300,18 +299,18 @@ export default {
 
       if (input.from_date != null) {
         _stringData +=
-          "created_by=" +
+          " and created_by=" +
           input.created_by +
           " and  date(visit_date) between date('" +
           input.from_date +
-          "') AND date('" +
+          "') and date('" +
           input.to_date +
           "')";
       }
 
       _mysql
         .executeQuery({
-          query: `  SELECT appointment_patient,visit_date FROM hims_f_patient_visit  where   
+          query: `  SELECT appointment_patient,visit_date FROM hims_f_patient_visit  where  visit_type='10'   
             ${_stringData}  `,
 
           printQuery: true,
@@ -328,7 +327,6 @@ export default {
                 detailsOf: _.chain(details)
                   .groupBy((it) => it.appointment_patient)
                   .map((detail, index) => {
-                    console.log("detail====", detail);
                     const { appointment_patient, visit_date } = _.head(detail);
                     return {
                       appointment_patient: appointment_patient,
@@ -359,14 +357,14 @@ export default {
       let _stringData = "";
       const input = req.query;
 
-      if (input.today_date != null) {
+      if (input.from_date != null) {
         _stringData +=
           "PV.created_by=" +
           input.created_by +
           " and  date(visit_date) between date('" +
-          input.today_date +
+          input.from_date +
           "') AND date('" +
-          input.today_date +
+          input.to_date +
           "')";
       }
 
@@ -377,7 +375,7 @@ export default {
            left join hims_d_sub_department SD on PV.sub_department_id=SD.hims_d_sub_department_id  where   
             ${_stringData}  `,
 
-          printQuery: true,
+          // printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -411,30 +409,30 @@ export default {
       let _stringData = "";
       const input = req.query;
 
-      if (input.today_date != null) {
+      if (input.from_date != null) {
         _stringData +=
-          "PV.created_by=" +
+          "and PV.created_by=" +
           input.created_by +
           " and  date(visit_date) between date('" +
-          input.today_date +
+          input.from_date +
           "') AND date('" +
-          input.today_date +
+          input.to_date +
           "')";
       }
 
       _mysql
         .executeQuery({
-          query: `  SELECT PV.sub_department_id,PV.visit_date,E.full_name
+          query: `  SELECT PV.sub_department_id,PV.visit_date,PV.doctor_id,E.full_name
           FROM hims_f_patient_visit PV 
-           left join hims_d_employee E on PV.doctor_id=E.hims_d_employee_id  where   
+           left join hims_d_employee E on PV.doctor_id=E.hims_d_employee_id where visit_type='10'   
             ${_stringData}  `,
 
-          printQuery: true,
+          // printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
           const arrangedData = _.chain(result)
-            .groupBy((g) => g.full_name)
+            .groupBy((g) => g.doctor_id)
             .map((details, key) => {
               const { full_name } = _.head(details);
 
@@ -483,7 +481,7 @@ export default {
             date(daily_handover_date)=date(?) " +
             shift_status,
           values: [req.query.shift_id, req.query.daily_handover_date],
-          printQuery: true,
+          // printQuery: true,
         })
         .then((cash_handover_header) => {
           _mysql.releaseConnection();
@@ -548,7 +546,7 @@ export default {
             req.userIdentity.hospital_id,
             req.userIdentity.hospital_id,
           ],
-          printQuery: true,
+          // printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -701,7 +699,7 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_f_cash_handover_detail_id,
           ],
-          printQuery: true,
+          // printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -734,7 +732,7 @@ export function getDoctorAndDepartment(req, res, next) {
         where E.employee_status='A'  and SD.sub_department_status='A' and SD.record_status='A' and E.record_status ='A' 
         and UE.hospital_id=? and services_id is not null;`,
         values: [hims_d_hospital_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         const docDept = _.chain(result)

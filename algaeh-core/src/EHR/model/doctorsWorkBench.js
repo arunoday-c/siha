@@ -300,7 +300,7 @@ let addOrder = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
         ],
-        printQuery: true,
+        // printQuery: true,
         //         (error, results) => {
         //           releaseDBConnection(db, connection);
         //           if (error) {
@@ -669,7 +669,7 @@ let updateAllergy = (req, res, next) => {
           new Date(),
           input.hims_d_allergy_id,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -717,7 +717,7 @@ let deleteAllergy = (req, res, next) => {
       .executeQuery({
         query: "DELETE from hims_d_allergy where hims_d_allergy_id=?",
         values: [req.body.hims_d_allergy_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -943,7 +943,7 @@ let getPatientCount = (req, res, next) => {
 
     if (input.from_date != null) {
       _stringData +=
-        "doctor_id=" +
+        " and doctor_id=" +
         input.doctor_id +
         " and  date(visit_date) between date('" +
         input.from_date +
@@ -954,10 +954,10 @@ let getPatientCount = (req, res, next) => {
 
     _mysql
       .executeQuery({
-        query: `  SELECT new_visit_patient,visit_date FROM hims_f_patient_visit  where   
+        query: `  SELECT new_visit_patient,visit_date FROM hims_f_patient_visit  where appointment_patient='N'   
         ${_stringData}  `,
 
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -967,7 +967,7 @@ let getPatientCount = (req, res, next) => {
           .map((details, key) => {
             const { visit_date } = _.head(details);
 
-            console.log("details===", details);
+            // console.log("details===", details);
             return {
               date: visit_date,
               detailsOfPatient: details,
@@ -975,7 +975,7 @@ let getPatientCount = (req, res, next) => {
             };
           })
           .value();
-        console.log("arrangedData===", arrangedData);
+        // console.log("arrangedData===", arrangedData);
         req.records = arrangedData;
         next();
       })
@@ -1010,7 +1010,7 @@ let getAllPatientFollowUpDash = (req, res, next) => {
         query: `  SELECT new_visit_patient,visit_date FROM hims_f_patient_visit  where   
         ${_stringData}  `,
 
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1080,7 +1080,7 @@ let getDoctorDashboardData = (req, res, next) => {
         query: `  SELECT new_visit_patient,appointment_patient FROM hims_f_patient_visit   where   
           doctor_id=? ;`,
         values: [input.doctor_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1170,7 +1170,7 @@ let getMyDay = (req, res, next) => {
           //   where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND " +
           // _query,
           `select  E.hims_f_patient_encounter_id, P.patient_code, concat(T.title,". ", P.full_name) as full_name,
-          concat(T.arabic_title,". ",P.arabic_name) as pat_arabic_name, P.gender, P.age, E.patient_id, 
+          concat(T.arabic_title,". ",P.arabic_name) as pat_arabic_name, P.gender, V.age_in_years, E.patient_id, 
           V.appointment_patient, V.new_visit_patient, E.provider_id, E.status, E.nurse_examine, E.checked_in, 
           E.payment_type, E.episode_id, E.encounter_id, E.source, E.updated_date as encountered_date,E.visit_id, 
           V.sub_department_id, SD.department_type, SD.vitals_mandatory,	P.primary_id_no,ID.identity_document_name, 
@@ -1219,7 +1219,7 @@ let updatdePatEncntrStatus = (req, res, next) => {
     _mysql
       .executeQueryWithTransaction({
         query: `SELECT encounter_id FROM algaeh_d_app_config where param_name='VISITEXPERIDAY' for update; `,
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         let currentEncounterNo = result[0].encounter_id;
@@ -1238,7 +1238,7 @@ let updatdePatEncntrStatus = (req, res, next) => {
               new Date(),
               req.body.patient_encounter_id,
             ],
-            printQuery: true,
+            // printQuery: true,
           })
           .then((resultd) => {
             _mysql.commitTransaction(() => {
@@ -1300,7 +1300,7 @@ let getPatientProfile = (req, res, next) => {
           inputData.patient_id,
           inputData.visit_id,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((visit_result) => {
         // console.log("visit_result", visit_result)
@@ -1343,7 +1343,7 @@ let getPatientVitals = (req, res, next) => {
       left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
       where PV.record_status='A' and PH.record_status='A' ${strQuery}
        group by PV.created_date  , vital_id order by PH.sequence_order asc;`,
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1425,7 +1425,7 @@ let getPatientAllergies = (req, res, next) => {
           where PA.record_status='A' and patient_id=? and PA.allergy_id=A.hims_d_allergy_id \
           order by hims_f_patient_allergy_id desc;",
         values: [inputData.patient_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1579,7 +1579,7 @@ let getChiefComplaints = (req, res, next) => {
           "select hims_d_hpi_header_id,hpi_description,created_date from hims_d_hpi_header where \
           sub_department_id=? and record_status='A';",
         values: [req.userIdentity.sub_department_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1730,7 +1730,7 @@ let getPatientChiefComplaints = (req, res, next) => {
           from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
           where ecc.record_status='A'and ecc.episode_id=? group by chief_complaint_id ",
         values: [inputData.episode_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         // utilities.logger().log("result: ", result);
@@ -1758,7 +1758,7 @@ let getPatientBasicChiefComplaints = (req, res, next) => {
         query:
           "select * from hims_f_episode_chief_complaint where episode_id=?",
         values: [inputData.episode_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         // utilities.logger().log("result: ", result);
@@ -1907,7 +1907,7 @@ let getAllAllergies = (req, res, next) => {
         query:
           "select hims_d_allergy_id, allergy_type, allergy_name \
           from hims_d_allergy where record_status='A';",
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2047,7 +2047,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
     _mysql
       .executeQueryWithTransaction({
         query: qry,
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.commitTransaction(() => {
@@ -2194,7 +2194,7 @@ let updatePatientDiagnosis = (req, res, next) => {
           input.record_status,
           input.hims_f_patient_diagnosis_id,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2233,7 +2233,7 @@ let getReviewOfSystem = (req, res, next) => {
     _mysql
       .executeQuery({
         query: strQry,
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2267,7 +2267,7 @@ let getPatientROS = (req, res, next) => {
           where ER.record_status='A' and ER.patient_id=? and ER.episode_id=?;",
         values: [input.patient_id, input.episode_id],
 
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2307,7 +2307,7 @@ let updatePatientROS = (req, res, next) => {
           input.hims_f_encounter_review_id,
         ],
 
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2399,7 +2399,7 @@ let addPatientVitals = (req, res, next) => {
           //   updated_date: new Date(),
           //   updated_by: req.userIdentity.algaeh_d_app_user_id,
           // },
-          printQuery: true,
+          // printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -2486,7 +2486,7 @@ let updatePatientAllergy = (req, res, next) => {
           input.hims_f_patient_allergy_id,
         ],
 
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2547,7 +2547,7 @@ let getPhysicalExamination = (req, res, next) => {
       .executeQuery({
         query: queryBuilder,
         values: [req.query.patient_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2583,7 +2583,7 @@ let getAllPhysicalExamination = (req, res, next) => {
         hims_d_physical_examination_subdetails sd  on sd.physical_examination_details_id=d.hims_d_physical_examination_details_id \
          where         h.record_status='A' and h.examination_type=? ",
         values: [req.query.allDept, req.userIdentity.sub_department_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2651,7 +2651,7 @@ let deleteDietAdvice = (req, res, next) => {
         query:
           "DELETE FROM  `hims_f_patient_diet`  WHERE `hims_f_patient_diet_id`=?;",
         values: [inputParam.hims_f_patient_diet_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2689,7 +2689,7 @@ let getEpisodeDietAdvice = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `SELECT * FROM hims_f_patient_diet WHERE record_status='A' ${str} ;`,
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2734,7 +2734,7 @@ let addReferalDoctor = (req, res, next) => {
           new Date(),
           inputParam.external_doc_name,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2762,7 +2762,7 @@ let getPatientReferralDoc = (req, res, next) => {
         left join hims_d_sub_department SD on SD.hims_d_sub_department_id = PR.sub_department_id
         left join hims_d_employee E on E.hims_d_employee_id = PR.doctor_id where  patient_id=?;`,
         values: [input.patient_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2805,7 +2805,7 @@ let addFollowUp = (req, res, next) => {
           new Date(),
           req.userIdentity.hospital_id,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2841,7 +2841,7 @@ let getPatientPhysicalExamination = (req, res, next) => {
         left join hims_d_physical_examination_subdetails PS on EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id \
         where  EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
         values: [input.patient_id, input.episode_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2884,7 +2884,7 @@ let updatePatientPhysicalExam = (req, res, next) => {
           input.record_status,
           input.hims_f_episode_examination_id,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2918,7 +2918,7 @@ let updatePatientHistory = (req, res, next) => {
 
           input.hims_f_patient_history_id,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2950,7 +2950,7 @@ let deletePatientHistory = (req, res, next) => {
 
           input.hims_f_patient_history_id,
         ],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2989,7 +2989,7 @@ let getVitalsHeaderMaster = (req, res, next) => {
     ) \
     SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,isDecimal,mandatory,vital_short_name,box_type from vitals",
         values: [req.userIdentity.sub_department_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         const vitalDetails = new LINQ(result)
@@ -3077,7 +3077,7 @@ let getPatientHistory = (req, res, next) => {
  on T.his_d_title_id = E.title_id       where  PH.provider_id = E.hims_d_employee_id 
  and PH.record_status = 'A'  and E.record_status = 'A'  and  patient_id =?;`,
         values: [req.query.patient_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -3150,7 +3150,7 @@ let getFollowUp = (req, res, next) => {
     _mysql
       .executeQuery({
         query: strQuery,
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -3192,7 +3192,7 @@ let getAllPatientFollowUp = (req, res, next) => {
       .executeQuery({
         query: strQuery,
         values: [inputData.recall_start, inputData.recall_end],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -3231,7 +3231,7 @@ let checkFollowUPofVisit = (req, res, next) => {
         query: `SELECT him_f_patient_followup_id,followup_type,reason,followup_date from hims_f_patient_followup
           where visit_id=?  `,
         values: [req.query.visit_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -3380,7 +3380,7 @@ let updatePatientEncounter = (req, res, next) => {
       .executeQuery({
         query: strQuery,
         values: [inputData.encounter_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         // utilities.logger().log("result: ", result);
@@ -3458,7 +3458,7 @@ let getPatientEncounter = (req, res, next) => {
           "SELECT examination_notes,assesment_notes, other_signs,\
          significant_signs FROM hims_f_patient_encounter where encounter_id=?;",
         values: [req.query.encounter_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         req.records = result;
@@ -3673,7 +3673,7 @@ let getActiveEncounters = (req, res, next) => {
           and date(current_date()) and E.provider_id = ? and  E.`status` in ('W','CO') and E.hospital_id=?; \
           ",
         values: [provider_id, hospital_id],
-        printQuery: true,
+        // printQuery: true,
       })
       .then((result) => {
         req.records = result;
