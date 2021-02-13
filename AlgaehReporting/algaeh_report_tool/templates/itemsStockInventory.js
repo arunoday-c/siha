@@ -8,13 +8,13 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
+      // const decimal_places = options.args.crypto.decimal_places;
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
       // utilities.logger().log("input: ", input);
-      let current_date = moment().format("YYYY-MM-DD");
+      // let current_date = moment().format("YYYY-MM-DD");
 
       //   console.log("item_id: ", input.item_id);
       if (
@@ -56,7 +56,7 @@ const executePDF = function executePDFMethod(options) {
             EXECUTE stmt; \
             DEALLOCATE PREPARE stmt;",
           values: [input.hospital_id],
-          printQuery: true,
+          // printQuery: true,
         })
         .then((results) => {
           const getTable = results.find((f) => Array.isArray(f));
@@ -71,29 +71,27 @@ const executePDF = function executePDFMethod(options) {
           const columns = Object.keys(others).map((item) => {
             return item;
           });
-
           let report = [];
           _.chain(getTable)
             .groupBy((g) => g.hims_d_inventory_item_master_id)
             .forEach((details, key) => {
-              const { item_description: desc } = _.head(details);
-              let innerObject = { item_description: desc };
-
+              const desc = _.head(details);
+              let innerObject = { item_description: desc.item_description };
               for (let i = 0; i < columns.length; i++) {
                 innerObject[columns[i]] = _.sumBy(details, (s) =>
-                  parseFloat(s[columns[i]] ?? 0)
+                  parseFloat(s[columns[i]] ? s[columns[i]] : 0)
                 );
               }
-
               report.push(innerObject);
             })
             .value();
-
           // console.log("<<<< results >>>>", report);
+          // console.log("details", details);
           resolve({
             columns,
             details: report,
           });
+          // resolve({});
         })
         .catch((error) => {
           options.mysql.releaseConnection();
