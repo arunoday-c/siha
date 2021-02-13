@@ -352,6 +352,11 @@ export default function ReportMaster() {
                     columns={[
                       {
                         fieldName: "",
+                        label: <AlgaehLabel label={{ fieldName: "Action" }} />,
+                        filterable: true,
+                      },
+                      {
+                        fieldName: "",
                         label: (
                           <AlgaehLabel label={{ fieldName: "Category" }} />
                         ),
