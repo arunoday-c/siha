@@ -57,7 +57,7 @@ const executePDF = function executePDFMethod(options) {
                       on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
                       VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
                        C.head_id=AH.finance_account_head_id     where  VD.auth_status='A' and
-                      VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no, VD.head_id order by VD.payment_date;
+                      VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no, VD.head_id order by VD.finance_voucher_id asc;
                       select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
                       ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
                       from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date < ?;
