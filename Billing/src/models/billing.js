@@ -1973,8 +1973,8 @@ export default {
                         printQuery: true,
                       })
                       .then((updateResult) => {
-                        console.log("last :", req.adv_refnd);
-                        console.log("last 1 :", req.connection);
+                        // console.log("last :", req.adv_refnd);
+                        // console.log("last 1 :", req.connection);
                         if (req.connection == null || req.adv_refnd == "Y") {
                           // console.log("BOOSSS :");
                           _mysql.commitTransaction(() => {
