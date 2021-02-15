@@ -400,6 +400,7 @@ export default {
     // let outputArray = [];
 
     let strQry = "";
+    let _strAppend = "";
 
     if (input.hims_d_employee_id > 0) {
       strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
@@ -418,7 +419,23 @@ export default {
       strQry += " and E.employee_group_id=" + input.employee_group_id;
     }
 
-    if (input.hospital_id > 0 && fromDate > 0 && toDate > 0) {
+    console.log("input", input)
+    if (
+      input.hospital_requires === undefined ||
+      input.hospital_requires === true
+    ) {
+      if (input.select_all === "true") {
+        _strAppend +=
+          " and E.hospital_id in (" + input.hospital_id + ")";
+      } else if (input.hospital_id != null) {
+        _strAppend += " and E.hospital_id='" + input.hospital_id + "'";
+      } else {
+        _strAppend +=
+          " and E.hospital_id='" + req.userIdentity.hospital_id + "'";
+      }
+    }
+
+    if (fromDate > 0 && toDate > 0) {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
@@ -429,7 +446,7 @@ export default {
         left join  hims_d_project P on P.hims_d_project_id=PR.project_id
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
         left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-        where E.hospital_id=? and E.record_status='A' and E.employee_status='A' ${strQry}
+        where E.record_status='A' ${_strAppend} and E.employee_status='A' ${strQry}
         order by hims_d_employee_id ;
         select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,status,
         from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
@@ -437,25 +454,21 @@ export default {
         inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
         left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-        where    E.hospital_id=?    ${strQry.replace(
-          /PR/gi,
-          "LA"
-        )} and (status= 'APR' or status= 'PEN' ) and
-          (    (  date(?)>=date(from_date) and	date(?)<=date(to_date)) or
-          ( date(?)>=date(from_date) and   date(?)<=date(to_date))
-        or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or
-        (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
+        where    ${strQry.replace(
+            /PR/gi,
+            "LA"
+          )} (status= 'APR' or status= 'PEN' ) and ((date(?)>=date(from_date) and	date(?)<=date(to_date)) or
+          (date(?)>=date(from_date) and   date(?)<=date(to_date)) or (date(from_date)>= date(?) and date(from_date)<=date(?) ) 
+          or (date(to_date)>=date(?) and date(to_date)<= date(?) )) ${_strAppend};
         select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,
         weekoff, holiday, holiday_type, religion_id from
-        hims_d_holiday where record_status='A' and   date(holiday_date) between date(?) and date(?)
-         and (weekoff='Y' or holiday='Y') and hospital_id=?;
-
-        `,
+        hims_d_holiday E where record_status='A' and   date(holiday_date) between date(?) and date(?)
+         and (weekoff='Y' or holiday='Y') ${_strAppend};`,
           values: [
             input.fromDate,
             input.toDate,
-            input.hospital_id,
-            input.hospital_id,
+            // input.hospital_id,
+            // input.hospital_id,
             input.fromDate,
             input.fromDate,
             input.toDate,
@@ -466,9 +479,9 @@ export default {
             input.toDate,
             input.fromDate,
             input.toDate,
-            input.hospital_id,
+            // input.hospital_id,
           ],
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -716,7 +729,7 @@ export default {
           }
         })
         .catch((e) => {
-          utilities.logger().log("error: ", e);
+          // utilities.logger().log("error: ", e);
           _mysql.releaseConnection();
           next(e);
         });
@@ -812,10 +825,10 @@ export default {
             _days.map((date) => {
               if (
                 moment(date).format("YYYYMMDD") >=
-                  moment(employee["date_of_joining"]).format("YYYYMMDD") &&
+                moment(employee["date_of_joining"]).format("YYYYMMDD") &&
                 (employee["exit_date"] == null ||
                   moment(employee["exit_date"]).format("YYYYMMDD") <
-                    moment(date).format("YYYYMMDD"))
+                  moment(date).format("YYYYMMDD"))
               ) {
                 const week_off_Data = _.find(empHoliday, (f) => {
                   return (

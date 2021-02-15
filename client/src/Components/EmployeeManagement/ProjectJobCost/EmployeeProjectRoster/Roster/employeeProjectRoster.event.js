@@ -22,14 +22,30 @@ export function getEmployeesForProjectRoster(inputs) {
         sub_department_id,
         department_id,
         designation_id,
-        group_id
+        group_id,
+        hospitals
       } = inputs;
       const { fromDate, toDate } = getInputDates(inputs);
-      algaehApiCall({
-        uri: "/projectjobcosting/getEmployeesForProjectRoster",
-        method: "GET",
-        module: "hrManagement",
-        data: {
+      let inputObj = {}
+
+      if (hospital_id === -1) {
+        const all_branches = hospitals.map((item) => {
+          return item.hims_d_hospital_id;
+        });
+        inputObj = {
+          select_all: true,
+          hospital_id: all_branches,
+          show_all_status: true,
+          hims_d_employee_id: hims_d_employee_id,
+          sub_department_id: sub_department_id,
+          department_id: department_id,
+          fromDate: fromDate,
+          toDate: toDate,
+          designation_id: designation_id,
+          employee_group_id: group_id
+        };
+      } else {
+        inputObj = {
           hims_d_employee_id: hims_d_employee_id,
           hospital_id: hospital_id,
           sub_department_id: sub_department_id,
@@ -37,8 +53,15 @@ export function getEmployeesForProjectRoster(inputs) {
           fromDate: fromDate,
           toDate: toDate,
           designation_id: designation_id,
-          employee_group_id: group_id
-        },
+          employee_group_id: group_id,
+          show_all_status: true
+        };
+      }
+      algaehApiCall({
+        uri: "/projectjobcosting/getEmployeesForProjectRoster",
+        method: "GET",
+        module: "hrManagement",
+        data: inputObj,
         onSuccess: res => {
           const { success, records } = res.data;
           if (success === true) {

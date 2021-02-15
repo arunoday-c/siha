@@ -5,7 +5,7 @@ import { getEmpGroups } from "../../PayrollManagement/AttendanceMgmt/BulkTimeShe
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, RawSecurityComponent } from "algaeh-react-components";
 
 export const FilterContext = createContext(null);
 
@@ -81,16 +81,38 @@ export default function EmployeeFilter(props) {
   }, [inputs.sub_department_id]); // eslint-disable-line
 
   function getHospitals() {
-    algaehApiCall({
-      uri: "/organization/getOrganizationByUser",
-      method: "GET",
-      onSuccess: (res) => {
-        if (res.data.success) {
-          setHospitals(res.data.records);
-        }
-      },
-      onFailure: (err) => {},
+    debugger
+    RawSecurityComponent({ componentCode: "ALL_BRANCHES" }).then((result) => {
+      if (result === "show") {
+        algaehApiCall({
+          uri: "/organization/getOrganizationByUser",
+          method: "GET",
+          onSuccess: (res) => {
+            if (res.data.success) {
+              res.data.records.push({
+                hims_d_hospital_id: -1,
+                hospital_name: "All",
+              });
+              setHospitals(res.data.records);
+            }
+          },
+          onFailure: (err) => { },
+        });
+      } else {
+        algaehApiCall({
+          uri: "/organization/getOrganizationByUser",
+          method: "GET",
+          onSuccess: (res) => {
+            if (res.data.success) {
+              setHospitals(res.data.records);
+            }
+          },
+          onFailure: (err) => { },
+        });
+      }
     });
+
+
   }
 
   function getBranchDetails() {
@@ -141,8 +163,8 @@ export default function EmployeeFilter(props) {
     const { name, value, selected } = e;
     const hosName = name.includes("hospital_id")
       ? {
-          hospital_name: selected.hospital_name,
-        }
+        hospital_name: selected.hospital_name,
+      }
       : {};
     setInputs((state) => ({
       ...state,
@@ -240,7 +262,9 @@ export default function EmployeeFilter(props) {
   }
 
   function loadFunc() {
+    debugger
     if (inputs.hospital_id) {
+      inputs.hospitals = hospitals
       props.loadFunc(inputs);
     } else {
       swalMessage({

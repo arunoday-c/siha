@@ -520,8 +520,9 @@ body {
 }
 
 img.specimenBarcode {
-  height: 45px;
-  margin-bottom: 2px;
+  height: 24px;
+  margin-bottom: 3px;
+  /* margin-top: 4px; */
 }
 .barcodeLine p {
   margin: 0;
@@ -530,10 +531,12 @@ img.specimenBarcode {
 .barcodeLine .small-left {
   font-size: 7px;
   float: left;
+  margin-bottom: 2px;
 }
 .barcodeLine .small-right {
   font-size: 7px;
   float: right;
+  margin-bottom: 2px;
 }
 
 .barcodeLine .small-center {
@@ -541,6 +544,7 @@ img.specimenBarcode {
   text-align: center;
   float: left;
   width: 100%;
+  margin-bottom: 2px;
 }
 
 .labelBlock label {

@@ -3,7 +3,7 @@ import Index from "./employeeProjectRoster.html";
 import { getEmployeesForProjectRoster } from "./employeeProjectRoster.event";
 export const ProjectRosterContext = createContext(undefined);
 
-export default function(props) {
+export default function (props) {
   const [projectRoster, setProjectRoster] = useState({
     employees: [],
     filterEmployees: [],
@@ -14,7 +14,8 @@ export default function(props) {
     total_rosted: 0,
     total_non_rosted: 0,
     fromDate: "",
-    toDate: ""
+    toDate: "",
+    hospitals: []
   });
 
   function setProjectRosterState(options) {

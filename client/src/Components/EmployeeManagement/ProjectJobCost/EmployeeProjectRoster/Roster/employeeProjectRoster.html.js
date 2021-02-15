@@ -214,8 +214,8 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                    <Table ref={tableRef} editing={editingProjectRoster} />
-                  )}
+                      <Table ref={tableRef} editing={editingProjectRoster} />
+                    )}
                 </div>
               </div>
             </div>
