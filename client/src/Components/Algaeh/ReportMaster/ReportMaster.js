@@ -110,7 +110,7 @@ export default function ReportMaster() {
         setThermal_print("");
         refetch();
         AlgaehMessagePop({
-          display: "Patient Updated Successfully",
+          display: "Report Added Successfully",
           type: "success",
         });
       },
@@ -132,7 +132,7 @@ export default function ReportMaster() {
         setThermal_print("");
         refetch();
         AlgaehMessagePop({
-          display: "Patient Updated Successfully",
+          display: "Report Updated Successfully",
           type: "success",
         });
       },
