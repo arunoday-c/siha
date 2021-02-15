@@ -85,8 +85,6 @@ const executePDF = function executePDFMethod(options) {
               report.push(innerObject);
             })
             .value();
-          // console.log("<<<< results >>>>", report);
-          // console.log("details", details);
           resolve({
             columns,
             details: report,
