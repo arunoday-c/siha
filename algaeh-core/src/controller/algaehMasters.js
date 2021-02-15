@@ -49,7 +49,10 @@ const {
   getAllAssignedScrens,
   updateLandingScreen,
   getScreenElementsRoles,
-  updateAlgaehComponent
+  updateAlgaehComponent,
+  getReportDetailsFromDataBase,
+  addNewReportsFromReportMaster,
+  updateReportMaster,
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -62,12 +65,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -82,12 +85,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -102,12 +105,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -120,12 +123,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -140,12 +143,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -160,12 +163,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -180,12 +183,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -197,7 +200,7 @@ export default ({ config, db }) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      message: "Successfully Deleted...."
+      message: "Successfully Deleted....",
     });
   });
 
@@ -210,7 +213,7 @@ export default ({ config, db }) => {
       res.status(httpStatus.ok).json({
         success: true,
         records: result,
-        elements: elements
+        elements: elements,
       });
       next();
     }
@@ -223,7 +226,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       delete req.records;
     }
@@ -235,7 +238,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       delete req.records;
     }
@@ -248,7 +251,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -263,12 +266,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -281,11 +284,51 @@ export default ({ config, db }) => {
     let result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      records: result
+      records: result,
     });
     delete req.records;
   });
+  api.get(
+    "/getReportDetailsFromDataBase",
+    getReportDetailsFromDataBase,
+    (req, res) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      delete req.records;
+    }
+  );
+  api.post(
+    "/addNewReportsFromReportMaster",
+    addNewReportsFromReportMaster,
+    (req, res, next) => {
+      let result = req.records;
 
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result,
+      });
+
+      next();
+    }
+  );
+  api.put(
+    "/updateReportMaster",
+    updateReportMaster,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+
+      next();
+    },
+    releaseConnection
+  );
   // created by irfan :
   api.get(
     "/getAlgaehScreens",
@@ -295,12 +338,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -317,12 +360,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -340,12 +383,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -360,7 +403,7 @@ export default ({ config, db }) => {
     (req, res) => {
       res.status(httpStatus.ok).json({
         success: true,
-        message: "Successfully updated"
+        message: "Successfully updated",
       });
     }
   );
@@ -374,12 +417,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -394,7 +437,7 @@ export default ({ config, db }) => {
     (req, res, next) => {
       res.status(httpStatus.ok).json({
         success: true,
-        message: "Successfully updated"
+        message: "Successfully updated",
       });
 
       next();
@@ -410,12 +453,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -432,12 +475,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -455,7 +498,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -472,7 +515,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -489,7 +532,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -506,7 +549,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -523,12 +566,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -545,12 +588,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -567,12 +610,12 @@ export default ({ config, db }) => {
       if (result.invalid_input == true) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -589,12 +632,12 @@ export default ({ config, db }) => {
       if (result.invalid_input == true) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
       next();
@@ -607,12 +650,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -623,12 +666,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -639,12 +682,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -654,12 +697,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -670,12 +713,12 @@ export default ({ config, db }) => {
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
     next();
@@ -689,7 +732,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -704,7 +747,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -719,7 +762,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -733,7 +776,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -747,7 +790,7 @@ export default ({ config, db }) => {
 
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
 
       next();
@@ -762,12 +805,12 @@ export default ({ config, db }) => {
       if (result.invalid_input == true) {
         res.status(httpStatus.internalServer).json({
           success: false,
-          message: result.message
+          message: result.message,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -776,7 +819,9 @@ export default ({ config, db }) => {
   );
   api.get("/getAllAssignedScrens", getAllAssignedScrens, (req, res) => {
     let result = req.records;
-    const default_landing = result.find(f => f.default_land_screen_id !== null);
+    const default_landing = result.find(
+      (f) => f.default_land_screen_id !== null
+    );
 
     res
       .status(httpStatus.ok)
@@ -788,8 +833,8 @@ export default ({ config, db }) => {
               ? default_landing.default_land_screen_id
               : undefined,
 
-          allScreens: result
-        }
+          allScreens: result,
+        },
       })
       .end();
   });
@@ -797,7 +842,7 @@ export default ({ config, db }) => {
   api.put("/updateLandingScreen", updateLandingScreen, (req, res) => {
     res.status(httpStatus.ok).json({
       success: true,
-      message: "Successfully Done...."
+      message: "Successfully Done....",
     });
   });
 
@@ -807,7 +852,7 @@ export default ({ config, db }) => {
       .status(httpStatus.ok)
       .json({
         success: true,
-        records: result
+        records: result,
       })
       .end();
     delete req.records;
@@ -817,10 +862,7 @@ export default ({ config, db }) => {
     updateScreenElementRoles,
     (req, res) => {
       let result = req.records;
-      res
-        .status(httpStatus.ok)
-        .json(result)
-        .end();
+      res.status(httpStatus.ok).json(result).end();
       delete req.records;
     }
   );
@@ -833,12 +875,12 @@ export default ({ config, db }) => {
       if (result.validUser == false) {
         res.status(httpStatus.ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(httpStatus.ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
