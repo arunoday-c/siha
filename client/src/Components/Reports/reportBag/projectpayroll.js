@@ -594,6 +594,118 @@ export default function ProjectPayroll({
           },
         ],
       },
+      {
+        subitem: "Project Roster Report",
+        reportName: "projectRosterReport",
+        requireIframe: true,
+        pageSize: "A3",
+        // componentCode: "RPT_PRO_RSTR",
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: false,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "designation_id",
+            initialLoad: true,
+            isImp: false,
+            label: "designation",
+            link: {
+              uri: "/hrsettings/getDesignations",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "designation",
+              valueField: "hims_d_designation_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "project_id",
+            initialLoad: true,
+            label: "Project",
+            link: {
+              uri: "/hrsettings/getProjects",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "project_desc",
+              valueField: "hims_d_project_id",
+            },
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id",
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "is_local",
+            initialLoad: true,
+            // isImp: true,
+            label: "Employee Type",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
+      },
     ],
   };
 }

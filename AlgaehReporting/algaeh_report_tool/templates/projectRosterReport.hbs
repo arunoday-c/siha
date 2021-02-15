@@ -1,0 +1,39 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Date</th>
+                        <th>Project Code</th>
+                        <th>Project Name</th>
+                        <th>Branch Code</th>
+                        <th>Branch Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each detail}}
+                    <tr>
+                        <td colspan="11" class="tableSubHdg">{{employee_code}} - {{full_name}} / {{designation}}</td>
+                    </tr>
+                        {{#each detailList}}
+                            <tr>
+                                <td>{{inc @index}}</td>
+                                <td>{{attendance_date}}</td>
+                                <td>{{project_code}}</td>
+                                <td>{{project_desc}}</td>
+                                <td>{{hospital_code}}</td>
+                                <td>{{hospital_name}}</td>
+                            </tr>
+                        {{/each }}
+                    {{/each }}
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
