@@ -68,9 +68,13 @@ export function uploadFile(req, res, next) {
 
         // console.log("Before saving", fieldObject, fieldName);
         // console.log(`Upload of '${filename}' finished`, fieldObject);
-        contractDoc.insertMany([dataToSave]);
-        res.status(200).json({
-          success: true,
+        contractDoc.insertMany([dataToSave], (err, docs) => {
+          const unique = docs[0]._id.toString();
+          res.status(200).json({
+            success: true,
+            unique: unique,
+            message: "Updated Successfully",
+          });
         });
       });
     });
@@ -87,12 +91,15 @@ export function getUploadedFile(req, res, next) {
     let filter = {};
     let _mimeType = "filetype";
     const { download } = input;
+
     // console.log("input", input);
     switch (input.forModule) {
       case "EmployeeDocModel":
         contractDoc = EmployeeDocModel;
-        const { destinationName } = input;
-        filter = { destinationName };
+        const { destinationName, unique_id_fromMongo } = input;
+        const unique = unique_id_fromMongo ? unique_id_fromMongo : "";
+
+        filter = { destinationName, _id: unique };
         _mimeType = "fileExtention";
         break;
 

@@ -1,4 +1,5 @@
 import contract from "../Model/contractDocs";
+import EmployeeDocModel from "../Model/employeeDoc";
 import formidable from "formidable";
 import fs from "fs";
 import path from "path";
@@ -41,8 +42,19 @@ export const getContractDoc = (req, res) => {
 };
 
 export const deleteContractDoc = (req, res) => {
-  const { id } = req.body;
-  contract.findByIdAndDelete(id, (err, docs) => {
+  const { id, forModule } = req.body;
+
+  let contractDoc = undefined;
+  switch (forModule) {
+    case "EmployeeDocModel":
+      contractDoc = EmployeeDocModel;
+
+      break;
+
+    default:
+      contractDoc = contract;
+  }
+  contractDoc.findByIdAndDelete(id, (err, docs) => {
     if (err) {
       res.status(400).json({ error: err.message });
     } else {

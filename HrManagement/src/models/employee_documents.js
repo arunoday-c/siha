@@ -86,8 +86,8 @@ export default {
         .executeQuery({
           query:
             "insert into hims_f_employee_documents(document_type,employee_id,document_id,\
-            document_name,dependent_id,download_uniq_id,create_by,created_date,update_by,update_date,document_type_name,hospital_id)\
-             values(?,?,?,?,?,?,?,?,?,?,?,?)",
+            document_name,dependent_id,download_uniq_id,unique_id_fromMongo,create_by,created_date,update_by,update_date,document_type_name,hospital_id)\
+             values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.document_type,
             input.employee_id,
@@ -95,6 +95,7 @@ export default {
             input.document_name,
             input.dependent_id,
             input.download_uniq_id,
+            input.unique_id_fromMongo,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
@@ -202,7 +203,7 @@ export default {
         .executeQuery({
           query:
             "select hims_f_employee_documents_id,document_type,\
-          document_type_name,document_name,download_uniq_id from hims_f_employee_documents \
+          document_type_name,document_name,download_uniq_id,unique_id_fromMongo from hims_f_employee_documents \
           where document_type=?  " +
             appendString,
           values: [input.document_type],
