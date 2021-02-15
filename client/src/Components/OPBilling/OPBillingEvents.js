@@ -527,7 +527,7 @@ const getPatientDetails = ($this, patient_code) => {
             if (data.length !== 0 || data.length === undefined) {
               $this.setState({
                 pack_balance_amount: data[0].balance_amount,
-                pack_advance_amount: data[0].advance_amount,
+                pack_advance_amount: data[0].pack_advance_amount,
                 pack_advance_percentage: data[0].advance_percentage
               });
             }
@@ -604,7 +604,7 @@ const ClosePackageUtilize = ($this) => {
           if (data.length !== 0 || data.length === undefined) {
             $this.setState({
               pack_balance_amount: data[0].balance_amount,
-              pack_advance_amount: data[0].advance_amount,
+              pack_advance_amount: data[0].pack_advance_amount,
               pack_advance_percentage: data[0].advance_percentage
             });
           }

@@ -30,7 +30,8 @@ const {
   getPednigBills,
   insertPhysiotherapyServices,
   updateOldBill,
-  generateAccountingEntryAdjustBill
+  generateAccountingEntryAdjustBill,
+  updatePackageAdvance
 } = opModels;
 const { getReceiptEntry } = recModels;
 const { insertLadOrderedServices, updateLabOrderedBilled } = labModels;
@@ -65,6 +66,7 @@ export default () => {
     },
     updateOrderedServicesBilled,
     updateOrderedConsumablessBilled,
+    updatePackageAdvance,
     updateOrderedPackageBilled,
     updatePhysiotherapyServices,
     (req, res, next) => {

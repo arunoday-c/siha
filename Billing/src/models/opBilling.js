@@ -262,7 +262,7 @@ export default {
                 printQuery: true,
               })
               .then((package_details) => {
-                console.log("package_details", package_details)
+                // console.log("package_details", package_details)
                 req.body.billdetails = req.body.billdetails.concat(
                   package_details
                 );
@@ -286,6 +286,57 @@ export default {
           });
       } else {
         next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updatePackageAdvance: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+
+      // console.log("req.body.pack_advance_adjust", req.body.pack_advance_adjust)
+      if (req.body.pack_advance_adjust > 0) {
+        const package_details = req.body.billdetails.filter(f => f.ordered_package_id !== null || f.ordered_package_id !== undefined)
+
+        // console.log("package_details ======> ", package_details)
+        let qry = "";
+        if (package_details.length > 0) {
+          for (let i = 0; i < package_details.length; i++) {
+            qry += mysql.format(
+              "UPDATE `hims_f_package_header` SET utilized_advance=utilized_advance+(?) where hims_f_package_header_id=?;",
+              [
+                package_details[i].gross_amount,
+                package_details[i].ordered_package_id
+              ]
+            );
+          }
+
+          // console.log("qry =------ ", qry)
+          // consol.log("package_details", package_details)
+          _mysql
+            .executeQuery({
+              query: qry,
+              printQuery: true,
+            })
+            .then((updateOrder) => {
+              next();
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        } else {
+          next();
+        }
+      }
+      else {
+        next()
       }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
