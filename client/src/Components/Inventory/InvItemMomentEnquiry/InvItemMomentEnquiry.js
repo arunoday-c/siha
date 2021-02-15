@@ -446,6 +446,21 @@ class InvItemMomentEnquiry extends Component {
                       },
                     },
                     {
+                      fieldName: "average_cost",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Cost" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {GetAmountFormart(row.average_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
+                    },
+                    {
                       fieldName: "qtyhand",
                       label: (
                         <AlgaehLabel
@@ -458,22 +473,8 @@ class InvItemMomentEnquiry extends Component {
                       others: {
                         filterable: false,
                       },
-                    },
-                    {
-                      fieldName: "average_cost",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Average Cost" }} />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            {GetAmountFormart(row.average_cost, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      }
                     }
+
                   ]}
                   keyId="item_id"
                   dataSource={{
