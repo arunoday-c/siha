@@ -1612,6 +1612,29 @@ let getAlgaehComponents = (req, res, next) => {
     next(e);
   }
 };
+let getReportDetailsFromDataBase = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query: `select report_id,report_module,report_type,report_name,report_name_for_header,report_header_file_name,report_footer_file_name,report_props,
+          status from algaeh_d_reports`,
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 
 let getAlgaehComponentsWithScreens = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -1676,6 +1699,85 @@ let getAlgaehComponentsWithScreens = (req, res, next) => {
       };
       next();
     }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let addNewReportsFromReportMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: `INSERT INTO algaeh_d_reports (report_module,report_name,report_name_for_header, report_header_file_name, report_footer_file_name,
+           report_type,status,report_props,created_by, created_datetime, updated_by, update_datetime)
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?)`,
+        values: [
+          input.report_module,
+          input.report_name,
+          input.report_name_for_header,
+          input.report_header_file_name,
+          input.report_footer_file_name,
+          input.report_type,
+          input.status,
+          input.report_props,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+        ],
+        // printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let updateReportMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "update algaeh_d_reports set report_module=?, report_name=?, report_name_for_header=?, report_header_file_name=?, \
+          report_footer_file_name=?, report_type=?, status=?,report_props=?, update_datetime=?, updated_by=? where report_id=?",
+        values: [
+          input.report_module,
+          input.report_name,
+          input.report_name_for_header,
+          input.report_header_file_name,
+          input.report_footer_file_name,
+          input.report_type,
+          input.status,
+          input.report_props,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.report_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -3427,7 +3529,6 @@ const getCurrentAssignedScreenAndComponent = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     if (req.query.role_id > 0 && req.query.module_id > 0) {
-      debugger;
       _mysql
         .executeQuery({
           query: `select M.algaeh_m_module_role_privilage_mapping_id,M.module_id,M.role_id,
@@ -3820,4 +3921,7 @@ export default {
   updateLandingScreen,
   getScreenElementsRoles,
   updateAlgaehComponent,
+  getReportDetailsFromDataBase,
+  addNewReportsFromReportMaster,
+  updateReportMaster,
 };

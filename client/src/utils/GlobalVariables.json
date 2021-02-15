@@ -33,6 +33,72 @@
       "color": "#ff99ff80"
     }
   ],
+  "REPORT_CATEGORY": [
+    {
+      "name": "HR Management",
+      "value": "HR"
+    },
+    {
+      "name": "Inventory",
+      "value": "INV"
+    },
+    {
+      "name": "Pharmacy",
+      "value": "PHR"
+    },
+    {
+      "name": "Pay Roll",
+      "value": "PAY"
+    },
+    {
+      "name": "Finance",
+      "value": "FIN"
+    },
+    {
+      "name": "HIS",
+      "value": "HIS"
+    },
+    {
+      "name": "MIS",
+      "value": "MIS"
+    },
+    {
+      "name": "APP",
+      "value": "APP"
+    },
+    {
+      "name": "VAT Report",
+      "value": "VAT"
+    },
+    {
+      "name": "Project Job Cost",
+      "value": "PJC"
+    },
+    {
+      "name": "INS",
+      "value": "INS"
+    },
+    {
+      "name": "Sales",
+      "value": "SAL"
+    },
+    {
+      "name": "PCR",
+      "value": "PRC"
+    },
+    {
+      "name": "Employee",
+      "value": "EMP"
+    },
+    {
+      "name": "Laboratory",
+      "value": "LAB"
+    },
+    {
+      "name": "Radiology",
+      "value": "RAD"
+    }
+  ],
   "ORDERED_TYPE": [
     {
       "name": "New",
