@@ -216,10 +216,10 @@ export default function (props) {
           <div className="row">
             <div className="col-4">
               <h6>
-                Select Project{" "}
+                Selected Project -{" "}
                 {isEditing !== undefined ? (
-                  <small> &#123;{isEditing.project_desc}&#125;</small>
-                ) : null}{" "}
+                  <b> {isEditing.project_desc}</b>
+                ) : null}
               </h6>
               <div className="row">
                 <AlagehFormGroup

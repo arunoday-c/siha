@@ -11,8 +11,12 @@
     }
   }
   #leaveRequestList_cntr {
-    .ReactTable {
-      max-height: 61vh !important;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 62vh;
+        max-height: 62vh;
+        overflow: auto;
+      }
     }
   }
 }

@@ -1,6 +1,10 @@
 #monthlyAttendenceGrid_Cntr {
-  .ReactTable {
-    max-height: 55vh !important;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 52vh;
+      max-height: 52vh;
+      overflow: auto;
+    }
   }
 }
 #EmployeeLeaveBalance_Cntr {
