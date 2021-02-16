@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./EmployeeDocuments.scss";
 import { MainContext } from "algaeh-react-components";
 import swal from "sweetalert2";
-
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import {
   AlagehFormGroup,
   AlgaehLabel,
@@ -542,6 +542,7 @@ class EmployeeDocuments extends Component {
     });
   }
   downloadSelectedFile(row, isPreview) {
+    AlgaehLoader({ show: true });
     eventLogic().downloadDoc(row, isPreview);
   }
 

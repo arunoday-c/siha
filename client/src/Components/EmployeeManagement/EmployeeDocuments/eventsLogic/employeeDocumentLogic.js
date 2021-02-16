@@ -5,7 +5,7 @@ import {
 } from "../../../../utils/algaehApiCall";
 import _ from "lodash";
 import { newAlgaehApi } from "../../../../hooks";
-
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 export default function eventsLogEmployeeDocument() {
   return {
     getEmployeeDetails: () => {
@@ -228,6 +228,7 @@ export default function eventsLogEmployeeDocument() {
             link.click();
             document.body.removeChild(link);
           }
+          AlgaehLoader({ show: false });
         })
         .catch((error) => {
           console.log(error);
