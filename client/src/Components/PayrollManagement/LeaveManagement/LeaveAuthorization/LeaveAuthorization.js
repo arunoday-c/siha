@@ -3,7 +3,6 @@ import "./LeaveAuthorization.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
   AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
@@ -14,7 +13,7 @@ import Enumerable from "linq";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
 import { MainContext } from "algaeh-react-components";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 import { generateLeaveRequestSlip } from "./LeaveAuthorizationEvents.js";
 export default class LeaveAuthorization extends Component {
   constructor(props) {
@@ -79,7 +78,7 @@ export default class LeaveAuthorization extends Component {
             employee_name: row.full_name,
             hims_d_employee_id: row.hims_d_employee_id,
           },
-          () => { }
+          () => {}
         );
       },
     });
@@ -209,8 +208,8 @@ export default class LeaveAuthorization extends Component {
           let auth_level =
             res.data.records.auth_levels.length > 0
               ? Enumerable.from(res.data.records.auth_levels).maxBy(
-                (w) => w.value
-              )
+                  (w) => w.value
+                )
               : null;
 
           this.setState({
@@ -246,7 +245,7 @@ export default class LeaveAuthorization extends Component {
         }
       },
 
-      onFailure: (err) => { },
+      onFailure: (err) => {},
     });
   }
 
@@ -434,8 +433,8 @@ export default class LeaveAuthorization extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                    <i className="fas fa-spinner fa-spin" />
-                  )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>
             </div>
           </div>
@@ -514,8 +513,8 @@ export default class LeaveAuthorization extends Component {
                               />{" "}
                             </React.Fragment>
                           ) : (
-                                "------"
-                              );
+                            "------"
+                          );
                         },
                         others: {
                           filterable: false,
@@ -545,11 +544,31 @@ export default class LeaveAuthorization extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                        "------"
-                                      )}
+                                "------"
+                              )}
                             </span>
                           );
                         },
+                        filterable: true,
+                        filterType: "choices",
+                        choices: [
+                          {
+                            name: "Pending",
+                            value: "PEN",
+                          },
+                          {
+                            name: "Approved",
+                            value: "APR",
+                          },
+                          {
+                            name: "Rejected",
+                            value: "REJ",
+                          },
+                          {
+                            name: "Cancelled",
+                            value: "CAN",
+                          },
+                        ],
                       },
                       {
                         fieldName: "employee_code",
@@ -558,6 +577,7 @@ export default class LeaveAuthorization extends Component {
                             label={{ forceLabel: "Employee Code" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           const statCheck =
                             row.status !== "REJ" && row.status !== "CAN";
@@ -575,8 +595,8 @@ export default class LeaveAuthorization extends Component {
                               {row.employee_code}
                             </span>
                           ) : (
-                              <span>{row.employee_code}</span>
-                            );
+                            <span>{row.employee_code}</span>
+                          );
                         },
                         className: (row) => {
                           return row.status !== "REJ" && row.status !== "CAN"
@@ -591,12 +611,14 @@ export default class LeaveAuthorization extends Component {
                             label={{ forceLabel: "Employee Name" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "designation",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Designation" }} />
                         ),
+                        filterable: true,
                       },
 
                       {
@@ -604,6 +626,7 @@ export default class LeaveAuthorization extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
                         ),
+                        filterable: true,
                       },
 
                       {
@@ -611,6 +634,7 @@ export default class LeaveAuthorization extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Request Code" }} />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "application_date",
@@ -619,6 +643,7 @@ export default class LeaveAuthorization extends Component {
                             label={{ forceLabel: "Requested Date" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -636,12 +661,14 @@ export default class LeaveAuthorization extends Component {
                             label={{ forceLabel: "Applied for (days)" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "from_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "From Date" }} />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -655,6 +682,7 @@ export default class LeaveAuthorization extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "To Date" }} />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -669,15 +697,16 @@ export default class LeaveAuthorization extends Component {
                       },
                     ]}
                     keyId="hims_f_leave_application_id"
-                    dataSource={{ data: this.state.leave_applns }}
-                    isEditable={false}
-                    filter={true}
+                    data={this.state.leave_applns}
+                    // isEditable={false}
+                    pagination={true}
+                    isFilterable={true}
                     loading={this.state.loading}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    // paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => { },
-                      onDone: () => { },
-                      onDelete: () => { },
+                      onEdit: () => {},
+                      onDone: () => {},
+                      onDelete: () => {},
                     }}
                   />
                 </div>

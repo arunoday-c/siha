@@ -5,7 +5,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -18,7 +18,7 @@ import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { MainContext, Upload } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
 import { AlgaehMessagePop } from "algaeh-react-components";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 const { Dragger } = Upload;
 class ApplyLeave extends Component {
   constructor(props) {
@@ -1038,6 +1038,7 @@ class ApplyLeave extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
                           ),
+                          filterable: true,
                           others: {
                             minWidth: 120,
                           },
@@ -1073,7 +1074,26 @@ class ApplyLeave extends Component {
                               </span>
                             );
                           },
-
+                          filterable: true,
+                          filterType: "choices",
+                          choices: [
+                            {
+                              name: "Pending",
+                              value: "PEN",
+                            },
+                            {
+                              name: "Approved",
+                              value: "APR",
+                            },
+                            {
+                              name: "Rejected",
+                              value: "REJ",
+                            },
+                            {
+                              name: "Cancelled",
+                              value: "CAN",
+                            },
+                          ],
                           others: {
                             maxWidth: 80,
                           },
@@ -1083,6 +1103,9 @@ class ApplyLeave extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
                           ),
+
+                          filterable: true,
+
                           others: {
                             maxWidth: 150,
                           },
@@ -1095,6 +1118,8 @@ class ApplyLeave extends Component {
                               label={{ forceLabel: "Leave Reason" }}
                             />
                           ),
+                          filterable: true,
+
                           displayTemplate: (row) => {
                             return (
                               <span>
@@ -1127,6 +1152,8 @@ class ApplyLeave extends Component {
                               label={{ forceLabel: "Requested On" }}
                             />
                           ),
+                          filterable: true,
+
                           displayTemplate: (row) => {
                             return (
                               <span>
@@ -1142,6 +1169,7 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "from_date",
+                          filterable: true,
 
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave From" }} />
@@ -1160,6 +1188,7 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "actual_to_date",
+                          filterable: true,
 
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave To" }} />
@@ -1185,6 +1214,18 @@ class ApplyLeave extends Component {
                               label={{ forceLabel: "Auth. Level 1" }}
                             />
                           ),
+                          filterable: true,
+                          filterType: "choices",
+                          choices: [
+                            {
+                              name: "Done",
+                              value: "Y",
+                            },
+                            {
+                              name: "Pending",
+                              value: "N",
+                            },
+                          ],
                           displayTemplate: (row) => {
                             return (
                               <span>
@@ -1198,7 +1239,18 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "authorized2",
-
+                          filterable: true,
+                          filterType: "choices",
+                          choices: [
+                            {
+                              name: "Done",
+                              value: "Y",
+                            },
+                            {
+                              name: "Pending",
+                              value: "N",
+                            },
+                          ],
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Auth. Level 2" }}
@@ -1217,7 +1269,18 @@ class ApplyLeave extends Component {
                         },
                         {
                           fieldName: "authorized3",
-
+                          filterable: true,
+                          filterType: "choices",
+                          choices: [
+                            {
+                              name: "Done",
+                              value: "Y",
+                            },
+                            {
+                              name: "Pending",
+                              value: "N",
+                            },
+                          ],
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Auth. Level 3" }}
@@ -1236,11 +1299,11 @@ class ApplyLeave extends Component {
                         },
                       ]}
                       keyId="hims_f_leave_application_id"
-                      dataSource={{
-                        data: this.state.leave_his,
-                      }}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 20 }}
+                      data={this.state.leave_his}
+                      pagination={true}
+                      isFilterable={true}
+                      // isEditable={false}
+                      // paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onEdit: () => {},
                         onDelete: () => {},

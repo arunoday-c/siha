@@ -5,7 +5,7 @@ import { MainContext } from "algaeh-react-components";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -15,7 +15,7 @@ import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { generateLoanEmiReport } from "./LoanAuthorizationEvent.js";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 class LoanAuthorization extends Component {
   constructor(props) {
     super(props);
@@ -200,10 +200,6 @@ class LoanAuthorization extends Component {
       hospital_id: userToken.hims_d_hospital_id,
     });
   }
-
-
-
-
 
   render() {
     return (
@@ -400,16 +396,25 @@ class LoanAuthorization extends Component {
                         ),
                         displayTemplate: (row) => {
                           return row.loan_authorized === "APR" ? (
-                            <i className="fas fa-eye" onClick={() => {
-                              this.setState({
-                                selRow: row,
-                                openAuth: true,
-                              });
-                            }}/>
-                          ) : 
-                          row.loan_authorized === "IS" ? 
-                          (<i className="fas fa-print" onClick={generateLoanEmiReport.bind(this,this, row)}/>) : 
-                          (
+                            <i
+                              className="fas fa-eye"
+                              onClick={() => {
+                                this.setState({
+                                  selRow: row,
+                                  openAuth: true,
+                                });
+                              }}
+                            />
+                          ) : row.loan_authorized === "IS" ? (
+                            <i
+                              className="fas fa-print"
+                              onClick={generateLoanEmiReport.bind(
+                                this,
+                                this,
+                                row
+                              )}
+                            />
+                          ) : (
                             <i
                               className="fas fa-file-signature"
                               onClick={() => {
@@ -454,6 +459,26 @@ class LoanAuthorization extends Component {
                             </span>
                           );
                         },
+                        filterable: true,
+                        filterType: "choices",
+                        choices: [
+                          {
+                            name: "Pending",
+                            value: "PEN",
+                          },
+                          {
+                            name: "Approved",
+                            value: "APR",
+                          },
+                          {
+                            name: "Rejected",
+                            value: "REJ",
+                          },
+                          {
+                            name: "Issued",
+                            value: "IS",
+                          },
+                        ],
                       },
                       {
                         fieldName: "loan_closed",
@@ -473,6 +498,7 @@ class LoanAuthorization extends Component {
                             </span>
                           );
                         },
+                        filterable: true,
                       },
                       {
                         fieldName: "loan_application_number",
@@ -481,6 +507,7 @@ class LoanAuthorization extends Component {
                             label={{ forceLabel: "Application Code" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "loan_application_date",
@@ -489,6 +516,7 @@ class LoanAuthorization extends Component {
                             label={{ forceLabel: "Application Date" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -504,12 +532,14 @@ class LoanAuthorization extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "employee_code",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "EmployeeCode" }} />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "employee_name",
@@ -518,14 +548,15 @@ class LoanAuthorization extends Component {
                             label={{ forceLabel: "Employee Name" }}
                           />
                         ),
+                        filterable: true,
                       },
                     ]}
                     keyId="hims_f_loan_application_id"
-                    dataSource={{ data: this.state.loan_applns }}
-                    isEditable={false}
-                    filter={true}
+                    data={this.state.loan_applns ? this.state.loan_applns : []}
+                    pagination={true}
+                    isFilterable={true}
                     loading={this.state.loading}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    // paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
                     others={{}}
                   />

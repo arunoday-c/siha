@@ -9,7 +9,7 @@ import moment from "moment";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -19,7 +19,7 @@ import { getYears } from "../../../../utils/GlobalFunctions";
 import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 class LeaveYearlyProcess extends Component {
   constructor(props) {
     super(props);
@@ -475,6 +475,7 @@ class LeaveYearlyProcess extends Component {
                         others: {
                           maxWidth: 70,
                         },
+                        filterable: true,
                       },
                       {
                         fieldName: "employee_code",
@@ -484,6 +485,7 @@ class LeaveYearlyProcess extends Component {
                         others: {
                           maxWidth: 120,
                         },
+                        filterable: true,
                       },
                       {
                         fieldName: "employee_name",
@@ -495,6 +497,7 @@ class LeaveYearlyProcess extends Component {
                         others: {
                           style: { textAlign: "left" },
                         },
+                        filterable: true,
                       },
                       {
                         fieldName: "group_description",
@@ -503,6 +506,7 @@ class LeaveYearlyProcess extends Component {
                             label={{ forceLabel: "Employee Group" }}
                           />
                         ),
+                        filterable: true,
                         others: {
                           maxWidth: 150,
                         },
@@ -514,6 +518,7 @@ class LeaveYearlyProcess extends Component {
                             label={{ forceLabel: "Department Name" }}
                           />
                         ),
+                        filterable: true,
                         others: {
                           maxWidth: 150,
                         },
@@ -525,19 +530,20 @@ class LeaveYearlyProcess extends Component {
                             label={{ forceLabel: "Sub Dept. Name" }}
                           />
                         ),
+                        filterable: true,
                         others: {
                           maxWidth: 150,
                         },
                       },
                     ]}
                     keyId="hims_f_employee_monthly_leave_id"
-                    dataSource={{ data: this.state.leave_data }}
-                    isEditable={false}
-                    filter={true}
+                    data={this.state.leave_data}
+                    pagination={true}
+                    isFilterable={true}
                     loading={this.state.loading}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
+                    // paging={{ page: 0, rowsPerPage: 10 }}
+                    // events={{}}
+                    // others={{}}
                   />
                 </div>
               </div>

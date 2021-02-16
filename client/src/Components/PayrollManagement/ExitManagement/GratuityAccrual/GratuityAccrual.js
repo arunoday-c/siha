@@ -5,7 +5,7 @@ import "./GratuityAccrual.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -18,7 +18,7 @@ import {
 } from "./GratuityAccrualEvent";
 import { MainContext } from "algaeh-react-components";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 export default class GratuityAccrual extends Component {
   constructor(props) {
     super(props);
@@ -186,6 +186,7 @@ export default class GratuityAccrual extends Component {
                             label={{ forceLabel: "Employee Code" }}
                           />
                         ),
+                        filterable: true,
                         others: {
                           maxWidth: 150,
                         },
@@ -197,6 +198,7 @@ export default class GratuityAccrual extends Component {
                             label={{ forceLabel: "Employee Name" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "month",
@@ -228,9 +230,10 @@ export default class GratuityAccrual extends Component {
                       },
                     ]}
                     keyId=""
-                    filter={true}
-                    dataSource={{ data: this.state.gratuity_details }}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    pagination={true}
+                    isFilterable={true}
+                    data={this.state.gratuity_details}
+                    // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>

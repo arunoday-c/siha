@@ -9,7 +9,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -21,7 +21,7 @@ import moment from "moment";
 import Options from "../../../../Options.json";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 class ApplyLeaveEncashment extends Component {
   constructor(props) {
     super(props);
@@ -599,6 +599,22 @@ class ApplyLeaveEncashment extends Component {
                               "-------"
                             );
                           },
+                          filterable: true,
+                          filterType: "choices",
+                          choices: [
+                            {
+                              name: "Pending",
+                              value: "PEN",
+                            },
+                            {
+                              name: "Approved",
+                              value: "APR",
+                            },
+                            {
+                              name: "Rejected",
+                              value: "REJ",
+                            },
+                          ],
                         },
                         {
                           fieldName: "encashment_number",
@@ -607,6 +623,7 @@ class ApplyLeaveEncashment extends Component {
                               label={{ forceLabel: "Encashment Number" }}
                             />
                           ),
+                          filterable: true,
                         },
                         {
                           fieldName: "encashment_date",
@@ -615,6 +632,8 @@ class ApplyLeaveEncashment extends Component {
                               label={{ forceLabel: "Encashment Date" }}
                             />
                           ),
+                          filterable: true,
+
                           displayTemplate: (row) => {
                             return (
                               <span>
@@ -630,6 +649,7 @@ class ApplyLeaveEncashment extends Component {
                               label={{ forceLabel: "Leave Description" }}
                             />
                           ),
+                          filterable: true,
                         },
                         {
                           fieldName: "close_balance",
@@ -654,6 +674,8 @@ class ApplyLeaveEncashment extends Component {
                               label={{ forceLabel: "Encashment Amount" }}
                             />
                           ),
+                          filterable: true,
+
                           displayTemplate: (row) => {
                             return (
                               <span>{GetAmountFormart(row.leave_amount)}</span>
@@ -662,8 +684,10 @@ class ApplyLeaveEncashment extends Component {
                         },
                       ]}
                       keyId="leave_id"
-                      dataSource={{ data: this.state.encashDetail }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      data={this.state.encashDetail}
+                      pagination={true}
+                      isFilterable={true}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
                     />
                   </div>
                 </div>

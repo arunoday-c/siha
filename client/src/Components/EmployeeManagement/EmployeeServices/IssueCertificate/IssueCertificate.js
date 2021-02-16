@@ -8,13 +8,14 @@ import "./IssueCertificate.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { MainContext } from "algaeh-react-components";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import { AlgaehButton } from "algaeh-react-components";
+import { AlgaehDataGrid } from "algaeh-react-components";
 class IssueCertificate extends Component {
   constructor(props) {
     super(props);
@@ -318,6 +319,7 @@ class IssueCertificate extends Component {
                           others: {
                             maxWidth: 150,
                           },
+                          filterable: true,
                         },
                         {
                           fieldName: "employee_name",
@@ -326,6 +328,7 @@ class IssueCertificate extends Component {
                               label={{ forceLabel: "Employee Name" }}
                             />
                           ),
+                          filterable: true,
                           others: {
                             style: {
                               textAlign: "left",
@@ -339,6 +342,7 @@ class IssueCertificate extends Component {
                               label={{ forceLabel: "Requested Date" }}
                             />
                           ),
+                          filterable: true,
                           displayTemplate: (row) => (
                             <spna>
                               {moment(row.request_date, "YYYYMMDD").format(
@@ -357,14 +361,15 @@ class IssueCertificate extends Component {
                               label={{ forceLabel: "Requested For" }}
                             />
                           ),
+                          filterable: true,
                         },
                       ]}
-                      filter={true}
-                      dataSource={{
-                        data: this.state.allIssuedCertificates,
-                      }}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // filter={true}
+
+                      data={this.state.allIssuedCertificates}
+                      pagination={true}
+                      isFilterable={true}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
                     />
                   </div>
                 </div>

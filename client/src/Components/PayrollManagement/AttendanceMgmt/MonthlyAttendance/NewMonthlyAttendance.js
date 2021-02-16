@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import "./MonthlyAttendance.scss";
-import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import MonthlyDetail from "./MonthlyDetail/MonthlyDetail";
 import MonthModify from "./MonthlyModify/MonthlyModify";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 export default class NewMonthlyAttendance extends Component {
   constructor(props) {
     super(props);
@@ -312,6 +312,7 @@ export default class NewMonthlyAttendance extends Component {
                           maxWidth: 200,
                           fixed: "left",
                         },
+                        filterable: true,
                       },
                       {
                         fieldName: "employee_code",
@@ -320,12 +321,14 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Employee Code" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "total_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Total Days" }} />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "total_work_days",
@@ -334,24 +337,28 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Total Work Days" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "display_present_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Present Days" }} />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "absent_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Absent Days" }} />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "paid_leave",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Paid Leaves" }} />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "unpaid_leave",
@@ -360,6 +367,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Unpaid Leaves" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "pending_unpaid_leave",
@@ -368,6 +376,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Pending Unpaid Leaves" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -385,6 +394,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Total Paid Days" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "total_holidays",
@@ -393,6 +403,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Total Holidays" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "total_weekoff_days",
@@ -401,6 +412,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Total Week Off Days" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "total_working_hours",
@@ -409,6 +421,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Total Working Hours" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -426,6 +439,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Total Worked Hours" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -441,6 +455,7 @@ export default class NewMonthlyAttendance extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "OT Hours" }} />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -458,6 +473,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Shortage Hours" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -473,6 +489,7 @@ export default class NewMonthlyAttendance extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -488,6 +505,7 @@ export default class NewMonthlyAttendance extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -505,6 +523,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Previous Month Shortage" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -522,6 +541,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Previous Month OT" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -539,6 +559,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Previous Month Weekoff OT" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -556,6 +577,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Previous Month Holiday OT" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -567,11 +589,10 @@ export default class NewMonthlyAttendance extends Component {
                         },
                       },
                     ]}
-                    dataSource={{
-                      data: this.state.data,
-                    }}
-                    filter={true}
-                    paging={{ page: 0, rowsPerPage: 20 }}
+                    data={this.state.data}
+                    pagination={true}
+                    isFilterable={true}
+                    // paging={{ page: 0, rowsPerPage: 20 }}
                     loading={this.state.loader || this.state.displayLoader}
                   />
                 </div>

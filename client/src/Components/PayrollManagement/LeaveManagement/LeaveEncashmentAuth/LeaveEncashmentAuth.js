@@ -23,14 +23,14 @@ import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import EncashmentAuthDtls from "./EncashmentAuthDtls";
 import { MainContext } from "algaeh-react-components";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 class LeaveEncashmentAuth extends Component {
   constructor(props) {
     super(props);
@@ -438,6 +438,26 @@ class LeaveEncashmentAuth extends Component {
                             </span>
                           );
                         },
+                        filterable: true,
+                        filterType: "choices",
+                        choices: [
+                          {
+                            name: "Pending",
+                            value: "PEN",
+                          },
+                          {
+                            name: "Approved",
+                            value: "APR",
+                          },
+                          {
+                            name: "Rejected",
+                            value: "REJ",
+                          },
+                          {
+                            name: "Cancelled",
+                            value: "CAN",
+                          },
+                        ],
                       },
                       {
                         fieldName: "employee_code",
@@ -446,6 +466,7 @@ class LeaveEncashmentAuth extends Component {
                             label={{ forceLabel: "Employee Code" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "full_name",
@@ -454,18 +475,21 @@ class LeaveEncashmentAuth extends Component {
                             label={{ forceLabel: "Employee Name" }}
                           />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "designation",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Designation" }} />
                         ),
+                        filterable: true,
                       },
                       {
                         fieldName: "encashment_number",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Request Code" }} />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span className="pat-code">
@@ -481,6 +505,7 @@ class LeaveEncashmentAuth extends Component {
                             label={{ forceLabel: "Applied Leave" }}
                           />
                         ),
+                        filterable: true,
                       },
 
                       {
@@ -490,6 +515,7 @@ class LeaveEncashmentAuth extends Component {
                             label={{ forceLabel: "Encashment Date" }}
                           />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>{dateFormater(row.encashment_date)}</span>
@@ -501,6 +527,7 @@ class LeaveEncashmentAuth extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Applied Days" }} />
                         ),
+                        filterable: true,
                       },
 
                       {
@@ -508,6 +535,7 @@ class LeaveEncashmentAuth extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Total Amount" }} />
                         ),
+                        filterable: true,
                         displayTemplate: (row) => {
                           return (
                             <span>{GetAmountFormart(row.total_amount)}</span>
@@ -516,11 +544,11 @@ class LeaveEncashmentAuth extends Component {
                       },
                     ]}
                     keyId="hims_f_leave_encash_header_id"
-                    dataSource={{ data: this.state.EncashHeader }}
-                    isEditable={false}
-                    filter={true}
+                    data={this.state.EncashHeader}
+                    pagination={true}
+                    isFilterable={true}
                     loading={this.state.loading}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>

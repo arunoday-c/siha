@@ -4,7 +4,6 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import EmployeeSearch from "../../../common/EmployeeSearch";
 import {
@@ -18,7 +17,7 @@ import { MainContext } from "algaeh-react-components";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 export default class MiscEarningsDeductions extends Component {
   constructor(props) {
     super(props);
@@ -115,7 +114,7 @@ export default class MiscEarningsDeductions extends Component {
         }
       },
 
-      onFailure: (err) => { },
+      onFailure: (err) => {},
     });
   }
 
@@ -254,14 +253,14 @@ export default class MiscEarningsDeductions extends Component {
 
     type === "B"
       ? (data = {
-        component_type: type,
-        component_category: "E",
-        miscellaneous_component: "Y",
-      })
+          component_type: type,
+          component_category: "E",
+          miscellaneous_component: "Y",
+        })
       : (data = {
-        component_category: type,
-        miscellaneous_component: "Y",
-      });
+          component_category: type,
+          miscellaneous_component: "Y",
+        });
 
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
@@ -652,6 +651,7 @@ export default class MiscEarningsDeductions extends Component {
                                 }}
                               />
                             ),
+                            filterable: true,
                             displayTemplate: (row) => {
                               return (
                                 <span>
@@ -660,10 +660,10 @@ export default class MiscEarningsDeductions extends Component {
                                       Processed
                                     </span>
                                   ) : (
-                                      <span className="badge badge-warning">
-                                        Not Processed
-                                      </span>
-                                    )}
+                                    <span className="badge badge-warning">
+                                      Not Processed
+                                    </span>
+                                  )}
                                 </span>
                               );
                             },
@@ -675,16 +675,27 @@ export default class MiscEarningsDeductions extends Component {
                                       Processed
                                     </span>
                                   ) : (
-                                      <span className="badge badge-warning">
-                                        Not Processed
-                                      </span>
-                                    )}
+                                    <span className="badge badge-warning">
+                                      Not Processed
+                                    </span>
+                                  )}
                                 </span>
                               );
                             },
                             others: {
                               maxWidth: 150,
                             },
+                            filterType: "choices",
+                            choices: [
+                              {
+                                name: "Processed",
+                                value: "Y",
+                              },
+                              {
+                                name: "Not Processed",
+                                value: "N",
+                              },
+                            ],
                           },
                           {
                             fieldName: "year",
@@ -700,6 +711,7 @@ export default class MiscEarningsDeductions extends Component {
                             others: {
                               maxWidth: 110,
                             },
+                            filterable: true,
                           },
                           {
                             fieldName: "month",
@@ -740,6 +752,7 @@ export default class MiscEarningsDeductions extends Component {
                             others: {
                               maxWidth: 110,
                             },
+                            filterable: true,
                           },
                           {
                             fieldName: "category",
@@ -757,8 +770,8 @@ export default class MiscEarningsDeductions extends Component {
                                   {row.category === "D"
                                     ? "Deduction"
                                     : row.category === "E"
-                                      ? "Earning"
-                                      : "Bonus"}
+                                    ? "Earning"
+                                    : "Bonus"}
                                 </span>
                               );
                             },
@@ -768,14 +781,15 @@ export default class MiscEarningsDeductions extends Component {
                                   {row.category === "D"
                                     ? "Deduction"
                                     : row.category === "E"
-                                      ? "Earning"
-                                      : "Bonus"}
+                                    ? "Earning"
+                                    : "Bonus"}
                                 </span>
                               );
                             },
                             others: {
                               maxWidth: 180,
                             },
+                            filterable: true,
                           },
                           {
                             fieldName: "earning_deduction_description",
@@ -788,6 +802,7 @@ export default class MiscEarningsDeductions extends Component {
                               />
                             ),
                             disabled: true,
+                            filterable: true,
                           },
                           {
                             fieldName: "amount",
@@ -800,7 +815,7 @@ export default class MiscEarningsDeductions extends Component {
                               />
                             ),
                             others: { maxWidth: 150 },
-
+                            filterable: true,
                             // displayTemplate: row => {
                             //   return (
                             //     <span> {getAmountFormart(row.amount)}</span>
@@ -827,7 +842,7 @@ export default class MiscEarningsDeductions extends Component {
                                       onBlur: this.changeAmount.bind(this, row),
                                       disabled:
                                         row.salary_processed === "N" ||
-                                          row.salary_processed === null
+                                        row.salary_processed === null
                                           ? false
                                           : true,
                                     },
@@ -863,16 +878,14 @@ export default class MiscEarningsDeductions extends Component {
                           },
                         ]}
                         keyId="algaeh_d_module_id"
-                        dataSource={{
-                          data: this.state.employee_miscellaneous,
-                        }}
+                        data={this.state.employee_miscellaneous}
                         isEditable={false}
-                        filter={true}
+                        pagination={true}
+                        isFilterable={true}
                         loading={this.state.loading}
-                        paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => { },
-                          onDelete: () => { },
+                          onEdit: () => {},
+                          onDelete: () => {},
                           onDone: this.addEarningsForEmployee.bind(this),
                         }}
                       />

@@ -7,7 +7,7 @@ import "./ProjectPayroll.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 
 import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -15,7 +15,7 @@ import moment from "moment";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import ProjectPayrollEvents from "./ProjectPayrollEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehDataGrid } from "algaeh-react-components";
 import ProjectPayrollSalaryBreakup from "./ProjectPayrollSalaryBreakup";
 // import { getBranchDetails, getHospitals } from "./ProjectPayrollEvents";
 
@@ -365,6 +365,7 @@ class ProjectPayroll extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />
                           ),
+                          filterable: true,
                           others: {
                             maxWidth: 80,
                           },
@@ -374,6 +375,7 @@ class ProjectPayroll extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Emp. Name" }} />
                           ),
+                          filterable: true,
                           others: {
                             style: {
                               textAlign: "left",
@@ -403,6 +405,7 @@ class ProjectPayroll extends Component {
                               label={{ forceLabel: "Designation " }}
                             />
                           ),
+                          filterable: true,
                           others: {
                             maxWidth: 130,
                           },
@@ -606,6 +609,7 @@ class ProjectPayroll extends Component {
                               label={{ forceLabel: "Project Name" }}
                             />
                           ),
+                          filterable: true,
                           others: {
                             style: {
                               textAlign: "left",
@@ -614,10 +618,12 @@ class ProjectPayroll extends Component {
                         },
                       ]}
                       keyId="projectPayrollGrid"
-                      dataSource={{ data: this.state.project_wise_payroll }}
-                      isEditable={false}
-                      filter={true}
-                      paging={{ page: 0, rowsPerPage: 20 }}
+                      data={this.state.project_wise_payroll}
+                      // isEditable={false}
+                      // filter={true}
+                      // paging={{ page: 0, rowsPerPage: 20 }}
+                      pagination={true}
+                      isFilterable={true}
                       events={{}}
                       others={{}}
                     />

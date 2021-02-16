@@ -4,7 +4,6 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import EmployeeSearch from "../../../common/EmployeeSearch";
 import {
@@ -17,7 +16,7 @@ import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
-
+import { AlgaehDataGrid } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
 export default class MiscEarningsDeductionsNew extends Component {
   constructor(props) {
@@ -813,6 +812,18 @@ export default class MiscEarningsDeductionsNew extends Component {
                             others: {
                               maxWidth: 150,
                             },
+                            filterable: true,
+                            filterType: "choices",
+                            choices: [
+                              {
+                                name: "Processed",
+                                value: "Y",
+                              },
+                              {
+                                name: "Not Processed",
+                                value: "N",
+                              },
+                            ],
                           },
                           // {
                           //   fieldName: "sub_department_name",
@@ -849,6 +860,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                               maxWidth: 150,
                             },
                             disabled: true,
+                            filterable: true,
                           },
                           {
                             fieldName: "employee_name",
@@ -861,6 +873,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                               />
                             ),
                             disabled: true,
+                            filterable: true,
                           },
                           {
                             fieldName: "amount",
@@ -873,6 +886,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                               />
                             ),
                             others: { maxWidth: 150 },
+                            filterable: true,
 
                             displayTemplate: (row) => {
                               return (
@@ -908,13 +922,12 @@ export default class MiscEarningsDeductionsNew extends Component {
                           },
                         ]}
                         keyId="algaeh_d_module_id"
-                        dataSource={{
-                          data: this.state.employees,
-                        }}
+                        data={this.state.employees}
                         isEditable={false}
-                        filter={true}
+                        pagination={true}
+                        isFilterable={true}
                         loading={this.state.loading}
-                        paging={{ page: 0, rowsPerPage: 10 }}
+                        // paging={{ page: 0, rowsPerPage: 10 }}
                         actions={{
                           allowDelete: false,
                         }}
