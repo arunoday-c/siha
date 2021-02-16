@@ -102,41 +102,62 @@ export function getProjects(hospital_id) {
     }
   });
 }
-export function generateReport($this) {
-  algaehApiCall({
-    uri: "/excelReport",
-    // uri: "/excelReport",
-    method: "GET",
-    module: "reports",
-    headers: {
-      Accept: "blob",
-    },
-    others: { responseType: "blob" },
-    data: {
-      report: {
-        // reportName: "pharmItemMomentEnquiryReport",
-        pageOrentation: "landscape",
-        // excelTabName: ,
-        excelHeader: false,
-        reportParams: [inputObj],
-        // outputFileType: "EXCEL", //"EXCEL", //"PDF",
-      },
-    },
-    onSuccess: (res) => {
-      // if ($this.state.exportAsPdf === "Y") {
-      //   const urlBlob = URL.createObjectURL(res.data);
-      //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Inventory Item Master`;
-      //   window.open(origin);
-      // } else {
-      //   const urlBlob = URL.createObjectURL(res.data);
-      //   const a = document.createElement("a");
-      //   a.href = urlBlob;
-      //   a.download = `Inventory Item Master.${"xlsx"}`;
-      //   a.click();
-      // }
-    },
+
+export function generateReports(hospital_id) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/excelReport",
+        // uri: "/excelReport",
+        method: "GET",
+        module: "reports",
+        headers: {
+          Accept: "blob",
+        },
+        others: { responseType: "blob" },
+        data: {
+          report: {
+            // reportName: "pharmItemMomentEnquiryReport",
+            pageOrentation: "landscape",
+            // excelTabName: ,
+            excelHeader: false,
+            // reportParams: [inputObj],
+            // outputFileType: "EXCEL", //"EXCEL", //"PDF",
+          },
+        },
+
+        onSuccess: (response) => {
+          // const { success, records, message } = response.data;
+
+          resolve();
+          // if ($this.state.exportAsPdf === "Y") {
+          //   const urlBlob = URL.createObjectURL(res.data);
+          //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Inventory Item Master`;
+          //   window.open(origin);
+          // } else {
+          //   const urlBlob = URL.createObjectURL(res.data);
+          //   const a = document.createElement("a");
+          //   a.href = urlBlob;
+          //   a.download = `Inventory Item Master.${"xlsx"}`;
+          //   a.click();
+          // }
+          // },
+          // if (success === true) {
+          //   resolve(records);
+          // } else {
+          //   reject(new Error(message));
+          // }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
   });
 }
+
 export function createReport(input, options) {
   return new Promise((resolve, reject) => {
     try {
