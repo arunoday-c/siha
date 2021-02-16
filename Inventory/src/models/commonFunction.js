@@ -34,7 +34,10 @@ let updateIntoInvItemLocation = (req, res, next) => {
     new LINQ(inputParam.inventory_stock_detail)
       .Select((s) => {
         let unit_cost =
-          req.body.transaction_type == "DNA" ? s.average_cost : s.unit_cost;
+          req.body.transaction_type == "DNA" ||
+          req.body.transaction_type == "SDN"
+            ? s.average_cost
+            : s.unit_cost;
         xmlQuery += "<hims_m_inventory_item_location>";
         xmlQuery += createXmlString({
           item_id: s.item_id,
