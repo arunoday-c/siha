@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./EmployeeDocuments.scss";
 import { MainContext } from "algaeh-react-components";
 import swal from "sweetalert2";
-
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import {
   AlagehFormGroup,
   AlgaehLabel,
@@ -63,19 +63,21 @@ class EmployeeDocuments extends Component {
       _document_type_name = _unique[_unique.length - 1];
     }
     eventLogic()
-      .saveDocumentDetails({
-        document_id: _document_id,
-        document_type: _type,
-        employee_id: this.state.employee_id,
-        document_name: fileName,
-        dependent_id: this.state.selected_id,
-        download_uniq_id: uniqueID,
-        document_type_name: _document_type_name,
-        file: file,
-      })
+      .saveDocument(file, uniqueID)
       .then((result) => {
+        eventLogic();
         eventLogic()
-          .saveDocument(file, uniqueID, result.insertId)
+          .saveDocumentDetails({
+            document_id: _document_id,
+            document_type: _type,
+            employee_id: this.state.employee_id,
+            document_name: fileName,
+            dependent_id: this.state.selected_id,
+            download_uniq_id: uniqueID,
+            document_type_name: _document_type_name,
+            file: file,
+            unique_id_fromMongo: result,
+          })
           .then((result) => {
             eventLogic()
               .getSaveDocument({
@@ -256,58 +258,58 @@ class EmployeeDocuments extends Component {
         //   }
         // });
 
+        // eventLogic()
+        //   .getSelectedDocument(data)
+        //   .then((result) => {
         eventLogic()
-          .getSelectedDocument(data)
-          .then((result) => {
-            eventLogic()
-              .onDelete(result)
-              .then(
-                swalMessage({
-                  title: "Successfully Deleted",
-                  type: "success",
-                }),
+          .onDelete(data)
+          .then(
+            swalMessage({
+              title: "Successfully Deleted",
+              type: "success",
+            }),
 
+            eventLogic()
+              .deleteSavedDocument(data)
+              .then((result) => {
                 eventLogic()
-                  .deleteSavedDocument(data)
+                  .getSaveDocument({
+                    document_type: this.state.document_type,
+                    employee_id: this.state.employee_id,
+                    dependent_id: this.state.selected_id,
+                  })
                   .then((result) => {
-                    eventLogic()
-                      .getSaveDocument({
-                        document_type: this.state.document_type,
-                        employee_id: this.state.employee_id,
-                        dependent_id: this.state.selected_id,
-                      })
-                      .then((result) => {
-                        this.setState({
-                          document_grid: result,
-                        });
-                      })
-                      .catch((error) => {
-                        swalMessage({
-                          title: error.message,
-                          type: "error",
-                        });
-                      });
+                    this.setState({
+                      document_grid: result,
+                    });
                   })
                   .catch((error) => {
                     swalMessage({
                       title: error.message,
                       type: "error",
                     });
-                  })
-              )
+                  });
+              })
               .catch((error) => {
                 swalMessage({
                   title: error.message,
                   type: "error",
                 });
-              });
-          })
+              })
+          )
           .catch((error) => {
             swalMessage({
               title: error.message,
               type: "error",
             });
           });
+        // })
+        // .catch((error) => {
+        //   swalMessage({
+        //     title: error.message,
+        //     type: "error",
+        //   });
+        // });
       }
     });
   }
@@ -540,6 +542,7 @@ class EmployeeDocuments extends Component {
     });
   }
   downloadSelectedFile(row, isPreview) {
+    AlgaehLoader({ show: true });
     eventLogic().downloadDoc(row, isPreview);
   }
 

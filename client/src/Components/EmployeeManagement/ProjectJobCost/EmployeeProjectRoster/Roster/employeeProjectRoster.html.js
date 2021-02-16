@@ -10,6 +10,7 @@ import {
   getEmployeesForProjectRoster,
   getProjects,
   // createReport,
+  generateReports,
 } from "./employeeProjectRoster.event";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import "../EmployeeProjectRoster.scss";
@@ -214,8 +215,8 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                      <Table ref={tableRef} editing={editingProjectRoster} />
-                    )}
+                    <Table ref={tableRef} editing={editingProjectRoster} />
+                  )}
                 </div>
               </div>
             </div>
@@ -248,6 +249,15 @@ export default function EmpProjectRoster(props) {
                 }}
               >
                 Assign New Project
+              </button>
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={() => {
+                  generateReports(this, this);
+                }}
+              >
+                Export as Excel
               </button>
               {/* <button type="button" className="btn btn-default">
               Download as Excel

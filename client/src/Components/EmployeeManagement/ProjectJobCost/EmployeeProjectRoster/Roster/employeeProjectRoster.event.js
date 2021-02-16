@@ -4,12 +4,8 @@ import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 function getInputDates(inputs) {
   let yearMonth = inputs.year + "-" + inputs.month + "-01";
 
-  const fromDate = moment(yearMonth)
-    .startOf("month")
-    .format("YYYY-MM-DD");
-  const toDate = moment(yearMonth)
-    .endOf("month")
-    .format("YYYY-MM-DD");
+  const fromDate = moment(yearMonth).startOf("month").format("YYYY-MM-DD");
+  const toDate = moment(yearMonth).endOf("month").format("YYYY-MM-DD");
   return { fromDate, toDate };
 }
 
@@ -23,10 +19,10 @@ export function getEmployeesForProjectRoster(inputs) {
         department_id,
         designation_id,
         group_id,
-        hospitals
+        hospitals,
       } = inputs;
       const { fromDate, toDate } = getInputDates(inputs);
-      let inputObj = {}
+      let inputObj = {};
 
       if (hospital_id === -1) {
         const all_branches = hospitals.map((item) => {
@@ -42,7 +38,7 @@ export function getEmployeesForProjectRoster(inputs) {
           fromDate: fromDate,
           toDate: toDate,
           designation_id: designation_id,
-          employee_group_id: group_id
+          employee_group_id: group_id,
         };
       } else {
         inputObj = {
@@ -54,7 +50,7 @@ export function getEmployeesForProjectRoster(inputs) {
           toDate: toDate,
           designation_id: designation_id,
           employee_group_id: group_id,
-          show_all_status: true
+          show_all_status: true,
         };
       }
       algaehApiCall({
@@ -62,7 +58,7 @@ export function getEmployeesForProjectRoster(inputs) {
         method: "GET",
         module: "hrManagement",
         data: inputObj,
-        onSuccess: res => {
+        onSuccess: (res) => {
           const { success, records } = res.data;
           if (success === true) {
             resolve({ records, fromDate, toDate });
@@ -70,9 +66,9 @@ export function getEmployeesForProjectRoster(inputs) {
             reject(new Error(records.message));
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);
@@ -88,8 +84,7 @@ export function getProjects(hospital_id) {
         module: "hrManagement",
         method: "GET",
         // data: { division_id: hospital_id },
-        onSuccess: response => {
-
+        onSuccess: (response) => {
           const { success, records, message } = response.data;
 
           if (success === true) {
@@ -98,15 +93,71 @@ export function getProjects(hospital_id) {
             reject(new Error(message));
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);
     }
   });
 }
+
+export function generateReports(hospital_id) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/excelReport",
+        // uri: "/excelReport",
+        method: "GET",
+        module: "reports",
+        headers: {
+          Accept: "blob",
+        },
+        others: { responseType: "blob" },
+        data: {
+          report: {
+            // reportName: "pharmItemMomentEnquiryReport",
+            pageOrentation: "landscape",
+            // excelTabName: ,
+            excelHeader: false,
+            // reportParams: [inputObj],
+            // outputFileType: "EXCEL", //"EXCEL", //"PDF",
+          },
+        },
+
+        onSuccess: (response) => {
+          // const { success, records, message } = response.data;
+
+          resolve();
+          // if ($this.state.exportAsPdf === "Y") {
+          //   const urlBlob = URL.createObjectURL(res.data);
+          //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Inventory Item Master`;
+          //   window.open(origin);
+          // } else {
+          //   const urlBlob = URL.createObjectURL(res.data);
+          //   const a = document.createElement("a");
+          //   a.href = urlBlob;
+          //   a.download = `Inventory Item Master.${"xlsx"}`;
+          //   a.click();
+          // }
+          // },
+          // if (success === true) {
+          //   resolve(records);
+          // } else {
+          //   reject(new Error(message));
+          // }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
 export function createReport(input, options) {
   return new Promise((resolve, reject) => {
     try {
@@ -118,12 +169,12 @@ export function createReport(input, options) {
         module: "reports",
         method: "POST",
         header: {
-          Accept: "blob"
+          Accept: "blob",
         },
         others: {
-          responseType: "blob"
+          responseType: "blob",
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           const url = URL.createObjectURL(response.data);
           const a = document.createElement("a");
           a.href = url;
@@ -131,9 +182,9 @@ export function createReport(input, options) {
           a.click();
           resolve();
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);

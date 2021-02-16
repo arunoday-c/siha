@@ -5,7 +5,7 @@ import {
 } from "../../../../utils/algaehApiCall";
 import _ from "lodash";
 import { newAlgaehApi } from "../../../../hooks";
-
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 export default function eventsLogEmployeeDocument() {
   return {
     getEmployeeDetails: () => {
@@ -150,6 +150,7 @@ export default function eventsLogEmployeeDocument() {
           data: {
             contract_no: row.contract_no,
             row: row,
+
             // employeeDoc: true,
           },
         })
@@ -188,7 +189,7 @@ export default function eventsLogEmployeeDocument() {
         })
           .then((res) => {
             if (res.data.success) {
-              resolve([]);
+              resolve(res.data.unique);
             } else {
               resolve([]);
             }
@@ -212,6 +213,7 @@ export default function eventsLogEmployeeDocument() {
           destinationName: doc.download_uniq_id,
           forModule: "EmployeeDocModel",
           download: true,
+          unique_id_fromMongo: doc.unique_id_fromMongo,
         },
       })
         .then((resp) => {
@@ -226,6 +228,7 @@ export default function eventsLogEmployeeDocument() {
             link.click();
             document.body.removeChild(link);
           }
+          AlgaehLoader({ show: false });
         })
         .catch((error) => {
           console.log(error);
@@ -273,7 +276,7 @@ export default function eventsLogEmployeeDocument() {
           uri: "/deleteContractDoc",
           method: "DELETE",
           module: "documentManagement",
-          data: { id: doc._id },
+          data: { id: doc.unique_id_fromMongo, forModule: "EmployeeDocModel" },
         })
           .then((res) => {
             if (res.data.success) {
