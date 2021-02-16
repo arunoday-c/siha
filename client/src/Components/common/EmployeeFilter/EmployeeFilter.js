@@ -81,7 +81,6 @@ export default function EmployeeFilter(props) {
   }, [inputs.sub_department_id]); // eslint-disable-line
 
   function getHospitals() {
-    debugger
     RawSecurityComponent({ componentCode: "ALL_BRANCHES" }).then((result) => {
       if (result === "show") {
         algaehApiCall({
@@ -262,7 +261,6 @@ export default function EmployeeFilter(props) {
   }
 
   function loadFunc() {
-    debugger
     if (inputs.hospital_id) {
       inputs.hospitals = hospitals
       props.loadFunc(inputs);

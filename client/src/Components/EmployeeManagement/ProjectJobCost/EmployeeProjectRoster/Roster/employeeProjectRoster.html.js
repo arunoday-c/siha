@@ -25,7 +25,7 @@ export default function EmpProjectRoster(props) {
     employees,
     total_rosted,
     total_non_rosted,
-    // fromDate,
+    dates,
     // toDate,
     inputs,
   } = getProjectRosterState();
@@ -215,8 +215,8 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                    <Table ref={tableRef} editing={editingProjectRoster} />
-                  )}
+                      <Table ref={tableRef} editing={editingProjectRoster} />
+                    )}
                 </div>
               </div>
             </div>
@@ -253,8 +253,9 @@ export default function EmpProjectRoster(props) {
               <button
                 type="button"
                 className="btn btn-default"
+                disabled={!showAssaign}
                 onClick={() => {
-                  generateReports(this, this);
+                  generateReports(dates, employees);
                 }}
               >
                 Export as Excel

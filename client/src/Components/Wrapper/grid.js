@@ -9,7 +9,7 @@ import moment from "moment";
 import { AlgaehDateHandler, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
-const CreateCsv = React.lazy(() => import("./csvGenerator"));
+// const CreateCsv = React.lazy(() => import("./csvGenerator"));
 
 let ReactTableFixedColumns = withFixedColumns(ReactTable);
 class DataGrid extends Component {
@@ -80,15 +80,15 @@ class DataGrid extends Component {
       }
       return row[id] !== undefined
         ? String(_value.toString().toLowerCase()).includes(
-            filter.value.toLowerCase()
-          )
+          filter.value.toLowerCase()
+        )
         : true;
     } else {
       //startsWith
       return row[id] !== undefined
         ? String(row[id].toString().toLowerCase()).includes(
-            filter.value.toLowerCase()
-          )
+          filter.value.toLowerCase()
+        )
         : true;
     }
   };
@@ -349,15 +349,15 @@ class DataGrid extends Component {
       } else {
         console.warn(
           "No data save from algaeh grid '" +
-            this.props.id +
-            "', Reason no  on done event"
+          this.props.id +
+          "', Reason no  on done event"
         );
       }
     } else {
       console.warn(
         "No data save from algaeh grid '" +
-          this.props.id +
-          "', Reason no events linked"
+        this.props.id +
+        "', Reason no events linked"
       );
     }
   };
@@ -368,7 +368,7 @@ class DataGrid extends Component {
     const _page = pageSizeP * page;
     const _pagaeInput =
       $this.props.dataSource.pageInputExclude !== undefined &&
-      $this.props.dataSource.pageInputExclude === true
+        $this.props.dataSource.pageInputExclude === true
         ? {}
         : { pageSize: pageSizeP, pageNo: _page };
 
@@ -402,7 +402,7 @@ class DataGrid extends Component {
               ) {
                 total_pages = eval(
                   "response.data." +
-                    $this.props.dataSource.responseSchema.totalPages
+                  $this.props.dataSource.responseSchema.totalPages
                 );
               } else {
                 total_pages = dataS.length;
@@ -440,8 +440,8 @@ class DataGrid extends Component {
               s.displayTemplate === undefined
                 ? { accessor: s.fieldName }
                 : {
-                    accessor: (row) => s.displayTemplate(row, this.state.data),
-                  };
+                  accessor: (row) => s.displayTemplate(row, this.state.data),
+                };
             const _assignClass =
               s.className !== undefined ? (row) => s.className(row) : "";
             const _disabled =
@@ -468,14 +468,14 @@ class DataGrid extends Component {
           this.props.actions === undefined
             ? true
             : this.props.actions.allowEdit !== undefined
-            ? this.props.actions.allowEdit
-            : true;
+              ? this.props.actions.allowEdit
+              : true;
         const _allowDeleteButton =
           this.props.actions === undefined
             ? true
             : this.props.actions.allowDelete !== undefined
-            ? this.props.actions.allowDelete
-            : true;
+              ? this.props.actions.allowDelete
+              : true;
 
         if (
           this.props.isEditable !== undefined
@@ -504,12 +504,12 @@ class DataGrid extends Component {
                         onClick={() => this.toggleRowSave(index)}
                       />
                     ) : (
-                      <i
-                        title="Edit Row"
-                        className="fas fa-pen"
-                        onClick={() => this.toggleRowEditable(index)}
-                      />
-                    )
+                        <i
+                          title="Edit Row"
+                          className="fas fa-pen"
+                          onClick={() => this.toggleRowEditable(index)}
+                        />
+                      )
                   ) : null}
                   {_allowDeleteButton ? (
                     edit ? (
@@ -519,12 +519,12 @@ class DataGrid extends Component {
                         onClick={() => this.toggleRowCancel(index)}
                       />
                     ) : (
-                      <i
-                        title="Delete Row"
-                        className="fas fa-trash-alt"
-                        onClick={() => this.toggleRowDelete(index)}
-                      />
-                    )
+                        <i
+                          title="Delete Row"
+                          className="fas fa-trash-alt"
+                          onClick={() => this.toggleRowDelete(index)}
+                        />
+                      )
                   ) : null}
                 </React.Fragment>
               );
@@ -560,7 +560,7 @@ class DataGrid extends Component {
             this.props.dataSource.uri === undefined
               ? this.props.dataSource.data !== undefined
                 ? this.props.dataSource.data.length /
-                  this.props.paging.rowsPerPage
+                this.props.paging.rowsPerPage
                 : 0
               : 0 / this.props.paging.rowsPerPage
           );
@@ -641,14 +641,14 @@ class DataGrid extends Component {
         props.actions === undefined
           ? true
           : props.actions.allowEdit !== undefined
-          ? props.actions.allowEdit
-          : true;
+            ? props.actions.allowEdit
+            : true;
       const _allowDeleteButton =
         props.actions === undefined
           ? true
           : props.actions.allowDelete !== undefined
-          ? props.actions.allowDelete
-          : true;
+            ? props.actions.allowDelete
+            : true;
 
       if (props.isEditable !== undefined && props.isEditable === true) {
         if (_allowEditButton || _allowDeleteButton) {
@@ -671,11 +671,11 @@ class DataGrid extends Component {
                         onClick={() => this.toggleRowSave(index)}
                       />
                     ) : (
-                      <i
-                        className="fas fa-pen"
-                        onClick={() => this.toggleRowEditable(index)}
-                      />
-                    )
+                        <i
+                          className="fas fa-pen"
+                          onClick={() => this.toggleRowEditable(index)}
+                        />
+                      )
                   ) : null}
                   {_allowDeleteButton ? (
                     edit ? (
@@ -684,11 +684,11 @@ class DataGrid extends Component {
                         onClick={() => this.toggleRowCancel(index)}
                       />
                     ) : (
-                      <i
-                        className="fas fa-trash-alt"
-                        onClick={() => this.toggleRowDelete(index)}
-                      />
-                    )
+                        <i
+                          className="fas fa-trash-alt"
+                          onClick={() => this.toggleRowDelete(index)}
+                        />
+                      )
                   ) : null}
                 </React.Fragment>
               );
@@ -899,20 +899,20 @@ class DataGrid extends Component {
     }
   };
 
-  CsvFileHandler() {
-    if (this.props.tool === undefined) {
-      return null;
-    }
-    const { tool, columns } = this.props;
-    return (
-      <CreateCsv
-        fileName={tool.fileName}
-        columns={columns}
-        rows={this.state.data}
-        tool={tool}
-      />
-    );
-  }
+  // CsvFileHandler() {
+  //   if (this.props.tool === undefined) {
+  //     return null;
+  //   }
+  //   const { tool, columns } = this.props;
+  //   return (
+  //     <CreateCsv
+  //       fileName={tool.fileName}
+  //       columns={columns}
+  //       rows={this.state.data}
+  //       tool={tool}
+  //     />
+  //   );
+  // }
 
   render() {
     const _data =
@@ -924,9 +924,9 @@ class DataGrid extends Component {
     const _filter =
       this.props.filter !== undefined
         ? {
-            filterable: this.props.filter,
-            defaultFilterMethod: this.filterCaseInsensitive.bind(this),
-          }
+          filterable: this.props.filter,
+          defaultFilterMethod: this.filterCaseInsensitive.bind(this),
+        }
         : {};
     const _noDataText =
       this.props.noDataText !== undefined
@@ -936,18 +936,18 @@ class DataGrid extends Component {
       this.props.paging !== undefined
         ? this.props.paging.rowsPerPage !== undefined
           ? {
-              defaultPageSize: this.props.paging.rowsPerPage,
-            }
+            defaultPageSize: this.props.paging.rowsPerPage,
+          }
           : {}
         : {};
     const _subComponent =
       this.props.expanded !== undefined
         ? this.props.expanded.detailTemplate !== undefined
           ? {
-              SubComponent: (row) => {
-                return this.props.expanded.detailTemplate(row.original);
-              },
-            }
+            SubComponent: (row) => {
+              return this.props.expanded.detailTemplate(row.original);
+            },
+          }
           : {}
         : {};
     const _onExpandRow =
@@ -955,10 +955,10 @@ class DataGrid extends Component {
         ? this.props.expanded.events !== undefined
           ? this.props.expanded.events.onExpandRow !== undefined
             ? {
-                onExpandRow: (row) => {
-                  this.props.expanded.events.onExpandRow(row.original);
-                },
-              }
+              onExpandRow: (row) => {
+                this.props.expanded.events.onExpandRow(row.original);
+              },
+            }
             : {}
           : {}
         : {};
@@ -976,9 +976,9 @@ class DataGrid extends Component {
     if (this.state.columns !== undefined && this.state.columns.length > 0) {
       return (
         <React.Fragment>
-          <div className="row">
+          {/* <div className="row">
             <div className="col gridToolSec">{this.CsvFileHandler()}</div>
-          </div>
+          </div> */}
           <div id={this.props.id}>
             <ReactTableFixedColumns
               id={this.props.id}
