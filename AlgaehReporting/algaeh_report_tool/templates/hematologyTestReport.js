@@ -59,11 +59,10 @@ const executePDF = function executePDFMethod(options) {
         .then((res) => {
           options.mysql.releaseConnection();
           const header = {
-            ...options.result[0][0],
-            ...options.result[1][0],
+            ..._.head(res[0]),
             ..._.head(res[1]),
           };
-          // console.log("header---", header);
+          console.log("header---", header);
           const result = res[1];
 
           if (result.length > 0) {

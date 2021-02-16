@@ -18,6 +18,7 @@ export default memo(function ({ details }) {
   const [enablePrintButton, setEnablePrintButton] = useState(true);
   const [loading, setLoading] = useState(false);
   function changeSelectStatus(event) {
+    debugger;
     const checkState = event.target.checked;
 
     const test = listOfDetails
@@ -55,7 +56,7 @@ export default memo(function ({ details }) {
     let sentItems = [];
     const recordCheckList = listOfDetails.filter((f) => f.checked === true);
     let reportName = "labMerge";
-    if (reportType === "merge") {
+    if (reportType === "separate") {
       reportExtraParams = { multiMerdgeReport: recordCheckList.length };
 
       recordCheckList.forEach((item) => {
@@ -71,7 +72,6 @@ export default memo(function ({ details }) {
         });
         sentItems.push(myRecords);
       });
-
       reportName = "hematologyTestReport";
     } else {
       const records = recordCheckList.map((m, index) => {
@@ -173,7 +173,7 @@ export default memo(function ({ details }) {
                   </td>
                   <td style={{ textAlign: "left", fontWeight: "bold" }}>
                     {service_name}
-                  </td>{" "}
+                  </td>
                   <td width="150">{category_name}</td>
                   <td width="20">{critical_status === "Y" ? "Yes" : "No"}</td>
                   <td width="120">
@@ -199,7 +199,7 @@ export default memo(function ({ details }) {
         <div className="accFooter">
           <AlgaehButton
             className="btn btn-default btn-sm"
-            report="single"
+            report="merge"
             onClick={showReport}
             disabled={enablePrintButton}
             loading={loading}
@@ -208,7 +208,7 @@ export default memo(function ({ details }) {
           </AlgaehButton>{" "}
           <AlgaehButton
             className="btn btn-default btn-sm"
-            report="merge"
+            report="separate"
             onClick={showReport}
             disabled={enablePrintButton}
             loading={loading}
@@ -234,6 +234,7 @@ function CheckBoxCheck({
     setCheckState(item.checked);
   }, [item.checked]);
   function onChangeHandler(event) {
+    debugger;
     const tarCheck = event.target.checked;
     item.checked = tarCheck;
     setCheckState(tarCheck);

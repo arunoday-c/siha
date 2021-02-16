@@ -1,5 +1,7 @@
 import moment from "moment";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
+// import XLSX from "xlsx";
+import { GenerateExcel } from "../../../../../utils/excelGeneration";
 
 function getInputDates(inputs) {
   let yearMonth = inputs.year + "-" + inputs.month + "-01";
@@ -103,59 +105,160 @@ export function getProjects(hospital_id) {
   });
 }
 
-export function generateReports(hospital_id) {
-  return new Promise((resolve, reject) => {
-    try {
-      algaehApiCall({
-        uri: "/excelReport",
-        // uri: "/excelReport",
-        method: "GET",
-        module: "reports",
-        headers: {
-          Accept: "blob",
-        },
-        others: { responseType: "blob" },
-        data: {
-          report: {
-            // reportName: "pharmItemMomentEnquiryReport",
-            pageOrentation: "landscape",
-            // excelTabName: ,
-            excelHeader: false,
-            // reportParams: [inputObj],
-            // outputFileType: "EXCEL", //"EXCEL", //"PDF",
-          },
-        },
+export function generateReports(dates, employees) {
+  const columns = dates.map((item, index) => {
+    return {
+      label: item,
+      fieldName: item
+    };
+  })
 
-        onSuccess: (response) => {
-          // const { success, records, message } = response.data;
+  let employee_data = []
 
-          resolve();
-          // if ($this.state.exportAsPdf === "Y") {
-          //   const urlBlob = URL.createObjectURL(res.data);
-          //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Inventory Item Master`;
-          //   window.open(origin);
-          // } else {
-          //   const urlBlob = URL.createObjectURL(res.data);
-          //   const a = document.createElement("a");
-          //   a.href = urlBlob;
-          //   a.download = `Inventory Item Master.${"xlsx"}`;
-          //   a.click();
-          // }
-          // },
-          // if (success === true) {
-          //   resolve(records);
-          // } else {
-          //   reject(new Error(message));
-          // }
-        },
-        onCatch: (error) => {
-          reject(error);
-        },
-      });
-    } catch (e) {
-      reject(e);
+  for (let i = 0; i < employees.length; i++) {
+    let Obj = {
+      employee_code: employees[i].employee_code,
+      employee_name: employees[i].employee_name,
+      designation: employees[i].designation
     }
-  });
+    for (let j = 0; j < employees[i].projects.length; j++) {
+      Obj[employees[i].projects[j].attendance_date] = employees[i].projects[j].abbreviation
+    }
+    employee_data.push(Obj)
+  }
+  console.log("columns", columns)
+  GenerateExcel({
+    columns: [{
+      label: "Employee Code",
+      fieldName: "employee_code"
+    },
+    {
+      label: "Employee Name",
+      fieldName: "employee_name"
+    }, {
+      label: "Designation",
+      fieldName: "designation"
+    }].concat(columns),
+    data: employee_data,
+
+    excelBodyRender: (records, cb) => {
+      console.log("records= = ", records);
+
+      records.ledger_code = records.group_code ?? records.ledger_code;
+      cb(records);
+    },
+    sheetName: "Employee Roster",
+  })
+    .then((result) => {
+      // setLoading(false);
+      if (typeof result !== "boolean") {
+        const a: HTMLAnchorElement = document.createElement("a");
+        a.style.display = "none";
+        document.body.appendChild(a);
+        const url: string = window.URL.createObjectURL(result);
+        a.href = url;
+        a.download = `${"Employee Roster"}-${moment()._d}.xlsx`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+
+        if (a && a.parentElement) {
+          a.parentElement.removeChild(a);
+        }
+      }
+    })
+    .catch((error) => {
+      console.error("Error", error);
+      // setLoading(false);
+    });
+
+  // const rows = employees;
+  // const header = dates;
+
+  // const fileName = "Employee Roster"
+  // const tool = ""
+
+  // const wb = XLSX.utils.book_new();
+  // wb.Props = {
+  //   Title: fileName,
+  //   Subject: fileName,
+  //   Author: "Algaeh Technologies",
+  //   CreatedDate: new Date()
+  // };
+  // wb.SheetNames.push(fileName);
+  // const ws = XLSX.utils.json_to_sheet(rows, { header: header });
+  // wb.Sheets[fileName] = ws;
+
+  // const myLabel = () => {
+  //   var wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+  //   var blob = new Blob([this.s2ab(wbout)], {
+  //     type: "application/octet-stream"
+  //   });
+  //   var objectUrl = URL.createObjectURL(blob);
+  //   var link = document.createElement("a");
+  //   link.setAttribute("href", objectUrl);
+  //   link.setAttribute("download", fileName + ".xlsx");
+  //   link.click();
+  // };
+
+  // if (typeof tool.formulazone === "function") {
+  //   tool.formulazone(ws, myLabel);
+  // } else {
+  //   myLabel();
+  // }
+
+  // return new Promise((resolve, reject) => {
+  //   try {
+  //     algaehApiCall({
+  //       uri: "/excelReport",
+  //       // uri: "/excelReport",
+  //       method: "GET",
+  //       module: "reports",
+  //       headers: {
+  //         Accept: "blob",
+  //       },
+  //       others: { responseType: "blob" },
+  //       data: {
+  //         report: {
+  //           // reportName: "pharmItemMomentEnquiryReport",
+  //           pageOrentation: "landscape",
+  //           // excelTabName: ,
+  //           excelHeader: false,
+  //           // reportParams: [inputObj],
+  //           // outputFileType: "EXCEL", //"EXCEL", //"PDF",
+  //         },
+  //       },
+
+  //       onSuccess: (response) => {
+  //         // const { success, records, message } = response.data;
+
+  //         resolve();
+  //         // if ($this.state.exportAsPdf === "Y") {
+  //         //   const urlBlob = URL.createObjectURL(res.data);
+  //         //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Inventory Item Master`;
+  //         //   window.open(origin);
+  //         // } else {
+  //         //   const urlBlob = URL.createObjectURL(res.data);
+  //         //   const a = document.createElement("a");
+  //         //   a.href = urlBlob;
+  //         //   a.download = `Inventory Item Master.${"xlsx"}`;
+  //         //   a.click();
+  //         // }
+  //         // },
+  //         // if (success === true) {
+  //         //   resolve(records);
+  //         // } else {
+  //         //   reject(new Error(message));
+  //         // }
+  //       },
+  //       onCatch: (error) => {
+  //         reject(error);
+  //       },
+  //     });
+  //   } catch (e) {
+  //     reject(e);
+  //   }
+  // });
 }
 
 export function createReport(input, options) {
