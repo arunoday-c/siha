@@ -4,18 +4,13 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
-  if (e.value === undefined) {
-    $this.setState({ [e]: null }, () => {
-      getItemLocationStock($this);
-    });
-  } else {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
 
-    $this.setState({ [name]: value }, () => {
-      getItemLocationStock($this);
-    });
-  }
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({ [name]: value }, () => {
+    getItemLocationStock($this);
+  });
 };
 
 const dateFormater = ($this, value) => {
@@ -56,7 +51,8 @@ const getBatchWiseData = ($this, row) => {
 
 const getItemLocationStock = ($this) => {
   if ($this.state.location_id !== null || $this.state.item_id !== null) {
-    let inputObj = {};
+    debugger;
+    let inputObj = { reorder_qty: $this.state.reorder_qty };
 
     if ($this.state.location_id !== null) {
       inputObj.pharmacy_location_id = $this.state.location_id;
@@ -216,6 +212,31 @@ const printBarcode = ($this, row) => {
     },
   });
 };
+
+const itemchangeText = ($this, e, ctrl) => {
+  debugger;
+  let name = ctrl;
+  let value = e.hims_d_item_master_id;
+
+  $this.setState(
+    {
+      [name]: value,
+      item_description: e.item_description,
+    },
+    () => {
+      getItemLocationStock($this);
+    }
+  );
+};
+
+const checkBoxEvent = ($this, e) => {
+  let name = e.target.name;
+  const _value = e.target.checked ? "Y" : "N";
+  $this.setState({ [name]: _value }, () => {
+    getItemLocationStock($this);
+  });
+};
+
 export {
   changeTexts,
   dateFormater,
@@ -228,4 +249,6 @@ export {
   printBarcode,
   downloadPharStock,
   downloadPharStockDetails,
+  itemchangeText,
+  checkBoxEvent,
 };
