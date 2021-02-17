@@ -395,6 +395,59 @@ export default {
       next(e);
     }
   },
+  getItemLocationStockConsumtion: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let intValues = [];
+      let strAppend = "",
+        strOrder = "";
+
+      if (req.query.inventory_location_id != null) {
+        strOrder = ` and location_id=${req.query.inventory_location_id} `;
+        strAppend += " and inventory_location_id=?";
+        intValues.push(req.query.inventory_location_id);
+      }
+
+      if (req.query.item_id != null) {
+        strAppend += " and IL.item_id=?";
+        intValues.push(req.query.item_id);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT IM.item_code,IM.item_description, IM.stocking_uom_id,coalesce(ILR.reorder_qty, IM.reorder_qty,0) as reorder_qty, \
+            hims_m_inventory_item_location_id, IL.item_id, inventory_location_id, item_location_status, \
+            batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost, waited_avg_cost, last_purchase_cost, \
+            grn_id, grnno, sale_price, mrp_price, sales_uom, uom_description as stock_uom,ILO.location_description,\
+            CASE WHEN sum(qtyhand)<=coalesce(ILR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder \
+            from hims_d_inventory_item_master IM \
+            left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
+            inner join hims_d_inventory_location ILO on ILO.hims_d_inventory_location_id=IL.inventory_location_id \
+            left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id " +
+            strOrder +
+            " left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id \
+            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0 and item_status ='A' " +
+            strAppend +
+            " group by hims_m_inventory_item_location_id order by date(expirydt)",
+          values: intValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   getItemLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -402,11 +455,7 @@ export default {
       let strAppend = "",
         strOrder = "",
         strGroup = "";
-      if (req.query.item_id != null) {
-        strAppend += " and IL.item_id=?";
-        intValues.push(req.query.item_id);
-        strGroup = " group by inventory_location_id";
-      }
+
       if (req.query.inventory_location_id != null) {
         strOrder = ` and location_id=${req.query.inventory_location_id} `;
 
@@ -415,6 +464,13 @@ export default {
 
         strGroup = " group by item_id";
       }
+
+      if (req.query.item_id != null) {
+        strAppend += " and IL.item_id=?";
+        intValues.push(req.query.item_id);
+        strGroup = " group by inventory_location_id";
+      }
+
       _mysql
         .executeQuery({
           query:

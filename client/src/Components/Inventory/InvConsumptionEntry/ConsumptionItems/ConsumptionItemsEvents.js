@@ -29,8 +29,8 @@ export default function ConsumptionItemsEvents() {
         e.value === ""
           ? null
           : e.value || e.target.value === ""
-            ? null
-            : e.target.value;
+          ? null
+          : e.target.value;
       if (parseFloat(value) < 0) {
         swalMessage({
           title: "Cannot be less than zero.",
@@ -72,6 +72,7 @@ export default function ConsumptionItemsEvents() {
             if (response.data.success === true) {
               let data = response.data.records;
               if (data.locationResult.length > 0) {
+                debugger;
                 getItemLocationStock($this, context, {
                   location_id: $this.state.location_id,
                   item_id: value,
@@ -95,7 +96,7 @@ export default function ConsumptionItemsEvents() {
                   batchno: data.locationResult[0].batchno,
                   grn_no: data.locationResult[0].grnno,
                   qtyhand: data.locationResult[0].qtyhand,
-
+                  unit_cost: data.locationResult[0].avgcost,
                   barcode: data.locationResult[0].barcode,
 
                   ItemUOM: data.uomResult,
@@ -253,7 +254,7 @@ export default function ConsumptionItemsEvents() {
 
 function getItemLocationStock($this, context, value) {
   algaehApiCall({
-    uri: "/inventoryGlobal/getItemLocationStock",
+    uri: "/inventoryGlobal/getItemLocationStockConsumtion",
     module: "inventory",
     method: "GET",
     data: {
@@ -261,6 +262,7 @@ function getItemLocationStock($this, context, value) {
       item_id: value.item_id,
     },
     onSuccess: (response) => {
+      debugger;
       if (response.data.success === true) {
         let data = response.data.records;
         if (data.length !== 0) {

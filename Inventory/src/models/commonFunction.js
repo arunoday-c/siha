@@ -28,8 +28,8 @@ let updateIntoInvItemLocation = (req, res, next) => {
     const decimal_places = req.userIdentity.decimal_places;
 
     const utilities = new algaehUtilities();
-    console.log("inventory_stock_detail: ", inputParam.inventory_stock_detail);
-    console.log("decimal_places: ", decimal_places);
+    // console.log("inventory_stock_detail: ", inputParam.inventory_stock_detail);
+    // console.log("decimal_places: ", decimal_places);
 
     new LINQ(inputParam.inventory_stock_detail)
       .Select((s) => {

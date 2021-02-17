@@ -375,7 +375,7 @@ export default {
       let complete = inputParam.complete === "N" ? "N" : "Y";
 
       const partial_recived = new LINQ(inputParam.stock_detail)
-        .Where((w) => w.quantity_outstanding != 0)
+        .Where((w) => parseFloat(w.quantity_outstanding) > 0)
         .ToArray();
 
       if (partial_recived.length > 0) {

@@ -3,10 +3,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
-import {
-  algaehApiCall,
-  swalMessage
-} from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 import moment from "moment";
 
@@ -29,9 +26,9 @@ const getCtrlCode = ($this, docNumber, row, from) => {
       data: {
         transfer_number: docNumber,
         from_location_id: row.from_location_id,
-        to_location_id: row.to_location_id
+        to_location_id: row.to_location_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           let inventory_stock_detail = [];
           let data = response.data.records[0];
@@ -97,13 +94,13 @@ const getCtrlCode = ($this, docNumber, row, from) => {
           AlgaehLoader({ show: false });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
@@ -118,9 +115,9 @@ const getDrilDownData = ($this, transaction_id) => {
       module: "inventory",
       method: "GET",
       data: {
-        transaction_id: transaction_id
+        transaction_id: transaction_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           let inventory_stock_detail = [];
           let data = response.data.records[0];
@@ -158,13 +155,13 @@ const getDrilDownData = ($this, transaction_id) => {
           AlgaehLoader({ show: false });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
@@ -174,14 +171,14 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
-const generateMaterialTransInv = data => {
+const generateMaterialTransInv = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -190,24 +187,25 @@ const generateMaterialTransInv = data => {
         reportParams: [
           {
             name: "transfer_number",
-            value: data.transfer_number
-          }
+            value: data.transfer_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.transfer_number}-Material Transfer Receipt`
+      const reportName = `${data.transfer_number}-Material Transfer Receipt`;
 
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Material Transfer Receipt";
-    }
+    },
   });
 };
 
-const SaveTransferEntry = $this => {
+const SaveTransferEntry = ($this) => {
+  debugger;
   let gitLoaction_Exists = {};
 
   let InputObj = $this.state;
@@ -215,7 +213,7 @@ const SaveTransferEntry = $this => {
     if ($this.props.git_locations.length === 0) {
       swalMessage({
         title: "Please Enter GIT Loaction to transfer item",
-        type: "warning"
+        type: "warning",
       });
       return;
     } else {
@@ -225,8 +223,8 @@ const SaveTransferEntry = $this => {
   } else {
     gitLoaction_Exists = {
       hims_d_inventory_location_id: $this.state.to_location_id,
-      location_type: $this.state.to_location_type
-    }
+      location_type: $this.state.to_location_type,
+    };
     InputObj.ack_done = "Y";
   }
 
@@ -243,8 +241,6 @@ const SaveTransferEntry = $this => {
   InputObj.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
   InputObj.ScreenCode = "INV0006";
   for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
-
-
     InputObj.inventory_stock_detail[i].location_id = InputObj.from_location_id;
     InputObj.inventory_stock_detail[i].location_type =
       InputObj.from_location_type;
@@ -273,13 +269,12 @@ const SaveTransferEntry = $this => {
       InputObj.inventory_stock_detail[i].expiry_date === null
         ? null
         : moment(
-          InputObj.inventory_stock_detail[i].expiry_date,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD");
+            InputObj.inventory_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;
-
 
   for (let j = 0; j < InputObj.stock_detail.length; j++) {
     if (InputObj.stock_detail[j].inventory_stock_detail === undefined) {
@@ -290,10 +285,10 @@ const SaveTransferEntry = $this => {
   }
 
   if (InputObj.stock_detail.length !== InputObj.inventory_stock_detail.length) {
-    InputObj.complete = "N"
+    InputObj.complete = "N";
   }
 
-  let stock_detail = _.filter(InputObj.stock_detail, f => {
+  let stock_detail = _.filter(InputObj.stock_detail, (f) => {
     return f.removed === "N";
   });
 
@@ -308,12 +303,12 @@ const SaveTransferEntry = $this => {
     method: "POST",
     header: {
       "content-type": "application/octet-stream",
-      ...settings
+      ...settings,
     },
     // uri: "/inventorytransferEntry/addtransferEntry",
     // module: "inventory",
     // data: InputObj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           transfer_number: response.data.records.transfer_number,
@@ -324,26 +319,26 @@ const SaveTransferEntry = $this => {
           saveEnable: true,
           dataExists: true,
           postEnable: false,
-          cannotEdit: true
+          cannotEdit: true,
         });
         swalMessage({
           title: "Saved successfully . .",
-          type: "success"
+          type: "success",
         });
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const PostTransferEntry = $this => {
+const PostTransferEntry = ($this) => {
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_inventory_transfer_header_id;
@@ -378,24 +373,24 @@ const PostTransferEntry = $this => {
     module: "inventory",
     data: $this.state,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
-          postEnable: true
+          postEnable: true,
         });
         swalMessage({
           title: "Posted successfully . .",
-          type: "success"
+          type: "success",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -403,7 +398,7 @@ const RequisitionSearch = ($this, e) => {
   if ($this.state.from_location_id !== null) {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.RequisitionEntry.ReqEntry
+        columns: spotlightSearch.RequisitionEntry.ReqEntry,
       },
       searchName: "InvREQTransEntry",
       uri: "/gloabelSearch/get",
@@ -411,7 +406,7 @@ const RequisitionSearch = ($this, e) => {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         if ($this.state.from_location_id !== null) {
           getRequisitionDetails(
             $this,
@@ -422,15 +417,15 @@ const RequisitionSearch = ($this, e) => {
         } else {
           swalMessage({
             title: "Please select From Location.",
-            type: "warning"
+            type: "warning",
           });
         }
-      }
+      },
     });
   } else {
     swalMessage({
       title: "Please select From Location.",
-      type: "warning"
+      type: "warning",
     });
   }
 };
@@ -448,10 +443,10 @@ const getRequisitionDetails = (
     method: "GET",
     data: {
       hims_f_inventory_material_header_id: hims_f_inventory_material_header_id,
-      from_location_id: from_location_id
+      from_location_id: from_location_id,
     },
 
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         let data = response.data.records;
         AlgaehLoader({ show: true });
@@ -504,13 +499,13 @@ const getRequisitionDetails = (
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -524,7 +519,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
     if ($this.state.to_location_id === value) {
       swalMessage({
         title: "From Location and To Location Cannot be Same ",
-        type: "error"
+        type: "error",
       });
       $this.setState({ [name]: null });
     } else {
@@ -547,7 +542,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         Batch_Items: [],
         addItemButton: true,
         item_description: "",
-        uom_description: null
+        uom_description: null,
       });
     }
   } else if (location === "To") {
@@ -555,7 +550,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
     if ($this.state.from_location_id === value) {
       swalMessage({
         title: "From Location and To Location Cannot be Same ",
-        type: "error"
+        type: "error",
       });
       $this.setState({ [name]: null });
     } else {
@@ -578,7 +573,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         Batch_Items: [],
         addItemButton: true,
         item_description: "",
-        uom_description: null
+        uom_description: null,
       });
     }
   }
@@ -590,17 +585,17 @@ const checkBoxEvent = ($this, e) => {
   $this.setState(IOputs);
 };
 
-const AcknowledgeTransferEntry = $this => {
+const AcknowledgeTransferEntry = ($this) => {
   AlgaehLoader({ show: true });
   const Quantity_zero = _.filter(
     $this.state.inventory_stock_detail,
-    f => f.ack_quantity === 0 || f.ack_quantity === ""
+    (f) => f.ack_quantity === 0 || f.ack_quantity === ""
   );
 
   if (Quantity_zero.length > 0) {
     swalMessage({
       type: "warning",
-      title: "Please Enter the Acknowledge Qty for each item in the list."
+      title: "Please Enter the Acknowledge Qty for each item in the list.",
     });
     return;
   }
@@ -610,7 +605,7 @@ const AcknowledgeTransferEntry = $this => {
   if ($this.props.git_locations.length === 0) {
     swalMessage({
       title: "Please Enter GIT Loaction to transfer item",
-      type: "warning"
+      type: "warning",
     });
     return;
   } else {
@@ -675,38 +670,37 @@ const AcknowledgeTransferEntry = $this => {
     method: "PUT",
     header: {
       "content-type": "application/octet-stream",
-      ...settings
+      ...settings,
     },
     // data: InputObj,
     // method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
-          ackTran: true
+          ackTran: true,
         });
         swalMessage({
           title: "Acknowledge successfully . .",
-          type: "success"
+          type: "success",
         });
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
 const ReturnCheckboxEvent = ($this, e) => {
   $this.setState({
-    [e.target.name]: e.target.checked === true ? "Y" : "N"
+    [e.target.name]: e.target.checked === true ? "Y" : "N",
   });
 };
-
 
 const getInventoryOptions = ($this) => {
   algaehApiCall({
@@ -727,7 +721,7 @@ const getInventoryOptions = ($this) => {
       });
     },
   });
-}
+};
 
 export {
   changeTexts,
@@ -743,5 +737,5 @@ export {
   AcknowledgeTransferEntry,
   ReturnCheckboxEvent,
   getInventoryOptions,
-  getDrilDownData
+  getDrilDownData,
 };

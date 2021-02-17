@@ -11,7 +11,8 @@ const {
   getItemandLocationStock,
   getConsumptionSelectedMonth,
   insertExpiryNotification,
-  getExpiringItemList
+  getExpiringItemList,
+  getItemLocationStockConsumtion,
 } = pharModels;
 
 export default () => {
@@ -19,7 +20,7 @@ export default () => {
   api.get("/getUomLocationStock", getUomLocationStock, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
@@ -29,29 +30,39 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
   api.get("/getItemMoment", getItemMoment, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.get("/getItemLocationStock", getItemLocationStock, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
+  api.get(
+    "/getItemLocationStockConsumtion",
+    getItemLocationStockConsumtion,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
   api.get(
     "/getUserLocationPermission",
     getUserLocationPermission,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -61,7 +72,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -71,7 +82,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -82,7 +93,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -90,7 +101,7 @@ export default () => {
   api.get("/getExpiringItemList", getExpiringItemList, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
