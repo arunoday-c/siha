@@ -43,7 +43,7 @@ const executePDF = function executePDFMethod(options) {
             FROM hims_d_inventory_item_master IM\
             left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
             inner join hims_d_inventory_location ILO on ILO.hims_d_inventory_location_id=IL.inventory_location_id; \
-            SET @sql = CONCAT('SELECT MAX(item_description)as item_description,IL.inventory_location_id, sum(IL.qtyhand) as  qtyhand, \
+            SET @sql = CONCAT('SELECT MAX(item_description) as item_description,item_code, IL.inventory_location_id, sum(IL.qtyhand) as  qtyhand, \
             hims_d_inventory_item_master_id,IL.batchno, ', @sql, ' \
             FROM hims_d_inventory_item_master IM \
             left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
@@ -56,11 +56,12 @@ const executePDF = function executePDFMethod(options) {
             EXECUTE stmt; \
             DEALLOCATE PREPARE stmt;",
           values: [input.hospital_id],
-          // printQuery: true,
+          printQuery: true,
         })
         .then((results) => {
           const getTable = results.find((f) => Array.isArray(f));
           const {
+            item_code,
             item_description,
             inventory_location_id,
             qtyhand,
@@ -76,7 +77,10 @@ const executePDF = function executePDFMethod(options) {
             .groupBy((g) => g.hims_d_inventory_item_master_id)
             .forEach((details, key) => {
               const desc = _.head(details);
-              let innerObject = { item_description: desc.item_description };
+              let innerObject = {
+                item_description: desc.item_description,
+                item_code: desc.item_code,
+              };
               for (let i = 0; i < columns.length; i++) {
                 innerObject[columns[i]] = _.sumBy(details, (s) =>
                   parseFloat(s[columns[i]] ? s[columns[i]] : 0)

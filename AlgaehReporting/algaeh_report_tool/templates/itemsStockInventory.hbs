@@ -10,7 +10,7 @@
                         <th>Sl No.</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
-                        <th style="width:0px;"></th>
+                        <th style="width:0px;padding:0;" cell-padding="0"></th>
                         {{#each columns}}
                           <th>{{this}}</th>
                         {{/each}}
@@ -20,6 +20,7 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
+                        <td>{{item_code}}</td>
                         <td>{{item_description}}</td>
                        <td>{{{dynamic . ../columns}}}</td>
                     </tr>
