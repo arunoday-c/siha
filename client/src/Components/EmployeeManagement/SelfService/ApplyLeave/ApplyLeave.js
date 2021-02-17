@@ -15,10 +15,13 @@ import Enumerable from "linq";
 import swal from "sweetalert2";
 import Socket from "../../../../sockets";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { MainContext, Upload } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
-import { AlgaehMessagePop } from "algaeh-react-components";
-import { AlgaehDataGrid } from "algaeh-react-components";
+import {
+  MainContext,
+  Upload,
+  AlgaehMessagePop,
+  AlgaehDataGrid,
+} from "algaeh-react-components";
 const { Dragger } = Upload;
 class ApplyLeave extends Component {
   constructor(props) {

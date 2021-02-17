@@ -48,6 +48,9 @@ import { AlgaehSecurityComponent } from "algaeh-react-components";
 import { debounce } from "lodash";
 import sockets from "../../sockets";
 import VitalComponent from "../../Components/PatientProfile/Vitals/VitalComponent";
+import { AlgaehModal } from "algaeh-react-components";
+import VitalsHistory from "../PatientProfile/Vitals/VitalsHistory";
+import ModalMedicalRecord from "../DoctorsWorkbench/ModalForMedicalRecordPat";
 
 class NurseWorkbench extends Component {
   constructor(props) {
@@ -87,6 +90,8 @@ class NurseWorkbench extends Component {
       searchText: "",
       filterList: [],
       patient_provider_id: undefined,
+      openVitalHistoryPop: false,
+      openMrdModal: false,
     };
     this.getVitalsRef = undefined;
     this.baseState = this.state;
@@ -1050,7 +1055,40 @@ class NurseWorkbench extends Component {
       [e.target.name]: e.target.value,
     });
   }
-
+  getPatientVitals() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientVitals",
+      method: "GET",
+      data: {
+        patient_id: this.state.patient_id,
+      },
+      cancelRequestId: "getPatientVitals1",
+      onSuccess: (response) => {
+        // algaehLoader({ show: false });
+        if (response.data.success) {
+          this.setState({
+            patientVitals: response.data.records,
+            openVitalHistoryPop: true,
+          });
+        }
+      },
+      onFailure: (error) => {
+        // algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+  onCloseVitalHistory() {
+    this.setState({ openVitalHistoryPop: !this.state.openVitalHistoryPop });
+  }
+  onClose(e) {
+    this.setState({
+      openMrdModal: !this.state.openMrdModal,
+    });
+  }
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
@@ -1326,7 +1364,27 @@ class NurseWorkbench extends Component {
                       <div className="caption">
                         <h3 className="caption-subject">Enter Vitals</h3>
                       </div>
-                      <div className="actions"></div>
+                      <div className="actions">
+                        {" "}
+                        <button className="btn btn-primary btn-circle active">
+                          <i
+                            className="fas fa-heartbeat"
+                            onClick={() => {
+                              this.getPatientVitals();
+                            }}
+                          />
+                        </button>
+                        <button className="btn btn-primary btn-circle active">
+                          <i
+                            className="fas fa-file"
+                            onClick={() => {
+                              this.setState({
+                                openMrdModal: true,
+                              });
+                            }}
+                          />
+                        </button>
+                      </div>
                     </div>
                     <div className="portlet-body" id="vitals_recording">
                       <div
@@ -1339,12 +1397,7 @@ class NurseWorkbench extends Component {
                         <VitalComponent
                           _department_viatals={_department_viatals}
                           state={this.state}
-                          // setState={this.setState}
                           texthandle={(e) => this.texthandle(e)}
-                          // handleClose={(e) => this.handleClose(e)}
-                          // editDateHandler={(selectedDate) => this.editDateHandler(selectedDate)}
-                          // editDateValidate={this.editDateValidate}
-
                           current_patient={this.state.patient_id}
                           visit_id={this.state.visit_id}
                           case_type={this.state.case_type}
@@ -1353,171 +1406,42 @@ class NurseWorkbench extends Component {
                           resetVitalComponent={() => {
                             this.resetVitalComponent();
                           }}
-                          // setstates={(name, value) =>
-                          //   this.setstates(name, value)
-                          // }
                         />
-                        {/* {_department_viatals.map((item, index) => {
-                          const _className =
-                            item.hims_d_vitals_header_id === 1
-                              ? "col-3"
-                              : item.hims_d_vitals_header_id >= 3
-                              ? "col-3 vitalTopFld15"
-                              : item.hims_d_vitals_header_id === 5 ||
-                                item.hims_d_vitals_header_id === 6
-                              ? "col-3 vitalTopFld20"
-                              : "col-3";
-                          const _name = String(item.vitals_name)
-                            .replace(/" "/g, "_")
-                            .toLowerCase();
-                          const _disable = _name === "bmi" ? true : false;
-                          const _dependent =
-                            item.hims_d_vitals_header_id === 8 ||
-                            item.hims_d_vitals_header_id === 9
-                              ? { dependent: "bp_position" }
-                              : item.hims_d_vitals_header_id === 4
-                              ? { dependent: "temperature_from" }
-                              : {};
-                          return (
-                            <React.Fragment key={index}>
-                              {item.hims_d_vitals_header_id === 4 ? (
-                                <React.Fragment>
-                                  <AlagehAutoComplete
-                                    div={{ className: "col-3" }}
-                                    label={{
-                                      fieldName: "temp_frm",
-                                    }}
-                                    selector={{
-                                      name: "temperature_from",
-                                      className: "select-fld",
-                                      value: this.state.temperature_from,
-                                      dataSource: {
-                                        textField: "name",
-                                        valueField: "value",
-                                        data: GlobalVariables.TEMP_FROM,
-                                      },
-
-                                      onChange: this.dropDownHandle.bind(this),
-                                    }}
-                                  />
-                                </React.Fragment>
-                              ) : item.hims_d_vitals_header_id === 8 ? (
-                                <AlagehAutoComplete
-                                  div={{ className: "col-3" }}
-                                  label={{
-                                    fieldName: "bp",
-                                    // fieldName: "BP_type"
-                                  }}
-                                  selector={{
-                                    name: "bp_position",
-                                    className: "select-fld",
-                                    value: this.state.bp_position,
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: GlobalVariables.BP_POSITION,
-                                    },
-                                    onChange: this.dropDownHandle.bind(this),
-                                  }}
-                                />
-                              ) : null}
-
-                              <AlagehFormGroup
-                                div={{
-                                  className: _className,
-                                  others: { key: index },
-                                }}
-                                label={{
-                                  forceLabel:
-                                    item.uom === "C"
-                                      ? "°C"
-                                      : item.uom === "F"
-                                      ? "°F"
-                                      : item.vital_short_name +
-                                        " (" +
-                                        String(item.uom).trim() +
-                                        ")",
-                                  isImp: item.mandatory === 0 ? false : true,
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: _name,
-                                  others: {
-                                    type: "number",
-                                    min: 0,
-                                    disabled: _disable,
-                                    vitalid: item.hims_d_vitals_header_id,
-                                    formula_value: String(item.uom).trim(),
-                                    ..._dependent,
-                                  },
-                                  value: this.state[_name],
-                                  events: {
-                                    onChange: this.texthandle.bind(this),
-                                  },
-                                }}
-                              />
-
-                              {item.hims_d_vitals_header_id === 4 ? (
-                                <AlagehFormGroup
-                                  div={{ className: "col-3" }}
-                                  label={{
-                                    forceLabel: item.uom === "C" ? "°F" : "°C",
-                                  }}
-                                  textBox={{
-                                    className: "txt-fld",
-                                    disabled: true,
-                                    value: temperatureConvertion(
-                                      this.state[_name],
-                                      item.uom
-                                    ),
-                                  }}
-                                />
-                              ) : null}
-                              {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
-                        {/* </React.Fragment> */}
-                        {/* ); */}
-                        {/* })} */}
-
-                        {/* <AlgaetexthandlehDateHandler
-                          div={{ className: "col-3" }}
-                          label={{ fieldName: "rec_date", isImp: true }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "recorded_date",
-                          }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: (selectedDate) => {
-                              this.setState({ recorded_date: selectedDate });
-                            },
-                          }}
-                          value={this.state.recorded_date}
-                        />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-3" }}
-                          label={{
-                            isImp: true,
-                            fieldName: "rec_time",
-                          }}
-                          textBox={{
-                            others: {
-                              type: "time",
-                              step: "2",
-                            },
-                            className: "txt-fld",
-                            name: "recorded_time",
-                            value: this.state.recorded_time,
-                            events: {
-                              onChange: this.texthandle.bind(this),
-                            },
-                          }}
-                        /> */}
                       </div>
                     </div>
                   </div>{" "}
                 </AlgaehSecurityComponent>
 
+                <AlgaehModal
+                  title="Medical Record List"
+                  visible={this.state.openVitalHistoryPop}
+                  mask={true}
+                  maskClosable={false}
+                  onCancel={() => this.onCloseVitalHistory()}
+                  footer={[
+                    <div className="col-12">
+                      <button
+                        onClick={() => this.onCloseVitalHistory()}
+                        className="btn btn-default btn-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>,
+                  ]}
+                  className={`algaehNewModal`}
+                >
+                  <VitalsHistory _vitalsGroup={this.state.patientVitals} />
+                </AlgaehModal>
+
+                {this.state.patient_id ? (
+                  <ModalMedicalRecord
+                    visit_id={this.state.visit_id}
+                    patient_id={this.state.patient_id}
+                    patient_code={this.state.patient_code}
+                    openMrdModal={this.state.openMrdModal}
+                    onClose={(e) => this.onClose(e)}
+                  />
+                ) : null}
                 <AlgaehSecurityComponent componentCode="NUR_PAT_CHF_COM">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">

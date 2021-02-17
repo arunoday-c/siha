@@ -7,30 +7,26 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlagehFormGroup,
-  // AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
-  // dateFormater,
   updateStockDetils,
   downloadPharStockDetails,
-  // datehandle,
   texthandle,
   getBatchWiseData,
   closeBatchWise,
   downloadPharStock,
+  itemchangeText,
+  getItemLocationStock,
+  checkBoxEvent,
 } from "./StockEnquiryEvents";
 import "./StockEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import BatchWiseStock from "./BatchWiseStock";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-// import {
-//   getCookie,
-//   algaehApiCall,
-//   swalMessage,
-// } from "../../../utils/algaehApiCall";
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 class StockEnquiry extends Component {
   constructor(props) {
@@ -51,6 +47,10 @@ class StockEnquiry extends Component {
       openBatchWise: false,
       item_description: null,
       total_quantity: 0,
+
+      reorder_qty: "N",
+      trans_ack_required: "N",
+      trans_required: false,
     };
   }
 
@@ -114,52 +114,108 @@ class StockEnquiry extends Component {
                       data: this.props.locations,
                     },
                     onChange: changeTexts.bind(this, this),
-                    onClear: changeTexts.bind(this, this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          location_id: null,
+                        },
+                        () => {
+                          getItemLocationStock(this, this);
+                        }
+                      );
+                    },
                     autoComplete: "off",
                   }}
                 />
-                <div className="col-1">
-                  {" "}
+                {/* <div className="col-1">
                   <button
                     className="btn btn-default"
                     // disabled={!this.state.location_id}
                     style={{ marginTop: 20, marginRight: 10 }}
-                  // onClick={() => downloadInvStockDetails(this)}
+                    // onClick={() => downloadInvStockDetails(this)}
                   >
                     Load
                   </button>
-                </div>
-                <AlagehAutoComplete
+                </div> */}
+                <AlgaehAutoSearch
                   div={{ className: "col" }}
-                  label={{ forceLabel: "By Item Name" }}
-                  selector={{
-                    name: "item_id",
-                    className: "select-fld",
-                    value: this.state.item_id,
-                    dataSource: {
-                      textField: "item_description",
-                      valueField: "hims_d_inventory_item_master_id",
-                      data: this.props.inventoryitemlist,
-                    },
-                    onChange: changeTexts.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        item_id: null,
-                      });
-                    },
+                  label={{ forceLabel: "Item Name" }}
+                  title="Search By Items"
+                  id="item_id_search"
+                  template={(result) => {
+                    return (
+                      <section className="resultSecStyles">
+                        <div className="row">
+                          <div className="col-8">
+                            <h4 className="title">{result.item_description}</h4>
+                            <small>{result.item_code}</small>
+                            <small>{result.stock_uom_desc}</small>
+                          </div>
+                          {/*<div className="col-4">
+                              <h6 className="price">
+                                {getAmountFormart(
+                                  result.standard_fee
+                                )}
+                              </h6>
+                            </div>*/}
+                        </div>
+                      </section>
+                    );
                   }}
-                />{" "}
-                <div className="col-1">
+                  name="item_id"
+                  columns={spotlightSearch.pharmacy.pharopeningstock}
+                  displayField="item_description"
+                  value={this.state.item_description}
+                  searchName="pharopeningstock"
+                  onClick={itemchangeText.bind(this, this)}
+                  onClear={() => {
+                    this.setState(
+                      {
+                        item_id: null,
+                        item_description: "",
+                      },
+                      () => {
+                        getItemLocationStock(this, this);
+                      }
+                    );
+                  }}
+                  ref={(attReg) => {
+                    this.attReg = attReg;
+                  }}
+                />
+                <div
+                  className="col customCheckbox"
+                  style={{ marginTop: 23, border: "none" }}
+                >
+                  <label className="checkbox inline">
+                    <input
+                      type="checkbox"
+                      name="reorder_qty"
+                      value={this.state.reorder_qty}
+                      checked={this.state.reorder_qty === "Y" ? true : false}
+                      onChange={checkBoxEvent.bind(this, this)}
+                    />
+                    <span>
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Re Order Items",
+                        }}
+                      />
+                    </span>
+                  </label>
+                </div>
+
+                {/* <div className="col-1">
                   {" "}
                   <button
                     className="btn btn-default"
                     // disabled={!this.state.location_id}
                     style={{ marginTop: 20, marginRight: 10 }}
-                  // onClick={() => downloadInvStockDetails(this)}
+                    // onClick={() => downloadInvStockDetails(this)}
                   >
                     Load
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -192,10 +248,10 @@ class StockEnquiry extends Component {
                         this.props.locations === undefined
                           ? []
                           : this.props.locations.filter(
-                            (f) =>
-                              f.hims_d_pharmacy_location_id ===
-                              row.pharmacy_location_id
-                          );
+                              (f) =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.pharmacy_location_id
+                            );
 
                       return (
                         <span>
@@ -210,10 +266,10 @@ class StockEnquiry extends Component {
                         this.props.locations === undefined
                           ? []
                           : this.props.locations.filter(
-                            (f) =>
-                              f.hims_d_pharmacy_location_id ===
-                              row.pharmacy_location_id
-                          );
+                              (f) =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.pharmacy_location_id
+                            );
 
                       return (
                         <span>
@@ -243,44 +299,44 @@ class StockEnquiry extends Component {
                     },
                   },
                   {
-                    fieldName: "stocking_uom_id",
+                    fieldName: "stock_uom",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
                     ),
-                    displayTemplate: (row) => {
-                      let display =
-                        this.props.itemuom === undefined
-                          ? []
-                          : this.props.itemuom.filter(
-                            (f) =>
-                              f.hims_d_pharmacy_uom_id === row.stocking_uom_id
-                          );
+                    // displayTemplate: (row) => {
+                    //   let display =
+                    //     this.props.itemuom === undefined
+                    //       ? []
+                    //       : this.props.itemuom.filter(
+                    //           (f) =>
+                    //             f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                    //         );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].uom_description
-                            : ""}
-                        </span>
-                      );
-                    },
-                    editorTemplate: (row) => {
-                      let display =
-                        this.props.itemuom === undefined
-                          ? []
-                          : this.props.itemuom.filter(
-                            (f) =>
-                              f.hims_d_pharmacy_uom_id === row.stocking_uom_id
-                          );
+                    //   return (
+                    //     <span>
+                    //       {display !== null && display.length !== 0
+                    //         ? display[0].uom_description
+                    //         : ""}
+                    //     </span>
+                    //   );
+                    // },
+                    // editorTemplate: (row) => {
+                    //   let display =
+                    //     this.props.itemuom === undefined
+                    //       ? []
+                    //       : this.props.itemuom.filter(
+                    //           (f) =>
+                    //             f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                    //         );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].uom_description
-                            : ""}
-                        </span>
-                      );
-                    },
+                    //   return (
+                    //     <span>
+                    //       {display !== null && display.length !== 0
+                    //         ? display[0].uom_description
+                    //         : ""}
+                    //     </span>
+                    //   );
+                    // },
                     others: { filterable: false },
                   },
                   {
@@ -291,8 +347,8 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                            (f) => f.hims_d_pharmacy_uom_id === row.sales_uom
-                          );
+                              (f) => f.hims_d_pharmacy_uom_id === row.sales_uom
+                            );
 
                       return (
                         <span>
@@ -307,8 +363,8 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                            (f) => f.hims_d_pharmacy_uom_id === row.sales_uom
-                          );
+                              (f) => f.hims_d_pharmacy_uom_id === row.sales_uom
+                            );
 
                       return (
                         <span>
@@ -331,8 +387,8 @@ class StockEnquiry extends Component {
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                          parseFloat(row.qtyhand)
-                        );
+                        parseFloat(row.qtyhand)
+                      );
                     },
                     disabled: true,
                     others: { filterable: false },
@@ -403,7 +459,7 @@ class StockEnquiry extends Component {
                 paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   // onDelete: deleteStock.bind(this, this),
-                  onEdit: (row) => { },
+                  onEdit: (row) => {},
                   onDone: updateStockDetils.bind(this, this),
                 }}
               />

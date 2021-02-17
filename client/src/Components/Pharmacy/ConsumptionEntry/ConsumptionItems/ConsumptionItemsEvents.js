@@ -53,9 +53,9 @@ export default function ConsumptionItemsEvents() {
       }
     },
 
-    itemchangeText: ($this, context, e) => {
+    itemchangeText: ($this, context, e, ctrl) => {
       // let name = e.name || e.target.name;
-      let name = e.item_description;
+      let name = ctrl;
       if ($this.state.location_id !== null) {
         // let value = e.value || e.target.value;
         let value = e.hims_d_item_master_id;
@@ -78,19 +78,20 @@ export default function ConsumptionItemsEvents() {
                 });
 
                 let uom_array = _.filter(data.uomResult, (f) => {
-                  return f.uom_id === e.selected.stocking_uom_id;
+                  return f.uom_id === e.stocking_uom_id;
                 });
+
                 $this.setState({
                   [name]: value,
-                  item_description: e.selected.item_description,
-                  item_code: e.selected.item_code,
-                  item_category_id: e.selected.category_id,
-                  uom_id: e.selected.stocking_uom_id,
-                  sales_uom: e.selected.sales_uom_id,
-                  item_group_id: e.selected.group_id,
+                  item_description: e.item_description,
+                  item_code: e.item_code,
+                  item_category_id: e.category_id,
+                  uom_id: e.stocking_uom_id,
+                  sales_uom: e.sales_uom_id,
+                  item_group_id: e.group_id,
                   quantity: 1,
                   addItemButton: false,
-
+                  item_id: e.hims_d_item_master_id,
                   expiry_date: data.locationResult[0].expirydt,
                   batchno: data.locationResult[0].batchno,
                   grn_no: data.locationResult[0].grnno,
@@ -104,12 +105,12 @@ export default function ConsumptionItemsEvents() {
                 if (context !== undefined) {
                   context.updateState({
                     [name]: value,
-                    item_description: e.selected.item_description,
-                    item_code: e.selected.item_code,
-                    item_category_id: e.selected.category_id,
-                    uom_id: e.selected.stocking_uom_id,
-                    sales_uom: e.selected.sales_uom_id,
-                    item_group_id: e.selected.group_id,
+                    item_description: e.item_description,
+                    item_code: e.item_code,
+                    item_category_id: e.category_id,
+                    uom_id: e.stocking_uom_id,
+                    sales_uom: e.sales_uom_id,
+                    item_group_id: e.group_id,
                     quantity: 1,
                     addItemButton: false,
 

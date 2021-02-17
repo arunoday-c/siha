@@ -2,10 +2,11 @@ import React, { Component } from "react";
 
 import "./ProcedureSetup.scss";
 import "../../styles/site.scss";
-import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import ProcedureSetupEvent from "./ProcedureSetupEvent";
 import Procedures from "./Procedures/Procedures";
 import ItemAssignPercedure from "./Procedures/ItemAssignPercedure";
+import { AlgaehDataGrid } from "algaeh-react-components";
 
 export default class ProcedureSetup extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ export default class ProcedureSetup extends Component {
   ShowItemModel() {
     this.setState({
       ...this.state,
-      isOpenItem: !this.state.isOpenItem
+      isOpenItem: !this.state.isOpenItem,
     });
   }
   CloseModel(e) {
@@ -76,18 +77,19 @@ export default class ProcedureSetup extends Component {
             </div>
             <div className="actions">
               <button
+                onClick={this.ShowItemModel.bind(this)}
+                type="button"
+                className="btn btn-default"
+              >
+                <AlgaehLabel label={{ forceLabel: "Item Assign" }} />
+              </button>
+              <button
                 // href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
+                style={{ marginLeft: 5 }}
               >
                 <i className="fas fa-plus" />
-              </button>
-              <button
-                onClick={this.ShowItemModel.bind(this)}
-                type="button"
-                className="btn btn-primary"
-              >
-                <AlgaehLabel label={{ forceLabel: "Item Assign" }} />
               </button>
               <Procedures
                 HeaderCaption="Procedure Details"
@@ -123,10 +125,10 @@ export default class ProcedureSetup extends Component {
                           </span>
                         );
                       },
+                      filterable: false,
                       others: {
                         maxWidth: 65,
                         resizable: false,
-                        filterable: false,
                         style: { textAlign: "center" },
                       },
                     },
@@ -135,8 +137,9 @@ export default class ProcedureSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Code" }} />
                       ),
+                      filterable: true,
                       others: {
-                        maxWidth: 120,
+                        Width: 150,
                       },
                     },
                     {
@@ -144,6 +147,7 @@ export default class ProcedureSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Desc" }} />
                       ),
+                      filterable: true,
                       others: { style: { textAlign: "left" } },
                     },
                     {
@@ -153,6 +157,7 @@ export default class ProcedureSetup extends Component {
                           label={{ forceLabel: "Description Arabic" }}
                         />
                       ),
+                      filterable: true,
                       others: { style: { textAlign: "right" } },
                     },
 
@@ -168,9 +173,20 @@ export default class ProcedureSetup extends Component {
                           </span>
                         );
                       },
-
+                      filterable: true,
+                      filterType: "choices",
+                      choices: [
+                        {
+                          name: "Dental",
+                          value: "DN",
+                        },
+                        {
+                          name: "General",
+                          value: "GN",
+                        },
+                      ],
                       others: {
-                        maxWidth: 120,
+                        Width: 140,
                       },
                     },
                     {
@@ -178,8 +194,10 @@ export default class ProcedureSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Amt." }} />
                       ),
+                      filterable: true,
                       others: {
-                        maxWidth: 120,
+                        Width: 140,
+                        style: { textAlign: "right" },
                       },
                     },
                     {
@@ -190,8 +208,9 @@ export default class ProcedureSetup extends Component {
                       displayTemplate: (row) => {
                         return row.vat_applicable === "Y" ? "Yes" : "No";
                       },
+                      filterable: true,
                       others: {
-                        maxWidth: 110,
+                        Width: 130,
                       },
                     },
                     {
@@ -204,17 +223,17 @@ export default class ProcedureSetup extends Component {
                           <span>{parseFloat(row.vat_percent).toFixed(0)}%</span>
                         );
                       },
+                      filterable: true,
                       others: {
-                        maxWidth: 100,
+                        Width: 120,
+                        style: { textAlign: "right" },
                       },
                     },
                   ]}
                   keyId="procedure_code"
-                  dataSource={{
-                    data: this.state.all_procedures,
-                  }}
-                  filter={true}
-                  paging={{ page: 0, rowsPerPage: 20 }}
+                  data={this.state.all_procedures}
+                  pagination={true}
+                  isFilterable={true}
                 />
               </div>
             </div>

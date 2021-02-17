@@ -78,8 +78,8 @@ class ConsumptionItems extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.ConsumptionIOputs);
   }
-  itemchangeText(context, e) {
-    ConsumptionItemsEvents().itemchangeText(this, context, e);
+  itemchangeText(context, e, ctrl) {
+    ConsumptionItemsEvents().itemchangeText(this, context, e, ctrl);
   }
 
   UomchangeTexts(context, e) {
@@ -148,7 +148,7 @@ class ConsumptionItems extends Component {
                             </section>
                           );
                         }}
-                        name={"hims_d_item_master_id"}
+                        name={"item_id"}
                         columns={spotlightSearch.Items.Pharmacyitemmaster}
                         displayField="item_description"
                         value={this.state.item_description}

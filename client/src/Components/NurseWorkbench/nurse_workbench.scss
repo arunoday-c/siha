@@ -125,3 +125,8 @@
     font-size: 3rem;
   }
 }
+#pat_dia_Grid {
+  .ReactTable {
+    max-height: 150px !important;
+  }
+}
