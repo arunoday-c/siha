@@ -27,7 +27,11 @@
   }
 }
 #proceduresGridCntr {
-  .ReactTable {
-    max-height: 75vh !important;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 70vh;
+      max-height: 70vh;
+      overflow: auto;
+    }
   }
 }
