@@ -22,7 +22,7 @@ const executePDF = function executePDFMethod(options) {
         input.location_id !== undefined &&
         input.location_id !== ""
       ) {
-        str += ` and IL.inventory_location_id = ${input.location_id}`;
+        str += ` and IL.pharmacy_location_id = ${input.location_id}`;
       }
       if (
         input.item_id !== null &&
@@ -36,25 +36,25 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query:
             "SET @sql = NULL; \
-            SELECT GROUP_CONCAT(DISTINCT \
-            CONCAT('CASE WHEN MAX(ILO.location_description) = ''', location_description,\
-            ''' THEN SUM(qtyhand) END `', location_description, '`'))\
-            INTO @sql\
-            FROM hims_d_inventory_item_master IM\
-            left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
-            inner join hims_d_inventory_location ILO on ILO.hims_d_inventory_location_id=IL.inventory_location_id; \
-            SET @sql = CONCAT('SELECT MAX(item_description) as item_description,item_code, IL.inventory_location_id, sum(IL.qtyhand) as  qtyhand, \
-            hims_d_inventory_item_master_id,IL.batchno, ', @sql, ' \
-            FROM hims_d_inventory_item_master IM \
-            left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
-            inner join hims_d_inventory_location ILO on ILO.hims_d_inventory_location_id=IL.inventory_location_id \
-            where IL.hospital_id='?'  " +
+              SELECT GROUP_CONCAT(DISTINCT \
+              CONCAT('CASE WHEN MAX(ILO.location_description) = ''', location_description,\
+              ''' THEN SUM(qtyhand) END `', location_description, '`'))\
+              INTO @sql\
+              FROM hims_d_item_master IM\
+              left join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
+              inner join hims_d_pharmacy_location ILO on ILO.hims_d_pharmacy_location_id=IL.pharmacy_location_id; \
+              SET @sql = CONCAT('SELECT MAX(item_description) as item_description,item_code, IL.pharmacy_location_id, sum(IL.qtyhand) as  qtyhand, \
+              hims_d_item_master_id,IL.batchno, ', @sql, ' \
+              FROM hims_d_item_master IM \
+              left join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
+              inner join hims_d_pharmacy_location ILO on ILO.hims_d_pharmacy_location_id=IL.pharmacy_location_id \
+              where IL.hospital_id='?'  " +
             str +
             " \
-            GROUP BY IL.inventory_location_id,IM.hims_d_inventory_item_master_id,IL.batchno;'); \
-            PREPARE stmt FROM @sql; \
-            EXECUTE stmt; \
-            DEALLOCATE PREPARE stmt;",
+              GROUP BY IL.pharmacy_location_id,IM.hims_d_item_master_id,IL.batchno;'); \
+              PREPARE stmt FROM @sql; \
+              EXECUTE stmt; \
+              DEALLOCATE PREPARE stmt;",
           values: [input.hospital_id],
           printQuery: true,
         })
@@ -63,9 +63,9 @@ const executePDF = function executePDFMethod(options) {
           const {
             item_code,
             item_description,
-            inventory_location_id,
+            pharmacy_location_id,
             qtyhand,
-            hims_d_inventory_item_master_id,
+            hims_d_item_master_id,
             batchno,
             ...others
           } = _.head(getTable);
@@ -74,7 +74,7 @@ const executePDF = function executePDFMethod(options) {
           });
           let report = [];
           _.chain(getTable)
-            .groupBy((g) => g.hims_d_inventory_item_master_id)
+            .groupBy((g) => g.hims_d_item_master_id)
             .forEach((details, key) => {
               const desc = _.head(details);
               let innerObject = {
