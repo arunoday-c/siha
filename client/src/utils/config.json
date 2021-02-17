@@ -113,7 +113,8 @@
       "port": 3023,
       "url": "",
       "path": "/admission",
-      "name": "Admission"
+      "name": "Admission",
+      "client": 1316
     }
   },
   "apiAuth": {

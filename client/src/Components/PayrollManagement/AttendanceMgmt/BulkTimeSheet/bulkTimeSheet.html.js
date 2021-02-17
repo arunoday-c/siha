@@ -45,6 +45,7 @@ function BulkTimeSheet(props) {
       hims_f_project_roster_id: e.hims_f_project_roster_id,
       showPopup: true,
       employee_name: employee_name,
+      project_desc: e.project_desc + " / " + e.hospital_name,
     };
 
     if (project_state.projects.length === 0) {
@@ -195,49 +196,49 @@ function BulkTimeSheet(props) {
                   <ol dangerouslySetInnerHTML={{ __html: message }} />
                 </div>
               ) : (
-                  <div className="bulkTimeScroll">
-                    <table id="bulkTimeSheetPreview">
-                      <thead>
-                        <tr>
-                          <th className="fixed freeze">Emp Name & Code</th>
-                          {dates.map((item, index) => (
-                            <th key={item} className="fixed freeze_vertical">
-                              <span>
-                                {moment(item, "YYYY-MM-DD").format("ddd")}
-                              </span>
-                              <br />
-                              <span>
-                                {moment(item, "YYYY-MM-DD").format("DD/MMM")}
-                              </span>
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.map((item, index) => (
-                          <tr key={item.employee_id}>
-                            <td className="fixed freeze">
-                              <span>{item.employee_name}</span>
-                              <small>{item.employee_code}</small>
-                            </td>
-                            {item.roster.map((itm, indx) => {
-                              return (
-                                <TableCells
-                                  itm={{ ...itm, project_id: itm.project_id }}
-                                  indx={indx}
-                                  key={`${item.employee_id}_${itm.attendance_date}`}
-                                  employee_name={item.employee_name}
-                                  editingProjectRoster={editingProjectRoster}
-                                  setSelectedTD={selectedITD}
-                                />
-                              );
-                            })}
-                          </tr>
+                <div className="bulkTimeScroll">
+                  <table id="bulkTimeSheetPreview">
+                    <thead>
+                      <tr>
+                        <th className="fixed freeze">Emp Name & Code</th>
+                        {dates.map((item, index) => (
+                          <th key={item} className="fixed freeze_vertical">
+                            <span>
+                              {moment(item, "YYYY-MM-DD").format("ddd")}
+                            </span>
+                            <br />
+                            <span>
+                              {moment(item, "YYYY-MM-DD").format("DD/MMM")}
+                            </span>
+                          </th>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.map((item, index) => (
+                        <tr key={item.employee_id}>
+                          <td className="fixed freeze">
+                            <span>{item.employee_name}</span>
+                            <small>{item.employee_code}</small>
+                          </td>
+                          {item.roster.map((itm, indx) => {
+                            return (
+                              <TableCells
+                                itm={{ ...itm, project_id: itm.project_id }}
+                                indx={indx}
+                                key={`${item.employee_id}_${itm.attendance_date}`}
+                                employee_name={item.employee_name}
+                                editingProjectRoster={editingProjectRoster}
+                                setSelectedTD={selectedITD}
+                              />
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -315,8 +316,8 @@ function BulkTimeSheet(props) {
                     label={{ forceLabel: "Process", returnText: true }}
                   />
                 ) : (
-                    <i className="fas fa-spinner fa-spin" />
-                  )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>{" "}
             </div>
           </div>
@@ -335,20 +336,20 @@ function TableCells(props) {
     const editableTD =
       status !== "N"
         ? {
-          style: { cursor: "pointer" },
-          onDoubleClick: (e) => {
-            const element = e.target.offsetParent;
-            const rowID = element.parentElement.sectionRowIndex;
-            const cellID = element.cellIndex;
+            style: { cursor: "pointer" },
+            onDoubleClick: (e) => {
+              const element = e.target.offsetParent;
+              const rowID = element.parentElement.sectionRowIndex;
+              const cellID = element.cellIndex;
 
-            setSelectedTD({
-              attendance_date: attendance_date,
-              cellID,
-              rowID,
-            });
-            editingProjectRoster(itm, employee_name);
-          },
-        }
+              setSelectedTD({
+                attendance_date: attendance_date,
+                cellID,
+                rowID,
+              });
+              editingProjectRoster(itm, employee_name);
+            },
+          }
         : {};
     setEditable(editableTD);
   }, []); // eslint-disable-line

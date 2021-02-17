@@ -45,6 +45,7 @@ const loadMicroFrontend = async (host, callback) => {
     success: callback,
     before: (path, scriptEl) => {
       scriptEl.id = path;
+      scriptEl.crossOrigin = "anonymous";
     },
   });
 };
