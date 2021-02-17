@@ -19,7 +19,7 @@ app.use(
   })
 );
 
-process.env.MYSQL_KEYS = JSON.stringify(keys.default);
+process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
 
 app.use(compression());
 // if (process.env.NODE_ENV == "production") {

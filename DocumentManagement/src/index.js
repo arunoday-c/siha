@@ -28,10 +28,8 @@ app.use(
   })
 );
 
-console.log(process.env.ENABLE_I18N);
 if (process.env.ENABLE_I18N) {
   const pathUI = `${process.cwd()}/translation-ui/public`;
-  console.log(pathUI);
   app.use(exxpress.static(pathUI));
 }
 // console.log("CWD", process.cwd());
@@ -50,7 +48,7 @@ app.use(
   exxpress.static(`${process.cwd()}/UPLOAD`)
 );
 
-process.env.MYSQL_KEYS = JSON.stringify(keys.default);
+process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
 //api routeres v1
 app.use("/api/v1", router);
 app.use("/translation", translation);

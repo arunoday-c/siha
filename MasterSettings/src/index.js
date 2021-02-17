@@ -14,11 +14,11 @@ app.use(cors());
 const _port = process.env.PORT;
 app.use(
   bodyParser.json({
-    limit: keys.bodyLimit
+    limit: keys.bodyLimit,
   })
 );
 
-process.env.MYSQL_KEYS = JSON.stringify(keys.default);
+process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
 
 app.use(compression());
 
@@ -87,13 +87,10 @@ app.use((req, res, next) => {
 
 app.use("/api/v1", routes);
 
-process.on("warning", warning => {
-  utliites
-    .AlgaehUtilities()
-    .logger()
-    .log("warn", warning, "warn");
+process.on("warning", (warning) => {
+  utliites.AlgaehUtilities().logger().log("warn", warning, "warn");
 });
-process.on("uncaughtException", error => {
+process.on("uncaughtException", (error) => {
   utliites
     .AlgaehUtilities()
     .logger()
@@ -126,17 +123,17 @@ app.use((error, req, res, next) => {
             host: reqH.host,
             "user-agent": reqH["user-agent"],
             "cache-control": reqH["cache-control"],
-            origin: reqH.origin
-          }
+            origin: reqH.origin,
+          },
         },
-        message: errorMessage
+        message: errorMessage,
       },
       "error"
     );
   res.status(error.status).json({
     success: false,
     isSql: error.sqlMessage != null ? true : false,
-    message: errorMessage
+    message: errorMessage,
   });
 });
 app.server.listen(_port);

@@ -4,23 +4,24 @@ import _ from "lodash";
 // import algaehUtilities from "algaeh-utilities/utilities";
 
 export function getBedStatus(req, res, next) {
+  const _mysql = new algaehMysql();
   try {
-    const _mysql = new algaehMysql();
     console.log("iam here");
     _mysql
       .executeQuery({
-        query: `select * from hims_adm_ip_bed `,
+        query: `select * from algaeh_d_app_screens `,
         printQuery: true,
       })
       .then((result) => {
-        _mysql.releaseConnection();
         req.records = result;
         next();
       })
       .catch((e) => {
-        next(e);
+        throw e;
       });
   } catch (e) {
     next(e);
+  } finally {
+    _mysql.releaseConnection();
   }
 }

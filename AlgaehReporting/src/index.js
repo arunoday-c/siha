@@ -17,7 +17,7 @@ import excelRouting from "./directExcel";
 const bwipjs = require("bwip-js");
 const exec = require("child_process").exec;
 const app = exxpress();
-const keys = algaehKeys.default;
+const keys = keys.default;
 app.server = http.createServer(app);
 
 const {
@@ -29,7 +29,7 @@ const {
   printReportRaw,
 } = reportGen;
 
-process.env.MYSQL_KEYS = JSON.stringify(keys);
+process.env.MYSQL_KEYS = JSON.stringify(keys.mysqlDb);
 
 app.use(cors());
 const _port = process.env.PORT;

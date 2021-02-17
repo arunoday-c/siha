@@ -13,7 +13,7 @@ let getTargetLangage = (req, res, next) => {
   let languageModel = {
     targetLanguage: "ar",
     sourceLanguage: "en",
-    forceChange: false
+    forceChange: false,
     /*
       fieldIdentifier:{
         english:'',
@@ -33,7 +33,7 @@ let getTargetLangage = (req, res, next) => {
   let isForceChange = languageModel.forceChange;
   let itemLength = Object.keys(languageModel).length;
   Object.keys(languageModel).forEach((key, index) => {
-    Object.keys(languageModel[key]).forEach(k => {
+    Object.keys(languageModel[key]).forEach((k) => {
       if (k == "target") {
         if (isForceChange) {
           translateApi(
@@ -90,7 +90,7 @@ let translateApi = (source, target, text, key, index, callBack) => {
     {
       SourceLanguageCode: source,
       TargetLanguageCode: target,
-      Text: text
+      Text: text,
     },
     (error, data) => {
       if (error) {
@@ -101,5 +101,5 @@ let translateApi = (source, target, text, key, index, callBack) => {
   );
 };
 export default {
-  getTargetLangage
+  getTargetLangage,
 };

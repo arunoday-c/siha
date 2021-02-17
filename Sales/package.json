@@ -36,7 +36,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
-    "algaeh-mysql": "^1.5.1",
+    "algaeh-mysql": "^1.5.2",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cors": "^2.8.4",
