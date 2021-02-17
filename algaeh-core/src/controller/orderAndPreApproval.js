@@ -35,7 +35,7 @@ const {
   deleteOrderService,
   insertPhysiotherapyServices,
   deleteInvOrderedItems,
-  deleteOrderedPackage
+  deleteOrderedPackage,
 } = onpModels;
 
 export default ({ config, db }) => {
@@ -51,7 +51,7 @@ export default ({ config, db }) => {
     (req, res, next) => {
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -64,7 +64,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -78,7 +78,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -93,7 +93,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -108,26 +108,21 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
   );
 
   //created by Nowshad :to get Ordered Services to Display
-  api.get(
-    "/getOrderServices",
-    getOrderServices,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
+  api.get("/getOrderServices", getOrderServices, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
   //created by Nowshad :to get Ordered Services to Display
   api.get(
     "/getMedicationAprovalList",
@@ -136,7 +131,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -151,7 +146,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -166,7 +161,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -181,7 +176,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -196,7 +191,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -211,7 +206,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -224,7 +219,7 @@ export default ({ config, db }) => {
     (req, res, next) => {
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -232,12 +227,12 @@ export default ({ config, db }) => {
     if (req.records.invalid_input == true) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -245,12 +240,12 @@ export default ({ config, db }) => {
     if (req.records.invalid_input == true) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -258,23 +253,24 @@ export default ({ config, db }) => {
     if (req.records.invalid_input == true) {
       res.status(httpStatus.ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
   api.delete("/deleteOrderService", deleteOrderService, (req, res, next) => {
     res.status(httpStatus.ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
-  api.delete("/deleteInvOrderedItems",
+  api.delete(
+    "/deleteInvOrderedItems",
     deleteInvOrderedItems,
     addInvConsumptionCancel,
     generateAccountingEntry,
@@ -282,25 +278,28 @@ export default ({ config, db }) => {
     (req, res, next) => {
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
-      });
-    });
-
-  api.delete("/deleteOrderedPackage", deleteOrderedPackage, (req, res, next) => {
-    if (req.records.invalid_input == true) {
-      res.status(httpStatus.ok).json({
-        success: false,
-        records: req.records
-      });
-    } else {
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: req.records
+        records: req.records,
       });
     }
-  });
+  );
 
-
+  api.delete(
+    "/deleteOrderedPackage",
+    deleteOrderedPackage,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: req.records,
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: req.records,
+        });
+      }
+    }
+  );
 
   return api;
 };
