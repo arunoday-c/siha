@@ -14,7 +14,7 @@ import {
   AlgaehAutoComplete,
   AlgaehLabel,
   // AlgaehDateHandler,
-  AlgaehMessagePop,
+  // AlgaehMessagePop,
   AlgaehSearch,
   algaehAxios,
   // // DatePicker,
@@ -34,7 +34,7 @@ import { Controller, useForm } from "react-hook-form";
 // import swal from "sweetalert2";
 // import GlobalVariables from "../../../../../client/src/utils/GlobalVariables.json";
 // import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import _ from "lodash";
+// import _ from "lodash";
 interface Row {
   hims_d_appointment_status_id: number;
   color_code: string;
@@ -251,17 +251,19 @@ export default function BedStatus(Props: any) {
   // };
 
   const getAppointmentStatus = async () => {
-    const { response, error } = await algaehAxios(
-      "/appointment/getAppointmentStatus",
-      {
-        module: "frontDesk",
-        method: "GET",
-      }
-    );
+    debugger;
+    const { response, error } = await algaehAxios("/bedMaster/getBedStatus", {
+      module: "admission",
+      method: "GET",
+    });
     if (error) {
       if (error.show === true) {
         console.log("error=====", error);
       }
+    }
+    console.log("response", response);
+    if (response) {
+      debugger;
     }
     // Props.algaehApiCall({
     //   uri: "/appointment/getAppointmentStatus",
