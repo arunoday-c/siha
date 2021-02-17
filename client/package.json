@@ -12,7 +12,7 @@
     "@toast-ui/react-image-editor": "^1.0.0",
     "aescrypt": "^1.0.0",
     "agentkeepalive": "^4.0.0",
-    "algaeh-react-components": "^3.10.0",
+    "algaeh-react-components": "^3.11.0",
     "antd": "^4.12.3",
     "axios": "^0.18.0",
     "axios-cancel": "^0.2.2",
