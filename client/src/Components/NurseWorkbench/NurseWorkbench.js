@@ -1326,7 +1326,15 @@ class NurseWorkbench extends Component {
                       <div className="caption">
                         <h3 className="caption-subject">Enter Vitals</h3>
                       </div>
-                      <div className="actions"></div>
+                      <div className="actions">
+                        {" "}
+                        <button
+                          className="btn btn-primary btn-circle active"
+                          // onClick={this.ShowModel.bind(this)}
+                        >
+                          <i className="fas fa-heartbeat" />
+                        </button>
+                      </div>
                     </div>
                     <div className="portlet-body" id="vitals_recording">
                       <div
@@ -1516,6 +1524,49 @@ class NurseWorkbench extends Component {
                       </div>
                     </div>
                   </div>{" "}
+                </AlgaehSecurityComponent>
+
+                <AlgaehSecurityComponent componentCode="NUR_PAT_DIA">
+                  <div className="portlet portlet-bordered margin-bottom-15">
+                    <div className="portlet-title">
+                      <div className="caption">
+                        <h3 className="caption-subject">Patient Diagnosis</h3>
+                      </div>
+                      <div className="actions"></div>
+                    </div>
+                    <div className="portlet-body" id="pat_dia_recorded">
+                      <div className="row">
+                        {" "}
+                        <div className="col-12" id="pat_dia_Grid">
+                          <AlgaehDataGrid
+                            columns={[
+                              {
+                                fieldName: "",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "ICD Code" }}
+                                  />
+                                ),
+                              },
+                              {
+                                fieldName: "",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "ICD Description" }}
+                                  />
+                                ),
+                              },
+                            ]}
+                            keyId=""
+                            dataSource={{}}
+                            isEditable={false}
+                            paging={{ page: 0, rowsPerPage: 10 }}
+                            events={{}}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </AlgaehSecurityComponent>
 
                 <AlgaehSecurityComponent componentCode="NUR_PAT_CHF_COM">
