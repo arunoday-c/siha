@@ -251,7 +251,7 @@ export default function ConsumptionItemsEvents() {
 
 function getItemLocationStock($this, context, value) {
   algaehApiCall({
-    uri: "/pharmacyGlobal/getItemLocationStock",
+    uri: "/pharmacyGlobal/getItemLocationStockConsumtion",
     module: "pharmacy",
     method: "GET",
     data: {
