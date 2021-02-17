@@ -89,18 +89,6 @@ export default function Inventory({
             searchName: "PurchaseOrderForInventry",
             value: null, //"item_description",
             label: "Item Name",
-            // link: {
-            //   uri: "/pharmacy/getItemMaster",
-            //   module: "pharmacy",
-            // },
-
-            // events: {
-            //   onClear: (reportState, currentName) => {
-            //     reportState.setState({
-            //       [currentName]: undefined,
-            //     });
-            //   },
-            // },
           },
         ],
       },

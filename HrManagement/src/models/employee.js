@@ -2167,7 +2167,7 @@ export default {
         .executeQuery({
           query: `${strHosQuery} 
             select  E.employee_code,E.full_name as name,E.sex as gender ,
-            coalesce(E.date_of_joining,'-') as  date_of_joining,
+            coalesce(E.date_of_joining,'-') as  date_of_joining,E.identity_no,
             coalesce(concat(RP.employee_code,' / ', left(RP.full_name,12)),'-') as reporting_to,
             coalesce(G.group_description,'-') as emloyee_group,
             case E.employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
