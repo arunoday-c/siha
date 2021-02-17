@@ -583,6 +583,7 @@ export default {
                                 next: next,
                                 decimal_places: req.userIdentity.decimal_places,
                                 empResult: empResult[i],
+                                ls_applied: ls_applied,
                                 LS_loan_deduct: _LS_loan_deduct,
                                 leave_salary: input.leave_salary,
                               }).then((loanOutput) => {
@@ -4407,17 +4408,22 @@ function getLoanDueandPayable(options) {
       const empResult = options.empResult;
       const LS_loan_deduct = options.LS_loan_deduct;
       const leave_salary = options.leave_salary;
+      const ls_applied = options.ls_applied;
 
-      // console.log("LS_loan_deduct", LS_loan_deduct)
       const loan_due_amount =
         leave_salary == "Y" && LS_loan_deduct.length > 0
           ? LS_loan_deduct[0].loan_due_amount
           : 0;
+
       let total_loan_due_amount = 0;
       let total_loan_payable_amount = 0;
       let current_loan_array = [];
 
-      if (leave_salary != "Y" && LS_loan_deduct.length > 0) {
+      if (
+        leave_salary != "Y" &&
+        ls_applied.length > 0 &&
+        LS_loan_deduct.length > 0
+      ) {
         resolve({
           total_loan_due_amount,
           total_loan_payable_amount,

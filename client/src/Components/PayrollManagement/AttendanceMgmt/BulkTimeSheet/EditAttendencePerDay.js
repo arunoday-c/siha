@@ -97,7 +97,7 @@ export default function EditAttendencePerDay(props) {
       <div className="popupInner" data-validate="editBulkCell">
         <div className="col-12">
           <div className="row margin-top-15">
-            <div className="col-8 form-group">
+            <div className="col form-group">
               <AlgaehLabel
                 label={{
                   forceLabel: "Employee Name",
@@ -109,7 +109,7 @@ export default function EditAttendencePerDay(props) {
                   : "--------"}
               </h6>
             </div>
-            <div className="col-4 form-group">
+            <div className="col form-group">
               <AlgaehLabel
                 label={{
                   forceLabel: "Selected Date",
@@ -121,8 +121,32 @@ export default function EditAttendencePerDay(props) {
                   : "--------"}
               </h6>
             </div>
-            <div className="col-4">
-              <h6>Select Project</h6>
+            <AlagehFormGroup
+              div={{ className: "col form-group mandatory" }}
+              label={{
+                forceLabel: "Worked Hours",
+                isImp: true,
+              }}
+              textBox={{
+                decimal: { allowNegative: false },
+                className: "txt-fld",
+                name: "worked_hours",
+                value: workingHours,
+                events: {
+                  onChange: (e) => {
+                    let value = e.target.value;
+                    setWorkingHours(value);
+                  },
+                },
+              }}
+            />
+            <div className="col-12">
+              <h6>
+                Selected Project -{" "}
+                {/* {isEditing !== undefined ? (
+                  <b> {isEditing.project_desc}</b>
+                ) : null} */}
+              </h6>
               <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -172,7 +196,9 @@ export default function EditAttendencePerDay(props) {
                           width: "80%",
                         }}
                       >
-                        <span>{data.project_desc}</span>
+                        <span>
+                          {data.project_desc + " / " + data.hospital_name}
+                        </span>
                       </label>
                     </li>
                   );
@@ -204,26 +230,6 @@ export default function EditAttendencePerDay(props) {
                 },
               }}
             /> */}
-
-            <AlagehFormGroup
-              div={{ className: "col-5 form-group mandatory" }}
-              label={{
-                forceLabel: "Worked Hours",
-                isImp: true,
-              }}
-              textBox={{
-                decimal: { allowNegative: false },
-                className: "txt-fld",
-                name: "worked_hours",
-                value: workingHours,
-                events: {
-                  onChange: (e) => {
-                    let value = e.target.value;
-                    setWorkingHours(value);
-                  },
-                },
-              }}
-            />
           </div>
         </div>
       </div>

@@ -98,8 +98,7 @@ export function getSalesOrderItem(req, res, next) {
 
     _mysql
       .executeQuery({
-        query:
-          `SELECT SQ.*, C.customer_name, H.hospital_name, P.project_desc as project_name from hims_f_sales_order SQ 
+        query: `SELECT SQ.*, C.customer_name, H.hospital_name, P.project_desc as project_name from hims_f_sales_order SQ 
           inner join hims_d_customer C on SQ.customer_id = C.hims_d_customer_id 
           inner join hims_d_hospital H  on SQ.hospital_id = H.hims_d_hospital_id 
           inner join hims_d_project P  on SQ.project_id = P.hims_d_project_id 
@@ -111,13 +110,12 @@ export function getSalesOrderItem(req, res, next) {
         if (headerResult.length != 0) {
           _mysql
             .executeQuery({
-              query:
-                `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,     IM.item_description,    
+              query: `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,     IM.item_description,    
               (D.quantity - D.quantity_outstanding) as delivered_to_date,
               D.quantity as ordered_quantity, 0 as selected_quantity, 'N' as removed, 
               LOC.hims_m_inventory_item_location_id, LOC.inventory_location_id, LOC.batchno,
               LOC.expirydt as expiry_date, LOC.barcode, LOC.qtyhand, LOC.cost_uom, 
-              LOC.avgcost, LOC.item_type, LOC.sale_price, LOC.sales_uom,
+              LOC.avgcost as average_cost, LOC.item_type, LOC.sale_price, LOC.sales_uom,
               IM.hims_d_inventory_item_master_id, IM.item_description,IM.category_id as item_category_id, IM.group_id as item_group_id,
               PU.uom_description, 0 as dispatch_quantity from hims_f_sales_order_items D
               inner join hims_d_inventory_uom PU  on PU.hims_d_inventory_uom_id=D.uom_id
@@ -125,13 +123,13 @@ export function getSalesOrderItem(req, res, next) {
               left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id
               and  (date(LOC.expirydt) > date(CURDATE()) or LOC.expirydt is null)
               where D.sales_order_id=? and D.quantity_outstanding<>0 order by  date(LOC.expirydt)`,
-              //   `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,         
+              //   `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,
               // (D.quantity - D.quantity_outstanding) as delivered_to_date,
-              // D.quantity as ordered_quantity, 0 as selected_quantity, 'N' as removed, 
+              // D.quantity as ordered_quantity, 0 as selected_quantity, 'N' as removed,
               // COALESCE(LOC.hims_m_inventory_item_location_id, LOCAD.hims_m_inventory_item_location_id) as hims_m_inventory_item_location_id ,
               // COALESCE(LOC.inventory_location_id, LOCAD.inventory_location_id) as inventory_location_id, COALESCE(LOC.batchno,LOCAD.batchno) as batchno
               // ,COALESCE(LOC.expirydt, LOCAD.expirydt) as expiry_date,COALESCE(LOC.barcode,LOCAD.barcode) as barcode,
-              // COALESCE(LOC.qtyhand,LOCAD.qtyhand) as qtyhand,COALESCE(LOC.cost_uom, LOCAD.cost_uom) as cost_uom, 
+              // COALESCE(LOC.qtyhand,LOCAD.qtyhand) as qtyhand,COALESCE(LOC.cost_uom, LOCAD.cost_uom) as cost_uom,
               // COALESCE(LOC.avgcost, LOCAD.avgcost) as avgcost,COALESCE(LOC.item_type, LOCAD.item_type) as item_type,
               // COALESCE(LOC.sale_price, LOCAD.sale_price) as sale_price,COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
               // IM.hims_d_inventory_item_master_id, IM.item_description,IM.category_id as item_category_id, IM.group_id as item_group_id,
@@ -139,7 +137,7 @@ export function getSalesOrderItem(req, res, next) {
               // inner join hims_d_inventory_uom PU  on PU.hims_d_inventory_uom_id=D.uom_id
               // inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id
               // left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id
-              // and  date(LOC.expirydt) > date(CURDATE()) 
+              // and  date(LOC.expirydt) > date(CURDATE())
               // left join hims_m_inventory_item_location LOCAD  on D.item_id=LOCAD.item_id and
               // LOCAD.expirydt is null and IM.exp_date_required='N'
               // where D.sales_order_id=?
@@ -174,7 +172,7 @@ export function getSalesOrderItem(req, res, next) {
                     ordered_quantity,
                     selected_quantity,
                     delivered_to_date,
-                    removed
+                    removed,
                   } = detail[0];
                   return {
                     sales_order_items_id,
@@ -192,7 +190,11 @@ export function getSalesOrderItem(req, res, next) {
                     selected_quantity,
                     delivered_to_date,
                     removed,
-                    batches: detail.filter((f) => parseFloat(f.qtyhand) > 0 && f.inventory_location_id == inputParam.location_id),
+                    batches: detail.filter(
+                      (f) =>
+                        parseFloat(f.qtyhand) > 0 &&
+                        f.inventory_location_id == inputParam.location_id
+                    ),
                   };
                 })
                 .value();
@@ -273,7 +275,7 @@ export function getSalesOrderItem(req, res, next) {
 
               req.records = {
                 ...headerResult[0],
-                stock_detail: grouppedData
+                stock_detail: grouppedData,
               };
 
               next();
@@ -521,7 +523,7 @@ export function adjustDispatchNote(req, res, next) {
             input.hims_f_dispatch_note_header_id,
             input.adjust_reason,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
           printQuery: true,
         })
@@ -531,14 +533,18 @@ export function adjustDispatchNote(req, res, next) {
           req.body.period = period;
           req.body.inventory_stock_detail = input.delete_dispatch_items;
 
-          let strQuery = ""
+          let strQuery = "";
           // console.log("headerResult: ", headerResult[0].insertId);
           // console.log("length: ", input.stock_detail.length);
 
           for (let i = 0; i < input.delete_dispatch_items.length; i++) {
             strQuery += mysql.format(
               "DELETE FROM hims_f_sales_dispatch_note_batches where hims_f_sales_dispatch_note_batches_id=?;",
-              [input.delete_dispatch_items[i]["hims_f_sales_dispatch_note_batches_id"]]
+              [
+                input.delete_dispatch_items[i][
+                  "hims_f_sales_dispatch_note_batches_id"
+                ],
+              ]
             );
             // if (i == input.stock_detail.length - 1) {
 
@@ -565,15 +571,13 @@ export function adjustDispatchNote(req, res, next) {
               printQuery: true,
             })
             .then((deleteData) => {
-
               req.connection = {
                 connection: _mysql.connection,
-                isTransactionConnection:
-                  _mysql.isTransactionConnection,
+                isTransactionConnection: _mysql.isTransactionConnection,
                 pool: _mysql.pool,
               };
 
-              req.records = deleteData
+              req.records = deleteData;
               next();
             })
             .catch((error) => {
@@ -581,14 +585,12 @@ export function adjustDispatchNote(req, res, next) {
                 next(error);
               });
             });
-
         })
         .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
         });
-
     });
   } catch (e) {
     _mysql.rollBackTransaction(() => {
@@ -630,19 +632,19 @@ export function cancelDispatchNote(req, res, next) {
           req.body.transaction_id = input.hims_f_dispatch_note_header_id;
           req.body.year = year;
           req.body.period = period;
-          req.body.complete = "N"
+          req.body.complete = "N";
 
           req.connection = {
             connection: _mysql.connection,
-            isTransactionConnection:
-              _mysql.isTransactionConnection,
+            isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool,
           };
           req.records = {
             dispatch_note_number: input.dispatch_note_number,
-            hims_f_dispatch_note_header_id: input.hims_f_dispatch_note_header_id,
+            hims_f_dispatch_note_header_id:
+              input.hims_f_dispatch_note_header_id,
             year: year,
-            period: period
+            period: period,
           };
           next();
         })
@@ -651,7 +653,6 @@ export function cancelDispatchNote(req, res, next) {
             next(e);
           });
         });
-
     });
   } catch (e) {
     _mysql.rollBackTransaction(() => {
@@ -669,15 +670,11 @@ export function revertSalesOrder(req, res, next) {
       .executeQuery({
         query:
           "UPDATE `hims_f_sales_order` SET `is_completed`='N' WHERE `hims_f_sales_order_id`=?; \
-          UPDATE hims_f_sales_quotation set qotation_status='O' where hims_f_sales_quotation_id = ?;" ,
-        values: [
-          inputParam.sales_order_id,
-          inputParam.sales_quotation_id
-        ],
+          UPDATE hims_f_sales_quotation set qotation_status='O' where hims_f_sales_quotation_id = ?;",
+        values: [inputParam.sales_order_id, inputParam.sales_quotation_id],
         printQuery: true,
       })
       .then((headerResult) => {
-
         next();
         // if (headerResult != null) {
         //   let details = inputParam.inventory_stock_detail;
@@ -743,23 +740,29 @@ export function updateinvSalesOrderDispatchAdjust(req, res, next) {
         printQuery: true,
       })
       .then((sales_order_result) => {
-
         let strQuery = "";
-        let sales_order_items = []
+        let sales_order_items = [];
 
         for (let i = 0; i < inputParam.delete_dispatch_items.length; i++) {
-          let sales_order_item = sales_order_result.find(f => f.item_id == inputParam.delete_dispatch_items[i].item_id)
+          let sales_order_item = sales_order_result.find(
+            (f) => f.item_id == inputParam.delete_dispatch_items[i].item_id
+          );
 
-          sales_order_items.push(sales_order_item)
+          sales_order_items.push(sales_order_item);
           const _index = sales_order_result.indexOf(sales_order_item);
-          if (parseFloat(sales_order_item.quantity) === parseFloat(inputParam.delete_dispatch_items[i].dispatch_quantity)) {
+          if (
+            parseFloat(sales_order_item.quantity) ===
+            parseFloat(inputParam.delete_dispatch_items[i].dispatch_quantity)
+          ) {
             strQuery += mysql.format(
               "DELETE FROM hims_f_sales_order_items where hims_f_sales_order_items_id=?;",
               [sales_order_item.hims_f_sales_order_items_id]
             );
             sales_order_result.splice(_index, 1);
           } else {
-            sales_order_item.quantity = parseFloat(sales_order_item.quantity) - parseFloat(inputParam.delete_dispatch_items[i].dispatch_quantity)
+            sales_order_item.quantity =
+              parseFloat(sales_order_item.quantity) -
+              parseFloat(inputParam.delete_dispatch_items[i].dispatch_quantity);
             // sales_order_item.quantity_outstanding = parseFloat(sales_order_item.quantity_outstanding) > 0 ?
             //   parseFloat(sales_order_item.quantity) -
             //   (parseFloat(sales_order_item.quantity_outstanding) + parseFloat(inputParam.delete_dispatch_items[i].dispatch_quantity)) : 0
@@ -771,25 +774,29 @@ export function updateinvSalesOrderDispatchAdjust(req, res, next) {
               );
               sales_order_result.splice(_index, 1);
             } else {
-
-              sales_order_item.extended_cost = (parseFloat(sales_order_item.unit_cost) * parseFloat(sales_order_item.quantity)).toFixed(
-                req.userIdentity.decimal_places
-              );
+              sales_order_item.extended_cost = (
+                parseFloat(sales_order_item.unit_cost) *
+                parseFloat(sales_order_item.quantity)
+              ).toFixed(req.userIdentity.decimal_places);
               sales_order_item.discount_amount = (
-                (parseFloat(sales_order_item.extended_cost) * parseFloat(sales_order_item.discount_percentage)) /
+                (parseFloat(sales_order_item.extended_cost) *
+                  parseFloat(sales_order_item.discount_percentage)) /
                 100
               ).toFixed(req.userIdentity.decimal_places);
               sales_order_item.net_extended_cost = (
-                parseFloat(sales_order_item.extended_cost) - parseFloat(sales_order_item.discount_amount)
+                parseFloat(sales_order_item.extended_cost) -
+                parseFloat(sales_order_item.discount_amount)
               ).toFixed(req.userIdentity.decimal_places);
 
               sales_order_item.tax_amount = (
-                (parseFloat(sales_order_item.net_extended_cost) * parseFloat(sales_order_item.tax_percentage)) /
+                (parseFloat(sales_order_item.net_extended_cost) *
+                  parseFloat(sales_order_item.tax_percentage)) /
                 100
               ).toFixed(req.userIdentity.decimal_places);
 
               sales_order_item.total_amount = (
-                parseFloat(sales_order_item.net_extended_cost) + parseFloat(sales_order_item.tax_amount)
+                parseFloat(sales_order_item.net_extended_cost) +
+                parseFloat(sales_order_item.tax_amount)
               ).toFixed(req.userIdentity.decimal_places);
 
               sales_order_result[_index] = sales_order_item;
@@ -804,7 +811,7 @@ export function updateinvSalesOrderDispatchAdjust(req, res, next) {
                   sales_order_item.net_extended_cost,
                   sales_order_item.tax_amount,
                   sales_order_item.total_amount,
-                  sales_order_item.hims_f_sales_order_items_id
+                  sales_order_item.hims_f_sales_order_items_id,
                 ]
               );
               sales_order_result[_index] = sales_order_item;
@@ -823,7 +830,9 @@ export function updateinvSalesOrderDispatchAdjust(req, res, next) {
           parseFloat(s.net_extended_cost)
         );
 
-        const total_tax = _.sumBy(sales_order_result, (s) => parseFloat(s.tax_amount));
+        const total_tax = _.sumBy(sales_order_result, (s) =>
+          parseFloat(s.tax_amount)
+        );
 
         const net_payable = _.sumBy(sales_order_result, (s) =>
           parseFloat(s.total_amount)
@@ -837,7 +846,7 @@ export function updateinvSalesOrderDispatchAdjust(req, res, next) {
             net_total,
             total_tax,
             net_payable,
-            inputParam.sales_order_id
+            inputParam.sales_order_id,
           ]
         );
         // sales_order_result.splice(_index, 1);
@@ -860,7 +869,9 @@ export function updateinvSalesOrderDispatchAdjust(req, res, next) {
 
         _mysql
           .executeQuery({
-            query: `INSERT INTO hims_f_sales_order_adj_item(??) VALUES ?;` + strQuery,
+            query:
+              `INSERT INTO hims_f_sales_order_adj_item(??) VALUES ?;` +
+              strQuery,
             values: sales_order_items,
             includeValues: IncludeValues,
             extraValues: {
@@ -895,7 +906,6 @@ export function updateinvSalesOrderDispatchAdjust(req, res, next) {
         //       next(e);
         //     });
         //   });
-
       })
       .catch((e) => {
         _mysql.rollBackTransaction(() => {

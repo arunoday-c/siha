@@ -36,7 +36,7 @@ const executePDF = function executePDFMethod(options) {
             left join hims_f_salary_loans as LS on LS.loan_application_id = LO.hims_f_loan_application_id
             left join hims_f_salary as SL on SL.hims_f_salary_id = LS.salary_header_id
             left join hims_d_designation as ED on ED.hims_d_designation_id=EM.employee_designation_id
-            where LO.hims_f_loan_application_id=? and LO.loan_authorized='IS' and PM.cancel = 'N';`,
+            where LO.hims_f_loan_application_id=? and LO.loan_authorized='IS' and PM.cancel = 'N' and SL.salary_paid='Y';`,
           values: [input.hims_f_loan_application_id],
           printQuery: true,
         })

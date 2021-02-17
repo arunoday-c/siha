@@ -990,6 +990,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       formulaCal = eval(formulaCal); // eslint-disable-line
       // limit_applicable: e.selected.contribut_limit_applicable,
       //   limit_amount: e.selected.contribut_limit_amount
+      formulaCal = parseFloat(formulaCal).toFixed($this.state.decimal_places)
       if (
         earn_comp[x].limit_applicable === "Y" &&
         parseFloat(formulaCal) > parseFloat(earn_comp[x].limit_amount)
@@ -1058,6 +1059,8 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       }
 
       formulaCal = eval(formulaCal); // eslint-disable-line
+
+      formulaCal = parseFloat(formulaCal).toFixed($this.state.decimal_places)
 
       if (
         deduct_comp[y].limit_applicable === "Y" &&
@@ -1134,6 +1137,8 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       }
 
       formulaCal = eval(formulaCal); // eslint-disable-line
+
+      formulaCal = parseFloat(formulaCal).toFixed($this.state.decimal_places)
 
       if (
         contribute_comp[z].limit_applicable === "Y" &&

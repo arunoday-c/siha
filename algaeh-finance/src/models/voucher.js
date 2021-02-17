@@ -1772,7 +1772,7 @@ export default {
                         if (pl_account != "") {
                           strQry += _mysql.mysqlQueryFormat(
                             "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
-                            payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
+                            payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status,voucher_header_id)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?);",
                             [
                               pl_account.payment_date,
                               pl_account.head_id,
@@ -1786,6 +1786,7 @@ export default {
                               "Y",
                               req.userIdentity.algaeh_d_app_user_id,
                               "A",
+                              input.voucher_header_id,
                             ]
                           );
                         }

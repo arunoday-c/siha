@@ -4,7 +4,7 @@ import {
   Collapse,
   Checkbox,
   AlgaehButton,
-  AlgaehMessagePop,
+  // AlgaehMessagePop,
 } from "algaeh-react-components";
 import moment from "moment";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
@@ -18,9 +18,11 @@ export default memo(function ({ details }) {
   const [enablePrintButton, setEnablePrintButton] = useState(true);
   const [loading, setLoading] = useState(false);
   function changeSelectStatus(event) {
-    debugger;
-    const checkState = event.target.checked;
-
+    let checkState = event.target.checked;
+    console.log("checkState===", checkState);
+    if (indeterminate === true && checkState === true) {
+      checkState = false;
+    }
     const test = listOfDetails
       // .filter((item) => {
       //   return item.checked === undefined || item.checked === false;
@@ -38,13 +40,17 @@ export default memo(function ({ details }) {
     }
     setListOfDetails(test);
     setEnablePrintButton(checkList.length === 0 ? true : false);
+
     if (checkList.length === 0) {
       setIndeterminate(false);
       setSelectAll(false);
-      AlgaehMessagePop({
-        type: "warning",
-        display: "Report's validation is pending you can't print now.",
-      });
+      // const hasChecked = listOfDetails.filter((f) => f.status !== "V");
+      // if (hasChecked.length > 0) {
+      //   AlgaehMessagePop({
+      //     type: "warning",
+      //     display: "Report's validation is pending you can't print now.",
+      //   });
+      // }
     }
     // setCheckState(checkState);
   }
@@ -134,7 +140,6 @@ export default memo(function ({ details }) {
           <thead>
             <tr>
               <th>
-                {" "}
                 <Checkbox
                   indeterminate={indeterminate}
                   checked={selectAll}

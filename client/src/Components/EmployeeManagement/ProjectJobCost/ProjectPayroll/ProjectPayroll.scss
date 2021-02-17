@@ -8,3 +8,12 @@
     max-height: 40vh !important;
   }
 }
+#projectPayrollGrid_Cntr {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 50vh;
+      max-height: 50vh;
+      overflow: auto;
+    }
+  }
+}
