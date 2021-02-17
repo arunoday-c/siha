@@ -23,5 +23,5 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/microBuild/", express.static(path.resolve("../", "client/build")));
 
 app.listen(port, () => {
-  console.log(`Daycare Server started at http://localhost:${port}`);
+  console.log(`Daycare Server started at  http://localhost:${port}`);
 });

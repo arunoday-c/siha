@@ -15,6 +15,8 @@ import {
   AlgaehLabel,
   // AlgaehDateHandler,
   AlgaehMessagePop,
+  AlgaehSearch,
+  algaehAxios,
   // // DatePicker,
   // AlgaehModal,
   // AlgaehHijriDatePicker,
@@ -32,7 +34,7 @@ import { Controller, useForm } from "react-hook-form";
 // import swal from "sweetalert2";
 // import GlobalVariables from "../../../../../client/src/utils/GlobalVariables.json";
 // import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import Enumerable from "linq";
+import _ from "lodash";
 interface Row {
   hims_d_appointment_status_id: number;
   color_code: string;
@@ -46,7 +48,6 @@ interface Response {
   data: { records: []; success: boolean };
 }
 export default function BedStatus(Props: any) {
-  console.log("props", Props);
   const [appointmentStatus, setAppointmentStatus] = useState([]);
   // const [color_code, setColor_code] = useState<string>("#FFFFFF");
   // const [description, setDescription] = useState<string>("");
@@ -249,41 +250,53 @@ export default function BedStatus(Props: any) {
   //   });
   // };
 
-  const getAppointmentStatus = () => {
-    Props.algaehApiCall({
-      uri: "/appointment/getAppointmentStatus",
-      module: "frontDesk",
-      method: "GET",
-      onSuccess: (response: Response) => {
-        if (response.data.success) {
-          setAppointmentStatus(response.data.records);
+  const getAppointmentStatus = async () => {
+    const { response, error } = await algaehAxios(
+      "/appointment/getAppointmentStatus",
+      {
+        module: "frontDesk",
+        method: "GET",
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        console.log("error=====", error);
+      }
+    }
+    // Props.algaehApiCall({
+    //   uri: "/appointment/getAppointmentStatus",
+    //   module: "frontDesk",
+    //   method: "GET",
+    //   onSuccess: (response: Response) => {
+    //     if (response.data.success) {
+    //       setAppointmentStatus(response.data.records);
 
-          //steps: this.state.appointmentStatus.length + 1,
-          setMin_steps(appointmentStatus.length + 1);
-          // let steps_list: any[any];
-          // steps_list = Enumerable.from(appointmentStatus)
-          //   .select((w: { steps: any }) => w.steps)
-          //   .toArray();
+    //       //steps: this.state.appointmentStatus.length + 1,
+    //       setMin_steps(appointmentStatus.length + 1);
+    //       // let steps_list: any[any];
+    //       // steps_list = Enumerable.from(appointmentStatus)
+    //       //   .select((w: { steps: any }) => w.steps)
+    //       //   .toArray();
 
-          // setSteps_list(steps_list);
+    //       // setSteps_list(steps_list);
 
-          let authCount = Enumerable.from(appointmentStatus)
-            .where((w: any) => w.authorized === "Y")
-            .toArray().length;
+    //       let authCount = _.chain(appointmentStatus)
+    //         .filter((w: any) => w.authorized === "Y")
+    //         .value().length;
 
-          if (authCount > 0 && authCount === appointmentStatus.length) {
-            setIsEditable(false);
-            setDisableAdd("none");
-          }
-        }
-      },
-      onFailure: (error: any) => {
-        AlgaehMessagePop({
-          display: error.message,
-          type: "error",
-        });
-      },
-    });
+    //       if (authCount > 0 && authCount === appointmentStatus.length) {
+    //         setIsEditable(false);
+    //         setDisableAdd("none");
+    //       }
+    //     }
+    //   },
+    //   onFailure: (error: any) => {
+    //     AlgaehMessagePop({
+    //       display: error.message,
+    //       type: "error",
+    //     });
+    //   },
+    // });
   };
   useEffect(() => {
     getAppointmentStatus();
@@ -334,7 +347,6 @@ export default function BedStatus(Props: any) {
 
   return (
     <div className="appointment_status">
-      {" "}
       <div className="row inner-top-search" style={{ display: disableAdd! }}>
         <Controller
           name="color_code"
@@ -575,13 +587,19 @@ export default function BedStatus(Props: any) {
         <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
             <div className="portlet-body">
-              {" "}
               <div className="row">
                 <div
                   className="col-12"
                   data-validate="apptStatusDiv"
                   id="apptStatusDivCntr"
                 >
+                  <button
+                    onClick={() => {
+                      AlgaehSearch();
+                    }}
+                  >
+                    Search
+                  </button>
                   <AlgaehDataGrid
                     // id="appt-status-grid"
                     // datavalidate="data-validate='apptStatusDiv'"

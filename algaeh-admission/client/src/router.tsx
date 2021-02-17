@@ -14,17 +14,14 @@ const Routing = [
 ];
 interface interRouter {
   path: string;
-  history: any;
   mainContext: any;
   globalVariables: any;
-  algaehApiCall: Function;
+  // algaehApiCall: Function;
 }
 export default function Router({
   path,
-  history,
   mainContext,
   globalVariables,
-  algaehApiCall,
 }: interRouter) {
   const [Component, setComponent] = useState<React.ReactElement>(<></>);
   useEffect(() => {
@@ -32,10 +29,8 @@ export default function Router({
     if (filter) {
       setComponent(
         filter.component({
-          history,
           mainContext,
           globalVariables,
-          algaehApiCall,
         })
       );
     } else {
@@ -45,4 +40,3 @@ export default function Router({
   }, [path]);
   return Component;
 }
-//--after-rebuild-hook='echo refreshing page. && ./reload.sh http://localhost:1313/daycare'
