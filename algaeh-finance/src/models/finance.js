@@ -2520,16 +2520,23 @@ export default {
           printQuery: false,
         })
         .then((result) => {
+          const record = _.head(result);
+          if (!record) {
+            _mysql.releaseConnection();
+            next(new Error("There is no such account exists"));
+            return;
+          }
           if (result[0]["created_from"] == "U") {
             _mysql
               .executeQuery({
                 query:
-                  "update finance_account_head set account_name=?,updated_by=?,updated_date=?\
+                  "update finance_account_head set account_name=?,updated_by=?,updated_date=?,arabic_account_name=?\
                  where finance_account_head_id=? and created_from='U';",
                 values: [
                   input.account_name,
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
+                  input.arabic_account_name,
                   input.finance_account_head_id,
                 ],
                 printQuery: false,
