@@ -99,7 +99,7 @@ class StockEnquiry extends Component {
             className="row inner-top-search"
             style={{ paddingBottom: "10px" }}
           >
-            <div className="col-12">
+            <div className="col-lg-8">
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col" }}
