@@ -15,6 +15,7 @@ export default function EditAttendencePerDay(props) {
   const [workingHours, setWorkingHours] = useState("");
   const [searchprojects, setSearchProject] = useState("");
   const [projectList, setProjectList] = useState([]);
+  const [project_desc, setProjectDesc] = useState("");
 
   const [loadingProcess, setLoadingProcess] = useState(false);
 
@@ -23,9 +24,11 @@ export default function EditAttendencePerDay(props) {
       setProjectList(project_state.projects);
       setProjectId(project_state.project_id || "");
       setWorkingHours(project_state.worked_hours || "");
+      setProjectDesc(project_state.project_desc || "");
     } else {
       setProjectId("");
       setWorkingHours("");
+      setProjectDesc("");
     }
   }, [project_state]);
 
@@ -142,7 +145,7 @@ export default function EditAttendencePerDay(props) {
             />
             <div className="col-12">
               <h6>
-                Selected Project -{" "}
+                Selected Project - {project_desc}
                 {/* {isEditing !== undefined ? (
                   <b> {isEditing.project_desc}</b>
                 ) : null} */}
@@ -185,6 +188,7 @@ export default function EditAttendencePerDay(props) {
                         id={data.project_id}
                         name="hims_d_project_id"
                         value={data}
+                        checked={projectId === data.project_id ? true : false}
                         onChange={() => {
                           projectHandler(data);
                         }}
