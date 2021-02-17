@@ -48,6 +48,9 @@ import { AlgaehSecurityComponent } from "algaeh-react-components";
 import { debounce } from "lodash";
 import sockets from "../../sockets";
 import VitalComponent from "../../Components/PatientProfile/Vitals/VitalComponent";
+import { AlgaehModal } from "algaeh-react-components";
+import VitalsHistory from "../PatientProfile/Vitals/VitalsHistory";
+import ModalMedicalRecord from "../DoctorsWorkbench/ModalForMedicalRecordPat";
 
 class NurseWorkbench extends Component {
   constructor(props) {
@@ -87,6 +90,8 @@ class NurseWorkbench extends Component {
       searchText: "",
       filterList: [],
       patient_provider_id: undefined,
+      openVitalHistoryPop: false,
+      openMrdModal: false,
     };
     this.getVitalsRef = undefined;
     this.baseState = this.state;
@@ -1050,7 +1055,40 @@ class NurseWorkbench extends Component {
       [e.target.name]: e.target.value,
     });
   }
-
+  getPatientVitals() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientVitals",
+      method: "GET",
+      data: {
+        patient_id: this.state.patient_id,
+      },
+      cancelRequestId: "getPatientVitals1",
+      onSuccess: (response) => {
+        // algaehLoader({ show: false });
+        if (response.data.success) {
+          this.setState({
+            patientVitals: response.data.records,
+            openVitalHistoryPop: true,
+          });
+        }
+      },
+      onFailure: (error) => {
+        // algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+  onCloseVitalHistory() {
+    this.setState({ openVitalHistoryPop: !this.state.openVitalHistoryPop });
+  }
+  onClose(e) {
+    this.setState({
+      openMrdModal: !this.state.openMrdModal,
+    });
+  }
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
@@ -1329,10 +1367,22 @@ class NurseWorkbench extends Component {
                       <div className="actions">
                         {" "}
                         <button className="btn btn-primary btn-circle active">
-                          <i className="fas fa-heartbeat" />
+                          <i
+                            className="fas fa-heartbeat"
+                            onClick={() => {
+                              this.getPatientVitals();
+                            }}
+                          />
                         </button>
                         <button className="btn btn-primary btn-circle active">
-                          <i className="fas fa-file" />
+                          <i
+                            className="fas fa-file"
+                            onClick={() => {
+                              this.setState({
+                                openMrdModal: true,
+                              });
+                            }}
+                          />
                         </button>
                       </div>
                     </div>
@@ -1362,6 +1412,36 @@ class NurseWorkbench extends Component {
                   </div>{" "}
                 </AlgaehSecurityComponent>
 
+                <AlgaehModal
+                  title="Medical Record List"
+                  visible={this.state.openVitalHistoryPop}
+                  mask={true}
+                  maskClosable={false}
+                  onCancel={() => this.onCloseVitalHistory()}
+                  footer={[
+                    <div className="col-12">
+                      <button
+                        onClick={() => this.onCloseVitalHistory()}
+                        className="btn btn-default btn-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>,
+                  ]}
+                  className={`algaehNewModal`}
+                >
+                  <VitalsHistory _vitalsGroup={this.state.patientVitals} />
+                </AlgaehModal>
+
+                {this.state.patient_id ? (
+                  <ModalMedicalRecord
+                    visit_id={this.state.visit_id}
+                    patient_id={this.state.patient_id}
+                    patient_code={this.state.patient_code}
+                    openMrdModal={this.state.openMrdModal}
+                    onClose={(e) => this.onClose(e)}
+                  />
+                ) : null}
                 <AlgaehSecurityComponent componentCode="NUR_PAT_CHF_COM">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">

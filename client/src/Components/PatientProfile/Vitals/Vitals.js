@@ -22,8 +22,9 @@ import config from "../../../utils/config.json";
 // import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 // import Enumerable from "linq";
 import moment from "moment";
-import _ from "lodash";
+// import _ from "lodash";
 import VitalComponent from "./VitalComponent";
+import VitalsHistory from "./VitalsHistory";
 class Vitals extends Component {
   constructor(props) {
     super(props);
@@ -536,11 +537,7 @@ class Vitals extends Component {
                           </div> */}
                         </div>
                       </div>{" "}
-                      <div className="col-8 vitalsTimeLineSec">
-                        <h6 className="margin-top-15">Vitals History</h6>
-                        <hr />
-                        <div className="timeline">
-                          {_vitalsGroup.map((data, index) => (
+                      {/* {_vitalsGroup.map((data, index) => (
                             <div
                               key={index}
                               className="timelineContainer right"
@@ -568,9 +565,8 @@ class Vitals extends Component {
                                 </div>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </div>
+                          ))} */}
+                      <VitalsHistory _vitalsGroup={_vitalsGroup} />
                     </div>
 
                     {/* <div className="row">

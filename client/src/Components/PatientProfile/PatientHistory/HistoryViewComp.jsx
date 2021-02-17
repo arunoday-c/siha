@@ -12,7 +12,6 @@ export default function HistoryViewComp({ data, remarks }) {
   });
 
   const updateHistory = (e) => {
-    debugger;
     newAlgaehApi({
       uri: "/doctorsWorkBench/updatePatientHistory",
       method: "PUT",
