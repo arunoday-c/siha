@@ -290,13 +290,14 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               <li
                 label="edit"
                 className={
-                  "NodeEditButton " +
-                  (node.leafnode === "N" && node.created_status === "S"
-                    ? "disabled"
-                    : "")
+                  "NodeEditButton "
+                  //changed as per mujahid requirement
+                  //  +
+                  // (node.leafnode === "N" && node.created_status === "S"
+                  //   ? "disabled"
+                  //   : "")
                 }
                 onClick={() => {
-                  debugger;
                   if (Object.keys(editorRecord).length > 0) {
                     setEditorRecord({});
                   } else {

@@ -2526,38 +2526,40 @@ export default {
             next(new Error("There is no such account exists"));
             return;
           }
-          if (result[0]["created_from"] == "U") {
-            _mysql
-              .executeQuery({
-                query:
-                  "update finance_account_head set account_name=?,updated_by=?,updated_date=?,arabic_account_name=?\
-                 where finance_account_head_id=? and created_from='U';",
-                values: [
-                  input.account_name,
-                  req.userIdentity.algaeh_d_app_user_id,
-                  new Date(),
-                  input.arabic_account_name,
-                  input.finance_account_head_id,
-                ],
-                printQuery: false,
-              })
-              .then((result2) => {
-                _mysql.releaseConnection();
-                req.records = result2;
-                next();
-              })
-              .catch((e) => {
-                _mysql.releaseConnection();
-                next(e);
-              });
-          } else {
-            _mysql.releaseConnection();
-            req.records = {
-              invalid_input: true,
-              message: "Cannot Modify System defined Ledgers",
-            };
-            next();
-          }
+          //As per requirement by mujahid on 17-02-2021
+          // if (result[0]["created_from"] == "U") {
+          _mysql
+            .executeQuery({
+              query:
+                "update finance_account_head set account_name=?,updated_by=?,updated_date=?,arabic_account_name=?\
+                 where finance_account_head_id=? ;", //and created_from='U'
+              values: [
+                input.account_name,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                input.arabic_account_name,
+                input.finance_account_head_id,
+              ],
+              printQuery: false,
+            })
+            .then((result2) => {
+              _mysql.releaseConnection();
+              req.records = result2;
+              next();
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+          //As per requirement by mujahid on 17-02-2021
+          //   } else {
+          //   _mysql.releaseConnection();
+          //   req.records = {
+          //     invalid_input: true,
+          //     message: "Cannot Modify System defined Ledgers",
+          //   };
+          //   next();
+          // }
         })
         .catch((e) => {
           _mysql.releaseConnection();
