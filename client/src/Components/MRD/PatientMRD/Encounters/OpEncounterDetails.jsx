@@ -1154,7 +1154,7 @@ export default function OPEncounterDetails({
                         // },
 
                         {
-                          fieldName: "hims_f_ordered_services_id",
+                          fieldName: "lab_ord_status",
                           label: "Status",
                           displayTemplate: (row) => {
                             return row.service_type_id === 5 ? (
@@ -1226,7 +1226,7 @@ export default function OPEncounterDetails({
                         //   },
                         // },
                         {
-                          fieldName: "hims_f_ordered_services_id",
+                          fieldName: "intrnReport",
                           label: "Internal Report",
                           displayTemplate: (row) => {
                             return row.service_type_id === 5 &&
@@ -1256,7 +1256,7 @@ export default function OPEncounterDetails({
                         },
 
                         {
-                          fieldName: "hims_f_ordered_services_id",
+                          fieldName: "extrnReport",
                           label: "External Report",
                           displayTemplate: (row) => {
                             return row.service_type_id === 5 &&
@@ -1479,7 +1479,7 @@ export default function OPEncounterDetails({
                           fieldName: "service_type",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "service_type_id" }}
+                              label={{ forceLabel: "Service Type" }}
                             />
                           ),
                           others: {
@@ -1566,7 +1566,7 @@ export default function OPEncounterDetails({
                 <div className="row">
                   <div className="col-lg-12">
                     <AlgaehDataGrid
-                      id="Package_list"
+                      id="consumables_list"
                       columns={[
                         {
                           fieldName: "billed",
@@ -1595,7 +1595,7 @@ export default function OPEncounterDetails({
                           fieldName: "service_type",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "service_type_id" }}
+                              label={{ forceLabel: "Service Type" }}
                             />
                           ),
                           others: {
