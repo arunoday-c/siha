@@ -40,9 +40,9 @@ export default {
             "SELECT * from hims_f_inventory_material_header where 1=1 " +
             _strAppend,
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -54,17 +54,17 @@ export default {
                   from hims_f_inventory_material_detail ID, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU\
                   where ID.inventory_header_id=? and item_id = IM.hims_d_inventory_item_master_id and item_uom = IU.hims_d_inventory_uom_id",
                 values: [headerResult[0].hims_f_inventory_material_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(inventory_stock_detail => {
+              .then((inventory_stock_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ inventory_stock_detail }
+                  ...{ inventory_stock_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -74,7 +74,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -98,9 +98,9 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["INV_REQ_NUM"],
-          table_name: "hims_f_inventory_numgen"
+          table_name: "hims_f_inventory_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           material_requisition_number = generatedNumbers.INV_REQ_NUM;
           // let today = moment().format("YYYY-MM-DD");
           _mysql
@@ -145,11 +145,11 @@ export default {
                 input.cancelled,
                 input.cancelled_by,
                 input.cancelled_date,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
               let IncludeValues = [
                 "item_id",
                 "item_category_id",
@@ -159,7 +159,7 @@ export default {
                 "from_qtyhand",
                 "quantity_required",
                 "quantity_outstanding",
-                "quantity_authorized"
+                "quantity_authorized",
               ];
 
               utilities
@@ -173,34 +173,34 @@ export default {
                   values: input.inventory_stock_detail,
                   includeValues: IncludeValues,
                   extraValues: {
-                    inventory_header_id: headerResult.insertId
+                    inventory_header_id: headerResult.insertId,
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(detailResult => {
+                .then((detailResult) => {
                   utilities.logger().log("detailResult: ", detailResult);
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = {
-                      material_requisition_number: material_requisition_number
+                      material_requisition_number: material_requisition_number,
                     };
                     next();
                   });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -231,11 +231,11 @@ export default {
             inputParam.authorie2,
             new Date(),
             inputParam.updated_by,
-            inputParam.hims_f_inventory_material_header_id
+            inputParam.hims_f_inventory_material_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult != null) {
             let details = inputParam.inventory_stock_detail;
 
@@ -258,23 +258,23 @@ export default {
                   details[i].item_uom,
                   details[i].quantity_recieved,
                   details[i].quantity_outstanding,
-                  details[i].hims_f_inventory_material_detail_id
+                  details[i].hims_f_inventory_material_detail_id,
                 ]
               );
             }
             _mysql
               .executeQueryWithTransaction({
                 query: qry,
-                printQuery: true
+                printQuery: true,
               })
-              .then(detailResult => {
+              .then((detailResult) => {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = detailResult;
                   next();
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -286,7 +286,7 @@ export default {
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -343,14 +343,14 @@ export default {
       _mysql
         .executeQuery({
           query: strQuery,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -369,9 +369,8 @@ export default {
       let complete = inputParam.complete === "N" ? "N" : "Y";
 
       const partial_recived = new LINQ(inputParam.inventory_stock_detail)
-        .Where(w => w.quantity_outstanding != 0)
+        .Where((w) => parseFloat(w.quantity_outstanding) > 0)
         .ToArray();
-
       if (partial_recived.length > 0) {
         complete = "N";
       }
@@ -384,11 +383,11 @@ export default {
           values: [
             complete,
             new Date(),
-            inputParam.hims_f_inventory_material_header_id
+            inputParam.hims_f_inventory_material_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult != null) {
             let details = inputParam.inventory_stock_detail;
 
@@ -400,23 +399,23 @@ export default {
               where `hims_f_inventory_material_detail_id`=?;",
                 [
                   details[i].quantity_outstanding,
-                  details[i].material_requisition_detail_id
+                  details[i].material_requisition_detail_id,
                 ]
               );
             }
             _mysql
               .executeQueryWithTransaction({
                 query: qry,
-                printQuery: true
+                printQuery: true,
               })
-              .then(detailResult => {
+              .then((detailResult) => {
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
                 // req.records = detailResult;
                 next();
                 // });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -428,7 +427,7 @@ export default {
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -438,5 +437,5 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };

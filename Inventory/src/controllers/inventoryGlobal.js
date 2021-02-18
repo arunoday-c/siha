@@ -12,6 +12,7 @@ const {
   getItemandLocationStock,
   getConsumptionSelectedMonth,
   getListUomSelectedItem,
+  getItemLocationStockConsumtion,
 } = invModels;
 
 export default () => {
@@ -46,6 +47,16 @@ export default () => {
       records: req.records,
     });
   });
+  api.get(
+    "/getItemLocationStockConsumtion",
+    getItemLocationStockConsumtion,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
   api.get("/getInvExpItemsDash", getInvExpItemsDash, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

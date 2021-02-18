@@ -1221,41 +1221,65 @@ let load_orders_for_bill = (req, res, next) => {
 };
 
 let getOrderServices = (req, res, next) => {
-  let selectWhere = {
-    visit_id: "ALL",
-    insurance_yesno: "ALL",
-    service_type_id: "ALL",
-    services_id: "ALL",
-  };
-
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT * FROM `hims_f_ordered_services` \
+        WHERE `record_status`='A' AND visit_id=? and insurance_yesno=?;",
+        values: [req.query.visit_id, req.query.insurance_yesno],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      }
-      let where = whereCondition(extend(selectWhere, req.query));
-      connection.query(
-        "SELECT  * FROM `hims_f_ordered_services` \
-       WHERE `record_status`='A' AND " +
-        where.condition,
-        where.values,
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+
+  // let selectWhere = {
+  //   visit_id: "ALL",
+  //   insurance_yesno: "ALL",
+  //   service_type_id: "ALL",
+  //   services_id: "ALL",
+  // };
+
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   db.getConnection((error, connection) => {
+  //     if (error) {
+  //       next(error);
+  //     }
+  //     let where = whereCondition(extend(selectWhere, req.query));
+  //     connection.query(
+  //       "SELECT  * FROM `hims_f_ordered_services` \
+  //      WHERE `record_status`='A' AND " +
+  //         where.condition,
+  //       where.values,
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //ordered services update

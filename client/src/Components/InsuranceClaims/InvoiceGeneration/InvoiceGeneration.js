@@ -144,6 +144,8 @@ class InvoiceGeneration extends Component {
         ...nonChangeable,
         dataExists: false,
         Invoice_Detail: [],
+        cash_invoice: true,
+        creidt_invoice: false,
       },
       () => {
         if (typeof callBack === "function") {
@@ -215,7 +217,7 @@ class InvoiceGeneration extends Component {
   }
 
   selectData(e) {
-    debugger
+    debugger;
     if (e.target.name === "cash_invoice") {
       this.setState({
         select_invoice: "CH",

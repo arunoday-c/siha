@@ -4,10 +4,10 @@ import { LINQ } from "node-linq";
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
-const createXmlString = Jobject => {
+const createXmlString = (Jobject) => {
   if (Jobject != null) {
     let stringObj = "";
-    Object.keys(Jobject).map(item => {
+    Object.keys(Jobject).map((item) => {
       if (Jobject[item] != null && Jobject[item] != undefined) {
         stringObj += "<" + item + ">" + Jobject[item] + "</" + item + ">";
       }
@@ -29,14 +29,14 @@ let updateIntoItemLocation = (req, res, next) => {
     const utilities = new algaehUtilities();
     // console.log("updateIntoItemLocation: ", inputParam.pharmacy_stock_detail);
 
-    console.log("transaction_type: ", req.body.transaction_type);
+    // console.log("transaction_type: ", req.body.transaction_type);
 
     new LINQ(inputParam.pharmacy_stock_detail)
-      .Select(s => {
+      .Select((s) => {
         let unit_cost =
           req.body.transaction_type == "DNA" ||
-            req.body.transaction_type == "POS" ||
-            req.body.transaction_type == "SRT"
+          req.body.transaction_type == "POS" ||
+          req.body.transaction_type == "SRT"
             ? s.average_cost
             : s.unit_cost;
         xmlQuery += "<hims_m_item_location>";
@@ -89,7 +89,7 @@ let updateIntoItemLocation = (req, res, next) => {
           updated_by: req.userIdentity.algaeh_d_app_user_id,
           operation: s.operation,
           hospital_id: req.userIdentity.hospital_id,
-          flag: req.flag || 0
+          flag: req.flag || 0,
         });
         xmlQuery += "</hims_m_item_location>";
       })
@@ -100,9 +100,9 @@ let updateIntoItemLocation = (req, res, next) => {
     _mysql
       .executeQuery({
         query: "call algaeh_proc_item_location ('" + xmlQuery + "')",
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         // utilities.logger().log("result: ", result);
         // utilities.logger().log("req.flag: ", req.flag);
         if (Array.isArray(result)) {
@@ -124,7 +124,8 @@ let updateIntoItemLocation = (req, res, next) => {
                 req.body.pharmacy_stock_detail[i].sales_uom =
                   req.body.pharmacy_stock_detail[i].uom_transferred_id;
 
-                req.body.pharmacy_stock_detail[i].operation = req.body.operation;
+                req.body.pharmacy_stock_detail[i].operation =
+                  req.body.operation;
                 req.body.pharmacy_stock_detail[i].git_qty = 0;
               }
               req.flag = 0;
@@ -161,7 +162,7 @@ let updateIntoItemLocation = (req, res, next) => {
           }
         }
       })
-      .catch(e => {
+      .catch((e) => {
         // utilities.logger().log("error: ", e);
         _mysql.rollBackTransaction(() => {
           next(e);
@@ -174,5 +175,5 @@ let updateIntoItemLocation = (req, res, next) => {
 };
 
 export default {
-  updateIntoItemLocation
+  updateIntoItemLocation,
 };

@@ -101,12 +101,12 @@ export default function FinanceYearlyClosing() {
                       },
                     ]}
                     data={allTransactions}
-                  />{" "}
+                  />
                 </div>
-              </div>{" "}
-            </div>{" "}
-          </div>{" "}
-        </div>{" "}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

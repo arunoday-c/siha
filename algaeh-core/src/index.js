@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(dist));
 }
 
-process.env.MYSQL_KEYS = JSON.stringify(keys);
+process.env.MYSQL_KEYS = JSON.stringify(keys.mysqlDb);
 app.use(
   cors({
     origin: "*",

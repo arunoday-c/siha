@@ -207,8 +207,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.inventoryitemlist === undefined
       ? []
       : $this.props.inventoryitemlist.filter(
-        (f) => f.hims_d_inventory_item_master_id === row.item_id
-      );
+          (f) => f.hims_d_inventory_item_master_id === row.item_id
+        );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -477,6 +477,7 @@ const AddSelectedBatches = ($this, context) => {
       const _index = _stock_detail.indexOf($this.state.item_details);
       _stock_detail[_index] = $this.state.item_details;
       delete details.batches;
+      delete details.unit_cost;
 
       _stock_detail[_index].inventory_stock_detail = batches.map(
         (item, index) => {
@@ -493,17 +494,15 @@ const AddSelectedBatches = ($this, context) => {
         // batch.sales_price = batch.sale_price;
 
         batch.ack_quantity = batch.quantity_transfer;
-        debugger
         if (updateStock !== undefined) {
           const invIndex = _inventory_stock_detail.indexOf(updateStock);
           const totalqty =
             updateStock.quantity_transfer + batch.quantity_transfer;
           if (totalqty > batch.qtyhand) {
             updateStock.quantity_transfer = batch.qtyhand;
-            updateStock.ack_quantity = updateStock.quantity_transfer
+            updateStock.ack_quantity = updateStock.quantity_transfer;
           }
           _inventory_stock_detail[invIndex] = updateStock;
-
         } else {
           _inventory_stock_detail.push({
             ...batch,
@@ -588,7 +587,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 parseFloat(sales_conversion_factor.conversion_factor);
               data.locationResult[i].qtyhand = qtyhand_batch;
             }
-            debugger
 
             $this.setState({
               [name]: value,
@@ -615,7 +613,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               conversion_factor: sales_conversion_factor.conversion_factor,
               sales_qtyhand: sales_qtyhand,
               sales_price: e.sale_price,
-              unit_cost: data.locationResult[0].avgcost
+              unit_cost: data.locationResult[0].avgcost,
             });
 
             if (context !== undefined) {
@@ -644,7 +642,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 conversion_factor: sales_conversion_factor.conversion_factor,
                 sales_qtyhand: sales_qtyhand,
                 sales_price: e.sale_price,
-                unit_cost: data.locationResult[0].avgcost
+                unit_cost: data.locationResult[0].avgcost,
               });
             }
           } else {

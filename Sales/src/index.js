@@ -15,12 +15,18 @@ const port = process.env.PORT;
 const keys = algaehKeys.default;
 app.use(
   bodyParser.json({
-    limit: "50MB"
+    limit: "50MB",
   })
 );
-app.use(express.urlencoded({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
-process.env.MYSQL_KEYS = JSON.stringify(keys);
+app.use(express.urlencoded({ limit: "50mb" }));
+app.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    extended: true,
+    parameterLimit: 50000,
+  })
+);
+process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
 app.use(compression());
 
 app.use((req, res, next) => {
@@ -36,14 +42,11 @@ app.use((req, res, next) => {
 // }
 app.use("/api/v1", routes());
 
-process.on("warning", warning => {
-  utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("warn", warning, "warn");
+process.on("warning", (warning) => {
+  utilities.AlgaehUtilities().logger().log("warn", warning, "warn");
 });
 
-process.on("uncaughtException", error => {
+process.on("uncaughtException", (error) => {
   utilities
     .AlgaehUtilities()
     .logger()
@@ -77,17 +80,17 @@ app.use((error, req, res, next) => {
             host: reqH.host,
             "user-agent": reqH["user-agent"],
             "cache-control": reqH["cache-control"],
-            origin: reqH.origin
-          }
+            origin: reqH.origin,
+          },
         },
-        message: errorMessage
+        message: errorMessage,
       },
       "error"
     );
   res.status(error.status).json({
     success: false,
     isSql: error.sqlMessage != null ? true : false,
-    message: errorMessage
+    message: errorMessage,
   });
 });
 app.listen(port, () => {

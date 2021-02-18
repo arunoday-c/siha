@@ -159,6 +159,9 @@ function OptionsComponent({
                       textField: "name",
                     },
                     onChange: handleDropDown,
+                    others: {
+                      disabled: true,
+                    },
                   }}
                 />
                 <div className="col-2">

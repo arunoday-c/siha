@@ -252,10 +252,13 @@ export default function BedStatus(Props: any) {
 
   const getAppointmentStatus = async () => {
     debugger;
-    const { response, error } = await algaehAxios("/bedMaster/getBedStatus", {
-      module: "admission",
-      method: "GET",
-    });
+    const { response, error } = await algaehAxios(
+      "/bedManagement/getBedStatus",
+      {
+        module: "admission",
+        method: "GET",
+      }
+    );
     if (error) {
       if (error.show === true) {
         console.log("error=====", error);
@@ -789,17 +792,18 @@ export default function BedStatus(Props: any) {
                       },
                     ]}
                     // keyId="hims_d_appointment_status_id"
-                    rowUniqueId="hims_d_appointment_status_id"
+                    // rowUniqueId="hims_d_appointment_status_id"
                     data={appointmentStatus}
                     isEditable={isEditable}
                     isFilterable={true}
                     pagination={true}
-                    footer={() => {
-                      return null;
-                    }}
-                    aggregate={() => {
-                      return null;
-                    }}
+                    pageOptions={{ rows: 20, page: 1 }}
+                    // footer={() => {
+                    //   return null;
+                    // }}
+                    // aggregate={() => {
+                    //   return null;
+                    // }}
                     // TableProps={{
                     //   aggregate: () => {
 

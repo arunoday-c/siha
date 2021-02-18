@@ -13,12 +13,12 @@ app.use(cors());
 const _port = process.env.PORT;
 app.use(
   bodyParser.json({
-    limit: keys.bodyLimit
+    limit: keys.bodyLimit,
   })
 );
 app.use(compression());
 
-process.env.MYSQL_KEYS = JSON.stringify(keys.default);
+process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
 
 if (process.env.NODE_ENV == "production") {
   app.set("view cache", true);
@@ -41,11 +41,11 @@ app.use((req, res, next) => {
           res.setHeader("connection", "keep-alive");
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           res.status(423).json({
             success: false,
             message: error,
-            username: error === "false" ? undefined : username
+            username: error === "false" ? undefined : username,
           });
           return;
         });
@@ -56,16 +56,16 @@ app.use((req, res, next) => {
           requestIdentity: {
             requestClient: reqH["x-client-ip"],
             requestAPIUser: reqUser,
-            reqUserIdentity: req.userIdentity
+            reqUserIdentity: req.userIdentity,
           },
           requestUrl: req.originalUrl,
           requestHeader: {
             host: reqH.host,
             "user-agent": reqH["user-agent"],
             "cache-control": reqH["cache-control"],
-            origin: reqH.origin
+            origin: reqH.origin,
           },
-          requestMethod: req.method
+          requestMethod: req.method,
         },
         "info"
       );
@@ -73,18 +73,18 @@ app.use((req, res, next) => {
   } else {
     res.status(utilities.httpStatus().unAuthorized).json({
       success: false,
-      message: "unauthorized access"
+      message: "unauthorized access",
     });
   }
 });
 
 app.use("/api/v1", routes);
 
-process.on("warning", warning => {
+process.on("warning", (warning) => {
   const utliites = new algaehUtilities();
   utliites.logger().log("warn", warning, "warn");
 });
-process.on("uncaughtException", error => {
+process.on("uncaughtException", (error) => {
   const utliites = new algaehUtilities();
   utliites.logger().log("uncatched Exception", error, "error");
 });
@@ -112,17 +112,17 @@ app.use((error, req, res, next) => {
           host: reqH.host,
           "user-agent": reqH["user-agent"],
           "cache-control": reqH["cache-control"],
-          origin: reqH.origin
-        }
+          origin: reqH.origin,
+        },
       },
-      message: errorMessage
+      message: errorMessage,
     },
     "error"
   );
   res.status(error.status).json({
     success: false,
     isSql: error.sqlMessage != null ? true : false,
-    message: errorMessage
+    message: errorMessage,
   });
 });
 app.server.listen(_port);

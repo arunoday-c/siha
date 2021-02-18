@@ -20,7 +20,7 @@ app.use(
 );
 app.use(compression());
 
-process.env.MYSQL_KEYS = JSON.stringify(keys.default);
+process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
 if (process.env.NODE_ENV === "development") {
   new SwaggerConfiguration("Insurance Api's").Geteate(app);
 }

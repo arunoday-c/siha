@@ -6,9 +6,9 @@
   "scripts": {
     "start": "NODE_ENV=production node build/app.js",
     "dev:ui": "npm run start --prefix ../client",
-    "dev:watch": "tsc",
-    "nodemon": "nodemon --watch src -e ts",
-    "dev": "NODE_ENV=development run-p  dev:*",
+    "tsc:watch": "tsc",
+    "dev:server": "NODE_ENV=development nodemon --watch src -e ts",
+    "dev": "run-p  dev:*",
     "client-build-webpack": "webpack --config webpack.prod.js --env=Client_Builds",
     "build": "webpack --config webpack.prod.js",
     "bundle": "npm run client-build-webpack"
@@ -36,12 +36,10 @@
     "algaeh-keys": "../../keys"
   },
   "dependencies": {
-    "algaeh-mysql": "^1.5.1",
-    "algaeh-react-components": "^3.10.0",
+    "algaeh-mysql": "^1.5.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "fs-extra": "^9.1.0",
-    "linq": "^3.2.3",
     "loadash": "^1.0.0",
     "module-alias": "^2.2.2"
   }
