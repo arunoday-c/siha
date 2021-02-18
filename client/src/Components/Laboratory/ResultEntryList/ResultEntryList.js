@@ -20,7 +20,7 @@ import {
   closeMicroResultEntry,
   saveDocumentCheck,
   getSavedDocument,
-  reloadAnalytesMaster
+  reloadAnalytesMaster,
 } from "./ResultEntryListHandaler";
 import { Upload, Modal } from "antd";
 import {
@@ -62,6 +62,7 @@ class ResultEntryList extends Component {
       // currentRow: [],
       lab_id_number: "",
       investigation_test_id: null,
+      disableUploadButton: true,
     };
   }
 
@@ -223,6 +224,7 @@ class ResultEntryList extends Component {
               <button
                 onClick={saveDocumentCheck.bind(this, this)}
                 className="btn btn-primary btn-sm"
+                // disabled={this.state.disableUploadButton}
               >
                 Attach Document
               </button>
@@ -261,6 +263,7 @@ class ResultEntryList extends Component {
                         };
                       });
                     }}
+                    // disabled={this.state.disableUploadButton}
                     beforeUpload={(file) => {
                       this.setState((state) => ({
                         attached_files: [...state.attached_files, file],
@@ -307,10 +310,10 @@ class ResultEntryList extends Component {
                             </li>
                           ))
                         ) : (
-                            <div className="col-12 noAttachment" key={1}>
-                              <p>No Attachments Available</p>
-                            </div>
-                          )}
+                          <div className="col-12 noAttachment" key={1}>
+                            <p>No Attachments Available</p>
+                          </div>
+                        )}
                       </ul>
                     </div>
                   </div>
@@ -424,8 +427,8 @@ class ResultEntryList extends Component {
                                       row.status === "O"
                                         ? ""
                                         : row.sample_status === "N"
-                                          ? "none"
-                                          : "",
+                                        ? "none"
+                                        : "",
                                   }}
                                   className="fas fa-file-signature"
                                   aria-hidden="true"
@@ -456,6 +459,9 @@ class ResultEntryList extends Component {
                                         lab_id_number: row.lab_id_number,
                                         investigation_test_id:
                                           row.hims_d_investigation_test_id,
+                                        disableUploadButton: row.lab_id_number
+                                          ? false
+                                          : true,
                                       },
 
                                       getSavedDocument.bind(this, this)
@@ -487,7 +493,6 @@ class ResultEntryList extends Component {
                                 />
                               </span>
                               } */}
-
                             </>
                           );
                         },
@@ -527,10 +532,10 @@ class ResultEntryList extends Component {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                              <span className="badge badge-secondary">
-                                Routine
-                              </span>
-                            );
+                            <span className="badge badge-secondary">
+                              Routine
+                            </span>
+                          );
                         },
                         disabled: true,
                         others: {
@@ -630,10 +635,10 @@ class ResultEntryList extends Component {
                               Confirmed
                             </span>
                           ) : (
-                                  <span className="badge badge-success">
-                                    Validated
-                                  </span>
-                                );
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
+                          );
                         },
                         disabled: true,
                         others: {
