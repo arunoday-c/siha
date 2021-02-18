@@ -1,5 +1,5 @@
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
 
@@ -7,11 +7,19 @@ const executePDF = function executePDFMethod(options) {
 
       const params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
       let strQuery = "";
+
+      if (input.hospital_id > 0) {
+        strQuery += ` hims_d_hospital_id= ${input.hospital_id} `;
+      }
+
+      if (input.hospital_id > 0) {
+        strQuery += ` and E.hospital_id= ${input.hospital_id} `;
+      }
 
       if (input.department_id > 0) {
         strQuery += ` and SD.department_id=${input.department_id}`;
@@ -54,7 +62,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: ` 
-          select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
+          select  hospital_name FROM hims_d_hospital where 1+1  ${strQuery};
           select * from (select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
           E.date_of_birth, TIMESTAMPDIFF(YEAR, E.date_of_birth, CURDATE()) AS new_age,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
@@ -71,11 +79,11 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department D on SD.department_id=D.hims_d_department_id
            left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
-          where E.hospital_id=? and E.record_status='A'  ${strQuery} )as EM ${isAge} order by new_age ; `,
-          values: [input.hospital_id, input.hospital_id],
-          printQuery: true
+          where E.record_status='A' ${strQuery} ) as EM ${isAge} order by new_age ; `,
+          // values: [input.hospital_id, input.hospital_id],
+          printQuery: true,
         })
-        .then(res => {
+        .then((res) => {
           options.mysql.releaseConnection();
           const hospital_name = res[0][0]["hospital_name"];
           const result = res[1];
@@ -84,10 +92,10 @@ const executePDF = function executePDFMethod(options) {
             return_age: return_age,
             hospital_name: hospital_name,
             no_employees: result.length,
-            result: result
+            result: result,
           });
         })
-        .catch(e => {
+        .catch((e) => {
           console.log("e:", e);
           options.mysql.releaseConnection();
           reject(e);

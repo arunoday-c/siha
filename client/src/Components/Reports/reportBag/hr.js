@@ -24,11 +24,11 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -163,11 +163,11 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -302,11 +302,11 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -427,11 +427,11 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -681,11 +681,11 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -808,11 +808,11 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -936,11 +936,11 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -1018,11 +1018,11 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -1172,11 +1172,11 @@ export default function Hr({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
