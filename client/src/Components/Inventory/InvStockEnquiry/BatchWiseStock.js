@@ -8,7 +8,7 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
   AlgaehModalPopUp,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import {
   changeEvent,
@@ -18,7 +18,7 @@ import {
   texthandle,
   printBarcode,
   openExchangePopup,
-  onClickProcess
+  onClickProcess,
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.scss";
 import "../../../styles/site.scss";
@@ -35,21 +35,30 @@ class BatchWiseStock extends Component {
       quantity: 0,
       to_location_id: null,
       open_exchange: false,
-      item_details: {}
+      item_details: {},
     };
   }
 
-  onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+  onClose = (e) => {
+    this.setState(
+      {
+        trans_type: null,
+        quantity: 0,
+        to_location_id: null,
+        open_exchange: false,
+        item_details: {},
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
   render() {
     return (
       <React.Fragment>
-
-
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Batch Wise Item"
           openPopup={this.props.show}
@@ -64,37 +73,42 @@ class BatchWiseStock extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ forceLabel: "Print" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
                             />
-                            {this.props.trans_required === true ? <i
-                              className="fa fa-exchange-alt"
-                              onClick={openExchangePopup.bind(this, this, row)}
-                            /> : null}
-
+                            {this.props.trans_required === true ? (
+                              <i
+                                className="fa fa-exchange-alt"
+                                onClick={openExchangePopup.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
+                              />
+                            ) : null}
                           </span>
                         );
                       },
                       others: {
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "inventory_location_id",
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                              f =>
-                                f.hims_d_inventory_location_id ===
-                                row.inventory_location_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.inventory_location_id
+                              );
 
                         return (
                           <span>
@@ -104,15 +118,15 @@ class BatchWiseStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                              f =>
-                                f.hims_d_inventory_location_id ===
-                                row.inventory_location_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.inventory_location_id
+                              );
 
                         return (
                           <span>
@@ -122,7 +136,7 @@ class BatchWiseStock extends Component {
                           </span>
                         );
                       },
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
 
                     {
@@ -130,22 +144,22 @@ class BatchWiseStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "stocking_uom_id",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              f =>
-                                f.hims_d_inventory_uom_id ===
-                                row.stocking_uom_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id ===
+                                  row.stocking_uom_id
+                              );
 
                         return (
                           <span>
@@ -155,20 +169,21 @@ class BatchWiseStock extends Component {
                           </span>
                         );
                       },
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "sales_uom",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              f => f.hims_d_inventory_uom_id === row.sales_uom
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id === row.sales_uom
+                              );
 
                         return (
                           <span>
@@ -179,13 +194,14 @@ class BatchWiseStock extends Component {
                         );
                       },
 
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              f => f.hims_d_inventory_uom_id === row.sales_uom
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id === row.sales_uom
+                              );
 
                         return (
                           <span>
@@ -195,7 +211,7 @@ class BatchWiseStock extends Component {
                           </span>
                         );
                       },
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     // {
                     //   fieldName: "barcode",
@@ -209,7 +225,7 @@ class BatchWiseStock extends Component {
                         <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                       ),
                       disabled: true,
-                      others: { minWidth: 150 }
+                      others: { minWidth: 150 },
                     },
                     {
                       fieldName: "vendor_batchno",
@@ -218,75 +234,75 @@ class BatchWiseStock extends Component {
                           label={{ forceLabel: "Vendor Batch No." }}
                         />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "expirydt",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return <span>{dateFormater(this, row.expirydt)}</span>;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlgaehDateHandler
                             div={{ className: "" }}
                             textBox={{
                               className: "txt-fld hidden",
-                              name: "expirydt"
+                              name: "expirydt",
                             }}
                             minDate={new Date()}
                             events={{
-                              onChange: datehandle.bind(this, this, row)
+                              onChange: datehandle.bind(this, this, row),
                             }}
                             value={row.expirydt}
                           />
                         );
                       },
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "qtyhand",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return parseFloat(row.qtyhand);
                       },
                       disabled: true,
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "avgcost",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {GetAmountFormart(row.avgcost, {
-                              appendSymbol: false
+                              appendSymbol: false,
                             })}
                           </span>
                         );
                       },
                       disabled: true,
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "sale_price",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {GetAmountFormart(row.sale_price, {
-                              appendSymbol: false
+                              appendSymbol: false,
                             })}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -296,21 +312,21 @@ class BatchWiseStock extends Component {
                               className: "txt-fld",
                               name: "sale_price",
                               events: {
-                                onChange: texthandle.bind(this, this, row)
-                              }
+                                onChange: texthandle.bind(this, this, row),
+                              },
                             }}
                           />
                         );
                       },
-                      others: { filterable: false }
-                    }
+                      others: { filterable: false },
+                    },
                   ]}
                   keyId="item_id"
                   dataSource={{
                     data:
                       this.props.batch_wise_item === undefined
                         ? []
-                        : this.props.batch_wise_item
+                        : this.props.batch_wise_item,
                   }}
                   noDataText="No Stock available for selected Item in the selected Location"
                   isEditable={false}
@@ -318,15 +334,15 @@ class BatchWiseStock extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //   onDelete: deleteServices.bind(this, this),
-                    onEdit: row => { },
-                    onDone: updateStockDetils.bind(this, this)
+                    onEdit: (row) => {},
+                    onDone: updateStockDetils.bind(this, this),
                   }}
                 />
               </div>
             </div>
           </div>
         </AlgaehModalPopUp>
-        < AlgaehModalPopUp
+        <AlgaehModalPopUp
           title="Transation Option"
           openPopup={this.state.open_exchange}
           class={"MultiTransationModal"}
@@ -335,10 +351,9 @@ class BatchWiseStock extends Component {
               open_exchange: false,
               trans_type: null,
               quantity: 0,
-              to_location_id: null
+              to_location_id: null,
             });
-          }
-          }
+          }}
         >
           <div className="col-12 popupInner margin-top-15">
             <div className="row">
@@ -400,41 +415,44 @@ class BatchWiseStock extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: this.props.location_type === "WH" ? [
-                      {
-                        "name": "Consume",
-                        "value": "C"
-                      },
-                      {
-                        "name": "Transfer",
-                        "value": "T"
-                      },
-                      {
-                        "name": "Purchase Request",
-                        "value": "PR"
-                      }
-                    ] : [
-                        {
-                          "name": "Consume",
-                          "value": "C"
-                        },
-                        {
-                          "name": "Transfer",
-                          "value": "T"
-                        }
-                      ],
+                    data:
+                      this.props.location_type === "WH"
+                        ? [
+                            {
+                              name: "Consume",
+                              value: "C",
+                            },
+                            {
+                              name: "Transfer",
+                              value: "T",
+                            },
+                            {
+                              name: "Purchase Request",
+                              value: "PR",
+                            },
+                          ]
+                        : [
+                            {
+                              name: "Consume",
+                              value: "C",
+                            },
+                            {
+                              name: "Transfer",
+                              value: "T",
+                            },
+                          ],
                   },
 
                   onChange: changeEvent.bind(this, this),
                   onClear: () => {
                     this.setState({
-                      trans_type: null
+                      trans_type: null,
                     });
                   },
                   autoComplete: "off",
                 }}
               />
-              {this.state.trans_type === "T" ?
+              {this.state.trans_type === "T" ? (
                 <AlagehAutoComplete
                   div={{ className: "col form-group" }}
                   label={{ forceLabel: "To Location", isImp: true }}
@@ -451,18 +469,19 @@ class BatchWiseStock extends Component {
                     onChange: changeEvent.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        to_location_id: null
+                        to_location_id: null,
                       });
                     },
                     autoComplete: "off",
                   }}
-                /> : null}
+                />
+              ) : null}
 
               <AlagehFormGroup
                 div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "Quantity",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   number: {
@@ -480,7 +499,6 @@ class BatchWiseStock extends Component {
             </div>
           </div>
 
-
           <div className=" popupFooter">
             <div className="col-lg-12">
               <div className="row">
@@ -491,7 +509,7 @@ class BatchWiseStock extends Component {
                     onClick={onClickProcess.bind(this, this)}
                   >
                     Save
-                        </button>
+                  </button>
                   <button
                     type="button"
                     className="btn btn-default"
@@ -500,7 +518,7 @@ class BatchWiseStock extends Component {
                         open_exchange: false,
                         trans_type: null,
                         quantity: 0,
-                        to_location_id: null
+                        to_location_id: null,
                       });
                     }}
                   >
@@ -510,9 +528,8 @@ class BatchWiseStock extends Component {
               </div>
             </div>
           </div>
-
-        </AlgaehModalPopUp >
-      </React.Fragment >
+        </AlgaehModalPopUp>
+      </React.Fragment>
     );
   }
 }
@@ -522,7 +539,7 @@ function mapStateToProps(state) {
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
     inventoryitemuom: state.inventoryitemuom,
-    git_locations: state.git_locations
+    git_locations: state.git_locations,
   };
 }
 
@@ -532,15 +549,12 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getGITLocation: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(BatchWiseStock)
+  connect(mapStateToProps, mapDispatchToProps)(BatchWiseStock)
 );
