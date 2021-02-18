@@ -35,6 +35,10 @@ export default function Filters({ activeTransaction }) {
           moment(activeTransaction.year_end_date, "YYYY-MM-DD HH:mm:ss"),
         ],
       });
+      setDateRange([
+        activeTransaction.year_start_date,
+        activeTransaction.year_end_date,
+      ]);
     }
   }, [activeTransaction]);
   useEffect(() => {
@@ -104,13 +108,14 @@ export default function Filters({ activeTransaction }) {
       AlgaehMessagePop({ type: "error", display: "Please select Account" });
       return;
     }
+
     const delta = state.account.split("-");
     const data = {
       year_end_id: state.year_end_id,
       updated_amount: state.new_amount,
       voucher_type: "year_end",
       from_screen: "YEAR_END",
-      transaction_date: moment().format("YYYY-MM-DD HH:mm:ss"),
+      transaction_date: moment(dateRange[1]).format("YYYY-MM-DD 23:00:00"),
       cost_center_id: null,
       details: [
         {
@@ -165,6 +170,10 @@ export default function Filters({ activeTransaction }) {
         textBox={{
           name: "selectRange",
           value: state.selectRange,
+          disabled: true,
+        }}
+        others={{
+          disabled: true,
         }}
         events={{
           onChange: (e) => {

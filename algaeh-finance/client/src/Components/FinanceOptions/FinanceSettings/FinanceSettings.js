@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import OptionsComponent from "./OptionsComponent";
 import { newAlgaehApi } from "../../../hooks";
 import { AlgaehMessagePop } from "algaeh-react-components";
@@ -45,11 +46,23 @@ export default function FinanceSettings(props) {
   }, [finOptions]);
 
   function handleDropDown(_, value, name) {
+    let extra = {};
+    if (name === "start_month") {
+      const endPhyYr = moment(
+        `01-${value.length === 1 ? `0${value}` : value}-1990`,
+        "DD-MM-YYYY"
+      )
+        .add("months", 11)
+        .format("MM");
+      extra = {
+        end_month: parseInt(endPhyYr),
+      };
+    }
     setFinOptions((state) => {
       if (name === "default_branch_id") {
         state.default_cost_center_id = null;
       }
-      return { ...state, [name]: value };
+      return { ...state, ...extra, [name]: value };
     });
   }
 
