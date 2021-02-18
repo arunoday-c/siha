@@ -130,10 +130,10 @@ class VitalComponent extends Component {
             item.box_type === "TEXT"
               ? {}
               : {
-                  number: {
-                    allowNegative: false,
-                  },
-                  type: "number",
+                  // number: {
+                  //   allowNegative: false,
+                  // },
+                  // type: "text",
                 };
           return (
             <React.Fragment key={index}>
