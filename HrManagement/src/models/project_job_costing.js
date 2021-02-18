@@ -419,14 +419,13 @@ export default {
       strQry += " and E.employee_group_id=" + input.employee_group_id;
     }
 
-    console.log("input", input)
+    console.log("input", input);
     if (
       input.hospital_requires === undefined ||
       input.hospital_requires === true
     ) {
       if (input.select_all === "true") {
-        _strAppend +=
-          " and E.hospital_id in (" + input.hospital_id + ")";
+        _strAppend += " and E.hospital_id in (" + input.hospital_id + ")";
       } else if (input.hospital_id != null) {
         _strAppend += " and E.hospital_id='" + input.hospital_id + "'";
       } else {
@@ -454,10 +453,10 @@ export default {
         inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
         left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-        where    ${strQry.replace(
-            /PR/gi,
-            "LA"
-          )} (status= 'APR' or status= 'PEN' ) and ((date(?)>=date(from_date) and	date(?)<=date(to_date)) or
+        where 1=1 ${strQry.replace(
+          /PR/gi,
+          "LA"
+        )} and (status= 'APR' or status= 'PEN' ) and ((date(?)>=date(from_date) and	date(?)<=date(to_date)) or
           (date(?)>=date(from_date) and   date(?)<=date(to_date)) or (date(from_date)>= date(?) and date(from_date)<=date(?) ) 
           or (date(to_date)>=date(?) and date(to_date)<= date(?) )) ${_strAppend};
         select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,
@@ -825,10 +824,10 @@ export default {
             _days.map((date) => {
               if (
                 moment(date).format("YYYYMMDD") >=
-                moment(employee["date_of_joining"]).format("YYYYMMDD") &&
+                  moment(employee["date_of_joining"]).format("YYYYMMDD") &&
                 (employee["exit_date"] == null ||
                   moment(employee["exit_date"]).format("YYYYMMDD") <
-                  moment(date).format("YYYYMMDD"))
+                    moment(date).format("YYYYMMDD"))
               ) {
                 const week_off_Data = _.find(empHoliday, (f) => {
                   return (
