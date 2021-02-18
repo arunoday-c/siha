@@ -33,6 +33,7 @@ export default function Income({
             },
           },
           {
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
