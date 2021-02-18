@@ -327,7 +327,8 @@ export function AddPatientDentalForm({
       footer={[
         <div className="col-12">
           {current.request_status === "APR" &&
-          current.work_status === "COM" ? null : (
+          current.work_status === "COM" ? null : current.work_status ===
+            "CAN" ? null : (
             <button
               onClick={handleSubmit(onSubmit)}
               className="btn btn-primary btn-sm"

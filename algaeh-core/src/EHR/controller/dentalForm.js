@@ -7,6 +7,7 @@ const {
   getDentalLab,
   getDentalLabAll,
   updateDentalForm,
+  cancelDentalForm,
 } = dentalModels;
 
 export default () => {
@@ -22,6 +23,14 @@ export default () => {
     next();
   });
   api.put("/updateDentalForm", updateDentalForm, (req, res, next) => {
+    let result = req.records;
+    res.status(utilities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.put("/cancelDentalForm", cancelDentalForm, (req, res, next) => {
     let result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,

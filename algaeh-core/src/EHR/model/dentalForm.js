@@ -143,7 +143,7 @@ export default {
       _mysql
         .executeQuery({
           query: `select E.full_name as  employee_name, D.arrival_date,D.odered_date, D.work_status,
-          case D.work_status when 'PEN' then 'Pending' when 'WIP' then 'Ordered' else 'Arrived' END as work_status_desc,D.request_status,
+          case D.work_status when 'PEN' then 'Pending' when 'WIP' then 'Ordered' when 'CAN' then 'Cancelled' else 'Arrived' END as work_status_desc,D.request_status,
           case D.request_status when 'PEN' then 'Pending' when 'APR' then 'Approved' when 'REJ' then 'Reject' else 'Resend' END as request_status_desc,D.ordered_type,
           case D.ordered_type when 'NEW' then 'New' when 'REF' then 'Refine'  when 'REM' then 'Remake' else 'Reimpression' END as ordered_type_desc,
           E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,IL.location_description, D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth, D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
@@ -383,6 +383,35 @@ export default {
           req.records = result;
           next();
         }
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  cancelDentalForm: (req, res, next) => {
+    // const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    // input.work_status ? input.work_status : "PEN",
+    //   input.request_status ? input.request_status : "PEN",
+    _mysql
+      .executeQuery({
+        query: `update hims_f_dental_form set work_status=?, cancelled_reason=?, cancelled_by=?, 
+          cancelled_date=?  where hims_f_dental_form_id=? `,
+        values: [
+          input.work_status,
+          input.cancelled_reason,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.hims_f_dental_form_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        next();
       })
       .catch((e) => {
         _mysql.releaseConnection();
