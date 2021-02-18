@@ -1418,7 +1418,7 @@ export default {
             EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
             on E.sub_department_id = SD.hims_d_sub_department_id left join hims_d_employee_group EG\
             on E.employee_group_id = EG.hims_d_employee_group_id left join hims_d_department D\
-            on SD.department_id=D.hims_d_department_id  where EYL.year=? and EYL.hospital_id=?" +
+            on SD.department_id=D.hims_d_department_id  where EYL.year=? and EYL.hospital_id in (?)" +
             strQry +
             " order by hims_f_employee_yearly_leave_id desc",
           values: [input.year, input.hospital_id],
@@ -3644,19 +3644,19 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             employee_status,date_of_joining,datediff( concat(?,'-12-31'),date_of_joining)+1 as no_days_til_eoy,
             coalesce (?- year(date_of_joining),0) as working_year,
             hospital_id,employee_type,sex from hims_d_employee where employee_status <>'I'
-            and hospital_id=? and  record_status='A'  ${employee};
+            and hospital_id in (?) and  record_status='A'  ${employee};
             select L.hims_d_leave_id,L.leave_code,L.religion_required,L.religion_id,L.reset_leave,LD.employee_type,
             LD.gender,LD.eligible_days,L.proportionate_leave from hims_d_leave  L
             inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id
             and L.record_status='A' ${leave};
             select hims_f_employee_yearly_leave_id,employee_id,year from hims_f_employee_yearly_leave
-            where  year=? and hospital_id=? and record_status='A'  ${yearlyEmployee};
+            where  year=? and hospital_id in (?) and record_status='A'  ${yearlyEmployee};
             select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from
-            hims_f_employee_monthly_leave where   year=? and hospital_id=? ${strQry} ;
+            hims_f_employee_monthly_leave where   year=? and hospital_id in (?) ${strQry} ;
             select hims_f_employee_monthly_leave_id,coalesce(close_balance,0) as close_balance,employee_id,year,leave_id,leave_carry_forward,
             coalesce(carry_forward_percentage ,0)  as carry_forward_percentage from hims_f_employee_monthly_leave ML inner join  hims_d_leave L
             on ML.leave_id=L.hims_d_leave_id
-            where   year=? and hospital_id=? and  ML.processed='N' ${strQry};`,
+            where   year=? and hospital_id in (?) and  ML.processed='N' ${strQry};`,
           values: [
             input.year,
             input.year,
