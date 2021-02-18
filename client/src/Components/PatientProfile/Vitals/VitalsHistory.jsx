@@ -4,7 +4,7 @@ import "./vitals.scss";
 
 function VitalsHistory({ _vitalsGroup }) {
   return (
-    <div className="col-8 vitalsTimeLineSec">
+    <div className="col vitalsTimeLineSec">
       <h6 className="margin-top-15">Vitals History</h6>
       <hr />
       <div className="timeline">
