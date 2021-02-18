@@ -68,7 +68,7 @@ class LeaveYearlyProcess extends Component {
   }
 
   getHospitals() {
-    RawSecurityComponent({ componentCode: "LEV_AUTH_ALL_BRNH" }).then(
+    RawSecurityComponent({ componentCode: "YER_LEV_ALL_BRNH" }).then(
       (result) => {
         debugger;
         if (result === "show") {
