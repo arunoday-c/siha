@@ -15,7 +15,7 @@ import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { generateLoanEmiReport } from "./LoanAuthorizationEvent.js";
-import { AlgaehDataGrid } from "algaeh-react-components";
+import { AlgaehDataGrid, RawSecurityComponent } from "algaeh-react-components";
 class LoanAuthorization extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +27,7 @@ class LoanAuthorization extends Component {
       loan_status: "PEN",
       //currLeavAppln: {}
     };
-    this.getHospitals();
+
     this.getEmployees();
     this.getLoanLevels();
   }
@@ -88,19 +88,42 @@ class LoanAuthorization extends Component {
     this.setState({
       loading: true,
     });
+    let inputObj = {};
+    if (this.state.hospital_id === -1) {
+      const all_branches = this.state.hospitals.map((item) => {
+        return item.hims_d_hospital_id;
+      });
+      inputObj = {
+        select_all: true,
+        hospital_id: all_branches,
+        auth_level:
+          this.state.auth_level !== undefined
+            ? this.state.auth_level
+            : this.state.auth_level,
+        employee_id: this.state.hims_d_employee_id,
+        leave_status: this.state.leave_status,
+        from_date: this.state.from_date,
+        actual_to_date: this.state.actual_to_date,
+      };
+    } else {
+      inputObj = {
+        hospital_id: this.state.hospital_id,
+        auth_level:
+          this.state.auth_level !== undefined
+            ? this.state.auth_level
+            : this.state.auth_level,
+        employee_id: this.state.hims_d_employee_id,
+        leave_status: this.state.leave_status,
+        from_date: this.state.from_date,
+        actual_to_date: this.state.actual_to_date,
+      };
+    }
 
     algaehApiCall({
       uri: "/loan/getLoanApplication",
       module: "hrManagement",
       method: "GET",
-      data: {
-        auth_level: this.state.auth_level,
-        employee_id: this.state.employee_id,
-        hospital_id: this.state.hospital_id,
-        from_date: this.state.from_date,
-        to_date: this.state.to_date,
-        loan_authorized: this.state.loan_status,
-      },
+      data: inputObj,
       onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
@@ -141,19 +164,41 @@ class LoanAuthorization extends Component {
   }
 
   getHospitals() {
-    algaehApiCall({
-      uri: "/organization/getOrganizationByUser",
-      method: "GET",
-      onSuccess: (res) => {
-        if (res.data.success) {
-          this.setState({
-            hospitals: res.data.records,
+    RawSecurityComponent({ componentCode: "LON_AUTH_ALL_BRNH" }).then(
+      (result) => {
+        if (result === "show") {
+          algaehApiCall({
+            uri: "/organization/getOrganizationByUser",
+            method: "GET",
+            onSuccess: (res) => {
+              if (res.data.success) {
+                res.data.records.push({
+                  hims_d_hospital_id: -1,
+                  hospital_name: "All",
+                });
+                this.setState({
+                  hospitals: res.data.records,
+                });
+              }
+            },
+            onFailure: (err) => {},
+          });
+        } else {
+          algaehApiCall({
+            uri: "/organization/getOrganizationByUser",
+            method: "GET",
+            onSuccess: (res) => {
+              if (res.data.success) {
+                this.setState({
+                  hospitals: res.data.records,
+                });
+              }
+            },
+            onFailure: (err) => {},
           });
         }
-      },
-
-      onFailure: (err) => {},
-    });
+      }
+    );
   }
 
   dropDownHandler(value) {
@@ -199,6 +244,8 @@ class LoanAuthorization extends Component {
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
     });
+
+    this.getHospitals();
   }
 
   render() {

@@ -12,7 +12,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, RawSecurityComponent } from "algaeh-react-components";
 import { AlgaehDataGrid } from "algaeh-react-components";
 import { generateLeaveRequestSlip } from "./LeaveAuthorizationEvents.js";
 export default class LeaveAuthorization extends Component {
@@ -28,8 +28,6 @@ export default class LeaveAuthorization extends Component {
       auth_level: undefined,
     };
     this.getLeaveLevels();
-    this.getHospitals();
-    this.getHospitals();
   }
   static contextType = MainContext;
   componentDidMount() {
@@ -37,6 +35,8 @@ export default class LeaveAuthorization extends Component {
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
     });
+
+    this.getHospitals();
   }
   closePopup() {
     this.setState({
@@ -163,11 +163,25 @@ export default class LeaveAuthorization extends Component {
       loading: true,
     });
 
-    algaehApiCall({
-      uri: "/leave/getLeaveApllication",
-      method: "GET",
-      module: "hrManagement",
-      data: {
+    let inputObj = {};
+    if (this.state.hospital_id === -1) {
+      const all_branches = this.state.hospitals.map((item) => {
+        return item.hims_d_hospital_id;
+      });
+      inputObj = {
+        // select_all: true,
+        hospital_id: all_branches,
+        auth_level:
+          this.state.auth_level !== undefined
+            ? this.state.auth_level
+            : this.state.auth_level,
+        employee_id: this.state.hims_d_employee_id,
+        leave_status: this.state.leave_status,
+        from_date: this.state.from_date,
+        actual_to_date: this.state.actual_to_date,
+      };
+    } else {
+      inputObj = {
         hospital_id: this.state.hospital_id,
         auth_level:
           this.state.auth_level !== undefined
@@ -177,7 +191,14 @@ export default class LeaveAuthorization extends Component {
         leave_status: this.state.leave_status,
         from_date: this.state.from_date,
         actual_to_date: this.state.actual_to_date,
-      },
+      };
+    }
+
+    algaehApiCall({
+      uri: "/leave/getLeaveApllication",
+      method: "GET",
+      module: "hrManagement",
+      data: inputObj,
       onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
@@ -234,19 +255,42 @@ export default class LeaveAuthorization extends Component {
   }
 
   getHospitals() {
-    algaehApiCall({
-      uri: "/organization/getOrganizationByUser",
-      method: "GET",
-      onSuccess: (res) => {
-        if (res.data.success) {
-          this.setState({
-            hospitals: res.data.records,
+    RawSecurityComponent({ componentCode: "LEV_AUTH_ALL_BRNH" }).then(
+      (result) => {
+        debugger;
+        if (result === "show") {
+          algaehApiCall({
+            uri: "/organization/getOrganizationByUser",
+            method: "GET",
+            onSuccess: (res) => {
+              if (res.data.success) {
+                res.data.records.push({
+                  hims_d_hospital_id: -1,
+                  hospital_name: "All",
+                });
+                this.setState({
+                  hospitals: res.data.records,
+                });
+              }
+            },
+            onFailure: (err) => {},
+          });
+        } else {
+          algaehApiCall({
+            uri: "/organization/getOrganizationByUser",
+            method: "GET",
+            onSuccess: (res) => {
+              if (res.data.success) {
+                this.setState({
+                  hospitals: res.data.records,
+                });
+              }
+            },
+            onFailure: (err) => {},
           });
         }
-      },
-
-      onFailure: (err) => {},
-    });
+      }
+    );
   }
 
   realoadLeaveAuths() {

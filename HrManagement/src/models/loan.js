@@ -832,9 +832,19 @@ export default {
       employee += ` and loan_authorized= '${input.loan_authorized}'`;
     }
 
-    if (input.hospital_id > 0) {
-      employee += ` and  E.hospital_id=${input.hospital_id} `;
+    if (input.select_all === "true") {
+      employee += " and E.hospital_id in (" + input.hospital_id + ")";
+    } else if (input.hospital_id > 0) {
+      employee += " and E.hospital_id='" + input.hospital_id + "'";
+    } else {
+      employee += " and E.hospital_id='" + req.userIdentity.hospital_id + "'";
     }
+
+    // if (input.hospital_id > 0) {
+    //   employee += ` and  E.hospital_id in (${input.hospital_id})`;
+    // }else if(input.hospital_id > 0){
+    //   employee += ` and  E.hospital_id in (${input.hospital_id})`;
+    // }
 
     if (input.from_date && input.to_date) {
       range = ` and date(loan_application_date)

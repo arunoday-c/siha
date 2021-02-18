@@ -1982,7 +1982,7 @@ export default {
             E.employee_designation_id = DE.hims_d_designation_id  \
             left join hims_d_authorization_setup AUS on  AUS.employee_id=E.hims_d_employee_id \
             left join hims_f_employee_annual_leave EAL on  EAL.leave_application_id=LA.hims_f_leave_application_id \
-            where LA.hospital_id=? and " +
+            where LA.hospital_id in (?) and " +
                   leave_status +
                   "" +
                   auth_level +
