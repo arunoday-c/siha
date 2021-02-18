@@ -33,7 +33,7 @@ const getBillDetails = async (
     consultation,
     promo_code,
     discount_amout,
-    sub_department_id
+    sub_department_id,
   }
 ) => {
   let zeroBill = false,
@@ -66,7 +66,7 @@ const getBillDetails = async (
           default_nationality == nationality_id ? local_vat_applicable : "Y",
         promo_code: promo_code || null,
         discount_amout: discount_amout,
-        sub_department_id
+        sub_department_id,
         // discount_percentage: discount_percentage,
       },
     ],
@@ -186,7 +186,7 @@ export function BillDetails({
         consultation: consultationInfo?.consultation,
         promo_code: promoCode,
         discount_amout: discount_amout,
-        sub_department_id
+        sub_department_id,
         // discount_percentage: discount_percentage,
       },
     ],
@@ -276,10 +276,8 @@ export function BillDetails({
   }
 
   function calculateHeaderBillDetails(value, forData) {
-
-    debugger
+    debugger;
     setBillData((sendingObject) => {
-
       if (forData === "A") {
         sendingObject.sheet_discount_percentage =
           (value / sendingObject.patient_payable) * 100;
@@ -290,8 +288,7 @@ export function BillDetails({
       } else if (forData === "P") {
         sendingObject.sheet_discount_percentage = value;
         sendingObject.sheet_discount_amount =
-          (sendingObject.patient_payable * value) /
-          100;
+          (sendingObject.patient_payable * value) / 100;
       }
 
       sendingObject.net_amount =
@@ -614,10 +611,10 @@ export function BillDetails({
                           Discount Applied Successfully.
                         </span>
                       ) : (
-                          <span class="badge badge-danger animated flash slow infinite">
-                            Discount not yet applied
-                          </span>
-                        )}
+                        <span class="badge badge-danger animated flash slow infinite">
+                          Discount not yet applied
+                        </span>
+                      )}
                     </p>
                   ) : null}
                 </div>
@@ -709,26 +706,27 @@ export function BillDetails({
                       div={{ className: "col" }}
                       label={{
                         // fieldName: "discount_percentage",
-                        forceLabel: "Sheet Discount %"
+                        forceLabel: "Sheet Discount %",
                       }}
                       textBox={{
                         className: "txt-fld",
-                        disabled:
-                          !parseInt(service_dis_percentage, 10) || disabled,
+                        //sidhiqe - disabled this due to issue in income report when u give sheet level discount
+
+                        disabled: true,
+                        // !parseInt(service_dis_percentage, 10) || disabled,
                         name: "sheet_discount_percentage",
                         type: "number",
                         ...props,
                         max: 100,
                         value: billData?.sheet_discount_percentage,
                         onChange: (e) => {
-
                           let perc = parseFloat(e.target.value);
                           if (perc > 100) {
                             perc = 99;
                           }
                           if (perc > 0) {
                             // setDiscountPerc(perc)
-                            calculateHeaderBillDetails(perc, "P")
+                            calculateHeaderBillDetails(perc, "P");
                           } else {
                             // setDiscountPerc(0)
                           }
@@ -748,12 +746,13 @@ export function BillDetails({
                       div={{ className: "col" }}
                       label={{
                         // fieldName: "discount_amount",
-                        forceLabel: "Sheet Discount"
+                        forceLabel: "Sheet Discount",
                       }}
                       textBox={{
                         className: "txt-fld",
-                        disabled:
-                          !parseInt(service_dis_percentage, 10) || disabled,
+                        //sidhiqe - disabled this due to issue in income report when u give sheet level discount
+                        disabled: true,
+                        // !parseInt(service_dis_percentage, 10) || disabled,
                         name: "sheet_discount_amount",
                         type: "number",
                         ...props,
@@ -771,7 +770,7 @@ export function BillDetails({
                               });
                             } else {
                               // setShtDiscountPerc(amount)
-                              calculateHeaderBillDetails(amount, "A")
+                              calculateHeaderBillDetails(amount, "A");
                             }
                           } else {
                             // setShtDiscountPerc(0)
