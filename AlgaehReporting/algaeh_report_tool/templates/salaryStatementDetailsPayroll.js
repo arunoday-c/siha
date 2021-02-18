@@ -40,6 +40,10 @@ const executePDF = function executePDFMethod(options) {
         is_local = " and H.default_nationality<>E.nationality ";
       }
 
+      if (input.hospital_id > 0) {
+        str += ` and E.hospital_id= ${input.hospital_id}`;
+      }
+
       if (input.employee_group_id > 0) {
         str += ` and E.employee_group_id= ${input.employee_group_id}`;
       }
@@ -68,13 +72,8 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
 				left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
 				left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
 				left join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-				where  E.hospital_id=?  and E.suspend_salary ='N' and S.salary_type ='NS' and E.employee_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local} ${str}`,
-          values: [
-            input.hospital_id,
-            input.employee_group_id,
-            input.month,
-            input.year,
-          ],
+				where E.suspend_salary ='N' and S.salary_type ='NS' and E.employee_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local} ${str}`,
+          values: [input.employee_group_id, input.month, input.year],
           printQuery: true,
         })
         .then((result) => {

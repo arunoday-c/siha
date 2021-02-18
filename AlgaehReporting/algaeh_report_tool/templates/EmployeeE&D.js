@@ -14,8 +14,12 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
+      if (input.hospital_id > 0) {
+        str += ` and E.hospital_id= ${input.hospital_id}`;
+      }
+
       if (input.employee_group_id > 0) {
-        str += ` and E.employee_group_id= ${input.employee_group_id}`;
+        str += ` and ED.employee_group_id= ${input.employee_group_id}`;
       }
 
       if (input.earning_deductions_id > 0) {
@@ -40,8 +44,8 @@ const executePDF = function executePDFMethod(options) {
             left join hims_d_designation DG on E.employee_designation_id=DG.hims_d_designation_id\
                       left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
 
-            where year=? and month=? and ED.hospital_id=? and category=? and E.employee_status='A' ${is_local}  ${str} `,
-          values: [input.year, input.month, input.hospital_id, input.edType],
+            where year=? and month=? and category=? and E.employee_status='A' ${is_local}  ${str} `,
+          values: [input.year, input.month, input.edType],
           printQuery: true,
         })
         .then((result) => {

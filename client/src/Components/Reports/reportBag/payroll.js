@@ -57,11 +57,11 @@ export default function Payroll({
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -164,11 +164,11 @@ export default function Payroll({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -330,11 +330,11 @@ export default function Payroll({
         input: "sub_department_id=?",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -471,11 +471,11 @@ export default function Payroll({
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -675,11 +675,11 @@ export default function Payroll({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -850,11 +850,11 @@ export default function Payroll({
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -991,11 +991,11 @@ export default function Payroll({
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -1242,11 +1242,11 @@ export default function Payroll({
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -1382,11 +1382,11 @@ export default function Payroll({
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -1491,11 +1491,11 @@ export default function Payroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -1567,7 +1567,7 @@ export default function Payroll({
             name: "edType",
 
             isImp: true,
-            label: "Miscellaneous Category",
+            label: "Misc. Category",
 
             dataSource: {
               textField: "edType",
@@ -1697,11 +1697,11 @@ export default function Payroll({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -1837,11 +1837,11 @@ export default function Payroll({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -1948,11 +1948,11 @@ export default function Payroll({
         pageOrentation: "portrait", //"landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
@@ -2037,11 +2037,11 @@ export default function Payroll({
         pageOrentation: "portrait", //"landscape",
         reportParameters: [
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "branch",
             link: {
               uri: "/organization/getOrganizationByUser",
