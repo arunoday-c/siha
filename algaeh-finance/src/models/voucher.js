@@ -2161,6 +2161,13 @@ export default {
       } else if (input.auth_status == "P" && input.auth_level == 2) {
         strQry += ` and VD.auth1 ='Y' and VD.auth2 ='N'`;
       }
+      let onlyCreditAccounts = "and VD.payment_type='CR'";
+      if (input.searchQuery) {
+        onlyCreditAccounts = "";
+        strQry += ` and (C.child_name like '%${input.searchQuery}%' or C.ledger_code like '%${input.searchQuery}%' or C.arabic_child_name like '%${input.searchQuery}%'
+       or  MH.account_code like '%${input.searchQuery}%' or    MH.account_name like '%${input.searchQuery}%' 
+       or MH.arabic_account_name like '%${input.searchQuery}%')`;
+      }
 
       _mysql
         .executeQuery({
@@ -2169,8 +2176,10 @@ export default {
           VD.entered_by as entered_id,'${user_id}' as current_user_id
            from finance_voucher_header H
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id
+          inner join finance_account_head as MH on MH.finance_account_head_id = VD.head_id 
+          left join finance_account_child as C on C.finance_account_child_id = VD.child_id
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
-          where posted_from='V'  and VD.payment_type='CR'  ${strQry};`,
+          where posted_from='V'  ${onlyCreditAccounts}  ${strQry};`,
           printQuery: true,
         })
         .then((result) => {

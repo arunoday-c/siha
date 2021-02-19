@@ -29,7 +29,7 @@ let finance_voucher_header_id = "";
 export default memo(function (props) {
   const history = useHistory();
   const location = useLocation();
-
+  const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
   const [visible, setVisibale] = useState(false);
   // const [visibleEditVoucher,setVisibleEditVoucher]=useState(false)
@@ -77,7 +77,11 @@ export default memo(function (props) {
       others["to_date"] = dates[1];
     }
 
-    LoadVouchersToAuthorize({ auth_level: level, ...others })
+    LoadVouchersToAuthorize({
+      auth_level: level,
+      searchQuery: search,
+      ...others,
+    })
       .then((result) => {
         setLoading(false);
         setData(result);
@@ -499,17 +503,26 @@ export default memo(function (props) {
               },
             }}
           />
+          <AlgaehFormGroup
+            div={{
+              className: "col",
+            }}
+            label={{
+              forceLabel: "Search",
+            }}
+            textBox={{
+              defaultValue: search,
+              placeHolder: "Account Name(English|Arabic)) / Ledger Code ",
+              onChange: (e) => {
+                if (e.target.value === "") {
+                  setSearch(null);
+                } else {
+                  setSearch(e.target.value);
+                }
+              },
+            }}
+          />
           <div className="col">
-            {" "}
-            {/* <AlgaehButton
-              className="btn btn-primary"
-              // type="primary"
-              loading={loading}
-              onClick={loadData}
-              style={{ marginTop: 15 }}
-              >
-              Load
-            </AlgaehButton> */}
             <button
               className="btn btn-primary"
               onClick={loadData}
@@ -523,7 +536,6 @@ export default memo(function (props) {
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              {" "}
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-lg-12 customCheckboxGrid">
