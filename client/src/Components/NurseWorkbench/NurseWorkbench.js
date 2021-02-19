@@ -3,8 +3,6 @@ import "./nurse_workbench.scss";
 import moment from "moment";
 import { AlgaehLabel, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 
-// import { AlgaehFormGroup } from "algaeh-react-components";
-import { Input } from "algaeh-react-components";
 import Enumerable from "linq";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import {
@@ -44,11 +42,16 @@ import OrderedList from "../PatientProfile/Assessment/OrderedList/OrderedList";
 import LabResults from "../PatientProfile/Assessment/LabResult/LabResult";
 import RadResults from "../PatientProfile/Assessment/RadResult/RadResult";
 import NursesNotes from "../PatientProfile/Examination/NursesNotes";
-import { AlgaehSecurityComponent } from "algaeh-react-components";
 import { debounce } from "lodash";
 import sockets from "../../sockets";
 import VitalComponent from "../../Components/PatientProfile/Vitals/VitalComponent";
-import { AlgaehModal } from "algaeh-react-components";
+
+import {
+  Input,
+  Tooltip,
+  AlgaehModal,
+  AlgaehSecurityComponent,
+} from "algaeh-react-components";
 import VitalsHistory from "../PatientProfile/Vitals/VitalsHistory";
 import ModalMedicalRecord from "../DoctorsWorkbench/ModalForMedicalRecordPat";
 
@@ -284,7 +287,7 @@ class NurseWorkbench extends Component {
       temperature_from: null,
       bp_position: null,
       complaint_type: null,
-      chief_complaint: null,
+      chief_complaint: "",
       pageDisplay: "Orders",
     });
     const _resetElements = this.getVitalsRef;
@@ -329,7 +332,7 @@ class NurseWorkbench extends Component {
   }
   textAreaEvent(e) {
     let name = e.name || e.target.name;
-    let value = e.value === "" ? null : e.value || e.target.value;
+    let value = e.value === "" ? "" : e.value || e.target.value;
 
     this.setState({
       [name]: value,
@@ -1365,25 +1368,29 @@ class NurseWorkbench extends Component {
                         <h3 className="caption-subject">Enter Vitals</h3>
                       </div>
                       <div className="actions">
-                        {" "}
-                        <button className="btn btn-primary btn-circle active">
-                          <i
-                            className="fas fa-heartbeat"
+                        <Tooltip title="View Vital History">
+                          <button
+                            className="btn btn-default btn-circle active"
+                            style={{ marginRight: 3 }}
                             onClick={() => {
                               this.getPatientVitals();
                             }}
-                          />
-                        </button>
-                        <button className="btn btn-primary btn-circle active">
-                          <i
-                            className="fas fa-file"
+                          >
+                            <i className="fas fa-heartbeat" />
+                          </button>{" "}
+                        </Tooltip>{" "}
+                        <Tooltip title="View Medical Record">
+                          <button
+                            className="btn btn-default btn-circle active"
                             onClick={() => {
                               this.setState({
                                 openMrdModal: true,
                               });
                             }}
-                          />
-                        </button>
+                          >
+                            <i className="fas fa-file" />
+                          </button>
+                        </Tooltip>
                       </div>
                     </div>
                     <div className="portlet-body" id="vitals_recording">
@@ -1418,6 +1425,7 @@ class NurseWorkbench extends Component {
                   mask={true}
                   maskClosable={false}
                   onCancel={() => this.onCloseVitalHistory()}
+                  key="1"
                   footer={[
                     <div className="col-12">
                       <button
@@ -1440,6 +1448,7 @@ class NurseWorkbench extends Component {
                     patient_code={this.state.patient_code}
                     openMrdModal={this.state.openMrdModal}
                     onClose={(e) => this.onClose(e)}
+                    key="2"
                   />
                 ) : null}
                 <AlgaehSecurityComponent componentCode="NUR_PAT_CHF_COM">

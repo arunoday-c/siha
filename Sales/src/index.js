@@ -26,7 +26,7 @@ app.use(
     parameterLimit: 50000,
   })
 );
-process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
+process.env.MYSQL_KEYS = JSON.stringify(keys.mysqlDb);
 app.use(compression());
 
 app.use((req, res, next) => {

@@ -18,6 +18,14 @@ const executePDF = function executePDFMethod(options) {
 
       let strQuery = "";
 
+      if (input.hospital_id > 0) {
+        strQuery += ` hims_d_hospital_id= ${input.hospital_id} `;
+      }
+
+      if (input.hospital_id > 0) {
+        strQuery += ` and E.hospital_id= ${input.hospital_id} `;
+      }
+
       if (input.department_id > 0) {
         strQuery += ` and SD.department_id=${input.department_id}`;
       }
@@ -39,7 +47,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
+          select  hospital_name FROM hims_d_hospital where  1+1 ${strQuery};
           select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
@@ -55,9 +63,9 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department D on SD.department_id=D.hims_d_department_id
           left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
-          where E.hospital_id=? and E.record_status='A'  ${strQuery}; `,
-          values: [input.hospital_id, input.hospital_id],
-          printQuery: true,
+          where E.record_status='A'  ${strQuery}; `,
+          // values: [input.hospital_id, input.hospital_id],
+          printQuery: false,
         })
         .then((res) => {
           options.mysql.releaseConnection();

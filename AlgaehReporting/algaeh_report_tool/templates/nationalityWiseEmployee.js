@@ -1,7 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
 
@@ -10,13 +10,21 @@ const executePDF = function executePDFMethod(options) {
 
       const params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
       // utilities.logger().log("input: ", input);
 
       let strQuery = "";
+
+      if (input.hospital_id > 0) {
+        strQuery += ` hims_d_hospital_id= ${input.hospital_id} `;
+      }
+
+      if (input.hospital_id > 0) {
+        strQuery += ` and E.hospital_id= ${input.hospital_id} `;
+      }
 
       if (input.department_id > 0) {
         strQuery += ` and SD.department_id=${input.department_id}`;
@@ -34,7 +42,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
+          select  hospital_name FROM hims_d_hospital where 1+1   ${strQuery};
           select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
@@ -55,23 +63,23 @@ const executePDF = function executePDFMethod(options) {
            left join hims_d_city C on E.permanent_city_id=C.hims_d_city_id 
           left join hims_d_state S on E.permanent_state_id=S.hims_d_state_id
           left join hims_d_country CO  on E.permanent_country_id=CO.hims_d_country_id  
-          where E.hospital_id=? and E.record_status='A'  ${strQuery}; `,
-          values: [input.hospital_id, input.hospital_id],
-          printQuery: true
+          where E.record_status='A'  ${strQuery}; `,
+          // values: [input.hospital_id, input.hospital_id],
+          printQuery: false,
         })
-        .then(res => {
+        .then((res) => {
           options.mysql.releaseConnection();
           const hospital_name = res[0][0]["hospital_name"];
           const result = res[1];
 
           if (result.length > 0) {
             const nationgWiseEmp = _.chain(result)
-              .groupBy(g => g.hims_d_nationality_id)
-              .map(m => {
+              .groupBy((g) => g.hims_d_nationality_id)
+              .map((m) => {
                 return {
                   nationality: m[0]["nationality"],
                   no_employee: m.length,
-                  employees: m
+                  employees: m,
                 };
               })
               .value();
@@ -79,17 +87,17 @@ const executePDF = function executePDFMethod(options) {
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,
-              result: nationgWiseEmp
+              result: nationgWiseEmp,
             });
           } else {
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,
-              result: result
+              result: result,
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           console.log("e:", e);
           options.mysql.releaseConnection();
           reject(e);

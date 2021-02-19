@@ -16,6 +16,10 @@ const executePDF = function executePDFMethod(options) {
 
       let strQuery = "";
 
+      if (input.hospital_id > 0) {
+        strQuery += ` and E.hospital_id= ${input.hospital_id} `;
+      }
+
       if (input.expiry_status == "E") {
         strQuery += ` and   date(ID.valid_upto)<= curdate()`;
       } else if (input.expiry_status == "EW") {
@@ -31,9 +35,9 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_employee E on ID.employee_id = E.hims_d_employee_id
           inner join hims_d_identity_document D on ID.identity_documents_id = D.hims_d_identity_document_id
           inner join hims_d_nationality N on E.nationality = N.hims_d_nationality_id
-          where E.hospital_id=?   and E.employee_status='A' ${strQuery};`,
-          values: [input.hospital_id],
-          printQuery: true,
+          where E.employee_status='A' ${strQuery};`,
+          // values: [input.hospital_id],
+          printQuery: false,
         })
         .then((res) => {
           options.mysql.releaseConnection();

@@ -534,8 +534,8 @@ class AddOPBillingForm extends Component {
       this.props.existinsurance === undefined
         ? []
         : this.props.existinsurance.length > 0
-          ? this.props.existinsurance[0].insurance_type
-          : [];
+        ? this.props.existinsurance[0].insurance_type
+        : [];
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -802,42 +802,42 @@ class AddOPBillingForm extends Component {
                             displayTemplate: (row) => {
                               return row.insurance_yesno === "Y" &&
                                 insurance_type === "I" ? (
-                                  row.discount_percentage
-                                ) : (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      decimal: { allowNegative: false },
-                                      value: row.discount_percentage,
-                                      className: "txt-fld",
-                                      name: "discount_percentage",
-                                      events: {
-                                        onChange: ondiscountgridcol.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
+                                row.discount_percentage
+                              ) : (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    decimal: { allowNegative: false },
+                                    value: row.discount_percentage,
+                                    className: "txt-fld",
+                                    name: "discount_percentage",
+                                    events: {
+                                      onChange: ondiscountgridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                    },
+                                    others: {
+                                      placeholder: "0.00",
+                                      disabled:
+                                        row.trans_package_detail_id > 0
+                                          ? true
+                                          : this.state.Billexists,
+                                      onBlur: makeZeroIngrid.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                      onFocus: (e) => {
+                                        e.target.oldvalue = e.target.value;
                                       },
-                                      others: {
-                                        placeholder: "0.00",
-                                        disabled:
-                                          row.trans_package_detail_id > 0
-                                            ? true
-                                            : this.state.Billexists,
-                                        onBlur: makeZeroIngrid.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
-                                        onFocus: (e) => {
-                                          e.target.oldvalue = e.target.value;
-                                        },
-                                      },
-                                    }}
-                                  />
-                                );
+                                    },
+                                  }}
+                                />
+                              );
                               // return (
                               //   <AlagehFormGroup
                               //     div={{}}
@@ -888,42 +888,42 @@ class AddOPBillingForm extends Component {
                             displayTemplate: (row) => {
                               return row.insurance_yesno === "Y" &&
                                 insurance_type === "I" ? (
-                                  row.discount_amout
-                                ) : (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      decimal: { allowNegative: false },
-                                      value: row.discount_amout,
-                                      className: "txt-fld",
-                                      name: "discount_amout",
-                                      events: {
-                                        onChange: ondiscountgridcol.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
+                                row.discount_amout
+                              ) : (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    decimal: { allowNegative: false },
+                                    value: row.discount_amout,
+                                    className: "txt-fld",
+                                    name: "discount_amout",
+                                    events: {
+                                      onChange: ondiscountgridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                    },
+                                    others: {
+                                      placeholder: "0.00",
+                                      disabled:
+                                        row.trans_package_detail_id > 0
+                                          ? true
+                                          : this.state.Billexists,
+                                      onBlur: makeZeroIngrid.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                      onFocus: (e) => {
+                                        e.target.oldvalue = e.target.value;
                                       },
-                                      others: {
-                                        placeholder: "0.00",
-                                        disabled:
-                                          row.trans_package_detail_id > 0
-                                            ? true
-                                            : this.state.Billexists,
-                                        onBlur: makeZeroIngrid.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
-                                        onFocus: (e) => {
-                                          e.target.oldvalue = e.target.value;
-                                        },
-                                      },
-                                    }}
-                                  />
-                                );
+                                    },
+                                  }}
+                                />
+                              );
                             },
                           },
 
@@ -1169,30 +1169,36 @@ class AddOPBillingForm extends Component {
                           }}
                         />
 
-                        {Package_Exists.length > 0 ? <AlagehFormGroup
-                          div={{ className: "col" }}
-                          label={{
-                            forceLabel: "adjust package",
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.pack_advance_adjust,
-                            className: "txt-fld",
-                            name: "pack_advance_adjust",
+                        {Package_Exists.length > 0 ? (
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "adjust package",
+                            }}
+                            textBox={{
+                              decimal: { allowNegative: false },
+                              value: this.state.pack_advance_adjust,
+                              className: "txt-fld",
+                              name: "pack_advance_adjust",
 
-                            events: {
-                              onChange: adjustadvance.bind(this, this, context),
-                            },
-                            others: {
-                              placeholder: "0.00",
-                              onBlur: makeZero.bind(this, this, context),
-                              onFocus: (e) => {
-                                e.target.oldvalue = e.target.value;
+                              events: {
+                                onChange: adjustadvance.bind(
+                                  this,
+                                  this,
+                                  context
+                                ),
                               },
-                              disabled: this.state.Billexists,
-                            },
-                          }}
-                        /> : null}
+                              others: {
+                                placeholder: "0.00",
+                                onBlur: makeZero.bind(this, this, context),
+                                onFocus: (e) => {
+                                  e.target.oldvalue = e.target.value;
+                                },
+                                disabled: this.state.Billexists,
+                              },
+                            }}
+                          />
+                        ) : null}
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
@@ -1212,10 +1218,11 @@ class AddOPBillingForm extends Component {
                               ),
                             },
                             others: {
-                              disabled:
-                                this.state.Billexists === true
-                                  ? true
-                                  : this.state.applydiscount,
+                              //sidhiqe - disabled this due to issue in income report when we give sheet level discount
+                              disabled: true,
+                              // this.state.Billexists === true
+                              //   ? true
+                              //   : this.state.applydiscount,
                               placeholder: "0.00",
                               onBlur: makeDiscountZero.bind(
                                 this,
@@ -1247,10 +1254,11 @@ class AddOPBillingForm extends Component {
                               ),
                             },
                             others: {
-                              disabled:
-                                this.state.Billexists === true
-                                  ? true
-                                  : this.state.applydiscount,
+                              //sidhiqe - disabled this due to issue in income report when u give sheet level discount
+                              disabled: true,
+                              // this.state.Billexists === true
+                              //   ? true
+                              //   : this.state.applydiscount,
                               placeholder: "0.00",
 
                               onFocus: (e) => {
@@ -1304,14 +1312,18 @@ class AddOPBillingForm extends Component {
                         className="row secondary-box-container"
                         style={{ marginBottom: "10px" }}
                       >
-                        {Package_Exists.length > 0 ? <div className="col">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Package Avilable Advance",
-                            }}
-                          />
-                          <h6>{GetAmountFormart(this.state.pack_advance_amount)}</h6>
-                        </div> : null}
+                        {Package_Exists.length > 0 ? (
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Package Avilable Advance",
+                              }}
+                            />
+                            <h6>
+                              {GetAmountFormart(this.state.pack_advance_amount)}
+                            </h6>
+                          </div>
+                        ) : null}
                         <div className="col">
                           <AlgaehLabel
                             label={{

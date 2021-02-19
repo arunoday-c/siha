@@ -476,8 +476,10 @@ class HospitalServiceSetup extends Component {
                       ? []
                       : this.props.hospitalservices
                   }
-                  isFilterable={true}
                   pagination={true}
+                  // editable
+                  // actionsStyle={{width:100}}
+                  pageOptions={{ rows: 20, page: 1 }}
                   isFilterable={true}
                 />
               </div>

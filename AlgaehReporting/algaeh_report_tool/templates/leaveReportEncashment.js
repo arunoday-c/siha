@@ -15,6 +15,10 @@ const executePDF = function executePDFMethod(options) {
 
       //utilities.logger().log("input: ", input);
 
+      if (input.hospital_id > 0) {
+        str += ` and H.hospital_id= ${input.hospital_id}`;
+      }
+
       if (input.hims_d_leave_id > 0) {
         str += ` and H.leave_id=${input.hims_d_leave_id}`;
       }
@@ -36,8 +40,8 @@ const executePDF = function executePDFMethod(options) {
                 inner join hims_d_leave L on H.leave_id=L.hims_d_leave_id
                 left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id\
                 left join hims_d_hospital HO  on E.hospital_id=HO.hims_d_hospital_id \
-                where authorized in('APR','PRO') and E.employee_status='A' and H.hospital_id=? and year=?  and date_format(encashment_date,'%m')=lpad (?,2,'0') ${is_local}  ${str};`,
-          values: [input.hospital_id, input.year, input.month],
+                where authorized in('APR','PRO') and E.employee_status='A' and year=?  and date_format(encashment_date,'%m')=lpad (?,2,'0') ${is_local}  ${str};`,
+          values: [input.year, input.month],
           printQuery: true,
         })
         .then((results) => {

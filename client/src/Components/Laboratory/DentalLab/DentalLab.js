@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./DentalLab.scss";
 import {
+  AlgaehFormGroup,
   AlgaehDataGrid,
   AlgaehDateHandler,
   AlgaehMessagePop,
   Spin,
   AlgaehSecurityComponent,
+  AlgaehButton,
   // RawSecurityComponent,
 } from "algaeh-react-components";
 import { useQuery } from "react-query";
@@ -16,6 +18,7 @@ import { newAlgaehApi } from "../../../hooks/";
 // import swal from "sweetalert2";
 import { Controller, useForm } from "react-hook-form";
 import { AddPatientDentalForm } from "./AddPatientmodal";
+import { Modal } from "antd";
 // import { useLangFieldName } from "../../PatientRegistrationNew/patientHooks";
 // import AlgaehSearch from "../../Wrapper/globalSearch";
 // import spotlightSearch from "../../../Search/spotlightSearch";
@@ -85,6 +88,9 @@ export default function DentalLab() {
   // const [procedureList, setProcedureList] = useState([]);
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [cancel_data, setCancelData] = useState({});
+  const [cancelled_reason, setCancelReason] = useState("");
   // const [patientName, setPatientName] = useState("");
   // const [povendors, setPovendors] = useState([]);
   // const [patientId, setPatientId] = useState("");
@@ -195,6 +201,57 @@ export default function DentalLab() {
         display: e.message,
       });
     }
+  };
+
+  const onClickCancelModel = () => {
+    if (cancelled_reason === null || cancelled_reason === "") {
+      AlgaehMessagePop({
+        type: "error",
+        display: "Reason is Mandatory.",
+      });
+    } else {
+      try {
+        cancelOrder();
+      } catch (e) {
+        AlgaehMessagePop({
+          type: "error",
+          display: e.message,
+        });
+      }
+    }
+  };
+
+  const cancelOrder = async (data) => {
+    try {
+      const res = await newAlgaehApi({
+        uri: "/dentalForm/cancelDentalForm",
+        method: "PUT",
+        data: {
+          hims_f_dental_form_id: cancel_data.hims_f_dental_form_id,
+          work_status: "CAN",
+          cancelled_reason: cancelled_reason,
+        },
+      });
+      if (res.data.success) {
+        // clearState
+        setVisible(false);
+        loadRequestListAll();
+        AlgaehMessagePop({
+          type: "success",
+          display: "Dental Form Updated Successfully",
+        });
+      }
+    } catch (e) {
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
+
+  const onCancelOrder = (data) => {
+    setVisible(true);
+    setCancelData(data);
   };
   const loadRequestListAll = async () => {
     setLoadingRequestList(true);
@@ -348,6 +405,38 @@ export default function DentalLab() {
 
   return (
     <Spin spinning={loading}>
+      <Modal
+        title="Cancel Order"
+        visible={visible}
+        width={1080}
+        footer={null}
+        onCancel={() => setVisible(false)}
+      >
+        <AlgaehFormGroup
+          div={{
+            className: "col-12 form-group  mandatory",
+          }}
+          label={{
+            forceLabel: "Reason",
+            isImp: true,
+          }}
+          textBox={{
+            type: "text",
+            value: cancelled_reason,
+            className: "form-control",
+            id: "name",
+            onChange: (e) => {
+              setCancelReason(e.target.value);
+            },
+            autoComplete: false,
+          }}
+        />
+
+        <AlgaehButton className="btn btn-primary" onClick={onClickCancelModel}>
+          Process
+        </AlgaehButton>
+      </Modal>
+
       <div className="DentalLabScreen">
         <div className="row inner-top-search">
           <AddPatientDentalForm
@@ -432,26 +521,31 @@ export default function DentalLab() {
               // </div>
             )}
           />
-          <div className="col-2" style={{ marginTop: 21 }}> 
-           <span>   <ButtonType
-              classname="btn btn-default"
-              label={{
-                forceLabel: "Clear",
-                returnText: true,
-              }}
-              onClick={onClear}
-              loading={loading_request_list}
-            /> </span>
-          <span style={{marginRight:15}}>  <ButtonType
-              classname="btn btn-primary"
-              label={{
-                forceLabel: "Load",
-                returnText: true,
-              }}
-              onClick={handleSubmit(getFormRequest)}
-              loading={loading_request_list}
-            /></span>
-          
+          <div className="col-2" style={{ marginTop: 21 }}>
+            <span>
+              {" "}
+              <ButtonType
+                classname="btn btn-default"
+                label={{
+                  forceLabel: "Clear",
+                  returnText: true,
+                }}
+                onClick={onClear}
+                loading={loading_request_list}
+              />{" "}
+            </span>
+            <span style={{ marginRight: 15 }}>
+              {" "}
+              <ButtonType
+                classname="btn btn-primary"
+                label={{
+                  forceLabel: "Load",
+                  returnText: true,
+                }}
+                onClick={handleSubmit(getFormRequest)}
+                loading={loading_request_list}
+              />
+            </span>
           </div>
         </div>
         <div className="row">
@@ -494,8 +588,16 @@ export default function DentalLab() {
                                   <i
                                     className="fas fa-eye"
                                     onClick={() => onEditStatus(row)}
-                                  ></i>{" "}
+                                  ></i>
                                 </AlgaehSecurityComponent>
+                                {row.work_status === "CAN" ? null : (
+                                  <AlgaehSecurityComponent componentCode="APP_ACC_CANCEL">
+                                    <i
+                                      className="fas fa-times"
+                                      onClick={() => onCancelOrder(row)}
+                                    ></i>
+                                  </AlgaehSecurityComponent>
+                                )}
                               </>
                             );
                           },
@@ -507,9 +609,17 @@ export default function DentalLab() {
                           filterable: true,
                           displayTemplate: (row) => {
                             return (
-                            <span className={`badge badge-${row.request_status === "PEN" ? "warning" : row.request_status === "APR" ? "success" : "info" }`}>
-                              {row.request_status_desc}
-                            </span>
+                              <span
+                                className={`badge badge-${
+                                  row.request_status === "PEN"
+                                    ? "warning"
+                                    : row.request_status === "APR"
+                                    ? "success"
+                                    : "info"
+                                }`}
+                              >
+                                {row.request_status_desc}
+                              </span>
                             );
                           },
                         },
@@ -519,9 +629,17 @@ export default function DentalLab() {
                           filterable: true,
                           displayTemplate: (row) => {
                             return (
-                            <span className={`badge badge-${row.work_status === "PEN" ? "warning" : row.work_status === "WIP" ? "info" : "success" }`}>
-                              {row.work_status_desc}
-                            </span>
+                              <span
+                                className={`badge badge-${
+                                  row.work_status === "PEN"
+                                    ? "warning"
+                                    : row.work_status === "WIP"
+                                    ? "info"
+                                    : "success"
+                                }`}
+                              >
+                                {row.work_status_desc}
+                              </span>
                             );
                           },
                         },
@@ -530,15 +648,13 @@ export default function DentalLab() {
                           label: "Order Type",
                           filterable: true,
 
-
                           displayTemplate: (row) => {
                             return (
-                            <span className="badge badge-light">
-                              {row.ordered_type_desc}
-                            </span>
+                              <span className="badge badge-light">
+                                {row.ordered_type_desc}
+                              </span>
                             );
                           },
-                          
                         },
                         {
                           fieldName: "full_name",

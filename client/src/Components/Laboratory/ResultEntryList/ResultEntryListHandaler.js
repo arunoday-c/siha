@@ -49,12 +49,20 @@ export function getSavedDocument($this) {
   getDocuments($this.state.lab_id_number, $this);
 }
 export function saveDocumentCheck($this) {
-  saveDocument(
-    $this.state.attached_files,
-    $this.state.lab_id_number,
-    $this.state.investigation_test_id,
-    $this
-  );
+  if ($this.state.disableUploadButton) {
+    swalMessage({
+      title: "Please Generate The Barcode First And Then Attach The Documents ",
+      type: "error",
+    });
+    return;
+  } else {
+    saveDocument(
+      $this.state.attached_files,
+      $this.state.lab_id_number,
+      $this.state.investigation_test_id,
+      $this
+    );
+  }
 }
 export function saveDocument(files = [], contract_no, contract_id, $this) {
   const formData = new FormData();
@@ -311,8 +319,8 @@ const reloadAnalytesMaster = ($this, row) => {
     test_id: row.hims_d_investigation_test_id,
     date_of_birth: row.date_of_birth,
     gender: row.gender,
-    order_id: row.hims_f_lab_order_id
-  }
+    order_id: row.hims_f_lab_order_id,
+  };
   algaehApiCall({
     uri: "/laboratory/reloadAnalytesMaster",
     module: "laboratory",
@@ -346,5 +354,5 @@ export {
   closeResultEntry,
   Refresh,
   closeMicroResultEntry,
-  reloadAnalytesMaster
+  reloadAnalytesMaster,
 };
