@@ -36,7 +36,6 @@ if (process.env.NODE_ENV === "production") {
   const dist = path.resolve("../", "client", "build");
   app.use(express.static(dist));
 }
-
 process.env.MYSQL_KEYS = JSON.stringify(keys.mysqlDb);
 app.use(
   cors({
