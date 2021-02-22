@@ -122,90 +122,232 @@ class InvItemMaster extends Component {
               <div className="row">
                 <div className="col-6">
                   <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col-4 mandatory form-group" }}
-                      label={{
-                        fieldName: "item_code",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "item_code",
-                        value: this.state.item_code,
-                        events: {
-                          onChange: texthandle.bind(this, this),
-                        },
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-8 mandatory form-group" }}
-                      label={{
-                        fieldName: "item_description",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "item_description",
-                        value: this.state.item_description,
-                        events: {
-                          onChange: texthandle.bind(this, this),
-                        },
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-4 mandatory form-group" }}
-                      label={{
-                        fieldName: "item_type",
-                        isImp: true,
-                      }}
-                      selector={{
-                        name: "item_type",
-                        className: "select-fld",
-                        value: this.state.item_type,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.ITEM_TYPE,
-                        },
-                        onChange: texthandle.bind(this, this),
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-4 mandatory form-group" }}
-                      label={{
-                        fieldName: "category_id",
-                        isImp: true,
-                      }}
-                      selector={{
-                        name: "category_id",
-                        className: "select-fld",
-                        value: this.state.category_id,
-                        dataSource: {
-                          textField: "category_desc",
-                          valueField: "hims_d_inventory_tem_category_id",
-                          data: this.props.invitemcategory,
-                        },
-                        onChange: texthandle.bind(this, this),
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-4 mandatory form-group" }}
-                      label={{
-                        fieldName: "group_id",
-                        isImp: true,
-                      }}
-                      selector={{
-                        name: "group_id",
-                        className: "select-fld",
-                        value: this.state.group_id,
-                        dataSource: {
-                          textField: "group_description",
-                          valueField: "hims_d_inventory_item_group_id",
-                          data: this.props.inventoryitemgroup,
-                        },
-                        onChange: texthandle.bind(this, this),
-                      }}
-                    />
+                    <div className="col-4">
+                      <div className="row">
+                        <div className="col-12 imgUploadCntr">
+                          <div className="imgPreviewSingle">
+                            {this.state.detail_item_uom.length > 0 ? (
+                              this.state.detail_item_uom.map((doc) => (
+                                <>
+                                  {doc.item_master_img_unique_id ? (
+                                    <>
+                                      <div>
+                                        <div className="image-drop-area">
+                                          <span className="image-drop-area">
+                                            <img
+                                              src={`${
+                                                window.location.protocol
+                                              }//${window.location.hostname}${
+                                                window.location.port === ""
+                                                  ? "/docserver"
+                                                  : `:3006`
+                                              }/UPLOAD/InvItemMasterImages/thumbnail/${
+                                                doc.item_master_img_unique_id
+                                              }`}
+                                            />
+                                          </span>
+                                        </div>
+                                        <span className="textActionSec">
+                                          {/* <small>
+                                        {" "}
+                                        {doc.item_master_img_unique_id.split(
+                                          "__ALGAEH__"
+                                        ).length === 0
+                                          ? doc.item_master_img_unique_id
+                                          : doc.item_master_img_unique_id.split(
+                                              "__ALGAEH__"
+                                            )[1]}{" "}
+                                      </small> */}
+                                          <p className="diagramActions">
+                                            <button
+                                              className="btn btn-default btn-sm viewBtn"
+                                              type="button"
+                                              // href={`${
+                                              //   window.location.protocol
+                                              // }//${window.location.hostname}${
+                                              //   window.location.port === ""
+                                              //     ? "/docserver"
+                                              //     : `:3006`
+                                              // }/UPLOAD/InvItemMasterImages/${
+                                              //   doc.item_master_img_unique_id
+                                              // }`}
+                                              // target="_blank"
+                                            >
+                                              View
+                                              <img
+                                                className="invItemThumbnail animated slideInLeft faster"
+                                                src={`${
+                                                  window.location.protocol
+                                                }//${window.location.hostname}${
+                                                  window.location.port === ""
+                                                    ? "/docserver"
+                                                    : `:3006`
+                                                }/UPLOAD/InvItemMasterImages/${
+                                                  doc.item_master_img_unique_id
+                                                }`}
+                                              />
+                                            </button>
+                                            <button
+                                              className="btn btn-default btn-sm deleteBtn"
+                                              type="button"
+                                              onClick={deleteDoc.bind(
+                                                this,
+                                                this,
+                                                doc
+                                              )}
+                                            >
+                                              Delete
+                                            </button>
+                                          </p>
+                                        </span>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <div
+                                      className="col-12 noAttachment"
+                                      key={1}
+                                    >
+                                      <p>No Image Attached</p>
+                                    </div>
+                                  )}
+                                </>
+                              ))
+                            ) : (
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Image Attached</p>
+                              </div>
+                            )}
+                          </div>
+                          <Dragger
+                            className="uploadActionBtn"
+                            accept=".jpg,.png"
+                            name="inv_item_image"
+                            data={(file) => {
+                              this.setState({
+                                fileName: file.name,
+                              });
+                            }}
+                            onRemove={(file) => {
+                              this.setState((state) => {
+                                return {
+                                  inv_item_image: [],
+                                };
+                              });
+                            }}
+                            disabled={this.state.disabledDragger}
+                            beforeUpload={(file) => {
+                              this.setState((state) => ({
+                                inv_item_image: [file],
+                                saveEnable: false,
+                              }));
+                              return false;
+                            }}
+                            // multiple={true}
+                            fileList={this.state.inv_item_image}
+                            onPreview={(file) => {
+                              const urlBlob = URL.createObjectURL(file);
+                              window.open(urlBlob);
+                            }}
+                          >
+                            <p className="ant-upload-text">
+                              {this.state.inv_item_image
+                                ? `Add Image`
+                                : `Update Image`}
+                            </p>
+                          </Dragger>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-8">
+                      <div className="row">
+                        <AlagehFormGroup
+                          div={{ className: "col-12 mandatory form-group" }}
+                          label={{
+                            fieldName: "item_description",
+                            isImp: true,
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "item_description",
+                            value: this.state.item_description,
+                            events: {
+                              onChange: texthandle.bind(this, this),
+                            },
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-6 mandatory form-group" }}
+                          label={{
+                            fieldName: "item_code",
+                            isImp: true,
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "item_code",
+                            value: this.state.item_code,
+                            events: {
+                              onChange: texthandle.bind(this, this),
+                            },
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col-6 mandatory form-group" }}
+                          label={{
+                            fieldName: "item_type",
+                            isImp: true,
+                          }}
+                          selector={{
+                            name: "item_type",
+                            className: "select-fld",
+                            value: this.state.item_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.ITEM_TYPE,
+                            },
+                            onChange: texthandle.bind(this, this),
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col-6 mandatory form-group" }}
+                          label={{
+                            fieldName: "category_id",
+                            isImp: true,
+                          }}
+                          selector={{
+                            name: "category_id",
+                            className: "select-fld",
+                            value: this.state.category_id,
+                            dataSource: {
+                              textField: "category_desc",
+                              valueField: "hims_d_inventory_tem_category_id",
+                              data: this.props.invitemcategory,
+                            },
+                            onChange: texthandle.bind(this, this),
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col-6 mandatory form-group" }}
+                          label={{
+                            fieldName: "group_id",
+                            isImp: true,
+                          }}
+                          selector={{
+                            name: "group_id",
+                            className: "select-fld",
+                            value: this.state.group_id,
+                            dataSource: {
+                              textField: "group_description",
+                              valueField: "hims_d_inventory_item_group_id",
+                              data: this.props.inventoryitemgroup,
+                            },
+                            onChange: texthandle.bind(this, this),
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
                     <div className="col-3">
                       <label>Item Currently </label>
                       <div className="customRadio" style={{ borderBottom: 0 }}>
@@ -280,7 +422,7 @@ class InvItemMaster extends Component {
                       </div>
                     </div>
                     <AlagehFormGroup
-                      div={{ className: "col-3 form-group" }}
+                      div={{ className: "col-3 form-group mandatory" }}
                       label={{
                         forceLabel: "Reorder Quantity",
                         isImp: true,
@@ -302,7 +444,6 @@ class InvItemMaster extends Component {
                         },
                       }}
                     />
-
                     <div className="col-12">
                       <div className="row">
                         <div className="col-3">
@@ -370,7 +511,6 @@ class InvItemMaster extends Component {
                         />
                       </div>
                     </div>
-
                     <div className="col-12">
                       <AlgaehLabel
                         label={{ forceLabel: "Additional Information" }}
@@ -754,165 +894,6 @@ class InvItemMaster extends Component {
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-12" style={{ padding: 15 }}>
-              <div className="row">
-                <div className="col-3">
-                  <Dragger
-                    accept=".jpg,.png"
-                    name="inv_item_image"
-                    data={(file) => {
-                      this.setState({
-                        fileName: file.name,
-                      });
-                    }}
-                    onRemove={(file) => {
-                      this.setState((state) => {
-                        return {
-                          inv_item_image: [],
-                        };
-                      });
-                    }}
-                    disabled={this.state.disabledDragger}
-                    beforeUpload={(file) => {
-                      this.setState((state) => ({
-                        inv_item_image: [file],
-                        saveEnable: false,
-                      }));
-                      return false;
-                    }}
-                    // multiple={true}
-                    fileList={this.state.inv_item_image}
-                    onPreview={(file) => {
-                      const urlBlob = URL.createObjectURL(file);
-                      window.open(urlBlob);
-                    }}
-                  >
-                    <p className="upload-drag-icon">
-                      <i className="fas fa-file-upload"></i>
-                    </p>
-                    <p className="ant-upload-text">
-                      {this.state.inv_item_image
-                        ? `Click or Drag a file to replace the current file`
-                        : `Click or Drag a file to this area to upload`}
-                    </p>
-                  </Dragger>
-                </div>{" "}
-                <div className="col-9">
-                  <div className="row">
-                    <div className="col-12">
-                      <ul className="imgPreview">
-                        {this.state.detail_item_uom.length > 0 ? (
-                          this.state.detail_item_uom.map((doc) => (
-                            <>
-                              {doc.item_master_img_unique_id ? (
-                                <>
-                                  {" "}
-                                  <li>
-                                    <div className="image-drop-area">
-                                      <span className="image-drop-area">
-                                        <img
-                                          src={`${window.location.protocol}//${
-                                            window.location.hostname
-                                          }${
-                                            window.location.port === ""
-                                              ? "/docserver"
-                                              : `:3006`
-                                          }/UPLOAD/InvItemMasterImages/thumbnail/${
-                                            doc.item_master_img_unique_id
-                                          }`}
-                                        />
-                                      </span>
-                                    </div>
-                                    <span className="textActionSec">
-                                      <small>
-                                        {" "}
-                                        {doc.item_master_img_unique_id.split(
-                                          "__ALGAEH__"
-                                        ).length === 0
-                                          ? doc.item_master_img_unique_id
-                                          : doc.item_master_img_unique_id.split(
-                                              "__ALGAEH__"
-                                            )[1]}{" "}
-                                      </small>
-                                      <p className="diagramActions">
-                                        <a
-                                          href={`${window.location.protocol}//${
-                                            window.location.hostname
-                                          }${
-                                            window.location.port === ""
-                                              ? "/docserver"
-                                              : `:3006`
-                                          }/UPLOAD/InvItemMasterImages/${
-                                            doc.item_master_img_unique_id
-                                          }`}
-                                          target="_blank"
-                                        >
-                                          <i className="fas fa-eye"></i>
-                                        </a>
-
-                                        <i
-                                          className="fas fa-trash"
-                                          onClick={deleteDoc.bind(
-                                            this,
-                                            this,
-                                            doc
-                                          )}
-                                        ></i>
-                                      </p>
-                                    </span>
-                                  </li>
-                                  <div className="invItemThumbnail animated slideInDown faster">
-                                    <img
-                                      src={`${window.location.protocol}//${
-                                        window.location.hostname
-                                      }${
-                                        window.location.port === ""
-                                          ? "/docserver"
-                                          : `:3006`
-                                      }/UPLOAD/InvItemMasterImages/${
-                                        doc.item_master_img_unique_id
-                                      }`}
-                                    />
-                                  </div>
-                                </>
-                              ) : (
-                                <div className="col-12 noAttachment" key={1}>
-                                  <p>No Attachments Available</p>
-                                </div>
-                              )}
-                            </>
-                          ))
-                        ) : (
-                          <div className="col-12 noAttachment" key={1}>
-                            <p>No Attachments Available</p>
-                          </div>
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                {/* <div className="col-lg-8">
-                  <button
-                    onClick={() => {
-                      this.uploadOrUpdateImage(
-                        this.state.inv_item_image,
-                        this.state.item_code
-                      );
-                    }}
-                    type="button"
-                    className="btn btn-primary"
-                    disabled={this.state.saveEnable}
-                  >
-                    {this.state.item_master_img_item_master_img_unique_id ===
-                    null ? (
-                      <AlgaehLabel label={{ fieldName: "btnSave" }} />
-                    ) : (
-                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                    )}
-                  </button>
-                </div> */}
               </div>
             </div>
           </div>
