@@ -929,6 +929,11 @@ const privateRoutes = [
     component: <FinanceFragment path="CustomerListFinance" />,
   },
   {
+    path: "/ProcessAccountingEntry",
+    isExactPath: true,
+    component: <FinanceFragment path="ProcessAccountingEntry" />,
+  },
+  {
     path: "/CustomerPayment",
     isExactPath: true,
     component: <FinanceFragment path="CustomerPayment" />,

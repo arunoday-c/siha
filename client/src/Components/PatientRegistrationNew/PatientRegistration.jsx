@@ -846,7 +846,7 @@ export function PatientRegistration() {
         secondary_network_office_id: input.secondary_network_office_id,
       },
     ];
-    debugger;
+
     // AlgaehLoader({ show: true });
 
     algaehApiCall({
@@ -875,7 +875,7 @@ export function PatientRegistration() {
                 //     response.data.records.receiveable_amount;
                 //   response.data.records.cash_amount = 0;
                 // }
-                debugger;
+
                 const doctor = `${e.sub_department_id}-${e.services_id}-${
                   e.doctor_id
                 }-${e.department_type}-${e?.department_id}-${"1"}`;
@@ -1208,7 +1208,6 @@ export function PatientRegistration() {
                       <PackageUtilize
                         open={showPackage}
                         onClose={(e) => {
-                          debugger;
                           packRefetch(e).then(
                             () => ClosePackageUtilize(e),
                             setShowPackage(false)
