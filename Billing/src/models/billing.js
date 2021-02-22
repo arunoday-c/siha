@@ -3820,10 +3820,10 @@ export default {
   generateAccountingEntry: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
-
+      const inputParam = req.body;
       const _mysql = new algaehMysql(_options);
       // const utilities = new algaehUtilities();
-
+      const {closeConnection}= inputParam;
       if (req.body.consultation == "N") {
         next();
         return;
@@ -3838,7 +3838,7 @@ export default {
         })
         .then((product_type) => {
           if (product_type.length == 1) {
-            const inputParam = req.body;
+          
             const servicesIds = ["0"];
             if (inputParam.billdetails && inputParam.billdetails.length > 0) {
               inputParam.billdetails.forEach((item) => {
@@ -4313,6 +4313,9 @@ export default {
                         })
                         .then((subResult) => {
                           // console.log("FOUR");
+                          if(closeConnection){
+                            _mysql.commitTransaction();
+                          }
                           next();
                         })
                         .catch((error) => {
@@ -4326,7 +4329,11 @@ export default {
                         next(error);
                       });
                     });
-                } else { next() }
+                } else {
+                  if(closeConnection){
+                    _mysql.commitTransaction();
+                  } 
+                  next() }
               })
               .catch((error) => {
                 _mysql.rollBackTransaction(() => {
@@ -4334,6 +4341,9 @@ export default {
                 });
               });
           } else {
+            if(closeConnection){
+              _mysql.commitTransaction();
+            }
             next();
           }
         })
