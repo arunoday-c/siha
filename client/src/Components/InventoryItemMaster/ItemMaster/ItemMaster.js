@@ -13,7 +13,7 @@ import {
   AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import InventoryItem from "../../../Models/InventoryItem";
-import { InsertUpdateItems } from "./ItemMasterEvents";
+import { InsertUpdateItems, deleteDoc } from "./ItemMasterEvents";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -33,10 +33,13 @@ import {
   stockonchangegridcol,
   additionaleInfo,
   numberEventHandaler,
-  getFinanceAccountsMaping
+  getFinanceAccountsMaping,
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components";
+import { Upload } from "antd";
+const { Dragger } = Upload;
+// const { confirm } = Modal;
 
 class InvItemMaster extends Component {
   constructor(props) {
@@ -47,7 +50,10 @@ class InvItemMaster extends Component {
       conversion_factor: 0,
       convertEnable: false,
       head_id: null,
-      child_id: null
+      child_id: null,
+      inv_item_image: [],
+      disabledDragger: false,
+      // diagramsDataBase: [],
     };
   }
 
@@ -57,8 +63,8 @@ class InvItemMaster extends Component {
 
     const FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -68,6 +74,7 @@ class InvItemMaster extends Component {
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
+      // diagramsDataBase
     });
   }
   onClose = (e) => {
@@ -78,13 +85,21 @@ class InvItemMaster extends Component {
 
   UNSAFE_componentWillMount() {
     let IOputs = InventoryItem.inputParam();
-    this.setState({ ...this.state, ...IOputs });
+
+    this.setState({
+      ...this.state,
+      ...IOputs,
+    });
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
-      this.setState({ ...this.state, ...IOputs });
+      debugger;
+      let disable = IOputs.detail_item_uom.map((item) => {
+        return item.item_master_img_unique_id ? true : false;
+      })[0];
+      this.setState({ ...this.state, ...IOputs, disabledDragger: disable });
     }
   }
 
@@ -490,9 +505,9 @@ class InvItemMaster extends Component {
                                 this.props.inventoryitemuom === undefined
                                   ? []
                                   : this.props.inventoryitemuom.filter(
-                                    (f) =>
-                                      f.hims_d_inventory_uom_id === row.uom_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_inventory_uom_id === row.uom_id
+                                    );
 
                               return (
                                 <span>
@@ -620,7 +635,7 @@ class InvItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: (row) => { },
+                          onEdit: (row) => {},
                           onDone: updateUOM.bind(this, this),
                         }}
                       />
@@ -726,7 +741,7 @@ class InvItemMaster extends Component {
                         fieldName: "price",
                         isImp:
                           this.state.item_type === "AST" ||
-                            this.state.item_type === "NSK"
+                          this.state.item_type === "NSK"
                             ? false
                             : true,
                       }}
@@ -739,6 +754,165 @@ class InvItemMaster extends Component {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="col-12" style={{ padding: 15 }}>
+              <div className="row">
+                <div className="col-3">
+                  <Dragger
+                    accept=".jpg,.png"
+                    name="inv_item_image"
+                    data={(file) => {
+                      this.setState({
+                        fileName: file.name,
+                      });
+                    }}
+                    onRemove={(file) => {
+                      this.setState((state) => {
+                        return {
+                          inv_item_image: [],
+                        };
+                      });
+                    }}
+                    disabled={this.state.disabledDragger}
+                    beforeUpload={(file) => {
+                      this.setState((state) => ({
+                        inv_item_image: [file],
+                        saveEnable: false,
+                      }));
+                      return false;
+                    }}
+                    // multiple={true}
+                    fileList={this.state.inv_item_image}
+                    onPreview={(file) => {
+                      const urlBlob = URL.createObjectURL(file);
+                      window.open(urlBlob);
+                    }}
+                  >
+                    <p className="upload-drag-icon">
+                      <i className="fas fa-file-upload"></i>
+                    </p>
+                    <p className="ant-upload-text">
+                      {this.state.inv_item_image
+                        ? `Click or Drag a file to replace the current file`
+                        : `Click or Drag a file to this area to upload`}
+                    </p>
+                  </Dragger>
+                </div>{" "}
+                <div className="col-9">
+                  <div className="row">
+                    <div className="col-12">
+                      <ul className="imgPreview">
+                        {this.state.detail_item_uom.length > 0 ? (
+                          this.state.detail_item_uom.map((doc) => (
+                            <>
+                              {doc.item_master_img_unique_id ? (
+                                <>
+                                  {" "}
+                                  <li>
+                                    <div className="image-drop-area">
+                                      <span className="image-drop-area">
+                                        <img
+                                          src={`${window.location.protocol}//${
+                                            window.location.hostname
+                                          }${
+                                            window.location.port === ""
+                                              ? "/docserver"
+                                              : `:3006`
+                                          }/UPLOAD/InvItemMasterImages/thumbnail/${
+                                            doc.item_master_img_unique_id
+                                          }`}
+                                        />
+                                      </span>
+                                    </div>
+                                    <span className="textActionSec">
+                                      <small>
+                                        {" "}
+                                        {doc.item_master_img_unique_id.split(
+                                          "__ALGAEH__"
+                                        ).length === 0
+                                          ? doc.item_master_img_unique_id
+                                          : doc.item_master_img_unique_id.split(
+                                              "__ALGAEH__"
+                                            )[1]}{" "}
+                                      </small>
+                                      <p className="diagramActions">
+                                        <a
+                                          href={`${window.location.protocol}//${
+                                            window.location.hostname
+                                          }${
+                                            window.location.port === ""
+                                              ? "/docserver"
+                                              : `:3006`
+                                          }/UPLOAD/InvItemMasterImages/${
+                                            doc.item_master_img_unique_id
+                                          }`}
+                                          target="_blank"
+                                        >
+                                          <i className="fas fa-eye"></i>
+                                        </a>
+
+                                        <i
+                                          className="fas fa-trash"
+                                          onClick={deleteDoc.bind(
+                                            this,
+                                            this,
+                                            doc
+                                          )}
+                                        ></i>
+                                      </p>
+                                    </span>
+                                  </li>
+                                  <div className="invItemThumbnail animated slideInDown faster">
+                                    <img
+                                      src={`${window.location.protocol}//${
+                                        window.location.hostname
+                                      }${
+                                        window.location.port === ""
+                                          ? "/docserver"
+                                          : `:3006`
+                                      }/UPLOAD/InvItemMasterImages/${
+                                        doc.item_master_img_unique_id
+                                      }`}
+                                    />
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="col-12 noAttachment" key={1}>
+                                  <p>No Attachments Available</p>
+                                </div>
+                              )}
+                            </>
+                          ))
+                        ) : (
+                          <div className="col-12 noAttachment" key={1}>
+                            <p>No Attachments Available</p>
+                          </div>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                {/* <div className="col-lg-8">
+                  <button
+                    onClick={() => {
+                      this.uploadOrUpdateImage(
+                        this.state.inv_item_image,
+                        this.state.item_code
+                      );
+                    }}
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={this.state.saveEnable}
+                  >
+                    {this.state.item_master_img_item_master_img_unique_id ===
+                    null ? (
+                      <AlgaehLabel label={{ fieldName: "btnSave" }} />
+                    ) : (
+                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                    )}
+                  </button>
+                </div> */}
               </div>
             </div>
           </div>
@@ -757,8 +931,8 @@ class InvItemMaster extends Component {
                     {this.state.hims_d_inventory_item_master_id === null ? (
                       <AlgaehLabel label={{ fieldName: "btnSave" }} />
                     ) : (
-                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                      )}
+                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                    )}
                   </button>
                   <button
                     onClick={(e) => {

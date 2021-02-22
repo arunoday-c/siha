@@ -29,7 +29,7 @@ import {
   getUploadedSubFile,
   deleteSubDeptImage,
 } from "../files/subdept";
-
+import { uploadInvItemImg, deleteInvItemImg } from "../files/invItemMaster";
 // import { uploadFile, getUploadedFile } from "../files";
 import {
   getAllNotifications,
@@ -44,6 +44,9 @@ initializedDb((db) => {
   router.post("/saveContractDoc", uploadFile); //saveContractDoc);
   router.get("/getContractDoc", getUploadedFile); // getContractDoc);
   router.post("/uploadSubDeptImg", uploadSubDeptImg);
+  router.post("/uploadInvItemImg", uploadInvItemImg);
+
+  router.delete("/deleteInvItemImg", deleteInvItemImg);
   router.get("/getUploadedSubFile", getUploadedSubFile);
   router.delete("/deleteContractDoc", deleteContractDoc);
   router.delete("/deleteSubDeptImage", deleteSubDeptImage);
