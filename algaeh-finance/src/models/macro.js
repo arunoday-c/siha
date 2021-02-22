@@ -1,4 +1,5 @@
 import algaehMysql from "algaeh-mysql";
+import axios from "axios";
 import _ from "lodash";
 export async function macro(req, res, next) {
   const _mysql = new algaehMysql();
@@ -162,14 +163,12 @@ export async function macro(req, res, next) {
           throw error;
         });
 
-      const generateAccountEntry = await fetch(
-        "http://localhost:3014/api/v1/billing/generateAccountEntry",
-        {
-          method: "POST",
-          body: JSON.stringify(records[i]),
-          headers: { ...headers },
-        }
-      ).catch((error) => {
+      const generateAccountEntry = await axios({
+        method: "POST",
+        url: "http://localhost:3014/api/v1/billing/generateAccountEntry",
+        data: { ...records[i], closeConnection: true },
+        headers: { ...headers },
+      }).catch((error) => {
         throw error;
       });
     }
