@@ -2056,9 +2056,9 @@ let getPatientPackage = (req, res, next) => {
       str += ` and H.hims_f_package_header_id=${req.query.hims_f_package_header_id} `;
     }
 
-    if (req.query.visit_id > 0) {
-      str += ` and H.visit_id=${req.query.visit_id} `;
-    }
+    // if (req.query.visit_id > 0) {
+    //   str += ` and H.visit_id=${req.query.visit_id} `;
+    // }
     if (req.query.package_type == "S" || req.query.package_type == "D") {
       str += ` and H.package_type='${req.query.package_type}' `;
     }
@@ -2159,7 +2159,9 @@ let deleteOrderService = (req, res, next) => {
 
       if (req.body.trans_package_detail_id != null) {
         strQuery += _mysql.mysqlQueryFormat(
-          "SELECT utilized_qty,available_qty from hims_f_package_detail where hims_f_package_detail_id=?;",
+          "SELECT package_header_id, utilized_qty, available_qty, appropriate_amount, \
+          tot_service_amount/qty as actual_utilize_amount from hims_f_package_detail \
+          where hims_f_package_detail_id=?;",
           [req.body.trans_package_detail_id]
         );
       } else {
@@ -2219,6 +2221,16 @@ let deleteOrderService = (req, res, next) => {
               "UPDATE hims_f_package_detail set utilized_qty=?, available_qty=? \
               where hims_f_package_detail_id=?;",
               [utilized_qty, available_qty, req.body.trans_package_detail_id]
+            );
+
+            strQry += _mysql.mysqlQueryFormat(
+              "UPDATE hims_f_package_header set utilize_amount=utilize_amount-?, \
+              actual_utilize_amount=actual_utilize_amount-? where hims_f_package_header_id=?;",
+              [
+                second_result.appropriate_amount,
+                second_result.actual_utilize_amount,
+                second_result.package_header_id,
+              ]
             );
           }
 

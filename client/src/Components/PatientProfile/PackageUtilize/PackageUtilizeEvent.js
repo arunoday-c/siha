@@ -11,7 +11,7 @@ export default function PackageSetupEvent() {
 
       $this.setState({
         ...$this.state,
-        ...e.selected
+        ...e.selected,
       });
     },
     texthandle: ($this, e) => {
@@ -52,7 +52,7 @@ export default function PackageSetupEvent() {
         [name]: value,
         cash_amount: refundAmount,
         total_amount: refundAmount,
-        cancel_amount: cancel_amount
+        cancel_amount: cancel_amount,
       });
     },
     onquantitycol: ($this, row, e) => {
@@ -63,7 +63,7 @@ export default function PackageSetupEvent() {
       if (parseFloat(value) > parseFloat(row["available_qty"])) {
         swalMessage({
           title: "Quantity cannot be greater than Avaiable Quantity. ",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -89,7 +89,7 @@ export default function PackageSetupEvent() {
       row[name] = value;
       package_details[_index] = row;
       $this.setState({
-        package_details: package_details
+        package_details: package_details,
       });
     },
 
@@ -99,7 +99,7 @@ export default function PackageSetupEvent() {
       if (InputObj.hims_f_package_header_id === null) {
         swalMessage({
           title: "Please Selecte Package",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -107,17 +107,17 @@ export default function PackageSetupEvent() {
       if (InputObj.package_visit_type === "S" && InputObj.billed === "N") {
         swalMessage({
           title: " Bill Not Yet done for the package.",
-          type: "warning"
+          type: "warning",
         });
       }
       const package_details = _.filter(
         InputObj.package_details,
-        f => parseFloat(f.quantity) > 0
+        (f) => parseFloat(f.quantity) > 0
       );
 
       const inventory_item = _.filter(
         InputObj.package_details,
-        f => f.service_type_id === 4 && f.quantity > 0
+        (f) => f.service_type_id === 4 && f.quantity > 0
       );
 
       if (inventory_item.length > 0) {
@@ -125,12 +125,12 @@ export default function PackageSetupEvent() {
           for (let k = 0; k < inventory_item.length; k++) {
             const selected_item = _.filter(
               InputObj.consumtion_items,
-              f => f.service_id === inventory_item[k].service_id
+              (f) => f.service_id === inventory_item[k].service_id
             );
             if (selected_item.length === 0) {
               swalMessage({
                 title: "Please Select The batch for all Inventory Items",
-                type: "warning"
+                type: "warning",
               });
               return;
             }
@@ -138,7 +138,7 @@ export default function PackageSetupEvent() {
         } else {
           swalMessage({
             title: "Please Select The batch for all Inventory Items",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
@@ -147,7 +147,7 @@ export default function PackageSetupEvent() {
       if (package_details.length === 0 && InputObj.package_utilize === false) {
         swalMessage({
           title: "Please Select atleast one service to Utilize",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -164,10 +164,10 @@ export default function PackageSetupEvent() {
         confirmButtonText: "Yes",
         confirmButtonColor: "#44b8bd",
         cancelButtonColor: "#d33",
-        cancelButtonText: "No"
-      }).then(willDelete => {
+        cancelButtonText: "No",
+      }).then((willDelete) => {
         if (willDelete.value) {
-          debugger
+          debugger;
           $this.setState({ loading_UtilizeService: true }, () => {
             for (let i = 0; i < InputObj.package_details.length; i++) {
               InputObj.package_details[i].utilized_qty =
@@ -180,15 +180,14 @@ export default function PackageSetupEvent() {
               InputObj.package_details[i].created_date = new Date();
               utilize_amount =
                 utilize_amount +
-                (parseFloat(InputObj.package_details[i].appropriate_amount) /
-                  parseFloat(InputObj.package_details[i].qty)) *
-                parseFloat(InputObj.package_details[i].quantity);
+                parseFloat(InputObj.package_details[i].appropriate_amount) *
+                  parseFloat(InputObj.package_details[i].quantity);
 
               actual_utilize_amount =
                 actual_utilize_amount +
                 (parseFloat(InputObj.package_details[i].tot_service_amount) /
                   parseFloat(InputObj.package_details[i].qty)) *
-                parseFloat(InputObj.package_details[i].quantity);
+                  parseFloat(InputObj.package_details[i].quantity);
 
               InputObj.package_details[i].patient_id = $this.props.patient_id;
               InputObj.package_details[i].visit_id = $this.props.visit_id;
@@ -207,26 +206,30 @@ export default function PackageSetupEvent() {
               ).toFixed(2);
 
               InputObj.balance_amount =
-                parseFloat(InputObj.advance_amount) -
-                parseFloat(InputObj.utilize_amount);
-              if (parseFloat(InputObj.advance_percentage) < 0 && parseFloat(InputObj.balance_amount) <= 0) {
+                parseFloat(InputObj.advance_amount) > 0
+                  ? parseFloat(InputObj.advance_amount) -
+                    parseFloat(InputObj.utilize_amount)
+                  : 0;
+              if (
+                parseFloat(InputObj.advance_percentage) < 0 &&
+                parseFloat(InputObj.balance_amount) <= 0
+              ) {
                 swalMessage({
                   title:
                     "Advance not sufficient to utilize these services.Please collect the advance",
-                  type: "warning"
+                  type: "warning",
                 });
                 $this.setState({ loading_UtilizeService: false });
                 if ($this.props.from_billing === true) {
                   return;
                 }
-
               }
             }
 
             if ($this.state.consultation === true) {
               const cons_service = _.find(
                 InputObj.package_details,
-                f => f.service_type_id === 1
+                (f) => f.service_type_id === 1
               );
               let inputObj = {};
               if (cons_service === null || cons_service === undefined) {
@@ -239,7 +242,7 @@ export default function PackageSetupEvent() {
                 module: "billing",
                 method: "get",
                 data: inputObj,
-                onSuccess: response => {
+                onSuccess: (response) => {
                   if (response.data.success) {
                     InputObj.doctor_id = response.data.records[0].employee_id;
                     InputObj.sub_department_id =
@@ -251,29 +254,39 @@ export default function PackageSetupEvent() {
                     });
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   $this.setState({ loading_UtilizeService: false }, () => {
                     swalMessage({
                       title: error.message,
-                      type: "error"
+                      type: "error",
                     });
                   });
-                }
+                },
               });
             } else {
               for (let i = 0; i < InputObj.package_details.length; i++) {
-                InputObj.package_details[i].unit_cost = parseFloat(InputObj.package_details[i].appropriate_amount);
-                InputObj.package_details[i].gross_amount = parseFloat(InputObj.package_details[i].appropriate_amount);
-                InputObj.package_details[i].net_amout = parseFloat(InputObj.package_details[i].appropriate_amount);
-                InputObj.package_details[i].patient_resp = parseFloat(InputObj.package_details[i].appropriate_amount);
-                InputObj.package_details[i].patient_payable = parseFloat(InputObj.package_details[i].appropriate_amount);
+                InputObj.package_details[i].unit_cost = parseFloat(
+                  InputObj.package_details[i].appropriate_amount
+                );
+                InputObj.package_details[i].gross_amount = parseFloat(
+                  InputObj.package_details[i].appropriate_amount
+                );
+                InputObj.package_details[i].net_amout = parseFloat(
+                  InputObj.package_details[i].appropriate_amount
+                );
+                InputObj.package_details[i].patient_resp = parseFloat(
+                  InputObj.package_details[i].appropriate_amount
+                );
+                InputObj.package_details[i].patient_payable = parseFloat(
+                  InputObj.package_details[i].appropriate_amount
+                );
               }
               algaehApiCall({
                 uri: "/billing/updatePatientPackage",
                 module: "billing",
                 method: "PUT",
                 data: InputObj,
-                onSuccess: response => {
+                onSuccess: (response) => {
                   if (response.data.success) {
                     if (InputObj.consumtion_items.length > 0) {
                       InputObj.transaction_type = "CS";
@@ -287,28 +300,28 @@ export default function PackageSetupEvent() {
                         uri: "/inventoryconsumption/addInventoryConsumption",
                         module: "inventory",
                         data: InputObj,
-                        onSuccess: response => {
+                        onSuccess: (response) => {
                           if (response.data.success === true) {
                             $this.setState($this.baseState, () => {
                               $this.props.onClose && $this.props.onClose(e);
                             });
                             swalMessage({
                               title: "Successful...",
-                              type: "success"
+                              type: "success",
                             });
                           }
                         },
-                        onFailure: err => {
+                        onFailure: (err) => {
                           $this.setState(
                             { loading_UtilizeService: false },
                             () => {
                               swalMessage({
                                 title: err.message,
-                                type: "error"
+                                type: "error",
                               });
                             }
                           );
-                        }
+                        },
                       });
                     } else {
                       $this.setState($this.baseState, () => {
@@ -316,19 +329,19 @@ export default function PackageSetupEvent() {
                       });
                       swalMessage({
                         title: "Successful...",
-                        type: "success"
+                        type: "success",
                       });
                     }
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   $this.setState({ loading_UtilizeService: false }, () => {
                     swalMessage({
                       title: error.message,
-                      type: "error"
+                      type: "error",
                     });
                   });
-                }
+                },
               });
             }
           });
@@ -336,16 +349,16 @@ export default function PackageSetupEvent() {
       });
     },
 
-    ShowVistUtilizedSer: $this => {
+    ShowVistUtilizedSer: ($this) => {
       if ($this.state.hims_f_package_header_id === null) {
         swalMessage({
           title: "Please Selecte Package",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
       $this.setState({
-        visitPackageser: !$this.state.visitPackageser
+        visitPackageser: !$this.state.visitPackageser,
       });
     },
     CloseVistUtilizedSer: ($this, e) => {
@@ -357,28 +370,28 @@ export default function PackageSetupEvent() {
         $this.setState({ visitPackageser: !$this.state.visitPackageser });
       }
     },
-    ShowAdvanceScreen: $this => {
+    ShowAdvanceScreen: ($this) => {
       if ($this.state.hims_f_package_header_id === null) {
         swalMessage({
           title: "Please Selecte Package",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
       $this.setState({
-        AdvanceOpen: !$this.state.AdvanceOpen
+        AdvanceOpen: !$this.state.AdvanceOpen,
       });
     },
-    ShowCloseScreen: $this => {
+    ShowCloseScreen: ($this) => {
       if ($this.state.hims_f_package_header_id === null) {
         swalMessage({
           title: "Please Selecte Package",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
       $this.setState({
-        closePackage: !$this.state.closePackage
+        closePackage: !$this.state.closePackage,
       });
     },
     ClosePackageScreen: ($this, e) => {
@@ -391,7 +404,7 @@ export default function PackageSetupEvent() {
         );
       } else {
         $this.setState({
-          closePackage: !$this.state.closePackage
+          closePackage: !$this.state.closePackage,
         });
       }
     },
@@ -402,11 +415,11 @@ export default function PackageSetupEvent() {
         data: { service_id: row.service_id },
         module: "inventory",
         method: "GET",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             let inputObj = {
               item_id: response.data.records[0].hims_d_inventory_item_master_id,
-              inventory_location_id: $this.props.inventory_location_id
+              inventory_location_id: $this.props.inventory_location_id,
             };
             let item_category_id = response.data.records[0].category_id;
             let item_group_id = response.data.records[0].group_id;
@@ -423,7 +436,7 @@ export default function PackageSetupEvent() {
                 module: "inventory",
                 method: "GET",
                 data: inputObj,
-                onSuccess: response => {
+                onSuccess: (response) => {
                   if (response.data.success === true) {
                     let batch_data = response.data.records;
                     for (let i = 0; i < batch_data.length; i++) {
@@ -437,16 +450,16 @@ export default function PackageSetupEvent() {
                       item_group_id: item_group_id,
                       package_details: package_details,
                       available_qty: row.available_qty,
-                      selectd_row_id: _index
+                      selectd_row_id: _index,
                     });
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   swalMessage({
                     title: error.message,
-                    type: "error"
+                    type: "error",
                   });
-                }
+                },
               });
             } else {
               $this.setState({
@@ -456,21 +469,21 @@ export default function PackageSetupEvent() {
                 item_group_id: item_group_id,
                 package_details: package_details,
                 available_qty: row.available_qty,
-                selectd_row_id: _index
+                selectd_row_id: _index,
               });
             }
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     },
 
-    getCashiersAndShiftMAP: $this => {
+    getCashiersAndShiftMAP: ($this) => {
       let year = moment().format("YYYY");
       let month = moment().format("MM");
 
@@ -479,20 +492,20 @@ export default function PackageSetupEvent() {
         module: "masterSettings",
         method: "GET",
         data: { year: year, month: month, for: "T" },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             if (response.data.records.length > 0) {
               $this.setState({ shift_id: response.data.records[0].shift_id });
             }
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   };
 }

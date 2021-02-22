@@ -11,6 +11,7 @@ import {
   AlgaehDateHandler,
   Tooltip,
   Modal,
+  AlgaehTreeSearch,
 } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import Details from "./details";
@@ -29,8 +30,9 @@ let finance_voucher_header_id = "";
 export default memo(function (props) {
   const history = useHistory();
   const location = useLocation();
-
+  const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [visible, setVisibale] = useState(false);
   // const [visibleEditVoucher,setVisibleEditVoucher]=useState(false)
   const [rowDetails, setRowDetails] = useState([]);
@@ -58,6 +60,28 @@ export default memo(function (props) {
   //     });
   // }, []);
 
+  React.useEffect(() => {
+    algaehApiCall({
+      uri: "/finance/getAccountHeads",
+      method: "GET",
+      module: "finance",
+      data: {
+        getAll: "Y",
+      },
+      onSuccess: (response) => {
+        if (response.data.result) {
+          setAccounts(response.data.result);
+        }
+      },
+      onCatch: (error) => {
+        AlgaehMessagePop({
+          type: "error",
+          display: error.message,
+        });
+      },
+    });
+  }, []);
+
   /**
    * To load the journal Authorization data
    */
@@ -77,7 +101,11 @@ export default memo(function (props) {
       others["to_date"] = dates[1];
     }
 
-    LoadVouchersToAuthorize({ auth_level: level, ...others })
+    LoadVouchersToAuthorize({
+      auth_level: level,
+      searchQuery: search,
+      ...others,
+    })
       .then((result) => {
         setLoading(false);
         setData(result);
@@ -389,7 +417,9 @@ export default memo(function (props) {
       {text}
     </AlgaehButton>
   );
-
+  function OnChangeTreeValue(value) {
+    setSearch(value);
+  }
   return (
     <div className="row">
       <AlgaehModal
@@ -499,17 +529,50 @@ export default memo(function (props) {
               },
             }}
           />
+          <AlgaehTreeSearch
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Search",
+            }}
+            tree={{
+              treeDefaultExpandAll: true,
+              // updateInternally: true,
+              data: accounts,
+              disableHeader: true,
+              textField: "full_name",
+              disabled: false,
+              valueField: (node) => {
+                if (node?.finance_account_child_id) {
+                  return `${node?.head_id}-${node?.finance_account_child_id}-${node?.account_code}`;
+                } else {
+                  return `${node?.finance_account_head_id}-${node?.account_code}`;
+                }
+              },
+
+              value: search,
+              onChange: OnChangeTreeValue,
+            }}
+          />
+          {/* <AlgaehFormGroup
+            div={{
+              className: "col",
+            }}
+            label={{
+              forceLabel: "Search",
+            }}
+            textBox={{
+              defaultValue: search,
+              placeHolder: "Account Name(English|Arabic)) / Ledger Code ",
+              onChange: (e) => {
+                if (e.target.value === "") {
+                  setSearch(null);
+                } else {
+                  setSearch(e.target.value);
+                }
+              },
+            }}
+          /> */}
           <div className="col">
-            {" "}
-            {/* <AlgaehButton
-              className="btn btn-primary"
-              // type="primary"
-              loading={loading}
-              onClick={loadData}
-              style={{ marginTop: 15 }}
-              >
-              Load
-            </AlgaehButton> */}
             <button
               className="btn btn-primary"
               onClick={loadData}
@@ -523,7 +586,6 @@ export default memo(function (props) {
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              {" "}
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-lg-12 customCheckboxGrid">

@@ -2161,6 +2161,12 @@ export default {
       } else if (input.auth_status == "P" && input.auth_level == 2) {
         strQry += ` and VD.auth1 ='Y' and VD.auth2 ='N'`;
       }
+      let onlyCreditAccounts = "and VD.payment_type='CR'";
+      if (input.searchQuery) {
+        onlyCreditAccounts = "";
+        const splitted = input.searchQuery.split("-");
+        strQry += ` and VD.child_id=${splitted[1]} and VD.head_id=${splitted[0]}`;
+      }
 
       _mysql
         .executeQuery({
@@ -2170,7 +2176,7 @@ export default {
            from finance_voucher_header H
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
-          where posted_from='V'  and VD.payment_type='CR'  ${strQry};`,
+          where posted_from='V'  ${onlyCreditAccounts}  ${strQry};`,
           printQuery: true,
         })
         .then((result) => {

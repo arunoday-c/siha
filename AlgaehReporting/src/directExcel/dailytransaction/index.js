@@ -8,7 +8,7 @@ export function generateExcelDilyTrans(req, res, next) {
   try {
     // console.log("req.query", req.query);
     const { date } = req.query;
-
+    const { decimal_places } = req.userIdentity;
     _mysql
       .executeQuery({
         query: `select P.hims_d_patient_id ,P.patient_code,CONCAT(T.title,". ",P.full_name) pat_name ,CONCAT(T.arabic_title ,". ",P.arabic_name) pat_arabic_name,
@@ -16,7 +16,10 @@ export function generateExcelDilyTrans(req, res, next) {
        CONCAT(T.arabic_title,". ",E.arabic_name)  as emp_arabic_name ,
         E.employee_code ,BH.bill_number as bill_invoice,V.insured,BH.hims_f_billing_header_id,BD.service_type_id,ST.service_type ,ST.arabic_service_type,
         S.arabic_service_name,S.service_name,if(S.procedure_type ='GN','General','Dental') as procedure_type,
-        BD.hims_f_billing_details_id ,BD.quantity,BD.net_amout ,BD.company_payble,BD.patient_payable,BD.discount_amout,IP.insurance_provider_name,
+        BD.hims_f_billing_details_id ,BD.quantity,BD.net_amout ,
+        COALESCE(BD.company_payble,0) as company_payble,COALESCE(BD.patient_payable,0) as patient_payable,
+        COALESCE(BD.discount_amout,0)as discount_amout,
+        IP.insurance_provider_name,
         IP.arabic_provider_name,COALESCE(BH.advance_amount,0)as advance_amount,COALESCE(BH.advance_adjust,0) as advance_adjust,case BD.service_type_id when 1 then 'Y' else 'N'  end new_visit_patient,
         RD.amount as receipt_amount,RD.pay_type
         from hims_f_patient as P inner join hims_f_patient_visit as V on P.hims_d_patient_id = V.patient_id
@@ -233,8 +236,8 @@ export function generateExcelDilyTrans(req, res, next) {
                           [bKey === "CA"
                             ? "cash_amount"
                             : bKey === "CD"
-                              ? "card_amount"
-                              : "cheque_amount"]: billH.receipt_amount,
+                            ? "card_amount"
+                            : "cheque_amount"]: billH.receipt_amount,
                         };
                       })
                       .value();
@@ -255,19 +258,24 @@ export function generateExcelDilyTrans(req, res, next) {
                       ...billing_type,
                       [sKey + "_amount"]:
                         recordsDtl.length === 1
-                          ? _.sumBy(services, (s) =>
-                            parseFloat(s.patient_payable)
-                          )
-                          : dualPayType,
-                      [sKey + "_desc_amount"]: _.sumBy(services, (s) =>
-                        parseFloat(s.discount_amout)
-                      ),
-                      advance_amount: _.sumBy(services, (s) =>
-                        parseFloat(s.advance_amount)
-                      ),
-                      advance_adjust: _.sumBy(services, (s) =>
-                        parseFloat(s.advance_adjust)
-                      ),
+                          ? parseFloat(
+                              _.sumBy(
+                                services,
+                                (s) =>
+                                  parseFloat(s.patient_payable) +
+                                  parseFloat(s.company_payble)
+                              )
+                            ).toFixed(decimal_places)
+                          : parseFloat(dualPayType).toFixed(decimal_places),
+                      [sKey + "_desc_amount"]: parseFloat(
+                        _.sumBy(services, (s) => parseFloat(s.discount_amout))
+                      ).toFixed(decimal_places),
+                      advance_amount: parseFloat(
+                        _.sumBy(services, (s) => parseFloat(s.advance_amount))
+                      ).toFixed(decimal_places),
+                      advance_adjust: parseFloat(
+                        _.sumBy(services, (s) => parseFloat(s.advance_adjust))
+                      ).toFixed(decimal_places),
                     };
                   })
                   .value();
