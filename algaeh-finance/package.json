@@ -23,7 +23,6 @@
   "license": "ISC",
   "dependencies": {
     "algaeh-mysql": "^1.5.2",
-    "algaeh-react-components": "^3.9.0",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",
