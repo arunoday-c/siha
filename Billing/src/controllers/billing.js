@@ -26,7 +26,7 @@ const {
   closePackage,
   addCashHandover,
   generateAccountingEntry,
-  checkServiceExists
+  checkServiceExists,
 } = models;
 
 const { insertLadOrderedServices } = labModels;
@@ -104,16 +104,12 @@ export default () => {
     }
   );
 
-  api.post(
-    "/checkServiceExists",
-    checkServiceExists,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  );
+  api.post("/checkServiceExists", checkServiceExists, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   api.get(
     "/getPakageDetails",
@@ -189,6 +185,10 @@ export default () => {
       records: req.records,
     });
   });
-
+  api.post("/generateAccountEntry", generateAccountingEntry, (req, res) => {
+    res.status
+      .json({ success: true.valueOf, message: "Successfully done" })
+      .end();
+  });
   return api;
 };
