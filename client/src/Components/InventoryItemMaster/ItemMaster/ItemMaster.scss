@@ -34,56 +34,137 @@
   }
 }
 
-.image-drop-area {
-  border: 1px solid #93a4ad;
-  min-height: 55px;
+// .image-drop-area {
+//   border: 1px solid #93a4ad;
+//   min-height: 55px;
+//   position: relative;
+//   background-color: #eaeaea;
+//   &:hover {
+//     cursor: pointer;
+//     .invItemThumbNail {
+//       display: block;
+//     }
+//   }
+
+//   img {
+//     height: 55px;
+//     width: 55px;
+//     border-radius: 4px;
+//     overflow: hidden;
+//     -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
+//     transition: width 0.3s;
+//     border-radius: 0;
+
+//     // &:hover {
+//     // width: 175px;
+//     // height: auto;
+//     // box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+//     // position: absolute;
+//     // z-index: 9;
+//     // .patientDemoHover{
+//     //   dis
+//     // }
+//     // }
+//   }
+// }
+// .invItemThumbnail {
+//   position: absolute;
+//   top: 64px;
+//   left: 11px;
+//   z-index: 999;
+//   width: auto;
+//   height: auto;
+//   // background: $color-white;
+//   // box-shadow: 0 20px 20px lighten($color-black, 60%);
+//   border-radius: 0 4px 4px 4px;
+//   padding: 15px;
+//   display: none;
+//   img {
+//     width: auto !important;
+//     height: 120px !important;
+//   }
+//   &.imgSection {
+//     padding: 0;
+//   }
+// }
+.imgUploadCntr {
   position: relative;
-  background-color: #eaeaea;
-  &:hover {
-    cursor: pointer;
-    .invItemThumbNail {
-      display: block;
+  .imgPreviewSingle {
+    width: 100%;
+    text-align: center;
+    .image-drop-area {
+      img {
+        height: 122px;
+      }
+    }
+    .diagramActions {
+      width: 100%;
+      border: 1px solid #808080;
+      border-bottom: none;
+      background-color: #ffffff;
+      button {
+        width: 50%;
+        background-color: #ffffff;
+        border: none;
+        font-size: 9px;
+        text-transform: uppercase;
+        cursor: pointer;
+        &:first-child {
+          border-right: 1px solid #000;
+        }
+        &:hover {
+          background-color: #eeeeee;
+          cursor: pointer;
+        }
+      }
+      .viewBtn {
+        position: relative;
+        .invItemThumbnail {
+          display: none;
+        }
+        &:hover {
+          .invItemThumbnail {
+            display: block;
+            z-index: 9;
+            position: absolute;
+            border: 1px solid #dcad64;
+            top: -126px;
+            left: 200%;
+            width: auto;
+            height: 400px;
+            box-shadow: 15px 16px 17px #00000045;
+          }
+        }
+      }
+    }
+    .noAttachment {
+      p {
+        height: 158px;
+        margin: 0 -15px;
+        text-align: center;
+        background-color: #ffffff;
+        border: 1px solid #e5e5e5;
+        padding: 38% 0;
+      }
     }
   }
-
-  img {
-    height: 55px;
-    width: 55px;
-    border-radius: 4px;
-    overflow: hidden;
-    -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
-    transition: width 0.3s;
-    border-radius: 0;
-
-    // &:hover {
-    // width: 175px;
-    // height: auto;
-    // box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
-    // position: absolute;
-    // z-index: 9;
-    // .patientDemoHover{
-    //   dis
-    // }
-    // }
+  .uploadActionBtn {
+    width: 100%;
+    height: 30px;
+    border: 1px solid grey;
+    background: #e6e6e6;
+    .ant-upload-btn {
+      padding: 3px 0;
+      text-transform: uppercase;
+      p {
+        font-size: 12px !important;
+        margin: 0;
+      }
+    }
   }
-}
-.invItemThumbnail {
-  position: absolute;
-  top: 64px;
-  left: 11px;
-  z-index: 999;
-  width: auto;
-  height: auto;
-  // background: $color-white;
-  // box-shadow: 0 20px 20px lighten($color-black, 60%);
-  border-radius: 0 4px 4px 4px;
-  padding: 15px;
-  display: none;
-  img {
-    width: auto !important;
-    height: 120px !important;
-  }
-  &.imgSection {
-    padding: 0;
+  .ant-upload-list-text {
+    position: absolute;
+    width: 100%;
+    top: 120px;
   }
 }
