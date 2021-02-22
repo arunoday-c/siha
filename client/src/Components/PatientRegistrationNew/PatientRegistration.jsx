@@ -10,6 +10,7 @@ import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal"
 import { PatientAttachments } from "./PatientAttachment";
 import { PricingModals } from "./PricingModal";
 import { UpdatePatient } from "./UpdatePatient";
+import Enumerable from "linq";
 import {
   MainContext,
   AlgaehLabel,
@@ -28,7 +29,7 @@ import { AdvanceModal } from "./AdvanceRefundModal";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import axios from "axios";
 import sockets from "../../sockets";
-
+// import _ from "lodash";
 export const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
     uri: "/frontDesk/get",
@@ -137,6 +138,7 @@ const generateIdCard = (data) => {
     },
   });
 };
+
 const generateIdCardBig = (data) => {
   algaehApiCall({
     uri: "/report",
@@ -265,6 +267,7 @@ export function PatientRegistration() {
     reset,
     setError,
     clearErrors,
+    getValues,
     formState,
   } = useForm({
     reValidateMode: "onChange",
@@ -764,6 +767,144 @@ export function PatientRegistration() {
       contact_number: ContactNo,
     });
   };
+  const ClosePackageUtilize = (e) => {
+    if (e === undefined || e.services_id === undefined) {
+      return;
+    }
+    // let visit_type = _.find(
+    //   $this.props.visittypes,
+    //   (f) => f.consultation === "Y"
+    // );
+    // $this.setState(
+    //   {
+    //     isPackUtOpen: !input.isPackUtOpen,
+    //     hims_d_services_id: e.services_id,
+    //     service_type_id: e.service_type_id,
+    //     incharge_or_provider: e.doctor_id,
+    //     provider_id: e.doctor_id,
+    //     doctor_id: e.doctor_id,
+    //     sub_department_id: e.sub_department_id,
+    //     visit_type: visit_type.hims_d_visit_type_id,
+    //     package_details: e.package_details,
+    //     from_package: ,
+    //     visittypeselect: true,
+    //     utilize_amount: e.utilize_amount,
+    //     balance_amount: e.balance_amount,
+    //     actual_utilize_amount: e.actual_utilize_amount,
+    //     consultation: "Y",
+    //     hims_f_package_header_id: e.hims_f_package_header_id,
+    //     saveEnable: false,
+    //     billdetail: false,
+    //     new_visit_patient: "P"
+    //   },
+    //   () => {
+    // generateBillDetails($this);
+
+    // }
+    // );
+
+    let input = getValues();
+    let zeroBill = false;
+    let DoctorVisits = Enumerable.from(patientData?.visitDetails)
+      .where((w) => w.doctor_id === e.doctor_id)
+      .toArray();
+
+    let FollowUp = false;
+    let currentDate = moment(new Date()).format("YYYY-MM-DD");
+    let expiryDate = 0;
+    if (DoctorVisits.length > 0) {
+      expiryDate = Enumerable.from(DoctorVisits).max(
+        (s) => s.visit_expiery_date
+      );
+    }
+    let from_package = e.package_utilize === true ? false : true;
+    if (
+      (department_type === "D" && input.existing_plan === "Y") ||
+      from_package === true
+    ) {
+      zeroBill = true;
+    } else {
+      if (expiryDate > currentDate) {
+        FollowUp = true;
+      }
+    }
+
+    let serviceInput = [
+      {
+        zeroBill: zeroBill,
+        FollowUp: FollowUp,
+        insured: input.insured ? input.insured : "N",
+        vat_applicable: input.vat_applicable ? input.vat_applicable : "N",
+        service_type_id: e.service_type_id,
+        hims_d_services_id: e.services_id,
+        primary_insurance_provider_id: input.primary_insurance_provider_id,
+        primary_network_office_id: input.primary_network_office_id,
+        primary_network_id: input.primary_network_id,
+        sec_insured: input.sec_insured ? input.sec_insured : "N",
+        secondary_insurance_provider_id: input.secondary_insurance_provider_id,
+        secondary_network_id: input.secondary_network_id,
+        secondary_network_office_id: input.secondary_network_office_id,
+      },
+    ];
+    debugger;
+    // AlgaehLoader({ show: true });
+
+    algaehApiCall({
+      uri: "/billing/getBillDetails",
+      module: "billing",
+      method: "POST",
+      data: serviceInput,
+      onSuccess: (response) => {
+        if (response.data.success) {
+          response.data.records.follow_up = FollowUp;
+          response.data.records.existing_treat = zeroBill;
+          // reset({ ...response.data.records });
+
+          algaehApiCall({
+            uri: "/billing/billingCalculations",
+            module: "billing",
+            method: "POST",
+            data: response.data.records,
+            onSuccess: (response) => {
+              if (response.data.success) {
+                // if (context !==null) {
+                //   context.updateState({ ...response.data.records });
+                // }
+                // if (input.default_pay_type === "CD") {
+                //   response.data.records.card_amount =
+                //     response.data.records.receiveable_amount;
+                //   response.data.records.cash_amount = 0;
+                // }
+                debugger;
+                const doctor = `${e.sub_department_id}-${e.services_id}-${
+                  e.doctor_id
+                }-${e.department_type}-${e?.department_id}-${"1"}`;
+
+                setServiceInfo(doctor);
+                setValue("doctor", doctor);
+                // reset({ ...response.data.records });
+              }
+              // AlgaehLoader({ show: false });
+            },
+            onFailure: (error) => {
+              // AlgaehLoader({ show: false });
+              AlgaehMessagePop({
+                display: error.message,
+                type: "error",
+              });
+            },
+          });
+        }
+      },
+      onFailure: (error) => {
+        // AlgaehLoader({ show:  false });
+        AlgaehMessagePop({
+          display: error.message,
+          type: "error",
+        });
+      },
+    });
+  };
   return (
     <Spin
       spinning={
@@ -1066,8 +1207,12 @@ export function PatientRegistration() {
                       </button>
                       <PackageUtilize
                         open={showPackage}
-                        onClose={() => {
-                          packRefetch().then(() => setShowPackage(false));
+                        onClose={(e) => {
+                          debugger;
+                          packRefetch(e).then(
+                            () => ClosePackageUtilize(e),
+                            setShowPackage(false)
+                          );
                         }}
                         package_detail={packages}
                         from="frontDesk"
