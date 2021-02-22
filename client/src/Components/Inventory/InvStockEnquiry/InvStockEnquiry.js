@@ -19,7 +19,7 @@ import {
   closeBatchWise,
   itemchangeText,
   checkBoxEvent,
-  getInventoryOptions
+  getInventoryOptions,
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.scss";
 import "../../../styles/site.scss";
@@ -28,7 +28,7 @@ import BatchWiseStock from "./BatchWiseStock";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
-import { RawSecurityComponent, } from "algaeh-react-components";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 class InvStockEnquiry extends Component {
   constructor(props) {
@@ -52,9 +52,9 @@ class InvStockEnquiry extends Component {
       total_quantity: 0,
       reorder_qty: "N",
       trans_ack_required: "N",
-      trans_required: false
+      trans_required: false,
     };
-    getInventoryOptions(this)
+    getInventoryOptions(this);
   }
 
   componentDidMount() {
@@ -107,16 +107,13 @@ class InvStockEnquiry extends Component {
       },
     });
 
-
-    RawSecurityComponent({ componentCode: "TRANS_OPTION" }).then(
-      (result) => {
-        if (result === "show") {
-          this.setState({
-            trans_required: true
-          })
-        }
+    RawSecurityComponent({ componentCode: "TRANS_OPTION" }).then((result) => {
+      if (result === "show") {
+        this.setState({
+          trans_required: true,
+        });
       }
-    );
+    });
   }
 
   render() {
@@ -141,11 +138,14 @@ class InvStockEnquiry extends Component {
 
                     onChange: changeTexts.bind(this, this),
                     onClear: () => {
-                      this.setState({
-                        location_id: null
-                      }, () => {
-                        getItemLocationStock(this, this)
-                      });
+                      this.setState(
+                        {
+                          location_id: null,
+                        },
+                        () => {
+                          getItemLocationStock(this, this);
+                        }
+                      );
                     },
                     autoComplete: "off",
                   }}
@@ -155,14 +155,12 @@ class InvStockEnquiry extends Component {
                   label={{ forceLabel: "Select Item" }}
                   title="Search Items"
                   id="item_id_search"
-                  template={result => {
+                  template={(result) => {
                     return (
                       <section className="resultSecStyles">
                         <div className="row">
                           <div className="col-8">
-                            <h4 className="title">
-                              {result.item_description}
-                            </h4>
+                            <h4 className="title">{result.item_description}</h4>
                             <small>{result.generic_name}</small>
                             <small>{result.uom_description}</small>
                           </div>
@@ -177,14 +175,17 @@ class InvStockEnquiry extends Component {
                   searchName="invopeningstock"
                   onClick={itemchangeText.bind(this, this)}
                   onClear={() => {
-                    this.setState({
-                      item_id: null,
-                      item_description: ""
-                    }, () => {
-                      getItemLocationStock(this, this)
-                    });
+                    this.setState(
+                      {
+                        item_id: null,
+                        item_description: "",
+                      },
+                      () => {
+                        getItemLocationStock(this, this);
+                      }
+                    );
                   }}
-                  ref={attReg => {
+                  ref={(attReg) => {
                     this.attReg = attReg;
                   }}
                 />
@@ -198,9 +199,7 @@ class InvStockEnquiry extends Component {
                       type="checkbox"
                       name="reorder_qty"
                       value={this.state.reorder_qty}
-                      checked={
-                        this.state.reorder_qty === "Y" ? true : false
-                      }
+                      checked={this.state.reorder_qty === "Y" ? true : false}
                       onChange={checkBoxEvent.bind(this, this)}
                     />
                     <span>
@@ -258,6 +257,31 @@ class InvStockEnquiry extends Component {
                     others: { filterable: true },
                   },
                   {
+                    fieldName: "item_master_img_unique_id",
+                    label: <AlgaehLabel label={{ forceLabel: "Item Image" }} />,
+                    others: { filterable: true },
+                    displayTemplate: (row) => {
+                      return row.item_master_img_unique_id ? (
+                        <span className="image-drop-area">
+                          <img
+                            src={`${window.location.protocol}//${
+                              window.location.hostname
+                            }${
+                              window.location.port === ""
+                                ? "/docserver"
+                                : `:3006`
+                            }/UPLOAD/InvItemMasterImages/thumbnail/${
+                              row.item_master_img_unique_id
+                            }`}
+                          />
+                        </span>
+                      ) : (
+                        <img src={"image/*"} />
+                      );
+                    },
+                  },
+
+                  {
                     fieldName: "item_code",
                     label: <AlgaehLabel label={{ forceLabel: "Item Code" }} />,
                     others: { filterable: true },
@@ -290,10 +314,10 @@ class InvStockEnquiry extends Component {
                         this.props.inventoryitemuom === undefined
                           ? []
                           : this.props.inventoryitemuom.filter(
-                            (f) =>
-                              f.hims_d_inventory_uom_id ===
-                              row.stocking_uom_id
-                          );
+                              (f) =>
+                                f.hims_d_inventory_uom_id ===
+                                row.stocking_uom_id
+                            );
 
                       return (
                         <span>
@@ -313,8 +337,8 @@ class InvStockEnquiry extends Component {
                         this.props.inventoryitemuom === undefined
                           ? []
                           : this.props.inventoryitemuom.filter(
-                            (f) => f.hims_d_inventory_uom_id === row.sales_uom
-                          );
+                              (f) => f.hims_d_inventory_uom_id === row.sales_uom
+                            );
 
                       return (
                         <span>
@@ -337,8 +361,8 @@ class InvStockEnquiry extends Component {
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                          parseFloat(row.qtyhand)
-                        );
+                        parseFloat(row.qtyhand)
+                      );
                     },
                     disabled: true,
                     others: { filterable: true },
@@ -391,7 +415,7 @@ class InvStockEnquiry extends Component {
                 paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   //   onDelete: deleteServices.bind(this, this),
-                  onEdit: (row) => { },
+                  onEdit: (row) => {},
                   onDone: updateStockDetils.bind(this, this),
                 }}
               />
@@ -442,7 +466,7 @@ function mapStateToProps(state) {
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
     inventoryitemuom: state.inventoryitemuom,
-    git_locations: state.git_locations
+    git_locations: state.git_locations,
   };
 }
 
