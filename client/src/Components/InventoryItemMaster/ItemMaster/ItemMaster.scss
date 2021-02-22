@@ -33,3 +33,57 @@
     max-height: 27vh !important;
   }
 }
+
+.image-drop-area {
+  border: 1px solid #93a4ad;
+  min-height: 55px;
+  position: relative;
+  background-color: #eaeaea;
+  &:hover {
+    cursor: pointer;
+    .invItemThumbNail {
+      display: block;
+    }
+  }
+
+  img {
+    height: 55px;
+    width: 55px;
+    border-radius: 4px;
+    overflow: hidden;
+    -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
+    transition: width 0.3s;
+    border-radius: 0;
+
+    // &:hover {
+    // width: 175px;
+    // height: auto;
+    // box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+    // position: absolute;
+    // z-index: 9;
+    // .patientDemoHover{
+    //   dis
+    // }
+    // }
+  }
+}
+.invItemThumbnail {
+  position: absolute;
+  top: 64px;
+  left: 11px;
+  z-index: 999;
+  width: auto;
+  height: auto;
+  // background: $color-white;
+  // box-shadow: 0 20px 20px lighten($color-black, 60%);
+  border-radius: 0 4px 4px 4px;
+  padding: 15px;
+  display: none;
+  img {
+    width: auto !important;
+    height: 120px !important;
+  }
+  &.imgSection {
+    padding: 0;
+  }
+}

@@ -70,6 +70,7 @@ export default {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = detailResult;
+
                   next();
                 });
               })
@@ -124,7 +125,39 @@ export default {
       next(e);
     }
   },
+  addUniqueId: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_inventory_item_master` SET `item_master_img_unique_id` = ?, \
+            `update_date`=?, `updated_by`=? \
+                WHERE `hims_d_inventory_item_master_id`=? ;",
+          values: [
+            input.item_master_img_unique_id,
 
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_inventory_item_master_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   addItemGroup: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -448,7 +481,7 @@ export default {
           query:
             "select  MIU.hims_m_inventory_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description,\
              MIU.stocking_uom, ROUND(MIU.conversion_factor,0) as conversion_factor,IM.hims_d_inventory_item_master_id,\
-             IM.item_code, IM.item_description, IM.arabic_item_description, IM.structure_id, IM.category_id,IM.group_id,IM.item_type, \
+             IM.item_master_img_unique_id,IM.item_code, IM.item_description, IM.arabic_item_description, IM.structure_id, IM.category_id,IM.group_id,IM.item_type, \
              IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
              IM.service_id, IM.purchase_cost,IM.addl_information,IM.exp_date_required,\
              IM.sfda_code, IM.reorder_qty,IM.sales_price,S.vat_applicable,S.vat_percent from\
@@ -1103,7 +1136,8 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query: "select *, req_warehouse as inv_req_warehouse from hims_d_inventory_options;",
+          query:
+            "select *, req_warehouse as inv_req_warehouse from hims_d_inventory_options;",
           printQuery: false,
         })
         .then((result) => {
@@ -1206,16 +1240,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1227,22 +1261,25 @@ export default {
   getInvLocationReorder: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-
-      let strQuery = req.query.location_id != null ? ` and location_id = '${req.query.location_id}' ` : ""
+      let strQuery =
+        req.query.location_id != null
+          ? ` and location_id = '${req.query.location_id}' `
+          : "";
 
       _mysql
         .executeQuery({
           query:
-            "select * from `hims_d_inv_location_reorder` where item_id=? " + strQuery,
+            "select * from `hims_d_inv_location_reorder` where item_id=? " +
+            strQuery,
           values: [req.query.item_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1264,16 +1301,16 @@ export default {
             input.reorder_qty,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_inv_location_reorder_id
+            input.hims_d_inv_location_reorder_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1281,5 +1318,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

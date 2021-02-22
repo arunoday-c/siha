@@ -35,12 +35,19 @@ const {
   addInvLocationReorder,
   getInvLocationReorder,
   updateInvLocationReorder,
+  addUniqueId,
 } = invModels;
 
 const { addServices, updateServicesOthrs } = serviceModels;
 
 export default () => {
   let api = Router();
+  api.put("/addUniqueId", addUniqueId, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   api.get("/getItemMaster", getItemMaster, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -95,17 +102,12 @@ export default () => {
     });
   });
 
-  api.post(
-    "/addItemMaster",
-    addServices,
-    addItemMaster,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
-    }
-  );
+  api.post("/addItemMaster", addServices, addItemMaster, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   api.post("/addItemCategory", addItemCategory, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

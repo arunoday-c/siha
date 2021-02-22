@@ -13,6 +13,7 @@ export default {
       purchase_uom_id: null,
       sales_uom_id: null,
       stocking_uom_id: null,
+      item_master_img_unique_id: "",
       item_status: "A",
       radioActive: true,
       radioInactive: false,
@@ -38,8 +39,8 @@ export default {
       reorder_qty: 0,
       vat_applicable: "N",
       sfda_code: null,
-      arabic_item_description: null
+      arabic_item_description: null,
     };
     return output;
-  }
+  },
 };
