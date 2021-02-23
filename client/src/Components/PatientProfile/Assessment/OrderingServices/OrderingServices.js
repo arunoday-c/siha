@@ -322,7 +322,9 @@ class OrderingServices extends PureComponent {
               ) : null}
               <div className="row">
                 <AlgaehAutoSearch
-                  div={{ className: "col customServiceSearch" }}
+                  div={{
+                    className: "col customServiceSearch AlgaehAutoSearch",
+                  }}
                   label={{ forceLabel: "Search Investigation" }}
                   title="Search Investigation"
                   id="service_id_search"

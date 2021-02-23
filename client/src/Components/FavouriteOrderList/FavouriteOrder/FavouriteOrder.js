@@ -34,7 +34,6 @@ class FavouriteOrder extends PureComponent {
     };
   }
 
-
   UNSAFE_componentWillReceiveProps(newProps) {
     if (
       newProps.favouriteData !== undefined &&
@@ -150,7 +149,9 @@ class FavouriteOrder extends PureComponent {
 
                 <div className="row">
                   <AlgaehAutoSearch
-                    div={{ className: "col customServiceSearch" }}
+                    div={{
+                      className: "col customServiceSearch AlgaehAutoSearch",
+                    }}
                     label={{ forceLabel: "Search Investigation" }}
                     title="Search Investigation"
                     id="service_id_search"
@@ -237,7 +238,7 @@ class FavouriteOrder extends PureComponent {
                               <AlgaehLabel
                                 label={{ forceLabel: "Service Name" }}
                               />
-                            )
+                            ),
                           },
                         ]}
                         keyId="favourite_detail_grid"
@@ -268,8 +269,8 @@ class FavouriteOrder extends PureComponent {
                       {this.state.hims_d_favourite_orders_header_id === null ? (
                         <AlgaehLabel label={{ forceLabel: "Save" }} />
                       ) : (
-                          <AlgaehLabel label={{ forceLabel: "Update" }} />
-                        )}
+                        <AlgaehLabel label={{ forceLabel: "Update" }} />
+                      )}
                     </button>
                     <button
                       onClick={(e) => {

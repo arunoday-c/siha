@@ -42,7 +42,7 @@ class SalesListItems extends Component {
       unit_cost: 0,
       tax_percent: 0,
       qtyhand: null,
-      stock_uom: null
+      stock_uom: null,
     };
   }
 
@@ -67,7 +67,6 @@ class SalesListItems extends Component {
       });
     }
 
-
     this.props.getInvLocation({
       uri: "/inventory/getInventoryLocation",
       module: "inventory",
@@ -75,10 +74,9 @@ class SalesListItems extends Component {
       data: { location_type: "WH" },
       redux: {
         type: "INV-LOCATION_GET_DATA",
-        mappingName: "inventorylocation"
-      }
+        mappingName: "inventorylocation",
+      },
     });
-
 
     if (
       this.props.inventoryitemgroup === undefined ||
@@ -132,7 +130,10 @@ class SalesListItems extends Component {
                   <div className="portlet-body">
                     <div className="row">
                       <AlgaehAutoSearch
-                        div={{ className: "col-12 form-group mandatory" }}
+                        div={{
+                          className:
+                            "col-12 form-group mandatory AlgaehAutoSearch",
+                        }}
                         label={{ forceLabel: "Item Name" }}
                         title="Search Items"
                         id="item_id_search"
@@ -272,7 +273,6 @@ class SalesListItems extends Component {
                             : "-----------"}
                         </h6>
                       </div> */}
-
                       {/* <div className="col-3 mandatory">
                         <AlgaehLabel
                           label={{
@@ -352,34 +352,34 @@ class SalesListItems extends Component {
                               displayTemplate: (row) => {
                                 return this.state.dataExists === true ||
                                   this.state.edit_mode === true ? (
-                                    parseFloat(row.quantity)
-                                  ) : (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        number: {
-                                          allowNegative: false,
-                                          thousandSeparator: ",",
+                                  parseFloat(row.quantity)
+                                ) : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ",",
+                                      },
+                                      value: row.quantity,
+                                      className: "txt-fld",
+                                      name: "quantity",
+                                      events: {
+                                        onChange: qtyonchangegridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                      },
+                                      others: {
+                                        onFocus: (e) => {
+                                          e.target.oldvalue = e.target.value;
                                         },
-                                        value: row.quantity,
-                                        className: "txt-fld",
-                                        name: "quantity",
-                                        events: {
-                                          onChange: qtyonchangegridcol.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          ),
-                                        },
-                                        others: {
-                                          onFocus: (e) => {
-                                            e.target.oldvalue = e.target.value;
-                                          },
-                                        },
-                                      }}
-                                    />
-                                  );
+                                      },
+                                    }}
+                                  />
+                                );
                               },
                               others: {
                                 minWidth: 90,
@@ -429,34 +429,34 @@ class SalesListItems extends Component {
                               displayTemplate: (row) => {
                                 return this.state.dataExists === true ||
                                   this.state.edit_mode === true ? (
-                                    row.discount_percentage
-                                  ) : (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        decimal: { allowNegative: false },
-                                        value: row.discount_percentage,
-                                        className: "txt-fld",
-                                        name: "discount_percentage",
-                                        events: {
-                                          onChange: onchangegridcol.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          ),
+                                  row.discount_percentage
+                                ) : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      decimal: { allowNegative: false },
+                                      value: row.discount_percentage,
+                                      className: "txt-fld",
+                                      name: "discount_percentage",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                      },
+                                      others: {
+                                        onFocus: (e) => {
+                                          e.target.value =
+                                            e.target.value === undefined
+                                              ? 0
+                                              : e.target.value;
                                         },
-                                        others: {
-                                          onFocus: (e) => {
-                                            e.target.value =
-                                              e.target.value === undefined
-                                                ? 0
-                                                : e.target.value;
-                                          },
-                                        },
-                                      }}
-                                    />
-                                  );
+                                      },
+                                    }}
+                                  />
+                                );
                               },
                             },
                             {
@@ -565,7 +565,7 @@ function mapStateToProps(state) {
   return {
     opitemlist: state.opitemlist,
     inventoryitemuom: state.inventoryitemuom,
-    inventorylocation: state.inventorylocation
+    inventorylocation: state.inventorylocation,
   };
 }
 
@@ -575,7 +575,7 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemUOM: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getInvLocation: AlgaehActions
+      getInvLocation: AlgaehActions,
     },
     dispatch
   );

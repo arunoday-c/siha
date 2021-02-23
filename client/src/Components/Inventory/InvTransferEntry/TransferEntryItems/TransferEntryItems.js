@@ -155,7 +155,7 @@ class TransferEntryItems extends Component {
                     <div className="portlet portlet-bordered margin-bottom-15">
                       <div className="row">
                         <AlgaehAutoSearch
-                          div={{ className: "col-3" }}
+                          div={{ className: "col-3 AlgaehAutoSearch" }}
                           label={{ forceLabel: "Item Name (Ctrl + i)" }}
                           title="Type Item Name Here"
                           id="item_id_search"

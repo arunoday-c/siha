@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 // import GlobalVariables from "../../../../utils/GlobalVariables";
 
@@ -48,7 +48,7 @@ class AuthorizationSetup extends Component {
       lo_full_name: "",
       l_sub_department_id: null,
       l_employee_id: null,
-      l_full_name: ""
+      l_full_name: "",
     };
     this.baseState = this.state;
 
@@ -62,7 +62,7 @@ class AuthorizationSetup extends Component {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
   }
   dropDownHandler(e) {
@@ -91,7 +91,7 @@ class AuthorizationSetup extends Component {
       l_employee_id: null,
       l_full_name: "",
       leave_level_set: "1",
-      loan_level_set: "1"
+      loan_level_set: "1",
     });
   }
   selectAll(e) {
@@ -109,7 +109,7 @@ class AuthorizationSetup extends Component {
         l_sub_department_id: null,
         l_employee_id: null,
         l_full_name: "",
-        processLeaveBtn: true
+        processLeaveBtn: true,
       });
     }
     if (type === "loan") {
@@ -117,7 +117,7 @@ class AuthorizationSetup extends Component {
         lo_sub_department_id: null,
         lo_employee_id: null,
         lo_full_name: "",
-        processLoanBtn: true
+        processLoanBtn: true,
       });
     }
     handlers.texthandle(this, { target: { name, value } });
@@ -129,14 +129,14 @@ class AuthorizationSetup extends Component {
         l_sub_department_id: data.sub_department_id,
         l_employee_id: data.hims_d_employee_id,
         l_full_name: data.full_name,
-        processLeaveBtn: false
+        processLeaveBtn: false,
       });
     } else if (frm_type === "Loan") {
       this.setState({
         lo_sub_department_id: data.sub_department_id,
         lo_employee_id: data.hims_d_employee_id,
         lo_full_name: data.full_name,
-        processLoanBtn: false
+        processLoanBtn: false,
       });
     }
   }
@@ -167,7 +167,7 @@ class AuthorizationSetup extends Component {
                 dataSource: {
                   textField: "department_name",
                   valueField: "hims_d_department_id",
-                  data: this.state.allDepartments
+                  data: this.state.allDepartments,
                 },
                 onChange: this.dropDownHandler.bind(this),
                 onClear: () => {
@@ -176,9 +176,9 @@ class AuthorizationSetup extends Component {
                     sub_department_id: null,
                     designation_id: null,
                     subDepts: [],
-                    designations: []
+                    designations: [],
                   });
-                }
+                },
               }}
             />
 
@@ -192,16 +192,16 @@ class AuthorizationSetup extends Component {
                 dataSource: {
                   textField: "sub_department_name",
                   valueField: "hims_d_sub_department_id",
-                  data: this.state.subDepts
+                  data: this.state.subDepts,
                 },
                 onChange: this.dropDownHandler.bind(this),
                 onClear: () => {
                   this.setState({
                     sub_department_id: null,
                     designation_id: null,
-                    designations: []
+                    designations: [],
                   });
-                }
+                },
               }}
             />
 
@@ -215,14 +215,14 @@ class AuthorizationSetup extends Component {
                 dataSource: {
                   textField: "designation",
                   valueField: "hims_d_designation_id",
-                  data: this.state.designations
+                  data: this.state.designations,
                 },
                 onChange: this.dropDownHandler.bind(this),
                 onClear: () => {
                   this.setState({
-                    designation_id: null
+                    designation_id: null,
                   });
-                }
+                },
               }}
             />
 
@@ -298,15 +298,15 @@ class AuthorizationSetup extends Component {
                 </div>
 
                 <AlgaehAutoSearch
-                  div={{ className: "col" }}
+                  div={{ className: "col AlgaehAutoSearch" }}
                   label={{
                     forceLabel: "Employee",
-                    isImp: true
+                    isImp: true,
                   }}
                   ref={this.inputRef}
                   title="Search Employees"
                   id="item_id_search"
-                  template={result => {
+                  template={(result) => {
                     return (
                       <section className="resultSecStyles">
                         <div className="row">
@@ -328,14 +328,14 @@ class AuthorizationSetup extends Component {
                   searchName="leave_auth"
                   onClick={this.searchSelect.bind(this, "Leave")}
                   extraParameters={{
-                    leave_authorize_privilege: this.state.leave_level_set
+                    leave_authorize_privilege: this.state.leave_level_set,
                   }}
                   onClear={() => {
                     this.setState({
                       l_sub_department_id: null,
                       l_employee_id: null,
                       l_full_name: "",
-                      processLeaveBtn: true
+                      processLeaveBtn: true,
                     });
                   }}
                 />
@@ -399,15 +399,15 @@ class AuthorizationSetup extends Component {
                 </div>
 
                 <AlgaehAutoSearch
-                  div={{ className: "col" }}
+                  div={{ className: "col AlgaehAutoSearch" }}
                   label={{
                     forceLabel: "Employee",
-                    isImp: true
+                    isImp: true,
                   }}
                   ref={this.inputRef}
                   title="Search Employees"
                   id="item_id_search"
-                  template={result => {
+                  template={(result) => {
                     return (
                       <section className="resultSecStyles">
                         <div className="row">
@@ -429,14 +429,14 @@ class AuthorizationSetup extends Component {
                   searchName="loan_auth"
                   onClick={this.searchSelect.bind(this, "Loan")}
                   extraParameters={{
-                    loan_authorize_privilege: this.state.loan_level_set
+                    loan_authorize_privilege: this.state.loan_level_set,
                   }}
                   onClear={() => {
                     this.setState({
                       lo_sub_department_id: null,
                       lo_employee_id: null,
                       lo_full_name: "",
-                      processLoanBtn: true
+                      processLoanBtn: true,
                     });
                   }}
                 />
@@ -483,7 +483,7 @@ class AuthorizationSetup extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Select To Process"
+                              forceLabel: "Select To Process",
                             }}
                           />
                         ),
@@ -504,8 +504,8 @@ class AuthorizationSetup extends Component {
                         },
                         others: {
                           maxWidth: 100,
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "employee_code",
@@ -517,8 +517,8 @@ class AuthorizationSetup extends Component {
                         others: {
                           maxWidth: 100,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "full_name",
@@ -527,20 +527,21 @@ class AuthorizationSetup extends Component {
                         ),
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "leave_level1",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave L1" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.employee_data === undefined
                               ? []
                               : this.props.employee_data.filter(
-                                  f => f.hims_d_employee_id === row.leave_level1
+                                  (f) =>
+                                    f.hims_d_employee_id === row.leave_level1
                                 );
 
                           return (
@@ -554,8 +555,8 @@ class AuthorizationSetup extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
 
                       {
@@ -563,12 +564,13 @@ class AuthorizationSetup extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave L2" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.employee_data === undefined
                               ? []
                               : this.props.employee_data.filter(
-                                  f => f.hims_d_employee_id === row.leave_level2
+                                  (f) =>
+                                    f.hims_d_employee_id === row.leave_level2
                                 );
 
                           return (
@@ -582,20 +584,21 @@ class AuthorizationSetup extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "leave_level3",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave L3" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.employee_data === undefined
                               ? []
                               : this.props.employee_data.filter(
-                                  f => f.hims_d_employee_id === row.leave_level3
+                                  (f) =>
+                                    f.hims_d_employee_id === row.leave_level3
                                 );
 
                           return (
@@ -609,8 +612,8 @@ class AuthorizationSetup extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
 
                       {
@@ -618,12 +621,13 @@ class AuthorizationSetup extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Loan L1" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.employee_data === undefined
                               ? []
                               : this.props.employee_data.filter(
-                                  f => f.hims_d_employee_id === row.loan_level1
+                                  (f) =>
+                                    f.hims_d_employee_id === row.loan_level1
                                 );
 
                           return (
@@ -637,20 +641,21 @@ class AuthorizationSetup extends Component {
                         others: {
                           maxWidth: 120,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "loan_level2",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Loan L2" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.employee_data === undefined
                               ? []
                               : this.props.employee_data.filter(
-                                  f => f.hims_d_employee_id === row.loan_level2
+                                  (f) =>
+                                    f.hims_d_employee_id === row.loan_level2
                                 );
 
                           return (
@@ -664,13 +669,16 @@ class AuthorizationSetup extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center", wordBreak: "break-all" }
-                        }
-                      }
+                          style: {
+                            textAlign: "center",
+                            wordBreak: "break-all",
+                          },
+                        },
+                      },
                     ]}
                     keyId="service_code"
                     dataSource={{
-                      data: this.state.employees_list
+                      data: this.state.employees_list,
                     }}
                     // filter={true}
                     paging={{ page: 0, rowsPerPage: 50 }}
@@ -709,22 +717,19 @@ class AuthorizationSetup extends Component {
 
 function mapStateToProps(state) {
   return {
-    employee_data: state.employee_data
+    employee_data: state.employee_data,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getProviderDetails: AlgaehActions
+      getProviderDetails: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AuthorizationSetup)
+  connect(mapStateToProps, mapDispatchToProps)(AuthorizationSetup)
 );

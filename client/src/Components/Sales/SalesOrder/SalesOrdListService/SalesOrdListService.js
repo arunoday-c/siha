@@ -73,7 +73,10 @@ export default class SalesOrdListService extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="row">
                     <AlgaehAutoSearch
-                      div={{ className: "col-12 form-group mandatory" }}
+                      div={{
+                        className:
+                          "col-12 form-group mandatory AlgaehAutoSearch",
+                      }}
                       label={{ forceLabel: "Service Name" }}
                       title="Search Items"
                       id="item_id_search"

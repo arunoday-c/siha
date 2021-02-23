@@ -130,7 +130,10 @@ class ConsumptionItems extends Component {
                         }}
                       /> */}
                       <AlgaehAutoSearch
-                        div={{ className: "col-12 form-group mandatory" }}
+                        div={{
+                          className:
+                            "col-12 form-group mandatory AlgaehAutoSearch",
+                        }}
                         label={{ forceLabel: "Item Name", isImp: true }}
                         title="Search Items"
                         id="item_id_search"
