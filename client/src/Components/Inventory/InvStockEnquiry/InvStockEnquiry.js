@@ -430,7 +430,6 @@ class InvStockEnquiry extends Component {
                   },
                 ]}
                 keyId="item_id"
-                // data="this.state.ListItems"
                 noDataText="No Stock available for selected Item in the selected Location"
                 data={
                   this.state.ListItems === undefined ? [] : this.state.ListItems
