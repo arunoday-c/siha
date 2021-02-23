@@ -50,18 +50,21 @@
     }
   }
 }
-.inv_initial_stock_Grid {
-  .ReactTable {
-    min-height: 65vh !important;
-    max-height: 65vh !important;
+#inv_initial_stock_Grid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 62vh;
+      max-height: 62vh;
+      overflow: auto;
+    }
   }
 }
 
 .MultiTransationModal {
   .algaeh-modal {
     width: 55vw;
-    .popupInner{
-      height:50vh
+    .popupInner {
+      height: 50vh;
     }
   }
 }

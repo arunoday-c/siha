@@ -2,11 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import {
-  AlgaehDataGrid,
-  AlgaehLabel,
-  AlagehAutoComplete,
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import {
   changeTexts,
   // dateFormater,
@@ -28,7 +24,7 @@ import BatchWiseStock from "./BatchWiseStock";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
-import { RawSecurityComponent } from "algaeh-react-components";
+import { AlgaehDataGrid, RawSecurityComponent } from "algaeh-react-components";
 
 class InvStockEnquiry extends Component {
   constructor(props) {
@@ -223,10 +219,8 @@ class InvStockEnquiry extends Component {
             <div className="actions">
             </div>
           </div> */}
-            <div className="portlet-body" id="precriptionList_Cntr">
+            <div className="portlet-body" id="inv_initial_stock_Grid">
               <AlgaehDataGrid
-                className="inv_initial_stock_Grid"
-                id="inv_initial_stock"
                 columns={[
                   // {
                   //   fieldName: "inventory_location_id",
@@ -254,12 +248,12 @@ class InvStockEnquiry extends Component {
                   {
                     fieldName: "location_description",
                     label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                    others: { filterable: true },
+                    filterable: true,
+                    others: { Width: 180 },
                   },
                   {
                     fieldName: "item_master_img_unique_id",
                     label: <AlgaehLabel label={{ forceLabel: "Item Image" }} />,
-                    others: { filterable: true },
                     displayTemplate: (row) => {
                       return row.item_master_img_unique_id ? (
                         <span className="image-drop-area">
@@ -279,12 +273,14 @@ class InvStockEnquiry extends Component {
                         <img src={"image/*"} />
                       );
                     },
+                    others: { Width: 130 },
                   },
 
                   {
                     fieldName: "item_code",
                     label: <AlgaehLabel label={{ forceLabel: "Item Code" }} />,
-                    others: { filterable: true },
+                    filterable: true,
+                    others: { Width: 140 },
                   },
 
                   {
@@ -300,9 +296,9 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                    className: (row) => {
-                      return "greenCell";
-                    },
+                    className: "hyperlinkTxt",
+                    filterable: true,
+                    others: { style: { textAlign: "left" } },
                   },
                   {
                     fieldName: "stocking_uom_id",
@@ -327,7 +323,20 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others: { filterable: false },
+                    filterable: true,
+                    filterType: "choices",
+                    choices:
+                      this.props.inventoryitemuom === undefined
+                        ? []
+                        : this.props?.inventoryitemuom?.map(
+                            ({ hims_d_inventory_uom_id, uom_description }) => {
+                              return {
+                                name: uom_description,
+                                value: hims_d_inventory_uom_id,
+                              };
+                            }
+                          ),
+                    others: { Width: 140 },
                   },
                   {
                     fieldName: "sales_uom",
@@ -348,7 +357,20 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others: { filterable: false },
+                    filterable: true,
+                    filterType: "choices",
+                    choices:
+                      this.props.inventoryitemuom === undefined
+                        ? []
+                        : this.props?.inventoryitemuom?.map(
+                            ({ hims_d_inventory_uom_id, uom_description }) => {
+                              return {
+                                name: uom_description,
+                                value: hims_d_inventory_uom_id,
+                              };
+                            }
+                          ),
+                    others: { Width: 140 },
                   },
 
                   {
@@ -365,15 +387,15 @@ class InvStockEnquiry extends Component {
                       );
                     },
                     disabled: true,
-                    others: { filterable: true },
+                    others: { Width: 140 },
                   },
                   {
                     fieldName: "reorder_qty",
                     label: (
-                      <AlgaehLabel label={{ forceLabel: "Reorder Quantity" }} />
+                      <AlgaehLabel label={{ forceLabel: "Reorder Qty" }} />
                     ),
                     disabled: true,
-                    others: { filterable: false },
+                    others: { Width: 140 },
                   },
                   // {
                   //   fieldName: "avgcost",
@@ -403,16 +425,18 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
+                    others: { Width: 140 },
                   },
                 ]}
                 keyId="item_id"
-                dataSource={{
-                  data: this.state.ListItems,
-                }}
+                // data="this.state.ListItems"
                 noDataText="No Stock available for selected Item in the selected Location"
-                isEditable={false}
-                filter={true}
-                paging={{ page: 0, rowsPerPage: 20 }}
+                data={
+                  this.state.ListItems === undefined ? [] : this.state.ListItems
+                }
+                pagination={true}
+                pageOptions={{ rows: 20, page: 1 }}
+                isFilterable={true}
                 events={{
                   //   onDelete: deleteServices.bind(this, this),
                   onEdit: (row) => {},
