@@ -182,6 +182,8 @@ export default memo(function ProcessAccountingEntry(props) {
           Generate
         </AlgaehButton>
       </div>
+
+      <div className="row ">Other Content can come here</div>
     </div>
   );
 });
