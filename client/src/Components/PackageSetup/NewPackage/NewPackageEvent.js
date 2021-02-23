@@ -565,8 +565,30 @@ export default function NewPackageEvent() {
               parseFloat($this.state.total_service_amount);
             appropriate_amount =
               appropriate_amount * parseFloat($this.state.package_amount);
-            appropriate_amount = appropriate_amount.toFixed(2);
+
+            appropriate_amount =
+              appropriate_amount / parseFloat(InputObj.PakageDetail[i].qty);
+
+            appropriate_amount = appropriate_amount.toFixed(
+              $this.state.decimal_places
+            );
             InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
+          }
+
+          for (let i = 0; i < InputObj.insertPackage.length; i++) {
+            let appropriate_amount =
+              parseFloat(InputObj.insertPackage[i].tot_service_amount) /
+              parseFloat($this.state.total_service_amount);
+            appropriate_amount =
+              appropriate_amount * parseFloat($this.state.package_amount);
+
+            appropriate_amount =
+              appropriate_amount / parseFloat(InputObj.insertPackage[i].qty);
+
+            appropriate_amount = appropriate_amount.toFixed(
+              $this.state.decimal_places
+            );
+            InputObj.insertPackage[i].appropriate_amount = appropriate_amount;
           }
           InputObj.approved = "Y";
           const updatePakageDetail = _.filter(InputObj.PakageDetail, (f) => {
