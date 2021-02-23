@@ -2342,6 +2342,16 @@ input.autoselect-input:disabled {
           text-transform: uppercase;
           min-width: 70px;
         }
+        .btn-danger {
+          color: $color-white;
+          background-color: rgb(236, 88, 88);
+          border-color: red;
+          &:hover,
+          &:focus {
+            background-color: red;
+            border-color: red;
+          }
+        }
         .btn-other {
           background: none;
           color: lighten($color-black, 90%);
