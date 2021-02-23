@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
+import {
+  // AlgaehDataGrid,
+  AlgaehLabel,
+  AlagehAutoComplete,
+} from "../../Wrapper/algaehWrapper";
+
+import noImage from "../../../assets/images/no-image-icon-6.webp";
+// import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import {
   changeTexts,
   // dateFormater,
@@ -255,22 +262,24 @@ class InvStockEnquiry extends Component {
                     fieldName: "item_master_img_unique_id",
                     label: <AlgaehLabel label={{ forceLabel: "Item Image" }} />,
                     displayTemplate: (row) => {
-                      return row.item_master_img_unique_id ? (
+                      return (
                         <span className="image-drop-area">
                           <img
-                            src={`${window.location.protocol}//${
-                              window.location.hostname
-                            }${
-                              window.location.port === ""
-                                ? "/docserver"
-                                : `:3006`
-                            }/UPLOAD/InvItemMasterImages/thumbnail/${
+                            src={
                               row.item_master_img_unique_id
-                            }`}
+                                ? `${window.location.protocol}//${
+                                    window.location.hostname
+                                  }${
+                                    window.location.port === ""
+                                      ? "/docserver"
+                                      : `:3006`
+                                  }/UPLOAD/InvItemMasterImages/thumbnail/${
+                                    row.item_master_img_unique_id
+                                  }`
+                                : noImage
+                            }
                           />
                         </span>
-                      ) : (
-                        <img src={"image/*"} />
                       );
                     },
                     others: { Width: 100 },
