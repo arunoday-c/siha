@@ -31,7 +31,7 @@ import {
   updateInitialStock,
   onChamgeGridQuantity,
   EditGrid,
-  getDrilDownData
+  getDrilDownData,
 } from "./InitialStockEvents";
 import "./InitialStock.scss";
 import "../../../styles/site.scss";
@@ -145,7 +145,6 @@ class InitialStock extends Component {
         },
       });
     }
-
 
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("transaction_id")) {
@@ -265,8 +264,8 @@ class InitialStock extends Component {
                         {this.state.posted === "Y" ? (
                           <span className="badge badge-success">Posted</span>
                         ) : (
-                            <span className="badge badge-danger">Not Posted</span>
-                          )}
+                          <span className="badge badge-danger">Not Posted</span>
+                        )}
                       </h6>
                     </div>
                   ) : null}
@@ -291,7 +290,7 @@ class InitialStock extends Component {
                   />
 
                   <AlgaehAutoSearch
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 AlgaehAutoSearch" }}
                     label={{ forceLabel: "Item Name" }}
                     title="Search Items"
                     id="item_id_search"
@@ -587,10 +586,10 @@ class InitialStock extends Component {
                           this.props.intlocations === undefined
                             ? []
                             : this.props.intlocations.filter(
-                              (f) =>
-                                f.hims_d_pharmacy_location_id ===
-                                row.location_id
-                            );
+                                (f) =>
+                                  f.hims_d_pharmacy_location_id ===
+                                  row.location_id
+                              );
 
                         return (
                           <span>
@@ -617,10 +616,10 @@ class InitialStock extends Component {
                           this.props.intitemcategory === undefined
                             ? []
                             : this.props.intitemcategory.filter(
-                              (f) =>
-                                f.hims_d_item_category_id ===
-                                row.item_category_id
-                            );
+                                (f) =>
+                                  f.hims_d_item_category_id ===
+                                  row.item_category_id
+                              );
 
                         return (
                           <span>
@@ -647,9 +646,9 @@ class InitialStock extends Component {
                           this.props.intitemgroup === undefined
                             ? []
                             : this.props.intitemgroup.filter(
-                              (f) =>
-                                f.hims_d_item_group_id === row.item_group_id
-                            );
+                                (f) =>
+                                  f.hims_d_item_group_id === row.item_group_id
+                              );
 
                         return (
                           <span>
@@ -676,8 +675,8 @@ class InitialStock extends Component {
                           this.props.intitemlist === undefined
                             ? []
                             : this.props.intitemlist.filter(
-                              (f) => f.hims_d_item_master_id === row.item_id
-                            );
+                                (f) => f.hims_d_item_master_id === row.item_id
+                              );
 
                         return (
                           <span>
@@ -755,8 +754,8 @@ class InitialStock extends Component {
                             }}
                           />
                         ) : (
-                            parseFloat(row.quantity)
-                          );
+                          parseFloat(row.quantity)
+                        );
                       },
                       others: {
                         filterable: false,

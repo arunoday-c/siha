@@ -106,7 +106,7 @@ class Referal extends PureComponent {
           </div>
           {this.state.radio ? (
             <AlgaehAutoSearch
-              div={{ className: "col-6 mandatory" }}
+              div={{ className: "col-6 mandatory AlgaehAutoSearch" }}
               label={{ forceLabel: "Physician / Department", isImp: true }}
               title="Search by physician / department"
               name="doctor_department"

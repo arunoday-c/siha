@@ -1309,7 +1309,8 @@ class BasicSubjective extends Component {
                       <div className="row medicationSearchCntr">
                         <AlgaehAutoSearch
                           div={{
-                            className: "col-12 mandatory form-group",
+                            className:
+                              "col-12 mandatory form-group AlgaehAutoSearch",
                           }}
                           label={{
                             forceLabel: "Generic Name / Item Name",

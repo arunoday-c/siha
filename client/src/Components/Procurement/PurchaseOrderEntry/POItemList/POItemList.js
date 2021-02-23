@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import MyContext from "../../../../utils/MyContext";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
@@ -24,7 +24,7 @@ import {
   EditGrid,
   CancelGrid,
   extendCostHandle,
-  onchhangegridUnitPrice
+  onchhangegridUnitPrice,
 } from "./POItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -56,7 +56,10 @@ export default class POItemList extends Component {
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
                       <AlgaehAutoSearch
-                        div={{ className: "col-3 form-group mandatory" }}
+                        div={{
+                          className:
+                            "col-3 form-group mandatory AlgaehAutoSearch",
+                        }}
                         label={{ forceLabel: "Item Name" }}
                         title="Search Items"
                         id="item_id_search"
@@ -417,7 +420,7 @@ export default class POItemList extends Component {
                               ),
                               others: {
                                 minWidth: 200,
-                                disabled: true
+                                disabled: true,
                               },
                             },
                             // {
@@ -449,17 +452,14 @@ export default class POItemList extends Component {
                               fieldName: "purchase_uom_desc",
 
                               label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "UOM" }}
-                                />
+                                <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
                               others: {
                                 minWidth: 150,
                                 filterable: false,
-                                disabled: true
-                              }
+                                disabled: true,
+                              },
                             },
-
 
                             {
                               fieldName: "unit_price",
@@ -478,7 +478,8 @@ export default class POItemList extends Component {
                                 );
                               },
                               editorTemplate: (row) => {
-                                return (this.state.hims_f_procurement_po_header_id === null ?
+                                return this.state
+                                  .hims_f_procurement_po_header_id === null ? (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
@@ -509,7 +510,9 @@ export default class POItemList extends Component {
                                           "value ==='' || value ==='0'",
                                       },
                                     }}
-                                  /> : <span>
+                                  />
+                                ) : (
+                                  <span>
                                     {GetAmountFormart(row.unit_price, {
                                       appendSymbol: false,
                                     })}
@@ -889,7 +892,8 @@ export default class POItemList extends Component {
                           isEditable={true}
                           actions={{
                             allowDelete: !this.state.dataExitst,
-                            allowEdit: this.state.is_revert === "Y" ? false : true,
+                            allowEdit:
+                              this.state.is_revert === "Y" ? false : true,
                           }}
                           byForceEvents={true}
                           // forceRender={true}

@@ -1068,7 +1068,16 @@ ul.ul-legend {
         border-color: lighten($color-black, 10%) !important;
       }
     }
-
+    .btn-danger {
+      color: $color-white;
+      background-color: rgb(236, 88, 88);
+      border-color: red;
+      &:hover,
+      &:focus {
+        background-color: red;
+        border-color: red;
+      }
+    }
     .btn-other {
       background: none;
       color: lighten($color-black, 10%);
@@ -1205,6 +1214,16 @@ ul.ul-legend {
       color: $color-white;
       background-color: $primary-color;
       border-color: darken($primary-color, 10%);
+    }
+    .btn-danger {
+      color: $color-white;
+      background-color: rgb(236, 88, 88);
+      border-color: red;
+      &:hover,
+      &:focus {
+        background-color: red;
+        border-color: red;
+      }
     }
     .btn-default {
       background: #efefef;
@@ -1992,18 +2011,21 @@ td {
     left: auto !important;
   }
 }
-.autoSearchClear {
-  position: absolute;
-  top: 25px;
-  right: 45px;
-  color: lighten($color-black, 50%);
-  border-right: 1px solid #dededf;
-  padding-left: 5px;
-  padding-right: 5px;
-  background: #fff;
-  &:hover {
-    cursor: pointer;
-    color: lighten($color-black, 20%);
+.AlgaehAutoSearch {
+  position: relative;
+  .autoSearchClear {
+    position: absolute;
+    top: 27px;
+    right: 45px;
+    color: lighten($color-black, 50%);
+    border-right: 1px solid #dededf;
+    padding-left: 5px;
+    padding-right: 5px;
+    background: #fff;
+    &:hover {
+      cursor: pointer;
+      color: lighten($color-black, 20%);
+    }
   }
 }
 .paddingLeft-0 {

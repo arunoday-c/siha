@@ -805,7 +805,7 @@ class LoginUsers extends Component {
                     }}
                   />
                   <AlgaehAutoSearch
-                    div={{ className: "col-12 form-group" }}
+                    div={{ className: "col-12 form-group AlgaehAutoSearch" }}
                     label={{
                       forceLabel: "Select Employee",
                       isImp: true,

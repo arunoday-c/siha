@@ -1,7 +1,7 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import opModels from "../models/opBillCancellation";
-import billModule from "../models/billing"
+import billModule from "../models/billing";
 const {
   addOpBillCancellation,
   getBillCancellation,
@@ -11,7 +11,7 @@ const {
   checkRadSheduled,
   generateAccountingEntry,
   checkDentalProcedure,
-  cancelPackage
+  cancelPackage,
 } = opModels;
 import recModels from "../models/receiptentry";
 const { getReceiptEntry, addReceiptEntry } = recModels;
@@ -29,7 +29,7 @@ export default () => {
       if (req.patientencounter.internal_error == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: req.patientencounter
+          records: req.patientencounter,
         });
       } else {
         next();
@@ -40,7 +40,7 @@ export default () => {
       if (req.laboratory.internal_error == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: req.laboratory
+          records: req.laboratory,
         });
       } else {
         next();
@@ -51,7 +51,7 @@ export default () => {
       if (req.radiology.internal_error == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: req.radiology
+          records: req.radiology,
         });
       } else {
         next();
@@ -62,7 +62,7 @@ export default () => {
       if (req.dental_procedure.internal_error == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: req.dental_procedure
+          records: req.dental_procedure,
         });
       } else {
         next();
@@ -82,8 +82,8 @@ export default () => {
 
           records: {
             internal_error: req.records.internal_error,
-            message: req.records.message
-          }
+            message: req.records.message,
+          },
         });
       } else {
         next();
@@ -94,7 +94,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -111,10 +111,15 @@ export default () => {
       let result = { ..._receptEntry, ..._billing };
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
   );
+  api.post("/generateAccountEntry", generateAccountingEntry, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+    });
+  });
 
   return api;
 };

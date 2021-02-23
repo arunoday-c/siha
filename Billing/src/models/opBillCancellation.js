@@ -342,7 +342,7 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       let inputParam = { ...req.body };
-      let _ordered_package_id = []
+      let _ordered_package_id = [];
 
       const bill_package = _.filter(
         inputParam.billdetails,
@@ -362,7 +362,7 @@ export default {
             printQuery: true,
           })
           .then((lab_data_result) => {
-            let strQry = ""
+            let strQry = "";
             for (let i = 0; i < lab_data_result.length; i++) {
               strQry += _mysql.mysqlQueryFormat(
                 "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
@@ -377,7 +377,8 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "UPDATE hims_f_package_header set closed = 'Y', closed_type='C' WHERE `hims_f_package_header_id` in (?); " + strQry,
+                  "UPDATE hims_f_package_header set closed = 'Y', closed_type='C' WHERE `hims_f_package_header_id` in (?); " +
+                  strQry,
                 values: [_ordered_package_id],
                 printQuery: true,
               })
@@ -396,8 +397,6 @@ export default {
               next(eval);
             });
           });
-
-
       } else {
         next();
       }
@@ -433,9 +432,12 @@ export default {
             printQuery: true,
           })
           .then((patient_encounter) => {
-            console.log("checked_in", patient_encounter[0].checked_in)
-            console.log("cancel_checkin", inputParam.cancel_checkin)
-            if (patient_encounter[0].checked_in == "Y" && inputParam.cancel_checkin == "N") {
+            console.log("checked_in", patient_encounter[0].checked_in);
+            console.log("cancel_checkin", inputParam.cancel_checkin);
+            if (
+              patient_encounter[0].checked_in == "Y" &&
+              inputParam.cancel_checkin == "N"
+            ) {
               req.patientencounter = {
                 internal_error: true,
                 message: "Already Consultation done you cannot cancel",
@@ -549,7 +551,10 @@ export default {
                     strQry += _mysql.mysqlQueryFormat(
                       "UPDATE hims_f_ordered_services SET billed='N' where hims_f_ordered_services_id=?;\
                       UPDATE hims_f_lab_order SET billed='N' where hims_f_lab_order_id=?;",
-                      [lab_data_result[i].ordered_services_id, lab_data_result[i].hims_f_lab_order_id]
+                      [
+                        lab_data_result[i].ordered_services_id,
+                        lab_data_result[i].hims_f_lab_order_id,
+                      ]
                     );
                   }
                 }
@@ -712,7 +717,7 @@ export default {
         inputParam.billdetails,
         (f) =>
           f.service_type_id ==
-          appsettings.hims_d_service_type.service_type_id.Procedure &&
+            appsettings.hims_d_service_type.service_type_id.Procedure &&
           f.ordered_services_id != null
       );
       // console.log("dental_Services: ", dental_Services.length);
@@ -843,6 +848,7 @@ export default {
                 servicesIds.push(item.services_id);
               });
             }
+            const { closeConnection } = inputParam;
 
             _mysql
               .executeQuery({
@@ -903,10 +909,12 @@ export default {
 
                   // console.log("bill", bill)
 
-                  const debit_amount = _.sumBy(bill, (s) => parseFloat(s.net_amout))
+                  const debit_amount = _.sumBy(bill, (s) =>
+                    parseFloat(s.net_amout)
+                  );
 
                   EntriesArray.push({
-                    payment_date: new Date(),
+                    payment_date: inputParam.bill_cancel_date,
                     head_id: curService.head_id,
                     child_id: curService.child_id,
                     debit_amount: debit_amount,
@@ -935,7 +943,7 @@ export default {
                     ",Reverting Adjusted Advance  Amount of " +
                     inputParam.advance_adjust;
                   EntriesArray.push({
-                    payment_date: new Date(),
+                    payment_date: inputParam.bill_cancel_date,
                     head_id: OP_DEP.head_id,
                     child_id: OP_DEP.child_id,
                     debit_amount: 0,
@@ -952,7 +960,7 @@ export default {
                     inputParam.credit_amount;
 
                   EntriesArray.push({
-                    payment_date: new Date(),
+                    payment_date: inputParam.bill_cancel_date,
                     head_id: OP_REC.head_id,
                     child_id: OP_REC.child_id,
                     debit_amount: 0,
@@ -966,7 +974,7 @@ export default {
                 inputParam.receiptdetails.forEach((m) => {
                   narration = narration + ",Paid By CASH:" + m.amount;
                   EntriesArray.push({
-                    payment_date: new Date(),
+                    payment_date: inputParam.bill_cancel_date,
                     head_id: CIH_OP.head_id,
                     child_id: CIH_OP.child_id,
                     debit_amount: 0,
@@ -979,7 +987,7 @@ export default {
                 //TAX part
                 if (parseFloat(inputParam.total_tax) > 0) {
                   EntriesArray.push({
-                    payment_date: new Date(),
+                    payment_date: inputParam.bill_cancel_date,
                     head_id: OUTPUT_TAX.head_id,
                     child_id: OUTPUT_TAX.child_id,
                     debit_amount: inputParam.total_tax,
@@ -990,13 +998,16 @@ export default {
                 }
 
                 //insurance company payable
-                if (inputParam.insured == "Y" && parseFloat(inputParam.company_payable) > 0) {
+                if (
+                  inputParam.insured == "Y" &&
+                  parseFloat(inputParam.company_payable) > 0
+                ) {
                   // narration =
                   //   narration +
                   //   `, insurance (${insurance_data[0]["insurance_sub_name"]}) receivable: ${inputParam.company_payble}`;
 
                   EntriesArray.push({
-                    payment_date: new Date(),
+                    payment_date: inputParam.bill_cancel_date,
                     head_id: OP_CTRL.head_id,
                     child_id: OP_CTRL.child_id,
                     debit_amount: 0,
@@ -1007,7 +1018,7 @@ export default {
                 }
                 if (inputParam.sheet_discount_amount > 0) {
                   EntriesArray.push({
-                    payment_date: new Date(),
+                    payment_date: inputParam.bill_cancel_date,
                     head_id: SALES_DISCOUNT.head_id,
                     child_id: SALES_DISCOUNT.child_id,
                     debit_amount: 0,
@@ -1036,7 +1047,7 @@ export default {
                   VALUES (?,?,?,?,?,?,?,?,?);" +
                       strQuery,
                     values: [
-                      new Date(),
+                      inputParam.bill_cancel_date,
                       amount,
                       voucher_type,
                       inputParam.hims_f_bill_cancel_header_id,
@@ -1089,6 +1100,12 @@ export default {
                       })
                       .then((subResult) => {
                         // console.log("FOUR");
+
+                        if (closeConnection) {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                          });
+                        }
                         next();
                       })
                       .catch((error) => {
@@ -1109,6 +1126,11 @@ export default {
                 });
               });
           } else {
+            if (closeConnection) {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+              });
+            }
             next();
           }
         })

@@ -22,7 +22,7 @@ import {
   EditGrid,
   ItemChargable,
   makeZeroIngrid,
-  texthandle
+  texthandle,
 } from "./OrderConsumablesHandaler";
 import "./OrderConsumables.scss";
 import "../../../../styles/site.scss";
@@ -133,12 +133,12 @@ class OrderConsumables extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-        this.props.inventorylocations.length > 0
+      this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, (f) => {
-          return (
-            f.hims_d_inventory_location_id === nextProps.inventory_location_id
-          );
-        })
+            return (
+              f.hims_d_inventory_location_id === nextProps.inventory_location_id
+            );
+          })
         : [];
 
     if (
@@ -262,7 +262,7 @@ class OrderConsumables extends Component {
                   </h6>
                 </div>
                 <AlgaehAutoSearch
-                  div={{ className: "col" }}
+                  div={{ className: "col AlgaehAutoSearch" }}
                   label={{ forceLabel: "Search Consumables" }}
                   title="Search Consumables"
                   id="service_id_search"
@@ -344,14 +344,14 @@ class OrderConsumables extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-2" }}
                   label={{
-                    forceLabel: "Instructions"
+                    forceLabel: "Instructions",
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "instructions",
                     value: this.state.instructions,
                     events: {
-                      onChange: texthandle.bind(this, this)
+                      onChange: texthandle.bind(this, this),
                     },
                   }}
                 />

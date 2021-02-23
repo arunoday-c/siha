@@ -248,7 +248,10 @@ export default function PackageSetupEvent() {
                     InputObj.sub_department_id =
                       response.data.records[0].sub_department_id;
                     InputObj.services_id = response.data.records[0].services_id;
-
+                    InputObj.department_id =
+                      response.data.records[0].department_id;
+                    InputObj.department_type =
+                      response.data.records[0].department_type;
                     $this.setState($this.baseState, () => {
                       $this.props.onClose && $this.props.onClose(InputObj);
                     });

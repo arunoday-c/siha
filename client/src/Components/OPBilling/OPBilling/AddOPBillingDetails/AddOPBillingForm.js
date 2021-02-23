@@ -547,7 +547,10 @@ class AddOPBillingForm extends Component {
                     <div className="col-12">
                       <div className="row">
                         <AlgaehAutoSearch
-                          div={{ className: "col customServiceSearch" }}
+                          div={{
+                            className:
+                              "col customServiceSearch AlgaehAutoSearch",
+                          }}
                           label={{ forceLabel: "Search Investigation" }}
                           title="Search Investigation"
                           id="service_id_search"

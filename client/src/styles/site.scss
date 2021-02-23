@@ -2342,6 +2342,16 @@ input.autoselect-input:disabled {
           text-transform: uppercase;
           min-width: 70px;
         }
+        .btn-danger {
+          color: $color-white;
+          background-color: rgb(236, 88, 88);
+          border-color: red;
+          &:hover,
+          &:focus {
+            background-color: red;
+            border-color: red;
+          }
+        }
         .btn-other {
           background: none;
           color: lighten($color-black, 90%);
@@ -2454,4 +2464,11 @@ input.autoselect-input:disabled {
   color: $primary-color !important;
   font-size: 11px;
   font-style: italic;
+}
+.hyperlinkTxt {
+  background-color: lighten($primary-color, 63%) !important;
+  .pat-code {
+    color: $primary-color !important;
+    text-decoration: underline;
+  }
 }

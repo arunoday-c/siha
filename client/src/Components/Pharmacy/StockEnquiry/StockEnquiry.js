@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
-  AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
   AlagehFormGroup,
@@ -27,6 +26,7 @@ import BatchWiseStock from "./BatchWiseStock";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
+import { AlgaehDataGrid } from "algaeh-react-components";
 
 class StockEnquiry extends Component {
   constructor(props) {
@@ -138,7 +138,7 @@ class StockEnquiry extends Component {
                   </button>
                 </div> */}
                 <AlgaehAutoSearch
-                  div={{ className: "col" }}
+                  div={{ className: "col AlgaehAutoSearch" }}
                   label={{ forceLabel: "Item Name" }}
                   title="Search By Items"
                   id="item_id_search"
@@ -235,10 +235,8 @@ class StockEnquiry extends Component {
                 </button>
               </div>
             </div> */}
-            <div className="portlet-body" id="precriptionList_Cntr">
+            <div className="portlet-body" id="phar_initial_stock_Grid">
               <AlgaehDataGrid
-                className="phar_initial_stock_Grid"
-                id="initial_stock"
                 columns={[
                   {
                     fieldName: "pharmacy_location_id",
@@ -279,8 +277,16 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others: { filterable: false },
+                    filterable: true,
+                    others: { Width: 180 },
                   },
+                  {
+                    fieldName: "item_code",
+                    label: <AlgaehLabel label={{ forceLabel: "Item Code" }} />,
+                    filterable: true,
+                    others: { Width: 140 },
+                  },
+
                   {
                     fieldName: "item_description",
                     label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
@@ -294,51 +300,70 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    className: (row) => {
-                      return "greenCell";
-                    },
+                    className: "hyperlinkTxt",
+                    filterable: true,
+                    others: { style: { textAlign: "left" } },
                   },
+
                   {
-                    fieldName: "stock_uom",
+                    fieldName: "stocking_uom_id",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
                     ),
-                    // displayTemplate: (row) => {
-                    //   let display =
-                    //     this.props.itemuom === undefined
-                    //       ? []
-                    //       : this.props.itemuom.filter(
-                    //           (f) =>
-                    //             f.hims_d_pharmacy_uom_id === row.stocking_uom_id
-                    //         );
+                    displayTemplate: (row) => {
+                      let display =
+                        this.props.itemuom === undefined
+                          ? []
+                          : this.props.itemuom.filter(
+                              (f) =>
+                                f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                            );
 
-                    //   return (
-                    //     <span>
-                    //       {display !== null && display.length !== 0
-                    //         ? display[0].uom_description
-                    //         : ""}
-                    //     </span>
-                    //   );
-                    // },
-                    // editorTemplate: (row) => {
-                    //   let display =
-                    //     this.props.itemuom === undefined
-                    //       ? []
-                    //       : this.props.itemuom.filter(
-                    //           (f) =>
-                    //             f.hims_d_pharmacy_uom_id === row.stocking_uom_id
-                    //         );
-
-                    //   return (
-                    //     <span>
-                    //       {display !== null && display.length !== 0
-                    //         ? display[0].uom_description
-                    //         : ""}
-                    //     </span>
-                    //   );
-                    // },
-                    others: { filterable: false },
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].uom_description
+                            : ""}
+                        </span>
+                      );
+                    },
+                    filterable: true,
+                    filterType: "choices",
+                    choices:
+                      this.props.itemuom === undefined
+                        ? []
+                        : this.props?.itemuom?.map(
+                            ({ hims_d_pharmacy_uom_id, uom_description }) => {
+                              return {
+                                name: uom_description,
+                                value: hims_d_pharmacy_uom_id,
+                              };
+                            }
+                          ),
+                    others: { Width: 140 },
                   },
+
+                  // {
+                  //   fieldName: "stock_uom",
+                  //   label: (
+                  //     <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
+                  //   ),
+
+                  //   filterable: true,
+                  //   filterType: "choices",
+                  //   choices:
+                  //     this.props.itemuom === undefined
+                  //       ? []
+                  //       : this.props?.itemuom?.map(
+                  //           ({ hims_d_pharmacy_uom_id, uom_description }) => {
+                  //             return {
+                  //               name: uom_description,
+                  //               value: hims_d_pharmacy_uom_id,
+                  //             };
+                  //           }
+                  //         ),
+                  //   others: { Width: 140 },
+                  // },
                   {
                     fieldName: "sales_uom",
                     label: <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />,
@@ -374,7 +399,21 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others: { filterable: false },
+
+                    filterable: true,
+                    filterType: "choices",
+                    choices:
+                      this.props.itemuom === undefined
+                        ? []
+                        : this.props?.itemuom?.map(
+                            ({ hims_d_pharmacy_uom_id, uom_description }) => {
+                              return {
+                                name: uom_description,
+                                value: hims_d_pharmacy_uom_id,
+                              };
+                            }
+                          ),
+                    others: { Width: 140 },
                   },
 
                   {
@@ -391,15 +430,15 @@ class StockEnquiry extends Component {
                       );
                     },
                     disabled: true,
-                    others: { filterable: false },
+                    others: { Width: 140 },
                   },
                   {
                     fieldName: "reorder_qty",
                     label: (
-                      <AlgaehLabel label={{ forceLabel: "Reorder Quantity" }} />
+                      <AlgaehLabel label={{ forceLabel: "Reorder Qty" }} />
                     ),
                     disabled: true,
-                    others: { filterable: false },
+                    others: { Width: 140 },
                   },
                   // {
                   //   fieldName: "avgcost",
@@ -446,17 +485,18 @@ class StockEnquiry extends Component {
                         />
                       );
                     },
-                    others: { filterable: false },
+                    disabled: true,
+                    others: { Width: 140 },
                   },
                 ]}
                 keyId="item_id"
-                dataSource={{
-                  data: this.state.ListItems,
-                }}
+                data={
+                  this.state.ListItems === undefined ? [] : this.state.ListItems
+                }
                 noDataText="No Stock available for selected Item in the selected Location"
-                isEditable={false}
-                filter={true}
-                paging={{ page: 0, rowsPerPage: 20 }}
+                pagination={true}
+                pageOptions={{ rows: 20, page: 1 }}
+                isFilterable={true}
                 events={{
                   // onDelete: deleteStock.bind(this, this),
                   onEdit: (row) => {},

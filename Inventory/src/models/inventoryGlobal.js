@@ -474,7 +474,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT IM.item_code,IM.item_description, IM.stocking_uom_id,coalesce(ILR.reorder_qty, IM.reorder_qty,0) as reorder_qty, \
+            "SELECT IM.item_code,IM.item_master_img_unique_id,IM.item_description, IM.stocking_uom_id,coalesce(ILR.reorder_qty, IM.reorder_qty,0) as reorder_qty, \
             hims_m_inventory_item_location_id, IL.item_id, inventory_location_id, item_location_status, \
             batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost, waited_avg_cost, last_purchase_cost, \
             grn_id, grnno, sale_price, mrp_price, sales_uom, uom_description as stock_uom,ILO.location_description,\
