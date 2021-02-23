@@ -222,7 +222,7 @@ export default function eventsLogEmployeeDocument() {
             window.open(urlBlob);
           } else {
             const link = document.createElement("a");
-            link.download = doc.filename;
+            link.download = doc.document_name;
             link.href = urlBlob;
             document.body.appendChild(link);
             link.click();
