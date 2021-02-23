@@ -8,6 +8,7 @@ import {
   Spin,
   AlgaehSecurityComponent,
   AlgaehButton,
+  AlgaehLabel,
   // RawSecurityComponent,
 } from "algaeh-react-components";
 import { useQuery } from "react-query";
@@ -411,6 +412,7 @@ export default function DentalLab() {
         width={1080}
         footer={null}
         onCancel={() => setVisible(false)}
+        className={`algaehNewModal dentalLabCancel`}
       >
         <AlgaehFormGroup
           div={{
@@ -432,9 +434,20 @@ export default function DentalLab() {
           }}
         />
 
-        <AlgaehButton className="btn btn-primary" onClick={onClickCancelModel}>
-          Process
-        </AlgaehButton>
+        <div className="popupFooter">
+          <div className="col-lg-12">
+            <div className="row">
+              <div className="col-lg-12">
+                <AlgaehButton
+                  className="btn btn-danger"
+                  onClick={onClickCancelModel}
+                >
+                  Cancel Order
+                </AlgaehButton>
+              </div>
+            </div>
+          </div>
+        </div>
       </Modal>
 
       <div className="DentalLabScreen">
@@ -573,11 +586,12 @@ export default function DentalLab() {
                       className="DentalFormGrid"
                       columns={[
                         {
-                          fieldName: "",
-                          label: "Actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Actions" }} />
+                          ),
                           displayTemplate: (row) => {
                             return (
-                              <>
+                              <span>
                                 <AlgaehSecurityComponent componentCode="APP_REQ_USER">
                                   <i
                                     className="fas fa-pen"
@@ -598,97 +612,254 @@ export default function DentalLab() {
                                     ></i>
                                   </AlgaehSecurityComponent>
                                 )}
-                              </>
+                              </span>
                             );
                           },
                           freezable: true,
+                          others: {
+                            minWidth: 130,
+                          },
+                          className: "actionFixedLeft",
                         },
                         {
-                          fieldName: "request_status_desc",
-                          label: "Request status",
-                          filterable: true,
+                          fieldName: "request_status",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Request Status" }}
+                            />
+                          ),
                           displayTemplate: (row) => {
                             return (
-                              <span
-                                className={`badge badge-${
-                                  row.request_status === "PEN"
-                                    ? "warning"
-                                    : row.request_status === "APR"
-                                    ? "success"
-                                    : "info"
-                                }`}
-                              >
-                                {row.request_status_desc}
+                              <span>
+                                {row.request_status === "PEN" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.request_status === "RES" ? (
+                                  <span className="badge badge-info">
+                                    Resend
+                                  </span>
+                                ) : row.request_status === "REJ" ? (
+                                  <span className="badge badge-danger">
+                                    Rejected
+                                  </span>
+                                ) : row.request_status === "APR" ? (
+                                  <span className="badge badge-success">
+                                    Approved
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
                               </span>
                             );
                           },
+                          filterable: true,
+                          filterType: "choices",
+                          choices: [
+                            {
+                              name: "Pending",
+                              value: "PEN",
+                            },
+                            {
+                              name: "Approved",
+                              value: "APR",
+                            },
+                            {
+                              name: "Rejected",
+                              value: "REJ",
+                            },
+                            {
+                              name: "Resend",
+                              value: "RES",
+                            },
+                          ],
                         },
                         {
-                          fieldName: "work_status_desc",
-                          label: "Work Status",
-                          filterable: true,
+                          fieldName: "work_status",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Work Status" }}
+                            />
+                          ),
                           displayTemplate: (row) => {
                             return (
-                              <span
-                                className={`badge badge-${
-                                  row.work_status === "PEN"
-                                    ? "warning"
-                                    : row.work_status === "WIP"
-                                    ? "info"
-                                    : "success"
-                                }`}
-                              >
-                                {row.work_status_desc}
+                              <span>
+                                {row.work_status === "PEN" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.work_status === "WIP" ? (
+                                  <span className="badge badge-info">
+                                    Ordered
+                                  </span>
+                                ) : row.work_status === "CAN" ? (
+                                  <span className="badge badge-danger">
+                                    Cancelled
+                                  </span>
+                                ) : row.work_status === "COM" ? (
+                                  <span className="badge badge-success">
+                                    Arrived
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
                               </span>
                             );
                           },
+                          filterable: true,
+                          filterType: "choices",
+                          choices: [
+                            {
+                              name: "Pending",
+                              value: "PEN",
+                            },
+                            {
+                              name: "Ordered",
+                              value: "WIP",
+                            },
+                            {
+                              name: "Cancelled",
+                              value: "CAN",
+                            },
+                            {
+                              name: "Arrived",
+                              value: "COM",
+                            },
+                          ],
                         },
                         {
-                          fieldName: "ordered_type_desc",
-                          label: "Order Type",
-                          filterable: true,
+                          fieldName: "ordered_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Ordered Type" }}
+                            />
+                          ),
 
                           displayTemplate: (row) => {
                             return (
-                              <span className="badge badge-light">
-                                {row.ordered_type_desc}
+                              // <span className="badge badge-light">
+                              //   {row.ordered_type_desc}
+                              // </span>
+                              <span>
+                                {row.ordered_type === "NEW" ? (
+                                  <span className="badge badge-info">New</span>
+                                ) : row.ordered_type === "REF" ? (
+                                  <span className="badge badge-info">
+                                    Refine
+                                  </span>
+                                ) : row.ordered_type === "REM" ? (
+                                  <span className="badge badge-info">
+                                    Remake
+                                  </span>
+                                ) : row.ordered_type === "RIM" ? (
+                                  <span className="badge badge-info">
+                                    Reimpression
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
                               </span>
                             );
                           },
+                          filterable: true,
+                          filterType: "choices",
+                          choices: [
+                            {
+                              name: "New",
+                              value: "NEW",
+                            },
+                            {
+                              name: "REF",
+                              value: "Refine",
+                            },
+                            {
+                              name: "Remake",
+                              value: "REM",
+                            },
+                            {
+                              name: "Reimpression",
+                              value: "RIM",
+                            },
+                          ],
                         },
                         {
                           fieldName: "full_name",
-                          label: "Patient Name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Patient Name" }}
+                            />
+                          ),
                           filterable: true,
+                          others: {
+                            minWidth: 230,
+                          },
                         },
                         {
                           fieldName: "patient_code",
-                          label: "MRN Number",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "MRN Number" }} />
+                          ),
                           filterable: true,
+                          others: {
+                            minWidth: 130,
+                          },
                         },
                         {
                           fieldName: "employee_name",
-                          label: "Requested By",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Requested By" }}
+                            />
+                          ),
                           filterable: true,
+                          others: {
+                            minWidth: 230,
+                          },
                         },
                         {
                           fieldName: "vendor_name",
-                          label: "Requesting to Vendor",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Vendor Name" }}
+                            />
+                          ),
                           filterable: true,
+                          others: {
+                            minWidth: 230,
+                          },
                         },
                         {
                           fieldName: "service_name",
-                          label: "For the Procedure",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "For the Procedure" }}
+                            />
+                          ),
                           filterable: true,
+                          others: {
+                            minWidth: 230,
+                          },
                         },
                         {
                           fieldName: "procedure_amt",
-                          label: "Amount",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                          ),
                           filterable: true,
+                          others: {
+                            minWidth: 100,
+                          },
                         },
                         {
                           fieldName: "requested_date",
-                          label: "Request Date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Requested Date" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 100,
+                          },
                         },
                         // {
                         //   fieldName: "due_date",
@@ -696,22 +867,44 @@ export default function DentalLab() {
                         // },
                         {
                           fieldName: "odered_date",
-                          label: "Odered Date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Ordered Date" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 100,
+                          },
                         },
                         {
                           fieldName: "arrival_date",
-                          label: "Received Date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Received Date" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 100,
+                          },
                         },
                         {
                           fieldName: "location_description",
-                          label: "Arrived LOcation",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Arrived Location" }}
+                            />
+                          ),
                           filterable: true,
+                          others: {
+                            minWidth: 180,
+                          },
                         },
                       ]}
                       loading={false}
                       data={request_list}
                       isFilterable={true}
                       pagination={true}
+                      pageOptions={{ rows: 20, page: 1 }}
                       events={
                         {
                           // onSave: updatePrePayReq,

@@ -1,10 +1,19 @@
 #DentalFormGrid_Cntr {
-  .DentalFormGrid {
-    min-height: 50vh !important;
-    max-height: 60vh !important;
-    overflow: auto;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 52vh;
+      max-height: 52vh;
+      overflow: auto;
+      td.actionFixedLeft {
+        z-index: 0;
+      }
+    }
   }
 }
 .dentalLabRequest {
   width: 40vw !important;
+}
+.dentalLabCancel {
+  min-width: 40% !important;
+  max-width: 40% !important;
 }
