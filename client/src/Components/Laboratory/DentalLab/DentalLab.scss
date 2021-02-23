@@ -1,11 +1,12 @@
 #DentalFormGrid_Cntr {
   .newStickyGrid {
     .table-scroll {
-      min-height: 52vh;
-      max-height: 52vh;
+      min-height: 56vh;
+      max-height: 56vh;
       overflow: auto;
       td.actionFixedLeft {
         z-index: 0;
+        background-color: whitesmoke;
       }
     }
   }
