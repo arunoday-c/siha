@@ -36,6 +36,7 @@ const getBillDetails = async (
     sub_department_id,
   }
 ) => {
+  debugger;
   let zeroBill = false,
     FollowUp = false;
 
@@ -202,6 +203,7 @@ export function BillDetails({
             type: "error",
           });
         } else {
+          debugger;
           // setBillData(null);
           setGlobalBillData(data);
           const billItem = data?.billdetails[0];
