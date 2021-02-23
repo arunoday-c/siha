@@ -130,6 +130,7 @@ export default function AddNewAccount({
         leaf_node: account_type === "G" ? "N" : "Y",
         insertInVoucherHeader,
         type,
+        ledgerCode: ledger_code,
       };
       if (account_type === "G") {
         input = {
@@ -140,6 +141,7 @@ export default function AddNewAccount({
           leaf_node: account_type === "G" ? "N" : "Y",
           insertInVoucherHeader,
           type,
+          ledgerCode: ledger_code,
         };
       }
       if (enableOP) {

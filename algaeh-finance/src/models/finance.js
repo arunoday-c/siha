@@ -2426,13 +2426,16 @@ export default {
             // if (result[0][0]["created_from"] == "U") {
             _mysql
               .executeQuery({
-                query: `update finance_account_child set  child_name=?,arabic_child_name=?,updated_by=?,updated_date=? where\
+                query: `update finance_account_child set  child_name=?,arabic_child_name=?,updated_by=?,updated_date=?,ledger_code=? where\
                   finance_account_child_id=? ; ${voucherStr};`,
                 values: [
                   input.child_name,
-                  input.arabic_child_name,
+                  input.arabic_child_name
+                    ? input.arabic_child_name
+                    : input.arabic_account_name,
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
+                  input.ledgerCode,
                   input.finance_account_child_id,
                 ],
                 printQuery: true,
@@ -2538,6 +2541,7 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 input.arabic_account_name,
+                // input.ledgerCode,
                 input.finance_account_head_id,
               ],
               printQuery: false,
