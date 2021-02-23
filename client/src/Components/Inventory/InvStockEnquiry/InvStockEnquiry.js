@@ -147,7 +147,7 @@ class InvStockEnquiry extends Component {
                   }}
                 />
                 <AlgaehAutoSearch
-                  div={{ className: "col" }}
+                  div={{ className: "col AlgaehAutoSearch AlgaehAutoSearch" }}
                   label={{ forceLabel: "Select Item" }}
                   title="Search Items"
                   id="item_id_search"
@@ -273,7 +273,8 @@ class InvStockEnquiry extends Component {
                         <img src={"image/*"} />
                       );
                     },
-                    others: { Width: 130 },
+                    others: { Width: 100 },
+                    className: "imgColmn",
                   },
 
                   {
