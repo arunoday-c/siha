@@ -758,7 +758,7 @@ function AppointmentComponent(props) {
               </div>
 
               <AlgaehAutoSearch
-                div={{ className: "col-3" }}
+                div={{ className: "col-3 AlgaehAutoSearch" }}
                 label={{ forceLabel: "Patient Search" }}
                 title="Search Patient"
                 id="patient_id_search"

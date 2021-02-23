@@ -138,7 +138,7 @@ class StockEnquiry extends Component {
                   </button>
                 </div> */}
                 <AlgaehAutoSearch
-                  div={{ className: "col" }}
+                  div={{ className: "col AlgaehAutoSearch" }}
                   label={{ forceLabel: "Item Name" }}
                   title="Search By Items"
                   id="item_id_search"

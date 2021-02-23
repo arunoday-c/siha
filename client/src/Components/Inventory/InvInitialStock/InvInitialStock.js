@@ -31,7 +31,7 @@ import {
   updateInitialStock,
   onChamgeGridQuantity,
   EditGrid,
-  getDrilDownData
+  getDrilDownData,
 } from "./InvInitialStockEvents";
 import "./InvInitialStock.scss";
 import "../../../styles/site.scss";
@@ -111,7 +111,7 @@ class InvInitialStock extends Component {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "inventoryitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     this.props.getItemGroup({
@@ -245,8 +245,8 @@ class InvInitialStock extends Component {
                         {this.state.posted === "Y" ? (
                           <span className="badge badge-success">Posted</span>
                         ) : (
-                            <span className="badge badge-danger">Not Posted</span>
-                          )}
+                          <span className="badge badge-danger">Not Posted</span>
+                        )}
                       </h6>
                     </div>
                   ) : null}
@@ -275,7 +275,7 @@ class InvInitialStock extends Component {
                     }}
                   />
                   <AlgaehAutoSearch
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 AlgaehAutoSearch" }}
                     label={{ forceLabel: "Item Name" }}
                     title="Search Items"
                     id="item_id_search"
@@ -575,10 +575,10 @@ class InvInitialStock extends Component {
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                              (f) =>
-                                f.hims_d_inventory_location_id ===
-                                row.location_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.location_id
+                              );
 
                         return (
                           <span>
@@ -604,10 +604,10 @@ class InvInitialStock extends Component {
                           this.props.inventoryitemcategory === undefined
                             ? []
                             : this.props.inventoryitemcategory.filter(
-                              (f) =>
-                                f.hims_d_inventory_tem_category_id ===
-                                row.item_category_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_tem_category_id ===
+                                  row.item_category_id
+                              );
 
                         return (
                           <span>
@@ -633,10 +633,10 @@ class InvInitialStock extends Component {
                           this.props.inventoryitemgroup === undefined
                             ? []
                             : this.props.inventoryitemgroup.filter(
-                              (f) =>
-                                f.hims_d_inventory_item_group_id ===
-                                row.item_group_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_item_group_id ===
+                                  row.item_group_id
+                              );
 
                         return (
                           <span>
@@ -663,10 +663,10 @@ class InvInitialStock extends Component {
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                              (f) =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.item_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_item_master_id ===
+                                  row.item_id
+                              );
 
                         return (
                           <span>
@@ -735,8 +735,8 @@ class InvInitialStock extends Component {
                             }}
                           />
                         ) : (
-                            row.quantity
-                          );
+                          row.quantity
+                        );
                       },
                       others: { filterable: false },
                     },

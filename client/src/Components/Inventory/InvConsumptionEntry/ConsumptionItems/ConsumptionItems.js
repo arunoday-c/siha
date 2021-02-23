@@ -133,7 +133,10 @@ class ConsumptionItems extends Component {
                         }}
                       /> */}
                       <AlgaehAutoSearch
-                        div={{ className: "col-12 form-group mandatory" }}
+                        div={{
+                          className:
+                            "col-12 form-group mandatory AlgaehAutoSearch",
+                        }}
                         label={{ forceLabel: "Item Name", isImp: true }}
                         title="Search Items"
                         id="item_id_search"
@@ -172,7 +175,7 @@ class ConsumptionItems extends Component {
                             grn_no: null,
                             qtyhand: null,
                             barcode: null,
-                            ItemUOM: []
+                            ItemUOM: [],
                           });
                           context.updateState({
                             item_description: "",
@@ -188,8 +191,8 @@ class ConsumptionItems extends Component {
                             grn_no: null,
                             qtyhand: null,
                             barcode: null,
-                            ItemUOM: []
-                          })
+                            ItemUOM: [],
+                          });
                         }}
                         others={{
                           disabled: this.state.ItemDisable,
@@ -366,15 +369,15 @@ class ConsumptionItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.item_id
+                                      );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -394,10 +397,10 @@ class ConsumptionItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_tem_category_id ===
-                                        row.item_category_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_tem_category_id ===
+                                          row.item_category_id
+                                      );
 
                                 return (
                                   <span>
@@ -421,10 +424,10 @@ class ConsumptionItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_group_id ===
-                                        row.item_group_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_group_id ===
+                                          row.item_group_id
+                                      );
 
                                 return (
                                   <span>
@@ -446,10 +449,10 @@ class ConsumptionItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_uom_id ===
-                                        row.uom_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_uom_id ===
+                                          row.uom_id
+                                      );
 
                                 return (
                                   <span>

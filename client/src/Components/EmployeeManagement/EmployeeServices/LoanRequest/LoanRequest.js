@@ -1083,7 +1083,7 @@ class LoanRequest extends Component {
                 </div>
 
                 {/* <AlgaehAutoSearch
-                  div={{ className: "col-12 form-group mandatory" }}
+                  div={{ className: "col-12 form-group mandatory AlgaehAutoSearch" }}
                   label={{
                     forceLabel: "Employee",
                     isImp: true
