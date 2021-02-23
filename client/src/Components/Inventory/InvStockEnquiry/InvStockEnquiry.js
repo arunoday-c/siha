@@ -3,10 +3,12 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
+import { AlgaehDataGrid } from "algaeh-react-components";
+import noImage from "../../../assets/images/no-image-icon-6.webp";
 import {
   changeTexts,
   // dateFormater,
@@ -261,22 +263,24 @@ class InvStockEnquiry extends Component {
                     label: <AlgaehLabel label={{ forceLabel: "Item Image" }} />,
                     others: { filterable: true },
                     displayTemplate: (row) => {
-                      return row.item_master_img_unique_id ? (
+                      return (
                         <span className="image-drop-area">
                           <img
-                            src={`${window.location.protocol}//${
-                              window.location.hostname
-                            }${
-                              window.location.port === ""
-                                ? "/docserver"
-                                : `:3006`
-                            }/UPLOAD/InvItemMasterImages/thumbnail/${
+                            src={
                               row.item_master_img_unique_id
-                            }`}
+                                ? `${window.location.protocol}//${
+                                    window.location.hostname
+                                  }${
+                                    window.location.port === ""
+                                      ? "/docserver"
+                                      : `:3006`
+                                  }/UPLOAD/InvItemMasterImages/thumbnail/${
+                                    row.item_master_img_unique_id
+                                  }`
+                                : noImage
+                            }
                           />
                         </span>
-                      ) : (
-                        <img src={"image/*"} />
                       );
                     },
                   },
@@ -406,13 +410,16 @@ class InvStockEnquiry extends Component {
                   },
                 ]}
                 keyId="item_id"
-                dataSource={{
-                  data: this.state.ListItems,
-                }}
+                // dataSource={{
+                data={this.state.ListItems}
+                // }}
                 noDataText="No Stock available for selected Item in the selected Location"
-                isEditable={false}
-                filter={true}
-                paging={{ page: 0, rowsPerPage: 20 }}
+                // isEditable={false}
+                // filter={true}
+                // paging={{ page: 0, rowsPerPage: 20 }}
+
+                filterable={true}
+                pagination={true}
                 events={{
                   //   onDelete: deleteServices.bind(this, this),
                   onEdit: (row) => {},
