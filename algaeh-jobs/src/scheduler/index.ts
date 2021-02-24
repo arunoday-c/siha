@@ -86,6 +86,7 @@ export async function schedulerTask() {
               }
             }
             // console.log("test....", connection.format(mysqlQuery, [values]));
+            // console.log("updateBase==", updateBase);
             await connection.query(mysqlQuery, [values]);
             await connection.query(updateBase);
             connection.release();
