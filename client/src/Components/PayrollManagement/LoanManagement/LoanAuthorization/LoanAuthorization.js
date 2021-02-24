@@ -101,7 +101,9 @@ class LoanAuthorization extends Component {
             ? this.state.auth_level
             : this.state.auth_level,
         employee_id: this.state.hims_d_employee_id,
-        leave_status: this.state.leave_status,
+        // leave_status: this.state.leave_status,
+        loan_authorized: this.state.loan_status,
+
         from_date: this.state.from_date,
         actual_to_date: this.state.actual_to_date,
       };
@@ -113,7 +115,8 @@ class LoanAuthorization extends Component {
             ? this.state.auth_level
             : this.state.auth_level,
         employee_id: this.state.hims_d_employee_id,
-        leave_status: this.state.leave_status,
+        // leave_status: this.state.leave_status,
+        loan_authorized: this.state.loan_status,
         from_date: this.state.from_date,
         actual_to_date: this.state.actual_to_date,
       };
