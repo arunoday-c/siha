@@ -473,6 +473,7 @@ class DayEndProcess extends Component {
               popUpRecords: result,
               openPopup: true,
               finance_day_end_header_id: row.finance_day_end_header_id,
+              narration: row.narration,
             });
           } else {
             that.setState({ popUpRecords: {}, openPopup: false });
@@ -566,6 +567,7 @@ class DayEndProcess extends Component {
           posted={this.state.posted}
           popUpRecords={this.state.popUpRecords}
           finance_day_end_header_id={this.state.finance_day_end_header_id}
+          narration={this.state.narration}
           onClose={this.CloseTransationDetail.bind(this)}
         />
         {/* <AlgaehModalPopUp
@@ -882,18 +884,18 @@ class DayEndProcess extends Component {
                           displayTemplate: (row) => (
                             <>
                               {this.state.posted === "N" &&
-                                this.state.revert_trans === "N" ? (
-                                  <Tooltip title="Post to Finance">
-                                    <i
-                                      className="fas fa-paper-plane"
-                                      onClick={() => {
-                                        this.postDayEndProcess(
-                                          row.finance_day_end_header_id
-                                        );
-                                      }}
-                                    ></i>
-                                  </Tooltip>
-                                ) : null}
+                              this.state.revert_trans === "N" ? (
+                                <Tooltip title="Post to Finance">
+                                  <i
+                                    className="fas fa-paper-plane"
+                                    onClick={() => {
+                                      this.postDayEndProcess(
+                                        row.finance_day_end_header_id
+                                      );
+                                    }}
+                                  ></i>
+                                </Tooltip>
+                              ) : null}
 
                               <Tooltip title="View Details">
                                 <i
@@ -914,24 +916,24 @@ class DayEndProcess extends Component {
                               </Tooltip>
 
                               {this.state.posted === "N" &&
-                                this.state.revert_trans === "N" &&
-                                (row.from_screen === "PR0004" ||
-                                  row.from_screen === "SAL005") ? (
-                                  <Tooltip title="Revert">
-                                    <i
-                                      className="fa fa-share fa-flip-horizontal "
-                                      // className="fa fa-exchange-alt"
-                                      // aria-hidden="true"
-                                      onClick={() =>
-                                        this.setState({
-                                          revert_visible: true,
-                                          selected_data: row,
-                                        })
-                                      }
+                              this.state.revert_trans === "N" &&
+                              (row.from_screen === "PR0004" ||
+                                row.from_screen === "SAL005") ? (
+                                <Tooltip title="Revert">
+                                  <i
+                                    className="fa fa-share fa-flip-horizontal "
+                                    // className="fa fa-exchange-alt"
+                                    // aria-hidden="true"
+                                    onClick={() =>
+                                      this.setState({
+                                        revert_visible: true,
+                                        selected_data: row,
+                                      })
+                                    }
                                     // onClick={this.RejectProcess.bind(this, row)}
-                                    />
-                                  </Tooltip>
-                                ) : null}
+                                  />
+                                </Tooltip>
+                              ) : null}
                             </>
                           ),
 
@@ -1079,7 +1081,7 @@ class DayEndProcess extends Component {
                       pagination={true}
                       isFilterable={true}
                       persistence={this.state.persistence}
-                    // paging={{ page: 3, rowsPerPage: 20 }}
+                      // paging={{ page: 3, rowsPerPage: 20 }}
                     />
                     {/* <AlgaehDataGrid
                       id="dayEndProcessGrid"
