@@ -520,35 +520,6 @@ export default class NewPackage extends PureComponent {
                       {this.state.package_visit_type === "M" ? (
                         <div className="col-5">
                           <div className="row">
-                            <AlagehAutoComplete
-                              div={{ className: "col-4 form-group  mandatory" }}
-                              label={{
-                                forceLabel: "Cancel Policy",
-                                isImp:
-                                  this.state.package_visit_type === "M"
-                                    ? true
-                                    : false,
-                              }}
-                              selector={{
-                                name: "cancellation_policy",
-                                className: "select-fld",
-                                value: this.state.cancellation_policy,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.FORMAT_PACK_CAL_POLICY,
-                                },
-                                onChange: this.texthandle.bind(this),
-                                onClear: () => {
-                                  this.setState({
-                                    cancellation_policy: null,
-                                  });
-                                },
-                                // others: {
-                                //   disabled: this.state.approvedPack
-                                // }
-                              }}
-                            />
                             <AlagehFormGroup
                               div={{ className: "col-4 form-group  mandatory" }}
                               label={{
@@ -656,6 +627,35 @@ export default class NewPackage extends PureComponent {
                                 }}
                               />
                             )}
+                            <AlagehAutoComplete
+                              div={{ className: "col-4 form-group  mandatory" }}
+                              label={{
+                                forceLabel: "Cancel Policy",
+                                isImp:
+                                  this.state.package_visit_type === "M"
+                                    ? true
+                                    : false,
+                              }}
+                              selector={{
+                                name: "cancellation_policy",
+                                className: "select-fld",
+                                value: this.state.cancellation_policy,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_PACK_CAL_POLICY,
+                                },
+                                onChange: this.texthandle.bind(this),
+                                onClear: () => {
+                                  this.setState({
+                                    cancellation_policy: null,
+                                  });
+                                },
+                                // others: {
+                                //   disabled: this.state.approvedPack
+                                // }
+                              }}
+                            />
 
                             <AlagehAutoComplete
                               div={{ className: "col-4 form-group" }}
