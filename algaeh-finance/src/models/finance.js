@@ -2534,14 +2534,14 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "update finance_account_head set account_name=?,updated_by=?,updated_date=?,arabic_account_name=?\
+                "update finance_account_head set account_name=?,updated_by=?,updated_date=?,arabic_account_name=?,group_code=? \
                  where finance_account_head_id=? ;", //and created_from='U'
               values: [
                 input.account_name,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 input.arabic_account_name,
-                // input.ledgerCode,
+                input.ledgerCode,
                 input.finance_account_head_id,
               ],
               printQuery: false,
@@ -2765,6 +2765,7 @@ function createHierarchy(
 
           target.push({
             ...item,
+            ledger_code: item.group_code,
             trans_symbol: trans_symbol,
             subtitle: amount,
             title: item.account_name,
@@ -2795,6 +2796,7 @@ function createHierarchy(
 
         target.push({
           ...item,
+          ledger_code: item.group_code,
           trans_symbol: trans_symbol,
           subtitle: amount,
           title: item.account_name,

@@ -372,7 +372,11 @@ function TreeComponent({ assetCode, title, inDrawer }) {
       title: (
         <>
           <span>
-            {node.full_name === null ? node.label : node.full_name}
+            {node.leafnode === "N"
+              ? node.full_name
+              : node.full_name === null
+              ? node.label
+              : node.full_name}
             {/* {node.leafnode === "Y" ? null : (
               <> /{node.children === undefined ? 0 : node.children.length}</>
             )} */}
