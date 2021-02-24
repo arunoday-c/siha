@@ -1128,11 +1128,12 @@ export default {
             .executeQuery({
               query:
                 "select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,\
-                  D.head_id,D.child_id,debit_amount,payment_type,credit_amount,year,month,\
-                  hospital_id,H.root_id,D.project_id,D.sub_department_id,C.child_name\
+                  D.head_id,D.child_id,debit_amount,payment_type,credit_amount,D.year,D.month,\
+                  hospital_id,H.root_id,D.project_id,D.sub_department_id,C.child_name, EH.narration\
                   from finance_day_end_sub_detail D  \
                   left join finance_account_head H  on D.head_id=H.finance_account_head_id\
                   inner join finance_account_child C on D.child_id=C.finance_account_child_id\
+                  inner join finance_day_end_header EH on EH.finance_day_end_header_id=D.day_end_header_id\
                   where  D.day_end_header_id =?;SELECT allow_negative_balance FROM finance_options;",
               values: [input.finance_day_end_header_id],
               printQuery: false,
@@ -1289,6 +1290,7 @@ export default {
                     hospital_id: result[0]["hospital_id"],
                     year: moment().format("YYYY"),
                     month: moment().format("M"),
+                    narration: result[0]["narration"],
                   };
                 } else if (balance < 0) {
                   pl_account = {
@@ -1301,6 +1303,7 @@ export default {
                     hospital_id: result[0]["hospital_id"],
                     year: moment().format("YYYY"),
                     month: moment().format("M"),
+                    narration: result[0]["narration"],
                   };
                 }
 
@@ -1353,6 +1356,7 @@ export default {
                       "month",
                       "project_id",
                       "sub_department_id",
+                      "narration",
                     ];
                     _mysql
                       .executeQueryWithTransaction({
@@ -1365,13 +1369,13 @@ export default {
                           voucher_header_id: headRes.insertId,
                           auth_status: "A",
                         },
-                        printQuery: false,
+                        printQuery: true,
                       })
                       .then((result2) => {
                         if (pl_account != "") {
                           strQry += _mysql.mysqlQueryFormat(
                             "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
-                                payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status,voucher_header_id)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                                payment_type,hospital_id,year,month,narration,pl_entry,entered_by,auth_status,voucher_header_id)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                             [
                               pl_account.payment_date,
                               pl_account.head_id,
@@ -1382,6 +1386,7 @@ export default {
                               pl_account.hospital_id,
                               pl_account.year,
                               pl_account.month,
+                              pl_account.narration,
                               "Y",
                               req.userIdentity.algaeh_d_app_user_id,
                               "A",

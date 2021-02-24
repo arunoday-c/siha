@@ -14,7 +14,7 @@ const requisitionEvent = ($this, ctrl, e) => {
     to_location_id: null,
     to_location_type: null,
     from_location_id: null,
-    from_location_type: null
+    from_location_type: null,
   });
 };
 
@@ -65,7 +65,7 @@ const getCtrlCode = ($this, docNumber) => {
         }
         data.ItemDisable = true;
         data.addedItem = true;
-        $this.setState(data, () => { });
+        $this.setState(data, () => {});
         AlgaehLoader({ show: false });
       },
     });
@@ -260,6 +260,13 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         transaction_qty: null,
         from_qtyhand: 0,
         to_qtyhand: 0,
+
+        addItemButton: true,
+        saveEnable: false,
+        item_description: "",
+        group_description: null,
+        uom_description: null,
+        category_desc: null,
       });
     }
   } else if (location === "To") {
@@ -285,6 +292,13 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         transaction_qty: null,
         from_qtyhand: 0,
         to_qtyhand: 0,
+
+        addItemButton: true,
+        saveEnable: false,
+        item_description: "",
+        group_description: null,
+        uom_description: null,
+        category_desc: null,
       });
     }
   }
