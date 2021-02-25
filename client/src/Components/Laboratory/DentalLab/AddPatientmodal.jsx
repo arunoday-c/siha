@@ -325,20 +325,21 @@ export function AddPatientDentalForm({
       onCancel={onClose}
       className={`row algaehNewModal dentalLabRequest`}
       footer={[
-        <div className="col-12">
-          {current.request_status === "APR" &&
-          current.work_status === "COM" ? null : current.work_status ===
-            "CAN" ? null : (
-            <button
-              onClick={handleSubmit(onSubmit)}
-              className="btn btn-primary btn-sm"
-            >
-              {current.length !== 0 ? "Update" : "Add to List"}
+        <div className="row">
+          <div className="col-12">
+            {current.request_status === "APR" &&
+            current.work_status === "COM" ? null : (
+              <button
+                onClick={handleSubmit(onSubmit)}
+                className="btn btn-primary btn-sm"
+              >
+                {current.length !== 0 ? "Update" : "Add to List"}
+              </button>
+            )}
+            <button onClick={onClose} className="btn btn-default btn-sm">
+              Cancel
             </button>
-          )}
-          <button onClick={onClose} className="btn btn-default btn-sm">
-            Cancel
-          </button>
+          </div>
         </div>,
       ]}
     >
@@ -513,34 +514,6 @@ export function AddPatientDentalForm({
                   />
                 )}
               />{" "}
-              <Controller
-                name="service_amount"
-                control={control}
-                rules={{ required: "Add Service Amount" }}
-                render={(props) => (
-                  <AlgaehFormGroup
-                    div={{ className: "col-2 mandatory form-group" }}
-                    error={errors}
-                    label={{
-                      forceLabel: "Service Amount",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      ...props,
-                      type: "number",
-                      className: "form-control",
-                      disabled:
-                        current.request_status === "APR" &&
-                        current.work_status === "COM",
-                      placeholder: "0.00",
-                      name: "service_amount",
-                      others: {
-                        tabIndex: "5",
-                      },
-                    }}
-                  />
-                )}
-              />
               <Controller
                 name="requesting_date"
                 control={control}
@@ -898,9 +871,12 @@ export function AddPatientDentalForm({
                             if (selected !== "COM") {
                               setValue("arrival_date", undefined);
                               setShowLocation(false);
-                              return;
                             } else {
                               setShowLocation(true);
+                            }
+
+                            if (selected === "PEN") {
+                              setValue("odered_date", undefined);
                             }
                           },
                           onClear: () => {
@@ -928,13 +904,13 @@ export function AddPatientDentalForm({
                         div={{ className: "col-3 form-group mandatory" }}
                         error={errors}
                         label={{
-                          forceLabel: "Odered Date",
+                          forceLabel: "Ordered Date",
                           isImp: true,
                         }}
                         textBox={{
-                          className: "txt-fld",
+                          className: "form-control",
                           name: "odered_date",
-                          value: value || undefined,
+                          value,
                         }}
                         others={{
                           disabled:

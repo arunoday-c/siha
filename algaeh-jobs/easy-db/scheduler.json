@@ -58,5 +58,20 @@
     "updateKeyName": "hims_f_sales_quotation_id",
     "updateTable": "hims_f_sales_quotation",
     "templateFile": "quotation_Followup"
+  },
+  "dentalFollowup": {
+    "name": "dental_Followup",
+    "title": "Dental Lab Follow up",
+    "second": "5",
+    "minute": "*",
+    "hour": "*",
+    "dayOfMonth": "*",
+    "month": "*",
+    "dayOfWeek": "*",
+    "moduleType": "dental_Followup",
+    "sqlQuery": "select DL.hims_f_dental_form_id,DL.odered_date,DL.work_status,DL.is_notify,DL.full_name,DL.patient_code,DL.procedure_id,PR.procedure_desc,DL.vendor_id,VN.vendor_name,USR.employee_id from hims_f_dental_form as DL inner join hims_d_vendor VN on VN.hims_d_vendor_id=DL.vendor_id inner join hims_d_procedure PR on PR.hims_d_procedure_id=DL.procedure_id inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=DL.updated_by where DL.work_status ='WIP' and DL.is_notify = 0 and DATEDIFF(date(now()),date(DL.odered_date)) >= (select dental_lab_days from hims_d_inventory_options limit 1);",
+    "updateKeyName": "hims_f_dental_form_id",
+    "updateTable": "hims_f_dental_form",
+    "templateFile": "dental_Followup"
   }
 }

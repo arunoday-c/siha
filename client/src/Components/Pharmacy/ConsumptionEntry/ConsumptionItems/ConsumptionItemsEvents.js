@@ -72,10 +72,10 @@ export default function ConsumptionItemsEvents() {
             if (response.data.success === true) {
               let data = response.data.records;
               if (data.locationResult.length > 0) {
-                getItemLocationStock($this, context, {
-                  location_id: $this.state.location_id,
-                  item_id: e.hims_d_item_master_id,
-                });
+                // getItemLocationStock($this, context, {
+                //   location_id: $this.state.location_id,
+                //   item_id: e.hims_d_item_master_id,
+                // });
 
                 let uom_array = _.filter(data.uomResult, (f) => {
                   return f.uom_id === e.stocking_uom_id;
@@ -100,6 +100,7 @@ export default function ConsumptionItemsEvents() {
 
                   ItemUOM: data.uomResult,
                   uom_description: uom_array[0].uom_description,
+                  extended_cost: parseFloat(data.locationResult[0].avgcost),
                 });
 
                 if (context !== undefined) {
@@ -119,7 +120,7 @@ export default function ConsumptionItemsEvents() {
                     grn_no: data.locationResult[0].grnno,
                     qtyhand: data.locationResult[0].qtyhand,
                     barcode: data.locationResult[0].barcode,
-
+                    extended_cost: parseFloat(data.locationResult[0].avgcost),
                     ItemUOM: data.uomResult,
                   });
                 }
@@ -249,39 +250,39 @@ export default function ConsumptionItemsEvents() {
   };
 }
 
-function getItemLocationStock($this, context, value) {
-  algaehApiCall({
-    uri: "/pharmacyGlobal/getItemLocationStockConsumtion",
-    module: "pharmacy",
-    method: "GET",
-    data: {
-      pharmacy_location_id: value.location_id,
-      item_id: value.item_id,
-    },
-    onSuccess: (response) => {
-      if (response.data.success === true) {
-        let data = response.data.records;
-        if (data.length !== 0) {
-          let total_quantity = 0;
-          for (let i = 0; i < data.length; i++) {
-            let qtyhand = data[i].qtyhand;
-            total_quantity = total_quantity + parseFloat(qtyhand);
-          }
-          let extended_cost = $this.state.quantity * data[0].avgcost;
-          $this.setState({
-            qtyhand: total_quantity,
-            unit_cost: data[0].avgcost,
-            extended_cost: extended_cost,
-          });
-          if (context !== undefined) {
-            context.updateState({
-              qtyhand: total_quantity,
-              unit_cost: data[0].avgcost,
-              extended_cost: extended_cost,
-            });
-          }
-        }
-      }
-    },
-  });
-}
+// function getItemLocationStock($this, context, value) {
+//   algaehApiCall({
+//     uri: "/pharmacyGlobal/getItemLocationStockConsumtion",
+//     module: "pharmacy",
+//     method: "GET",
+//     data: {
+//       pharmacy_location_id: value.location_id,
+//       item_id: value.item_id,
+//     },
+//     onSuccess: (response) => {
+//       if (response.data.success === true) {
+//         let data = response.data.records;
+//         if (data.length !== 0) {
+//           let total_quantity = 0;
+//           for (let i = 0; i < data.length; i++) {
+//             let qtyhand = data[i].qtyhand;
+//             total_quantity = total_quantity + parseFloat(qtyhand);
+//           }
+//           let extended_cost = $this.state.quantity * data[0].avgcost;
+//           $this.setState({
+//             // qtyhand: total_quantity,
+//             unit_cost: data[0].avgcost,
+//             extended_cost: extended_cost,
+//           });
+//           if (context !== undefined) {
+//             context.updateState({
+//               // qtyhand: total_quantity,
+//               unit_cost: data[0].avgcost,
+//               extended_cost: extended_cost,
+//             });
+//           }
+//         }
+//       }
+//     },
+//   });
+// }

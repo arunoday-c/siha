@@ -28,6 +28,7 @@ const {
   getCildLedgers,
   revertDayEnd,
   getFinanceAccountMapingSingle,
+  SaveNarration,
 } = finance;
 
 export default () => {
@@ -380,6 +381,13 @@ export default () => {
         ...req.records,
       })
       .end();
+  });
+
+  api.post("/SaveNarration", SaveNarration, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
   });
   return api;
 };

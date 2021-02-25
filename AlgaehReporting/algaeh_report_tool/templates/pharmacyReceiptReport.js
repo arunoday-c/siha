@@ -71,6 +71,8 @@ const executePDF = function executePDFMethod(options) {
                   return_done: m[0].return_done,
                   is_posted: m[0].is_posted,
                   net_total: m[0].net_total,
+                  total_tax: m[0].total_tax,
+                  net_payable: m[0].net_payable,
                   poitems: m,
                 };
               })
@@ -82,11 +84,21 @@ const executePDF = function executePDFMethod(options) {
                 _.sumBy(nationgWiseEmp, (s) => parseFloat(s.net_total)),
                 options.args.crypto
               ),
+              total_total_tax: options.currencyFormat(
+                _.sumBy(nationgWiseEmp, (s) => parseFloat(s.total_tax)),
+                options.args.crypto
+              ),
+              total_net_payable: options.currencyFormat(
+                _.sumBy(nationgWiseEmp, (s) => parseFloat(s.net_payable)),
+                options.args.crypto
+              ),
             });
           } else {
             resolve({
               result: result,
               total_net_total: 0,
+              total_total_tax: 0,
+              total_net_payable: 0,
               decimalOnly: {
                 decimal_places,
                 addSymbol: false,

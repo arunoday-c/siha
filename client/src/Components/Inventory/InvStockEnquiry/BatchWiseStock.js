@@ -54,6 +54,10 @@ class BatchWiseStock extends Component {
     );
   };
   render() {
+    const ware_house =
+      this.props.inventorylocations === undefined
+        ? []
+        : this.props.inventorylocations.filter((f) => f.location_type === "WH");
     return (
       <React.Fragment>
         <AlgaehModalPopUp
@@ -357,31 +361,7 @@ class BatchWiseStock extends Component {
         >
           <div className="col-12 popupInner margin-top-15">
             <div className="row">
-              <div className="col-6">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Selected Location",
-                  }}
-                />
-                <h6>
-                  {this.props.location_description
-                    ? this.props.location_description
-                    : "--------"}
-                </h6>
-              </div>
-              <div className="col-6">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Location Type",
-                  }}
-                />
-                <h6>
-                  {this.props.location_type
-                    ? this.props.location_type
-                    : "--------"}
-                </h6>
-              </div>
-              <div className="col-6">
+              <div className="col-12">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Selected Item",
@@ -393,7 +373,31 @@ class BatchWiseStock extends Component {
                     : "--------"}
                 </h6>
               </div>
-              <div className="col-6">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Selected Location",
+                  }}
+                />
+                <h6>
+                  {this.props.location_description
+                    ? this.props.location_description
+                    : "--------"}
+                </h6>
+              </div>
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Location Type",
+                  }}
+                />
+                <h6>
+                  {this.props.location_type
+                    ? this.props.location_type
+                    : "--------"}
+                </h6>
+              </div>
+              <div className="col">
                 <AlgaehLabel
                   label={{
                     forceLabel: "QTY In Hand",
@@ -405,8 +409,10 @@ class BatchWiseStock extends Component {
                     : "--------"}
                 </h6>
               </div>
+            </div>
+            <div className="row">
               <AlagehAutoComplete
-                div={{ className: "col form-group" }}
+                div={{ className: "col-4 form-group mandatory" }}
                 label={{ forceLabel: "Transation Type", isImp: true }}
                 selector={{
                   name: "trans_type",
@@ -415,32 +421,20 @@ class BatchWiseStock extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data:
-                      this.props.location_type === "WH"
-                        ? [
-                            {
-                              name: "Consume",
-                              value: "C",
-                            },
-                            {
-                              name: "Transfer",
-                              value: "T",
-                            },
-                            {
-                              name: "Purchase Request",
-                              value: "PR",
-                            },
-                          ]
-                        : [
-                            {
-                              name: "Consume",
-                              value: "C",
-                            },
-                            {
-                              name: "Transfer",
-                              value: "T",
-                            },
-                          ],
+                    data: [
+                      {
+                        name: "Consume",
+                        value: "C",
+                      },
+                      {
+                        name: "Transfer",
+                        value: "T",
+                      },
+                      {
+                        name: "Purchase Request",
+                        value: "PR",
+                      },
+                    ],
                   },
 
                   onChange: changeEvent.bind(this, this),
@@ -452,10 +446,10 @@ class BatchWiseStock extends Component {
                   autoComplete: "off",
                 }}
               />
-              {this.state.trans_type === "T" ? (
+              {this.state.trans_type === "PR" ? (
                 <AlagehAutoComplete
-                  div={{ className: "col form-group" }}
-                  label={{ forceLabel: "To Location", isImp: true }}
+                  div={{ className: "col-4 form-group mandatory" }}
+                  label={{ forceLabel: "Request From", isImp: true }}
                   selector={{
                     name: "to_location_id",
                     className: "select-fld",
@@ -463,7 +457,38 @@ class BatchWiseStock extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: this.props.inventorylocations,
+                      data:
+                        this.state.trans_type === "T"
+                          ? this.props.inventorylocations
+                          : ware_house,
+                    },
+
+                    onChange: changeEvent.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        to_location_id: null,
+                      });
+                    },
+                    autoComplete: "off",
+                  }}
+                />
+              ) : null}
+
+              {this.state.trans_type === "T" ? (
+                <AlagehAutoComplete
+                  div={{ className: "col-3 form-group mandatory" }}
+                  label={{ forceLabel: "Transfer To", isImp: true }}
+                  selector={{
+                    name: "to_location_id",
+                    className: "select-fld",
+                    value: this.state.to_location_id,
+                    dataSource: {
+                      textField: "location_description",
+                      valueField: "hims_d_inventory_location_id",
+                      data:
+                        this.state.trans_type === "T"
+                          ? this.props.inventorylocations
+                          : ware_house,
                     },
 
                     onChange: changeEvent.bind(this, this),
@@ -478,7 +503,7 @@ class BatchWiseStock extends Component {
               ) : null}
 
               <AlagehFormGroup
-                div={{ className: "col form-group" }}
+                div={{ className: "col-2 form-group mandatory" }}
                 label={{
                   forceLabel: "Quantity",
                   isImp: true,

@@ -1096,6 +1096,32 @@ export default {
         });
       });
   },
+
+  SaveNarration: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: `UPDATE finance_day_end_header set narration = ? where finance_day_end_header_id = ?;`,
+        values: [input.narration, input.finance_day_end_header_id],
+        printQuery: false,
+      })
+      .then((headRes) => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = headRes;
+          next();
+        });
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
+
   //created by irfan: to
   postDayEndData: (req, res, next) => {
     const _mysql = new algaehMysql();
