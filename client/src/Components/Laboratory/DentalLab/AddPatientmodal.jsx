@@ -325,19 +325,21 @@ export function AddPatientDentalForm({
       onCancel={onClose}
       className={`row algaehNewModal dentalLabRequest`}
       footer={[
-        <div className="col-12">
-          {current.request_status === "APR" &&
-          current.work_status === "COM" ? null : (
-            <button
-              onClick={handleSubmit(onSubmit)}
-              className="btn btn-primary btn-sm"
-            >
-              {current.length !== 0 ? "Update" : "Add to List"}
+        <div className="row">
+          <div className="col-12">
+            {current.request_status === "APR" &&
+            current.work_status === "COM" ? null : (
+              <button
+                onClick={handleSubmit(onSubmit)}
+                className="btn btn-primary btn-sm"
+              >
+                {current.length !== 0 ? "Update" : "Add to List"}
+              </button>
+            )}
+            <button onClick={onClose} className="btn btn-default btn-sm">
+              Cancel
             </button>
-          )}
-          <button onClick={onClose} className="btn btn-default btn-sm">
-            Cancel
-          </button>
+          </div>
         </div>,
       ]}
     >
@@ -902,7 +904,7 @@ export function AddPatientDentalForm({
                         div={{ className: "col-3 form-group mandatory" }}
                         error={errors}
                         label={{
-                          forceLabel: "Odered Date",
+                          forceLabel: "Ordered Date",
                           isImp: true,
                         }}
                         textBox={{
