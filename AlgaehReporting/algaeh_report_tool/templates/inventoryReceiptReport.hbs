@@ -29,6 +29,8 @@
                         <th>Vendor Name</th>
                         <th>Created by</th>
                         <th>Net Total</th>
+                        <th>Vat</th>
+                        <th>Net Payble</th>
                         <th>Return Status</th>
                         <th>Posted Status</th>
                     </tr>
@@ -48,6 +50,8 @@
                         <td  class="txtFld">{{vendor_name}}</td>
                         <td class="txtFld">{{created_user}}</td>
                         <td  class="numberFld">{{net_total}}</td>
+                        <td  class="numberFld">{{total_tax}}</td>
+                        <td  class="numberFld">{{net_payable}}</td>
                         <td  class="">{{return_done}}</td>
                         <td  class="">{{is_posted}}</td>
                     </tr>
@@ -67,12 +71,14 @@
                    <tr class="tableSubHdg2">
                         <td colspan="9"></td>
                         <td class="numberFld"><b>{{total_net_total}}</b></td>
+                        <td class="numberFld"><b>{{total_total_tax}}</b></td>
+                        <td class="numberFld"><b>{{total_net_payable}}</b></td>
                         <td></td>
                         <td></td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="12" class="noResultTextReport">No Records Found</td>
+                        <td colspan="14" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
 
                 </tbody>
