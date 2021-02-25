@@ -195,65 +195,69 @@ class DoctorsWorkbench extends Component {
 
   loadListofData() {
     algaehLoader({ show: true });
+    try {
+      const dateRange =
+        localStorage.getItem("workbenchDateRange") !== null
+          ? JSON.parse(localStorage.getItem("workbenchDateRange"))
+          : {
+              fromDate: this.state.fromDate,
+              toDate: this.state.toDate,
+              activeDateHeader: this.state.fromDate,
+            };
 
-    const dateRange =
-      localStorage.getItem("workbenchDateRange") !== null
-        ? JSON.parse(localStorage.getItem("workbenchDateRange"))
-        : {
-            fromDate: this.state.fromDate,
-            toDate: this.state.toDate,
-            activeDateHeader: this.state.fromDate,
-          };
-
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getMyDay",
-      data: {
-        fromDate: moment(dateRange.fromDate).format("YYYY-MM-DD"),
-        toDate: moment(dateRange.toDate).format("YYYY-MM-DD"),
-      },
-      method: "GET",
-      cancelRequestId: "getMyDay",
-      onSuccess: (response) => {
-        if (response.data.success) {
-          const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
-          if (Array.isArray(response.data.records)) {
-            this.setState(
-              {
-                selectedHDate: _selecDate,
-                data: response.data.records,
-                activeDateHeader: dateRange.activeDateHeader,
-                provider_id: response.data.records[0].provider_id,
-                sub_department_id: response.data.records[0].sub_department_id,
-              },
-              () => {
-                this.getAppointments();
-                algaehLoader({ show: false });
-              }
-            );
-          } else {
-            this.setState(
-              {
-                provider_id: response.data.records.provider_id,
-                sub_department_id: response.data.records.sub_department_id,
-                activeDateHeader: dateRange.activeDateHeader,
-                data: [],
-              },
-              () => {
-                this.getAppointments();
-                algaehLoader({ show: false });
-              }
-            );
+      algaehApiCall({
+        uri: "/doctorsWorkBench/getMyDay",
+        data: {
+          fromDate: moment(dateRange.fromDate).format("YYYY-MM-DD"),
+          toDate: moment(dateRange.toDate).format("YYYY-MM-DD"),
+        },
+        method: "GET",
+        cancelRequestId: "getMyDay",
+        onSuccess: (response) => {
+          if (response.data.success) {
+            const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
+            if (Array.isArray(response.data.records)) {
+              this.setState(
+                {
+                  selectedHDate: _selecDate,
+                  data: response.data.records,
+                  activeDateHeader: dateRange.activeDateHeader,
+                  provider_id: response.data.records[0].provider_id,
+                  sub_department_id: response.data.records[0].sub_department_id,
+                },
+                () => {
+                  this.getAppointments();
+                  algaehLoader({ show: false });
+                }
+              );
+            } else {
+              this.setState(
+                {
+                  provider_id: response.data.records.provider_id,
+                  sub_department_id: response.data.records.sub_department_id,
+                  activeDateHeader: dateRange.activeDateHeader,
+                  data: [],
+                },
+                () => {
+                  this.getAppointments();
+                  algaehLoader({ show: false });
+                }
+              );
+            }
           }
-        }
-      },
-      onFailure: (error) => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
+        },
+        onCatch: (error) => {
+          algaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      algaehLoader({ show: false });
+    }
   }
 
   componentWillUnmount() {
@@ -279,13 +283,15 @@ class DoctorsWorkbench extends Component {
           );
           // console.log(dateCheck, "date check mwb");
           if (dateCheck) {
-            this.loadListofData();
+            if (window.location.pathname === "/DoctorsWorkbench")
+              this.loadListofData();
           }
         });
 
         this.socket.on("nursing_completed", (response) => {
           if (response.status === "ok") {
-            this.loadListofData();
+            if (window.location.pathname === "/DoctorsWorkbench")
+              this.loadListofData();
           }
         });
       }
