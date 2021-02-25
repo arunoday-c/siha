@@ -1066,7 +1066,9 @@ export function PatientRegistration() {
                       </button>
                       <PackageUtilize
                         open={showPackage}
-                        onClose={() => {
+                        onClose={(e) => {
+                          debugger;
+                          console.log("e", e);
                           packRefetch().then(() => setShowPackage(false));
                         }}
                         package_detail={packages}

@@ -7,7 +7,7 @@ export async function macro(req, res, next) {
 
     let whereCondition = "";
     if (from_date && to_date) {
-      whereCondition = ` DATE(BH.bill_date) between DATE('${from_date}') and DATE('${to_date}')`;
+      whereCondition = ` DATE(bill_date) between DATE('${from_date}') and DATE('${to_date}')`;
     }
     if (bill_number) {
       if (whereCondition.length > 0) {
@@ -29,8 +29,8 @@ export async function macro(req, res, next) {
       .groupBy((g) => g.hims_f_billing_header_id)
       .map((details) => {
         const {
-            hims_f_billing_header_id,
-            finance_day_end_header_id,
+          hims_f_billing_header_id,
+          finance_day_end_header_id,
           bill_number,
           pack_advance_adjust,
           company_payable,
@@ -124,8 +124,8 @@ export async function macro(req, res, next) {
         });
 
         return {
-            hims_f_billing_header_id,
-            finance_day_end_header_id,
+          hims_f_billing_header_id,
+          finance_day_end_header_id,
           bill_number,
           pack_advance_adjust,
           company_payable,
@@ -151,21 +151,26 @@ export async function macro(req, res, next) {
         // billdetails,
         // receiptdetails,
       } = records[i];
-      
-      const deteRecords = await _mysql.executeQuery({
-          query:`delete from  finance_day_end_detail where finance_day_end_header_id =?;
-          delete from  finance_day_end_header where finance_day_end_header_id =?;`,
-          values:[finance_day_end_header_id,finance_day_end_header_id]
-      }).catch(error=>{
-          throw error;
-      });
 
-     const generateAccountEntry = await fetch("http://localhost:3014/api/v1/billing/generateAccountEntry", {
-        method:"POST",
-        body: JSON.stringify(records[i]),
-        headers:{..headers}
-      }).catch(error=>{
+      const deteRecords = await _mysql
+        .executeQuery({
+          query: `delete from  finance_day_end_sub_detail where day_end_header_id =?;
+          delete from  finance_day_end_header where finance_day_end_header_id =?;`,
+          values: [finance_day_end_header_id, finance_day_end_header_id],
+        })
+        .catch((error) => {
           throw error;
+        });
+
+      const generateAccountEntry = await fetch(
+        "http://localhost:3014/api/v1/billing/generateAccountEntry",
+        {
+          method: "POST",
+          body: JSON.stringify(records[i]),
+          headers: { ...headers },
+        }
+      ).catch((error) => {
+        throw error;
       });
     }
   } catch (e) {
