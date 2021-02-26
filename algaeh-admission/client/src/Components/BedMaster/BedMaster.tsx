@@ -289,7 +289,7 @@ export default function BedStatus(Props: any) {
             rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehFormGroup
-                div={{ className: "col-2 mandatory form-group" }}
+                div={{ className: "col-3 mandatory form-group" }}
                 error={errors}
                 label={{
                   forceLabel: "Bed Description",
@@ -380,7 +380,7 @@ export default function BedStatus(Props: any) {
             rules={{ required: "Select Procedure" }}
             render={({ value, onChange }) => (
               <AlgaehAutoComplete
-                div={{ className: "col-3 form-group mandatory" }}
+                div={{ className: "col-1 form-group mandatory" }}
                 label={{
                   forceLabel: "Status",
                   isImp: true,
@@ -448,25 +448,28 @@ export default function BedStatus(Props: any) {
               },
             }} */}
           {/* /> */}
-          <div className="col">
-            <button type="submit" className="btn btn-primary">
-              Add to List
-            </button>
+          <div className="col" style={{ marginTop: 21 }}>
             <button
-              style={{ marginTop: 20, marginLeft: 15, float: "right" }}
               onClick={() => {
                 reset({});
               }}
               className="btn btn-default"
             >
               Clear
+            </button>{" "}
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ marginLeft: 10 }}
+            >
+              Add to List
             </button>
           </div>
         </div>
       </form>
       <div className="row">
         <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+          <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-body">
               <div className="row">
                 <div
@@ -474,13 +477,13 @@ export default function BedStatus(Props: any) {
                   data-validate="apptStatusDiv"
                   id="apptStatusDivCntr"
                 >
-                  <button
+                  {/* <button
                     onClick={() => {
                       AlgaehSearch();
                     }}
                   >
                     Search
-                  </button>
+                  </button> */}
                   <AlgaehDataGrid
                     // id="appt-status-grid"
                     // datavalidate="data-validate='apptStatusDiv'"

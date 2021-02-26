@@ -262,27 +262,35 @@ export default function BedStatus(Props: any) {
               />
             )}
           /> */}
-          {/* <AlagehFormGroup
-            div={{ className: "col-2 form-group mandatory" }}
-            label={{
-              fieldName: "color_code",
-              isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "color_code",
-              value: this.state.color_code,
-              events: {
-                onChange: this.changeTexts.bind(this),
-              },
-              others: {
-                type: "color",
-                required: true,
-                checkvalidation: "$value === #ffffff",
-                errormessage: "Please Select a color",
-              },
-            }}
-          /> */}
+
+          <Controller
+            name="bed_color"
+            control={control}
+            rules={{ required: "Required" }}
+            render={(props) => (
+              <AlgaehFormGroup
+                div={{ className: "col-2 form-group mandatory" }}
+                label={{
+                  fieldName: "color_code",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "color_code",
+                  // value: this.state.color_code,
+                  // events: {
+                  //   onChange: this.changeTexts.bind(this),
+                  // },
+                  others: {
+                    type: "color",
+                    required: true,
+                    checkvalidation: "$value === #ffffff",
+                    errormessage: "Please Select a color",
+                  },
+                }}
+              />
+            )}
+          />
           <Controller
             name="bed_desc"
             control={control}
@@ -303,156 +311,16 @@ export default function BedStatus(Props: any) {
               />
             )}
           />
-          <Controller
-            name="bed_short_name"
-            control={control}
-            rules={{ required: "Required" }}
-            render={(props) => (
-              <AlgaehFormGroup
-                div={{ className: "col-2 mandatory form-group" }}
-                error={errors}
-                label={{
-                  forceLabel: "Short Name",
-                  isImp: true,
-                }}
-                textBox={{
-                  ...props,
-                  className: "txt-fld",
-                  name: "bed_short_name",
-                }}
-              />
-            )}
-          />
-          <Controller
-            name="services_id"
-            control={control}
-            rules={{ required: "Select service" }}
-            render={({ value, onChange }) => (
-              <AlgaehAutoComplete
-                div={{ className: "col-3 form-group mandatory" }}
-                label={{
-                  forceLabel: "select The service",
-                  isImp: true,
-                }}
-                error={errors}
-                selector={{
-                  name: "services_id",
-                  value,
-                  onChange: (_: any, selected: any) => {
-                    onChange(selected);
 
-                    // setValue("service_amount", _.standard_fee);
-                  },
-
-                  dataSource: {
-                    textField: "service_name",
-                    valueField: "hims_d_services_id",
-                    data: dropDownData,
-                  },
-                  // others: {
-                  //   disabled:
-                  //     current.request_status === "APR" &&
-                  //     current.work_status === "COM",
-                  //   tabIndex: "4",
-                  // },
-                }}
-              />
-            )}
-          />{" "}
-          {/* <AlagehFormGroup
-            div={{ className: "col-2 form-group mandatory" }}
-            label={{
-              fieldName: "description",
-              isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "description",
-              value: this.state.description,
-              events: {
-                onChange: this.changeTexts.bind(this),
-              },
-            }}
-          /> */}
-          <Controller
-            name="bed_status"
-            control={control}
-            rules={{ required: "Select Procedure" }}
-            render={({ value, onChange }) => (
-              <AlgaehAutoComplete
-                div={{ className: "col-3 form-group mandatory" }}
-                label={{
-                  forceLabel: "Status",
-                  isImp: true,
-                }}
-                error={errors}
-                selector={{
-                  name: "bed_status",
-                  value,
-                  onChange: (_: any, selected: any) => {
-                    onChange(selected);
-
-                    // setValue("service_amount", _.standard_fee);
-                  },
-
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: Props.globalVariables.FORMAT_STATUS,
-                  },
-                  // others: {
-                  //   disabled:
-                  //     current.request_status === "APR" &&
-                  //     current.work_status === "COM",
-                  //   tabIndex: "4",
-                  // },
-                }}
-              />
-            )}
-          />{" "}
-          {/* <AlagehAutoComplete
-            div={{ className: "col-2 form-group mandatory" }}
-            label={{
-              forceLabel: "default_status",
-              isImp: true,
-            }}
-            selector={{
-              name: "default_status",
-              className: "select-fld",
-              value: this.state.default_status,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.FORMAT_APPT_STATUS,
-              },
-              onChange: this.dropDownHandler.bind(this),
-            }}
-          /> */}
-          {/* <AlagehFormGroup
-            div={{ className: "col-1 form-group mandatory" }}
-            label={{
-              forceLabel: "steps",
-              isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "steps",
-              value: this.state.steps,
-              events: {
-                onChange: this.changeTexts.bind(this),
-              },
-              others: {
-                type: "number",
-                disabled: true,
-                min: this.state.min_steps,
-              },
-            }} */}
-          {/* /> */}
           <div className="col">
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ marginTop: 21 }}
+            >
               Add to List
             </button>
-            <button
+            {/* <button
               style={{ marginTop: 20, marginLeft: 15, float: "right" }}
               onClick={() => {
                 reset({});
@@ -460,13 +328,13 @@ export default function BedStatus(Props: any) {
               className="btn btn-default"
             >
               Clear
-            </button>
+            </button> */}
           </div>
         </div>
       </form>
       <div className="row">
         <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+          <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-body">
               <div className="row">
                 <div
@@ -474,13 +342,13 @@ export default function BedStatus(Props: any) {
                   data-validate="apptStatusDiv"
                   id="apptStatusDivCntr"
                 >
-                  <button
+                  {/* <button
                     onClick={() => {
                       AlgaehSearch();
                     }}
                   >
                     Search
-                  </button>
+                  </button> */}
                   <AlgaehDataGrid
                     // id="appt-status-grid"
                     // datavalidate="data-validate='apptStatusDiv'"
@@ -504,6 +372,9 @@ export default function BedStatus(Props: any) {
                               ></i>
                             </>
                           );
+                        },
+                        others: {
+                          width: 50,
                         },
                       },
                       {
@@ -531,64 +402,6 @@ export default function BedStatus(Props: any) {
                         //         },
                         //         others: {
                         //           errormessage: "Description - cannot be blank",
-                        //           required: true,
-                        //         },
-                        //       }}
-                        //     />
-                        //   );
-                        // },
-                      },
-                      {
-                        fieldName: "bed_short_name",
-
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Short Name" }} />
-                        ),
-
-                        disabled: false,
-                      },
-                      {
-                        fieldName: "service_name",
-
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Service Name" }} />
-                        ),
-
-                        disabled: false,
-                      },
-                      {
-                        fieldName: "bed_status",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "default Status" }}
-                          />
-                        ),
-                        displayTemplate: (row: Row) => {
-                          return row.bed_status === "A" ? "Active" : "InActive";
-                        },
-                        // editorTemplate: (row: Row) => {
-                        //   return (
-                        //     <AlgaehAutoComplete
-                        //       div={{ className: "col" }}
-                        //       label={{
-                        //         fieldName: "",
-                        //         // isImp: true,
-                        //       }}
-                        //       selector={{
-                        //         name: "bed_status",
-                        //         className: "select-fld",
-                        //         value: row.bed_status,
-                        //         dataSource: {
-                        //           textField: "name",
-                        //           valueField: "value",
-                        //           data:
-                        //             Props.globalVariables.FORMAT_STATUS,
-                        //         },
-                        //         onChange: () => {
-                        //           changeGridEditors.bind(row);
-                        //         },
-                        //         others: {
-                        //           errormessage: "Cannot be blank",
                         //           required: true,
                         //         },
                         //       }}
