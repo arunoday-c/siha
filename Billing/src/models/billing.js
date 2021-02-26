@@ -3433,8 +3433,9 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_id as employee_id, sub_department_id, services_id from hims_d_employee \
-            Where record_status='A' " +
+              "SELECT E.hims_d_employee_id as employee_id, E.sub_department_id, E.services_id,SD.department_id,SD.department_type from hims_d_employee E  left join \
+              hims_d_sub_department SD on E.sub_department_id= SD.hims_d_sub_department_id  \
+              Where E.record_status='A' " +
               strQuery,
             printQuery: true,
           })
@@ -3827,11 +3828,12 @@ export default {
 
   //created by:IRFAN
   generateAccountingEntry: (req, res, next) => {
-    try {      
+    try {
       const _options = req.connection == null ? {} : req.connection;
-      const inputParam = req.body;
+
       const _mysql = new algaehMysql(_options);
       // const utilities = new algaehUtilities();
+      const inputParam = req.body;
       const { closeConnection } = inputParam;
       if (req.body.consultation == "N") {
         next();
@@ -4340,7 +4342,7 @@ export default {
                           },
                           printQuery: true,
                         })
-                        .then((subResult) => {                          
+                        .then((subResult) => {
                           if (closeConnection) {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();

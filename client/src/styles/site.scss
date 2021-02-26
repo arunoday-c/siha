@@ -2455,3 +2455,10 @@ input.autoselect-input:disabled {
   font-size: 11px;
   font-style: italic;
 }
+.hyperlinkTxt {
+  background-color: lighten($primary-color, 63%) !important;
+  .pat-code {
+    color: $primary-color !important;
+    text-decoration: underline;
+  }
+}

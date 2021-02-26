@@ -20,13 +20,13 @@ import {
   ShowItemBatch,
   numberchangeTexts,
   itemchangeText,
-  CloseItemBatch
+  CloseItemBatch,
 } from "./POReturnItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import Options from "../../../../Options.json";
 import moment from "moment";
-import ItemBatchs from "../ItemBatchs/ItemBatchs"
+import ItemBatchs from "../ItemBatchs/ItemBatchs";
 class POReturnItemList extends Component {
   constructor(props) {
     super(props);
@@ -49,12 +49,12 @@ class POReturnItemList extends Component {
           {(context) => (
             <div className="hims-purchase-order-entry">
               <div className="row">
-                {this.state.return_type === "D" ?
+                {this.state.return_type === "D" ? (
                   <div className="col-lg-12">
                     <div className="portlet portlet-bordered margin-bottom-15">
                       <div className="row">
                         <AlgaehAutoSearch
-                          div={{ className: "col-3" }}
+                          div={{ className: "col-3 AlgaehAutoSearch" }}
                           label={{ forceLabel: "Item Name" }}
                           title="Type Item Name Here"
                           id="item_id_search"
@@ -73,17 +73,34 @@ class POReturnItemList extends Component {
                               </section>
                             );
                           }}
-                          name={this.state.po_return_from === "PHR" ? "phar_item_id" : "inv_item_id"}
-                          columns={this.state.po_return_from === "PHR" ? spotlightSearch.pharmacy.itemmaster : spotlightSearch.Items.InvItems}
+                          name={
+                            this.state.po_return_from === "PHR"
+                              ? "phar_item_id"
+                              : "inv_item_id"
+                          }
+                          columns={
+                            this.state.po_return_from === "PHR"
+                              ? spotlightSearch.pharmacy.itemmaster
+                              : spotlightSearch.Items.InvItems
+                          }
                           displayField="item_description"
                           value={this.state.item_description}
-                          searchName={this.state.po_return_from === "PHR" ? "itemmaster" : "tranitemmaster"}
+                          searchName={
+                            this.state.po_return_from === "PHR"
+                              ? "itemmaster"
+                              : "tranitemmaster"
+                          }
                           extraParameters={
-                            this.state.po_return_from === "PHR" ? {
-                              pharmacy_location_id: this.state.pharmcy_location_id,
-                            } : {
-                                inventory_location_id: this.state.inventory_location_id,
-                              }}
+                            this.state.po_return_from === "PHR"
+                              ? {
+                                  pharmacy_location_id: this.state
+                                    .pharmcy_location_id,
+                                }
+                              : {
+                                  inventory_location_id: this.state
+                                    .inventory_location_id,
+                                }
+                          }
                           onClick={itemchangeText.bind(this, this, context)}
                           onClear={() => {
                             context.updateState({
@@ -140,8 +157,8 @@ class POReturnItemList extends Component {
                           <h6>
                             {this.state.expiry_date
                               ? moment(this.state.expiry_date).format(
-                                Options.dateFormat
-                              )
+                                  Options.dateFormat
+                                )
                               : "-----------"}
                           </h6>
                         </div>
@@ -155,8 +172,8 @@ class POReturnItemList extends Component {
                           <h6>
                             {this.state.qtyhand
                               ? this.state.qtyhand +
-                              " " +
-                              this.state.stocking_uom
+                                " " +
+                                this.state.stocking_uom
                               : "-----------"}
                           </h6>
                         </div>
@@ -188,7 +205,6 @@ class POReturnItemList extends Component {
                             },
                           }}
                         />
-
 
                         <div className="col">
                           <AlgaehLabel
@@ -243,7 +259,8 @@ class POReturnItemList extends Component {
                         />
                       </div>
                     </div>
-                  </div> : null}
+                  </div>
+                ) : null}
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
@@ -376,8 +393,8 @@ class POReturnItemList extends Component {
                                     }}
                                   />
                                 ) : (
-                                    parseFloat(row.return_qty)
-                                  );
+                                  parseFloat(row.return_qty)
+                                );
                               },
                             },
                             {
@@ -503,7 +520,7 @@ class POReturnItemList extends Component {
                           }}
                           isEditable={
                             this.state.purchase_return_number !== null &&
-                              this.state.purchase_return_number !== ""
+                            this.state.purchase_return_number !== ""
                               ? false
                               : true
                           }
@@ -518,15 +535,14 @@ class POReturnItemList extends Component {
                               this,
                               context
                             ),
-                            onEdit: (row) => { },
-                            onDone: (row) => { },
+                            onEdit: (row) => {},
+                            onDone: (row) => {},
                           }}
                         />
                       </div>
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           )}

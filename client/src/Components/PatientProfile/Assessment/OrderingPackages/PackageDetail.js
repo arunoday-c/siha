@@ -173,7 +173,10 @@ class PackageDetail extends Component {
                   {this.state.package_type === "D" ? (
                     <div className="row">
                       <AlgaehAutoSearch
-                        div={{ className: "col-4 customServiceSearch" }}
+                        div={{
+                          className:
+                            "col-4 customServiceSearch AlgaehAutoSearch",
+                        }}
                         label={{ forceLabel: "Select Service" }}
                         title="Search Services"
                         id="service_id_search"
@@ -316,7 +319,7 @@ class PackageDetail extends Component {
                               <AlgaehLabel
                                 label={{ fieldName: "service_type_id" }}
                               />
-                            )
+                            ),
                           },
 
                           {

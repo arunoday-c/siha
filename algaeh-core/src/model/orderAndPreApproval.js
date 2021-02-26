@@ -2078,7 +2078,7 @@ let getPatientPackage = (req, res, next) => {
     }
     _mysql
       .executeQuery({
-        query: `select hims_f_package_header_id, package_id, patient_id,H.created_date, visit_id, doctor_id, H.service_type_id,\
+        query: `select hims_f_package_header_id, package_id,ST.service_type,ST.hims_d_service_type_id, patient_id,H.created_date, visit_id, doctor_id, H.service_type_id,\
               services_id, insurance_yesno, insurance_provider_id, insurance_sub_id, network_id,\
               insurance_network_office_id, policy_number, pre_approval, apprv_status, billed, quantity, \
               unit_cost, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage, \

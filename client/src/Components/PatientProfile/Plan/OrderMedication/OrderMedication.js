@@ -420,7 +420,8 @@ class OrderMedication extends Component {
                     <div className="row medicationSearchCntr">
                       <AlgaehAutoSearch
                         div={{
-                          className: "col-8 form-group medicationSearchFld",
+                          className:
+                            "col-8 form-group medicationSearchFld AlgaehAutoSearch",
                         }}
                         label={{ forceLabel: "Generic Name / Item Name" }}
                         title="Search by generic name / item name"

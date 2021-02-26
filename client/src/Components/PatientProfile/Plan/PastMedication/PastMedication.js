@@ -258,7 +258,7 @@ class PastMedication extends Component {
             <div className="popLeftDiv" style={{ minHeight: "50vh" }}>
               <div className="row">
                 <AlgaehAutoSearch
-                  div={{ className: "col-12 form-group" }}
+                  div={{ className: "col-12 form-group AlgaehAutoSearch" }}
                   label={{ forceLabel: "Generic Name / Item Name" }}
                   title="Search by generic name / item name"
                   name="generic_name_item_description"

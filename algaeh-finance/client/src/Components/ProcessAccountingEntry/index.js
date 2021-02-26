@@ -16,29 +16,27 @@ import { ProcessAccountingEntrys } from "./events";
 // import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export default memo(function ProcessAccountingEntry(props) {
-  debugger;
-
   const [transation_type, setTransationType] = useState(null);
   const [transation_wise, setTransationWise] = useState("D");
   const [bill_number, setBillNumber] = useState(null);
   const previousMonthDate = [moment().startOf("month"), moment()];
   const [dateRange, setDateRange] = useState(previousMonthDate);
   const [loading, setLoading] = useState(false);
-  //   const history = useHistory();
-  //   const [info, setInfo] = useState({
-  //     over_due: "",
-  //     total_receivable: "",
-  //     day_end_pending: "",
-  //   });
 
   function onClickSendSelected() {
+    if (transation_type === null) {
+      AlgaehMessagePop({
+        type: "warning",
+        display: "Select Transation",
+      });
+      return;
+    }
     Modal.confirm({
-      title: "Are you sure do you want to process ?",
+      title: "Are you sure do you want to generate ?",
       okText: "Proceed",
       cancelText: "Cancel",
       onOk: () => {
         setLoading(true);
-        debugger;
         ProcessAccountingEntrys({
           from_date: dateRange[0],
           to_date: dateRange[1],
@@ -46,16 +44,11 @@ export default memo(function ProcessAccountingEntry(props) {
           bill_number: bill_number,
         })
           .then(() => {
-            debugger;
             setLoading(false);
             AlgaehMessagePop({
               type: "success",
-              display: "Processed Successfully...",
+              display: "Generated Successfully...",
             });
-            // history.push("/JournalVoucher", {
-            //   data: { ...row, disabled: true },
-            //   type: "supplier",
-            // });
           })
           .catch((error) => {
             setLoading(false);
@@ -79,6 +72,7 @@ export default memo(function ProcessAccountingEntry(props) {
               }}
               label={{
                 forceLabel: "Select Transation",
+                isImp: true,
               }}
               selector={{
                 dataSource: {
@@ -93,9 +87,13 @@ export default memo(function ProcessAccountingEntry(props) {
 
                 onChange: (selected) => {
                   setTransationType(selected.value);
+                  setDateRange(previousMonthDate);
+                  setBillNumber(null);
                 },
                 onClear: () => {
                   setTransationType(null);
+                  setDateRange(previousMonthDate);
+                  setBillNumber(null);
                 },
               }}
             />
@@ -110,6 +108,8 @@ export default memo(function ProcessAccountingEntry(props) {
                     name="cost_center_type"
                     onChange={(e) => {
                       setTransationWise("D");
+                      setDateRange(previousMonthDate);
+                      setBillNumber(null);
                     }}
                     checked={transation_wise === "D"}
                   />
@@ -121,8 +121,9 @@ export default memo(function ProcessAccountingEntry(props) {
                     type="radio"
                     value="SD"
                     onChange={(e) => {
-                      debugger;
                       setTransationWise("T");
+                      setDateRange(previousMonthDate);
+                      setBillNumber(null);
                     }}
                     name="cost_center_type"
                     checked={transation_wise === "T"}
@@ -172,39 +173,14 @@ export default memo(function ProcessAccountingEntry(props) {
                   autoComplete: false,
                 }}
               />
-
-              // <div
-              //   className="col-2 globalSearchCntr"
-              //   style={{
-              //     cursor: "pointer",
-              //     pointerEvents:
-              //       this.state.Billexists === true
-              //         ? "none"
-              //         : this.state.patient_code
-              //         ? "none"
-              //         : "",
-              //   }}
-              // >
-              //   <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
-              //   <h6 onClick={PatientSearch.bind(this, this, context)}>
-              //   <h6>
-              //     {this.state.patient_code ? (
-              //   this.state.patient_code
-              // ) : (
-              //   <AlgaehLabel label={{ fieldName: "patient_code" }} />
-              // )}
-              //     <i className="fas fa-search fa-lg"></i>
-              //   </h6>
-              // </div>
             )}
 
             <AlgaehButton
               className="btn btn-primary"
-              // disabled={!processList.length}
               loading={loading}
               onClick={onClickSendSelected}
             >
-              Process
+              Generate
             </AlgaehButton>
           </div>
         </div>

@@ -72,7 +72,7 @@ export function InputItem({
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="row">
           <AlgaehAutoSearch
-            div={{ className: "col-3 form-group mandatory" }}
+            div={{ className: "col-3 form-group mandatory AlgaehAutoSearch" }}
             label={{ forceLabel: "Item Name" }}
             title="Search Items"
             id="item_id_search"

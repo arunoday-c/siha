@@ -8,7 +8,7 @@ import "./../../../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import {
@@ -24,7 +24,7 @@ import {
   ShowItemBatch,
   CloseItemBatch,
   AddItems,
-  onchangegridcolauthqty
+  onchangegridcolauthqty,
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import _ from "lodash";
@@ -54,8 +54,8 @@ class TransferEntryItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "itemcategory"
-        }
+          mappingName: "itemcategory",
+        },
       });
     }
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
@@ -65,8 +65,8 @@ class TransferEntryItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "itemuom"
-        }
+          mappingName: "itemuom",
+        },
       });
     }
 
@@ -80,8 +80,8 @@ class TransferEntryItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GROUOP_GET_DATA",
-          mappingName: "itemgroup"
-        }
+          mappingName: "itemgroup",
+        },
       });
     }
   }
@@ -94,20 +94,20 @@ class TransferEntryItems extends Component {
     this.setState({
       quantity_transferred: 0,
       item_details: null,
-      batch_detail_view: false
+      batch_detail_view: false,
     });
 
     if (context !== undefined) {
       context.updateState({
         quantity_transferred: 0,
         item_details: null,
-        batch_detail_view: false
+        batch_detail_view: false,
       });
     }
   }
 
   ChangesOrent(context, item) {
-    let quantity_transferred = _.sumBy(item.batches, s =>
+    let quantity_transferred = _.sumBy(item.batches, (s) =>
       parseFloat(s.quantity_transfer)
     );
 
@@ -116,7 +116,7 @@ class TransferEntryItems extends Component {
       quantity_transferred: quantity_transferred,
       item_details: item,
       batch_detail_view: true,
-      stock_enable: stock_enable
+      stock_enable: stock_enable,
     });
 
     if (context !== undefined) {
@@ -124,7 +124,7 @@ class TransferEntryItems extends Component {
         quantity_transferred: quantity_transferred,
         item_details: item,
         batch_detail_view: true,
-        stock_enable: stock_enable
+        stock_enable: stock_enable,
       });
     }
   }
@@ -142,7 +142,7 @@ class TransferEntryItems extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div>
               {this.state.direct_transfer === "Y" ? (
                 <div className="row">
@@ -150,11 +150,11 @@ class TransferEntryItems extends Component {
                     <div className="portlet portlet-bordered margin-bottom-15">
                       <div className="row">
                         <AlgaehAutoSearch
-                          div={{ className: "col-3" }}
+                          div={{ className: "col-3 AlgaehAutoSearch" }}
                           label={{ forceLabel: "Item Name (Ctrl + i)" }}
                           title="Type Item Name Here"
                           id="item_id_search"
-                          template={result => {
+                          template={(result) => {
                             return (
                               <section className="resultSecStyles">
                                 <div className="row">
@@ -175,7 +175,7 @@ class TransferEntryItems extends Component {
                           value={this.state.item_description}
                           searchName="itemmaster"
                           extraParameters={{
-                            pharmacy_location_id: pharmacy_location_id
+                            pharmacy_location_id: pharmacy_location_id,
                           }}
                           onClick={itemchangeText.bind(this, this, context)}
                           onClear={() => {
@@ -200,10 +200,10 @@ class TransferEntryItems extends Component {
                               uom_description: null,
                               stocking_uom: null,
                               conversion_factor: null,
-                              sales_qtyhand: null
+                              sales_qtyhand: null,
                             });
                           }}
-                          ref={attReg => {
+                          ref={(attReg) => {
                             this.attReg = attReg;
                           }}
                           others={{ disabled: this.state.dataExitst }}
@@ -211,7 +211,7 @@ class TransferEntryItems extends Component {
                         <div className="col">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Batch No."
+                              forceLabel: "Batch No.",
                             }}
                           />
                           <h6>
@@ -223,7 +223,7 @@ class TransferEntryItems extends Component {
                         <div className="col">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Expiry Date"
+                              forceLabel: "Expiry Date",
                             }}
                           />
                           <h6>
@@ -238,7 +238,7 @@ class TransferEntryItems extends Component {
                         <div className="col">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Quantity In Hand"
+                              forceLabel: "Quantity In Hand",
                             }}
                           />
                           <h6>
@@ -253,7 +253,7 @@ class TransferEntryItems extends Component {
                         <div className="col">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Transfered UOM"
+                              forceLabel: "Transfered UOM",
                             }}
                           />
                           <h6>
@@ -284,12 +284,12 @@ class TransferEntryItems extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            forceLabel: "Quantity"
+                            forceLabel: "Quantity",
                           }}
                           textBox={{
                             number: {
                               allowNegative: false,
-                              thousandSeparator: ","
+                              thousandSeparator: ",",
                             },
                             dontAllowKeys: ["-", "e", "."],
                             className: "txt-fld",
@@ -300,12 +300,12 @@ class TransferEntryItems extends Component {
                                 this,
                                 this,
                                 context
-                              )
+                              ),
                             },
                             others: {
                               disabled: this.state.dataExitst,
-                              tabIndex: "3"
-                            }
+                              tabIndex: "3",
+                            },
                           }}
                         />
                       </div>
@@ -334,7 +334,7 @@ class TransferEntryItems extends Component {
                             inputsparameters={{
                               item_id: this.state.item_id,
                               location_id: this.state.location_id,
-                              Batch_Items: this.state.Batch_Items
+                              Batch_Items: this.state.Batch_Items,
                             }}
                           />
                         </div>
@@ -351,7 +351,7 @@ class TransferEntryItems extends Component {
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "Action" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     <i
@@ -364,7 +364,7 @@ class TransferEntryItems extends Component {
                                         opacity:
                                           this.state.cannotEdit === true
                                             ? "0.1"
-                                            : ""
+                                            : "",
                                       }}
                                       onClick={deleteTransEntryDetail.bind(
                                         this,
@@ -375,7 +375,7 @@ class TransferEntryItems extends Component {
                                     />
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "item_id",
@@ -384,12 +384,12 @@ class TransferEntryItems extends Component {
                                   label={{ forceLabel: "Item Name" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.itemlist === undefined
                                     ? []
                                     : this.props.itemlist.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_item_master_id ===
                                           row.item_id
                                       );
@@ -403,12 +403,12 @@ class TransferEntryItems extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 let display =
                                   this.props.itemlist === undefined
                                     ? []
                                     : this.props.itemlist.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_item_master_id ===
                                           row.item_id
                                       );
@@ -423,8 +423,8 @@ class TransferEntryItems extends Component {
                                 );
                               },
                               others: {
-                                minWidth: 150
-                              }
+                                minWidth: 150,
+                              },
                             },
 
                             {
@@ -434,12 +434,12 @@ class TransferEntryItems extends Component {
                                   label={{ forceLabel: "Item Category" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.itemcategory === undefined
                                     ? []
                                     : this.props.itemcategory.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_item_category_id ===
                                           row.item_category_id
                                       );
@@ -452,12 +452,12 @@ class TransferEntryItems extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 let display =
                                   this.props.itemcategory === undefined
                                     ? []
                                     : this.props.itemcategory.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_item_category_id ===
                                           row.item_category_id
                                       );
@@ -471,8 +471,8 @@ class TransferEntryItems extends Component {
                                 );
                               },
                               others: {
-                                minWidth: 250
-                              }
+                                minWidth: 250,
+                              },
                             },
 
                             {
@@ -482,12 +482,12 @@ class TransferEntryItems extends Component {
                                   label={{ forceLabel: "Item Group" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.itemgroup === undefined
                                     ? []
                                     : this.props.itemgroup.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_item_group_id ===
                                           row.item_group_id
                                       );
@@ -500,12 +500,12 @@ class TransferEntryItems extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 let display =
                                   this.props.itemgroup === undefined
                                     ? []
                                     : this.props.itemgroup.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_item_group_id ===
                                           row.item_group_id
                                       );
@@ -519,8 +519,8 @@ class TransferEntryItems extends Component {
                                 );
                               },
                               others: {
-                                minWidth: 150
-                              }
+                                minWidth: 150,
+                              },
                             },
                             {
                               fieldName: "expiry_date",
@@ -529,20 +529,20 @@ class TransferEntryItems extends Component {
                                   label={{ forceLabel: "Expiry Date" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {dateFormater(this, row.expiry_date)}
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <span>
                                     {dateFormater(this, row.expiry_date)}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "batchno",
@@ -552,20 +552,20 @@ class TransferEntryItems extends Component {
                                 />
                               ),
                               others: {
-                                minWidth: 150
-                              }
+                                minWidth: 150,
+                              },
                             },
                             {
                               fieldName: "uom_transferred_id",
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.itemuom === undefined
                                     ? []
                                     : this.props.itemuom.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_pharmacy_uom_id ===
                                           row.uom_transferred_id
                                       );
@@ -578,12 +578,12 @@ class TransferEntryItems extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 let display =
                                   this.props.itemuom === undefined
                                     ? []
                                     : this.props.itemuom.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_pharmacy_uom_id ===
                                           row.uom_transferred_id
                                       );
@@ -595,7 +595,7 @@ class TransferEntryItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -603,13 +603,13 @@ class TransferEntryItems extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Qty Transfered"
+                                    forceLabel: "Qty Transfered",
                                   }}
                                 />
                               ),
                               others: {
-                                minWidth: 130
-                              }
+                                minWidth: 130,
+                              },
                             },
 
                             {
@@ -617,11 +617,11 @@ class TransferEntryItems extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Acknowledge Qty"
+                                    forceLabel: "Acknowledge Qty",
                                   }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return this.state.ack_tran === false ? (
                                   row.ack_quantity !== "" ? (
                                     parseFloat(row.ack_quantity)
@@ -634,7 +634,7 @@ class TransferEntryItems extends Component {
                                     textBox={{
                                       number: {
                                         allowNegative: false,
-                                        thousandSeparator: ","
+                                        thousandSeparator: ",",
                                       },
                                       dontAllowKeys: ["-", "e", "."],
                                       value:
@@ -649,17 +649,17 @@ class TransferEntryItems extends Component {
                                           this,
                                           context,
                                           row
-                                        )
-                                      }
+                                        ),
+                                      },
                                     }}
                                   />
                                 );
-                              }
-                            }
+                              },
+                            },
                           ]}
                           keyId="batch_details"
                           dataSource={{
-                            data: this.state.pharmacy_stock_detail
+                            data: this.state.pharmacy_stock_detail,
                           }}
                           isEditable={false}
                           byForceEvents={true}
@@ -677,9 +677,9 @@ class TransferEntryItems extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           }}
-                          onRowSelect={row => {
+                          onRowSelect={(row) => {
                             getItemLocationStock(this, row);
                           }}
                         />
@@ -731,7 +731,7 @@ class TransferEntryItems extends Component {
                                     opacity:
                                       this.state.cannotEdit === true
                                         ? "0.1"
-                                        : ""
+                                        : "",
                                   }}
                                   onClick={this.ChangesOrent.bind(
                                     this,
@@ -761,12 +761,12 @@ class TransferEntryItems extends Component {
                                     label={{ forceLabel: "Item Name" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display =
                                     this.props.itemlist === undefined
                                       ? []
                                       : this.props.itemlist.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_item_master_id ===
                                             row.item_id
                                         );
@@ -780,12 +780,12 @@ class TransferEntryItems extends Component {
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   let display =
                                     this.props.itemlist === undefined
                                       ? []
                                       : this.props.itemlist.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_item_master_id ===
                                             row.item_id
                                         );
@@ -800,8 +800,8 @@ class TransferEntryItems extends Component {
                                   );
                                 },
                                 others: {
-                                  minWidth: 150
-                                }
+                                  minWidth: 150,
+                                },
                               },
 
                               {
@@ -811,12 +811,12 @@ class TransferEntryItems extends Component {
                                     label={{ forceLabel: "Item Category" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display =
                                     this.props.itemcategory === undefined
                                       ? []
                                       : this.props.itemcategory.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_item_category_id ===
                                             row.item_category_id
                                         );
@@ -829,12 +829,12 @@ class TransferEntryItems extends Component {
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   let display =
                                     this.props.itemcategory === undefined
                                       ? []
                                       : this.props.itemcategory.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_item_category_id ===
                                             row.item_category_id
                                         );
@@ -848,8 +848,8 @@ class TransferEntryItems extends Component {
                                   );
                                 },
                                 others: {
-                                  minWidth: 250
-                                }
+                                  minWidth: 250,
+                                },
                               },
 
                               {
@@ -859,12 +859,12 @@ class TransferEntryItems extends Component {
                                     label={{ forceLabel: "Item Group" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display =
                                     this.props.itemgroup === undefined
                                       ? []
                                       : this.props.itemgroup.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_item_group_id ===
                                             row.item_group_id
                                         );
@@ -877,12 +877,12 @@ class TransferEntryItems extends Component {
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   let display =
                                     this.props.itemgroup === undefined
                                       ? []
                                       : this.props.itemgroup.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_item_group_id ===
                                             row.item_group_id
                                         );
@@ -896,8 +896,8 @@ class TransferEntryItems extends Component {
                                   );
                                 },
                                 others: {
-                                  minWidth: 150
-                                }
+                                  minWidth: 150,
+                                },
                               },
                               {
                                 fieldName: "expiry_date",
@@ -906,7 +906,7 @@ class TransferEntryItems extends Component {
                                     label={{ forceLabel: "Expiry Date" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {row.expiry_date !== null
@@ -915,13 +915,13 @@ class TransferEntryItems extends Component {
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   return (
                                     <span>
                                       {dateFormater(this, row.expiry_date)}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "batchno",
@@ -931,20 +931,20 @@ class TransferEntryItems extends Component {
                                   />
                                 ),
                                 others: {
-                                  minWidth: 150
-                                }
+                                  minWidth: 150,
+                                },
                               },
                               {
                                 fieldName: "uom_transferred_id",
                                 label: (
                                   <AlgaehLabel label={{ forceLabel: "UOM" }} />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display =
                                     this.props.itemuom === undefined
                                       ? []
                                       : this.props.itemuom.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_pharmacy_uom_id ===
                                             row.uom_transferred_id
                                         );
@@ -957,12 +957,12 @@ class TransferEntryItems extends Component {
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   let display =
                                     this.props.itemuom === undefined
                                       ? []
                                       : this.props.itemuom.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_pharmacy_uom_id ===
                                             row.uom_transferred_id
                                         );
@@ -974,20 +974,20 @@ class TransferEntryItems extends Component {
                                         : ""}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "quantity_transfer",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Qty Transfered"
+                                      forceLabel: "Qty Transfered",
                                     }}
                                   />
                                 ),
                                 others: {
-                                  minWidth: 130
-                                }
+                                  minWidth: 130,
+                                },
                               },
 
                               {
@@ -999,33 +999,33 @@ class TransferEntryItems extends Component {
                                 ),
                                 disabled: true,
                                 others: {
-                                  minWidth: 130
-                                }
+                                  minWidth: 130,
+                                },
                               },
                               {
                                 fieldName: "quantity_authorized",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Qty Authorized"
+                                      forceLabel: "Qty Authorized",
                                     }}
                                   />
                                 ),
                                 disabled: true,
                                 others: {
-                                  minWidth: 140
-                                }
+                                  minWidth: 140,
+                                },
                               },
                               {
                                 fieldName: "ack_quantity",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Acknowledge Qty"
+                                      forceLabel: "Acknowledge Qty",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return this.state.ack_tran === false ? (
                                     row.ack_quantity !== "" ? (
                                       parseFloat(row.ack_quantity)
@@ -1038,7 +1038,7 @@ class TransferEntryItems extends Component {
                                       textBox={{
                                         number: {
                                           allowNegative: false,
-                                          thousandSeparator: ","
+                                          thousandSeparator: ",",
                                         },
                                         dontAllowKeys: ["-", "e", "."],
                                         value:
@@ -1053,17 +1053,17 @@ class TransferEntryItems extends Component {
                                             this,
                                             context,
                                             row
-                                          )
-                                        }
+                                          ),
+                                        },
                                       }}
                                     />
                                   );
-                                }
-                              }
+                                },
+                              },
                             ]}
                             keyId="service_type_id"
                             dataSource={{
-                              data: this.state.pharmacy_stock_detail
+                              data: this.state.pharmacy_stock_detail,
                             }}
                             isEditable={false}
                             byForceEvents={true}
@@ -1081,9 +1081,9 @@ class TransferEntryItems extends Component {
                                 this,
                                 this,
                                 context
-                              )
+                              ),
                             }}
-                            onRowSelect={row => {
+                            onRowSelect={(row) => {
                               getItemLocationStock(this, row);
                             }}
                           />
@@ -1133,17 +1133,17 @@ class TransferEntryItems extends Component {
                                       <AlgaehLabel
                                         label={{ forceLabel: "Batch No" }}
                                       />
-                                    )
+                                    ),
                                   },
                                   {
                                     fieldName: "qtyhand",
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Qty in Hand"
+                                          forceLabel: "Qty in Hand",
                                         }}
                                       />
-                                    )
+                                    ),
                                   },
                                   {
                                     fieldName: "expiry_date",
@@ -1152,31 +1152,31 @@ class TransferEntryItems extends Component {
                                         label={{ forceLabel: "Expiry Date" }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return (
                                         <span>
                                           {dateFormater(this, row.expiry_date)}
                                         </span>
                                       );
-                                    }
+                                    },
                                   },
                                   {
                                     fieldName: "quantity_transfer",
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Transfering Qty"
+                                          forceLabel: "Transfering Qty",
                                         }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
                                             number: {
                                               allowNegative: false,
-                                              thousandSeparator: ","
+                                              thousandSeparator: ",",
                                             },
                                             dontAllowKeys: ["-", "e", "."],
                                             value: row.quantity_transfer,
@@ -1188,27 +1188,27 @@ class TransferEntryItems extends Component {
                                                 this,
                                                 context,
                                                 row
-                                              )
+                                              ),
                                             },
                                             others: {
                                               algaeh_required: "true",
                                               errormessage:
                                                 "Please enter Transferred Quantity ..",
                                               checkvalidation:
-                                                "value ==='' || value ==='0'"
-                                            }
+                                                "value ==='' || value ==='0'",
+                                            },
                                           }}
                                         />
                                       );
-                                    }
-                                  }
+                                    },
+                                  },
                                 ]}
                                 keyId=""
                                 dataSource={{
                                   data:
                                     this.state.item_details == null
                                       ? []
-                                      : this.state.item_details.batches
+                                      : this.state.item_details.batches,
                                 }}
                                 isEditable={false}
                                 paging={{ page: 0, rowsPerPage: 10 }}
@@ -1242,7 +1242,7 @@ class TransferEntryItems extends Component {
                               style={{
                                 marginTop: 8,
                                 float: "right",
-                                marginLeft: 10
+                                marginLeft: 10,
                               }}
                             >
                               Save
@@ -1277,7 +1277,7 @@ function mapStateToProps(state) {
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
     itemgroup: state.itemgroup,
-    itemBatch: state.itemBatch
+    itemBatch: state.itemBatch,
   };
 }
 
@@ -1289,7 +1289,7 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
       getTransferData: AlgaehActions,
-      getItemLocationStock: AlgaehActions
+      getItemLocationStock: AlgaehActions,
     },
     dispatch
   );

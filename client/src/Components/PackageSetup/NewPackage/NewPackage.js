@@ -732,7 +732,9 @@ export default class NewPackage extends PureComponent {
                   </div>
                   <div className="row">
                     <AlgaehAutoSearch
-                      div={{ className: "col customServiceSearch" }}
+                      div={{
+                        className: "col customServiceSearch AlgaehAutoSearch",
+                      }}
                       label={{ forceLabel: "Search Services" }}
                       title="Search Services"
                       id="service_id_search"

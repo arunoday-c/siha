@@ -330,7 +330,9 @@ export default class PackageUtilize extends Component {
                           <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                         ),
                         displayTemplate: (row) => {
-                          return row.service_type_id === 4 ? (
+                          return row.service_type_id === 4 ||
+                            (row.service_type_id !== 1 &&
+                              this.props.from === "frontDesk") ? (
                             row.quantity
                           ) : (
                             <AlagehFormGroup

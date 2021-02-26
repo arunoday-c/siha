@@ -90,7 +90,6 @@ class OrderingPackages extends Component {
       selectedLang: prevLang,
     });
 
-
     this.getPatientInsurance();
   }
 
@@ -121,7 +120,6 @@ class OrderingPackages extends Component {
             secondary_network_id: data[0].secondary_network_id,
             secondary_network_office_id: data[0].secondary_network_office_id,
           });
-
         } else {
           this.setState({
             insured: "N",
@@ -282,7 +280,9 @@ class OrderingPackages extends Component {
               ) : null}
               <div className="row">
                 <AlgaehAutoSearch
-                  div={{ className: "col customServiceSearch" }}
+                  div={{
+                    className: "col customServiceSearch AlgaehAutoSearch",
+                  }}
                   label={{ forceLabel: "Search Package" }}
                   title="Search Package"
                   id="service_id_search"
@@ -405,7 +405,7 @@ class OrderingPackages extends Component {
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "package_code",
