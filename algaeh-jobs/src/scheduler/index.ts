@@ -114,7 +114,7 @@ async function ReadAndExecuteTemplate(
         "templates",
         templateFile + ".js"
       );
-      const execTemplate = require(fullTemplatePath);
+      const execTemplate = __non_webpack_require__(fullTemplatePath);
       const records = await execTemplate({ data }, connection);
       return records;
     } else {
