@@ -283,6 +283,23 @@ class InvStockEnquiry extends Component {
                                 : noImage
                             }
                           />
+
+                          <img
+                            className="invItemThumbnail animated slideInLeft faster"
+                            src={
+                              row.item_master_img_unique_id
+                                ? `${window.location.protocol}//${
+                                    window.location.hostname
+                                  }${
+                                    window.location.port === ""
+                                      ? "/docserver"
+                                      : `:3006`
+                                  }/UPLOAD/InvItemMasterImages/thumbnail/${
+                                    row.item_master_img_unique_id
+                                  }`
+                                : noImage
+                            }
+                          />
                         </span>
                       );
                     },
