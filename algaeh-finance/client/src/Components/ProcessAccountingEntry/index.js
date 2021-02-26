@@ -68,7 +68,7 @@ export default memo(function ProcessAccountingEntry(props) {
           <div className="portlet-title">
             <AlgaehAutoComplete
               div={{
-                className: "col",
+                className: "col form-group mandatory",
               }}
               label={{
                 forceLabel: "Select Transation",
@@ -137,7 +137,7 @@ export default memo(function ProcessAccountingEntry(props) {
               <AlgaehDateHandler
                 type={"range"}
                 div={{
-                  className: "col form-group",
+                  className: "col form-group mandatory",
                 }}
                 label={{
                   forceLabel: "Select Date Range",
