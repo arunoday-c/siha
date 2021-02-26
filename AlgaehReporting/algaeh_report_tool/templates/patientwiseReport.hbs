@@ -13,6 +13,8 @@
                         <th>MRN No.<small>كود المريض</small></th>
                         <th>Patient Name<small>اسم المريض</small></th>
                         <th>Nationality<small>الجنسية</small></th>
+                        <th>ID Type<small>نوع الهوية</small></th>
+                        <th>ID No.<small>رقم الهوية</small></th>
                         <th>Payment Method<small>طريقة الدفع او السداد</small></th>
                         <th>Total Before VAT<small>الإجمالي قبل ضريبة القيمة المضافة</small></th>
                         <th>Patient VAT Amount<small>مبلغ ضريبة القيمة المضافة للمريض</small></th>
@@ -29,6 +31,8 @@
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
                         <td>{{nationality}}</td>
+                        <td>{{identity_document_name}}</td>
+                        <td>{{primary_id_no}}</td>
                         <td>{{insurance_yesno}}</td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{patient_tax}}</td>
@@ -38,7 +42,7 @@
                     </tr>
                     {{/each }}
                     <tr class="numberFldTotalBottom">
-                        <td colspan="7"></td>
+                        <td colspan="9"></td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{patient_tax}}</td>
                         <td class="numberFld">{{total_after_vat}}</td>

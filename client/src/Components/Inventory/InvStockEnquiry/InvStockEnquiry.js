@@ -158,7 +158,7 @@ class InvStockEnquiry extends Component {
                   }}
                 />
                 <AlgaehAutoSearch
-                  div={{ className: "col AlgaehAutoSearch AlgaehAutoSearch" }}
+                  div={{ className: "col AlgaehAutoSearch" }}
                   label={{ forceLabel: "Select Item" }}
                   title="Search Items"
                   id="item_id_search"
