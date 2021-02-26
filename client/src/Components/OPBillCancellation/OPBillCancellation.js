@@ -187,6 +187,7 @@ class OPBillCancellation extends Component {
         let Inputobj = $this.state;
 
         Inputobj.patient_payable = $this.state.patient_payable_h;
+        Inputobj.payable_amount = $this.state.receiveable_amount;
         Inputobj.pay_type = "P";
         Inputobj.ScreenCode = "BL0003";
         AlgaehLoader({ show: true });
@@ -297,17 +298,17 @@ class OPBillCancellation extends Component {
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}

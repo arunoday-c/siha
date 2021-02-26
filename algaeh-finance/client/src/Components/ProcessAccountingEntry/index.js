@@ -47,6 +47,11 @@ export default memo(function ProcessAccountingEntry(props) {
         })
           .then(() => {
             debugger;
+            setLoading(false);
+            AlgaehMessagePop({
+              type: "success",
+              display: "Processed Successfully...",
+            });
             // history.push("/JournalVoucher", {
             //   data: { ...row, disabled: true },
             //   type: "supplier",

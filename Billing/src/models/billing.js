@@ -103,19 +103,19 @@ export default {
     try {
       let inputParam = { ...req.body };
 
-      let strQuery = ""
+      let strQuery = "";
       if (inputParam.service_type_id == 5) {
-        strQuery = `SELECT hims_f_lab_order_id FROM hims_f_lab_order where visit_id= ${inputParam.visit_id} and service_id=${inputParam.services_id};`
+        strQuery = `SELECT hims_f_lab_order_id FROM hims_f_lab_order where visit_id= ${inputParam.visit_id} and service_id=${inputParam.services_id};`;
       } else if (inputParam.service_type_id == 11) {
-        strQuery = `SELECT hims_f_rad_order_id FROM hims_f_rad_order where visit_id= ${inputParam.visit_id} and service_id=${inputParam.services_id};`
+        strQuery = `SELECT hims_f_rad_order_id FROM hims_f_rad_order where visit_id= ${inputParam.visit_id} and service_id=${inputParam.services_id};`;
       } else if (inputParam.service_type_id == 14) {
-        strQuery = `SELECT hims_f_package_header_id FROM hims_f_package_header where visit_id= ${inputParam.visit_id} and services_id=${inputParam.services_id};`
+        strQuery = `SELECT hims_f_package_header_id FROM hims_f_package_header where visit_id= ${inputParam.visit_id} and services_id=${inputParam.services_id};`;
       }
       if (strQuery == "") {
         _mysql.releaseConnection();
         req.records = { exists: false };
         next();
-        return
+        return;
       }
       _mysql
         .executeQuery({
@@ -126,7 +126,6 @@ export default {
           _mysql.releaseConnection();
           if (headerRcptResult.length > 0) {
             req.records = { exists: true };
-
           } else {
             req.records = { exists: false };
           }
@@ -137,7 +136,6 @@ export default {
             next(error);
           });
         });
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -212,7 +210,9 @@ export default {
             inputParam.advance_amount,
             inputParam.advance_adjust === "" ? 0 : inputParam.advance_adjust,
             inputParam.pack_advance_adjust,
-            inputParam.pack_advance_amount === "" ? 0 : inputParam.pack_advance_amount,
+            inputParam.pack_advance_amount === ""
+              ? 0
+              : inputParam.pack_advance_amount,
             inputParam.discount_amount === "" ? 0 : inputParam.discount_amount,
             inputParam.sub_total_amount,
             inputParam.total_tax,
@@ -253,6 +253,7 @@ export default {
         })
         .then((headerResult) => {
           req.body.hims_f_billing_header_id = headerResult.insertId;
+          req.body.bill_date = new Date();
           if (
             headerResult.insertId != null &&
             headerResult.insertId != "" &&
@@ -527,7 +528,7 @@ export default {
         );
 
         sendingObject.company_payable = new LINQ(inputParam).Sum(
-          d => d.company_payble
+          (d) => d.company_payble
         );
 
         sendingObject.sec_company_paybale = new LINQ(inputParam).Sum((d) =>
@@ -631,28 +632,28 @@ export default {
               sendingObject.receiveable_amount =
                 sendingObject.net_amount -
                 parseFloat(inputParam.advance_adjust) -
-                parseFloat(inputParam.credit_amount) - parseFloat(inputParam.pack_advance_adjust);
+                parseFloat(inputParam.credit_amount) -
+                parseFloat(inputParam.pack_advance_adjust);
             } else {
               sendingObject.receiveable_amount =
                 sendingObject.net_amount -
                 parseFloat(inputParam.advance_adjust) -
                 parseFloat(inputParam.credit_amount);
             }
-
           } else {
             if (inputParam.pack_advance_adjust > 0) {
               sendingObject.receiveable_amount =
-                sendingObject.net_amount - parseFloat(inputParam.advance_adjust) - parseFloat(inputParam.pack_advance_adjust);
-            }
-            else {
+                sendingObject.net_amount -
+                parseFloat(inputParam.advance_adjust) -
+                parseFloat(inputParam.pack_advance_adjust);
+            } else {
               sendingObject.receiveable_amount =
-                sendingObject.net_amount - parseFloat(inputParam.advance_adjust);
+                sendingObject.net_amount -
+                parseFloat(inputParam.advance_adjust);
             }
           }
 
           console.log("sendingObject", sendingObject);
-
-
 
           sendingObject.receiveable_amount = utilities.decimalPoints(
             sendingObject.receiveable_amount,
@@ -911,7 +912,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -1183,7 +1184,7 @@ export default {
               printQuery: true,
             })
             .then((result) => {
-              console.log("result", result)
+              console.log("result", result);
               let collected_cash = 0;
               let expected_card = 0;
 
@@ -1195,8 +1196,14 @@ export default {
                 .Where((w) => w.pay_type == "CD")
                 .Sum((s) => parseFloat(s.amount));
 
-              expected_card = result[0].expected_card === null ? 0 : parseFloat(result[0].expected_card) - expected_card;
-              collected_cash = result[0].collected_cash === null ? 0 : parseFloat(result[0].collected_cash) - collected_cash;
+              expected_card =
+                result[0].expected_card === null
+                  ? 0
+                  : parseFloat(result[0].expected_card) - expected_card;
+              collected_cash =
+                result[0].collected_cash === null
+                  ? 0
+                  : parseFloat(result[0].collected_cash) - collected_cash;
 
               _mysql
                 .executeQueryWithTransaction({
@@ -1212,7 +1219,7 @@ export default {
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     result[0]["hims_f_cash_handover_detail_id"],
-                    result[0]["hims_f_cash_handover_detail_id"]
+                    result[0]["hims_f_cash_handover_detail_id"],
                   ],
                   printQuery: true,
                 })
@@ -1226,7 +1233,6 @@ export default {
                   }
 
                   next();
-
                 })
                 .catch((error) => {
                   _mysql.rollBackTransaction(() => {
@@ -1305,22 +1311,24 @@ export default {
                   printQuery: true,
                 })
                 .then((result) => {
-                  console.log("1", result)
+                  console.log("1", result);
                   let collected_cash = 0;
                   let expected_card = 0;
-                  console.log("2", receipt_result)
+                  console.log("2", receipt_result);
                   collected_cash = new LINQ(receipt_result)
                     .Where((w) => w.pay_type == "CA")
                     .Sum((s) => parseFloat(s.amount));
 
-                  console.log("3")
+                  console.log("3");
                   expected_card = new LINQ(receipt_result)
                     .Where((w) => w.pay_type == "CD")
                     .Sum((s) => parseFloat(s.amount));
 
-                  console.log("4")
-                  expected_card = parseFloat(result[0].expected_card) - expected_card;
-                  collected_cash = parseFloat(result[0].collected_cash) - collected_cash;
+                  console.log("4");
+                  expected_card =
+                    parseFloat(result[0].expected_card) - expected_card;
+                  collected_cash =
+                    parseFloat(result[0].collected_cash) - collected_cash;
 
                   _mysql
                     .executeQueryWithTransaction({
@@ -1336,7 +1344,7 @@ export default {
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
                         result[0]["hims_f_cash_handover_detail_id"],
-                        result[0]["hims_f_cash_handover_detail_id"]
+                        result[0]["hims_f_cash_handover_detail_id"],
                       ],
                       printQuery: true,
                     })
@@ -1350,7 +1358,6 @@ export default {
                       }
 
                       next();
-
                     })
                     .catch((error) => {
                       _mysql.rollBackTransaction(() => {
@@ -1948,7 +1955,7 @@ export default {
                     collected_cash += parseFloat(result[0].collected_cash);
                     expected_cheque += parseFloat(result[0].expected_cheque);
                     no_of_cheques += parseFloat(result[0].no_of_cheques);
-                    console.log("12345")
+                    console.log("12345");
                     _mysql
                       .executeQueryWithTransaction({
                         query:
@@ -2531,7 +2538,6 @@ export default {
               return item.primary_network_id;
             });
 
-
             strQuery = `select hims_d_insurance_network_office_id,price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,\
                  copay_percent_dental, copay_optical, copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
                deductible_trt, deductible_medicine,deductable_type from hims_d_insurance_network_office where hospital_id=${req.userIdentity.hospital_id}\
@@ -2550,11 +2556,14 @@ export default {
                where SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
 
-            console.log("input[0].sub_department_id", input[0].sub_department_id)
+            console.log(
+              "input[0].sub_department_id",
+              input[0].sub_department_id
+            );
             if (input[0].sub_department_id != null) {
-              strQuery += `select department_type from hims_d_sub_department where hims_d_sub_department_id=${input[0].sub_department_id}`
+              strQuery += `select department_type from hims_d_sub_department where hims_d_sub_department_id=${input[0].sub_department_id}`;
             } else {
-              strQuery += `select 1=1`
+              strQuery += `select 1=1`;
             }
           } else if (promo_code != null) {
             strQuery = `select S.hims_d_services_id, PD.avail_type, offer_value, valid_to_from, valid_to_date, offer_code from hims_d_promotion P 
@@ -2714,8 +2723,8 @@ export default {
                     ? "N"
                     : servicesDetails.insured;
 
-                console.log("servicesDetails.insured", servicesDetails.insured)
-                console.log("insured", insured)
+                console.log("servicesDetails.insured", servicesDetails.insured);
+                console.log("insured", insured);
 
                 // let sec_insured =
                 //   servicesDetails.sec_insured == undefined
@@ -2784,7 +2793,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2886,10 +2895,10 @@ export default {
                       copay_percentage = policydtls.copay_consultation;
 
                       if (sub_dept_details[0].department_type == "D") {
-                        copay_percentage = policydtls.copay_percent_dental
+                        copay_percentage = policydtls.copay_percent_dental;
                       }
                       if (sub_dept_details[0].department_type == "O") {
-                        copay_percentage = policydtls.copay_optical
+                        copay_percentage = policydtls.copay_optical;
                       }
 
                       deductable_percentage = policydtls.deductible;
@@ -2983,16 +2992,16 @@ export default {
                         deductable_amount =
                           deductable_percentage !== null
                             ? (parseFloat(net_amout) *
-                              parseFloat(deductable_percentage)) /
-                            100
+                                parseFloat(deductable_percentage)) /
+                              100
                             : 0;
                       }
                     } else {
                       deductable_amount =
                         deductable_percentage !== null
                           ? (parseFloat(net_amout) *
-                            parseFloat(deductable_percentage)) /
-                          100
+                              parseFloat(deductable_percentage)) /
+                            100
                           : 0;
                     }
 
@@ -3156,8 +3165,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                            ? parseFloat(unit_cost)
-                            : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -3818,12 +3827,12 @@ export default {
 
   //created by:IRFAN
   generateAccountingEntry: (req, res, next) => {
-    try {
+    try {      
       const _options = req.connection == null ? {} : req.connection;
       const inputParam = req.body;
       const _mysql = new algaehMysql(_options);
       // const utilities = new algaehUtilities();
-      const {closeConnection}= inputParam;
+      const { closeConnection } = inputParam;
       if (req.body.consultation == "N") {
         next();
         return;
@@ -3838,7 +3847,6 @@ export default {
         })
         .then((product_type) => {
           if (product_type.length == 1) {
-          
             const servicesIds = ["0"];
             if (inputParam.billdetails && inputParam.billdetails.length > 0) {
               inputParam.billdetails.forEach((item) => {
@@ -3846,15 +3854,17 @@ export default {
               });
             }
 
-            console.log("inputParam.receiptdetails", inputParam.receiptdetails)
-            let bank_card_id = inputParam.receiptdetails.find(f =>
-              f.pay_type == "CD"
-            )
+            console.log("inputParam.receiptdetails", inputParam.receiptdetails);
+            let bank_card_id = inputParam.receiptdetails.find(
+              (f) => f.pay_type == "CD"
+            );
 
-            console.log("bank_card_id === ", bank_card_id)
-            let strQuery = "select 1=1"
+            console.log("bank_card_id === ", bank_card_id);
+            let strQuery = "select 1=1";
             if (bank_card_id !== undefined) {
-              strQuery = "select * from hims_d_bank_card where hims_d_bank_card_id=" + bank_card_id.bank_card_id
+              strQuery =
+                "select * from hims_d_bank_card where hims_d_bank_card_id=" +
+                bank_card_id.bank_card_id;
             }
 
             // let strqry = "";
@@ -3877,7 +3887,8 @@ export default {
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
             account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL', 'INPUT_TAX', 'SALES_DISCOUNT');\
             SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
-            select cost_center_type, cost_center_required from finance_options limit 1;"+ strQuery,
+            select cost_center_type, cost_center_required from finance_options limit 1;" +
+                  strQuery,
                 values: [servicesIds],
                 printQuery: true,
               })
@@ -3943,13 +3954,22 @@ export default {
                     if (m.pay_type == "CD") {
                       narration = narration + ",Received By CARD:" + m.amount;
 
-                      let service_charge = (parseFloat(m.amount) * parseFloat(card_data[0].service_charge)) / 100
-                      let vat_charge = (parseFloat(service_charge) * parseFloat(card_data[0].vat_percentage)) / 100
+                      let service_charge =
+                        (parseFloat(m.amount) *
+                          parseFloat(card_data[0].service_charge)) /
+                        100;
+                      let vat_charge =
+                        (parseFloat(service_charge) *
+                          parseFloat(card_data[0].vat_percentage)) /
+                        100;
 
-                      const final_amount = parseFloat(m.amount) - parseFloat(service_charge) - parseFloat(vat_charge)
+                      const final_amount =
+                        parseFloat(m.amount) -
+                        parseFloat(service_charge) -
+                        parseFloat(vat_charge);
                       if (final_amount > 0) {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: inputParam.bill_date,
                           head_id: CARD_SETTL.head_id,
                           child_id: CARD_SETTL.child_id,
                           debit_amount: final_amount,
@@ -3960,7 +3980,7 @@ export default {
                       }
                       if (service_charge > 0) {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: inputParam.bill_date,
                           head_id: card_data[0].head_id,
                           child_id: card_data[0].child_id,
                           debit_amount: service_charge,
@@ -3971,7 +3991,7 @@ export default {
                       }
                       if (vat_charge > 0) {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: inputParam.bill_date,
                           head_id: INPUT_TAX.head_id,
                           child_id: INPUT_TAX.child_id,
                           debit_amount: vat_charge,
@@ -3985,7 +4005,7 @@ export default {
 
                       if (parseFloat(m.amount) > 0) {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: inputParam.bill_date,
                           head_id: CIH_OP.head_id,
                           child_id: CIH_OP.child_id,
                           debit_amount: m.amount,
@@ -4006,7 +4026,7 @@ export default {
 
                   if (inputParam.total_amount > 0) {
                     EntriesArray.push({
-                      payment_date: new Date(),
+                      payment_date: inputParam.bill_date,
                       head_id: OP_DEP.head_id,
                       child_id: OP_DEP.child_id,
                       debit_amount: inputParam.total_amount,
@@ -4019,7 +4039,7 @@ export default {
                   // DECREASE CASH IN HAND
                   if (parseFloat(amount) > 0) {
                     EntriesArray.push({
-                      payment_date: new Date(),
+                      payment_date: inputParam.bill_date,
                       head_id: CIH_OP.head_id,
                       child_id: CIH_OP.child_id,
                       debit_amount: 0,
@@ -4052,7 +4072,7 @@ export default {
 
                     if (credit_amount > 0) {
                       EntriesArray.push({
-                        payment_date: new Date(),
+                        payment_date: inputParam.bill_date,
                         head_id: curService.head_id,
                         child_id: curService.child_id,
                         debit_amount: 0,
@@ -4098,7 +4118,7 @@ export default {
                     //   ", Adjusting Advance  Amount of " +
                     //   inputParam.pack_advance_amount;
                     EntriesArray.push({
-                      payment_date: new Date(),
+                      payment_date: inputParam.bill_date,
                       head_id: OP_DEP.head_id,
                       child_id: OP_DEP.child_id,
                       debit_amount: inputParam.pack_advance_adjust,
@@ -4115,7 +4135,7 @@ export default {
                       inputParam.credit_amount;
 
                     EntriesArray.push({
-                      payment_date: new Date(),
+                      payment_date: inputParam.bill_date,
                       head_id: OP_REC.head_id,
                       child_id: OP_REC.child_id,
                       debit_amount: inputParam.credit_amount,
@@ -4130,15 +4150,24 @@ export default {
                     if (m.pay_type == "CD") {
                       narration = narration + ",Received By CARD:" + m.amount;
 
-                      let service_charge = (parseFloat(m.amount) * parseFloat(card_data[0].service_charge)) / 100
-                      let vat_charge = (parseFloat(service_charge) * parseFloat(card_data[0].vat_percentage)) / 100
+                      let service_charge =
+                        (parseFloat(m.amount) *
+                          parseFloat(card_data[0].service_charge)) /
+                        100;
+                      let vat_charge =
+                        (parseFloat(service_charge) *
+                          parseFloat(card_data[0].vat_percentage)) /
+                        100;
 
                       // console.log("service_charge", service_charge)
                       // console.log("vat_charge", vat_charge)
-                      const final_amount = parseFloat(m.amount) - parseFloat(service_charge) - parseFloat(vat_charge)
+                      const final_amount =
+                        parseFloat(m.amount) -
+                        parseFloat(service_charge) -
+                        parseFloat(vat_charge);
                       if (final_amount > 0) {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: inputParam.bill_date,
                           head_id: CARD_SETTL.head_id,
                           child_id: CARD_SETTL.child_id,
                           debit_amount: final_amount,
@@ -4149,7 +4178,7 @@ export default {
                       }
                       if (service_charge > 0) {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: inputParam.bill_date,
                           head_id: card_data[0].head_id,
                           child_id: card_data[0].child_id,
                           debit_amount: service_charge,
@@ -4160,7 +4189,7 @@ export default {
                       }
                       if (vat_charge > 0) {
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: inputParam.bill_date,
                           head_id: INPUT_TAX.head_id,
                           child_id: INPUT_TAX.child_id,
                           debit_amount: vat_charge,
@@ -4182,7 +4211,7 @@ export default {
                       if (parseFloat(m.amount) > 0) {
                         narration = narration + ",Received By CASH:" + m.amount;
                         EntriesArray.push({
-                          payment_date: new Date(),
+                          payment_date: inputParam.bill_date,
                           head_id: CIH_OP.head_id,
                           child_id: CIH_OP.child_id,
                           debit_amount: m.amount,
@@ -4204,7 +4233,7 @@ export default {
                     //   `, insurance (${insurance_data[0]["insurance_sub_name"]}) receivable: ${inputParam.company_payble}`;
 
                     EntriesArray.push({
-                      payment_date: new Date(),
+                      payment_date: inputParam.bill_date,
                       head_id: OP_CTRL.head_id,
                       child_id: OP_CTRL.child_id,
                       debit_amount: inputParam.company_payble,
@@ -4218,7 +4247,7 @@ export default {
 
                   if (parseFloat(inputParam.total_tax) > 0) {
                     EntriesArray.push({
-                      payment_date: new Date(),
+                      payment_date: inputParam.bill_date,
                       head_id: OUTPUT_TAX.head_id,
                       child_id: OUTPUT_TAX.child_id,
                       debit_amount: 0,
@@ -4229,7 +4258,7 @@ export default {
                   }
                   if (inputParam.sheet_discount_amount > 0) {
                     EntriesArray.push({
-                      payment_date: new Date(),
+                      payment_date: inputParam.bill_date,
                       head_id: SALES_DISCOUNT.head_id,
                       child_id: SALES_DISCOUNT.child_id,
                       debit_amount: inputParam.sheet_discount_amount,
@@ -4260,7 +4289,7 @@ export default {
                   VALUES (?,?,?,?,?,?,?,?,?);" +
                         strQuery,
                       values: [
-                        new Date(),
+                        new Date(inputParam.bill_date),
                         amount,
                         voucher_type,
                         inputParam.hims_f_billing_header_id,
@@ -4311,10 +4340,11 @@ export default {
                           },
                           printQuery: true,
                         })
-                        .then((subResult) => {
-                          // console.log("FOUR");
-                          if(closeConnection){
-                            _mysql.commitTransaction();
+                        .then((subResult) => {                          
+                          if (closeConnection) {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                            });
                           }
                           next();
                         })
@@ -4330,10 +4360,13 @@ export default {
                       });
                     });
                 } else {
-                  if(closeConnection){
-                    _mysql.commitTransaction();
-                  } 
-                  next() }
+                  if (closeConnection) {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                    });
+                  }
+                  next();
+                }
               })
               .catch((error) => {
                 _mysql.rollBackTransaction(() => {
@@ -4341,8 +4374,10 @@ export default {
                 });
               });
           } else {
-            if(closeConnection){
-              _mysql.commitTransaction();
+            if (closeConnection) {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+              });
             }
             next();
           }
@@ -4357,7 +4392,7 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };
 
 //Not in Use
@@ -4837,8 +4872,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                          ? unit_cost
-                          : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                   }
                 }
 

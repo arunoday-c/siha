@@ -186,9 +186,9 @@ export default () => {
     });
   });
   api.post("/generateAccountEntry", generateAccountingEntry, (req, res) => {
-    res.status
-      .json({ success: true.valueOf, message: "Successfully done" })
-      .end();
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+    });
   });
   return api;
 };

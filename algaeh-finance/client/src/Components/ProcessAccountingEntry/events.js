@@ -10,6 +10,7 @@ export function ProcessAccountingEntrys(inputObj) {
         data: inputObj,
         module: "finance",
         onSuccess: (response) => {
+          debugger;
           resolve();
         },
         onCatch: (error) => {
