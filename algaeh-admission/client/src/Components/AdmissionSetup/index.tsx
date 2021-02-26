@@ -29,7 +29,7 @@ export default function AdmissionSetup(props: any) {
                 }}
               />
             ),
-            children: <WardBedSetup />,
+            children: <WardBedSetup {...props} />,
             componentCode: "APP_CLINICS",
           },
         ]}

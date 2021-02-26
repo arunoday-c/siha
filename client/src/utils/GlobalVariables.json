@@ -335,6 +335,37 @@
       "value": "I"
     }
   ],
+  "FORMAT_WARD_TYPE": [
+    {
+      "name": "MALE",
+
+      "value": "M"
+    },
+    {
+      "name": "FEMALE",
+      "value": "F"
+    },
+    {
+      "name": "Pediatric",
+      "value": "P"
+    },
+    {
+      "name": "Neonatal",
+      "value": "N"
+    },
+    {
+      "name": "General",
+      "value": "G"
+    },
+    {
+      "name": "Intensive",
+      "value": "I"
+    },
+    {
+      "name": "Labour",
+      "value": "L"
+    }
+  ],
   "FORMAT_ACT_INACT": [
     {
       "name": "Active",
