@@ -79,3 +79,18 @@
     border-radius: 5px;
   }
 }
+#getInvestigationGrid,
+#getPackageGrid,
+#getConsumableGrid,
+#getMedicationGrid,
+#getProcedureGrid,
+#getNursingNotesGrid {
+  .newStickyGrid {
+    width: 99%;
+    .table-scroll {
+      min-height: 25vh;
+      max-height: 25vh;
+      overflow: auto;
+    }
+  }
+}

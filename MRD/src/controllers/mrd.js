@@ -10,6 +10,7 @@ const {
   getPatientDiagnosis,
   getPatientMedication,
   getPatientInvestigation,
+  getPatientProcedures,
   getPatientInvestigationForDashBoard,
   getPatientPaymentDetails,
   getPatientTreatments,
@@ -97,6 +98,14 @@ export default () => {
       next();
     }
   );
+  api.get("/getPatientProcedures", getPatientProcedures, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
   api.get(
     "/getPatientInvestigationForDashBoard",
     getPatientInvestigationForDashBoard,
