@@ -83,8 +83,12 @@ class InvStockEnquiry extends Component {
         module: "inventory",
         method: "GET",
         redux: {
-          type: "ANALYTES_GET_DATA",
+          type: "INV_LOCATION_GET_DATA",
           mappingName: "inventorylocations",
+        },
+        afterSuccess: (data) => {
+          let ware_house = data.find((f) => f.location_type === "WH");
+          this.setState({ providers: ware_house.hims_d_inventory_location_id });
         },
       });
     }

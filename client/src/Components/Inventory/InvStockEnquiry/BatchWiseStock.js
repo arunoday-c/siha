@@ -54,6 +54,10 @@ class BatchWiseStock extends Component {
     );
   };
   render() {
+    const ware_house =
+      this.props.inventorylocations === undefined
+        ? []
+        : this.props.inventorylocations.filter((f) => f.location_type === "WH");
     return (
       <React.Fragment>
         <AlgaehModalPopUp
@@ -415,32 +419,20 @@ class BatchWiseStock extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data:
-                      this.props.location_type === "WH"
-                        ? [
-                            {
-                              name: "Consume",
-                              value: "C",
-                            },
-                            {
-                              name: "Transfer",
-                              value: "T",
-                            },
-                            {
-                              name: "Purchase Request",
-                              value: "PR",
-                            },
-                          ]
-                        : [
-                            {
-                              name: "Consume",
-                              value: "C",
-                            },
-                            {
-                              name: "Transfer",
-                              value: "T",
-                            },
-                          ],
+                    data: [
+                      {
+                        name: "Consume",
+                        value: "C",
+                      },
+                      {
+                        name: "Transfer",
+                        value: "T",
+                      },
+                      {
+                        name: "Purchase Request",
+                        value: "PR",
+                      },
+                    ],
                   },
 
                   onChange: changeEvent.bind(this, this),
@@ -452,7 +444,8 @@ class BatchWiseStock extends Component {
                   autoComplete: "off",
                 }}
               />
-              {this.state.trans_type === "T" ? (
+              {this.state.trans_type === "T" ||
+              this.state.trans_type === "PR" ? (
                 <AlagehAutoComplete
                   div={{ className: "col form-group" }}
                   label={{ forceLabel: "To Location", isImp: true }}
@@ -463,7 +456,10 @@ class BatchWiseStock extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: this.props.inventorylocations,
+                      data:
+                        this.state.trans_type === "T"
+                          ? this.props.inventorylocations
+                          : ware_house,
                     },
 
                     onChange: changeEvent.bind(this, this),

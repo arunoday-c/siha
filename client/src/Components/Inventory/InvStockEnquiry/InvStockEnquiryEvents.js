@@ -10,15 +10,17 @@ const changeTexts = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState({
-    [name]: value,
-    location_type: e.selected.location_type,
-    location_description: e.selected.location_description
-  }, () => {
-    getItemLocationStock($this);
-  });
+  $this.setState(
+    {
+      [name]: value,
+      location_type: e.selected.location_type,
+      location_description: e.selected.location_description,
+    },
+    () => {
+      getItemLocationStock($this);
+    }
+  );
 };
-
 
 const changeEvent = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -26,37 +28,43 @@ const changeEvent = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-
   switch (name) {
     case "to_location_id":
       $this.setState({
         [name]: value,
-        to_location_type: e.selected.location_type
+        to_location_type: e.selected.location_type,
+      });
+      break;
+    case "trans_type":
+      $this.setState({
+        [name]: value,
+        to_location_id: null,
       });
       break;
     case "quantity":
-      if ((parseFloat(value) > parseFloat($this.state.item_details.qtyhand)) && $this.state.trans_type !== "PR") {
+      if (
+        parseFloat(value) > parseFloat($this.state.item_details.qtyhand) &&
+        $this.state.trans_type !== "PR"
+      ) {
         swalMessage({
           title: "Selected QTY cannot be greated than QTY in hand",
           type: "warning",
         });
 
         $this.setState({
-          [name]: $this.state.quantity
+          [name]: $this.state.quantity,
         });
       } else {
         $this.setState({
-          [name]: value
+          [name]: value,
         });
       }
       break;
-
 
     default:
       $this.setState({ [name]: value });
       break;
   }
-
 };
 
 const dateFormater = ($this, value) => {
@@ -133,7 +141,7 @@ const getItemLocationStock = ($this) => {
   }
 };
 
-const updateStockDetils = ($this) => { };
+const updateStockDetils = ($this) => {};
 
 const datehandle = ($this, row, ctrl, e) => {
   row[e] = moment(ctrl)._d;
@@ -282,16 +290,13 @@ const checkBoxEvent = ($this, e) => {
 };
 
 const openExchangePopup = ($this, row) => {
-
   $this.setState({
     open_exchange: true,
-    item_details: row
-  })
+    item_details: row,
+  });
 };
 
 const onClickProcess = ($this) => {
-
-
   let inputOb = $this.state;
   if (inputOb.trans_type === "C") {
     swal({
@@ -310,7 +315,8 @@ const onClickProcess = ($this) => {
         inputOb.item_details.expiry_date = inputOb.item_details.expirydt;
         inputOb.item_details.uom_id = inputOb.item_details.stocking_uom_id;
         inputOb.item_details.unit_cost = inputOb.item_details.waited_avg_cost;
-        inputOb.item_details.extended_cost = inputOb.item_details.waited_avg_cost;
+        inputOb.item_details.extended_cost =
+          inputOb.item_details.waited_avg_cost;
         inputOb.item_details.sales_price = inputOb.item_details.sale_price;
         inputOb.item_details.operation = "-";
 
@@ -336,7 +342,7 @@ const onClickProcess = ($this) => {
                 open_exchange: false,
                 trans_type: null,
                 quantity: 0,
-                to_location_id: null
+                to_location_id: null,
               });
             }
           },
@@ -368,7 +374,7 @@ const onClickProcess = ($this) => {
           if ($this.props.git_locations.length === 0) {
             swalMessage({
               title: "Please Enter GIT Loaction to transfer item",
-              type: "warning"
+              type: "warning",
             });
             return;
           } else {
@@ -378,11 +384,10 @@ const onClickProcess = ($this) => {
         } else {
           gitLoaction_Exists = {
             hims_d_inventory_location_id: inputOb.to_location_id,
-            location_type: inputOb.to_location_type
-          }
+            location_type: inputOb.to_location_type,
+          };
           inputOb.ack_done = "Y";
         }
-
 
         inputOb.item_details.quantity = inputOb.quantity;
         inputOb.item_details.quantity_transfer = inputOb.quantity;
@@ -390,9 +395,11 @@ const onClickProcess = ($this) => {
         inputOb.item_details.location_type = $this.props.location_type;
         inputOb.item_details.expiry_date = inputOb.item_details.expirydt;
         inputOb.item_details.uom_id = inputOb.item_details.stocking_uom_id;
-        inputOb.item_details.uom_transferred_id = inputOb.item_details.stocking_uom_id;
+        inputOb.item_details.uom_transferred_id =
+          inputOb.item_details.stocking_uom_id;
         inputOb.item_details.unit_cost = inputOb.item_details.waited_avg_cost;
-        inputOb.item_details.extended_cost = inputOb.item_details.waited_avg_cost;
+        inputOb.item_details.extended_cost =
+          inputOb.item_details.waited_avg_cost;
         inputOb.item_details.sales_price = inputOb.item_details.sale_price;
         inputOb.item_details.operation = "-";
 
@@ -401,23 +408,25 @@ const onClickProcess = ($this) => {
         inputOb.from_location_id = $this.props.location_id;
         inputOb.from_location_type = $this.props.location_type;
         inputOb.direct_transfer = "Y";
-        inputOb.stock_detail = [{
-          item_id: inputOb.item_details.item_id,
-          item_category_id: inputOb.item_details.item_category_id,
-          item_group_id: inputOb.item_details.item_group_id,
-          quantity_transferred: inputOb.item_details.quantity_transferred,
-          uom_transferred_id: inputOb.item_details.stocking_uom_id,
-          inventory_stock_detail: [inputOb.item_details],
-        }];
+        inputOb.stock_detail = [
+          {
+            item_id: inputOb.item_details.item_id,
+            item_category_id: inputOb.item_details.item_category_id,
+            item_group_id: inputOb.item_details.item_group_id,
+            quantity_transferred: inputOb.item_details.quantity_transferred,
+            uom_transferred_id: inputOb.item_details.stocking_uom_id,
+            inventory_stock_detail: [inputOb.item_details],
+          },
+        ];
         inputOb.inventory_stock_detail = [inputOb.item_details];
 
         inputOb.git_location_type = gitLoaction_Exists.location_type;
-        inputOb.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
+        inputOb.git_location_id =
+          gitLoaction_Exists.hims_d_inventory_location_id;
 
-        inputOb.transaction_date = moment(
-          new Date(),
+        inputOb.transaction_date = moment(new Date(), "YYYY-MM-DD").format(
           "YYYY-MM-DD"
-        ).format("YYYY-MM-DD");
+        );
         inputOb.ScreenCode = "INV0006";
         AlgaehLoader({ show: true });
         algaehApiCall({
@@ -428,7 +437,7 @@ const onClickProcess = ($this) => {
           method: "POST",
           header: {
             "content-type": "application/octet-stream",
-            ...settings
+            ...settings,
           },
           onSuccess: (response) => {
             AlgaehLoader({ show: false });
@@ -441,7 +450,7 @@ const onClickProcess = ($this) => {
                 open_exchange: false,
                 trans_type: null,
                 quantity: 0,
-                to_location_id: null
+                to_location_id: null,
               });
             }
           },
@@ -456,7 +465,7 @@ const onClickProcess = ($this) => {
       }
     });
   } else if (inputOb.trans_type === "PR") {
-    debugger
+    debugger;
     swal({
       title: "Are you sure you want to Raise Purchase Request ?",
       type: "warning",
@@ -467,22 +476,22 @@ const onClickProcess = ($this) => {
       cancelButtonText: "No",
     }).then((willTransfer) => {
       if (willTransfer.value) {
-
-
-
-        inputOb.authorize1 = $this.props.requisition_auth_level === "N" ? "Y" : "N";
-        inputOb.authorie2 = $this.props.requisition_auth_level === "N" ? "Y" : "N";
-
+        inputOb.authorize1 =
+          $this.props.requisition_auth_level === "N" ? "Y" : "N";
+        inputOb.authorie2 =
+          $this.props.requisition_auth_level === "N" ? "Y" : "N";
 
         inputOb.item_details.quantity_required = inputOb.quantity;
-        inputOb.item_details.quantity_outstanding = $this.props.requisition_auth_level === "N" ? inputOb.quantity : 0;
-        inputOb.item_details.quantity_authorized = $this.props.requisition_auth_level === "N" ? inputOb.quantity : 0;
+        inputOb.item_details.quantity_outstanding =
+          $this.props.requisition_auth_level === "N" ? inputOb.quantity : 0;
+        inputOb.item_details.quantity_authorized =
+          $this.props.requisition_auth_level === "N" ? inputOb.quantity : 0;
 
         inputOb.item_details.from_qtyhand = inputOb.item_details.qtyhand;
         inputOb.item_details.item_uom = inputOb.item_details.stocking_uom_id;
 
-        inputOb.from_location_id = $this.props.location_id;
-        inputOb.from_location_type = $this.props.location_type;
+        inputOb.from_location_id = $this.state.to_location_id;
+        inputOb.from_location_type = $this.props.to_location_type;
         inputOb.is_completed = "N";
         inputOb.cancelled = "N";
         inputOb.requistion_type = "PR";
@@ -508,7 +517,7 @@ const onClickProcess = ($this) => {
                 open_exchange: false,
                 trans_type: null,
                 quantity: 0,
-                to_location_id: null
+                to_location_id: null,
               });
             }
           },
@@ -525,7 +534,6 @@ const onClickProcess = ($this) => {
   }
 };
 
-
 const getInventoryOptions = ($this) => {
   algaehApiCall({
     uri: "/inventory/getInventoryOptions",
@@ -535,7 +543,7 @@ const getInventoryOptions = ($this) => {
       if (res.data.success) {
         $this.setState({
           trans_ack_required: res.data.records[0].trans_ack_required,
-          requisition_auth_level: res.data.records[0].requisition_auth_level
+          requisition_auth_level: res.data.records[0].requisition_auth_level,
         });
       }
     },
@@ -546,7 +554,7 @@ const getInventoryOptions = ($this) => {
       });
     },
   });
-}
+};
 
 export {
   changeEvent,
@@ -565,5 +573,5 @@ export {
   checkBoxEvent,
   openExchangePopup,
   onClickProcess,
-  getInventoryOptions
+  getInventoryOptions,
 };
