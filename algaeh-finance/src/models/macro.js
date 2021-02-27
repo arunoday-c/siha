@@ -11,15 +11,14 @@ export async function macro(req, res, next) {
     let strUrl = "";
     if (transation_type === "1") {
       strUrl = "http://localhost:3014/api/v1/billing/generateAccountEntry";
-      if (from_date && to_date) {
-        whereCondition = ` DATE(bill_date) between DATE('${from_date}') and DATE('${to_date}')`;
-      }
       if (bill_number) {
         if (whereCondition.length > 0) {
           whereCondition += ` and bill_number='${bill_number}'`;
         } else {
           whereCondition = ` bill_number='${bill_number}'`;
         }
+      } else if (from_date && to_date) {
+        whereCondition = ` DATE(bill_date) between DATE('${from_date}') and DATE('${to_date}')`;
       }
       const result = await _mysql
         .executeQuery({

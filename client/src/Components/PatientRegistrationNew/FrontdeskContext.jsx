@@ -1,5 +1,5 @@
 import React, { createContext, useReducer } from "react";
-
+debugger;
 const baseState = {
   department_id: null,
   sub_department_id: null,
@@ -59,6 +59,7 @@ const baseState = {
   },
   disabled: false,
   savedPatient: null,
+  from_package: false,
 };
 
 export const FrontdeskContext = createContext(baseState);
