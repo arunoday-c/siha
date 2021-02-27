@@ -462,28 +462,6 @@ export default function WardBedSetup(Props: any) {
                     <div className="col-12 algaehLabelFormGroup margin-top-15">
                       <label className="algaehLabelGroup">Assign Beds</label>
                       <div className="row">
-                        {" "}
-                        <Controller
-                          name="bed_no"
-                          control={control2}
-                          rules={{ required: "Required" }}
-                          render={(props) => (
-                            <AlgaehFormGroup
-                              div={{ className: "col-3 form-group mandatory" }}
-                              error={errors2}
-                              label={{
-                                forceLabel: "Enter Bed No.",
-                                isImp: true,
-                              }}
-                              textBox={{
-                                type: "number",
-                                ...props,
-                                className: "form-control",
-                                name: "bed_no",
-                              }}
-                            />
-                          )}
-                        />
                         <Controller
                           name="bed_id"
                           control={control2}
@@ -517,6 +495,27 @@ export default function WardBedSetup(Props: any) {
                                 //     current.work_status === "COM",
                                 //   tabIndex: "4",
                                 // },
+                              }}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="bed_no"
+                          control={control2}
+                          rules={{ required: "Required" }}
+                          render={(props) => (
+                            <AlgaehFormGroup
+                              div={{ className: "col-3 form-group mandatory" }}
+                              error={errors2}
+                              label={{
+                                forceLabel: "Enter Bed No.",
+                                isImp: true,
+                              }}
+                              textBox={{
+                                type: "number",
+                                ...props,
+                                className: "form-control",
+                                name: "bed_no",
                               }}
                             />
                           )}
@@ -680,7 +679,7 @@ export default function WardBedSetup(Props: any) {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Bed Setup</h3>
+                  <h3 className="caption-subject">List of Wards</h3>
                 </div>
               </div>
 
