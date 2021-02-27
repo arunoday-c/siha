@@ -15,6 +15,10 @@ import {
   updateWardHeader,
   getBedService,
   bedDataFromMaster,
+  bedStatusSetUp,
+  updateBedStatus,
+  addBedStatus,
+  onDeleteBedStatus,
 } from "../models/bedMaster";
 import { Router, Request, Response, NextFunction } from "express";
 // const { getBedStatus } = bedMaster;
@@ -27,20 +31,26 @@ export default () => {
     "/getBedStatus",
     getBedStatus,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
     }
   );
   api.delete(
     "/deleteBedStatus",
     deleteBedStatus,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
     }
   );
 
@@ -48,10 +58,13 @@ export default () => {
     "/AddNewBedType",
     AddNewBedType,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
     }
   );
 
@@ -59,10 +72,13 @@ export default () => {
     "/updateBedType",
     updateBedType,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
     }
   );
 
@@ -70,20 +86,26 @@ export default () => {
     "/getWardDetails",
     getWardDetails,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
     }
   );
   api.delete(
     "/onDeleteDetails",
     onDeleteDetails,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
     }
   );
 
@@ -91,10 +113,13 @@ export default () => {
     "/addWardDetails",
     addWardDetails,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
     }
   );
 
@@ -102,10 +127,13 @@ export default () => {
     "/updateWardDetails",
     updateWardDetails,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
     }
   );
 
@@ -113,31 +141,40 @@ export default () => {
     "/getWardHeaderData",
     getWardHeaderData,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
     }
   );
   api.delete(
     "/onDeleteHeader",
     onDeleteHeader,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
     }
   );
 
   api.post(
     "/addWardHeader",
     addWardHeader,
-    (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records,
-      });
+    (req: newRequest, res: Response) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
     }
   );
 
@@ -145,10 +182,13 @@ export default () => {
     "/updateWardHeader",
     updateWardHeader,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
     }
   );
 
@@ -156,10 +196,13 @@ export default () => {
     "/getBedService",
     getBedService,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
     }
   );
 
@@ -167,10 +210,64 @@ export default () => {
     "/bedDataFromMaster",
     bedDataFromMaster,
     (req: newRequest, res: Response, next: NextFunction) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
+    }
+  );
+  api.get(
+    "/bedStatusSetUp",
+    bedStatusSetUp,
+    (req: newRequest, res: Response, next: NextFunction) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
+    }
+  );
+
+  api.post("/addBedStatus", addBedStatus, (req: newRequest, res: Response) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
         success: true,
-        records: req.records,
-      });
+        result: req.records,
+      })
+      .end();
+  });
+
+  api.put(
+    "/onDeleteBedStatus",
+    onDeleteBedStatus,
+    (req: newRequest, res: Response, next: NextFunction) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
+    }
+  );
+
+  api.put(
+    "/updateBedStatus",
+    updateBedStatus,
+    (req: newRequest, res: Response, next: NextFunction) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
     }
   );
   return api;

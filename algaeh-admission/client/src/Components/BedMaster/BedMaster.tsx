@@ -15,7 +15,7 @@ import {
   AlgaehLabel,
   // AlgaehDateHandler,
   // AlgaehMessagePop,
-  AlgaehSearch,
+  // AlgaehSearch,
   algaehAxios,
   AlgaehMessagePop,
   // // DatePicker,
@@ -28,7 +28,7 @@ import {
 } from "algaeh-react-components";
 // import { useQuery,ReactQueryCacheProvider } from "react-query";
 import { Controller, useForm } from "react-hook-form";
-import { result } from "lodash";
+// import { result } from "lodash";
 
 // const getBedService = async (key: any) => {
 //   const { response } = await algaehAxios("/bedManagement/getBedService", {
@@ -66,7 +66,7 @@ export default function BedStatus(Props: any) {
   // const [color_code, setColor_code] = useState<string>("#FFFFFF");
   // const [description, setDescription] = useState<string>("");
   // const [default_status, setDefault_status] = useState<string>("");
-  const [isEditable, setIsEditable] = useState<boolean>(true);
+  // const [isEditable, setIsEditable] = useState<boolean>(true);
   const [currentRow, setCurrentRow] = useState<Row>();
   const [dropDownData, setDropDownData] = useState([]);
   // const [disableAdd, setDisableAdd] = useState<null | string>("none");
@@ -121,11 +121,16 @@ export default function BedStatus(Props: any) {
     );
     if (error) {
       if (error.show === true) {
-        console.log("error=====", error);
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
       }
     }
     console.log("response", response);
-    if (response) {
+    if (response.data.success === true) {
       getAppointmentStatus();
       reset();
     }
@@ -141,11 +146,16 @@ export default function BedStatus(Props: any) {
     );
     if (error) {
       if (error.show === true) {
-        console.log("error=====", error);
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
       }
     }
 
-    if (response) {
+    if (response.data.success) {
       setDropDownData(response.data.records);
     }
   };
@@ -160,10 +170,16 @@ export default function BedStatus(Props: any) {
     );
     if (error) {
       if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
       }
     }
-    console.log("response", response);
-    if (response) {
+
+    if (response.data.success) {
       return response.data.records;
     }
   };
@@ -178,14 +194,17 @@ export default function BedStatus(Props: any) {
     );
     if (error) {
       if (error.show === true) {
-        console.log("error=====", error);
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
       }
     }
-    console.log("response", response);
-    if (response) {
-      debugger;
+
+    if (response.data.success) {
       setAppointmentStatus(response.data.records);
-      console.log("appointmentStatus", appointmentStatus);
     }
   };
   useEffect(() => {
@@ -208,14 +227,21 @@ export default function BedStatus(Props: any) {
     );
     if (error) {
       if (error.show === true) {
+        let extendedError: Error | any = error;
         AlgaehMessagePop({
-          display: "Successfully Deleted",
-          type: "success",
+          display: extendedError.response.data.message,
+          type: "error",
         });
+        throw error;
       }
     }
-    console.log("response", response);
-    if (response) {
+
+    if (response.data.success) {
+      AlgaehMessagePop({
+        display: "Record Deleted Successfully",
+        type: "success",
+      });
+    } else {
     }
   };
 

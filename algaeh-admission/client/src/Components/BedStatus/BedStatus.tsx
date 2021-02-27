@@ -1,34 +1,16 @@
 import React, { useState, useEffect } from "react";
-// import "./appointment_status.scss";
-// import {
-//   AlagehFormGroup,
-//   AlgaehDataGrid,
-//   AlgaehLabel,
-//   AlagehAutoComplete,
-// } from "../../Wrapper/algaehWrapper";
+
 import {
   // AlgaehLabel,
   AlgaehFormGroup,
   AlgaehDataGrid,
-  // AlgaehDateHandler,
-  AlgaehAutoComplete,
   AlgaehLabel,
-  // AlgaehDateHandler,
-  // AlgaehMessagePop,
-  AlgaehSearch,
   algaehAxios,
   AlgaehMessagePop,
-  // // DatePicker,
-  // AlgaehModal,
-  // AlgaehHijriDatePicker,
-  // // AlgaehTreeSearch,
-  // AlgaehSecurityComponent,
-
-  //   AlgaehButton,
 } from "algaeh-react-components";
 // import { useQuery,ReactQueryCacheProvider } from "react-query";
 import { Controller, useForm } from "react-hook-form";
-import { result } from "lodash";
+import _ from "lodash";
 
 // const getBedService = async (key: any) => {
 //   const { response } = await algaehAxios("/bedManagement/getBedService", {
@@ -52,23 +34,27 @@ import { result } from "lodash";
 // import _ from "lodash";
 interface Row {
   hims_adm_ip_bed_id?: number;
-
-  bed_desc: string;
+  bed_color?: string;
+  steps?: number;
+  description: string;
   bed_status: string;
   bed_short_name: string;
+  record_status?: string;
 }
-interface Response {
-  data: { records: []; success: boolean };
+// interface Response {
+//   data: { records: []; success: boolean };
+// }
+interface Error {
+  show: boolean;
+  response: { data: { message: string; success: boolean } };
 }
-
 export default function BedStatus(Props: any) {
-  const [appointmentStatus, setAppointmentStatus] = useState([]);
+  const [bedStatusData, setBedStatusData] = useState<any>([]);
   // const [color_code, setColor_code] = useState<string>("#FFFFFF");
   // const [description, setDescription] = useState<string>("");
   // const [default_status, setDefault_status] = useState<string>("");
-  const [isEditable, setIsEditable] = useState<boolean>(true);
-  const [currentRow, setCurrentRow] = useState<Row>();
-  const [dropDownData, setDropDownData] = useState([]);
+  // const [isEditable, setIsEditable] = useState<boolean>(true);
+
   // const [disableAdd, setDisableAdd] = useState<null | string>("none");
   // const [min_steps, setMin_steps] = useState<number | string | null>(null);
   // const [steps_list, setSteps_list] = useState([]);
@@ -79,7 +65,7 @@ export default function BedStatus(Props: any) {
   // isEditable: true,
   // disableAdd: null,
 
-  const { control, errors, reset, handleSubmit } = useForm({
+  const { control, errors, reset, setValue, handleSubmit } = useForm({
     shouldFocusError: true,
   });
 
@@ -110,48 +96,41 @@ export default function BedStatus(Props: any) {
   //     this.setState({ default_status: "Y" });
   //   }
   // }
-  const updateReportMaster = async (data: Row) => {
+  const updateBedStatus = async (data: Row) => {
     const { error, response } = await algaehAxios(
-      "/bedManagement/updateBedType",
+      "/bedManagement/updateBedStatus",
       {
         module: "admission",
         method: "PUT",
-        data: { ...data, hims_adm_ip_bed_id: currentRow?.hims_adm_ip_bed_id },
+        data: { ...data },
       }
     );
     if (error) {
       if (error.show === true) {
-        console.log("error=====", error);
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
       }
     }
     console.log("response", response);
     if (response) {
-      getAppointmentStatus();
-      reset();
+      if (response.data.success) {
+        bedStatusSetUp();
+        reset();
+        AlgaehMessagePop({
+          display: "Successfully Updated",
+          type: "success",
+        });
+      }
     }
   };
-  const getBedService = async () => {
-    const { error, response } = await algaehAxios(
-      "/bedManagement/getBedService",
-      {
-        module: "admission",
-        method: "GET",
-        // data: { ...data, hims_adm_ip_bed_id: currentRow?.hims_adm_ip_bed_id },
-      }
-    );
-    if (error) {
-      if (error.show === true) {
-        console.log("error=====", error);
-      }
-    }
 
-    if (response) {
-      setDropDownData(response.data.records);
-    }
-  };
-  const addNewReportsFromReportMaster = async (data: Row) => {
+  const addBedStatus = async (data: Row) => {
     const { error, response } = await algaehAxios(
-      "/bedManagement/AddNewBedType",
+      "/bedManagement/addBedStatus",
       {
         module: "admission",
         method: "POST",
@@ -160,17 +139,23 @@ export default function BedStatus(Props: any) {
     );
     if (error) {
       if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
       }
     }
-    console.log("response", response);
-    if (response) {
+
+    if (response.data.success) {
       return response.data.records;
     }
   };
 
-  const getAppointmentStatus = async () => {
+  const bedStatusSetUp = async () => {
     const { response, error } = await algaehAxios(
-      "/bedManagement/getBedStatus",
+      "/bedManagement/bedStatusSetUp",
       {
         module: "admission",
         method: "GET",
@@ -178,58 +163,80 @@ export default function BedStatus(Props: any) {
     );
     if (error) {
       if (error.show === true) {
-        console.log("error=====", error);
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
       }
     }
-    console.log("response", response);
-    if (response) {
+
+    if (response.data.success) {
       debugger;
-      setAppointmentStatus(response.data.records);
-      console.log("appointmentStatus", appointmentStatus);
+      setValue(
+        "steps",
+        response.data.records.length > 0
+          ? parseInt(response.data.records[0].last_inserted) + 1
+          : 1
+      );
+      setBedStatusData(response.data.records);
+      return response.data.records;
     }
   };
   useEffect(() => {
-    getAppointmentStatus();
+    bedStatusSetUp();
     // eslint-disable-next-line
-    getBedService();
+    // getBedService();
   }, []);
-  const onEdit = (row: Row) => {
-    reset({ ...row });
-    setCurrentRow(row);
-  };
-  const onDelete = async (row: Row) => {
+  // const onEdit = (row: Row) => {
+  //   reset({ ...row });
+  //   setCurrentRow(row);
+  // };
+  const onDeleteBedStatus = async (row: Row) => {
     const { response, error } = await algaehAxios(
-      "/bedManagement/deleteBedStatus",
+      "/bedManagement/onDeleteBedStatus",
       {
         module: "admission",
-        method: "DELETE",
+        method: "PUT",
         data: { ...row },
       }
     );
     if (error) {
       if (error.show === true) {
+        let extendedError: Error | any = error;
         AlgaehMessagePop({
-          display: "Successfully Deleted",
-          type: "success",
+          display: extendedError.response.data.message,
+          type: "error",
         });
+        throw error;
       }
     }
     console.log("response", response);
     if (response) {
+      AlgaehMessagePop({
+        display: "Successfully Deleted",
+        type: "success",
+      });
     }
   };
 
   const onSubmit = (data: any) => {
     console.error(errors);
 
-    if (currentRow) {
-      updateReportMaster(data);
-    } else {
-      addNewReportsFromReportMaster(data).then((result) => {
-        getAppointmentStatus();
-        reset({});
+    addBedStatus(data).then(() => {
+      bedStatusSetUp().then((result) => {
+        reset({
+          bed_color: "#ffffff",
+          description: "",
+          steps: parseInt(result[0].last_inserted) + 1,
+        });
       });
-    }
+      AlgaehMessagePop({
+        display: "Successfully Added...",
+        type: "success",
+      });
+    });
   };
 
   return (
@@ -268,31 +275,49 @@ export default function BedStatus(Props: any) {
             control={control}
             rules={{ required: "Required" }}
             render={(props) => (
-              <AlgaehFormGroup
-                div={{ className: "col-2 form-group mandatory" }}
-                label={{
-                  fieldName: "color_code",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "color_code",
-                  // value: this.state.color_code,
-                  // events: {
-                  //   onChange: this.changeTexts.bind(this),
-                  // },
-                  others: {
-                    type: "color",
-                    required: true,
-                    checkvalidation: "$value === #ffffff",
-                    errormessage: "Please Select a color",
-                  },
-                }}
-              />
+              <div
+                component-role="textbox"
+                validator-required="true"
+                validator-value="focus-on"
+                focus-on="input"
+                className="col-2 form-group mandatory "
+              >
+                <label className="style_Label">
+                  Color Code<span className="imp">&nbsp;*</span>
+                </label>
+                <input
+                  className="ant-input txt-fld"
+                  // name="bed_color"
+                  // value={
+                  //   props.value === "" || !props.value ? "#ffffff" : props.value
+                  // }
+
+                  {...props}
+                  type="color"
+                />
+              </div>
+              // <AlgaehFormGroup
+              //   div={{ className: "col-2 form-group mandatory" }}
+              //   label={{
+              //     fieldName: "color_code",
+              //     isImp: true,
+              //   }}
+              //   textBox={{
+              //     className: "txt-fld",
+              //     name: "color_code",
+
+              //     others: {
+              //       type: "color",
+              //       required: true,
+              //       checkvalidation: "$value === #ffffff",
+              //       errormessage: "Please Select a color",
+              //     },
+              //   }}
+              // />
             )}
           />
           <Controller
-            name="bed_desc"
+            name="description"
             control={control}
             rules={{ required: "Required" }}
             render={(props) => (
@@ -306,7 +331,28 @@ export default function BedStatus(Props: any) {
                 textBox={{
                   ...props,
                   className: "txt-fld",
-                  name: "bed_desc",
+                  name: "description",
+                }}
+              />
+            )}
+          />
+          <Controller
+            name="steps"
+            control={control}
+            rules={{ required: "Required" }}
+            render={(props) => (
+              <AlgaehFormGroup
+                div={{ className: "col-2 mandatory form-group" }}
+                error={errors}
+                label={{
+                  forceLabel: "steps",
+                  isImp: true,
+                }}
+                textBox={{
+                  ...props,
+                  className: "txt-fld",
+                  name: "steps",
+                  disabled: true,
                 }}
               />
             )}
@@ -354,66 +400,111 @@ export default function BedStatus(Props: any) {
                     // datavalidate="data-validate='apptStatusDiv'"
                     columns={[
                       {
-                        fieldName: "actions",
-                        label: <AlgaehLabel label={{ fieldName: "Actions" }} />,
+                        fieldName: "bed_color",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "Bed Color" }} />
+                        ),
                         displayTemplate: (row: Row) => {
                           return (
-                            <>
-                              <i
-                                className="fas fa-pen"
-                                onClick={() => {
-                                  onEdit(row);
-                                }}
-                              ></i>
-
-                              <i
-                                className="fas fa-trash-alt"
-                                onClick={() => onDelete(row)}
-                              ></i>
-                            </>
+                            <div
+                              className="col"
+                              style={{
+                                backgroundColor: "" + row.bed_color,
+                                height: "20px",
+                                margin: "auto",
+                              }}
+                            />
                           );
                         },
-                        others: {
-                          width: 50,
+                        editorTemplate: (row: Row) => {
+                          return (
+                            <div className="row">
+                              <input
+                                className="col-lg-11"
+                                name="bed_color"
+                                defaultValue={row.bed_color}
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                  let name = e.target.name;
+                                  let value = e.target.value;
+                                  row[name] = value;
+                                }}
+                                type="color"
+                              />
+                            </div>
+                          );
                         },
                       },
                       {
-                        fieldName: "bed_desc",
+                        fieldName: "description",
                         label: (
                           <AlgaehLabel label={{ fieldName: "description" }} />
                         ),
-                        // editorTemplate: (row: Row) => {
-                        //   return (
-                        //     <AlgaehFormGroup
-                        //       div={{ className: "col" }}
-                        //       label={{
-                        //         fieldName: "",
-                        //         // isImp: true,
-                        //       }}
-                        //       textBox={{
-                        //         className: "txt-fld",
-                        //         name: "bed_desc",
-
-                        //         value: row.bed_desc,
-                        //         events: {
-                        //           onChange: () => {
-                        //             changeGridEditors.bind(row);
-                        //           },
-                        //         },
-                        //         others: {
-                        //           errormessage: "Description - cannot be blank",
-                        //           required: true,
-                        //         },
-                        //       }}
-                        //     />
-                        //   );
-                        // },
+                        editorTemplate: (row: Row) => {
+                          return (
+                            <AlgaehFormGroup
+                              div={{ className: "col" }}
+                              label={
+                                {
+                                  // forceLabel: "BED NO.",
+                                  // isImp: true,
+                                }
+                              }
+                              textBox={{
+                                type: "text",
+                                value: row.description,
+                                className: "form-control",
+                                name: "bed_no",
+                                updateInternally: true,
+                                onChange: (
+                                  e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                  row.description = e.target.value;
+                                },
+                              }}
+                            />
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "steps",
+                        label: <AlgaehLabel label={{ fieldName: "Steps" }} />,
+                        editorTemplate: (row: Row) => {
+                          return row.steps;
+                        },
+                      },
+                      {
+                        fieldName: "record_status",
+                        label: <AlgaehLabel label={{ fieldName: "Status" }} />,
+                        displayTemplate: (row: Row) => {
+                          return row.record_status === "A"
+                            ? "Active"
+                            : "InActive";
+                        },
+                        editorTemplate: (row: Row) => {
+                          return row.record_status === "A"
+                            ? "Active"
+                            : "InActive";
+                        },
                       },
                     ]}
                     // keyId="hims_d_appointment_status_id"
                     // rowUniqueId="hims_d_appointment_status_id"
-                    data={appointmentStatus}
-                    // isEditable={isEditable}
+                    data={bedStatusData}
+                    isEditable={true}
+                    events={{
+                      onCancel: (row) => {},
+                      onDeleteShow: (row) => {},
+                      onSaveShow: (row) => {},
+                      onEdit: (row) => {},
+                      onSave: (row) => {
+                        updateBedStatus(row);
+                      },
+                      onDelete: (row) => {
+                        onDeleteBedStatus(row);
+                      },
+                    }}
                     isFilterable={true}
                     pagination={true}
                   />

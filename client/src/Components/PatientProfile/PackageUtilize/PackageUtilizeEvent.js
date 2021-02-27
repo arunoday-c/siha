@@ -244,14 +244,17 @@ export default function PackageSetupEvent() {
                 data: inputObj,
                 onSuccess: (response) => {
                   if (response.data.success) {
-                    InputObj.doctor_id = response.data.records[0].employee_id;
+                    const doctor_details = response.data.records.filter(
+                      (f) => f.employee_id === InputObj.doctor_id
+                    );
+
+                    InputObj.doctor_id = doctor_details[0].employee_id;
                     InputObj.sub_department_id =
-                      response.data.records[0].sub_department_id;
-                    InputObj.services_id = response.data.records[0].services_id;
-                    InputObj.department_id =
-                      response.data.records[0].department_id;
+                      doctor_details[0].sub_department_id;
+                    InputObj.services_id = doctor_details[0].services_id;
+                    InputObj.department_id = doctor_details[0].department_id;
                     InputObj.department_type =
-                      response.data.records[0].department_type;
+                      doctor_details[0].department_type;
                     $this.setState($this.baseState, () => {
                       $this.props.onClose && $this.props.onClose(InputObj);
                     });

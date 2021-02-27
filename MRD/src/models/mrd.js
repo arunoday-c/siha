@@ -336,6 +336,39 @@ export default {
     }
   },
 
+  getPatientProcedures: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _stringData = "";
+      const input = req.query;
+      if (input.visit_id != null) {
+        _stringData += " and OS.visit_id = ?" + input.visit_id;
+      }
+      _mysql
+        .executeQuery({
+          query: `SELECT S.service_code, S.service_name,
+          case when OS.pre_approval='N' then 'Not Required' else 'Required' end as pre_approval, 
+          case when OS.insurance_yesno='N' then 'Not Covered' else 'Covered' end as insurance_yesno 
+          FROM hims_f_ordered_services as OS 
+          inner join hims_d_services S on S.hims_d_services_id=OS.services_id
+          where OS.service_type_id=2  ${_stringData};`,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   getPatientInvestigationForDashBoard: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

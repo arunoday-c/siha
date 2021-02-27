@@ -57,7 +57,7 @@ export default function OPEncounterDetails({
   const [consumableorderedList, setConsumableorderedList] = useState([]);
   const [nursingNotes, setNursingNotes] = useState([]);
   const [currentRow, setCurrentRow] = useState({});
-  // const [patientProcedures, setPatientProcedures] = useState([]);
+  const [patientProcedures, setPatientProcedures] = useState([]);
   const [patientVital, setPatientVital] = useState([]);
   const [loaderChiefComp, setLoaderChiefComp] = useState(false);
   const [
@@ -90,6 +90,7 @@ export default function OPEncounterDetails({
       getPatientDiagnosis(episode_id);
       getPatientMedication(encounter_id);
       getPatientInvestigation(visit_id);
+      getPatientProcedures(visit_id);
       getPatientPakages(visit_id, Window.global["mrd_patient"]);
       getConsumableorderedList(visit_id);
       getNursingNotes(visit_id, Window.global["mrd_patient"]);
@@ -427,6 +428,31 @@ export default function OPEncounterDetails({
       },
     });
   };
+
+  const getPatientProcedures = (visit_id) => {
+    algaehApiCall({
+      uri: "/mrd/getPatientProcedures",
+      module: "MRD",
+      method: "GET",
+      data: {
+        visit_id: visit_id,
+      },
+      cancelRequestId: "getPatientProcedures",
+      onSuccess: (response) => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          setPatientProcedures(response.data.records);
+        }
+      },
+      onFailure: (error) => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  };
   const getConsumableorderedList = (visit_id) => {
     algaehApiCall({
       uri: "/orderAndPreApproval/getVisitConsumable",
@@ -693,7 +719,6 @@ export default function OPEncounterDetails({
         ],
       };
     }
-    // let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
     let tab_name = inputObj.tab_name;
     algaehApiCall({
       uri: "/report",
@@ -711,19 +736,9 @@ export default function OPEncounterDetails({
         },
       },
       onSuccess: (res) => {
-        // const url = URL.createObjectURL(res.data);
-        // let myWindow = window.open(
-        //   "{{ product.metafields.google.custom_label_0 }}",
-        //   "_blank"
-        // );
-
-        // myWindow.document.write(
-        //   "<iframe src= '" + url + "' width='100%' height='100%' />"
-        // );
         const urlBlob = URL.createObjectURL(res.data);
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${tab_name}`;
         window.open(origin);
-        // window.document.title = tab_name;
       },
     });
   };
@@ -961,7 +976,6 @@ export default function OPEncounterDetails({
               </div>
             </div>
           </div>
-
           <div className="row chiefComplaint">
             <div className="col-lg-12">
               <h6 className="smallh6">Chief Complaint(s)</h6>
@@ -988,7 +1002,6 @@ export default function OPEncounterDetails({
               </div>
             </div>
           </div>
-
           <div className="row chiefComplaint">
             <div className="col-lg-12">
               <h6 className="smallh6">Significant Signs</h6>
@@ -1007,7 +1020,6 @@ export default function OPEncounterDetails({
               </div>
             </div>
           </div>
-
           {/* VITALS START */}
           <div className="row vitals">
             <div className="col-12">
@@ -1038,20 +1050,6 @@ export default function OPEncounterDetails({
                               <span>{item.uom}</span>
                             </h6>
                           </div>
-
-                          {/* {item.details.map((row, indexD) => (
-                                <div key={indexD} className="col borderVitals">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: row.vitals_name,
-                                    }}
-                                  />
-                                  <h6>
-                                    {row.vital_value}
-                                    <span>{row.uom}</span>
-                                  </h6>
-                                </div>
-                              ))} */}
                         </React.Fragment>
                       ))
                     ) : (
@@ -1063,7 +1061,6 @@ export default function OPEncounterDetails({
             </div>
           </div>
           {/* VITALS END */}
-
           <div className="row diagnosis">
             <div className="col-lg-12">
               <h6 className="smallh6">Diagnosis</h6>
@@ -1101,13 +1098,16 @@ export default function OPEncounterDetails({
               <div className="col-lg-12">
                 <h6 className="smallh6">Investigation</h6>
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="getInvestigationGrid">
                     <AlgaehDataGrid
-                      id="investigation-grid"
                       columns={[
                         {
                           fieldName: "service_type_id",
-                          label: "Service Type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Service Type" }}
+                            />
+                          ),
                           displayTemplate: (row) => {
                             return row.service_type_id === 5 ? (
                               <span>Lab</span>
@@ -1118,44 +1118,18 @@ export default function OPEncounterDetails({
                         },
                         {
                           fieldName: "service_name",
-                          label: "Service Name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Service Name" }}
+                            />
+                          ),
                         },
-                        // {
-                        //   fieldName: "lab_ord_status",
-                        //   label: "Lab Order Status",
-                        //   displayTemplate: (row) => {
-                        //     return (
-                        //       <span>
-                        //         {row.lab_ord_status === "O"
-                        //           ? "Ordered"
-                        //           : row.lab_ord_status === "CL"
-                        //           ? "Specimen Collected"
-                        //           : row.lab_ord_status === "CN"
-                        //           ? "Test Cancelled"
-                        //           : row.lab_ord_status === "CF"
-                        //           ? "Result Confirmed "
-                        //           : row.lab_ord_status === "V"
-                        //           ? "Result Validated"
-                        //           : "----"}
-                        //       </span>
-                        //     );
-                        //   },
-                        // },
-                        // {
-                        //   fieldName: "lab_billed",
-                        //   label: "Lab Billed",
-                        //   displayTemplate: (row) => {
-                        //     return (
-                        //       <span>
-                        //         {row.lab_billed === "Y" ? "Yes" : "----"}
-                        //       </span>
-                        //     );
-                        //   },
-                        // },
 
                         {
                           fieldName: "lab_ord_status",
-                          label: "Status",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Status" }} />
+                          ),
                           displayTemplate: (row) => {
                             return row.service_type_id === 5 ? (
                               <span>
@@ -1190,44 +1164,13 @@ export default function OPEncounterDetails({
                             ) : null;
                           },
                         },
-
-                        // {
-                        //   fieldName: "rad_ord_status",
-                        //   label: "Radiology Order Status",
-                        //   displayTemplate: (row) => {
-                        //     return (
-                        //       <span>
-                        //         {row.rad_ord_status === "O"
-                        //           ? "Ordered"
-                        //           : row.rad_ord_status === "S"
-                        //           ? "Scheduled"
-                        //           : row.rad_ord_status === "UP"
-                        //           ? "Under Process"
-                        //           : row.rad_ord_status === "CN"
-                        //           ? "Cancelled"
-                        //           : row.rad_ord_status === "RC"
-                        //           ? "Result Confirmed"
-                        //           : row.rad_ord_status === "RA"
-                        //           ? "Result Available"
-                        //           : "----"}
-                        //       </span>
-                        //     );
-                        //   },
-                        // },
-                        // {
-                        //   fieldName: "rad_billed",
-                        //   label: "Radiology Billed",
-                        //   displayTemplate: (row) => {
-                        //     return (
-                        //       <span>
-                        //         {row.rad_billed === "Y" ? "Yes" : "----"}
-                        //       </span>
-                        //     );
-                        //   },
-                        // },
                         {
                           fieldName: "intrnReport",
-                          label: "Internal Report",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Internal Report" }}
+                            />
+                          ),
                           displayTemplate: (row) => {
                             return row.service_type_id === 5 &&
                               row.lab_ord_status === "V" ? (
@@ -1257,7 +1200,11 @@ export default function OPEncounterDetails({
 
                         {
                           fieldName: "extrnReport",
-                          label: "External Report",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "External Report" }}
+                            />
+                          ),
                           displayTemplate: (row) => {
                             return row.service_type_id === 5 &&
                               row.lab_ord_status === "V" ? (
@@ -1288,86 +1235,10 @@ export default function OPEncounterDetails({
                             ) : null;
                           },
                         },
-                        // {
-                        //   fieldName: "action",
-                        //   label: "Attachments",
-                        //   displayTemplate: (row) => {
-                        //     return row.lab_billed === "Y" ? (
-                        //       <span>
-                        //         <i
-                        //           className="fas fa-paperclip"
-                        //           aria-hidden="true"
-                        //           onClick={() => {
-                        //             this.setState(
-                        //               {
-                        //                 openAttachmentsModal: true,
-                        //                 // currentRow: row,
-                        //                 // lab_id_number: row.lab_id_number,
-                        //               },
-
-                        //               this.getSavedDocument.bind(
-                        //                 this,
-                        //                 row
-                        //               )
-                        //             );
-                        //           }}
-                        //         />
-                        //       </span>
-                        //     ) : (
-                        //       "----"
-                        //     );
-                        //   },
-                        // },
-                        // {
-                        //   fieldName: "radiology_attachments",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{
-                        //         forceLabel: "Radiology Attachments",
-                        //       }}
-                        //     />
-                        //   ),
-                        //   displayTemplate: (row) => {
-                        //     return row.rad_billed === "Y" ? (
-                        //       <span>
-                        //         <i
-                        //           // style={{
-                        //           //   pointerEvents:
-                        //           //     row.status === "O"
-                        //           //       ? ""
-                        //           //       : row.sample_status === "N"
-                        //           //       ? "none"
-                        //           //       : "",
-                        //           // }}
-                        //           className="fas fa-paperclip"
-                        //           aria-hidden="true"
-                        //           onClick={(e) => {
-                        //             this.setState(
-                        //               {
-                        //                 openAttachmentsModal: true,
-                        //               },
-
-                        //               this.getDocuments.bind(this, row)
-                        //             );
-                        //           }}
-                        //         />
-                        //       </span>
-                        //     ) : (
-                        //       "----"
-                        //     );
-                        //   },
-                        // },
                       ]}
                       keyId="index"
                       data={patientInvestigations}
-                      // isEditable={false}
                       pagination={true}
-                      // paging={{ page: 0, rowsPerPage: 5 }}
-                      events={{
-                        onDelete: (row) => {},
-                        onEdit: (row) => {},
-                        onDone: (row) => {},
-                      }}
                     />
                   </div>
                 </div>
@@ -1381,7 +1252,6 @@ export default function OPEncounterDetails({
               onClose={showAttachmentsOfServices}
             />
           ) : null}
-
           {/* <AlgaehModal
             title="View Attachments"
             visible={openAttachmentsModal}
@@ -1446,9 +1316,9 @@ export default function OPEncounterDetails({
           {patientPakages.length !== 0 ? (
             <div className="row investigation">
               <div className="col-lg-12">
-                <h6 className="smallh6">Pakages</h6>
+                <h6 className="smallh6">Packages</h6>
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="getPackageGrid">
                     <AlgaehDataGrid
                       id="Package_list"
                       columns={[
@@ -1560,9 +1430,9 @@ export default function OPEncounterDetails({
             </div>
           ) : null}
           {consumableorderedList.length !== 0 ? (
-            <div className="row investigation">
+            <div className="row investigation" id="getConsumableGrid">
               <div className="col-lg-12">
-                <h6 className="smallh6">consumables</h6>
+                <h6 className="smallh6">Consumables</h6>
                 <div className="row">
                   <div className="col-lg-12">
                     <AlgaehDataGrid
@@ -1693,36 +1563,44 @@ export default function OPEncounterDetails({
               </div>
             </div>
           ) : null}
-
           {patientMedications.length !== 0 ? (
             <div className="row medication">
               <div className="col-lg-12">
                 <h6 className="smallh6">Medication</h6>
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="getMedicationGrid">
                     <AlgaehDataGrid
-                      id="medication-grid"
                       columns={[
                         {
                           fieldName: "generic_name",
-                          label: "Generic Name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Generic Name" }}
+                            />
+                          ),
                         },
                         {
                           fieldName: "item_description",
-                          label: "Item Description",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Item Desc." }} />
+                          ),
                         },
 
                         {
                           fieldName: "dosage",
-                          label: "Dosage",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Dosage" }} />
+                          ),
                         },
                         {
                           fieldName: "med_units",
-                          label: "Unit",
+                          label: <AlgaehLabel label={{ forceLabel: "Unit" }} />,
                         },
                         {
                           fieldName: "frequency",
-                          label: "Frequency",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Frequency" }} />
+                          ),
                           displayTemplate: (row) => {
                             return row.frequency === "0"
                               ? "1-0-1"
@@ -1769,11 +1647,17 @@ export default function OPEncounterDetails({
                         },
                         {
                           fieldName: "no_of_days",
-                          label: "No. of Days",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "No. of Days" }}
+                            />
+                          ),
                         },
                         {
                           fieldName: "start_date",
-                          label: "Start date",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Start Date" }} />
+                          ),
                           displayTemplate: (row) => {
                             return (
                               <span>
@@ -1786,94 +1670,87 @@ export default function OPEncounterDetails({
                       keyId="index"
                       data={patientMedications}
                       pagination={true}
-                      // isEditable={false}
-                      // paging={{ page: 0, rowsPerPage: 5 }}
-                      // events={{
-                      //   onDelete: (row) => {},
-                      //   onEdit: (row) => {},
-                      //   onDone: (row) => {},
-                      // }}
                     />
                   </div>
                 </div>
               </div>
             </div>
           ) : null}
-          {/* {patientProcedures.length !== 0 ? (
-                <div className="row procedures">
-                  <div className="col-lg-12">
-                    <h6 className="smallh6">Procedures</h6>
-                    <div className="row">
-                      <div className="col-lg-12">
-                        <AlgaehDataGrid
-                          id="procedure-grid"
-                          columns={[
-                            {
-                              fieldName: "index",
-                              label: "Sl. No.",
-                            },
-                            {
-                              fieldName: "c_d_t",
-                              label: "Consult Date & Time",
-                            },
-                            {
-                              fieldName: "doc_name",
-                              label: "Doctor Name",
-                            },
-                          ]}
-                          keyId="index"
-                          dataSource={{
-                            data: [
-                              {
-                                c_d_t: "May 22 13:00:00",
-                                doc_name: "Norman John",
-                                index: "1",
-                              },
-                              {
-                                c_d_t: "May 23 13:00:00",
-                                doc_name: "John Morgan",
-                                index: "2",
-                              },
-                            ],
-                          }}
-                          isEditable={false}
-                          paging={{ page: 0, rowsPerPage: 5 }}
-                          events={{
-                            onDelete: (row) => {},
-                            onEdit: (row) => {},
-                            onDone: (row) => {},
-                          }}
-                        />
-                      </div>
-                    </div>
+          {patientProcedures.length !== 0 ? (
+            <div className="row procedures">
+              <div className="col-lg-12">
+                <h6 className="smallh6">Procedures</h6>
+                <div className="row">
+                  <div className="col-lg-12" id="getProcedureGrid">
+                    <AlgaehDataGrid
+                      id="procedure-grid"
+                      columns={[
+                        {
+                          fieldName: "service_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Service Code" }}
+                            />
+                          ),
+                        },
+                        {
+                          fieldName: "service_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Service Name" }}
+                            />
+                          ),
+                        },
+                        {
+                          fieldName: "insurance_yesno",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Insurance" }} />
+                          ),
+                        },
+                        {
+                          fieldName: "pre_approval",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Pre-Approval" }}
+                            />
+                          ),
+                        },
+                      ]}
+                      data={patientProcedures}
+                      pagination={true}
+                    />
                   </div>
                 </div>
-              ) : null} */}
+              </div>
+            </div>
+          ) : null}
           {nursingNotes.length !== 0 ? (
             <div className="row investigation">
               <div className="col-lg-12">
                 <h6 className="smallh6">Nursing Notes</h6>
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="getNursingNotesGrid">
                     <AlgaehDataGrid
                       id="Package_list"
                       columns={[
                         {
                           fieldName: "nursing_notes",
-                          label: "Notes",
-                          disabled: true,
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Notes" }} />
+                          ),
                         },
                         {
                           fieldName: "created_date",
-                          label: "Entered by & Date",
-                          disabled: true,
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Entered By & Date" }}
+                            />
+                          ),
                         },
                       ]}
                       // keyId="_type_id"
-                      dataSource={{
-                        data: nursingNotes,
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      data={nursingNotes}
+                      pagination={true}
                     />
                   </div>
                 </div>

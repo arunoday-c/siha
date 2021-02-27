@@ -848,6 +848,7 @@ export function PatientRegistration() {
     // ];
 
     // AlgaehLoader({ show: true });
+    debugger;
     const doctor = `${e.sub_department_id}-${e.services_id}-${e.doctor_id}-${
       e.department_type
     }-${e?.department_id}-${"1"}`;
@@ -855,6 +856,7 @@ export function PatientRegistration() {
 
     setValue("doctor", doctor);
     setValue("doctor_id", e.doctor_id);
+    setValue("from_package", e.package_utilize === true ? false : true);
 
     setServiceInfo(service);
     // algaehApiCall({

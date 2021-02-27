@@ -157,11 +157,11 @@ export async function macro(req, res, next) {
         whereCondition = ` DATE(bill_cancel_date) between DATE('${from_date}') and DATE('${to_date}')`;
       }
       if (bill_number) {
-        if (whereCondition.length > 0) {
-          whereCondition += ` and bill_cancel_number='${bill_number}'`;
-        } else {
-          whereCondition = ` bill_cancel_number='${bill_number}'`;
-        }
+        // if (whereCondition.length > 0) {
+        // whereCondition += ` and bill_cancel_number='${bill_number}'`;
+        // } else {
+        whereCondition = ` bill_cancel_number='${bill_number}'`;
+        // }
       }
       const result = await _mysql
         .executeQuery({

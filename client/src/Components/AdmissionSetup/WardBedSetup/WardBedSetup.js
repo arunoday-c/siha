@@ -22,7 +22,7 @@ export default function FinanceYearlyClosing() {
               <div className="row">
                 <AlgaehFormGroup
                   div={{
-                    className: "col-6 form-group",
+                    className: "col form-group",
                   }}
                   label={{
                     forceLabel: "Ward Desc.",
@@ -37,7 +37,7 @@ export default function FinanceYearlyClosing() {
                 />
                 <AlgaehFormGroup
                   div={{
-                    className: "col-6 form-group",
+                    className: "col-3 form-group",
                   }}
                   label={{
                     forceLabel: "Ward Short Desc.",
@@ -51,7 +51,7 @@ export default function FinanceYearlyClosing() {
                   }}
                 />
                 <AlgaehAutoComplete
-                  div={{ className: "col-6" }}
+                  div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Ward Type",
                     isImp: true,

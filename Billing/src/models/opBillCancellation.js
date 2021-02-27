@@ -830,8 +830,8 @@ export default {
       const _options = req.connection == null ? {} : req.connection;
 
       const _mysql = new algaehMysql(_options);
-      const utilities = new algaehUtilities();
-
+      // const utilities = new algaehUtilities();
+      const { closeConnection } = req.body;
       _mysql
         .executeQuery({
           query:
@@ -848,7 +848,6 @@ export default {
                 servicesIds.push(item.services_id);
               });
             }
-            const { closeConnection } = inputParam;
 
             _mysql
               .executeQuery({
