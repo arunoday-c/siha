@@ -183,7 +183,7 @@ class DocumentMaster extends Component {
           <AlagehFormGroup
             div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Description",
+              fieldName: "doc_desc",
               isImp: true,
             }}
             textBox={{
@@ -198,7 +198,7 @@ class DocumentMaster extends Component {
 
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
-            label={{ forceLabel: "Document Type", isImp: true }}
+            label={{ fieldName: "doc_type", isImp: true }}
             selector={{
               name: "document_type",
               value: this.state.document_type,
@@ -225,7 +225,7 @@ class DocumentMaster extends Component {
               id="srch-sch"
               onClick={this.addDocType.bind(this)}
             >
-              Add to List
+              <AlgaehLabel label={{ fieldName: "add_to_list" }} />
             </button>
           </div>
         </div>
@@ -234,7 +234,10 @@ class DocumentMaster extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Document Master List</h3>
+                  <h3 className="caption-subject">
+                    {" "}
+                    <AlgaehLabel label={{ fieldName: "emp_doc_mst_list" }} />
+                  </h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -246,7 +249,7 @@ class DocumentMaster extends Component {
                       {
                         fieldName: "document_description",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Description" }} />
+                          <AlgaehLabel label={{ fieldName: "doc_desc" }} />
                         ),
                         editorTemplate: (row) => {
                           return (
@@ -274,9 +277,7 @@ class DocumentMaster extends Component {
                       {
                         fieldName: "document_type",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Document Type" }}
-                          />
+                          <AlgaehLabel label={{ fieldName: "doc_type" }} />
                         ),
                         displayTemplate: (row) => {
                           return (
@@ -317,7 +318,7 @@ class DocumentMaster extends Component {
                       {
                         fieldName: "created_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Created Date" }} />
+                          <AlgaehLabel label={{ fieldName: "created_date" }} />
                         ),
                         displayTemplate: (row) => {
                           return (
