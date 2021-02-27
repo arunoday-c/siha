@@ -196,7 +196,6 @@ export function getWardHeaderData(
           .value();
         // console.log("history", history);
         req["records"] = history;
-
         next();
       })
       .catch((e) => {
@@ -288,6 +287,7 @@ export async function updateWardHeader(
         throw e;
       });
     req["records"] = result;
+    next();
   } catch (e) {
     next(e);
   } finally {
@@ -320,6 +320,7 @@ export async function onDeleteHeader(
         throw e;
       });
     req["records"] = result;
+    next();
   } catch (e) {
     next(e);
   } finally {
@@ -346,7 +347,7 @@ export async function getWardDetails(
         throw e;
       });
     req["records"] = result;
-    // next();
+    next();
   } catch (e) {
     next(e);
   } finally {
@@ -368,7 +369,7 @@ export async function addWardDetails(
         extraValues: {
           ward_header_id: input.insertId,
         },
-        excludeValues: ["rIndex"],
+        excludeValues: ["rIndex", "bed_desc"],
         // replcaeKeys: { status: "record_status" },
         query: "insert into hims_adm_ward_detail (??) values ?",
         printQuery: true,
@@ -467,7 +468,7 @@ export async function onDeleteDetails(
         throw e;
       });
     req["records"] = result;
-    // next();
+    next();
   } catch (e) {
     next(e);
   } finally {

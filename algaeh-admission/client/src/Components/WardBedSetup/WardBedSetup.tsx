@@ -13,6 +13,7 @@ import {
   AlgaehMessagePop,
   // AlgaehSearch,
   algaehAxios,
+  Collapse,
   // // DatePicker,
   // AlgaehModal,
   // AlgaehHijriDatePicker,
@@ -22,8 +23,9 @@ import {
   //   AlgaehButton,
 } from "algaeh-react-components";
 import { Controller, useForm } from "react-hook-form";
+import { parseInt } from "lodash";
 // import { debug } from "console";
-
+const { Panel } = Collapse;
 export default function WardBedSetup(Props: any) {
   // const [wardRow, setWardRow] = useState<any>({});
   const [wardHeaderRow, setWardHeaderRow] = useState<any>({});
@@ -134,10 +136,15 @@ export default function WardBedSetup(Props: any) {
       // let details = wardDetailsData;
       const rIndex = pre.length + 1;
       // let itemObj =
+      let bedDesc: { bed_desc: string } = bedDropDown.filter((f: any) => {
+        return f.hims_adm_ip_bed_id === parseInt(data.bed_id);
+      })[0];
+
       pre.push({
         rIndex: rIndex,
         bed_id: data.bed_id,
         bed_no: data.bed_no,
+        bed_desc: bedDesc.bed_desc,
       });
       return [...pre];
     });
@@ -307,7 +314,7 @@ export default function WardBedSetup(Props: any) {
     if (wardHeaderRow.hims_adm_ward_header_id) {
       updateWardHeader(data).then((result) => {
         const addNewWardDetails = wardDetailsData.filter(
-          (item: { isInserted: number | null | undefined }) => {
+          (item: { isInserted: number }) => {
             return item.isInserted !== 1;
           }
         );
@@ -321,6 +328,7 @@ export default function WardBedSetup(Props: any) {
                 display: "Successfully Updated",
                 type: "success",
               });
+              setWardDetailsData([]);
               return;
             });
           });
@@ -561,6 +569,7 @@ export default function WardBedSetup(Props: any) {
                                         value: row.bed_id,
                                         onChange: (e: any, value: any) => {
                                           row.bed_id = value;
+                                          row.bed_desc = e.bed_desc;
                                         },
                                         // others: { defaultValue: row.bed_id },
                                         dataSource: {
@@ -619,7 +628,7 @@ export default function WardBedSetup(Props: any) {
                               onSaveShow: (row) => {},
                               onEdit: (row) => {},
                               onSave: (row) => {
-                                if (row.isInserted === 1) {
+                                if (row.isInserted === 1 && row.bed_id) {
                                   updateWardDetails(row);
                                 } else {
                                   return;
@@ -682,14 +691,93 @@ export default function WardBedSetup(Props: any) {
                   <h3 className="caption-subject">List of Wards</h3>
                 </div>
               </div>
+              <Collapse className="accCntr">
+                {wardHeaderData.map((item: any, key: number) => (
+                  <Panel
+                    header={
+                      <div className="portlet-body">
+                        <i
+                          className="fas fa-pen"
+                          onClick={() => {
+                            let filteredItem = item.groupDetail.filter(
+                              (f: any) => {
+                                return f.bed_id !== null || undefined;
+                              }
+                            );
+                            setWardDetailsData(filteredItem);
+                            setWardHeaderRow(item);
+                            reset({ ...item });
+                          }}
+                        ></i>
+                        <h3>{item.ward_desc}</h3>
+                      </div>
+                    }
+                    key={key}
+                  >
+                    <table className="accrTable">
+                      <thead>
+                        <tr>
+                          <th>Bed Name</th>
+                          <th>Bed No.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {item.groupDetail.map((data: any, index: number) => {
+                          const {
+                            bed_desc,
+                            // bed_id,
+                            bed_no,
+                          } = data;
 
-              {wardHeaderData.map((item: any, key: number) => (
+                          return (
+                            <tr key={index}>
+                              <td
+                                style={{
+                                  textAlign: "left",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {bed_desc}
+                              </td>
+                              <td width="150">{bed_no}</td>
+                              {/* <td width="20">{critical_status === "Y" ? "Yes" : "No"}</td> */}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <div className="accFooter">
+                      {/* <AlgaehButton
+            className="btn btn-default btn-sm"
+            report="merge"
+            onClick={showReport}
+            disabled={enablePrintButton}
+            loading={loading}
+          >
+            Print as merge report
+          </AlgaehButton>{" "}
+          <AlgaehButton
+            className="btn btn-default btn-sm"
+            report="separate"
+            onClick={showReport}
+            disabled={enablePrintButton}
+            loading={loading}
+            style={{ marginLeft: 10 }}
+          >
+            Print as separate report
+          </AlgaehButton> */}
+                    </div>
+                  </Panel>
+                ))}
+              </Collapse>
+
+              {/* {wardHeaderData.map((item: any, key: number) => (
                 <div className="portlet-body" key={key}>
                   <span>
                     <i
                       className="fas fa-pen"
                       onClick={() => {
-                        debugger;
+                        
                         setWardDetailsData(
                           item.groupDetail.length > 0 ? item.groupDetail : []
                         );
@@ -720,7 +808,7 @@ export default function WardBedSetup(Props: any) {
                     </table>
                   ))}
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
         </div>
