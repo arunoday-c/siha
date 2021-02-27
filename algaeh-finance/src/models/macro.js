@@ -15,11 +15,11 @@ export async function macro(req, res, next) {
         whereCondition = ` DATE(bill_date) between DATE('${from_date}') and DATE('${to_date}')`;
       }
       if (bill_number) {
-        if (whereCondition.length > 0) {
-          whereCondition += ` and bill_number='${bill_number}'`;
-        } else {
-          whereCondition = ` bill_number='${bill_number}'`;
-        }
+        // if (whereCondition.length > 0) {
+        // whereCondition += ` and bill_number='${bill_number}'`;
+        // } else {
+        whereCondition = ` bill_number='${bill_number}'`;
+        // }
       }
       const result = await _mysql
         .executeQuery({
@@ -292,7 +292,7 @@ export async function macro(req, res, next) {
     }
 
     const { headers } = req;
-    console.log("headers", headers);
+
     for (let i = 0; i < records.length; i++) {
       const {
         finance_day_end_header_id,
@@ -309,22 +309,50 @@ export async function macro(req, res, next) {
       if (finance_day_end_header_id > 0) {
         const deteRecords = await _mysql
           .executeQuery({
-            query: `delete from  finance_day_end_sub_detail where day_end_header_id =?;
-          delete from  finance_day_end_header where finance_day_end_header_id =?;`,
-            values: [finance_day_end_header_id, finance_day_end_header_id],
+            query: `insert into finance_day_end_header_roll_back select * from finance_day_end_header
+            where finance_day_end_header_id =?; 
+            insert into finance_day_end_sub_detail_roll_back select * from finance_day_end_sub_detail
+            where day_end_header_id =?;
+            delete from  finance_day_end_sub_detail where day_end_header_id =?;
+            delete from  finance_day_end_header where finance_day_end_header_id =?;            
+          `,
+            values: [
+              finance_day_end_header_id,
+              finance_day_end_header_id,
+              finance_day_end_header_id,
+              finance_day_end_header_id,
+            ],
             printQuery: true,
           })
           .catch((error) => {
             throw error;
           });
       }
-      const generateAccountEntry = await axios({
+      await axios({
         method: "POST",
         url: strUrl,
         data: { ...records[i], closeConnection: true },
         headers: { ...headers },
-      }).catch((error) => {
-        throw error;
+      }).catch(async (error) => {
+        await _mysql.executeQuery({
+          query: `insert into finance_day_end_header select * from finance_day_end_header_roll_back where finance_day_end_header_id=?;
+          insert into finance_day_end_sub_detail select * from finance_day_end_sub_detail_roll_back where day_end_header_id =?;
+          delete from finance_day_end_header_roll_back where finance_day_end_header_id=?;
+           delete from finance_day_end_sub_detail_roll_back where day_end_header_id =?;
+          `,
+          values: [
+            finance_day_end_header_id,
+            finance_day_end_header_id,
+            finance_day_end_header_id,
+            finance_day_end_header_id,
+          ],
+          printQuery: true,
+        });
+        if (error.response.data?.message) {
+          throw new Error(error.response.data?.message);
+        } else {
+          throw error;
+        }
       });
     }
     next();
