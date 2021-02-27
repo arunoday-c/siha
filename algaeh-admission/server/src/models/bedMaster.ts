@@ -10,7 +10,7 @@ export function getBedStatus(req: Request, res: Response, next: NextFunction) {
   try {
     _mysql
       .executeQuery({
-        query: `select IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id=S. hims_d_services_id `,
+        query: `select IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id=S. hims_d_services_id   order by hims_adm_ip_bed_id desc `,
         printQuery: true,
       })
       .then((result) => {
@@ -147,12 +147,56 @@ export function getWardHeaderData(
   try {
     _mysql
       .executeQuery({
-        query: `select * from hims_adm_ward_header `,
+        query: `select WH.hims_adm_ward_header_id,WH.ward_desc, WH.ward_short_name,IB.bed_desc,WH.ward_type,WD.hims_adm_ward_detail_id,WD.ward_header_id,
+        WD.bed_id,WD.bed_no,WD.status  from hims_adm_ward_header as WH left join hims_adm_ward_detail as WD on 
+       WD.ward_header_id= WH.hims_adm_ward_header_id left join hims_adm_ip_bed IB on WD.bed_id=IB.hims_adm_ip_bed_id where WH.ward_status='A'; `,
         printQuery: true,
       })
       .then((result) => {
-        req["records"] = result;
         _mysql.releaseConnection();
+
+        let history = _.chain(result)
+          .groupBy((g) => g.hims_adm_ward_header_id)
+          .map((detail, key) => {
+            const {
+              ward_desc,
+              hims_adm_ward_header_id,
+              ward_type,
+              ward_short_name,
+            } = _.head(detail);
+            const item: {
+              // hims_adm_ward_header_id: number;
+              bed_id: number;
+              bed_no: number;
+              status: string;
+              hims_adm_ward_detail_id: number;
+              isInserted: number;
+            } = detail.map((item: any) => {
+              return {
+                // hims_adm_ward_header_id: item.hims_adm_ward_header_id,
+                bed_id: item.bed_id,
+                bed_no: item.bed_no,
+                status: item.status,
+                bed_desc: item.bed_desc,
+                hims_adm_ward_detail_id: item.hims_adm_ward_detail_id,
+                isInserted: 1,
+              };
+            });
+
+            return {
+              groupType: key,
+              hims_adm_ward_header_id: hims_adm_ward_header_id,
+              ward_short_name: ward_short_name,
+              ward_type: ward_type,
+              ward_desc: ward_desc,
+
+              groupDetail: item,
+            };
+          })
+          .value();
+        // console.log("history", history);
+        req["records"] = history;
+
         next();
       })
       .catch((e) => {
@@ -202,12 +246,12 @@ export async function addWardHeader(
       .catch((e) => {
         throw e;
       });
+
     req["records"] = result;
-    // next();
+    next();
   } catch (e) {
     next(e);
   } finally {
-    console.log("release");
     _mysql.releaseConnection();
   }
 }
@@ -220,13 +264,15 @@ export async function updateWardHeader(
   try {
     console.log("iam here");
     const input = req.body;
+
     const result = await _mysql
       .executeQuery({
-        query: `Update hims_adm_ward_header set ward_desc=?,ward_short_name=?,ward_status=?,updated_by=? ,updated_date=? where hims_adm_ward_header=?`,
+        query: `Update hims_adm_ward_header set ward_desc=?,ward_short_name=?,ward_type=?,updated_by=? ,updated_date=? where hims_adm_ward_header_id=?;`,
         values: [
           input.ward_desc,
           input.ward_short_name,
-          input.ward_status,
+          // input.ward_status,
+          input.ward_type,
 
           req["userIdentity"].algaeh_d_app_user_id,
           new Date(),
@@ -315,24 +361,37 @@ export async function addWardDetails(
   const _mysql = new algaehMysql();
   try {
     const input = req.body;
-
+    console.log(input, "input");
     const result = await _mysql
       .executeQuery({
-        query: `insert into hims_adm_ward_detail(
-          ward_header_id,bed_id,bed_no,created_by,created_date,updated_by,updated_date)values(
-          ?,?,?,?,?,?,?)`,
-        values: [
-          input.ward_header_id,
-          input.bed_id,
-          input.bed_no,
-
-          req["userIdentity"].algaeh_d_app_user_id,
-          new Date(),
-          req["userIdentity"].algaeh_d_app_user_id,
-          new Date(),
-        ],
+        values: input.wardDetailsData,
+        extraValues: {
+          ward_header_id: input.insertId,
+        },
+        excludeValues: ["rIndex"],
+        // replcaeKeys: { status: "record_status" },
+        query: "insert into hims_adm_ward_detail (??) values ?",
         printQuery: true,
+        bulkInsertOrUpdate: true,
       })
+
+      // const result = await _mysql
+      //   .executeQuery({
+      //     query: `insert into hims_adm_ward_detail(
+      //       ward_header_id,bed_id,bed_no,created_by,created_date,updated_by,updated_date)values(
+      //       ?,?,?,?,?,?,?)`,
+      //     values: [
+      //       input.ward_header_id,
+      //       input.bed_id,
+      //       input.bed_no,
+
+      //       req["userIdentity"].algaeh_d_app_user_id,
+      //       new Date(),
+      //       req["userIdentity"].algaeh_d_app_user_id,
+      //       new Date(),
+      //     ],
+      //     printQuery: true,
+      //   })
       // .then((result) => {
       //   req["records"] = result;
       //   next();
@@ -341,7 +400,7 @@ export async function addWardDetails(
         throw e;
       });
     req["records"] = result;
-    // next();
+    next();
   } catch (e) {
     next(e);
   } finally {
@@ -355,13 +414,13 @@ export async function updateWardDetails(
 ) {
   const _mysql = new algaehMysql();
   try {
-    console.log("iam here");
     const input = req.body;
+
     const result = await _mysql
       .executeQuery({
-        query: `Update hims_adm_ward_detail set ward_header_id=?,bed_id=?,bed_no=?,updated_by=? ,updated_date=? where hims_adm_ward_detail_id=?`,
+        query: `Update hims_adm_ward_detail set bed_id=?,bed_no=?,updated_by=? ,updated_date=? where hims_adm_ward_detail_id=?`,
         values: [
-          input.ward_header_id,
+          // input.ward_header_id,
           input.bed_id,
           input.bed_no,
 
@@ -379,7 +438,7 @@ export async function updateWardDetails(
         throw e;
       });
     req["records"] = result;
-    // next();
+    next();
   } catch (e) {
     next(e);
   } finally {
@@ -396,12 +455,8 @@ export async function onDeleteDetails(
     const input = req.body;
     const result = await _mysql
       .executeQuery({
-        query: `Update  hims_adm_ward_detail set status='I',updated_by=? ,updated_date=? where hims_adm_ward_detail_id=?`,
-        values: [
-          req["userIdentity"].algaeh_d_app_user_id,
-          new Date(),
-          input.hims_adm_ward_detail_id,
-        ],
+        query: `delete from hims_adm_ward_detail where hims_adm_ward_detail_id=?;`,
+        values: [input.hims_adm_ward_detail_id],
         printQuery: true,
       })
       // .then((result) => {
@@ -476,4 +531,147 @@ export function bedDataFromMaster(
   // } finally {
   //   _mysql.releaseConnection();
   // }
+}
+
+export function bedStatusSetUp(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const _mysql = new algaehMysql();
+  try {
+    _mysql
+      .executeQuery({
+        query: `select hims_adm_bed_status_id,bed_color,description,steps,record_status,LAST_INSERT_ID(steps) as last_inserted from hims_adm_bed_status order by steps desc ;`,
+        printQuery: true,
+      })
+      .then((result) => {
+        req["records"] = result;
+        _mysql.releaseConnection();
+        next();
+      })
+      .catch((e) => {
+        throw e;
+      });
+  } catch (e) {
+    next(e);
+    _mysql.releaseConnection();
+  }
+  // } finally {
+  //   _mysql.releaseConnection();
+  // }
+}
+export async function onDeleteBedStatus(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const _mysql = new algaehMysql();
+  try {
+    const input = req.body;
+    const result = await _mysql
+      .executeQuery({
+        query: `Update hims_adm_bed_status set record_status='I',updated_by=? ,updated_date=? where hims_adm_bed_status_id=?`,
+        values: [
+          req["userIdentity"].algaeh_d_app_user_id,
+          new Date(),
+          input.hims_adm_bed_status_id,
+        ],
+        printQuery: true,
+      })
+      // .then((result) => {
+      //   req["records"] = result;
+      //   next();
+      // })
+      .catch((e) => {
+        throw e;
+      });
+    req["records"] = result;
+    next();
+  } catch (e) {
+    next(e);
+  } finally {
+    _mysql.releaseConnection();
+  }
+}
+export async function addBedStatus(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const _mysql = new algaehMysql();
+  try {
+    const input = req.body;
+
+    const result = await _mysql
+      .executeQuery({
+        query: `insert into hims_adm_bed_status(
+          bed_color,description,steps,created_by,created_date,updated_by,updated_date)values(
+          ?,?,?,?,?,?,?)`,
+        values: [
+          input.bed_color,
+          input.description,
+          input.steps,
+
+          req["userIdentity"].algaeh_d_app_user_id,
+          new Date(),
+          req["userIdentity"].algaeh_d_app_user_id,
+          new Date(),
+        ],
+        printQuery: true,
+      })
+      // .then((result) => {
+      //   req["records"] = result;
+      //   next();
+      // })
+      .catch((e) => {
+        throw e;
+      });
+
+    req["records"] = result;
+    next();
+  } catch (e) {
+    next(e);
+  } finally {
+    _mysql.releaseConnection();
+  }
+}
+
+export async function updateBedStatus(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const _mysql = new algaehMysql();
+  try {
+    const input = req.body;
+    const result = await _mysql
+      .executeQuery({
+        query: `Update hims_adm_bed_status set bed_color=?,description=?,steps=?,updated_by=? ,updated_date=? where hims_adm_bed_status_id=?`,
+        values: [
+          input.bed_color,
+          input.description,
+          input.steps,
+
+          req["userIdentity"].algaeh_d_app_user_id,
+          new Date(),
+          input.hims_adm_bed_status_id,
+        ],
+        printQuery: true,
+      })
+      // .then((result) => {
+      //   req["records"] = result;
+      //   _mysql.releaseConnection();
+      //   next();
+      // })
+      .catch((e) => {
+        throw e;
+      });
+    req["records"] = result;
+    next();
+  } catch (e) {
+    next(e);
+  } finally {
+    _mysql.releaseConnection();
+  }
 }
