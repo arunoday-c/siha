@@ -749,5 +749,11 @@
   "monthly_accural_days": "Monthly Accural Days",
   "airfare_eligiblity": "Airfare Eligiblity",
   "airfare_amount": "Airfare Amount",
-  "ramzan_timing_required": "Ramzan Timing Required"
+  "ramzan_timing_required": "Ramzan Timing Required",
+  "designation_mst_list": "Designation Master List",
+  "designation_code": "Designation Code",
+  "designation_desc": "Designation Description",
+  "emp_doc_mst_list": "Employee Document Master List",
+  "doc_type": "Document Type",
+  "doc_desc": "Document Description"
 }

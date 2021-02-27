@@ -470,5 +470,11 @@
   "monthly_accural_days": "اضافة ايام في الشهر",
   "airfare_eligiblity": "أهلية السفر الجوي",
   "airfare_amount": "مقدار السفر بالطائرة",
-  "ramzan_timing_required": "توقيت رمضان مطلوب"
+  "ramzan_timing_required": "توقيت رمضان مطلوب",
+  "designation_mst_list": "قائمة التعيين",
+  "designation_code": "رمز التعيين",
+  "designation_desc": "وصف التعيين",
+  "emp_doc_mst_list": "قائمة المستندات الرئيسية للموظف",
+  "doc_type": "نوع الوثيقة",
+  "doc_desc": "وصف الوثيقة"
 }
