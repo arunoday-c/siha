@@ -1637,6 +1637,7 @@ td {
 
 //App Arabic Version Starts  Here //
 .ar_component {
+  font-family: "Segoe UI", sans-serif;
   direction: rtl;
   text-align: right;
   input {
@@ -1646,6 +1647,23 @@ td {
   }
   .text-arabic {
     font-size: 1.1rem;
+  }
+  .style_Label {
+    font-family: "Segoe UI", sans-serif;
+    font-size: 0.88rem;
+  }
+  .ReactTable {
+    .style_Label {
+      font-size: 1rem;
+    }
+  }
+  .caption {
+    float: right;
+    .caption-subject {
+      .style_Label {
+        font-size: 1.1rem !important;
+      }
+    }
   }
   .spotlightSearchIconBox {
     border-right: 1px solid #ced4d8;

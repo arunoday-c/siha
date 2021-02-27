@@ -743,5 +743,11 @@
   "vendor_status": "Vendor Status",
   "bank_account_no": "Account Number",
   "vat_number": "Vat Number",
-  "form_worklist": "Work List Generation"
+  "form_worklist": "Work List Generation",
+  "group_mst_list": "Group Master List",
+  "group_description": "Group Description",
+  "monthly_accural_days": "Monthly Accural Days",
+  "airfare_eligiblity": "Airfare Eligiblity",
+  "airfare_amount": "Airfare Amount",
+  "ramzan_timing_required": "Ramzan Timing Required"
 }
