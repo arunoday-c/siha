@@ -8,7 +8,7 @@ import {
   AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 
-import noImage from "../../../assets/images/no-image-icon-6.webp";
+// import noImage from "../../../assets/images/no-image-icon-6.webp";
 // import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import {
   changeTexts,
@@ -262,50 +262,50 @@ class InvStockEnquiry extends Component {
                     filterable: true,
                     others: { Width: 180 },
                   },
-                  {
-                    fieldName: "item_master_img_unique_id",
-                    label: <AlgaehLabel label={{ forceLabel: "Item Image" }} />,
-                    displayTemplate: (row) => {
-                      return (
-                        <span className="image-drop-area">
-                          <img
-                            src={
-                              row.item_master_img_unique_id
-                                ? `${window.location.protocol}//${
-                                    window.location.hostname
-                                  }${
-                                    window.location.port === ""
-                                      ? "/docserver"
-                                      : `:3006`
-                                  }/UPLOAD/InvItemMasterImages/thumbnail/${
-                                    row.item_master_img_unique_id
-                                  }`
-                                : noImage
-                            }
-                          />
+                  // {
+                  //   fieldName: "item_master_img_unique_id",
+                  //   label: <AlgaehLabel label={{ forceLabel: "Item Image" }} />,
+                  //   displayTemplate: (row) => {
+                  //     return (
+                  //       <span className="image-drop-area">
+                  //         <img
+                  //           src={
+                  //             row.item_master_img_unique_id
+                  //               ? `${window.location.protocol}//${
+                  //                   window.location.hostname
+                  //                 }${
+                  //                   window.location.port === ""
+                  //                     ? "/docserver"
+                  //                     : `:3006`
+                  //                 }/UPLOAD/InvItemMasterImages/thumbnail/${
+                  //                   row.item_master_img_unique_id
+                  //                 }`
+                  //               : noImage
+                  //           }
+                  //         />
 
-                          <img
-                            className="invItemThumbnail animated slideInLeft faster"
-                            src={
-                              row.item_master_img_unique_id
-                                ? `${window.location.protocol}//${
-                                    window.location.hostname
-                                  }${
-                                    window.location.port === ""
-                                      ? "/docserver"
-                                      : `:3006`
-                                  }/UPLOAD/InvItemMasterImages/thumbnail/${
-                                    row.item_master_img_unique_id
-                                  }`
-                                : noImage
-                            }
-                          />
-                        </span>
-                      );
-                    },
-                    others: { Width: 100 },
-                    className: "imgColmn",
-                  },
+                  //         {/* <img
+                  //           className="invItemThumbnail animated slideInLeft faster"
+                  //           src={
+                  //             row.item_master_img_unique_id
+                  //               ? `${window.location.protocol}//${
+                  //                   window.location.hostname
+                  //                 }${
+                  //                   window.location.port === ""
+                  //                     ? "/docserver"
+                  //                     : `:3006`
+                  //                 }/UPLOAD/InvItemMasterImages/thumbnail/${
+                  //                   row.item_master_img_unique_id
+                  //                 }`
+                  //               : noImage
+                  //           }
+                  //         /> */}
+                  //       </span>
+                  //     );
+                  //   },
+                  //   others: { Width: 100 },
+                  //   className: "imgColmn",
+                  // },
 
                   {
                     fieldName: "item_code",

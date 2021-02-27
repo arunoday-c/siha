@@ -173,9 +173,10 @@ export default function BedStatus(Props: any) {
     }
 
     if (response.data.success) {
+      debugger;
       setValue(
         "steps",
-        response.data.records[0].last_inserted
+        response.data.records.length > 0
           ? parseInt(response.data.records[0].last_inserted) + 1
           : 1
       );
