@@ -48,6 +48,7 @@ export default {
             req.body.receipt_header_id = headerRcptResult.insertId;
             const receptSample = [
               "card_check_number",
+              "bank_card_id",
               "expiry_date",
               "pay_type",
               "amount",
