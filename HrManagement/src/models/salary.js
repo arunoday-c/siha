@@ -3759,6 +3759,7 @@ function getEarningComponents(options) {
       _earnings.map((obj) => {
         console.log("_earlyJoin", _earlyJoin);
         console.log("early_join_comp", obj["early_join_comp"]);
+        console.log("calculation_type", obj.calculation_type);
         const early_join_days =
           _earlyJoin.length > 0 && obj["early_join_comp"] === "Y"
             ? parseFloat(_earlyJoin[0].early_join_days) + 1
@@ -3836,16 +3837,17 @@ function getEarningComponents(options) {
           let annual_per_day_sal = 0;
 
           // console.log("obj", obj["amount"]);
-          console.log("total_paid_days", empResult["total_paid_days"]);
+          // console.log("total_paid_days", empResult["total_paid_days"]);
           // console.log("total_days", empResult["total_days"]);
 
           if (leave_salary == null || leave_salary == undefined) {
-            console.log("leave_period", leave_period);
-            console.log("early_join_days", early_join_days);
+            // console.log("leave_period", leave_period);
+            // console.log("early_join_days", early_join_days);
             let total_paid_days =
-              parseFloat(empResult["total_paid_days"]) -
-              leave_period -
-              early_join_days;
+              parseFloat(cal_total_days) - leave_period - early_join_days;
+
+            // console.log("total_paid_days", total_paid_days);
+            // console.log("cal_total_days", cal_total_days);
             current_earning_per_day_salary =
               parseFloat(obj["amount"]) / parseFloat(cal_total_days);
             if (
