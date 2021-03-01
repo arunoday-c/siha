@@ -72,32 +72,32 @@ export function getAllNotifications(req, res, next) {
     const _pageSize = parseInt(perPage);
     const _page = parseInt(page);
     new Promise((resolve, reject) => {
-      if (require_total_count === "true") {
-        let todayNotifications = {};
-        if (todays === "true") {
-          todayNotifications = {
-            createdAt: {
-              $gt: moment().startOf("day"),
-              $lt: moment().endOf("day"),
-            },
-          };
-        }
-        notificationModel.countDocuments(
-          {
-            user_id,
-            ...todayNotifications,
+      // if (require_total_count === "true") {
+      let todayNotifications = {};
+      if (todays === "true") {
+        todayNotifications = {
+          createdAt: {
+            $gt: moment().startOf("day"),
+            $lt: moment().endOf("day"),
           },
-          (error, count) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(count);
-            }
-          }
-        );
-      } else {
-        resolve(0);
+        };
       }
+      notificationModel.countDocuments(
+        {
+          user_id,
+          ...todayNotifications,
+        },
+        (error, count) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(count);
+          }
+        }
+      );
+      // } else {
+      //   resolve(0);
+      // }
     })
       .then((result) => {
         let todayNotifications = {};
