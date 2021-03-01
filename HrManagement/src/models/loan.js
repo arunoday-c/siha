@@ -1186,103 +1186,179 @@ export default {
     }
   },
   //created by irfan: to
+
+  addFinalSettlementReceipt: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .generateRunningNumber({
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["EMPLOYEE_RECEIPT"],
+        table_name: "hims_f_hrpayroll_numgen",
+      })
+      .then((generatedNumbers) => {
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO `hims_f_employee_reciepts` (emp_recp_number,employee_id,reciepts_type,recievable_amount,\
+            write_off_amount,final_settlement_id,remarks,salary_id,reciepts_mode,cheque_number,\
+             created_date, created_by, updated_date, updated_by,hospital_id)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values: [
+              generatedNumbers.EMPLOYEE_RECEIPT,
+              input.employee_id,
+              input.reciepts_type,
+              input.recievable_amount,
+              input.write_off_amount,
+              input.final_settlement_id,
+              input.remarks,
+              input.salary_id,
+              input.reciepts_mode,
+              input.cheque_number,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              req.userIdentity.hospital_id,
+            ],
+            printQuery: true,
+          })
+          .then((result) => {
+            req.records = {
+              ...result,
+              EMPLOYEE_RECEIPT: generatedNumbers.EMPLOYEE_RECEIPT,
+            };
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+
+              next();
+            });
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
   addLoanReciept: (req, res, next) => {
     let input = req.body;
     const _mysql = new algaehMysql();
+
     _mysql
-      .executeQueryWithTransaction({
-        query:
-          "INSERT INTO `hims_f_employee_reciepts` (employee_id,reciepts_type,recievable_amount,\
+      .generateRunningNumber({
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["EMPLOYEE_RECEIPT"],
+        table_name: "hims_f_hrpayroll_numgen",
+      })
+      .then((generatedNumbers) => {
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "INSERT INTO `hims_f_employee_reciepts` (emp_recp_number,employee_id,reciepts_type,recievable_amount,\
             write_off_amount,loan_application_id,remarks,balance_amount,reciepts_mode,cheque_number,\
              created_date, created_by, updated_date, updated_by,hospital_id)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        values: [
-          input.employee_id,
-          input.reciepts_type,
-          input.recievable_amount,
-          input.write_off_amount,
-          input.loan_application_id,
-          input.remarks,
-          input.balance_amount,
-          input.reciepts_mode,
-          input.cheque_number,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id,
-        ],
-        printQuery: true,
-      })
-      .then((result) => {
-        if (result.insertId > 0) {
-          _mysql
-            .executeQuery({
-              query:
-                "select hims_f_loan_application_id,pending_loan from\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values: [
+              generatedNumbers.EMPLOYEE_RECEIPT,
+              input.employee_id,
+              input.reciepts_type,
+              input.recievable_amount,
+              input.write_off_amount,
+              input.loan_application_id,
+              input.remarks,
+              input.balance_amount,
+              input.reciepts_mode,
+              input.cheque_number,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              req.userIdentity.hospital_id,
+            ],
+            printQuery: true,
+          })
+          .then((result) => {
+            if (result.insertId > 0) {
+              _mysql
+                .executeQuery({
+                  query:
+                    "select hims_f_loan_application_id,pending_loan from\
               hims_f_loan_application where hims_f_loan_application_id=?",
-              values: [input.loan_application_id],
-              printQuery: true,
-            })
-            .then((pendingResult) => {
-              const cur_pending_loan =
-                parseFloat(pendingResult[0]["pending_loan"]) -
-                parseFloat(input.recievable_amount) -
-                parseFloat(input.write_off_amount);
+                  values: [input.loan_application_id],
+                  printQuery: true,
+                })
+                .then((pendingResult) => {
+                  const cur_pending_loan =
+                    parseFloat(pendingResult[0]["pending_loan"]) -
+                    parseFloat(input.recievable_amount) -
+                    parseFloat(input.write_off_amount);
 
-              let close_loan = "";
-              if (cur_pending_loan == parseFloat(0)) {
-                close_loan = ",loan_closed='Y'";
-              }
+                  let close_loan = "";
+                  if (cur_pending_loan == parseFloat(0)) {
+                    close_loan = ",loan_closed='Y'";
+                  }
 
-              if (cur_pending_loan === parseFloat(input.balance_amount)) {
-                _mysql
-                  .executeQueryWithTransaction({
-                    query:
-                      "update hims_f_loan_application set pending_loan=?" +
-                      close_loan +
-                      " where hims_f_loan_application_id=?",
-                    values: [cur_pending_loan, input.loan_application_id],
-                    printQuery: true,
-                  })
-                  .then((updateResult) => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = updateResult;
+                  if (cur_pending_loan === parseFloat(input.balance_amount)) {
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "update hims_f_loan_application set pending_loan=?" +
+                          close_loan +
+                          " where hims_f_loan_application_id=?",
+                        values: [cur_pending_loan, input.loan_application_id],
+                        printQuery: true,
+                      })
+                      .then((updateResult) => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = updateResult;
+                          next();
+                        });
+                      })
+                      .catch((error) => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else {
+                    _mysql.rollBackTransaction(() => {
+                      req.records = {
+                        invalid_input: true,
+                        message: "calculation incorrect",
+                      };
                       next();
                     });
-                  })
-                  .catch((error) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
+                  }
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
                   });
-              } else {
-                _mysql.rollBackTransaction(() => {
-                  req.records = {
-                    invalid_input: true,
-                    message: "calculation incorrect",
-                  };
-                  next();
                 });
-              }
-            })
-            .catch((error) => {
-              _mysql.rollBackTransaction(() => {
-                next(error);
-              });
-            });
-        } else {
-          //roll back
+            } else {
+              //roll back
 
-          _mysql.rollBackTransaction(() => {
-            req.records = {
-              invalid_input: true,
-              message: "Please provide valid input",
-            };
-            next();
+              _mysql.rollBackTransaction(() => {
+                req.records = {
+                  invalid_input: true,
+                  message: "Please provide valid input",
+                };
+                next();
+              });
+            }
           });
-        }
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
       })
       .catch((error) => {
         _mysql.rollBackTransaction(() => {
@@ -1307,6 +1383,46 @@ export default {
               ER.loan_application_id=LA.hims_f_loan_application_id inner join hims_d_loan L on\
               LA.loan_id=L.hims_d_loan_id inner join hims_d_employee E on ER.employee_id=E.hims_d_employee_id\
                 where ER.employee_id=? order by hims_f_employee_reciepts_id desc",
+          values: [req.query.employee_id],
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide employee id",
+      };
+
+      next();
+      return;
+    }
+  },
+
+  getEmployeeFinalSettlementReceipt: (req, res, next) => {
+    const utilities = new algaehUtilities();
+
+    if (req.query.employee_id > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query: `select hims_f_employee_reciepts_id,ER.employee_id,FSH.final_settlement_number,reciepts_type,
+          recievable_amount,write_off_amount,loan_application_id,S.salary_number,
+          ER.final_settlement_id,ER.remarks,balance_amount,reciepts_mode,cheque_number,ER.posted,ER.posted_by,ER.posted_date,
+          E.employee_code,E.full_name as employee_name from hims_f_employee_reciepts ER
+           inner join hims_f_final_settlement_header FSH on ER.final_settlement_id=FSH.hims_f_final_settlement_header_id  
+          inner join hims_d_employee E on ER.employee_id=E.hims_d_employee_id
+          inner join hims_f_salary S on ER.salary_id=S.hims_f_salary_id 
+            where ER.employee_id=? order by hims_f_employee_reciepts_id desc`,
           values: [req.query.employee_id],
 
           printQuery: true,

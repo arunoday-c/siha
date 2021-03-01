@@ -729,6 +729,28 @@
         "label": "Approved Amount"
       }
     ],
+    "loan_apply_branch": [
+      {
+        "fieldName": "loan_application_number",
+        "label": "Loan Application Number"
+      },
+      {
+        "fieldName": "loan_application_date",
+        "label": "Loan Date"
+      },
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "employee_name",
+        "label": "Employee Name"
+      },
+      {
+        "fieldName": "approved_amount",
+        "label": "Approved Amount"
+      }
+    ],
     "encash_leave": [
       {
         "fieldName": "encashment_number",

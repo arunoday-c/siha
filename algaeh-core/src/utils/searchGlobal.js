@@ -425,7 +425,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "exit_employees_final_settlement",
         searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
-        S.sub_department_name,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else 'Pending' END as final_settlement_status,
+        S.sub_department_name,FSH.hims_f_final_settlement_header_id,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else 'Pending' END as final_settlement_status,
         CASE WHEN E.employee_status ='T' THEN 'Terminated' WHEN E.employee_status ='R' THEN 'Resigned' else 'Retirement' END as employee_status
         from hims_d_employee as E
         left join hims_f_final_settlement_header as FSH on FSH.employee_id=E.hims_d_employee_id
@@ -433,6 +433,19 @@ let algaehSearchConfig = (searchName, req) => {
         inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
         where E.record_status='A' and E.employee_status in('R','T','E')`,
         orderBy: "E.hims_d_employee_id desc",
+      },
+
+      {
+        searchName: "final_settlement_list",
+        searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
+        S.sub_department_name,FSH.hims_f_final_settlement_header_id,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else 'Pending' END as final_settlement_status,
+        CASE WHEN E.employee_status ='T' THEN 'Terminated' WHEN E.employee_status ='R' THEN 'Resigned' else 'Retirement' END as employee_status
+        from hims_f_final_settlement_header as FSH
+        left join hims_d_employee as E  on E.hims_d_employee_id=FSH.employee_id
+        inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
+        inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
+        where E.record_status='A' `,
+        orderBy: "FSH.hims_f_final_settlement_header_id desc",
       },
       {
         searchName: "exit_employees_gratuity",
@@ -466,6 +479,19 @@ let algaehSearchConfig = (searchName, req) => {
           start_month, start_year, emp.employee_code, emp.full_name from hims_f_loan_application, hims_d_employee emp \
           where hims_f_loan_application.employee_id = emp.hims_d_employee_id and hims_f_loan_application.hospital_id=" +
           hospitalId,
+        orderBy: "hims_f_loan_application_id desc",
+      },
+      {
+        searchName: "loan_apply_branch",
+        searchQuery: `select hims_f_loan_application_id,loan_application_number, loan_skip_months , 
+        LA.employee_id,loan_id,L.loan_code,L.loan_description,L.loan_account,L.loan_limit_type,L.loan_maximum_amount,
+        LA.application_reason,loan_application_date,loan_authorized,authorized_date,authorized_by,loan_closed,loan_amount,
+        approved_amount,start_month,start_year,loan_tenure,pending_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,            
+        authorized1,authorized2_by,authorized2_date,authorized2 ,E.full_name as employee_name ,E.employee_code from hims_f_loan_application LA  
+        inner join hims_d_loan L on LA.loan_id=L.hims_d_loan_id  inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id
+        and E.record_status='A'  left join hims_d_authorization_setup AUS on  AUS.employee_id=E.hims_d_employee_id 
+         where L.record_status='A'    and loan_authorized='IS'  and LA.loan_closed='N'
+        `,
         orderBy: "hims_f_loan_application_id desc",
       },
       {
