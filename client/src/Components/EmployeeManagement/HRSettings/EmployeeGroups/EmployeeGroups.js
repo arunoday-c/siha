@@ -219,7 +219,7 @@ class EmployeeGroups extends Component {
           <AlagehFormGroup
             div={{ className: "col-3 mandatory form-group" }}
             label={{
-              forceLabel: "Group Description",
+              fieldName: "group_description",
               isImp: true,
             }}
             textBox={{
@@ -234,7 +234,7 @@ class EmployeeGroups extends Component {
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Monthly Accrual Days",
+              fieldName: "monthly_accural_days",
               isImp: true,
             }}
             textBox={{
@@ -254,7 +254,7 @@ class EmployeeGroups extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Airfare Eligibility",
+              fieldName: "airfare_eligiblity",
               isImp: true,
             }}
             selector={{
@@ -273,7 +273,7 @@ class EmployeeGroups extends Component {
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Airfare Amount",
+              fieldName: "airfare_amount",
               isImp: true,
             }}
             textBox={{
@@ -290,7 +290,7 @@ class EmployeeGroups extends Component {
           />
 
           <div className="col">
-            <label>Ramzan Timing Required</label>
+            <AlgaehLabel label={{ fieldName: "ramzan_timing_required" }} />
             <div className="customRadio">
               <label className="radio inline">
                 <input
@@ -332,7 +332,7 @@ class EmployeeGroups extends Component {
                 id="srch-sch"
                 onClick={this.addEmployeeGroups.bind(this)}
               >
-                Add to List
+                <AlgaehLabel label={{ fieldName: "add_to_list" }} />
               </button>
             </div>
           </AlgaehSecurityElement>
@@ -343,7 +343,10 @@ class EmployeeGroups extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Group Master List</h3>
+                  <h3 className="caption-subject">
+                    {" "}
+                    <AlgaehLabel label={{ fieldName: "group_mst_list" }} />
+                  </h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -355,7 +358,9 @@ class EmployeeGroups extends Component {
                       {
                         fieldName: "group_description",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Description" }} />
+                          <AlgaehLabel
+                            label={{ fieldName: "group_description" }}
+                          />
                         ),
                         editorTemplate: (row) => {
                           return (
@@ -384,7 +389,7 @@ class EmployeeGroups extends Component {
                         fieldName: "monthly_accrual_days",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Monthly Accural Days" }}
+                            label={{ fieldName: "monthly_accural_days" }}
                           />
                         ),
                         editorTemplate: (row) => {
@@ -414,7 +419,7 @@ class EmployeeGroups extends Component {
                         fieldName: "airfare_eligibility",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Airfare Eligibility" }}
+                            label={{ fieldName: "airfare_eligiblity" }}
                           />
                         ),
                         editorTemplate: (row) => {
@@ -447,7 +452,7 @@ class EmployeeGroups extends Component {
                         fieldName: "airfare_amount",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Airfare Amount" }}
+                            label={{ fieldName: "airfare_amount" }}
                           />
                         ),
                         displayTemplate: (row) => {
@@ -482,7 +487,7 @@ class EmployeeGroups extends Component {
                         fieldName: "ramzan_timing",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Ramzan Timing" }}
+                            label={{ fieldName: "ramzan_timing_required" }}
                           />
                         ),
                         displayTemplate: (row) => {

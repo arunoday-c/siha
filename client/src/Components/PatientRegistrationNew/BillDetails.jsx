@@ -34,18 +34,12 @@ const getBillDetails = async (
     promo_code,
     discount_amout,
     sub_department_id,
-    from_package,
   }
 ) => {
-  debugger;
   let zeroBill = false,
     FollowUp = false;
 
   if (consultation !== "Y") {
-    zeroBill = true;
-  }
-
-  if (from_package === true) {
     zeroBill = true;
   }
 
@@ -195,7 +189,6 @@ export function BillDetails({
         promo_code: promoCode,
         discount_amout: discount_amout,
         sub_department_id,
-        from_package,
         // discount_percentage: discount_percentage,
       },
     ],
@@ -210,7 +203,6 @@ export function BillDetails({
             type: "error",
           });
         } else {
-          debugger;
           // setBillData(null);
           setGlobalBillData(data);
           const billItem = data?.billdetails[0];

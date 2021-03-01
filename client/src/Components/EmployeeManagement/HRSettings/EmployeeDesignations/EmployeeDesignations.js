@@ -174,7 +174,7 @@ class EmployeeDesignations extends Component {
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Code",
+              fieldName: "designation_code",
               isImp: true,
             }}
             textBox={{
@@ -189,7 +189,7 @@ class EmployeeDesignations extends Component {
           <AlagehFormGroup
             div={{ className: "col-3 mandatory form-group" }}
             label={{
-              forceLabel: "Designation Description",
+              fieldName: "designation_desc",
               isImp: true,
             }}
             textBox={{
@@ -211,7 +211,7 @@ class EmployeeDesignations extends Component {
                 id="srch-sch"
                 onClick={this.addDesignations.bind(this)}
               >
-                Add to List
+                <AlgaehLabel label={{ fieldName: "add_to_list" }} />
               </button>
             </div>
           </AlgaehSecurityElement>
@@ -221,7 +221,12 @@ class EmployeeDesignations extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Designation Master List</h3>
+                  <h3 className="caption-subject">
+                    {" "}
+                    <AlgaehLabel
+                      label={{ fieldName: "designation_mst_list" }}
+                    />
+                  </h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -234,7 +239,7 @@ class EmployeeDesignations extends Component {
                         fieldName: "designation_code",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Designation Code" }}
+                            label={{ fieldName: "designation_code" }}
                           />
                         ),
                         editorTemplate: (row) => {
@@ -264,7 +269,9 @@ class EmployeeDesignations extends Component {
                       {
                         fieldName: "designation",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Designation" }} />
+                          <AlgaehLabel
+                            label={{ fieldName: "designation_desc" }}
+                          />
                         ),
                         editorTemplate: (row) => {
                           return (
@@ -292,7 +299,7 @@ class EmployeeDesignations extends Component {
                       {
                         fieldName: "created_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Created Date" }} />
+                          <AlgaehLabel label={{ fieldName: "created_date" }} />
                         ),
                         displayTemplate: (row) => {
                           return (
