@@ -32,7 +32,7 @@ export default {
         let leave_salary_year = input.year;
 
         // console.log("month_start", month_start)
-        // console.log("month_end", month_end)
+        // console.log("month_end", month_end);
         let inputValues = [input.year, input.month];
         let _stringData = "";
 
@@ -285,8 +285,12 @@ export default {
               input.leave_salary == undefined ||
               input.leave_salary === "N"
             ) {
-              str_Query +=
-                "select employee_id,actual_to_date,to_date, DATEDIFF(actual_to_date, to_date) AS early_join_days from hims_f_leave_application where  early_rejoin='Y' and employee_id in (?) and  date(to_date) BETWEEN date(?) and date(?);";
+              str_Query += `select employee_id,actual_to_date,to_date, CASE WHEN MONTH(actual_to_date)=MONTH('${month_end}') 
+                then DATEDIFF(actual_to_date, '${month_start}')  ELSE DATEDIFF('${month_end}', to_date)
+                END AS early_join_days from hims_f_leave_application 
+                where  early_rejoin='Y' and employee_id in (?) and  (date(to_date) 
+                BETWEEN date(?) and date(?) OR date(actual_to_date) 
+                BETWEEN date(?) and date(?));`;
             }
 
             _mysql
@@ -371,6 +375,8 @@ export default {
                   previous_month,
                   _myemp,
                   _myemp,
+                  month_start,
+                  month_end,
                   month_start,
                   month_end,
                 ],
@@ -3757,9 +3763,9 @@ function getEarningComponents(options) {
       }
 
       _earnings.map((obj) => {
-        console.log("_earlyJoin", _earlyJoin);
-        console.log("early_join_comp", obj["early_join_comp"]);
-        console.log("calculation_type", obj.calculation_type);
+        // console.log("_earlyJoin", _earlyJoin);
+        // console.log("early_join_comp", obj["early_join_comp"]);
+        // console.log("calculation_type", obj.calculation_type);
         const early_join_days =
           _earlyJoin.length > 0 && obj["early_join_comp"] === "Y"
             ? parseFloat(_earlyJoin[0].early_join_days) + 1
@@ -3771,9 +3777,9 @@ function getEarningComponents(options) {
             leave_salary == "N"
           ) {
             // ED.limit_applicable, ED.limit_amount
-            console.log(obj.amount);
-            console.log(empResult.total_days);
-            console.log(early_join_days);
+            // console.log(obj.amount);
+            // console.log(empResult.total_days);
+            // console.log(early_join_days);
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_earning_amt) > parseFloat(obj["limit_amount"])
@@ -3837,20 +3843,20 @@ function getEarningComponents(options) {
           let annual_per_day_sal = 0;
 
           // console.log("obj", obj["amount"]);
-          console.log("total_applied_days", empResult["total_applied_days"]);
-          console.log("total_paid_days", empResult["total_paid_days"]);
-          console.log("leave_period", leave_period);
+          // console.log("total_applied_days", empResult["total_applied_days"]);
+          // console.log("total_paid_days", empResult["total_paid_days"]);
+          // console.log("leave_period", leave_period);
 
           if (leave_salary == null || leave_salary == undefined) {
-            console.log("leave_period", leave_period);
-            console.log("early_join_days", early_join_days);
+            // console.log("leave_period", leave_period);
+            // console.log("early_join_days", early_join_days);
             let total_paid_days =
               parseFloat(empResult["total_paid_days"]) -
               leave_period -
               early_join_days;
 
-            console.log("total_paid_days", total_paid_days);
-            console.log("cal_total_days", cal_total_days);
+            // console.log("total_paid_days", total_paid_days);
+            // console.log("cal_total_days", cal_total_days);
             current_earning_per_day_salary =
               parseFloat(obj["amount"]) / parseFloat(cal_total_days);
             if (
