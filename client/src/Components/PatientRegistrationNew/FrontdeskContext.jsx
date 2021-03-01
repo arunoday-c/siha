@@ -1,5 +1,5 @@
 import React, { createContext, useReducer } from "react";
-debugger;
+
 const baseState = {
   department_id: null,
   sub_department_id: null,
@@ -56,6 +56,7 @@ const baseState = {
     created_date: null,
     updated_by: null,
     updated_date: null,
+    package_details: [],
   },
   disabled: false,
   savedPatient: null,
@@ -73,6 +74,7 @@ const TYPES = {
   setConsultationInfo: "setConsultationInfo",
   setDisable: "setDisable",
   setSavedPatient: "setSavedPatient",
+  setFromPackage: "setFromPackage",
   clearState: "clearState",
 };
 
@@ -122,6 +124,10 @@ function reducer(state, { type, payload }) {
       return { ...state, disabled: payload };
     case TYPES.setSavedPatient:
       return { ...state, savedPatient: payload };
+    case TYPES.setFromPackage:
+      return { ...state, from_package: payload };
+    case TYPES.setPackageDetail:
+      return { ...state, package_details: payload };
     case TYPES.clearState:
       return { ...baseState };
     default:
@@ -159,6 +165,12 @@ export const FProvider = ({ children }) => {
     },
     setSavedPatient(e) {
       dispatch({ type: TYPES.setSavedPatient, payload: e });
+    },
+    setFromPackage(e) {
+      dispatch({ type: TYPES.setFromPackage, payload: e });
+    },
+    setPackageDetail(e) {
+      dispatch({ type: TYPES.setPackageDetail, payload: e });
     },
     setDisable() {
       dispatch({ type: TYPES.setDisable, payload: true });
