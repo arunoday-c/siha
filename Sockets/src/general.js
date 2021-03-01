@@ -4,8 +4,6 @@ import moment from "moment";
 import { createNotification } from "./utils";
 // const { CronJob } = cron;
 export default function generalNotification(io) {
-  console.log("generalNotification");
-
   var job = new CronJob(
     "5 * * * * *",
     async function () {
@@ -38,6 +36,7 @@ export default function generalNotification(io) {
                   module: module_type ?? "general",
                   user_id: pIdsList[p],
                   title: title,
+                  isSeen: false,
                 });
                 io.to(`${pIdsList[p]}`).emit("notification", createForPIds);
               }
@@ -53,6 +52,7 @@ export default function generalNotification(io) {
                   user_id: pIdsList[p],
                   module: module_type ?? "general",
                   title: title,
+                  isSeen: false,
                 });
                 io.to(`${pIdsList[p]}`).emit("notification", createForPIds);
               }

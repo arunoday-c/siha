@@ -34,6 +34,7 @@ import { uploadInvItemImg, deleteInvItemImg } from "../files/invItemMaster";
 import {
   getAllNotifications,
   deleteNotification,
+  seenNotification,
 } from "../Model/notifications";
 const router = express();
 initializedDb((db) => {
@@ -63,6 +64,7 @@ initializedDb((db) => {
   router.get("/getReceiptEntryDoc", getReceiptEntryDoc);
   router.delete("/deleteReceiptEntryDoc", deleteReceiptEntryDoc);
   router.get("/getAllNotifications", getAllNotifications);
+  router.post("/seenNotification", seenNotification);
   router.delete("/deleteNotification", deleteNotification);
 });
 export default router;

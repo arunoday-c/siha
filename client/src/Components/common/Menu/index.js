@@ -56,7 +56,6 @@ function NavBars(props) {
     });
     if (socket.connected) {
       socket.on("count", (res) => {
-        // console.log("RES========", res);
         setCount(res);
       });
     }
@@ -69,7 +68,8 @@ function NavBars(props) {
   function showNotification() {
     if (socket.connected && !openNotif) {
       // socket.emit("seen");
-      setCount(null);
+      //Todo:Here added Comment
+      // setCount(null);
     }
     setOpenNotif((state) => !state);
   }
@@ -239,6 +239,7 @@ function NavBars(props) {
         }}
       />
       <Notifications
+        count={count}
         open={openNotif}
         handlePanel={() => {
           setOpenNotif(false);

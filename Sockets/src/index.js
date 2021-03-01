@@ -125,6 +125,7 @@ db.once("open", function () {
         },
         (err, count) => {
           if (!err) {
+            console.log(" notifications count", count);
             socket.emit("count", count);
           }
         }

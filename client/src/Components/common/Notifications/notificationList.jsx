@@ -11,7 +11,12 @@ import {
 import newAlgaehApi from "../../../hooks/newAlgaehApi";
 // import { MainContext } from "algaeh-react-components";
 import moment from "moment";
-export default function NotificationList({ isToday, userToken, socket }) {
+export default function NotificationList({
+  isToday,
+  userToken,
+  socket,
+  count,
+}) {
   //   const { userToken } = useContext(MainContext);
   const [perPage, setPageSize] = useState(10); //, setPerPage, setPage, setDate
   const [page, setPage] = useState(0);
@@ -23,12 +28,13 @@ export default function NotificationList({ isToday, userToken, socket }) {
     setFirstLoad(true);
   }, []);
   useEffect(() => {
+    debugger;
     if (page === 0) {
       callNotifications({ require_total_count: true });
     } else {
       callNotifications({ require_total_count: false });
     }
-  }, [page, perPage]);
+  }, [page, perPage, count]);
 
   async function callNotifications({ require_total_count }) {
     try {
@@ -52,7 +58,6 @@ export default function NotificationList({ isToday, userToken, socket }) {
       setLoading(false);
       setFirstLoad(false);
       setData(result.data.records);
-      debugger;
       if (require_total_count) {
         setTotalRecords(result.data.total_records);
       }
@@ -85,6 +90,7 @@ export default function NotificationList({ isToday, userToken, socket }) {
   function showTotal() {
     return `Total ${totalRecords} items`;
   }
+
   return (
     <>
       {data.length === 0 ? (
@@ -102,7 +108,7 @@ export default function NotificationList({ isToday, userToken, socket }) {
             showLessItems: true,
             size: "small",
             pageSizeOptions: [10, 20, 50],
-            total: Math.ceil(totalRecords / perPage),
+            total: totalRecords, //Math.ceil(totalRecords / perPage),
             showTotal: showTotal,
             onChange: (page, pageSize) => {
               setPage(page);

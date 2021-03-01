@@ -43,12 +43,12 @@ export function deleteNotification({ id }) {
 }
 
 export function acknowledgement(doc) {
-  console.log(doc, "ack");
+  // console.log(doc, "ack");
   const { _id } = doc;
   if (_id) {
     notifiModel
       .findByIdAndUpdate(_id, {
-        $set: { isSeen: true },
+        $set: { isSeen: false },
       })
       .then((doc) => console.log(doc, "after doc"))
       .catch((e) => console.log(e.message));

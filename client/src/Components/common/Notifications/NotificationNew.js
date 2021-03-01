@@ -12,12 +12,13 @@ import {
   Switch,
   Tabs,
 } from "antd";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehMessagePop } from "algaeh-react-components";
+import newAlgaehApi from "../../../hooks/newAlgaehApi";
 // import emptyImage from "./no_data.svg";
 import NotificationList from "./notificationList";
 const { TabPane } = Tabs;
 
-export default function Notification({ open, handlePanel }) {
+export default function Notification({ open, handlePanel, count }) {
   // const base = Array(5).fill({
   //   loading: true,
   //   message: "",
@@ -40,10 +41,13 @@ export default function Notification({ open, handlePanel }) {
       //   state.unshift(notobj);
       //   return [...state];
       // });
+      // console.log("Here inside ack====>", notobj);
+      // socket.emit("count");
       socket.emit("acknowledge", notobj);
       if (!doNot) {
         //  notification sound here
         window.audio_feedback.play();
+
         notification.info({
           message: "Notification",
           description: (
@@ -52,6 +56,23 @@ export default function Notification({ open, handlePanel }) {
           // description: notobj.message,
           duration: 6,
           className: "notifySlide",
+          onClick: () => {
+            newAlgaehApi({
+              uri: "/seenNotification",
+              module: "documentManagement",
+              method: "POST",
+              data: {
+                _id: notobj._id,
+              },
+            })
+              .then(() => {
+                socket.emit("getAll");
+              })
+              .catch((error) => {
+                AlgaehMessagePop({ type: "error", display: error.message });
+              });
+            notification.destroy();
+          },
         });
       }
     };
@@ -89,8 +110,9 @@ export default function Notification({ open, handlePanel }) {
       // });
 
       socket.on("notification", (msg) => {
-        // console.log("Im executed", msg);
+        //console.log("Im executed", msg);
         addToNotiList(msg);
+        // socket.emit("count");
       });
 
       socket.on("refresh_appointment", (msg) => {
@@ -98,6 +120,7 @@ export default function Notification({ open, handlePanel }) {
       });
       socket.on("patient_added", (msg) => {
         addToNotiList(msg);
+        socket.emit("getAll");
       });
       socket.on("service_added", (services) => {
         let serStr = "";
@@ -217,6 +240,7 @@ export default function Notification({ open, handlePanel }) {
         <Tabs defaultActiveKey="1">
           <TabPane tab="Today" key="1">
             <NotificationList
+              count={count}
               isToday={true}
               userToken={userToken}
               socket={socket}
@@ -225,6 +249,7 @@ export default function Notification({ open, handlePanel }) {
           </TabPane>
           <TabPane tab="All Notifications" key="2">
             <NotificationList
+              count={count}
               isToday={false}
               userToken={userToken}
               socket={socket}
