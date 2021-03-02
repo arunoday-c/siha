@@ -113,8 +113,9 @@ const existingHeaderDiagramsGetter = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT hims_f_examination_diagram_header_id,diagram_desc,diagram_id,patient_id,header_datetime,\
-      provider_id,hims_d_sub_department_id,last_update from hims_f_examination_diagram_header \
+          "SELECT H.hims_f_examination_diagram_header_id,D.examination_diagrams_id,diagram_desc,diagram_id,patient_id,header_datetime,\
+      provider_id,hims_d_sub_department_id,last_update from hims_f_examination_diagram_header H \
+      left join hims_f_examination_diagrams_detail D on H.hims_f_examination_diagram_header_id=D.hims_f_examination_diagram_header_id\
       where record_status='A' and provider_id=? and hims_d_sub_department_id=? and patient_id=?",
         values: [_req.employee_id, _req.sub_department_id, _getPatientId],
         printQuery: true,
@@ -140,9 +141,9 @@ const existingDetailDiagramGetter = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select examination_diagrams_id,visit_id,H.hims_f_examination_diagram_header_id,episode_id,patient_id,\
+          "select examination_diagrams_id,visit_id,H.hims_f_examination_diagram_header_id,episode_id,patient_id,D.examination_diagrams_id\
           provider_id,encounter_id,remarks,update_date, \
-          concat(diagram_id,'_',patient_id,'_',provider_id,'_',H.hims_f_examination_diagram_header_id,'_',examination_diagrams_id) as image  from hims_f_examination_diagram_header H,hims_f_examination_diagrams_detail D \
+          concat(H.patient_id,'_',H.provider_id,'_',H.hims_f_examination_diagram_header_id,'_',D.examination_diagrams_id) as image  from hims_f_examination_diagram_header H,hims_f_examination_diagrams_detail D \
           where H.hims_f_examination_diagram_header_id = D.hims_f_examination_diagram_header_id and record_status='A' \
           and H.hims_f_examination_diagram_header_id = ?",
         values: [req.query.hims_f_examination_diagram_header_id],

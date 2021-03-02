@@ -254,6 +254,15 @@ export default class AlgaehCanvas extends Component {
       }
     );
   }
+  closeImage() {
+    this.setState({
+      image:
+        // `${window.location.protocol}//${window.location.hostname}${
+        //   window.location.port === "" ? "/docserver" : `:3006`
+        // }/UPLOAD/${57}/60118524785f6e2591a28d38__ALGAEH__3.png`,
+        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+    });
+  }
   implementWebCam() {
     if (this.state.openWebCam) {
       return (
@@ -364,10 +373,16 @@ export default class AlgaehCanvas extends Component {
           usageStatistics={false}
         />
         {_showSave ? (
-          <button style={this.btnSave} onClick={this.loadImagaing.bind(this)}>
-            <i className="far fa-save" />
-          </button>
+          <>
+            <button style={this.btnSave} onClick={this.loadImagaing.bind(this)}>
+              <i className="far fa-save" />
+            </button>
+            <button onClick={this.closeImage.bind(this)}>
+              <i class="fas fa-cross"></i>
+            </button>
+          </>
         ) : null}
+
         {_showUpload ? (
           <React.Fragment>
             <span className="d-none">

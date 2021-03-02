@@ -128,8 +128,9 @@ export default function examination() {
         });
       });
     },
-    saveDiagramHandler: (that, props) => {
+    saveDiagramHandler: (that, props, data) => {
       return new Promise((resolve, reject) => {
+        data.setState({ loading: true });
         let _header_datetime = undefined;
 
         if (that.saveAsChecked !== "new") {
@@ -152,7 +153,9 @@ export default function examination() {
           patient_id: Window.global["current_patient"],
           visit_id: Window.global["visit_id"],
           hims_f_examination_diagram_header_id:
-            that.hims_f_examination_diagram_header_id,
+            that.saveAsChecked !== "new"
+              ? that.hims_f_examination_diagram_header_id
+              : null,
           episode_id: Window.global["episode_id"],
           encounter_id: Window.global["encounter_id"],
           remarks: that.remarks,
