@@ -1489,7 +1489,11 @@ class Appointment extends PureComponent {
               {_otherPatients.map((item, index) => {
                 return (
                   <li key={index}>
-                    <p>{item.patient_name}</p>
+                    <p>
+                      {this.context?.userLanguage === "ar"
+                        ? item.arabic_name
+                        : item.patient_name}
+                    </p>
                     <span>
                       <i
                         className="fas fa-check"
@@ -1609,7 +1613,9 @@ class Appointment extends PureComponent {
                                 backgroundColor: data.color_code,
                               }}
                             >
-                              {data.statusDesc}
+                              {this.context?.userLanguage === "ar"
+                                ? data.description_ar
+                                : data.statusDesc}
                             </span>
                           </li>
                         ))
@@ -1743,7 +1749,9 @@ class Appointment extends PureComponent {
             onDragLeave={this.leaveDrag.bind(this)}
           >
             {data.mark_as_break === false ? (
-              <span className="dynSlot">{data.time}</span>
+              <span className="dynSlot">
+                {this.context.userLanguage === "ar" ? data.time_ar : data.time}
+              </span>
             ) : null}
 
             {data.mark_as_break === false ? (
@@ -1760,7 +1768,10 @@ class Appointment extends PureComponent {
                       draggable={false}
                     >
                       <span>
-                        {patient.patient_name} <br />
+                        {this.context?.userLanguage === "ar"
+                          ? patient.arabic_name
+                          : patient.patient_name}{" "}
+                        <br />
                         {patient.tel_code}
                         &nbsp; {patient.contact_number}
                       </span>
@@ -1776,7 +1787,9 @@ class Appointment extends PureComponent {
                       <span
                       // onClick={this.openEditModal.bind(this, patient, null)}
                       >
-                        {patient.patient_name}
+                        {this.context?.userLanguage === "ar"
+                          ? patient.arabic_name
+                          : patient.patient_name}
                         <br />
                         {patient.tel_code}
                         &nbsp;
@@ -1828,7 +1841,9 @@ class Appointment extends PureComponent {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <span>Break Time</span>
+                <span>
+                  <AlgaehLabel label={{ fieldName: "break_time" }} />{" "}
+                </span>
               </React.Fragment>
             )}
           </td>
@@ -1902,6 +1917,7 @@ class Appointment extends PureComponent {
           data = schedule.filter(
             (doc) => doc.provider_id === this.state.edit_provider_id
           );
+          const options = { hour12: true, hour: "2-digit", minute: "2-digit" };
           const result = generateTimeslotsForDoctor(data[0]);
           let timeSlots = [];
           result.forEach((time) => {
@@ -1916,9 +1932,12 @@ class Appointment extends PureComponent {
                   })
                 )
               ) {
-                timeSlots.push({
+                const time_ar = new Date(
+                  moment(time, "HH:mm:ss")._d
+                ).timeSlots.push({
                   name: moment(time, "HH:mm:ss").format("hh:mm a"),
                   value: time,
+                  name_ar: time_ar.toLocaleDateString("ar-EG", options),
                 });
               }
             }
@@ -1971,6 +1990,7 @@ class Appointment extends PureComponent {
     // console.log("timeSlots", timeSlots);
     timeSlots.forEach((time) => {
       let isBreak = time === "break";
+      const options = { hour12: true, hour: "2-digit", minute: "2-digit" };
       if (isBreak) {
         isPrevbreak = {
           counter: count,
@@ -1981,9 +2001,15 @@ class Appointment extends PureComponent {
           tds.push(this.generateChildren(isPrevbreak));
           isPrevbreak = null;
         }
+        const time_ar = new Date(moment(time, "HH:mm:ss")).toLocaleDateString(
+          "ar-EG",
+          options
+        );
+        // console.log("time_ar", time_ar.split(","));
         tds.push(
           this.generateChildren({
             time: moment(time, "HH:mm:ss").format("hh:mm a"),
+            time_ar: time_ar.split(",")[1],
             counter: count,
             to_work_hr: moment(to_work_hr).format("hh:mm a"),
             from_break_hr1: moment(from_break_hr1).format("hh:mm a"),

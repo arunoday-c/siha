@@ -756,5 +756,6 @@
   "emp_doc_mst_list": "Employee Document Master List",
   "doc_type": "Document Type",
   "doc_desc": "Document Description",
-  "patient_search": "Patient Search"
+  "patient_search": "Patient Search",
+  "break_time": "Break Time"
 }
