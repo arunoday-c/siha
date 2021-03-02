@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "start": "NODE_ENV=production node build/app.js",
-    "dev:watch": "tsc -w",
+    "erf:watch": "tsc -w",
     "dev:nodemon": "nodemon build/index.js",
     "dev": "NODE_ENV=development run-p  dev:*",
     "client-build-webpack": "webpack --config webpack.prod.js --env=Client_Builds",
