@@ -69,7 +69,7 @@
     "month": "*",
     "dayOfWeek": "*",
     "moduleType": "dental_Followup",
-    "sqlQuery": "select (select employees_id from hims_d_inventory_options limit 1) as employees,DL.hims_f_dental_form_id,DL.odered_date,DL.work_status,DL.is_notify,DL.full_name,DL.patient_code,DL.procedure_id,PR.procedure_desc,DL.vendor_id,VN.vendor_name,USR.employee_id,EM.full_name from hims_f_dental_form as DL inner join hims_d_vendor VN on VN.hims_d_vendor_id=DL.vendor_id inner join hims_d_procedure PR on PR.hims_d_procedure_id=DL.procedure_id inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=DL.updated_by inner join hims_d_employee EM on EM.hims_d_employee_id=USR.employee_id where DL.work_status ='WIP' and DL.is_notify = 0 and DATEDIFF(date(now()),date(DL.odered_date)) >= (select dental_lab_days from hims_d_inventory_options limit 1);",
+    "sqlQuery": "select (select employees_id from hims_d_inventory_options limit 1) as employees,DL.hims_f_dental_form_id,DL.odered_date,DL.work_status,DL.is_notify,DL.full_name,DL.patient_code,DL.procedure_id,PR.procedure_desc,DL.vendor_id,VN.vendor_name,USR.employee_id,EM.full_name as orderBy from hims_f_dental_form as DL inner join hims_d_vendor VN on VN.hims_d_vendor_id=DL.vendor_id inner join hims_d_procedure PR on PR.hims_d_procedure_id=DL.procedure_id inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=DL.updated_by inner join hims_d_employee EM on EM.hims_d_employee_id=USR.employee_id where DL.work_status ='WIP' and DL.is_notify = 0 and DATEDIFF(date(now()),date(DL.odered_date)) >= (select dental_lab_days from hims_d_inventory_options limit 1);",
     "updateKeyName": "hims_f_dental_form_id",
     "updateTable": "hims_f_dental_form",
     "templateFile": "dental_Followup"
