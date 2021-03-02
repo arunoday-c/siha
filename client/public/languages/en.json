@@ -755,5 +755,6 @@
   "designation_desc": "Designation Description",
   "emp_doc_mst_list": "Employee Document Master List",
   "doc_type": "Document Type",
-  "doc_desc": "Document Description"
+  "doc_desc": "Document Description",
+  "patient_search": "Patient Search"
 }
