@@ -2271,6 +2271,20 @@
       "value": "CH"
     }
   ],
+  "RECIEPTS_MODE_RECEIPTS": [
+    {
+      "name": "Cash",
+      "value": "CS"
+    },
+    {
+      "name": "Cheque",
+      "value": "CH"
+    },
+    {
+      "name": "Salary",
+      "value": "SA"
+    }
+  ],
   "EMPLOYEE_PAYMENT_TYPE": [
     {
       "name": "Advance",

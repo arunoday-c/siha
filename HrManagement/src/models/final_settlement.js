@@ -231,6 +231,39 @@ export default {
       next(e);
     }
   },
+  getEmployeeSalaryData: (req, res, next) => {
+    const _input = req.query;
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    let stringQuery = "";
+    if (_input.year) {
+      stringQuery += " and year=" + _input.year;
+    }
+    if (_input.month) {
+      stringQuery += " and month=" + _input.month;
+    }
+    try {
+      _mysql
+        .executeQuery({
+          query: `SELECT hims_f_salary_id,salary_number FROM hims_f_salary where employee_id=? ${stringQuery};`,
+          printQuery: true,
+          values: [_input.employee_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   //Functionality changed as per discussion on 08-07-2020
   finalSettlemntAdd_depricated: (req, res, next) => {
     const _input = req.body;

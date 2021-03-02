@@ -4,6 +4,7 @@ import final_settlement from "../models/final_settlement";
 
 const {
   finalSettlement,
+  getEmployeeSalaryData,
   finalSettlemntAdd,
   generateAccountingEntry,
   finalSettlementSave,
@@ -14,6 +15,12 @@ const {
 export default () => {
   const api = Router();
   api.get("/", finalSettlement, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records,
+    });
+  });
+  api.get("/getEmployeeSalaryData", getEmployeeSalaryData, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records,

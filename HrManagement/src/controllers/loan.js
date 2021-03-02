@@ -9,7 +9,9 @@ const {
   authorizeLoan,
   getLoanLevels,
   addLoanReciept,
+  addFinalSettlementReceipt,
   getEmployeeLoanReciept,
+  getEmployeeFinalSettlementReceipt,
   getEmployeeLoanOpenBal,
   mailSendForLoan,
   sendAuthorizeLoanRejEmail,
@@ -69,6 +71,25 @@ export default () => {
       });
     }
   });
+
+  api.get(
+    "/getEmployeeFinalSettlementReceipt",
+    getEmployeeFinalSettlementReceipt,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records,
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records,
+        });
+      }
+    }
+  );
+
   api.put(
     "/authorizeLoan",
     authorizeLoan,
@@ -114,6 +135,23 @@ export default () => {
       });
     }
   });
+  api.post(
+    "/addFinalSettlementReceipt",
+    addFinalSettlementReceipt,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records,
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records,
+        });
+      }
+    }
+  );
   api.post("/addLoanReciept", addLoanReciept, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
