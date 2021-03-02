@@ -142,8 +142,8 @@
   "company_share": "Co.",
   "advance": "Advance",
   "advance_adjust": "Adjust",
-  "sheet_discount": "Sheet Level Dis. %",
-  "sheet_discount_amount": "Amount",
+  "sheet_discount": "Sheet Discount %",
+  "sheet_discount_amount": "Sheet Discount",
   "bill_amount": "Bill Amount",
   "net_amount": "Net",
   "credit_amount": "Credit Amount",
@@ -756,6 +756,12 @@
   "emp_doc_mst_list": "Employee Document Master List",
   "doc_type": "Document Type",
   "doc_desc": "Document Description",
-  "patient_search": "Patient Search",
-  "break_time": "Break Time"
+  "break_time": "Break Time",
+  "print_sticker": "Print Sticker",
+  "promo_code": "Enter Promo Code",
+  "btnApply": "Apply",
+  "btnViewPriceList": "View Price List",
+  "select_card_type": "Select Card Type",
+  "smart_card": "Load from Smart Card",
+  "patient_search": "Patient Search"
 }

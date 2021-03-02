@@ -601,7 +601,13 @@ export function BillDetails({
                       } else setApplyDiscount(false);
                     }}
                   >
-                    Apply
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "btnApply",
+                        align: "ltr",
+                        returnText: true,
+                      }}
+                    />
                   </button>
                 </div>
               </div>
@@ -709,8 +715,8 @@ export function BillDetails({
                     <AlgaehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        // fieldName: "discount_percentage",
-                        forceLabel: "Sheet Discount %",
+                        fieldName: "sheet_discount",
+                        // forceLabel: "Sheet Discount %",
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -749,8 +755,8 @@ export function BillDetails({
                     <AlgaehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        // fieldName: "discount_amount",
-                        forceLabel: "Sheet Discount",
+                        fieldName: "sheet_discount_amount",
+                        // forceLabel: "Sheet Discount",
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -792,7 +798,7 @@ export function BillDetails({
                     <AlgaehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Enter Promo Code",
+                        fieldName: "promo_code",
                         isImp: false,
                       }}
                       textBox={{
@@ -815,7 +821,7 @@ export function BillDetails({
                   >
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Apply Promo",
+                        fieldName: "btnApply",
                         align: "ltr",
                         returnText: true,
                       }}
@@ -1007,7 +1013,9 @@ export function BillDetails({
                         }}
                       />
 
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        <AlgaehLabel label={{ fieldName: "payby_cash" }} />
+                      </span>
                     </label>
                   </div>
                   <Controller
@@ -1069,7 +1077,9 @@ export function BillDetails({
                         }}
                         disabled={disabled}
                       />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
+                      <span style={{ fontSize: "0.8rem" }}>
+                        <AlgaehLabel label={{ fieldName: "payby_card" }} />
+                      </span>
                     </label>
                   </div>
                   <CardComponent

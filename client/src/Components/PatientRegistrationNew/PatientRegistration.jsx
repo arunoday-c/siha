@@ -473,7 +473,7 @@ export function PatientRegistration() {
     }
     if (
       patientIdCard.current !== null &&
-      patientImage.current?.state?.fileExtention
+      patientIdCard.current?.state?.fileExtention
     ) {
       images.push(
         new Promise((resolve, reject) => {
@@ -492,7 +492,7 @@ export function PatientRegistration() {
     if (data?.primary_insurance_provider_id) {
       if (
         insuranceImgBack.current !== null &&
-        patientImage.current?.state?.fileExtention
+        insuranceImgBack.current?.state?.fileExtention
       ) {
         images.push(
           new Promise((resolve, reject) => {
@@ -510,7 +510,7 @@ export function PatientRegistration() {
       }
       if (
         insuranceImgFront.current !== null &&
-        patientImage.current?.state?.fileExtention
+        insuranceImgFront.current?.state?.fileExtention
       ) {
         images.push(
           new Promise((resolve, reject) => {
@@ -977,7 +977,12 @@ export function PatientRegistration() {
                     className="btn btn-default btn-small"
                     onClick={getFromSmartCard}
                   >
-                    Load from Smart card
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "smart_card",
+                        align: "ltr",
+                      }}
+                    />
                   </button>
                 </div>
               </AlgaehSecurityComponent>
@@ -1127,7 +1132,12 @@ export function PatientRegistration() {
                         setPriceModalVisible(true);
                       }}
                     >
-                      View Price List
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "btnViewPriceList",
+                          returnText: true,
+                        }}
+                      />
                     </button>
                   </AlgaehSecurityComponent>
                 </div>
