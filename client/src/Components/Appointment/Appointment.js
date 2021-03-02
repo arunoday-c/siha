@@ -25,7 +25,6 @@ import {
 } from "./AppointmentHelper";
 import sockets from "../../sockets";
 import { MainContext, AlgaehModal, AlgaehLabel } from "algaeh-react-components";
-// const { confirm } = Modal;
 
 class Appointment extends PureComponent {
   constructor(props) {
@@ -59,6 +58,7 @@ class Appointment extends PureComponent {
       rowData: [],
     };
     this.appSock = sockets;
+    this.rejectNotes = undefined;
   }
   static contextType = MainContext;
   componentDidMount() {
@@ -142,6 +142,7 @@ class Appointment extends PureComponent {
       cancel_reason: this.state.cancel_reason,
       hims_f_patient_appointment_id: row.hims_f_patient_appointment_id,
     };
+    this.rejectNotes.value = "";
     algaehApiCall({
       uri: "/appointment/cancelPatientAppointment",
       module: "frontDesk",
@@ -171,7 +172,7 @@ class Appointment extends PureComponent {
   cancelAppt(row) {
     let _date = moment(row.appointment_date).format("YYYYMMDD");
     let _time = moment(row.appointment_from_time, "HH:mm:ss").format("HHmm");
-
+    debugger;
     if (
       _date < moment(new Date()).format("YYYYMMDD") ||
       (_date === moment(new Date()).format("YYYYMMDD") &&
@@ -299,7 +300,7 @@ class Appointment extends PureComponent {
       date_of_birth: null,
       age: null,
       contact_number: "",
-
+      cancel_reason: "",
       email: "",
       appointment_remarks: "",
       timeSlots: [],
@@ -556,7 +557,7 @@ class Appointment extends PureComponent {
                 : [];
               const slot = dataArray.length > 0 ? dataArray[0].slot : null;
               const width = 318 * dataArray;
-              console.log("dataArray", dataArray);
+              // console.log("dataArray", dataArray);
               this.setState({ slot, width, appointmentSchedule: dataArray });
               // this.setState(
               //   { appointmentSchedule: response.data.records },
@@ -805,6 +806,12 @@ class Appointment extends PureComponent {
 
       generatedLi.push({
         day: dt.format("DD"),
+        day_ar: new Date(dt.clone()._d).toLocaleDateString("ar-EG", {
+          day: "2-digit",
+        }),
+        dayName_ar: new Date(dt.clone()._d).toLocaleDateString("ar-EG", {
+          weekday: "narrow",
+        }),
         currentdate: dt._d,
         dayName: dt.format("ddd"),
       });
@@ -814,6 +821,7 @@ class Appointment extends PureComponent {
   }
 
   generateHorizontalDateBlocks() {
+    const lang = this.context?.userLanguage ?? "en";
     const act_date = new Date(this.state.activeDateHeader);
     return (
       <div className="calendar">
@@ -839,12 +847,12 @@ class Appointment extends PureComponent {
                     }
                     onClick={this.onSelectedDateHandler.bind(this)}
                   >
-                    {row.day}
+                    {lang === "ar" ? row.day_ar : row.day}
                     <span
                       date={row.currentdate}
                       onClick={this.onSelectedDateHandler.bind(this)}
                     >
-                      {row.dayName}
+                      {lang === "ar" ? row.dayName_ar : row.dayName}
                     </span>
                   </li>
                 );
@@ -2045,13 +2053,17 @@ class Appointment extends PureComponent {
           okText="Update"
           onOk={() => this.modalOnOk(this.state.rowData)}
           onCancel={() => {
+            this.rejectNotes.value = "";
             this.setState({ rejectVisible: false, cancel_reason: "" });
           }}
         >
           <div className="col-12">
             <AlgaehLabel label={{ forceLabel: "Reason For Rejection" }} />
             <textarea
-              value={this.state.cancel_reason}
+              ref={(c) => {
+                this.rejectNotes = c;
+              }}
+              defaultValue={this.state.cancel_reason}
               name="cancel_reason"
               onChange={(e) => this.texthandle(e)}
             />

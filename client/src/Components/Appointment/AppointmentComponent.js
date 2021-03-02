@@ -16,7 +16,7 @@ import spotlightSearch from "../../Search/spotlightSearch.json";
 import {
   AlgaehAutoComplete,
   MainContext,
-  // AlgaehLabel,
+  AlgaehLabel as NewAlgaehLabel,
   // AlgaehAutoComplete,
   // AlgaehDateHandler,
   Input,
@@ -25,7 +25,7 @@ import {
 import { useLocation } from "react-router-dom";
 
 function AppointmentComponent(props) {
-  const { countries = [] } = useContext(MainContext);
+  const { countries = [], userLanguage } = useContext(MainContext);
   const location = useLocation();
   useEffect(() => {
     if (location.state) {
@@ -715,7 +715,7 @@ function AppointmentComponent(props) {
                   className: "select-fld",
                   value: props.state.sub_department_id,
                   dataSource: {
-                    textField: "label", //"sub_department_name",
+                    textField: userLanguage === "ar" ? "arlabel" : "label", //"sub_department_name",
                     valueField: "value", //"sub_dept_id",
                     data: props.state.departments,
                   },
@@ -735,7 +735,7 @@ function AppointmentComponent(props) {
                   className: "select-fld",
                   value: props.state.provider_id,
                   dataSource: {
-                    textField: "label", //"full_name",
+                    textField: userLanguage === "ar" ? "arlabel" : "label", //"full_name",
                     valueField: "value", //"provider_id",
                     data: props.state.doctors,
                   },
@@ -752,14 +752,17 @@ function AppointmentComponent(props) {
                   onClick={props.getAppointmentSchedule}
                   className="btn btn-primary"
                 >
-                  {/* {getLabelFromLanguage({ fieldName: "loadData" })} */}
-                  Load
+                  <NewAlgaehLabel
+                    label={{
+                      fieldName: "loadData",
+                    }}
+                  />
                 </button>
               </div>
 
               <AlgaehAutoSearch
                 div={{ className: "col-3 AlgaehAutoSearch" }}
-                label={{ forceLabel: "Patient Search" }}
+                label={{ fieldName: "patient_search" }}
                 title="Search Patient"
                 id="patient_id_search"
                 template={(result) => {
@@ -836,9 +839,14 @@ function AppointmentComponent(props) {
               >
                 <div className="caption">
                   <h3 className="caption-subject">
-                    {getLabelFromLanguage({
+                    <NewAlgaehLabel
+                      label={{
+                        fieldName: "doctorsAvailability",
+                      }}
+                    />
+                    {/* {getLabelFromLanguage({
                       fieldName: "doctorsAvailability",
-                    })}
+                    })} */}
                   </h3>
                 </div>
                 <div className="actions">

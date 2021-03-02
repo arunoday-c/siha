@@ -761,5 +761,6 @@
   "btnApply": "Apply",
   "btnViewPriceList": "View Price List",
   "select_card_type": "Select Card Type",
-  "smart_card": "Load from Smart Card"
+  "smart_card": "Load from Smart Card",
+  "patient_search": "Patient Search"
 }

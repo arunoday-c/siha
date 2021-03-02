@@ -473,7 +473,7 @@ export function PatientRegistration() {
     }
     if (
       patientIdCard.current !== null &&
-      patientImage.current?.state?.fileExtention
+      patientIdCard.current?.state?.fileExtention
     ) {
       images.push(
         new Promise((resolve, reject) => {
@@ -492,7 +492,7 @@ export function PatientRegistration() {
     if (data?.primary_insurance_provider_id) {
       if (
         insuranceImgBack.current !== null &&
-        patientImage.current?.state?.fileExtention
+        insuranceImgBack.current?.state?.fileExtention
       ) {
         images.push(
           new Promise((resolve, reject) => {
@@ -510,7 +510,7 @@ export function PatientRegistration() {
       }
       if (
         insuranceImgFront.current !== null &&
-        patientImage.current?.state?.fileExtention
+        insuranceImgFront.current?.state?.fileExtention
       ) {
         images.push(
           new Promise((resolve, reject) => {

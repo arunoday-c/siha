@@ -6,55 +6,54 @@ export function setUserPreference(req, res, next) {
     language,
     theme,
     controlName,
-    controlValue
+    controlValue,
   } = req.body;
   userPrefernce
     .findOne({
-      userID: user_id
+      userID: user_id,
     })
-    .then(result => {
+    .then((result) => {
       let newDetails = { userID: user_id };
-      //{userID:1,preferences:[{screenCode:'front_desk',preference:[{controlName:"",controlValue:""}]}]}
       if (result !== null && Object.keys(result).length > 0) {
         let details = result["preferences"];
-        const screens = details.find(f => f.screenCode === screenCode);
+        const screens = details.find((f) => f.screenCode === screenCode);
         const indexS = details.indexOf(screens);
         if (screens !== undefined) {
           const preference = screens["preference"].find(
-            f => f.controlName === controlName
+            (f) => f.controlName === controlName
           );
 
           if (preference !== undefined) {
             const index = screens["preference"].indexOf(preference);
             screens["preference"][index] = {
               controlName: controlName,
-              controlValue: controlValue
+              controlValue: controlValue,
             };
           } else {
             screens["preference"].push({
               controlName: controlName,
-              controlValue: controlValue
+              controlValue: controlValue,
             });
           }
           details[indexS] = screens;
         } else {
           details.push({
             screenCode: screenCode,
-            preference: [{ controlName, controlValue }]
+            preference: [{ controlName, controlValue }],
           });
         }
         newDetails = {
           userID: result.userID,
           language: result.language,
           theme: result.theme,
-          preferences: details
+          preferences: details,
         };
       } else {
         newDetails["preferences"] = [
           {
             screenCode: screenCode,
-            preference: [{ controlName, controlValue }]
-          }
+            preference: [{ controlName, controlValue }],
+          },
         ];
       }
       const _lan = language !== undefined ? { language: language } : {};
@@ -63,19 +62,19 @@ export function setUserPreference(req, res, next) {
       userPrefernce
         .findOneAndUpdate({ userID: newDetails.userID }, newDetails, {
           upsert: true,
-          new: true
+          new: true,
         })
-        .then(response => {
+        .then((response) => {
           res.status(200).json({
             success: true,
-            message: "updated success"
+            message: "updated success",
           });
         })
-        .catch(error => {
+        .catch((error) => {
           res.status(400).json({ success: false, message: error });
         });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(400).json({ success: false, message: error });
     });
 }
@@ -83,16 +82,16 @@ export function getUserPreferences(req, res, next) {
   const { user_id } = req.body;
   userPrefernce
     .find({ userID: user_id })
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         success: true,
-        records: result
+        records: result,
       });
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(400).json({
         success: false,
-        message: error
+        message: error,
       });
     });
 }

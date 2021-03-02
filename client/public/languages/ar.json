@@ -482,5 +482,6 @@
   "btnApply": "يتقدم",
   "btnViewPriceList": "عرض قائمة الأسعار",
   "select_card_type": "حدد نوع البطاقة",
-  "smart_card": "التحميل من البطاقة الذكية"
+  "smart_card": "التحميل من البطاقة الذكية",
+  "patient_search": "البحث عن المرضى"
 }
