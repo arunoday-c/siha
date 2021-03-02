@@ -14,8 +14,8 @@ export default {
     _mysql
       .executeQueryWithTransaction({
         query:
-          "INSERT INTO `hims_d_appointment_status` (color_code, description, default_status,steps, created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?,?)",
+          "INSERT INTO `hims_d_appointment_status` (color_code, description, default_status,steps, created_date, created_by, updated_date, updated_by,description_ar)\
+          VALUE(?,?,?,?,?,?,?,?,?)",
         values: [
           input.color_code,
           input.description,
@@ -25,6 +25,7 @@ export default {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
+          input.description_ar,
         ],
       })
       .then((result) => {
@@ -151,7 +152,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_appointment_status_id, color_code,description as statusDesc, default_status,steps,authorized FROM\
+          "select hims_d_appointment_status_id, color_code,description as statusDesc,description_ar, default_status,steps,authorized FROM\
            hims_d_appointment_status where record_status='A'  order by steps ",
       })
       .then((result) => {
@@ -223,7 +224,7 @@ export default {
       .executeQueryWithTransaction({
         query:
           "UPDATE `hims_d_appointment_status` SET color_code=?, description=?, default_status=?,steps=?,\
-        updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
+        updated_date=?, updated_by=? ,`record_status`=?,description_ar=? WHERE  `record_status`='A' and `hims_d_appointment_status_id`=?;",
         values: [
           input.color_code,
           input.description,
@@ -232,6 +233,7 @@ export default {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.record_status,
+          input.description_ar,
           input.hims_d_appointment_status_id,
         ],
       })
@@ -1180,7 +1182,8 @@ export default {
           query: `select  hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,
           from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,
           to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,
-          hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,
+          hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,coalesce(E.arabic_name,E.full_name) as doctor_name_ar,
+          clinic_id,C.description as clinic_name,R.description as  room_name,
           ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified 
           from hims_d_appointment_schedule_header SH inner join  hims_d_appointment_schedule_detail ASD  on
           SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id 
@@ -1201,7 +1204,8 @@ export default {
                   if (result[j]["modified"] == "M") {
                     _mysql
                       .executeQuery({
-                        query: `select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr, ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2,hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status, schedule_description, month, year, monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name, ASD.schedule_status as todays_schedule_status, modified from hims_d_appointment_schedule_header SH inner join hims_d_appointment_schedule_detail ASD
+                        query: `select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr, ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2,hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status, schedule_description, month, year, monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,
+                           coalesce(R.description_ar,R.description) as room_name_ar, ASD.schedule_status as todays_schedule_status, modified from hims_d_appointment_schedule_header SH inner join hims_d_appointment_schedule_detail ASD
                           on SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id 
                           inner join hims_d_appointment_schedule_modify as ASM on ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id inner join hims_d_employee E on ASD.provider_id=E.hims_d_employee_id and E.record_status='A' left join hims_d_appointment_clinic C on ASD.clinic_id=C.hims_d_appointment_clinic_id left join hims_d_appointment_room R on C.room_id=R.hims_d_appointment_room_id inner join hims_d_sub_department SD 
                           on SH.sub_dept_id = SD.hims_d_sub_department_id and SD.record_status='A'
@@ -1234,7 +1238,7 @@ export default {
                     .executeQuery({
                       query:
                         "select hims_f_patient_appointment_id, patient_id, title_id, patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
-                          appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number,tel_code, email, send_to_provider,\
+                          appointment_to_time, appointment_status_id, patient_name, coalesce(arabic_name,patient_name)as arabic_name, date_of_birth, age, contact_number,tel_code, email, send_to_provider,\
                           gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
                           appointment_remarks, visit_created,is_stand_by  from hims_f_patient_appointment where record_status='A' and   cancelled<>'Y' and sub_department_id=?\
                           and appointment_date=? and provider_id=? ",
