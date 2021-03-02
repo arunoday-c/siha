@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import noImage from "../../../assets/images/no-image-icon-6.webp";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -68,9 +69,10 @@ class BatchWiseStock extends Component {
           openPopup={this.props.show}
           class={this.state.lang_sets}
         >
-          <div className="hptl-phase1-speciman-collection-form">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body" id="precriptionList_Cntr">
+          {" "}
+          <div className="col margin-top-15  margin-bottom-15">
+            <div className="row">
+              <div className="col-9">
                 <AlgaehDataGrid
                   id="inv_initial_stock"
                   columns={[
@@ -342,6 +344,39 @@ class BatchWiseStock extends Component {
                     onDone: updateStockDetils.bind(this, this),
                   }}
                 />
+              </div>
+              <div className="col-3">
+                <img
+                  className="itemStockBigImg"
+                  src={
+                    this.props.currentRow?.item_master_img_unique_id
+                      ? `${window.location.protocol}//${
+                          window.location.hostname
+                        }${
+                          window.location.port === "" ? "/docserver" : `:3006`
+                        }/UPLOAD/InvItemMasterImages/${
+                          this.props.currentRow.item_master_img_unique_id
+                        }`
+                      : noImage
+                  }
+                />
+                <a
+                  className="enlargeView"
+                  href={
+                    this.props.currentRow?.item_master_img_unique_id
+                      ? `${window.location.protocol}//${
+                          window.location.hostname
+                        }${
+                          window.location.port === "" ? "/docserver" : `:3006`
+                        }/UPLOAD/InvItemMasterImages/${
+                          this.props.currentRow.item_master_img_unique_id
+                        }`
+                      : noImage
+                  }
+                  target="_blank"
+                >
+                  Enlarge View
+                </a>
               </div>
             </div>
           </div>

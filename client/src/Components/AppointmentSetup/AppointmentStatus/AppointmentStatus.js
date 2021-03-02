@@ -6,6 +6,7 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
+import { AlgaehFormGroup } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -19,6 +20,7 @@ class AppointmentStatus extends Component {
       appointmentStatus: [],
       color_code: "#FFFFFF",
       description: "",
+      description_ar: "",
       default_status: "",
       isEditable: true,
       disableAdd: null,
@@ -147,8 +149,9 @@ class AppointmentStatus extends Component {
           data: {
             hims_d_appointment_status_id: data.hims_d_appointment_status_id,
             color_code: data.color_code,
-            description: data.description,
+            description: data.description ? data.description : data.statusDesc,
             default_status: data.default_status,
+
             record_status: "I",
           },
           method: "PUT",
@@ -180,10 +183,11 @@ class AppointmentStatus extends Component {
       data: {
         hims_d_appointment_status_id: data.hims_d_appointment_status_id,
         color_code: data.color_code,
-        description: data.description,
+        description: data.description ? data.description : data.statusDesc,
         default_status: data.default_status,
         steps: data.steps,
         record_status: "A",
+        description_ar: data.description_ar,
       },
       method: "PUT",
       onSuccess: (response) => {
@@ -282,6 +286,7 @@ class AppointmentStatus extends Component {
                 color_code: this.state.color_code,
                 description: this.state.description,
                 default_status: this.state.default_status,
+                description_ar: this.state.description_ar,
                 steps: this.state.steps,
               },
               onSuccess: (response) => {
@@ -345,7 +350,19 @@ class AppointmentStatus extends Component {
               },
             }}
           />
-
+          <AlgaehFormGroup
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              fieldName: "arabic_type_desc",
+              isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "description_ar",
+              value: this.state.description_ar,
+              onChange: this.changeTexts.bind(this),
+            }}
+          />
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
@@ -473,22 +490,56 @@ class AppointmentStatus extends Component {
                           ),
                           editorTemplate: (row) => {
                             return (
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
+                              <AlgaehFormGroup
                                 textBox={{
                                   className: "txt-fld",
-                                  name: "description",
+                                  name: "statusDesc",
                                   value: row.statusDesc,
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    ),
+                                  updateInternally: true,
+                                  onChange: (e) => {
+                                    row.description = e.target.value;
                                   },
-                                  others: {
-                                    errormessage:
-                                      "Description - cannot be blank",
-                                    required: true,
+                                }}
+                              />
+                              // <AlagehFormGroup
+                              //   div={{ className: "col" }}
+                              //   textBox={{
+                              //     className: "txt-fld",
+                              //     name: "description",
+                              //     value: row.statusDesc,
+                              //     events: {
+                              //       onChange: this.changeGridEditors.bind(
+                              //         this,
+                              //         row
+                              //       ),
+                              //     },
+                              //     others: {
+                              //       errormessage:
+                              //         "Description - cannot be blank",
+                              //       required: true,
+                              //     },
+                              //   }}
+                              // />
+                            );
+                          },
+                        },
+                        {
+                          fieldName: "description_ar",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "arabic_type_desc" }}
+                            />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlgaehFormGroup
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "description_ar",
+                                  value: row.description_ar,
+                                  updateInternally: true,
+                                  onChange: (e) => {
+                                    row.description_ar = e.target.value;
                                   },
                                 }}
                               />

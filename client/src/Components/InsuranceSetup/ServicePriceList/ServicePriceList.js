@@ -95,7 +95,7 @@ class ServicePriceList extends PureComponent {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "pricefromplans",
         },
-        afterSuccess: (data) => { },
+        afterSuccess: (data) => {},
       });
       this.setState({
         [e.target.name]: e.target.value,
@@ -356,10 +356,37 @@ class ServicePriceList extends PureComponent {
                 {
                   fieldName: "service_name",
                   label: <AlgaehLabel label={{ fieldName: "service_name" }} />,
-                  others: { disabled: true, }
-
+                  others: { disabled: true },
                 },
-
+                {
+                  fieldName: "interval",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Interval(In Days)" }} />
+                  ),
+                  displayTemplate: (row) => {
+                    return row.interval;
+                  },
+                  editorTemplate: (row) => {
+                    return (
+                      <AlagehFormGroup
+                        div={{}}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ",",
+                          },
+                          value: row.interval,
+                          className: "txt-fld",
+                          name: "interval",
+                          dontAllowKeys: ["-", "e", "."],
+                          events: {
+                            onChange: onchangegridcol.bind(this, this, row),
+                          },
+                        }}
+                      />
+                    );
+                  },
+                },
                 {
                   fieldName: "cpt_code",
                   label: <AlgaehLabel label={{ fieldName: "cpt_code" }} />,
@@ -524,7 +551,7 @@ class ServicePriceList extends PureComponent {
               paging={{ page: 0, rowsPerPage: 5 }}
               events={{
                 // onDelete: this.deleteVisaType.bind(this),
-                onEdit: (row) => { },
+                onEdit: (row) => {},
                 onDone: updatePriceList.bind(this, this),
               }}
             />

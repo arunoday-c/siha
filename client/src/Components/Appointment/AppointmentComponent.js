@@ -16,7 +16,7 @@ import spotlightSearch from "../../Search/spotlightSearch.json";
 import {
   AlgaehAutoComplete,
   MainContext,
-  // AlgaehLabel,
+  AlgaehLabel as NewAlgaehLabel,
   // AlgaehAutoComplete,
   // AlgaehDateHandler,
   Input,
@@ -25,7 +25,7 @@ import {
 import { useLocation } from "react-router-dom";
 
 function AppointmentComponent(props) {
-  const { countries = [] } = useContext(MainContext);
+  const { countries = [], userLanguage } = useContext(MainContext);
   const location = useLocation();
   useEffect(() => {
     if (location.state) {
@@ -267,9 +267,10 @@ function AppointmentComponent(props) {
             {/* Add Pop up start */}
             <AlgaehModalPopUp
               class="appoPopupWidth"
-              title={getLabelFromLanguage({
-                fieldName: "bookAppo",
-              })}
+              title={<NewAlgaehLabel label={{ fieldName: "bookAppo" }} />}
+              // {getLabelFromLanguage({
+              //   fieldName: "bookAppo",
+              // })}
               events={{
                 onClose: props.handleClose,
               }}
@@ -285,9 +286,17 @@ function AppointmentComponent(props) {
                         }}
                       />
                       <h6>
-                        {moment(props.state.activeDateHeader).format(
-                          "DD-MM-YYYY"
-                        )}
+                        {userLanguage === "ar"
+                          ? new Date(
+                              props.state.activeDateHeader
+                            ).toLocaleDateString("ar-EG", {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                            })
+                          : moment(props.state.activeDateHeader).format(
+                              "DD-MM-YYYY"
+                            )}
                       </h6>
                     </div>
 
@@ -297,7 +306,19 @@ function AppointmentComponent(props) {
                           fieldName: "appoTime",
                         }}
                       />
-                      <h6>{props.state.apptFromTime}</h6>
+                      <h6>
+                        {userLanguage === "ar"
+                          ? new Date(
+                              moment(props.state.apptFromTime, "HH:mm tt")._d
+                            )
+                              .toLocaleDateString("ar-EG", {
+                                hour12: true,
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                              .split(",")[1]
+                          : props.state.apptFromTime}
+                      </h6>
                     </div>
 
                     <AlagehAutoComplete
@@ -322,7 +343,7 @@ function AppointmentComponent(props) {
                     />
 
                     <div className="col globalSearchCntr">
-                      <AlgaehLabel label={{ forceLabel: "Search Patient" }} />
+                      <AlgaehLabel label={{ fieldName: "patient_search" }} />
                       <h6 onClick={props.patientSearch}>
                         {props.state.patient_code
                           ? props.state.patient_code
@@ -346,7 +367,8 @@ function AppointmentComponent(props) {
                         className: "select-fld",
                         value: props.state.title_id,
                         dataSource: {
-                          textField: "title",
+                          textField:
+                            userLanguage === "ar" ? "arabic_title" : "title",
                           valueField: "his_d_title_id",
                           data: props.state.titles,
                         },
@@ -463,7 +485,8 @@ function AppointmentComponent(props) {
                         className: "select-fld",
                         value: props.state.gender,
                         dataSource: {
-                          textField: "name",
+                          textField:
+                            userLanguage === "ar" ? "arabic_name" : "name",
                           valueField: "value",
                           data: GlobalVariables.FORMAT_GENDER,
                         },
@@ -487,7 +510,10 @@ function AppointmentComponent(props) {
                         className: "select-fld",
                         value: props.state.appointment_status_id,
                         dataSource: {
-                          textField: "statusDesc",
+                          textField:
+                            userLanguage === "ar"
+                              ? "description_ar"
+                              : "statusDesc",
                           valueField: "hims_d_appointment_status_id",
                           data: props.state.appointmentStatus,
                         },
@@ -519,9 +545,12 @@ function AppointmentComponent(props) {
                     /> */}
                     {!!countries?.length && (
                       <div className="col-lg-4 algaehInputGroup">
-                        <label className="style_Label">
-                          Contact Number<span className="imp">&nbsp;*</span>
-                        </label>
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "contact_number",
+                            isImp: true,
+                          }}
+                        />
                         <Input.Group compact>
                           <>
                             <Select
@@ -715,7 +744,7 @@ function AppointmentComponent(props) {
                   className: "select-fld",
                   value: props.state.sub_department_id,
                   dataSource: {
-                    textField: "label", //"sub_department_name",
+                    textField: userLanguage === "ar" ? "arlabel" : "label", //"sub_department_name",
                     valueField: "value", //"sub_dept_id",
                     data: props.state.departments,
                   },
@@ -735,7 +764,7 @@ function AppointmentComponent(props) {
                   className: "select-fld",
                   value: props.state.provider_id,
                   dataSource: {
-                    textField: "label", //"full_name",
+                    textField: userLanguage === "ar" ? "arlabel" : "label", //"full_name",
                     valueField: "value", //"provider_id",
                     data: props.state.doctors,
                   },
@@ -752,14 +781,17 @@ function AppointmentComponent(props) {
                   onClick={props.getAppointmentSchedule}
                   className="btn btn-primary"
                 >
-                  {/* {getLabelFromLanguage({ fieldName: "loadData" })} */}
-                  Load
+                  <NewAlgaehLabel
+                    label={{
+                      fieldName: "loadData",
+                    }}
+                  />
                 </button>
               </div>
 
               <AlgaehAutoSearch
                 div={{ className: "col-3 AlgaehAutoSearch" }}
-                label={{ forceLabel: "Patient Search" }}
+                label={{ fieldName: "patient_search" }}
                 title="Search Patient"
                 id="patient_id_search"
                 template={(result) => {
@@ -836,9 +868,14 @@ function AppointmentComponent(props) {
               >
                 <div className="caption">
                   <h3 className="caption-subject">
-                    {getLabelFromLanguage({
+                    <NewAlgaehLabel
+                      label={{
+                        fieldName: "doctorsAvailability",
+                      }}
+                    />
+                    {/* {getLabelFromLanguage({
                       fieldName: "doctorsAvailability",
-                    })}
+                    })} */}
                   </h3>
                 </div>
                 <div className="actions">
@@ -851,7 +888,9 @@ function AppointmentComponent(props) {
                                 backgroundColor: data.color_code,
                               }}
                             />
-                            {data.statusDesc}
+                            {userLanguage === "ar"
+                              ? data.description_ar
+                              : data.statusDesc}
                           </li>
                         ))
                       : null}
@@ -874,27 +913,49 @@ function AppointmentComponent(props) {
                             <thead>
                               <tr>
                                 <th className="tg-amwm" colSpan="2">
-                                  <h6>{data.doctor_name}</h6>
+                                  <h6>
+                                    {userLanguage === "ar"
+                                      ? data.doctor_name_ar
+                                      : data.doctor_name}
+                                  </h6>
                                   <p>
                                     <span>
-                                      {getLabelFromLanguage({
+                                      <NewAlgaehLabel
+                                        label={{
+                                          fieldName: "roomNo",
+                                        }}
+                                      />
+                                      {/* {getLabelFromLanguage({
                                         fieldName: "roomNo",
-                                      })}
-                                      : {data.room_name}
+                                      })} */}
+                                      :{" "}
+                                      {userLanguage === "ar"
+                                        ? data.room_name_ar
+                                        : data.room_name}
                                     </span>
                                   </p>
                                 </th>
                               </tr>
                               <tr>
                                 <th className="tbl-subHdg">
-                                  {getLabelFromLanguage({
+                                  <NewAlgaehLabel
+                                    label={{
+                                      fieldName: "booked",
+                                    }}
+                                  />
+                                  {/* {getLabelFromLanguage({
                                     fieldName: "booked",
-                                  })}
+                                  })} */}
                                 </th>
                                 <th className="tbl-subHdg">
-                                  {getLabelFromLanguage({
+                                  <NewAlgaehLabel
+                                    label={{
+                                      fieldName: "standBy",
+                                    }}
+                                  />
+                                  {/* {getLabelFromLanguage({
                                     fieldName: "standBy",
-                                  })}
+                                  })} */}
                                 </th>
                               </tr>
                             </thead>
@@ -903,9 +964,14 @@ function AppointmentComponent(props) {
                                 <tr>
                                   <td>
                                     <span className="doctorLeaveCntr">
-                                      {getLabelFromLanguage({
+                                      <NewAlgaehLabel
+                                        label={{
+                                          fieldName: "doctorLeave",
+                                        }}
+                                      />
+                                      {/* {getLabelFromLanguage({
                                         fieldName: "doctorLeave",
-                                      })}
+                                      })} */}
                                     </span>
                                   </td>
                                 </tr>
@@ -918,7 +984,12 @@ function AppointmentComponent(props) {
                       </>
                     ) : (
                       <span className="noDoctor">
-                        {getLabelFromLanguage({ fieldName: "noDoctorAvail" })}
+                        <NewAlgaehLabel
+                          label={{
+                            fieldName: "noDoctorAvail",
+                          }}
+                        />
+                        {/* {getLabelFromLanguage({ fieldName: "noDoctorAvail" })} */}
                       </span>
                     )}
                   </div>

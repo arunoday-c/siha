@@ -313,6 +313,89 @@ let updateMedicinePreApproval = (req, res, next) => {
   }
 };
 
+let checkOrderedDetails = (req, res, next) => {
+  try {
+    const _mysql = new algaehMysql({ path: keyPath });
+    let inputParam = extend({}, req.query);
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_f_ordered_services_id, created_date FROM hims_f_ordered_services \
+            where patient_id = ? and services_id = ? ORDER BY hims_f_ordered_services_id DESC LIMIT 1; \
+            SELECT `interval`, hims_d_services_insurance_id FROM hims_d_services_insurance where \
+            insurance_id = ?  and services_id = ? ",
+        values: [
+          inputParam.patient_id,
+          inputParam.services_id,
+          inputParam.insurance_id,
+          inputParam.services_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        req.flag = true;
+        const order_details = result[0];
+        const insurance_details = result[1];
+        let date_valid = null;
+
+        // console.log(
+        //   "insurance_details[0].interval",
+        //   insurance_details[0].interval
+        // );
+        if (parseInt(insurance_details[0].interval) > 0) {
+          if (order_details.length > 0) {
+            const ordered_date = moment(
+              order_details[0].created_date,
+              "YYYY-MM-DD"
+            ).format("YYYY-MM-DD");
+
+            date_valid = moment(ordered_date).add(
+              parseInt(insurance_details[0].interval),
+              "days"
+            );
+
+            // console.log(
+            //   "date_valid:---",
+            //   moment(date_valid).format("YYYYMMDD")
+            // );
+
+            // console.log("currenct:---", moment().format("YYYYMMDD"));
+
+            if (
+              moment(date_valid).format("YYYYMMDD") <=
+              moment().format("YYYYMMDD")
+            ) {
+              // console.log("234567");
+              req.flag = false;
+            }
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          } else {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          }
+        } else {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        }
+      })
+      .catch((error) => {
+        // console.log("error", error);
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+};
+
 let insertOrderedServices = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
@@ -2511,4 +2594,5 @@ export default {
   insertPhysiotherapyServices,
   deleteInvOrderedItems,
   deleteOrderedPackage,
+  checkOrderedDetails,
 };

@@ -112,6 +112,7 @@ export default function Notification({ open, handlePanel, count }) {
       socket.on("notification", (msg) => {
         //console.log("Im executed", msg);
         addToNotiList(msg);
+        socket.emit("getAll");
         // socket.emit("count");
       });
 

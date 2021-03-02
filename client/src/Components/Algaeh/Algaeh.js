@@ -6,6 +6,7 @@ import ScreenElements from "./ScreenElements/ScreenElements";
 import Formula from "./Formula/Formula";
 import LisConfigList from "./LisConfig/LisConfigList";
 import ReportMaster from "./ReportMaster/ReportMaster";
+import DBBackup from "./DBBackup/DBBackup";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehTabs } from "algaeh-react-components";
 import "./algaeh.scss";
@@ -110,6 +111,17 @@ class Algaeh extends Component {
               ),
               children: <ReportMaster />,
               componentCode: "ALG_RPT_MST",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "DB Backup",
+                  }}
+                />
+              ),
+              children: <DBBackup />,
+              componentCode: "ALG_DB_BCK",
             },
           ]}
           renderClass="AlgaehMastersSection"
