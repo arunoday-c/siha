@@ -741,7 +741,7 @@ class EarningsDeductions extends Component {
                     </div>
                   </div>
                   <div className="col-4">
-                    <label>Early Join Comp.</label>
+                    <label>Consider in Early Join</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
                         <input
@@ -751,7 +751,7 @@ class EarningsDeductions extends Component {
                           checked={this.state.early_join_comp}
                           onChange={changeChecks.bind(this, this)}
                         />
-                        <span>Yes</span>
+                        <span>No</span>
                       </label>
                     </div>
                   </div>
