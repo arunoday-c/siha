@@ -476,5 +476,6 @@
   "designation_desc": "وصف التعيين",
   "emp_doc_mst_list": "قائمة المستندات الرئيسية للموظف",
   "doc_type": "نوع الوثيقة",
-  "doc_desc": "وصف الوثيقة"
+  "doc_desc": "وصف الوثيقة",
+  "patient_search": "البحث عن المرضى"
 }
