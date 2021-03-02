@@ -95,3 +95,18 @@
     }
   }
 }
+.itemStockBigImg {
+  width: 100%;
+  border: 1px solid #ccc;
+}
+.enlargeView {
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-top: none;
+  text-transform: uppercase;
+  &:hover {
+    background-color: whitesmoke;
+  }
+}

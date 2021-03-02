@@ -8,7 +8,6 @@ import {
   AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 
-// import noImage from "../../../assets/images/no-image-icon-6.webp";
 // import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import {
   changeTexts,
@@ -509,6 +508,8 @@ class InvStockEnquiry extends Component {
           requisition_auth_level={this.state.requisition_auth_level}
           trans_required={this.state.trans_required}
           location_description={this.state.location_description}
+          location_description={this.state.location_description}
+          currentRow={this.state.currentRow}
         />
       </React.Fragment>
     );

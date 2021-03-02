@@ -29,11 +29,14 @@ module.exports = (options, connection) =>
           vendor_name,
           procedure_desc,
           employee_id,
+          employees,
         } = data[i];
         newData.push({
           hims_f_dental_form_id,
           primary_user_ids: employee_id,
-          primary_message: `The Item Ordered on ${odered_date} for the ${full_name}-${patient_code} from Vendor  ${vendor_name} for the procedure  ${procedure_desc} not yet arrived.`,
+          primary_message: `The Item Ordered by ${orderBy} on ${odered_date} for the ${full_name}-${patient_code} from Vendor  ${vendor_name} for the procedure  ${procedure_desc} not yet arrived.`,
+          other_user_ids: employees,
+          other_message: `The Item Ordered by ${orderBy} on ${odered_date} for the ${full_name}-${patient_code} from Vendor  ${vendor_name} for the procedure  ${procedure_desc} not yet arrived.`,
         });
       }
       // console.log("newData=== ", JSON.stringify(newData));
