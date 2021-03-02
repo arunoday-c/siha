@@ -91,6 +91,7 @@ const getBatchWiseData = ($this, row) => {
           item_description: row.item_description,
           total_quantity: row.qtyhand,
           openBatchWise: !$this.state.openBatchWise,
+          currentRow: row,
         });
       }
     },
