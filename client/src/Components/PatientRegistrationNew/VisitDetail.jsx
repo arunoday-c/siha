@@ -366,7 +366,7 @@ export function VisitDetails({
                             fieldName: "Print_sticker",
                             label: (
                               <AlgaehLabel
-                                label={{ forceLabel: "Print Sticker" }}
+                                label={{ fieldName: "print_sticker" }}
                               />
                             ),
                             displayTemplate: (row) => {

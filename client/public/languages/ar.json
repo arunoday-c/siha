@@ -476,5 +476,11 @@
   "designation_desc": "وصف التعيين",
   "emp_doc_mst_list": "قائمة المستندات الرئيسية للموظف",
   "doc_type": "نوع الوثيقة",
-  "doc_desc": "وصف الوثيقة"
+  "doc_desc": "وصف الوثيقة",
+  "print_sticker": "ملصقطبع",
+  "promo_code": "إدخال الرمز الترويجي",
+  "btnApply": "يتقدم",
+  "btnViewPriceList": "عرض قائمة الأسعار",
+  "select_card_type": "حدد نوع البطاقة",
+  "smart_card": "التحميل من البطاقة الذكية"
 }

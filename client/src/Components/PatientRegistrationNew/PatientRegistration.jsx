@@ -977,7 +977,12 @@ export function PatientRegistration() {
                     className="btn btn-default btn-small"
                     onClick={getFromSmartCard}
                   >
-                    Load from Smart card
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "smart_card",
+                        align: "ltr",
+                      }}
+                    />
                   </button>
                 </div>
               </AlgaehSecurityComponent>
@@ -1127,7 +1132,12 @@ export function PatientRegistration() {
                         setPriceModalVisible(true);
                       }}
                     >
-                      View Price List
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "btnViewPriceList",
+                          returnText: true,
+                        }}
+                      />
                     </button>
                   </AlgaehSecurityComponent>
                 </div>

@@ -359,7 +359,7 @@ export function Demographics({
                             tabIndex: "6",
                           }}
                           gregorianDate={date_of_birth || null}
-                          label={{ forceLabel: "Hijiri Date" }}
+                          label={{ fieldName: "hijiri_date" }}
                           textBox={{ className: "txt-fld", disabled }}
                           type="hijri"
                           events={{
@@ -397,9 +397,15 @@ export function Demographics({
                         />
                         {!!countries?.length && (
                           <div className="col-lg-4 algaehInputGroup">
-                            <label className="style_Label">
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "contact_number",
+                                isImp: true,
+                              }}
+                            />
+                            {/* <label className="style_Label">
                               Contact Number<span className="imp">&nbsp;*</span>
-                            </label>
+                            </label> */}
                             <Input.Group compact>
                               <Controller
                                 control={control}

@@ -10,8 +10,8 @@ import { getCards } from "../../BusinessSetup/CardMaster/api";
 import MaskedInput from "react-maskedinput";
 
 export default function CardComponent({
-  onChangeCard = () => { },
-  onChangeNumber = () => { },
+  onChangeCard = () => {},
+  onChangeNumber = () => {},
   card_id,
   card_number,
   disabled,
@@ -29,9 +29,8 @@ export default function CardComponent({
 
   useEffect(() => {
     if (card_id > 0) {
-      return
-    }
-    else {
+      return;
+    } else {
       onChangeCard(null, null);
       onChangeNumber("");
     }
@@ -43,7 +42,7 @@ export default function CardComponent({
       <AlgaehAutoComplete
         div={{ className: "col-3  mandatory" }}
         label={{
-          forceLabel: "Select Card Type",
+          fieldName: "select_card_type",
           isImp: false,
         }}
         error={errors}
@@ -76,7 +75,7 @@ export default function CardComponent({
             value={card_number}
             guide={false}
             id="my-input-id"
-            onBlur={() => { }}
+            onBlur={() => {}}
             onChange={(e) => {
               const { value } = e.target;
               onChangeNumber(value);
@@ -85,27 +84,27 @@ export default function CardComponent({
           />
         </div>
       ) : (
-          <AlgaehFormGroup
-            div={{
-              className: "col no-padding-left-right  mandatory",
-            }}
-            label={{
-              fieldName: "card_check_number",
-              isImp: false,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "card_number",
-              disabled: isLoading || disabled,
-              value: card_number,
-              type: "number",
-              onChange: (e) => {
-                const { value } = e.target;
-                onChangeNumber(value);
-              },
-            }}
-          />
-        )}
+        <AlgaehFormGroup
+          div={{
+            className: "col no-padding-left-right  mandatory",
+          }}
+          label={{
+            fieldName: "card_check_number",
+            isImp: false,
+          }}
+          textBox={{
+            className: "txt-fld",
+            name: "card_number",
+            disabled: isLoading || disabled,
+            value: card_number,
+            type: "number",
+            onChange: (e) => {
+              const { value } = e.target;
+              onChangeNumber(value);
+            },
+          }}
+        />
+      )}
     </>
   );
 }
