@@ -711,7 +711,7 @@ export default class MiscEarningsDeductions extends Component {
                             others: {
                               maxWidth: 110,
                             },
-                            filterable: true,
+                            // filterable: true,
                           },
                           {
                             fieldName: "month",
@@ -752,7 +752,7 @@ export default class MiscEarningsDeductions extends Component {
                             others: {
                               maxWidth: 110,
                             },
-                            filterable: true,
+                            // filterable: true,
                           },
                           {
                             fieldName: "category",
@@ -789,7 +789,7 @@ export default class MiscEarningsDeductions extends Component {
                             others: {
                               maxWidth: 180,
                             },
-                            filterable: true,
+                            // filterable: true,
                           },
                           {
                             fieldName: "earning_deduction_description",
@@ -802,7 +802,7 @@ export default class MiscEarningsDeductions extends Component {
                               />
                             ),
                             disabled: true,
-                            filterable: true,
+                            // filterable: true,
                           },
                           {
                             fieldName: "amount",
@@ -815,12 +815,7 @@ export default class MiscEarningsDeductions extends Component {
                               />
                             ),
                             others: { maxWidth: 150 },
-                            filterable: true,
-                            // displayTemplate: row => {
-                            //   return (
-                            //     <span> {getAmountFormart(row.amount)}</span>
-                            //   );
-                            // },
+                            // filterable: true,
                             displayTemplate: (row) => {
                               return (
                                 <AlagehFormGroup
@@ -849,37 +844,11 @@ export default class MiscEarningsDeductions extends Component {
                                   }}
                                 />
                               );
-                              // return row.salary_processed === "N" ||
-                              //   row.salary_processed === null ? (
-                              //   <AlagehFormGroup
-                              //     div={{ className: "col" }}
-                              //     textBox={{
-                              //       decimal: { allowNegative: false },
-                              //       className: "txt-fld",
-                              //       name: "amount",
-                              //       value: row.amount,
-                              //       events: {
-                              //         onChange: this.changeGridEditors.bind(
-                              //           this,
-                              //           row
-                              //         )
-                              //       },
-                              //       others: {
-                              //         errormessage: "Amount - cannot be blank",
-                              //         required: true,
-
-                              //       }
-                              //     }}
-                              //   />
-                              // ) : (
-                              //   GetAmountFormart(row.amount)
-                              // );
                             },
                           },
                         ]}
                         keyId="algaeh_d_module_id"
                         data={this.state.employee_miscellaneous}
-                        isEditable={false}
                         pagination={true}
                         isFilterable={true}
                         loading={this.state.loading}
