@@ -29,6 +29,7 @@ import {
   ProcessFromFavourite,
   openViewFavouriteOrder,
   closeViewFavouriteOrder,
+  onchangegridcol,
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.scss";
 import "../../../../styles/site.scss";
@@ -582,7 +583,22 @@ class OrderingServices extends PureComponent {
                           <AlgaehLabel label={{ fieldName: "pre_approval" }} />
                         ),
                         displayTemplate: (row) => {
-                          return (
+                          return row.insurance_yesno === "Y" ? (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "pre_approval",
+                                className: "select-fld",
+                                value: row.pre_approval,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO,
+                                },
+                                onChange: onchangegridcol.bind(this, this, row),
+                              }}
+                            />
+                          ) : (
                             <span>
                               {row.pre_approval === "Y"
                                 ? "Required"

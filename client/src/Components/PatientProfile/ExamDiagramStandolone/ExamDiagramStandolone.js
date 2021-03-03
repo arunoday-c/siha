@@ -18,6 +18,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { MainContext } from "algaeh-react-components";
 import SubImageMasterPopUp from "../../BusinessSetup/DeptMaster/subImageMasterPopUp";
+import { Spin } from "algaeh-react-components";
 export default class ExaminationDiagram extends Component {
   constructor(props) {
     super(props);
@@ -25,9 +26,9 @@ export default class ExaminationDiagram extends Component {
       name: "",
       image: undefined,
       diagramData: [],
-      showSave: false,
-      showUpload: false,
-      showCam: false,
+      showSave: true,
+      showUpload: true,
+      showCam: true,
       diagram_id: undefined,
       showSavePopup: false,
       existingDiagram: [],
@@ -46,6 +47,7 @@ export default class ExaminationDiagram extends Component {
       leftComireText: undefined,
       leftCompireImage: undefined,
       UploadImagesModal: false,
+      loading: false,
     };
   }
   static contextType = MainContext;
@@ -91,7 +93,8 @@ export default class ExaminationDiagram extends Component {
   }
 
   /** Template to load image in a content */
-  templateForNewDiagram(item, isAddNew = false) {
+  // templateForNewDiagram(item, isAddNew = false) {
+  templateForNewDiagram(item) {
     return new Promise((resolve, reject) => {
       // if (
       //   item.hims_d_employee_speciality_id === null ||
@@ -101,38 +104,18 @@ export default class ExaminationDiagram extends Component {
         ...item,
         content: (
           <div className="diagramDropdown">
-            {!isAddNew ? (
-              <>
-                <img
-                  src={`${window.location.protocol}//${
-                    window.location.hostname
-                  }${
-                    window.location.port === "" ? "/docserver" : `:3006`
-                  }/UPLOAD/${item.sub_department_id}/${item.unique_id}`}
-                />
-                {/* <b>
+            <>
+              <img
+                src={`${window.location.protocol}//${window.location.hostname}${
+                  window.location.port === "" ? "/docserver" : `:3006`
+                }/UPLOAD/${item.sub_department_id}/${item.unique_id}`}
+              />
+              {/* <b>
               {item.unique_id.split("__ALGAEH__").length === 0
                 ? item.unique_id
                 : item.unique_id.split("__ALGAEH__")[1]}{" "}
             </b> */}
-              </>
-            ) : (
-              // <img
-              //   src={addNew}
-              //   onClick={() => {
-              //
-              //     this.onCloseUploadModal();
-              //   }}
-              // />
-
-              <i
-                className="fas fa-plus"
-                // onClick={() => {
-                //
-                //   this.onCloseUploadModal();
-                // }}
-              />
-            )}
+            </>
 
             {/* <img alt={item.image_desc} src={addNew} />
             <span>Add new diagram</span> */}
@@ -174,13 +157,15 @@ export default class ExaminationDiagram extends Component {
   templateForExistingDiagramHeader(item) {
     return new Promise((resolve, reject) => {
       const _unique =
-        item.diagram_id +
-        "_" +
+        // item.diagram_id +
+        // "_" +
         item.patient_id +
         "_" +
         item.provider_id +
         "_" +
-        item.hims_f_examination_diagram_header_id;
+        item.hims_f_examination_diagram_header_id +
+        "_" +
+        item.examination_diagrams_id;
 
       resolve({
         ...item,
@@ -254,44 +239,48 @@ export default class ExaminationDiagram extends Component {
     }
   }
   newDiagramHandler(item) {
-    if (
-      item.selected.hims_d_employee_speciality_id === undefined ||
-      item.selected.hims_d_employee_speciality_id === null
-    ) {
-      if (item.value) {
-        this.setState({
-          showSave: true,
-          showUpload: false,
-          showCam: false,
-          diagram_id: item.value,
-          image: `${window.location.protocol}//${window.location.hostname}${
-            window.location.port === "" ? "/docserver" : `:3006`
-          }/UPLOAD/${item.selected.sub_department_id}/${
-            item.selected.unique_id
-          }`,
-          name: item.selected.unique_id.split("__ALGAEH__")[1],
-        });
-      } else {
-        this.setState({
-          UploadImagesModal: !this.state.UploadImagesModal,
-        });
-      }
-    } else {
-      // const imgData = document.querySelector(
-      //   "div[diagram_id='" + item.value + "']"
-      // );
-      // const src = imgData.querySelector("img").getAttribute("src");
-      this.setState({
-        showSave: true,
-        showUpload: false,
-        showCam: false,
+    // if (
+    //   item.selected.hims_d_employee_speciality_id === undefined ||
+    //   item.selected.hims_d_employee_speciality_id === null
+    // ) {
 
-        diagram_id: item.value,
-        image: `${window.location.protocol}//${window.location.hostname}${
-          window.location.port === "" ? "/docserver" : `:3006`
-        }/UPLOAD/57/60118524785f6e2591a28d38__ALGAEH__3.png`,
-      });
-    }
+    // if (item.value) {
+    this.setState({
+      showSave: true,
+      showUpload: false,
+      showCam: false,
+      diagram_id: item.value,
+      image: `${window.location.protocol}//${window.location.hostname}${
+        window.location.port === "" ? "/docserver" : `:3006`
+      }/UPLOAD/${item.selected.sub_department_id}/${item.selected.unique_id}`,
+      name: item.selected.unique_id.split("__ALGAEH__")[1],
+    });
+    // } else {
+    //   this.setState({
+    //     UploadImagesModal: !this.state.UploadImagesModal,
+    //   });
+    // }
+    // } else {
+    //   // const imgData = document.querySelector(
+    //   //   "div[diagram_id='" + item.value + "']"
+    //   // );
+    //   // const src = imgData.querySelector("img").getAttribute("src");
+    //   this.setState({
+    //     showSave: true,
+    //     showUpload: false,
+    //     showCam: false,
+
+    //     diagram_id: item.value,
+    //     image: `${window.location.protocol}//${window.location.hostname}${
+    //       window.location.port === "" ? "/docserver" : `:3006`
+    //     }/UPLOAD/57/60118524785f6e2591a28d38__ALGAEH__3.png`,
+    //   });
+    // }
+  }
+  openSubDeptImageModal() {
+    this.setState({
+      UploadImagesModal: !this.state.UploadImagesModal,
+    });
   }
   onFileUploadImage(imageData) {
     this.setState({
@@ -324,9 +313,9 @@ export default class ExaminationDiagram extends Component {
   clearExisting() {
     this.setState({
       exittingDetails: [],
-      showUpload: false,
-      showCam: false,
-      showSave: false,
+      // showUpload: false,
+      // showCam: false,
+      // showSave: false,
       diagram_desc: undefined,
       diagram_id: undefined,
       hims_f_examination_diagram_header_id: undefined,
@@ -420,15 +409,19 @@ export default class ExaminationDiagram extends Component {
         if (that.state.remarks !== "") {
           const resultOfHeader = await examination().saveDiagramHandler(
             that.state,
-            that.props
+            that.props,
+            that
           );
+          that.setState({ showSavePopup: false });
           if (that.state.saveAsChecked === "new") {
             await examination()
               .saveFileOnServer({
                 file: that.refs.imageSaver.editor.getInstance().toDataURL(),
                 uniqueID:
-                  that.state.diagram_id +
-                  "_" +
+                  // moment(resultOfHeader.header_datetime).format(
+                  //   "YYYY-MM-DD HH:mm:ss"
+                  // ) +
+                  // "_" +
                   Window.global["current_patient"] +
                   "_" +
                   Window.global["provider_id"] +
@@ -444,48 +437,61 @@ export default class ExaminationDiagram extends Component {
                 throw error;
               });
           } else {
-            await examination().saveFileOnServer({
-              file: that.refs.imageSaver.editor.getInstance().toDataURL(),
-              uniqueID:
-                that.state.diagram_id +
-                "_" +
-                Window.global["current_patient"] +
-                "_" +
-                Window.global["provider_id"] +
-                "_" +
-                resultOfHeader.hims_f_examination_diagram_header_id +
-                "_" +
-                resultOfHeader.insertId,
-              fileType: "DepartmentImages",
-              fileExtention: "webp",
-            });
-          }
-
-          const resultOfExisting = await examination().getExistingHeader(
-            that.state,
-            that.props
-          );
-          let resultData = [];
-          for (let i = 0; i < resultOfExisting.length; i++) {
-            resultData.push(
-              that.templateForExistingDiagramHeader(resultOfExisting[i])
-            );
+            await examination()
+              .saveFileOnServer({
+                file: that.refs.imageSaver.editor.getInstance().toDataURL(),
+                uniqueID:
+                  // moment(resultOfHeader.header_datetime).format(
+                  //   "YYYY-MM-DD HH:mm:ss"
+                  // ) +
+                  // "_" +
+                  Window.global["current_patient"] +
+                  "_" +
+                  Window.global["provider_id"] +
+                  "_" +
+                  resultOfHeader.hims_f_examination_diagram_header_id +
+                  "_" +
+                  resultOfHeader.insertId,
+                fileType: "DepartmentImages",
+                fileExtention: "webp",
+              })
+              .then((response) => {});
           }
 
           //
           const allResult = await examination().getExistingDetail(
             resultOfHeader.hims_f_examination_diagram_header_id
           );
+
           Promise.all(allResult).then((data) => {
-            that.setState({
-              exittingDetails: data,
-              showUpload: true,
-              showCam: true,
-              showSave: true,
-              showSavePopup: false,
-              remarks: undefined,
-              diagram_desc: undefined,
-            });
+            // 2021-03-02 16:36:45_139_6_116_116
+            // 2021-03-02 16:25:00_139_6_116_116
+            that.setState(
+              {
+                exittingDetails: data,
+                showUpload: true,
+                showCam: true,
+                showSave: true,
+
+                remarks: undefined,
+                diagram_desc: undefined,
+                loading: false,
+              },
+              () => {
+                examination()
+                  .getExistingHeader(that.state, that.props)
+                  .then((resultOfExisting) => {
+                    let resultData = [];
+                    for (let i = 0; i < resultOfExisting.length; i++) {
+                      resultData.push(
+                        that.templateForExistingDiagramHeader(
+                          resultOfExisting[i]
+                        )
+                      );
+                    }
+                  });
+              }
+            );
           });
 
           // .then((result) => {
@@ -943,7 +949,16 @@ export default class ExaminationDiagram extends Component {
               }}
             />
           </div>
+          <div className="row">
+            <button onClick={() => this.openSubDeptImageModal()}>
+              Add Image To subDept
+            </button>
+          </div>
           <div className="row diagramManageCntr" style={{ marginBottom: 0 }}>
+            <Spin spinning={this.state.loading}>
+              {" "}
+              {this.state.loading ? "Loading Please Wait..." : ""}
+            </Spin>
             <AlagehAutoComplete
               div={{ className: "col-12 form-group" }}
               label={{ forceLabel: "Exisiting Diagram", isImp: false }}
@@ -961,7 +976,7 @@ export default class ExaminationDiagram extends Component {
               }}
             />
           </div>
-          <div className="row   ">
+          <div className="row diagramList  ">
             {this.state.exittingDetails.map((item, index) => (
               <div className="col-12 eachDiagram" key={index}>
                 <AlgaehFile

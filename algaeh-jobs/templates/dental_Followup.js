@@ -23,6 +23,7 @@ module.exports = (options, connection) =>
       for (let i = 0; i < data.length; i++) {
         const {
           hims_f_dental_form_id,
+          orderBy,
           odered_date,
           full_name,
           patient_code,

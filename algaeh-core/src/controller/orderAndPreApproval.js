@@ -36,6 +36,7 @@ const {
   insertPhysiotherapyServices,
   deleteInvOrderedItems,
   deleteOrderedPackage,
+  checkOrderedDetails,
 } = onpModels;
 
 export default ({ config, db }) => {
@@ -300,6 +301,14 @@ export default ({ config, db }) => {
       }
     }
   );
+
+  api.get("/checkOrderedDetails", checkOrderedDetails, (req, res, next) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      flag: req.flag,
+      records: req.records,
+    });
+  });
 
   return api;
 };
