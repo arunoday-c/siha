@@ -1,8 +1,8 @@
 import React from "react";
 import "./AdmissionSetup.scss";
-import BedStatus from "../BedStatus/BedStatus";
-import BedMaster from "../BedMaster/BedMaster";
-import WardBedSetup from "../WardBedSetup/WardBedSetup";
+import BedStatus from "./BedStatus/BedStatus";
+import BedMaster from "./BedMaster/BedMaster";
+import WardBedSetup from "./WardBedSetup/WardBedSetup";
 import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
 
 export default function AdmissionSetup(props: any) {
