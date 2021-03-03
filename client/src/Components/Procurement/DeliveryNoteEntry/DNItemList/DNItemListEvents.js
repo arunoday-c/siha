@@ -462,6 +462,7 @@ const onChangeTextEventHandaler = ($this, context, e) => {
   let item_details = $this.state.item_details;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
   if (name === "sales_price" || name === "unit_price") {
     if (parseFloat(value) < 0) {
       swalMessage({
@@ -471,15 +472,39 @@ const onChangeTextEventHandaler = ($this, context, e) => {
       return;
     }
   }
-  item_details[name] = value;
-  $this.setState({
-    [name]: value,
-    item_details: item_details,
-  });
-  context.updateState({
-    [name]: value,
-    item_details: item_details,
-  });
+
+  switch (name) {
+    case "unit_price":
+      if (parseFloat(value) > parseFloat(item_details.purchase_cost)) {
+        swalMessage({
+          title: "Purchase cost cannot be greater than PO purchase cost.",
+          type: "warning",
+        });
+        item_details[name] = item_details.purchase_cost;
+      } else {
+        item_details[name] = value;
+      }
+      $this.setState({
+        [name]: value,
+        item_details: item_details,
+      });
+      context.updateState({
+        [name]: value,
+        item_details: item_details,
+      });
+      break;
+    default:
+      item_details[name] = value;
+      $this.setState({
+        [name]: value,
+        item_details: item_details,
+      });
+      context.updateState({
+        [name]: value,
+        item_details: item_details,
+      });
+      break;
+  }
 };
 
 const onDateTextEventHandaler = ($this, context, ctrl, e) => {
@@ -592,6 +617,16 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 const AddtoList = ($this, context) => {
   let item_details = extend({}, $this.state.item_details);
 
+  // else if (
+  //   item_details.unit_price === null ||
+  //   parseFloat(item_details.unit_price) === 0
+  // ) {
+  //   swalMessage({
+  //     title: "Purchase Cost is mandatory.",
+  //     type: "warning",
+  //   });
+  // }
+
   if (
     (parseFloat($this.state.dn_quantity) === 0 ||
       $this.state.dn_quantity === "" ||
@@ -621,15 +656,9 @@ const AddtoList = ($this, context) => {
       title: "Sales Price is mandatory.",
       type: "warning",
     });
-  } else if (
-    item_details.unit_price === null ||
-    parseFloat(item_details.unit_price) === 0
-  ) {
-    swalMessage({
-      title: "Purchase Cost is mandatory.",
-      type: "warning",
-    });
   } else {
+    item_details.unit_price =
+      item_details.unit_price === null ? 0 : item_details.unit_price;
     let extended_price = (
       parseFloat(item_details.unit_price) * parseFloat(item_details.dn_quantity)
     ).toFixed($this.state.decimal_places);

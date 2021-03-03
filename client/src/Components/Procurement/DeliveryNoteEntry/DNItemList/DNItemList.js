@@ -81,6 +81,7 @@ class DNItemList extends Component {
       parseFloat(item.dn_quantity) -
       parseFloat(item.quantity_recieved_todate);
 
+    item_details.purchase_cost = item_details.unit_price;
     let extended_price = (
       parseFloat(item_details.unit_price) * parseFloat(dn_quantity)
     ).toFixed(this.state.decimal_places);
@@ -439,7 +440,6 @@ class DNItemList extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Purchase Cost",
-                          isImp: true,
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
