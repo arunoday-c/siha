@@ -174,7 +174,13 @@ export default function BalanceSheet({
       others = { responseType: "blob" };
     }
     const from_date = rangeDate[0].format("YYYY-MM-DD");
-    const to_date = rangeDate[1].format("YYYY-MM-DD");
+    let to_date = undefined;
+    if (rangeDate.length === 2) {
+      to_date = rangeDate[1].format("YYYY-MM-DD");
+    } else {
+      to_date = `${rangeDate[0].format("YYYY")}-12-31`;
+    }
+
     let prev_from_date = undefined;
     let prev_to_date = undefined;
     if (Array.isArray(prevDateRange) && prevDateRange.length > 0) {
@@ -603,7 +609,12 @@ export default function BalanceSheet({
               ARABIC,
               SHOWLEDGERCODE,
             } = inputs;
-            setRangeDate(RANGE);
+            if (Array.isArray(RANGE)) {
+              setRangeDate(RANGE);
+            } else {
+              setRangeDate([RANGE]);
+            }
+
             setPrevDateRange(PREVIOUSRANGE);
             setChangeInPercentage(inputs["CHANGEIN%"]);
             setChangeInAccount(inputs["CHANGEINAMT."]);

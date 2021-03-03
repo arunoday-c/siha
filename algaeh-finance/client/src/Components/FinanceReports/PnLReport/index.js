@@ -253,7 +253,7 @@ export default function PnLReport({
         prev_to_date = previousYear[1].format("YYYY-MM-DD");
       }
     }
-
+    debugger;
     newAlgaehApi({
       uri: "/pl_comparison/getPlComparison",
       module: "finance",
@@ -281,6 +281,7 @@ export default function PnLReport({
       });
   }
   function onLoad() {
+    debugger;
     if (preview === undefined) {
       return null;
     }
@@ -329,6 +330,7 @@ export default function PnLReport({
       RANGE,
       PREVIOUSRANGE,
     } = inputs;
+    debugger;
     setBranchID(BRANCH);
     setColumnType(BASEDON);
     setCostCenterId(COSTCENTER);
