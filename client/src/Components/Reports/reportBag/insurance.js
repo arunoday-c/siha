@@ -1,11 +1,17 @@
-export default function Insurance({ algaehApiCall, hospital_id }) {
+export default function Insurance({ hospital_id }) {
   return {
     name: "Insurance",
     excel: "true",
     submenu: [
       {
         subitem: "All Claim Statement",
-        template_name: "allClaimStatementInsurance",
+        reportName: "allClaimStatementInsurance",
+        // reportQuery: "subDepartmentIncome",
+        requireIframe: true,
+        // componentCode: "RPT_INC_SALES",
+
+        // subitem: "All Claim Statement",
+        // template_name: "allClaimStatementInsurance",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
@@ -45,15 +51,15 @@ export default function Insurance({ algaehApiCall, hospital_id }) {
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "insurance_provider_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Company",
             link: {
               uri: "/insurance/getInsuranceProviders",
-              module: "insurance"
+              module: "insurance",
             },
             events: {
               onChange: (reportState, currentEvent) => {
