@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import App from "./App";
 import AdmissionSetup from "./Components/AdmissionSetup";
+import BedManagement from "./Components/BedManagement";
 const Routing = [
   {
     path: "/",
@@ -10,6 +11,11 @@ const Routing = [
     path: "/admissionSetup",
     // component: (props: any) => <h1>Here in Testing Page111</h1>,
     component: (props: any) => <AdmissionSetup {...props} />,
+  },
+  {
+    path: "/bedManagement",
+    // component: (props: any) => <h1>Here in Testing Page111</h1>,
+    component: (props: any) => <BedManagement {...props} />,
   },
 ];
 interface interRouter {

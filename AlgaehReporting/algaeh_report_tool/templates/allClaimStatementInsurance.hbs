@@ -4,104 +4,108 @@
     <div class="print-body">
 
         <section>
+            {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table> --}}
+
+
+        </section>
+        <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>File No.</th>
+                        <th>Patient Code</th>
                         <th>Patient Name</th>
-                        <th>Memebership No.</th>
-                        <th>Invoice No.</th>
-                        <th>Consultation</th>
-                        <th>Lab</th>
-                        <th>Radiology</th>
-                        <th>Dental</th>
-                        <th>Procedure</th>
-                        <th>Medicines</th>
-                        <th>Gross Amt.</th>
-                        <th>Discount</th>
-                        <th>Co.Payed</th>
-                        <th>Patient Vat</th>
-                        <th>Net Amount</th>
-                        <th>Payer Vat</th>
+                        <th>Invoice Number</th>
+                        <th>Invoice Date</th>
+                        <th>Card Number</th>
+                        <th>Policy Number</th>
+                        <th>Total</th>
+                        <th>Vat</th>
+                        <th>Net Payable</th>
                     </tr>
+
                 </thead>
                 <tbody>
-                    {{#each details}}
+                    {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
+                    {{#hasElement result}}
+
+
+                    {{#each result}}
+                    <tr>
+                        <td colspan="7" class="tableSubHdg">{{company_name}}</td>
+  <td  class="tableSubHdg numberFld">
+                            {{totalCompanyAmt}}
+                        </td>
+  <td  class="tableSubHdg numberFld">
+                            {{vatCompanyAmt}}
+                        </td>
+  <td  class="tableSubHdg numberFld">
+                            {{netCompanyAmt}}
+                        </td>
+                    </tr>
+                    {{#each networkList}}
+                    <tr>
+                        <td colspan="7" class="tableSubHdg2">{{policy_name}}
+                        </td>
+                        <td  class="tableSubHdg2 numberFld">
+                            {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
+                            {{totalNetworkAmt}}
+                        </td>  <td  class="tableSubHdg2 numberFld">
+                            {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
+                            {{vatNetworkAmt}}
+                        </td>  <td  class="tableSubHdg2 numberFld">
+                            {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
+                            {{netNetworkAmt}}
+                        </td>
+                      
+                    </tr>
+                    {{#each docs}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>File No.</td>
-                        <td>Patient Name</td>
-                        <td>Memebership No.</td>
-                        <td>Invoice No.</td>
-                        <td>Consultation</td>
-                        <td>Lab</td>
-                        <td>Radiology</td>
-                        <td>Dental</td>
-                        <td>Procedure</td>
-                        <td>Medicines</td>
-                        <td>Gross Amt.</td>
-                        <td>Discount</td>
-                        <td>Co.Payed</td>
-                        <td>Patient Vat</td>
-                        <td>Net Amount</td>
-                        <td>Payer Vat</td>
+                        <td>{{patient_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{invoice_number}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td>{{card_number}}</td>
+                        <td>{{policy_number}}</td>
+                        <td class="numberFld">{{company_resp}}</td>
+                        <td class="numberFld">{{company_tax}}</td>
+                        <td class="numberFld">{{company_payable}}</td>
                     </tr>
                     {{/each }}
+                     {{!-- <tr class="numberFldTotalBottom">
+                        <td colspan="4"></td>
+                        <td class="numberFld">{{total_net_amout}}</td>
+                    </tr>  --}}
+                    {{/each }}{{/each }}
+                  
+                    {{else}}
                     <tr>
-                        <td colspan="6" class="tableSubTotal"></td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                        <td class="tableSubTotal">0.00</td>
-                    </tr>
+                        <td colspan="6" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
                 </tbody>
+
             </table>
-            <table class="tableTotal">
-                <tr>
-                    <td>Total Gross Amt.</td>
-                    <td>{{total_gross_amount}}</td>
-                    <td>الإجمالي قبل الضريبة المضافة</td>
+             {{!-- <table class="tableTotal">
+                <tr class="bold">
+                    <td>Net Stock Value</td>
+                    <td class="numberFld">{{net_stock_value}}</td>
+                   
                 </tr>
-                <tr>
-                    <td>Total Discount Amt.</td>
-                    <td>{{total_discount_amount}}</td>
-                    <td>الخصم</td>
-                </tr>
-                <tr>
-                    <td>Total Deductible Amt.</td>
-                    <td>{{total_discount_amount}}</td>
-                    <td>الخصم</td>
-                </tr>
-                <tr>
-                    <td>Total Patient Vat</td>
-                    <td>{{total_discount_amount}}</td>
-                    <td>الخصم</td>
-                </tr>
-                <tr>
-                    <td>Total Net Amt.</td>
-                    <td>{{total_discount_amount}}</td>
-                    <td>الخصم</td>
-                </tr>
-                <tr>
-                    <td>Total Payer Vat</td>
-                    <td>{{total_discount_amount}}</td>
-                    <td>الخصم</td>
-                </tr>
-                <tr>
-                    <td>Net Amount + Payer Vat</td>
-                    <td>{{total_discount_amount}}</td>
-                    <td>الخصم</td>
-                </tr>
-            </table>
+               
+            </table> --}}
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
     </div>
 </body>

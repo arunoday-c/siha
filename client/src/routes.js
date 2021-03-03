@@ -607,6 +607,7 @@ function LoadComponent({ path, noSecurityCheck, children }) {
 const Admission = ({ history, pathName }) => {
   return <MicroUI history={history} host="admission" path={pathName} />;
 };
+
 const publicRoutes = [
   {
     path: "/",
@@ -703,6 +704,11 @@ const privateRoutes = [
     isExactPath: true,
     // component: <AdmissionSetup />
     component: <Admission pathName="/admissionSetup" />,
+  },
+  {
+    path: "/BedManagement",
+    isExactPath: true,
+    component: <Admission pathName="/bedManagement" />,
   },
   {
     path: "/LabSetup",

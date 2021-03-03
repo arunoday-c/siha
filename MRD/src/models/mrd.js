@@ -303,7 +303,7 @@ export default {
       //       " group by hims_f_ordered_services_id order by OS.visit_id desc",
       _mysql
         .executeQuery({
-          query: `select hims_f_lab_order_id,LO.lab_id_number, LO.visit_id, LO.patient_id, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
+          query: `select hims_f_lab_order_id,LO.lab_id_number, LO.visit_id, LO.patient_id,LO.send_out_test, visit_date, E.full_name as provider_name, S.service_name, LO.billed as lab_billed, 
           LO.status as lab_ord_status, S.service_type_id from hims_f_lab_order LO 
           inner join hims_f_patient_visit V on LO.visit_id = V.hims_f_patient_visit_id
           inner join hims_d_services S on LO.service_id=S.hims_d_services_id 

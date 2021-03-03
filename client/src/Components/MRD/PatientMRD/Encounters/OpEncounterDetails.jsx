@@ -1206,8 +1206,9 @@ export default function OPEncounterDetails({
                             />
                           ),
                           displayTemplate: (row) => {
+                            console.log("row", row);
                             return row.service_type_id === 5 &&
-                              row.lab_ord_status === "V" ? (
+                              row.send_out_test === "Y" ? (
                               <span>
                                 <i
                                   className="fas fa-paperclip"
