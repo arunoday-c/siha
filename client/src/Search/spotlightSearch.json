@@ -743,7 +743,7 @@
         "label": "Employee Code"
       },
       {
-        "fieldName": "employee_name",
+        "fieldName": "full_name",
         "label": "Employee Name"
       },
       {

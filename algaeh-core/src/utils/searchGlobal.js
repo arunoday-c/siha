@@ -487,7 +487,7 @@ let algaehSearchConfig = (searchName, req) => {
         LA.employee_id,loan_id,L.loan_code,L.loan_description,L.loan_account,L.loan_limit_type,L.loan_maximum_amount,
         LA.application_reason,loan_application_date,loan_authorized,authorized_date,authorized_by,loan_closed,loan_amount,
         approved_amount,start_month,start_year,loan_tenure,pending_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,            
-        authorized1,authorized2_by,authorized2_date,authorized2 ,E.full_name as employee_name ,E.employee_code from hims_f_loan_application LA  
+        authorized1,authorized2_by,authorized2_date,authorized2 , E.full_name ,E.employee_code from hims_f_loan_application LA  
         inner join hims_d_loan L on LA.loan_id=L.hims_d_loan_id  inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id
         and E.record_status='A'  left join hims_d_authorization_setup AUS on  AUS.employee_id=E.hims_d_employee_id 
          where L.record_status='A'    and loan_authorized='IS'  and LA.loan_closed='N'
