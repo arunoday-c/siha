@@ -1682,7 +1682,6 @@ class Appointment extends PureComponent {
 
     const sel_stat_id =
       patient !== undefined ? patient.appointment_status_id : 0;
-
     const sel_stat = Enumerable.from(
       this.state.appointmentStatus !== undefined
         ? this.state.appointmentStatus
@@ -1690,7 +1689,6 @@ class Appointment extends PureComponent {
     )
       .where((w) => w.hims_d_appointment_status_id === sel_stat_id)
       .firstOrDefault();
-
     let sel_steps = sel_stat !== undefined ? sel_stat.steps : 0;
 
     let status =
@@ -1735,7 +1733,6 @@ class Appointment extends PureComponent {
         : this.isInactiveTimeSlot(data.time)
         ? "#fbfbfb"
         : "#ffffff";
-
     return (
       <React.Fragment key={data.counter}>
         <tr>{this.checkCurrentTime(data)}</tr>
