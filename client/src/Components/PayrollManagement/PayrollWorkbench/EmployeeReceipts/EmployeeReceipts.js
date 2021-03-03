@@ -38,9 +38,12 @@ class EmployeeReceipts extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
 
-    this.setState({
-      hospital_id: userToken.hims_d_hospital_id,
-    });
+    this.setState(
+      {
+        hospital_id: userToken.hims_d_hospital_id,
+      },
+      () => this.getEmployeeReceipts()
+    );
   }
   getHospitals() {
     algaehApiCall({
@@ -289,7 +292,7 @@ class EmployeeReceipts extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id,
       },
       onSuccess: (res) => {
         if (res.data.success) {
@@ -378,6 +381,7 @@ class EmployeeReceipts extends Component {
             this.getEmployeeSalaryData();
           }
         );
+        break;
       case "year":
         this.setState(
           {
@@ -387,6 +391,18 @@ class EmployeeReceipts extends Component {
             this.getEmployeeSalaryData();
           }
         );
+        break;
+
+      case "hospital_id":
+        this.setState(
+          {
+            [value.name]: value.value,
+          },
+          () => {
+            this.getEmployeeReceipts();
+          }
+        );
+        break;
       default:
         this.setState({
           [value.name]: value.value,
@@ -398,9 +414,12 @@ class EmployeeReceipts extends Component {
   textHandler(e) {
     switch (e.target.name) {
       case "reciepts_type":
-        this.setState({
-          reciepts_type: e.target.value,
-        });
+        this.setState(
+          {
+            reciepts_type: e.target.value,
+          },
+          () => this.getEmployeeReceipts()
+        );
         break;
 
       case "recievable_amount":
@@ -671,10 +690,7 @@ class EmployeeReceipts extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data:
-                          this.state.reciepts_type === "FS"
-                            ? GlobalVariables.RECIEPTS_MODE_RECEIPTS
-                            : GlobalVariables.RECIEPTS_MODE,
+                        data: GlobalVariables.RECIEPTS_MODE_RECEIPTS,
                       },
                       onChange: this.dropDownHandler.bind(this),
                     }}
@@ -853,6 +869,16 @@ class EmployeeReceipts extends Component {
                           },
                         },
                         {
+                          fieldName: "emp_recp_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Receipt No.",
+                              }}
+                            />
+                          ),
+                        },
+                        {
                           fieldName:
                             this.state.reciepts_type === "LO"
                               ? "loan_application_number"
@@ -935,6 +961,14 @@ class EmployeeReceipts extends Component {
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Salary Number" }}
+                            />
+                          ),
+                        },
+                        {
+                          fieldName: "cheque_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Cheque Number" }}
                             />
                           ),
                         },

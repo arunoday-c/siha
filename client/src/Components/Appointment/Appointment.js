@@ -24,7 +24,14 @@ import {
   generateReport,
 } from "./AppointmentHelper";
 import sockets from "../../sockets";
-import { MainContext, AlgaehModal, AlgaehLabel } from "algaeh-react-components";
+import {
+  MainContext,
+  AlgaehModal,
+  AlgaehLabel,
+  persistStateOnBack,
+  persistStageOnGet,
+  persistStorageOnRemove,
+} from "algaeh-react-components";
 
 class Appointment extends PureComponent {
   constructor(props) {
@@ -62,34 +69,42 @@ class Appointment extends PureComponent {
   }
   static contextType = MainContext;
   componentDidMount() {
-    const userToken = this.context.userToken;
-    this.setState({ requied_emp_id: userToken.requied_emp_id });
-    this.getDoctorsAndDepts();
-    this.getAppointmentStatus();
-    this.getTitles();
-    this.props.getVisittypes({
-      uri: "/visitType/get",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "VISITTYPE_GET_DATA",
-        mappingName: "visittypes",
-      },
-    });
-    this.appSock.on("refresh_appointment", (patient) => {
-      const { provider_id, sub_department_id } = this.state;
-      if (
-        sub_department_id === patient.sub_department_id ||
-        provider_id === patient.provider_id
-      ) {
-        this.setState(
-          {
-            byPassValidation: true,
+    (async () => {
+      const records = await persistStageOnGet();
+      if (records) {
+        this.setState({ ...records });
+        persistStorageOnRemove();
+      } else {
+        const userToken = this.context.userToken;
+        this.setState({ requied_emp_id: userToken.requied_emp_id });
+        this.getDoctorsAndDepts();
+        this.getAppointmentStatus();
+        this.getTitles();
+        this.props.getVisittypes({
+          uri: "/visitType/get",
+          module: "masterSettings",
+          method: "GET",
+          redux: {
+            type: "VISITTYPE_GET_DATA",
+            mappingName: "visittypes",
           },
-          this.getAppointmentSchedule
-        );
+        });
+        this.appSock.on("refresh_appointment", (patient) => {
+          const { provider_id, sub_department_id } = this.state;
+          if (
+            sub_department_id === patient.sub_department_id ||
+            provider_id === patient.provider_id
+          ) {
+            this.setState(
+              {
+                byPassValidation: true,
+              },
+              this.getAppointmentSchedule
+            );
+          }
+        });
       }
-    });
+    })();
   }
 
   PatientRecallDataFill() {
@@ -865,7 +880,7 @@ class Appointment extends PureComponent {
   }
 
   handlePatient(patient, data, e) {
-    console.log(patient, data);
+    persistStateOnBack(this.state, true);
     if (data.hims_d_appointment_status_id === this.state.checkInId) {
       this.handleCheckIn(patient, data);
     } else {
@@ -1801,24 +1816,28 @@ class Appointment extends PureComponent {
                         <i className="fas fa-clock" />
                         <ul className="appStatusList">
                           {status !== undefined
-                            ? status.map((data, index) => (
-                                <li
-                                  key={index}
-                                  onClick={this.handlePatient.bind(
-                                    this,
-                                    patient,
-                                    data
-                                  )}
-                                >
-                                  <span
-                                    style={{
-                                      backgroundColor: data.color_code,
-                                    }}
+                            ? status.map((data, index) => {
+                                return (
+                                  <li
+                                    key={index}
+                                    onClick={this.handlePatient.bind(
+                                      this,
+                                      patient,
+                                      data
+                                    )}
                                   >
-                                    {data.statusDesc}
-                                  </span>
-                                </li>
-                              ))
+                                    <span
+                                      style={{
+                                        backgroundColor: data.color_code,
+                                      }}
+                                    >
+                                      {this.context?.userLanguage === "ar"
+                                        ? data.description_ar
+                                        : data.statusDesc}
+                                    </span>
+                                  </li>
+                                );
+                              })
                             : null}
                           <li
                             onClick={generateReport.bind(

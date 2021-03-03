@@ -85,7 +85,6 @@ const savePatient = async (data) => {
 };
 
 const updatePatient = async (data) => {
-  debugger;
   data.ScreenCode = "BL0001";
   const result = await newAlgaehApi({
     uri: "/frontDesk/update",
@@ -258,7 +257,7 @@ export function PatientRegistration() {
     from_package,
     package_details,
   } = useContext(FrontdeskContext);
-  console.log(cardData, "cardData");
+  // console.log(cardData, "cardData");
   const [currentCountry] = countries?.filter(
     (item) => item.hims_d_country_id === userToken?.default_country
   );
@@ -387,6 +386,7 @@ export function PatientRegistration() {
       enabled: !!appointment_id,
       onSuccess: (data) => {
         const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}-${data?.department_id}-${data?.service_type_id}`;
+
         if (!patient_code) {
           reset({
             ...data,
@@ -400,6 +400,7 @@ export function PatientRegistration() {
         } else {
           setValue("consultation", "Y");
           setValue("doctor", doctor);
+
           setValue("doctor_id", data?.provider_id);
           setValue("visit_type", 10);
           setServiceInfo(doctor);
@@ -532,7 +533,6 @@ export function PatientRegistration() {
   };
 
   const onSubmit = (input) => {
-    debugger;
     let inputData;
     const receiptdetails = [];
 
@@ -861,7 +861,6 @@ export function PatientRegistration() {
     }-${e?.department_id}-${"1"}`;
     const service = `${e.sub_department_id}-${e.services_id}-${e.doctor_id}-${e.department_type}-${e?.department_id}-${e.service_type_id}`;
 
-    debugger;
     setValue("doctor", doctor);
     setValue("doctor_id", e.doctor_id);
     setFromPackage(!e.package_utilize);

@@ -337,7 +337,7 @@ let checkOrderedDetails = (req, res, next) => {
         req.flag = true;
         const order_details = result[0];
         const insurance_details = result[1];
-        let date_valid = null;
+        // let date_valid = null;
 
         // console.log(
         //   "insurance_details[0].interval",
@@ -350,10 +350,13 @@ let checkOrderedDetails = (req, res, next) => {
               "YYYY-MM-DD"
             ).format("YYYY-MM-DD");
 
-            date_valid = moment(ordered_date).add(
-              parseInt(insurance_details[0].interval),
-              "days"
-            );
+            // console.log("ordered_date", ordered_date);
+            // date_valid = moment(ordered_date).add(
+            //   parseInt(insurance_details[0].interval),
+            //   "days"
+            // );
+
+            let no_of_days = moment().diff(ordered_date, "days");
 
             // console.log(
             //   "date_valid:---",
@@ -361,11 +364,10 @@ let checkOrderedDetails = (req, res, next) => {
             // );
 
             // console.log("currenct:---", moment().format("YYYYMMDD"));
-
-            if (
-              moment(date_valid).format("YYYYMMDD") <=
-              moment().format("YYYYMMDD")
-            ) {
+            // console.log("no_of_days:---", no_of_days);
+            // moment(date_valid).format("YYYYMMDD") <=
+            // moment().format("YYYYMMDD")
+            if (no_of_days <= parseInt(insurance_details[0].interval)) {
               // console.log("234567");
               req.flag = false;
             }

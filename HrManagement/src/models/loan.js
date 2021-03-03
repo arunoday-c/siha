@@ -1262,9 +1262,9 @@ export default {
           .executeQueryWithTransaction({
             query:
               "INSERT INTO `hims_f_employee_reciepts` (emp_recp_number,employee_id,reciepts_type,recievable_amount,\
-            write_off_amount,loan_application_id,remarks,balance_amount,reciepts_mode,cheque_number,\
+            write_off_amount,loan_application_id,remarks,balance_amount,reciepts_mode,cheque_number,salary_id,\
              created_date, created_by, updated_date, updated_by,hospital_id)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               generatedNumbers.EMPLOYEE_RECEIPT,
               input.employee_id,
@@ -1276,6 +1276,7 @@ export default {
               input.balance_amount,
               input.reciepts_mode,
               input.cheque_number,
+              input.salary_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -1371,19 +1372,20 @@ export default {
   getEmployeeLoanReciept: (req, res, next) => {
     const utilities = new algaehUtilities();
 
-    if (req.query.employee_id > 0) {
+    if (req.query.hospital_id > 0) {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
           query:
-            "select hims_f_employee_reciepts_id,ER.employee_id,reciepts_type,\
-              recievable_amount,write_off_amount,loan_application_id,LA.loan_application_number,LA.application_reason,\
-              final_settlement_id,remarks,balance_amount,reciepts_mode,cheque_number,posted,posted_by,posted_date,\
-              L.loan_code,L.loan_description,E.employee_code,E.full_name as employee_name from hims_f_employee_reciepts ER inner join hims_f_loan_application LA on\
-              ER.loan_application_id=LA.hims_f_loan_application_id inner join hims_d_loan L on\
-              LA.loan_id=L.hims_d_loan_id inner join hims_d_employee E on ER.employee_id=E.hims_d_employee_id\
-                where ER.employee_id=? order by hims_f_employee_reciepts_id desc",
-          values: [req.query.employee_id],
+            "select ER.*,LA.loan_application_number,LA.application_reason,\
+              L.loan_code,L.loan_description,E.employee_code,E.full_name as employee_name,SL.salary_number \
+              from hims_f_employee_reciepts ER \
+              inner join hims_f_loan_application LA on ER.loan_application_id=LA.hims_f_loan_application_id\
+              inner join hims_d_loan L on LA.loan_id=L.hims_d_loan_id \
+              inner join hims_d_employee E on ER.employee_id=E.hims_d_employee_id \
+              left join hims_f_salary SL on SL.hims_f_salary_id=ER.salary_id \
+              where ER.hospital_id=? order by hims_f_employee_reciepts_id desc",
+          values: [req.query.hospital_id],
 
           printQuery: true,
         })
@@ -1411,19 +1413,17 @@ export default {
   getEmployeeFinalSettlementReceipt: (req, res, next) => {
     const utilities = new algaehUtilities();
 
-    if (req.query.employee_id > 0) {
+    if (req.query.hospital_id > 0) {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query: `select hims_f_employee_reciepts_id,ER.employee_id,FSH.final_settlement_number,reciepts_type,
-          recievable_amount,write_off_amount,loan_application_id,S.salary_number,
-          ER.final_settlement_id,ER.remarks,balance_amount,reciepts_mode,cheque_number,ER.posted,ER.posted_by,ER.posted_date,
+          query: `select ER.*,FSH.final_settlement_number,S.salary_number,
           E.employee_code,E.full_name as employee_name from hims_f_employee_reciepts ER
            inner join hims_f_final_settlement_header FSH on ER.final_settlement_id=FSH.hims_f_final_settlement_header_id  
           inner join hims_d_employee E on ER.employee_id=E.hims_d_employee_id
-          inner join hims_f_salary S on ER.salary_id=S.hims_f_salary_id 
-            where ER.employee_id=? order by hims_f_employee_reciepts_id desc`,
-          values: [req.query.employee_id],
+          left join hims_f_salary S on ER.salary_id=S.hims_f_salary_id 
+            where ER.hospital_id=? order by hims_f_employee_reciepts_id desc`,
+          values: [req.query.hospital_id],
 
           printQuery: true,
         })

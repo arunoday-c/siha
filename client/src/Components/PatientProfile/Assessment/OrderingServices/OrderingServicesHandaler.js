@@ -413,12 +413,24 @@ const checkOrderedDetails = ($this) => {
         onSuccess: (response) => {
           if (response.data.success) {
             if (response.data.flag === false) {
-              swalMessage({
-                title: "Selected Service Already ordered with in the interval.",
+              swal({
+                title: "Interval.",
+                text:
+                  "Selected service ordered with in the interval, Do you wnat to proceed.",
                 type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes!",
+                confirmButtonColor: "#",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "No",
+              }).then((willProceed) => {
+                if (willProceed.value) {
+                  resolve();
+                }
               });
+            } else {
+              resolve();
             }
-            resolve();
           } else {
             reject(response);
           }

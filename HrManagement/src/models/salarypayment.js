@@ -498,7 +498,7 @@ export default {
             "select MED.*, ED.earning_deduction_description, COALESCE( S.salary_processed,'N') salary_processed from  hims_f_miscellaneous_earning_deduction MED \
             inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = MED.earning_deductions_id \
             left join hims_f_salary S on S.employee_id = MED.employee_id and S.month =MED.month and S.year =MED.year \
-            where MED.employee_id=?",
+            where MED.employee_id=? order by S.year",
           values: [inputParam.employee_id], //inputParam.year, inputParam.month,
           printQuery: true,
         })
