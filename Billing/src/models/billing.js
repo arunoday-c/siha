@@ -4299,7 +4299,9 @@ export default {
                         inputParam.bill_number,
                         inputParam.ScreenCode,
                         narration,
-                        req.userIdentity.algaeh_d_app_user_id,
+                        closeConnection
+                          ? inputParam.created_by
+                          : req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                       ],
                       printQuery: true,

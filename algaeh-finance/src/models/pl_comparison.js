@@ -502,6 +502,7 @@ function buildHierarchyForProfitAndLoss(
             }
           });
           let notPush = nonExistingArray.length === ObjProceeding.length;
+
           if (!notPush) {
             child.push({
               finance_account_child_id: item["finance_account_child_id"],
@@ -514,6 +515,7 @@ function buildHierarchyForProfitAndLoss(
               leafnode: "Y",
               change: changed_amount,
               percent: percent,
+              parent_acc_id: item.parent_acc_id,
             });
           }
         } else {
@@ -528,6 +530,7 @@ function buildHierarchyForProfitAndLoss(
             leafnode: "Y",
             change: changed_amount,
             percent: percent,
+            parent_acc_id: item.parent_acc_id,
           });
         }
 
