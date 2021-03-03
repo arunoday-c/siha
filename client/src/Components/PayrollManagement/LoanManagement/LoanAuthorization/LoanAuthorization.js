@@ -549,6 +549,17 @@ class LoanAuthorization extends Component {
                           );
                         },
                         filterable: true,
+                        filterType: "choices",
+                        choices: [
+                          {
+                            name: "Closed",
+                            value: "Y",
+                          },
+                          {
+                            name: "Open",
+                            value: "N",
+                          },
+                        ],
                       },
                       {
                         fieldName: "loan_application_number",
