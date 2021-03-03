@@ -20,6 +20,7 @@
                         <th>Sl No.</th>
                         <th>Patient Code</th>
                         <th>Patient Name</th>
+                        <th>Service Name</th>
                         <th>Invoice Number</th>
                         <th>Invoice Date</th>
                         <th>Card Number</th>
@@ -42,7 +43,7 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg">{{company_name}}</td>
+                        <td colspan="8" class="tableSubHdg">{{company_name}}</td>
   <td  class="tableSubHdg numberFld">
                             {{totalCompanyAmt}}
                         </td>
@@ -55,7 +56,7 @@
                     </tr>
                     {{#each networkList}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg2">{{policy_name}}
+                        <td colspan="8" class="tableSubHdg2">{{policy_name}}
                         </td>
                         <td  class="tableSubHdg2 numberFld">
                             {{!-- {{numberFormating totalNetworkAmt .../currencyOnly}} --}}
@@ -74,6 +75,7 @@
                         <td>{{inc @index}}</td>
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
+                        <td>{{service_name}}</td>
                         <td>{{invoice_number}}</td>
                         <td>{{invoice_date}}</td>
                         <td>{{card_number}}</td>
