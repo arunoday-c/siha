@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import { AlgaehModal, AlgaehMessagePop } from "algaeh-react-components";
 import Template from "../template";
 import { loadData, generateReport } from "./api";
-export default function ({ visible, onClose, template, row, dates }) {
+export default function ({
+  visible,
+  onClose,
+  template,
+  row,
+  dates,
+  changedDateRange,
+}) {
   const [data, setData] = useState([]);
   useEffect(() => {
     (async () => {
@@ -13,18 +20,26 @@ export default function ({ visible, onClose, template, row, dates }) {
             head_id,
             finance_account_child_id: child_id,
           } = row;
+          let fromDate = undefined;
+          let toDate = undefined;
           if (Array.isArray(dates) && dates.length === 2) {
-            const fromDate = dates[0].format("YYYY-MM-DD");
-            const toDate = dates[1].format("YYYY-MM-DD");
-            const result = await loadData({
-              head_id,
-              child_id,
-              parent_id,
-              from_date: fromDate,
-              to_date: toDate,
-            });
-            setData(result);
+            fromDate = dates[0].format("YYYY-MM-DD");
+            toDate = dates[1].format("YYYY-MM-DD");
+          } else if (
+            Array.isArray(changedDateRange) &&
+            changedDateRange.length === 2
+          ) {
+            fromDate = changedDateRange[0].format("YYYY-MM-DD");
+            toDate = changedDateRange[1].format("YYYY-MM-DD");
           }
+          const result = await loadData({
+            head_id,
+            child_id,
+            parent_id,
+            from_date: fromDate,
+            to_date: toDate,
+          });
+          setData(result);
         }
       } catch (e) {
         AlgaehMessagePop({ type: "error", message: e.message });

@@ -283,11 +283,50 @@ export default function BalanceSheet({
     const { columns, income, Direct_expense, Indirect_expense } = records;
     let cols = columns.map((col) => {
       const { column_id, label } = col;
+
       return {
         fieldName: column_id,
         label: label,
         displayTemplate: (row) => {
-          return getAmountFormart(row[column_id], { appendSymbol: false });
+          const rec = getAmountFormart(row[column_id], {
+            appendSymbol: false,
+          });
+          if (row.leafnode === "Y") {
+            const rangeYear = label.split(",");
+            const datesArray = rangeYear[0].split("-");
+            let startOff_date = undefined;
+            let cutOff_date = undefined;
+            if (datesArray.length === 2) {
+              startOff_date = moment(
+                `${datesArray[0]}-${rangeYear[1]}`,
+                "DD MMM-YYYY"
+              ).format("YYYY-MM-DD");
+              cutOff_date = moment(
+                `${datesArray[1]}-${rangeYear[1]}`,
+                "DD MMM-YYYY"
+              ).format("YYYY-MM-DD");
+            }
+            return (
+              <a
+                href="void(0);"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setChangedDateRange([
+                    moment(startOff_date),
+                    moment(cutOff_date),
+                  ]);
+
+                  OpenDrillDown({
+                    ...row,
+                    child_id: row.finance_account_child_id,
+                  });
+                }}
+              >
+                {rec}
+              </a>
+            );
+          }
+          return rec;
         },
       };
     });
@@ -570,6 +609,7 @@ export default function BalanceSheet({
         onClose={OnCloseDrillDown}
         row={row}
         dates={rangeDate}
+        changedDateRange={changedDateRange}
       />
       <div className="row inner-top-search">
         <Filter
