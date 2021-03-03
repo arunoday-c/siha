@@ -2672,7 +2672,8 @@ export default {
                     ? false
                     : servicesDetails.FollowUp;
                 let gross_amount = 0,
-                  net_amout = 0;
+                  net_amout = 0,
+                  gross_total = 0;
 
                 let patient_resp = 0,
                   patient_payable = 0;
@@ -2844,6 +2845,10 @@ export default {
                     ? policydtls.cpt_code
                     : records.cpt_code;
 
+                console.log(
+                  "policydtls.company_service_price_type",
+                  policydtls.company_service_price_type
+                );
                 if (insured == "Y" && policydtls.covered == "Y") {
                   if (FollowUp === true) {
                     ser_net_amount = 0;
@@ -2859,6 +2864,9 @@ export default {
                       unit_cost = parseFloat(policydtls.gross_amt);
                     }
                   }
+
+                  gross_total = policydtls.gross_amt;
+                  console.log("unit_cost", unit_cost);
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
                   // }
@@ -2982,7 +2990,8 @@ export default {
                       copay_percentage = policydtls.copay_percent;
                     }
 
-                    // console.log("deductable_percentage", deductable_percentage);
+                    console.log("deductable_percentage", deductable_percentage);
+                    console.log("deductable_type", policydtls.deductable_type);
                     if (policydtls.deductable_type) {
                       if (policydtls.deductable_type === "AMOUNT") {
                         deductable_amount =
@@ -2992,7 +3001,7 @@ export default {
                       } else {
                         deductable_amount =
                           deductable_percentage !== null
-                            ? (parseFloat(net_amout) *
+                            ? (parseFloat(gross_total) *
                                 parseFloat(deductable_percentage)) /
                               100
                             : 0;
@@ -3010,8 +3019,14 @@ export default {
                       deductable_amount,
                       decimal_places
                     );
+
+                    console.log("deductable_amount", deductable_amount);
+
                     after_dect_amout =
                       parseFloat(net_amout) - parseFloat(deductable_amount);
+
+                    console.log("after_dect_amout", after_dect_amout);
+                    console.log("copay_percentage", copay_percentage);
                     copay_amount =
                       (parseFloat(after_dect_amout) *
                         parseFloat(copay_percentage)) /
@@ -3020,7 +3035,10 @@ export default {
                       copay_amount,
                       decimal_places
                     );
+
+                    console.log("copay_amount", copay_amount);
                   }
+                  console.log("net_amout", net_amout);
                   // utilities
                   //   .logger()
                   //   .log("service_type_id: ", typeof patient_resp);
@@ -4346,7 +4364,9 @@ export default {
                           printQuery: true,
                         })
                         .then((subResult) => {
+                          console.log("closeConnection", closeConnection);
                           if (closeConnection) {
+                            console.log("111");
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                             });

@@ -61,9 +61,9 @@ export default class ExaminationDiagram extends Component {
         for (let i = 0; i < result.length; i++) {
           resultData.push(this.templateForNewDiagram(result[i]));
         }
-        resultData.push(
-          this.templateForNewDiagram({ image_desc: "Add new diagram" }, true)
-        );
+        // resultData.push(
+        //   this.templateForNewDiagram({ image_desc: "Add new diagram" }, true)
+        // );
         Promise.all(resultData).then((data) => {
           this.setState({ diagramData: data });
         });
@@ -217,9 +217,10 @@ export default class ExaminationDiagram extends Component {
 
   newDiagramClearHandler(name) {
     this.setState({
-      showSave: false,
-      showUpload: false,
-      showCam: false,
+      // showSave: false,
+      showUpload: true,
+      showCam: true,
+      diagram_id: undefined,
       image:
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
       name: "emptyimage",
@@ -243,18 +244,23 @@ export default class ExaminationDiagram extends Component {
     //   item.selected.hims_d_employee_speciality_id === undefined ||
     //   item.selected.hims_d_employee_speciality_id === null
     // ) {
-
+    debugger;
     // if (item.value) {
-    this.setState({
-      showSave: true,
-      showUpload: false,
-      showCam: false,
-      diagram_id: item.value,
-      image: `${window.location.protocol}//${window.location.hostname}${
-        window.location.port === "" ? "/docserver" : `:3006`
-      }/UPLOAD/${item.selected.sub_department_id}/${item.selected.unique_id}`,
-      name: item.selected.unique_id.split("__ALGAEH__")[1],
-    });
+    this.setState(
+      {
+        showSave: true,
+        showUpload: false,
+        showCam: false,
+        diagram_id: item.value,
+        image: `${window.location.protocol}//${window.location.hostname}${
+          window.location.port === "" ? "/docserver" : `:3006`
+        }/UPLOAD/${item.selected.sub_department_id}/${item.selected.unique_id}`,
+        name: item.selected.unique_id.split("__ALGAEH__")[1],
+      },
+      () => {
+        debugger;
+      }
+    );
     // } else {
     //   this.setState({
     //     UploadImagesModal: !this.state.UploadImagesModal,
