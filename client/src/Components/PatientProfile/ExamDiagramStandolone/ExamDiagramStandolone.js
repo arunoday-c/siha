@@ -244,7 +244,7 @@ export default class ExaminationDiagram extends Component {
     //   item.selected.hims_d_employee_speciality_id === undefined ||
     //   item.selected.hims_d_employee_speciality_id === null
     // ) {
-    debugger;
+
     // if (item.value) {
     this.setState(
       {
@@ -257,9 +257,7 @@ export default class ExaminationDiagram extends Component {
         }/UPLOAD/${item.selected.sub_department_id}/${item.selected.unique_id}`,
         name: item.selected.unique_id.split("__ALGAEH__")[1],
       },
-      () => {
-        debugger;
-      }
+      () => {}
     );
     // } else {
     //   this.setState({
@@ -295,6 +293,11 @@ export default class ExaminationDiagram extends Component {
       showCam: false,
       image: imageData.image,
       name: imageData.name,
+    });
+  }
+  onClose() {
+    this.setState({
+      image: undefined,
     });
   }
   onChangeSaveAsHandler(e) {
@@ -624,6 +627,13 @@ export default class ExaminationDiagram extends Component {
           });
         }
       },
+    });
+  }
+  closeImage() {
+    const that = this;
+    that.setState({
+      image:
+        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
     });
   }
 
@@ -1054,6 +1064,7 @@ export default class ExaminationDiagram extends Component {
                 showSave={this.state.showSave}
                 showUpload={this.state.showUpload}
                 showCam={this.state.showCam}
+                onClearImage={this.newDiagramClearHandler.bind(this)}
               />
             </div>
           </div>
