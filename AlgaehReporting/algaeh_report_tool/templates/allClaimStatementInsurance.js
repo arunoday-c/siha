@@ -29,14 +29,10 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select IH.*,INN.network_type as policy_name, INO.employer as provider_name,
-           coalesce(ID.gross_amount,0) as gross_amount, coalesce(ID.discount_amount,0) as discount_amount, 
-           coalesce(0,0) as deductible, coalesce(ID.net_amount,0) as net_amount, 
-           (coalesce(ID.company_tax,0) + coalesce(ID.patient_tax,0)) as vat, 
-           (coalesce(ID.net_amount,0) + coalesce(ID.company_tax,0) + coalesce(ID.patient_tax,0)) as net_vat, 
-           IP.insurance_provider_name as company_name, INO.policy_number as provider_code, 
-           IP.insurance_provider_code as policy_holder, P.patient_code,P.full_name, ID.service_type_id,ID.patient_resp as co_pay, 
-           ID.patient_tax,ID.company_tax,ID.unit_cost, SI.procedure_type
+          query: `select IH.insurance_provider_id,IH.network_id,IH.invoice_number,IH.invoice_date,IH.card_number,IH.policy_number,
+          ID.*,INN.network_type as policy_name,
+          IP.insurance_provider_name as company_name, INO.policy_number as provider_code,
+          IP.insurance_provider_code as policy_holder, P.patient_code,P.full_name, SI.service_name
           from hims_f_invoice_header as IH
           left outer join hims_d_insurance_network INN on IH.network_id = INN.hims_d_insurance_network_id
           left outer join hims_d_insurance_provider IP on IH.insurance_provider_id = IP.hims_d_insurance_provider_id
