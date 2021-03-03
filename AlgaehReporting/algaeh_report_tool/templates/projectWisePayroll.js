@@ -53,7 +53,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
           left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id
           left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id
-          where PWP.hospital_id=?   and E.employee_status='A'  ${is_local}  ${strData} ;`,
+          where PWP.hospital_id=?   and E.employee_status='A'  ${is_local}  ${strData}   order by project_id ;`,
           values: [input.year, input.month, input.hospital_id],
           printQuery: true,
         })

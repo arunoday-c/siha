@@ -27,6 +27,14 @@ const executePDF = function executePDFMethod(options) {
         strData += " and E.employee_group_id=" + input.employee_group_id;
       }
 
+      let is_local = "";
+
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
+
       options.mysql
         .executeQuery({
           query: `Select hims_f_project_wise_payroll_id,employee_id,  month, year,group_description,
@@ -45,7 +53,8 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
           left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
           left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id
-          where year=? and month=? and PWP.hospital_id=?    and E.employee_status='A'   ${strData}  order by project_id ;`,
+          left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id
+          where year=? and month=? and PWP.hospital_id=?    and E.employee_status='A' ${is_local}  ${strData}  order by project_id ;`,
           values: [input.year, input.month, input.hospital_id],
           printQuery: true,
         })
