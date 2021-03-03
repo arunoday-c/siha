@@ -46,6 +46,7 @@ export async function macro(req, res, next) {
             receiveable_amount,
             ScreenCode,
             sub_department_id,
+            created_by,
           } = _.head(details);
           let receiptdetails = [];
           let billdetails = [];
@@ -147,6 +148,7 @@ export async function macro(req, res, next) {
             billdetails,
             receiptdetails,
             sub_department_id,
+            created_by,
           };
         })
         .value();
@@ -187,6 +189,7 @@ export async function macro(req, res, next) {
             receiveable_amount,
             ScreenCode,
             sub_department_id,
+            created_by,
           } = _.head(details);
           let receiptdetails = [];
           let billdetails = [];
@@ -286,6 +289,7 @@ export async function macro(req, res, next) {
             billdetails,
             receiptdetails,
             sub_department_id,
+            created_by,
           };
         })
         .value();
@@ -294,17 +298,7 @@ export async function macro(req, res, next) {
     const { headers } = req;
 
     for (let i = 0; i < records.length; i++) {
-      const {
-        finance_day_end_header_id,
-        // bill_number,
-        // pack_advance_adjust,
-        // company_payable,
-        // total_tax,
-        // sheet_discount_amount,
-        // ScreenCode,
-        // billdetails,
-        // receiptdetails,
-      } = records[i];
+      const { finance_day_end_header_id } = records[i];
 
       if (finance_day_end_header_id > 0) {
         const deteRecords = await _mysql
