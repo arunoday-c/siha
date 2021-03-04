@@ -188,6 +188,10 @@ export default {
         });
         return;
       }
+      let strQuery = "select 1=1;";
+      if (inputParam.advance_adjust > 0) {
+        strQuery = `SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id='${inputParam.patient_id}';`;
+      }
 
       _mysql
         .executeQuery({
@@ -200,7 +204,8 @@ export default {
               , patient_tax, s_patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
               balance_credit, from_bill_id, shift_id, created_by, created_date, updated_by, updated_date, copay_amount,\
               deductable_amount,hospital_id)\
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); " +
+            strQuery,
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -252,52 +257,19 @@ export default {
           ],
           printQuery: true,
         })
-        .then((headerResult) => {
+        .then((insert_result) => {
+          const headerResult = insert_result[0];
+          const pat_advance = insert_result[1];
+
           req.body.hims_f_billing_header_id = headerResult.insertId;
           req.body.bill_date = new Date();
-          if (
-            headerResult.insertId != null &&
-            headerResult.insertId != "" &&
-            inputParam.advance_adjust > 0
-          ) {
-            _mysql
-              .executeQuery({
-                query:
-                  "SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
-                values: [inputParam.patient_id],
-                printQuery: true,
-              })
-              .then((result) => {
-                let existingAdvance = result[0].advance_amount;
-                if (result.length != 0) {
-                  inputParam.advance_amount =
-                    existingAdvance - inputParam.advance_adjust;
+          let strQry = "";
+          if (inputParam.advance_adjust > 0) {
+            inputParam.advance_amount =
+              pat_advance[0].advance_amount - inputParam.advance_adjust;
 
-                  _mysql
-                    .executeQuery({
-                      query:
-                        "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
-                        `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
-                      values: [
-                        inputParam.advance_amount,
-                        req.userIdentity.algaeh_d_app_user_id,
-                        new Date(),
-                        inputParam.patient_id,
-                      ],
-                      printQuery: true,
-                    })
-                    .catch((error) => {
-                      _mysql.rollBackTransaction(() => {
-                        next(error);
-                      });
-                    });
-                }
-              })
-              .catch((error) => {
-                _mysql.rollBackTransaction(() => {
-                  next(error);
-                });
-              });
+            strQry = `UPDATE  hims_f_patient SET  advance_amount='${inputParam.advance_amount}' 
+              WHERE hims_d_patient_id='${inputParam.patient_id}';`;
           }
 
           let IncludeValues = [
@@ -393,7 +365,8 @@ export default {
 
           _mysql
             .executeQuery({
-              query: "INSERT INTO hims_f_billing_details(??) VALUES ?",
+              query:
+                "INSERT INTO hims_f_billing_details(??) VALUES ? ;" + strQry,
               values: newDtls,
               includeValues: IncludeValues,
               bulkInsertOrUpdate: true,
