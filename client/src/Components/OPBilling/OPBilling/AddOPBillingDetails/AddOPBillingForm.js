@@ -1165,7 +1165,7 @@ class AddOPBillingForm extends Component {
                                 e.target.oldvalue = e.target.value;
                               },
                               disabled:
-                                this.state.advance_amount === 0
+                                parseFloat(this.state.advance_amount) === 0
                                   ? true
                                   : this.state.Billexists,
                             },
@@ -1197,7 +1197,11 @@ class AddOPBillingForm extends Component {
                                 onFocus: (e) => {
                                   e.target.oldvalue = e.target.value;
                                 },
-                                disabled: this.state.Billexists,
+                                disabled:
+                                  parseFloat(this.state.pack_advance_amount) ===
+                                  0
+                                    ? true
+                                    : this.state.Billexists,
                               },
                             }}
                           />
@@ -1315,6 +1319,15 @@ class AddOPBillingForm extends Component {
                         className="row secondary-box-container"
                         style={{ marginBottom: "10px" }}
                       >
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "advance_amount",
+                            }}
+                          />
+                          <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
+                        </div>
+
                         {Package_Exists.length > 0 ? (
                           <div className="col">
                             <AlgaehLabel
@@ -1327,14 +1340,6 @@ class AddOPBillingForm extends Component {
                             </h6>
                           </div>
                         ) : null}
-                        <div className="col">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "advance_amount",
-                            }}
-                          />
-                          <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
-                        </div>
 
                         <div className="col">
                           <AlgaehLabel
