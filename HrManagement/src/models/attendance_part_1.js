@@ -3442,27 +3442,42 @@ export function processBulkAtt_Normal(data) {
                               // );
 
                               console.log("employee_join", employee_join);
+                              console.log(
+                                "anual_leave",
+                                DilayResult[i]["anual_leave"]
+                              );
+                              console.log(
+                                "leave_salary_payment_days",
+                                options["leave_salary_payment_days"]
+                              );
                               if (
                                 DilayResult[i]["anual_leave"] > 0 &&
                                 options["leave_salary_payment_days"] == "P" &&
                                 employee_join == false
                               ) {
-                                // console.log("DilayResult", DilayResult[i])
-                                let _earlyjoin;
+                                // console.log("DilayResult", DilayResult[i]);
+                                // let _earlyjoin;
                                 const month_days = moment(
                                   month_start
                                 ).daysInMonth();
                                 DilayResult[i]["total_days"] = month_days;
 
-                                // console.log("total_days", parseFloat(DilayResult[i]["total_days"]))
-                                // console.log("total_work_days", parseFloat(DilayResult[i]["total_work_days"]))
+                                console.log(
+                                  "total_days",
+                                  parseFloat(DilayResult[i]["total_days"])
+                                );
+                                console.log(
+                                  "total_work_days",
+                                  parseFloat(DilayResult[i]["total_work_days"])
+                                );
                                 console.log("annual_leave", annual_leave);
-                                if (annual_leave[0].employee_joined == "Y") {
-                                }
+                                // if (annual_leave[0].employee_joined == "Y") {
+                                // }
                                 if (
                                   parseFloat(DilayResult[i]["total_days"]) <
                                   parseFloat(DilayResult[i]["total_work_days"])
                                 ) {
+                                  // console.log("1");
                                   t_paid_days =
                                     DilayResult[i]["total_work_days"] -
                                     parseFloat(DilayResult[i]["absent_days"]) -
@@ -3472,6 +3487,7 @@ export function processBulkAtt_Normal(data) {
                                     parseFloat(calc_mnth_annl_leav) -
                                     parseFloat(_salary_paid_days);
                                 } else {
+                                  // console.log("2");
                                   t_paid_days =
                                     parseFloat(DilayResult[i]["present_days"]) +
                                     parseFloat(DilayResult[i]["paid_leave"]) +
