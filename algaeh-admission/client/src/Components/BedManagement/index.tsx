@@ -1,36 +1,159 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./BedManagement.scss";
-import { AlgaehAutoComplete } from "algaeh-react-components";
+import {
+  AlgaehAutoComplete,
+  algaehAxios,
+  AlgaehMessagePop,
+  // MainContext,
+} from "algaeh-react-components";
+import { useForm, Controller, useWatch } from "react-hook-form";
+
+interface IFormInputs {
+  // name: string;
+  hims_adm_ward_header_id: string;
+}
 
 export default function BedManagement(props: any) {
+  const { control, setValue } = useForm<IFormInputs>();
+
+  const [wardHeaderData, setWardHeaderData] = useState([]);
+  const [bedStatusData, setBedStatusData] = useState([]);
+  useEffect(() => {
+    getWardHeaderData();
+    bedStatusSetUp();
+  }, []);
+  const { hims_adm_ward_header_id } = useWatch({
+    control,
+    name: ["hims_adm_ward_header_id"],
+  });
+  useEffect(() => {
+    getWardHeaderData(hims_adm_ward_header_id);
+  }, [hims_adm_ward_header_id]);
+  const bedStatusSetUp = async () => {
+    const { response, error } = await algaehAxios(
+      "/bedManagement/bedStatusSetUp",
+      {
+        module: "admission",
+        method: "GET",
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+
+    if (response.data.success) {
+      setBedStatusData(response.data.records);
+    }
+  };
+  const getWardHeaderData = async (data?: string) => {
+    const { response, error } = await algaehAxios(
+      "/bedManagement/getWardHeaderData",
+      {
+        module: "admission",
+        method: "GET",
+        data: { hims_adm_ward_header_id: data },
+      }
+    );
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+    if (response.data.success) {
+      setWardHeaderData(response.data.records);
+    }
+  };
+  // const context: any = useContext(MainContext);
   return (
     <div className="BedManagementScreen">
       <div className="row inner-top-search">
-        <AlgaehAutoComplete
-          div={{ className: "col-3 form-group mandatory" }}
-          label={{
-            forceLabel: "Filter By Ward",
-            isImp: true,
-          }}
-          selector={{
-            name: "services_id",
+        <Controller
+          name="hims_adm_ward_header_id"
+          control={control}
+          // rules={{ required: "Select Ward Type " }}
+          render={({ value, onChange }) => (
+            <AlgaehAutoComplete
+              div={{ className: "col-2  form-group mandatory" }}
+              label={{
+                forceLabel: "Filter By Ward",
+                // isImp: true,
+              }}
+              // error={errors}
+              selector={{
+                name: "hims_adm_ward_header_id",
+                value,
+                onChange: (_: any, selected: any) => {
+                  onChange(selected);
 
-            dataSource: {
-              textField: "service_name",
-              valueField: "hims_d_services_id",
-              data: "",
-            },
-          }}
-        />
+                  getWardHeaderData(selected);
+                  // setValue("service_amount", _.standard_fee);
+                },
+
+                onClear: () => {
+                  onChange("");
+                },
+
+                dataSource: {
+                  textField: "ward_desc",
+                  valueField: "hims_adm_ward_header_id",
+                  data: wardHeaderData,
+                },
+                // others: {
+                //   disabled: hims_adm_ward_header_id,
+
+                //   tabIndex: "4",
+                // },
+              }}
+            />
+          )}
+        />{" "}
+        <button
+          className="btn btn-default btn-small"
+          onClick={() => setValue("hims_adm_ward_header_id", undefined)}
+        >
+          clear
+        </button>
       </div>
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">
           <div className="caption">
             <h3 className="caption-subject">Ward and Bed List</h3>
           </div>
+
           <div className="actions">
             <ul className="ul-legend">
-              <li>
+              {bedStatusData !== undefined
+                ? bedStatusData.map(
+                    (
+                      data: { bed_color: string; description: string },
+                      index
+                    ) => (
+                      <li key={index}>
+                        <span
+                          style={{
+                            backgroundColor: data.bed_color,
+                          }}
+                        />
+                        {/* {context.userLanguage === "ar" */}
+                        {data.description}
+                        {/* : data.statusDesc} */}
+                      </li>
+                    )
+                  )
+                : null}
+              {/* <li>
                 <span style={{ backgroundColor: "red" }}></span>Legend 1
               </li>
               <li>
@@ -41,653 +164,50 @@ export default function BedManagement(props: any) {
               </li>
               <li>
                 <span style={{ backgroundColor: "red" }}></span>Legend 1
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
         <div className="portlet-body">
           <div className="col-12">
             <div className="row">
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
+              {wardHeaderData.map((item: any, key: number) => (
+                <div className="col WardCol" key={key}>
+                  <>
                     <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
+                      <div className="col-12">
+                        <h3>{item.ward_desc}</h3>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
-                    <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
+                    <div className="row ">
+                      <div className="col-12 bedCol">
+                        <div className="row">
+                          {item.groupDetail.map((data: any, index: number) => {
+                            const {
+                              bed_desc,
+                              // bed_id,
+                              bed_no,
+                              service_name,
+                            } = data;
+                            return (
+                              <div className="col-12 bedBox" key={index}>
+                                <span>
+                                  <b>{service_name}</b>
+                                </span>
+                                <span>
+                                  <b>{bed_no}</b>
+                                </span>
+                                <span>{bed_desc}</span>
+                              </div>
+                            );
+                          })}
+                          {/* </div> */}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </>
                 </div>
-              </div>
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
-                    <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
-                    <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
-                    <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
-                    <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
-                    <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
-                    <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col WardCol">
-                <div className="row">
-                  <div className="col-12">
-                    <h3>Ward No.1</h3>
-                  </div>
-                </div>
-                <div className="row ">
-                  <div className="col-12 bedCol">
-                    <div className="row">
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                      <div className="col-12 bedBox">
-                        <span>
-                          <b>Bed No.</b>
-                        </span>
-                        <span>Bed Type</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

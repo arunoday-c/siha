@@ -10,7 +10,7 @@ export function getBedStatus(req: Request, res: Response, next: NextFunction) {
   try {
     _mysql
       .executeQuery({
-        query: `select IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id=S. hims_d_services_id   order by hims_adm_ip_bed_id desc `,
+        query: `select IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id= S.hims_d_services_id   order by hims_adm_ip_bed_id desc `,
         printQuery: true,
       })
       .then((result) => {
@@ -144,12 +144,19 @@ export function getWardHeaderData(
   next: NextFunction
 ) {
   const _mysql = new algaehMysql();
+  let strQuery = "";
+  if (req.query.hims_adm_ward_header_id) {
+    strQuery +=
+      " and WH.hims_adm_ward_header_id= " + req.query.hims_adm_ward_header_id;
+  }
   try {
     _mysql
       .executeQuery({
-        query: `select WH.hims_adm_ward_header_id,WH.ward_desc, WH.ward_short_name,IB.bed_desc,WH.ward_type,WD.hims_adm_ward_detail_id,WD.ward_header_id,
+        query: `select WH.hims_adm_ward_header_id,IB.services_id,IB.bed_desc,WH.ward_desc,S.service_name, WH.ward_short_name,IB.bed_desc,WH.ward_type,WD.hims_adm_ward_detail_id,WD.ward_header_id,
         WD.bed_id,WD.bed_no,WD.status  from hims_adm_ward_header as WH left join hims_adm_ward_detail as WD on 
-       WD.ward_header_id= WH.hims_adm_ward_header_id left join hims_adm_ip_bed IB on WD.bed_id=IB.hims_adm_ip_bed_id where WH.ward_status='A'; `,
+       WD.ward_header_id= WH.hims_adm_ward_header_id 
+       left join hims_adm_ip_bed IB on WD.bed_id=IB.hims_adm_ip_bed_id
+       left join hims_d_services S on IB.services_id= S.hims_d_services_id  where WH.ward_status='A' ${strQuery} `,
         printQuery: true,
       })
       .then((result) => {
@@ -169,6 +176,8 @@ export function getWardHeaderData(
               bed_id: number;
               bed_no: number;
               status: string;
+              bed_desc: string;
+              service_name: string;
               hims_adm_ward_detail_id: number;
               isInserted: number;
             } = detail.map((item: any) => {
@@ -177,6 +186,7 @@ export function getWardHeaderData(
                 bed_id: item.bed_id,
                 bed_no: item.bed_no,
                 status: item.status,
+                service_name: item.service_name,
                 bed_desc: item.bed_desc,
                 hims_adm_ward_detail_id: item.hims_adm_ward_detail_id,
                 isInserted: 1,
