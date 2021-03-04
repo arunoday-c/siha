@@ -14,16 +14,17 @@ import {
 // import addNew from "../../../assets/images/add-new-diagram.jpg";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
-import moment from "moment";
+// import moment from "moment";
 import Swal from "sweetalert2";
 import { MainContext } from "algaeh-react-components";
 import SubImageMasterPopUp from "../../BusinessSetup/DeptMaster/subImageMasterPopUp";
 import { Spin } from "algaeh-react-components";
+import ExsistingDiagram from "./ExsistingDiagram";
 export default class ExaminationDiagram extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "",
+      name: "img",
       image: undefined,
       diagramData: [],
       showSave: true,
@@ -246,19 +247,17 @@ export default class ExaminationDiagram extends Component {
     // ) {
 
     // if (item.value) {
-    this.setState(
-      {
-        showSave: true,
-        showUpload: false,
-        showCam: false,
-        diagram_id: item.value,
-        image: `${window.location.protocol}//${window.location.hostname}${
-          window.location.port === "" ? "/docserver" : `:3006`
-        }/UPLOAD/${item.selected.sub_department_id}/${item.selected.unique_id}`,
-        name: item.selected.unique_id.split("__ALGAEH__")[1],
-      },
-      () => {}
-    );
+    this.setState({
+      showSave: true,
+      showUpload: false,
+      showCam: false,
+      name: item.selected.unique_id.split("__ALGAEH__")[1],
+      diagram_id: item.value,
+
+      image: `${window.location.protocol}//${window.location.hostname}${
+        window.location.port === "" ? "/docserver" : `:3006`
+      }/UPLOAD/${item.selected.sub_department_id}/${item.selected.unique_id}`,
+    });
     // } else {
     //   this.setState({
     //     UploadImagesModal: !this.state.UploadImagesModal,
@@ -374,12 +373,12 @@ export default class ExaminationDiagram extends Component {
               for (let i = 0; i < result.length; i++) {
                 resultData.push(this.templateForNewDiagram(result[i]));
               }
-              resultData.push(
-                this.templateForNewDiagram(
-                  { image_desc: "Add new diagram" },
-                  true
-                )
-              );
+              // resultData.push(
+              //   this.templateForNewDiagram(
+              //     { image_desc: "Add new diagram" },
+              //     true
+              //   )
+              // );
               Promise.all(resultData).then((data) => {
                 this.setState({ diagramData: data });
               });
@@ -446,62 +445,104 @@ export default class ExaminationDiagram extends Component {
                 throw error;
               });
           } else {
-            await examination()
-              .saveFileOnServer({
-                file: that.refs.imageSaver.editor.getInstance().toDataURL(),
-                uniqueID:
-                  // moment(resultOfHeader.header_datetime).format(
-                  //   "YYYY-MM-DD HH:mm:ss"
-                  // ) +
-                  // "_" +
-                  Window.global["current_patient"] +
-                  "_" +
-                  Window.global["provider_id"] +
-                  "_" +
-                  resultOfHeader.hims_f_examination_diagram_header_id +
-                  "_" +
-                  resultOfHeader.insertId,
-                fileType: "DepartmentImages",
-                fileExtention: "webp",
-              })
-              .then((response) => {});
+            await examination().saveFileOnServer({
+              file: that.refs.imageSaver.editor.getInstance().toDataURL(),
+              uniqueID:
+                // moment(resultOfHeader.header_datetime).format(
+                //   "YYYY-MM-DD HH:mm:ss"
+                // ) +
+                // "_" +
+                Window.global["current_patient"] +
+                "_" +
+                Window.global["provider_id"] +
+                "_" +
+                resultOfHeader.hims_f_examination_diagram_header_id +
+                "_" +
+                resultOfHeader.insertId,
+              fileType: "DepartmentImages",
+              fileExtention: "webp",
+            });
           }
 
           //
-          const allResult = await examination().getExistingDetail(
-            resultOfHeader.hims_f_examination_diagram_header_id
-          );
+          await examination()
+            .getExistingHeader(this.state, this.props)
+            .then((result) => {
+              let resultData = [];
+              for (let i = 0; i < result.length; i++) {
+                resultData.push(
+                  this.templateForExistingDiagramHeader(result[i], false)
+                );
+              }
 
-          Promise.all(allResult).then((data) => {
-            // 2021-03-02 16:36:45_139_6_116_116
-            // 2021-03-02 16:25:00_139_6_116_116
-            that.setState(
-              {
-                exittingDetails: data,
-                showUpload: true,
-                showCam: true,
-                showSave: true,
+              // examination()
+              //   .getExistingDetail(
+              //     resultOfHeader.hims_f_examination_diagram_header_id
+              //   )
+              //   .then((allResult) => {
 
-                remarks: undefined,
-                diagram_desc: undefined,
-                loading: false,
-              },
-              () => {
+              Promise.all(resultData).then((data, data1) => {
                 examination()
-                  .getExistingHeader(that.state, that.props)
-                  .then((resultOfExisting) => {
-                    let resultData = [];
-                    for (let i = 0; i < resultOfExisting.length; i++) {
-                      resultData.push(
-                        that.templateForExistingDiagramHeader(
-                          resultOfExisting[i]
-                        )
+                  .getExistingDetail(
+                    resultOfHeader.hims_f_examination_diagram_header_id
+                  )
+                  .then((allResult) => {
+                    if (that.state.saveAsChecked === "new") {
+                      const filteredImage = result.filter((f) => {
+                        return (
+                          f.hims_f_examination_diagram_header_id ===
+                          resultOfHeader.hims_f_examination_diagram_header_id
+                        );
+                      })[0];
+
+                      that.setState(
+                        {
+                          exittingDetails: allResult,
+                        },
+                        () => {
+                          that.setState({
+                            existingDiagram: data,
+                            showUpload: true,
+                            showCam: true,
+                            showSave: true,
+
+                            remarks: undefined,
+                            // diagram_desc: undefined,
+                            loading: false,
+                            diagram_desc: filteredImage.diagram_desc,
+                            diagram_id:
+                              resultOfHeader.hims_f_examination_diagram_header_id,
+                            hims_f_examination_diagram_header_id:
+                              resultOfHeader.hims_f_examination_diagram_header_id,
+                          });
+                        }
+                      );
+                    } else {
+                      that.setState(
+                        {
+                          exittingDetails: allResult,
+                        },
+                        () => {
+                          that.setState({
+                            existingDiagram: data,
+                            showUpload: true,
+                            showCam: true,
+                            showSave: true,
+
+                            remarks: undefined,
+                            diagram_desc: undefined,
+                            loading: false,
+                          });
+                        }
                       );
                     }
                   });
-              }
-            );
-          });
+              });
+              // );
+            })
+            .catch((error) => {
+              console.error(error);
+            });
 
           // .then((result) => {
           // if (that.state.saveAsChecked === "new") {
@@ -993,43 +1034,54 @@ export default class ExaminationDiagram extends Component {
             />
           </div>
           <div className="row diagramList  ">
-            {this.state.exittingDetails.map((item, index) => (
-              <div className="col-12 eachDiagram" key={index}>
-                <AlgaehFile
-                  name={"attach_" + index}
-                  accept="image/*"
-                  noImage={true}
-                  forceRefreshed={true}
-                  showActions={false}
-                  serviceParameters={{
-                    uniqueID: item.image,
-                    destinationName: item.image,
-                    fileType: "DepartmentImages",
-                  }}
-                />
-                <p>
-                  {item.remarks}
-                  <small>
-                    {moment(new Date(item.update_date)).format(
-                      "DD:MM:YYYY | hh:mm A"
-                    )}
-                  </small>
-                </p>{" "}
-                <div className="diagramImgTool">
-                  <i
-                    className="fas fa-trash-alt"
-                    onClick={this.onClickDeleteDiagram.bind(this, item)}
-                  />
-                  <i
-                    className="fas fa-search-plus"
-                    onClick={this.onZoomImage.bind(this)}
-                  />
+            {this.state.exittingDetails.length > 0 ? (
+              <ExsistingDiagram
+                exittingDetails={this.state.exittingDetails}
+                onClickDeleteDiagram={this.onClickDeleteDiagram.bind(this)}
+                onZoomImage={this.onZoomImage.bind(this)}
+              />
+            ) : null}
 
-                  {/* <input type="checkbox" id={"chk_compire_" + index} />
+            {/* {this.state.exittingDetails.map((item, index) => {
+              
+              return (
+                <div className="col-12 eachDiagram" key={index}>
+                  <AlgaehFile
+                    name={"attach_" + index}
+                    accept="image/*"
+                    noImage={true}
+                    forceRefreshed={true}
+                    showActions={false}
+                    serviceParameters={{
+                      uniqueID: item.image,
+                      destinationName: item.image,
+                      fileType: "DepartmentImages",
+                    }}
+                  />
+                  <p>
+                    {item.remarks}
+                    <small>
+                      {moment(new Date(item.update_date)).format(
+                        "DD:MM:YYYY | hh:mm A"
+                      )}
+                    </small>
+                  </p>{" "}
+                  <div className="diagramImgTool">
+                    <i
+                      className="fas fa-trash-alt"
+                      onClick={this.onClickDeleteDiagram.bind(this, item)}
+                    />
+                    <i
+                      className="fas fa-search-plus"
+                      onClick={this.onZoomImage.bind(this)}
+                    />
+
+                    {/* <input type="checkbox" id={"chk_compire_" + index} />
                   <label htmlFor={"chk_compire_" + index}>Compare</label> */}
+            {/* </div>
                 </div>
-              </div>
-            ))}
+              );
+            })} */}
           </div>
           {this.state.exittingDetails.length > 0 ? (
             <button
@@ -1053,6 +1105,7 @@ export default class ExaminationDiagram extends Component {
         <div className="col-10">
           <div className="row">
             <div className="col-12 CanvasEditorCntr">
+              {/* {this.state.image ? ( */}
               <AlgaehCanvas
                 ref="imageSaver"
                 directImage={true}
@@ -1066,6 +1119,7 @@ export default class ExaminationDiagram extends Component {
                 showCam={this.state.showCam}
                 onClearImage={this.newDiagramClearHandler.bind(this)}
               />
+              {/* ) : null} */}
             </div>
           </div>
         </div>
