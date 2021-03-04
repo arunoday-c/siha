@@ -341,6 +341,7 @@ class FinalSettlement extends Component {
       posted: null,
       cancelled: null,
       loans: data.loans,
+      hospital_id: this.state.hospital_id,
       earnings: this.state.earningList,
       deductions: this.state.deductingList,
       ScreenCode: getCookie("ScreenCode"),

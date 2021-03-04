@@ -324,7 +324,7 @@ export default {
                   ? req.userIdentity.algaeh_d_app_user_id
                   : null,
                 _input.cancelled === "Y" ? new Date() : null,
-                req.userIdentity.hospital_id,
+                _input.hospital_id,
               ],
             })
             .then((header_result) => {
@@ -677,7 +677,7 @@ export default {
                   "N",
                   null,
                   null,
-                  hospital_id,
+                  _input.hospital_id,
                 ],
                 printQuery: true,
               })
