@@ -691,25 +691,30 @@ export default function WardBedSetup(Props: any) {
                   <h3 className="caption-subject">List of Wards</h3>
                 </div>
               </div>
-              <Collapse className="accCntr">
+              <Collapse className="wardBedListAcc">
                 {wardHeaderData.map((item: any, key: number) => (
                   <Panel
                     header={
                       <div className="portlet-body">
-                        <i
-                          className="fas fa-pen"
-                          onClick={() => {
-                            let filteredItem = item.groupDetail.filter(
-                              (f: any) => {
-                                return f.bed_id !== null || undefined;
-                              }
-                            );
-                            setWardDetailsData(filteredItem);
-                            setWardHeaderRow(item);
-                            reset({ ...item });
-                          }}
-                        ></i>
-                        <h3>{item.ward_desc}</h3>
+                        <h3>
+                          {item.ward_desc}{" "}
+                          <span
+                            className="ediIcon"
+                            onClick={() => {
+                              let filteredItem = item.groupDetail.filter(
+                                (f: any) => {
+                                  return f.bed_id !== null || undefined;
+                                }
+                              );
+                              setWardDetailsData(filteredItem);
+                              setWardHeaderRow(item);
+                              reset({ ...item });
+                            }}
+                          >
+                            {" "}
+                            <i className="fas fa-pen"></i>
+                          </span>
+                        </h3>
                       </div>
                     }
                     key={key}

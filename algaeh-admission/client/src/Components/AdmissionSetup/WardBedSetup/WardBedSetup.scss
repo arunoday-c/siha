@@ -16,7 +16,19 @@
     }
   }
 }
-.accCntr {
+.wardBedListAcc {
+  .ediIcon {
+    position: absolute;
+    border-left: 1px solid #d9d9d9;
+    padding: 12px;
+    right: 0;
+    top: 0;
+    color: #595959;
+    &:hover {
+      background-color: #e0e0e0;
+      color: black;
+    }
+  }
   .accrTable {
     width: 100%;
     border-collapse: collapse;
