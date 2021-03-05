@@ -11,7 +11,7 @@
                     <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
                     </td>
                     <td colspan="2"><label class="textEnLft">Employee Name:</label><span
-                            class="valueText">{{full_name}}</span></td>
+                            class="valueText">{{employee_name}}</span></td>
                 </tr>
             </table>
         </section>
@@ -19,18 +19,22 @@
             <table class="tableForLabel labelBlock" cell-padding="0">
                 
                 <tr>
-                    <td><label class="textEnLft">Loan Status</label><span class="valueText">{{loan_status}} </span></td>
+                    <td><label class="textEnLft">Receipt No.</label><span class="valueText">{{emp_recp_number}} </span></td>
 
-                    <td><label class="textEnLft">Loan Type: </label><span class="valueText">
-                            {{loan_description}}</span></td>
-                    <td ><label class="textEnLft">Loan Issues Date: </label><span class="valueText">
-                            {{payment_date}}</span></td>
+                    <td><label class="textEnLft">Receipt Type: </label><span class="valueText">
+                            {{reciepts_type}}</span></td>
+                    <td ><label class="textEnLft">Application No: </label><span class="valueText">
+                            {{appl_no}}</span></td>
 
                 </tr>
-                <tr>
+                
+                <tr>  <td ><label class="textEnLft">Mode of Receipt & No.: </label><span class="valueText">
+                            {{reciepts_mode}} - {{paymentNo}}</span></td>
+                    <td><label class="textEnLft">Write off Amount:</label><span class="valueText">{{write_off_amount}} </span></td>
 
-                    <td colspan="3"><label class="textEnLft">Loan Reason: </label><span class="valueText">
-                            {{application_reason}}</span></td>
+                    <td><label class="textEnLft">Recevied Amount:</label><span class="valueText">
+                            {{recievable_amount}}</span></td>
+                 
 
                 </tr>
 
