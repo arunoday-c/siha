@@ -233,7 +233,7 @@ class EmployeeReceipts extends Component {
           //
           this.setState(
             {
-              employee_name: row.employee_name,
+              employee_name: row.full_name,
               hims_d_employee_id: row.employee_id,
               current_loan: row,
               hims_f_loan_application_id: row.hims_f_loan_application_id,
@@ -418,8 +418,13 @@ class EmployeeReceipts extends Component {
         this.setState(
           {
             reciepts_type: e.target.value,
+            employee_name: null,
+            employee_code: null,
           },
-          () => this.getEmployeeReceipts()
+          () => {
+            this.getEmployeeReceipts();
+            this.clearSaveState();
+          }
         );
         break;
 
