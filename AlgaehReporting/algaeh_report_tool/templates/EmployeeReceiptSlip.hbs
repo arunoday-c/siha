@@ -1,0 +1,41 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px"> 
+        {{#hasElement result}}
+         {{#each result}}
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
+                    </td>
+                    <td colspan="2"><label class="textEnLft">Employee Name:</label><span
+                            class="valueText">{{full_name}}</span></td>
+                </tr>
+            </table>
+        </section>
+  <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                
+                <tr>
+                    <td><label class="textEnLft">Loan Status</label><span class="valueText">{{loan_status}} </span></td>
+
+                    <td><label class="textEnLft">Loan Type: </label><span class="valueText">
+                            {{loan_description}}</span></td>
+                    <td ><label class="textEnLft">Loan Issues Date: </label><span class="valueText">
+                            {{payment_date}}</span></td>
+
+                </tr>
+                <tr>
+
+                    <td colspan="3"><label class="textEnLft">Loan Reason: </label><span class="valueText">
+                            {{application_reason}}</span></td>
+
+                </tr>
+
+            </table>
+        </section> {{/each }}
+        {{else}}abcd{{/hasElement }}
+    </div>
+</body>

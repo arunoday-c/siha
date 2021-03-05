@@ -15,6 +15,7 @@ import GlobalVariables, {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { AlgaehValidation, getYears } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components";
+import { generateEmployeeReceipt } from "./EmployeeReceiptsEvent.js";
 
 // import { MONTHS } from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
@@ -813,12 +814,12 @@ class EmployeeReceipts extends Component {
                   />
 
                   <div className="col form-group">
-                    <button
+                    {/* <button
                       style={{ marginTop: 20 }}
                       className="btn btn-default"
                     >
                       Print
-                    </button>{" "}
+                    </button>{" "} */}
                     <button
                       onClick={this.addEmployeeReceipts.bind(this)}
                       style={{ marginTop: 20, marginLeft: 10 }}
@@ -860,9 +861,11 @@ class EmployeeReceipts extends Component {
                                 {" "}
                                 <i
                                   className="fas fa-print"
-                                  onClick={() => {
-                                    return;
-                                  }}
+                                  onClick={generateEmployeeReceipt.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )}
                                 ></i>
                               </span>
                             );
