@@ -32,6 +32,7 @@ export default function WardBedSetup(Props: any) {
   const [wardHeaderData, setWardHeaderData] = useState([]);
   const [wardDetailsData, setWardDetailsData] = useState<any>([]);
   const [bedDropDown, setBedDropDown] = useState([]);
+  const [disabledSave, setDisabledSave] = useState(false);
   const { control, errors, reset, handleSubmit } = useForm({
     shouldFocusError: true,
     defaultValues: {
@@ -132,6 +133,7 @@ export default function WardBedSetup(Props: any) {
     }
     console.log("response", response);
     if (response.data.success) {
+      setDisabledSave(false);
       AlgaehMessagePop({
         display: "Successfully updated",
         type: "success",
@@ -342,13 +344,25 @@ export default function WardBedSetup(Props: any) {
               return;
             });
           });
-          reset({});
-        } else {
-          AlgaehMessagePop({
-            display: "Updated Successfully",
-            type: "error",
+          reset({
+            ward_desc: "",
+            ward_short_name: "",
+            ward_type: null,
           });
-          return;
+        } else {
+          getWardHeaderData().then(() => {
+            AlgaehMessagePop({
+              display: "Successfully Updated",
+              type: "success",
+            });
+            setWardDetailsData([]);
+          });
+
+          reset({
+            ward_desc: "",
+            ward_short_name: "",
+            ward_type: null,
+          });
         }
       });
     } else {
@@ -365,7 +379,7 @@ export default function WardBedSetup(Props: any) {
             return;
           });
         });
-        reset({});
+        reset({ ward_desc: "", ward_short_name: "", ward_type: null });
       });
     }
   };
@@ -636,7 +650,9 @@ export default function WardBedSetup(Props: any) {
                               onCancel: (row) => {},
                               onDeleteShow: (row) => {},
                               onSaveShow: (row) => {},
-                              onEdit: (row) => {},
+                              onEdit: (row) => {
+                                setDisabledSave(true);
+                              },
                               onSave: (row) => {
                                 if (row.isInserted === 1 && row.bed_id) {
                                   updateWardDetails(row);
@@ -686,9 +702,14 @@ export default function WardBedSetup(Props: any) {
                       onClick={() => {
                         setWardDetailsData([]);
                         setWardHeaderRow({});
-                        reset({});
+                        reset({
+                          ward_desc: "",
+                          ward_short_name: "",
+                          ward_type: null,
+                        });
                       }}
                       className="btn btn-default btn-small"
+                      // disabled={disabledSave}
                     >
                       clear
                     </button>
@@ -696,8 +717,9 @@ export default function WardBedSetup(Props: any) {
                       type="button"
                       onClick={handleSubmit(wardHeader)}
                       className="btn btn-primary btn-small"
+                      disabled={disabledSave}
                     >
-                      Save Ward
+                      {wardDetailsData.length > 0 ? "Update Ward" : "Save Ward"}
                     </button>
                   </div>
                 </div>

@@ -131,8 +131,7 @@ export default function BedStatus(Props: any) {
     }
     console.log("response", response);
     if (response.data.success === true) {
-      getAppointmentStatus();
-      reset();
+      return response.data.records;
     }
   };
   const getBedService = async () => {
@@ -204,6 +203,7 @@ export default function BedStatus(Props: any) {
     }
 
     if (response.data.success) {
+      debugger;
       setAppointmentStatus(response.data.records);
     }
   };
@@ -249,11 +249,31 @@ export default function BedStatus(Props: any) {
     console.error(errors);
 
     if (currentRow) {
-      updateReportMaster(data);
+      updateReportMaster(data).then(() => {
+        getAppointmentStatus();
+
+        reset({
+          bed_desc: "",
+          bed_short_name: "",
+          services_id: null,
+          bed_status: "A",
+        });
+        setCurrentRow({
+          bed_desc: "",
+          bed_short_name: "",
+          hims_adm_ip_bed_id: undefined,
+          bed_status: "A",
+        });
+      });
     } else {
       addNewReportsFromReportMaster(data).then((result) => {
         getAppointmentStatus();
-        reset({});
+        reset({
+          bed_desc: "",
+          bed_short_name: "",
+          services_id: null,
+          bed_status: "A",
+        });
       });
     }
   };
@@ -488,7 +508,7 @@ export default function BedStatus(Props: any) {
               className="btn btn-primary"
               style={{ marginLeft: 10 }}
             >
-              Add to List
+              {currentRow?.hims_adm_ip_bed_id ? "Update" : "Add to List"}
             </button>
           </div>
         </div>

@@ -488,10 +488,14 @@ export async function onDeleteDetails(
   }
 }
 
-export function getBedService(req: Request, res: Response, next: NextFunction) {
+export async function getBedService(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const _mysql = new algaehMysql();
   try {
-    _mysql
+    const result = await _mysql
       .executeQuery({
         query: `select hims_d_services_id, service_code, arabic_service_name, S.cpt_code, CPT.cpt_code as cpt_p_code,
          service_name, service_desc, sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent,
@@ -500,21 +504,21 @@ export function getBedService(req: Request, res: Response, next: NextFunction) {
             WHERE S.record_status ='A' and service_type_id='9' order by hims_d_services_id desc `,
         printQuery: true,
       })
-      .then((result) => {
-        req["records"] = result;
-        _mysql.releaseConnection();
-        next();
-      })
+      // .then((result) => {
+      //   req["records"] = result;
+      //   _mysql.releaseConnection();
+      //   next();
+      // })
       .catch((e) => {
         throw e;
       });
+    req["records"] = result;
+    next();
   } catch (e) {
     next(e);
+  } finally {
     _mysql.releaseConnection();
   }
-  // } finally {
-  //   _mysql.releaseConnection();
-  // }
 }
 export function bedDataFromMaster(
   req: Request,
