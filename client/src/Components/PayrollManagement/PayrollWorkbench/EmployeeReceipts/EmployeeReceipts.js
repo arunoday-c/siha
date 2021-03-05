@@ -155,6 +155,7 @@ class EmployeeReceipts extends Component {
               balance_amount: balance_amount,
               reciepts_mode: this.state.reciepts_mode,
               cheque_number: this.state.cheque_number,
+              salary_id: this.state.salary_id,
             },
             onSuccess: (res) => {
               if (res.data.success) {

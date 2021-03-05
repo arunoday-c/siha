@@ -153,7 +153,7 @@ export function getWardHeaderData(
     _mysql
       .executeQuery({
         query: `select WH.hims_adm_ward_header_id,IB.services_id,IB.bed_desc,WH.ward_desc,S.service_name, WH.ward_short_name,IB.bed_desc,WH.ward_type,WD.hims_adm_ward_detail_id,WD.ward_header_id,
-        WD.bed_id,WD.bed_no,WD.status  from hims_adm_ward_header as WH left join hims_adm_ward_detail as WD on 
+        WD.bed_id,WD.bed_no,WD.status,IB.bed_short_name  from hims_adm_ward_header as WH left join hims_adm_ward_detail as WD on 
        WD.ward_header_id= WH.hims_adm_ward_header_id 
        left join hims_adm_ip_bed IB on WD.bed_id=IB.hims_adm_ip_bed_id
        left join hims_d_services S on IB.services_id= S.hims_d_services_id  where WH.ward_status='A' ${strQuery} `,
@@ -177,6 +177,7 @@ export function getWardHeaderData(
               bed_no: number;
               status: string;
               bed_desc: string;
+              bed_short_name: string;
               service_name: string;
               hims_adm_ward_detail_id: number;
               isInserted: number;
@@ -188,6 +189,7 @@ export function getWardHeaderData(
                 status: item.status,
                 service_name: item.service_name,
                 bed_desc: item.bed_desc,
+                bed_short_name: item.bed_short_name,
                 hims_adm_ward_detail_id: item.hims_adm_ward_detail_id,
                 isInserted: 1,
               };
