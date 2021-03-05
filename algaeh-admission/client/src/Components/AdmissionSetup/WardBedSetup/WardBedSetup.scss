@@ -17,6 +17,9 @@
   }
 }
 .wardBedListAcc {
+  overflow: auto;
+  min-height: 68vh;
+  max-height: 68vh;
   .ediIcon {
     position: absolute;
     border-left: 1px solid #d9d9d9;

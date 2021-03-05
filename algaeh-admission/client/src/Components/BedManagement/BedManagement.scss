@@ -19,13 +19,23 @@
     }
   }
   .WardCol {
-    border: 1px solid #000;
+    border: 1px solid rgb(158, 158, 158);
     text-align: center;
-    h3 {
-      text-transform: uppercase;
-      font-size: 14px;
-      border-bottom: 1px solid #000;
-      width: 100%;
+    .WardHdg {
+      border-bottom: 1px solid rgb(158, 158, 158);
+      height: 50px;
+      vertical-align: middle;
+      text-align: center;
+      h3 {
+        text-transform: uppercase;
+        font-size: 13px;
+        padding: 0;
+        display: inline-grid;
+        vertical-align: middle;
+        align-items: center;
+        height: 49px;
+        width: 100%;
+      }
     }
 
     .bedCol {
@@ -33,7 +43,7 @@
       min-height: 63vh;
       max-height: 63vh;
       .bedBox {
-        border-bottom: 1px solid #000;
+        border-bottom: 1px dashed rgb(158, 158, 158);
         span {
           display: block;
           &:last-child {
@@ -44,7 +54,13 @@
           background-color: whitesmoke;
           cursor: pointer;
         }
+        &:last-child {
+          border-top: none;
+        }
       }
+    }
+    &:last-child {
+      border-left: none;
     }
   }
 }
