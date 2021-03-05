@@ -21,7 +21,7 @@ const executePDF = function executePDFMethod(options) {
       // console.log("INPUT:", input);
       options.mysql
         .executeQuery({
-          query: `select H.hospital_name,ER.*,
+          query: `select H.hospital_name,ER.*,ED.designation,
           case when ER.reciepts_type ='LO' then LA.loan_application_number else FL.final_settlement_number end as appl_no,
           case when ER.reciepts_type ='LO' then 'Loan Receipt' else 'Final Settlement Receipt' end as reciepts_type,
           case when ER.reciepts_mode ='CS' then 'Cash' when ER.reciepts_mode ='CH' then 'Card' else 'Salary' end as reciepts_mode,
@@ -33,7 +33,8 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_employee E on ER.employee_id=E.hims_d_employee_id 
           left join hims_f_salary SL on SL.hims_f_salary_id=ER.salary_id 
           left join hims_f_final_settlement_header FL on FL.hims_f_final_settlement_header_id=ER.final_settlement_id
-          left join hims_d_hospital H on H.hims_d_hospital_id=ER.hospital_id 
+          left join hims_d_hospital H on H.hims_d_hospital_id=ER.hospital_id
+          left join hims_d_designation as ED on ED.hims_d_designation_id=E.employee_designation_id
           where ER.hims_f_employee_reciepts_id=? order by hims_f_employee_reciepts_id desc;`,
           values: [input.hims_f_employee_reciepts_id],
           printQuery: true,

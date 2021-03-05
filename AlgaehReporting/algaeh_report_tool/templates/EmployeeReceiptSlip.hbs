@@ -39,7 +39,36 @@
                 </tr>
 
             </table>
-        </section> {{/each }}
+        </section>
+        </br>
+        </br>
+        <section>
+            <table class="tableForLabelSignature labelBlock" cell-padding="0">
+                <tr>
+                    <td width="50%">
+                        <p>I hereby confirm that I have paid all the dues.</p>
+                       
+                        <span>{{full_name}}</span>
+                        <span>{{employee_code}}</span>
+                        <small>{{designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
+                    <td width="50%" class="numberFld">
+                        <p>.أؤكد بموجب ذلك أنني سددت جميع المستحقات</p>
+                      
+                        <span>{{arabic_name}}</span>
+                        <span>{{employee_code}}</span>
+                        <small>{{designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
+                </tr>
+
+
+            </table>
+        </section>
+        <p style="text-align: center">This is a system generated Employee Receipt Slip on {{currentDateTime 'date'}}. </p> {{/each }}
         {{else}}abcd{{/hasElement }}
     </div>
 </body>
