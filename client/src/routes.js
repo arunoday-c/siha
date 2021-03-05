@@ -711,6 +711,11 @@ const privateRoutes = [
     component: <Admission pathName="/bedManagement" />,
   },
   {
+    path: "/PatientAdmission",
+    isExactPath: true,
+    component: <Admission pathName="/patientAdmission" />,
+  },
+  {
     path: "/LabSetup",
     isExactPath: true,
     component: <LabSetup />,
