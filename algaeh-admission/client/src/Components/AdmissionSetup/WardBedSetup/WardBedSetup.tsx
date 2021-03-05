@@ -34,6 +34,11 @@ export default function WardBedSetup(Props: any) {
   const [bedDropDown, setBedDropDown] = useState([]);
   const { control, errors, reset, handleSubmit } = useForm({
     shouldFocusError: true,
+    defaultValues: {
+      ward_desc: "",
+      ward_short_name: "",
+      ward_type: null,
+    },
   });
   const {
     control: control2,
@@ -44,7 +49,12 @@ export default function WardBedSetup(Props: any) {
     // register: register2,
     errors: errors2,
     handleSubmit: handleSubmit2,
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      bed_id: null,
+      bed_no: null,
+    },
+  });
 
   useEffect(() => {
     getWardHeaderData();
@@ -332,7 +342,7 @@ export default function WardBedSetup(Props: any) {
               return;
             });
           });
-          reset({ ward_desc: null, ward_short_name: null, ward_type: null });
+          reset({});
         } else {
           AlgaehMessagePop({
             display: "Updated Successfully",
@@ -355,7 +365,7 @@ export default function WardBedSetup(Props: any) {
             return;
           });
         });
-        reset({ ward_desc: null, ward_short_name: null, ward_type: null });
+        reset({});
       });
     }
   };
@@ -671,6 +681,17 @@ export default function WardBedSetup(Props: any) {
                 <div className="row">
                   {" "}
                   <div className="col-12" style={{ textAlign: "right" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setWardDetailsData([]);
+                        setWardHeaderRow({});
+                        reset({});
+                      }}
+                      className="btn btn-default btn-small"
+                    >
+                      clear
+                    </button>
                     <button
                       type="button"
                       onClick={handleSubmit(wardHeader)}
