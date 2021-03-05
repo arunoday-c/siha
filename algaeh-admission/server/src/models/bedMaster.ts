@@ -10,7 +10,7 @@ export function getBedStatus(req: Request, res: Response, next: NextFunction) {
   try {
     _mysql
       .executeQuery({
-        query: `select IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id= S.hims_d_services_id   order by hims_adm_ip_bed_id desc `,
+        query: `select IP.hims_adm_ip_bed_id,IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id= S.hims_d_services_id   order by hims_adm_ip_bed_id desc `,
         printQuery: true,
       })
       .then((result) => {
