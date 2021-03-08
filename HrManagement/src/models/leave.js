@@ -548,7 +548,7 @@ export default {
                         _mysql
                           .executeQuery({
                             query:
-                              "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid from \
+                              "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid, salary_type from \
                                   hims_f_salary where `month`=? and `year`=? and employee_id=?;\
                                   SELECT annual_leave_process_separately from hims_d_hrms_options ",
                             values: [
@@ -565,7 +565,8 @@ export default {
                               ];
                             if (
                               salResult[0].length > 0 &&
-                              salResult[0][0]["salary_processed"] == "Y"
+                              salResult[0][0]["salary_processed"] == "Y" &&
+                              salResult[0][0]["salary_type"] == "NS"
                             ) {
                               salary_processed = "Y";
                               resolve({ salResult });
