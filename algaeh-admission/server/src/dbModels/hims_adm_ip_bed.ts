@@ -37,10 +37,16 @@ hims_adm_ip_bed.init(
     ...dateConversions,
   }
 );
-(async () => {
-  await hims_adm_ip_bed.sync({
-    alter: true,
-  });
-})();
-hims_adm_ip_bed.hasOne(hims_d_services, { foreignKey: "services_id" });
+// (async () => {
+//   await hims_adm_ip_bed.sync({
+//     // alter: true,
+//   });
+// })();
+
+hims_adm_ip_bed.belongsTo(hims_d_services, {
+  foreignKey: "services_id",
+});
+hims_d_services.hasOne(hims_adm_ip_bed, {
+  foreignKey: "services_id",
+});
 export default hims_adm_ip_bed;

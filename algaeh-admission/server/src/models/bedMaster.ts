@@ -2,8 +2,8 @@ import algaehMysql from "algaeh-mysql";
 
 import _ from "lodash";
 // import algaehUtilities from "algaeh-utilities/utilities";
-// import hims_adm_ip_bed from "../dbModels/hims_adm_ip_bed";
-// import hims_d_services from "../dbModels/hims_d_services";
+import hims_adm_ip_bed from "../dbModels/hims_adm_ip_bed";
+import hims_d_services from "../dbModels/hims_d_services";
 import { Request, Response, NextFunction } from "express";
 
 export async function getBedStatus(
@@ -11,41 +11,50 @@ export async function getBedStatus(
   res: Response,
   next: NextFunction
 ) {
-  // try {
-  //   const result = await hims_adm_ip_bed.findAll({
-  //     include: [
-  //       {
-  //         model: hims_d_services,
-  //         attributes: ["service_name", "hims_d_services_id"],
-  //       },
-  //     ],
-  //   });
-  //   console.log("res", result);
-  //   req["records"] = result;
+  try {
+    const result = await hims_adm_ip_bed.findAll({
+      attributes: [
+        "hims_adm_ip_bed_id",
+        "bed_desc",
+        "bed_short_name",
+        "services_id",
+        "bed_status",
+      ],
+      include: [
+        {
+          model: hims_d_services,
+          attributes: ["service_name", "hims_d_services_id"],
+        },
+      ],
+      nest: false,
+      raw: true,
+    });
+    req["records"] = result;
 
-  //   next();
+    next();
+  } catch (e) {
+    console.log("Error=====>", e);
+    next(e);
+  }
+  // const _mysql = new algaehMysql();
+  // try {
+  //   _mysql
+  //     .executeQuery({
+  //       query: `select IP.hims_adm_ip_bed_id,IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id= S.hims_d_services_id   order by hims_adm_ip_bed_id desc `,
+  //       printQuery: true,
+  //     })
+  //     .then((result) => {
+  //       req["records"] = result;
+  //       _mysql.releaseConnection();
+  //       next();
+  //     })
+  //     .catch((e) => {
+  //       throw e;
+  //     });
   // } catch (e) {
   //   next(e);
+  //   _mysql.releaseConnection();
   // }
-  const _mysql = new algaehMysql();
-  try {
-    _mysql
-      .executeQuery({
-        query: `select IP.hims_adm_ip_bed_id,IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id= S.hims_d_services_id   order by hims_adm_ip_bed_id desc `,
-        printQuery: true,
-      })
-      .then((result) => {
-        req["records"] = result;
-        _mysql.releaseConnection();
-        next();
-      })
-      .catch((e) => {
-        throw e;
-      });
-  } catch (e) {
-    next(e);
-    _mysql.releaseConnection();
-  }
   // } finally {
   //   _mysql.releaseConnection();
   // }
