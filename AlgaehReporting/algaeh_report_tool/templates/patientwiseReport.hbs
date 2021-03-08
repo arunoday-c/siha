@@ -9,7 +9,7 @@
                     <tr>
                         <th>Sl No.<small>م</small></th>
                         <th>Data From<small>معلومات من</small></th>
-                        <th>Date<small>التاريخ</small></th>
+                        <th>Bill Date<small>التاريخ</small></th>
                         <th>MRN No.<small>كود المريض</small></th>
                         <th>Patient Name<small>اسم المريض</small></th>
                         <th>Nationality<small>الجنسية</small></th>
@@ -27,9 +27,9 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{data_from}} / {{doc_number}}</td>
-                        <td>{{visit_date}}</td>
+                        <td>{{billDate}}</td>
                         <td>{{patient_code}}</td>
-                        <td>{{full_name}}</td>
+                        <td class="txtFld">{{patientName}}</td>
                         <td>{{nationality}}</td>
                         <td>{{identity_document_name}}</td>
                         <td>{{primary_id_no}}</td>
