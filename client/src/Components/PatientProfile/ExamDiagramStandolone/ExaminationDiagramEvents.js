@@ -38,6 +38,24 @@ export default function examination() {
         // });
       });
     },
+
+    existingHeaderDiagramForDropDown: (that, props) => {
+      return new Promise((resolve, reject) => {
+        algaehApiCall({
+          uri: "/examinationDiagram/existingHeaderDiagramForDropDown",
+          method: "GET",
+          data: { patient_id: Window.global["current_patient"] },
+          onSuccess: (response) => {
+            if (response.data.success) {
+              console.log("response.data.records", response.data.records);
+              resolve(response.data.records);
+            } else {
+              reject(response);
+            }
+          },
+        });
+      });
+    },
     saveFileOnServer: (options) => {
       return new Promise((resolve, reject) => {
         const _pageName = getCookie("ScreenName").replace("/", "");
@@ -132,8 +150,9 @@ export default function examination() {
       return new Promise((resolve, reject) => {
         data.setState({ loading: true });
         let _header_datetime = undefined;
-
+        let urlType = "";
         if (that.saveAsChecked !== "new") {
+          urlType = "/examinationDiagram/updateExaminationDiagrams";
           const _header = _.find(
             that.existingDiagram,
             (f) =>
@@ -144,6 +163,7 @@ export default function examination() {
             _header_datetime = _header.header_datetime;
           }
         } else {
+          urlType = "/examinationDiagram/saveDiagram";
           _header_datetime = new Date();
         }
 
@@ -164,7 +184,7 @@ export default function examination() {
         };
 
         algaehApiCall({
-          uri: "/examinationDiagram/saveDiagram",
+          uri: urlType,
           method: "POST",
           data: _data,
           onSuccess: (response) => {

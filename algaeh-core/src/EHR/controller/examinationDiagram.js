@@ -5,9 +5,11 @@ import httpStatus from "../../utils/httpStatus";
 const {
   examinationDiagramMasterGetter,
   saveExaminationDiagrams,
+  updateExaminationDiagrams,
   existingHeaderDiagramsGetter,
   existingDetailDiagramGetter,
-  deleteExaminationDiagramDetailDelete
+  existingHeaderDiagramForDropDown,
+  deleteExaminationDiagramDetailDelete,
 } = diagramModels;
 
 export default () => {
@@ -16,7 +18,7 @@ export default () => {
     const result = req.records;
     res.status(httpStatus.ok).json({
       success: true,
-      records: result
+      records: result,
     });
     delete req.records;
   });
@@ -27,11 +29,24 @@ export default () => {
       const result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       delete req.records;
     }
   );
+  api.get(
+    "/existingHeaderDiagramForDropDown",
+    existingHeaderDiagramForDropDown,
+    (req, res) => {
+      const result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      delete req.records;
+    }
+  );
+
   api.get(
     "/getExistingDiagramDetails",
     existingDetailDiagramGetter,
@@ -39,7 +54,7 @@ export default () => {
       const result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       delete req.records;
     }
@@ -47,17 +62,29 @@ export default () => {
   api.post("/saveDiagram", saveExaminationDiagrams, (req, res) => {
     res.status(httpStatus.ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
     delete req.records;
   });
+  api.post(
+    "/updateExaminationDiagrams",
+    updateExaminationDiagrams,
+    (req, res) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records,
+      });
+      delete req.records;
+    }
+  );
+
   api.delete(
     "/deleteDiagram",
     deleteExaminationDiagramDetailDelete,
     (req, res) => {
       res.status(httpStatus.ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
       delete req.records;
     }

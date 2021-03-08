@@ -74,7 +74,7 @@ export default class ExaminationDiagram extends Component {
       });
     //Fetching Existing diagram dropdownlist
     examination()
-      .getExistingHeader(this.state, this.props)
+      .existingHeaderDiagramForDropDown(this.state, this.props)
       .then((result) => {
         let resultData = [];
         for (let i = 0; i < result.length; i++) {
@@ -166,7 +166,7 @@ export default class ExaminationDiagram extends Component {
         "_" +
         item.hims_f_examination_diagram_header_id +
         "_" +
-        item.examination_diagrams_id;
+        item.groupDetail[0].examination_diagrams_id;
 
       resolve({
         ...item,
@@ -204,10 +204,23 @@ export default class ExaminationDiagram extends Component {
   onSaveImage(imageDetails) {
     const _saveAsChecked =
       this.state.existingDiagram.length === 0 ? "new" : "existing";
-    this.setState({
-      showSavePopup: true,
-      saveAsChecked: _saveAsChecked,
-    });
+    if (
+      this.state.image === undefined ||
+      this.state.image ===
+        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+    ) {
+      swalMessage({
+        title: "Empty Image Please Upload a image",
+        type: "error",
+      });
+
+      return;
+    } else {
+      this.setState({
+        showSavePopup: true,
+        saveAsChecked: _saveAsChecked,
+      });
+    }
   }
 
   closeSavePopUp(e) {
@@ -387,7 +400,7 @@ export default class ExaminationDiagram extends Component {
               console.error(error);
             });
           examination()
-            .getExistingHeader(this.state, this.props)
+            .existingHeaderDiagramForDropDown(this.state, this.props)
             .then((result) => {
               let resultData = [];
               for (let i = 0; i < result.length; i++) {
@@ -466,7 +479,7 @@ export default class ExaminationDiagram extends Component {
 
           //
           await examination()
-            .getExistingHeader(this.state, this.props)
+            .existingHeaderDiagramForDropDown(this.state, this.props)
             .then((result) => {
               let resultData = [];
               for (let i = 0; i < result.length; i++) {

@@ -1,5 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
+import _ from "lodash";
 
 const examinationDiagramMasterGetter = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -18,6 +19,83 @@ const examinationDiagramMasterGetter = (req, res, next) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
+
+const updateExaminationDiagrams = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  const input = req.body;
+  const _req = req.userIdentity;
+
+  try {
+    // _mysql
+    //   .executeQueryWithTransaction({
+    //     query:
+    //       "INSERT INTO hims_f_examination_diagram_header(`diagram_desc`,`diagram_id`,\
+    //   `patient_id`,`provider_id`,`hims_d_sub_department_id`,`header_datetime`,hospital_id)values(?,?,?,?,?,?,?)  ON DUPLICATE KEY UPDATE last_update=?",
+    //     values: [
+    //       input.diagram_desc,
+    //       input.diagram_id,
+    //       input.patient_id,
+    //       _req.employee_id,
+    //       _req.sub_department_id,
+    //       input.header_datetime,
+    //       req.userIdentity.hospital_id,
+    //       new Date(),
+    //     ],
+    //     printQuery: true,
+    //   })
+    //   .then((result) => {
+    const _hims_f_examination_diagram_header_id =
+      input.hims_f_examination_diagram_header_id != null
+        ? input.hims_f_examination_diagram_header_id
+        : result.insertId;
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO hims_f_examination_diagrams_detail(`visit_id`,\
+        `hims_f_examination_diagram_header_id`,\
+        `episode_id`,\
+        `encounter_id`,\
+        `remarks`,\
+        `create_by`,\
+        `create_date`,\
+        `update_by`,\
+        `update_date`) values(?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.visit_id,
+          _hims_f_examination_diagram_header_id,
+          input.episode_id,
+          input.encounter_id,
+          input.remarks,
+          _req.algaeh_d_app_user_id,
+          new Date(),
+          _req.algaeh_d_app_user_id,
+          new Date(),
+        ],
+      })
+      .then((data) => {
+        _mysql.commitTransaction((error, resu) => {
+          if (error) {
+            _mysql.rollBackTransaction();
+            next(error);
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              hims_f_examination_diagram_header_id: _hims_f_examination_diagram_header_id,
+              ...data,
+            };
+            next();
+          }
+        });
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction();
+        next(error);
       });
   } catch (error) {
     _mysql.releaseConnection();
@@ -105,6 +183,65 @@ const saveExaminationDiagrams = (req, res, next) => {
     next(error);
   }
 };
+
+const existingHeaderDiagramForDropDown = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  const _req = req.userIdentity;
+  const _getPatientId = req.query.patient_id;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT H.hims_f_examination_diagram_header_id,D.examination_diagrams_id,diagram_desc,diagram_id,patient_id,header_datetime,\
+      provider_id,hims_d_sub_department_id,last_update from hims_f_examination_diagram_header H \
+      left join hims_f_examination_diagrams_detail D on H.hims_f_examination_diagram_header_id=D.hims_f_examination_diagram_header_id\
+      where record_status='A' and provider_id=? and hims_d_sub_department_id=? and patient_id=? ",
+        values: [_req.employee_id, _req.sub_department_id, _getPatientId],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        let groupedData = _.chain(result)
+          .groupBy((g) => g.hims_f_examination_diagram_header_id)
+          .map((detail, key) => {
+            const {
+              hims_f_examination_diagram_header_id,
+              diagram_desc,
+              provider_id,
+              hims_d_sub_department_id,
+              patient_id,
+            } = _.head(detail);
+            const item = detail.map((item) => {
+              return {
+                // hims_adm_ward_header_id: item.hims_adm_ward_header_id,
+                examination_diagrams_id: item.examination_diagrams_id,
+              };
+            });
+
+            return {
+              groupType: key,
+              hims_f_examination_diagram_header_id: hims_f_examination_diagram_header_id,
+              diagram_desc: diagram_desc,
+              hims_d_sub_department_id: hims_d_sub_department_id,
+              provider_id: provider_id,
+              patient_id: patient_id,
+              groupDetail: item,
+            };
+          })
+          .value();
+
+        req.records = groupedData;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
 const existingHeaderDiagramsGetter = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   const _req = req.userIdentity;
@@ -182,7 +319,9 @@ const deleteExaminationDiagramDetailDelete = (req, res, next) => {
 export default {
   examinationDiagramMasterGetter,
   saveExaminationDiagrams,
+  updateExaminationDiagrams,
   existingHeaderDiagramsGetter,
+  existingHeaderDiagramForDropDown,
   existingDetailDiagramGetter,
   deleteExaminationDiagramDetailDelete,
 };
