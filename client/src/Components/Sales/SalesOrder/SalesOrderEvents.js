@@ -544,6 +544,7 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
+        $this.getDocuments(docNumber);
         const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 

@@ -126,7 +126,7 @@ export default function JournalVoucher() {
               // setcostCenterdata(center.cost_centers);
               setCostCenterField({
                 fieldName: "cost_center_id",
-                label: <AlgaehLabel label={{ forceLabel: "Cost Center" }} />,
+                label: <AlgaehLabel label={{ fieldName: "costCenter" }} />,
                 displayTemplate: (row) => {
                   const valueRow =
                     options["default_branch_id"] !== undefined &&
@@ -836,7 +836,7 @@ export default function JournalVoucher() {
               className: "col-2 algaeh-date-fld",
             }}
             label={{
-              forceLabel: "Voucher Date",
+              fieldName: "vochuerDate",
               isImp: true,
             }}
             textBox={{
@@ -861,7 +861,7 @@ export default function JournalVoucher() {
           <AlgaehAutoComplete
             div={{ className: "col-2" }}
             label={{
-              forceLabel: "Voucher Type",
+              fieldName: "vochuerType",
               isImp: true,
             }}
             selector={{
@@ -891,7 +891,7 @@ export default function JournalVoucher() {
             <>
               <AlgaehTreeSearch
                 div={{ className: "col" }}
-                label={{ forceLabel: "Payment From", isImp: true }}
+                label={{ fieldName: "PaymentFrom", isImp: true }}
                 tree={{
                   treeDefaultExpandAll: true,
                   updateInternally: true,
@@ -926,7 +926,7 @@ export default function JournalVoucher() {
                   className: "col",
                 }}
                 label={{
-                  forceLabel: "Enter Amount",
+                  fieldName: "enterAmt",
                   isImp: true,
                 }}
                 textBox={{
@@ -947,7 +947,7 @@ export default function JournalVoucher() {
                 className: "col",
               }}
               label={{
-                forceLabel: "Invoice No.",
+                fieldName: "InvoiceNo",
                 isImp: true,
               }}
               textBox={{
@@ -967,7 +967,7 @@ export default function JournalVoucher() {
             <AlgaehAutoComplete
               div={{ className: "col-2" }}
               label={{
-                forceLabel: "Select Invoice No.",
+                fieldName: "InvoiceNo",
                 isImp: true,
               }}
               selector={{
@@ -1000,7 +1000,7 @@ export default function JournalVoucher() {
           {finOptions.cost_center_required !== "Y" ? (
             <AlgaehAutoComplete
               div={{ className: "col-2" }}
-              label={{ forceLabel: "Select a Branch", isImp: true }}
+              label={{ fieldName: "SelectBranch", isImp: true }}
               selector={{
                 dataSource: {
                   data: branchData,
@@ -1046,11 +1046,13 @@ export default function JournalVoucher() {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Journal Voucher List </h3>
+                  <h3 className="caption-subject">
+                    <AlgaehLabel label={{ fieldName: "JVList" }} />
+                  </h3>
                 </div>
                 <div className="actions">
                   <span>
-                    Total Credit:
+                    <AlgaehLabel label={{ fieldName: "TCredit" }} />
                     <b>
                       {getAmountFormart(total_credit, {
                         appendSymbol: false,
@@ -1059,7 +1061,7 @@ export default function JournalVoucher() {
                     |
                   </span>
                   <span>
-                    Total Debit:
+                    <AlgaehLabel label={{ fieldName: "TDebit" }} />
                     <b>
                       {getAmountFormart(total_debit, {
                         appendSymbol: false,
@@ -1073,7 +1075,7 @@ export default function JournalVoucher() {
                       setDrawer(true);
                     }}
                   >
-                    Add New Account
+                    <AlgaehLabel label={{ fieldName: "AddNewAccount" }} />
                   </button>
                 </div>
               </div>
@@ -1095,7 +1097,7 @@ export default function JournalVoucher() {
                       {
                         fieldName: "sourceName",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Account" }} />
+                          <AlgaehLabel label={{ fieldName: "accounts" }} />
                         ),
                         // align: "left",
                         displayTemplate: gridTree,
@@ -1106,7 +1108,7 @@ export default function JournalVoucher() {
                       {
                         fieldName: "payment_type",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
+                          <AlgaehLabel label={{ fieldName: "payment_type" }} />
                         ),
                         // filtered: true,
                         displayTemplate: PaymentInput,
@@ -1116,7 +1118,7 @@ export default function JournalVoucher() {
                       },
                       {
                         fieldName: "amount",
-                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                        label: <AlgaehLabel label={{ fieldName: "amount" }} />,
                         displayTemplate: AmountInput,
                         others: {
                           width: 100,
@@ -1125,7 +1127,7 @@ export default function JournalVoucher() {
                       {
                         fieldName: "narration",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                          <AlgaehLabel label={{ fieldName: "Narration" }} />
                         ),
                         displayTemplate: NarrationBox,
                       },
@@ -1194,7 +1196,7 @@ export default function JournalVoucher() {
               className: "col-12 form-group algaeh-text-fld textArea",
             }}
             label={{
-              forceLabel: "Narration",
+              fieldName: "narration",
               isImp: false,
             }}
             multiline={true}
