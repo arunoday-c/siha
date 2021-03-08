@@ -163,7 +163,11 @@ export default () => {
   });
   api.post(
     "/add/subdepartment",
-
+    (req, res, next) => {
+      deleteCacheMaster("subdepartment");
+      deleteCacheMaster("selectDoctorsAndClinic");
+      next();
+    },
     (req, res, next) => {
       if (req.body.Inventory_Active == true) {
         addInventoryLocation(req, res, next);
@@ -348,6 +352,7 @@ export default () => {
     "/deleteSubDepartment",
     (req, res, next) => {
       deleteCacheMaster("subdepartment");
+      deleteCacheMaster("selectDoctorsAndClinic");
       next();
     },
     deleteSubDepartment,
@@ -364,6 +369,7 @@ export default () => {
     "/makeSubDepartmentInActive",
     (req, res, next) => {
       deleteCacheMaster("subdepartment");
+      deleteCacheMaster("selectDoctorsAndClinic");
       next();
     },
     makeSubDepartmentInActive,
