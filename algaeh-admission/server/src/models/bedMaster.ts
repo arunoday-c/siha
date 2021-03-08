@@ -2,10 +2,31 @@ import algaehMysql from "algaeh-mysql";
 
 import _ from "lodash";
 // import algaehUtilities from "algaeh-utilities/utilities";
-
+// import hims_adm_ip_bed from "../dbModels/hims_adm_ip_bed";
+// import hims_d_services from "../dbModels/hims_d_services";
 import { Request, Response, NextFunction } from "express";
 
-export function getBedStatus(req: Request, res: Response, next: NextFunction) {
+export async function getBedStatus(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  // try {
+  //   const result = await hims_adm_ip_bed.findAll({
+  //     include: [
+  //       {
+  //         model: hims_d_services,
+  //         attributes: ["service_name", "hims_d_services_id"],
+  //       },
+  //     ],
+  //   });
+  //   console.log("res", result);
+  //   req["records"] = result;
+
+  //   next();
+  // } catch (e) {
+  //   next(e);
+  // }
   const _mysql = new algaehMysql();
   try {
     _mysql
