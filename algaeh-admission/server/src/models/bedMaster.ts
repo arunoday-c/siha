@@ -10,7 +10,7 @@ export function getBedStatus(req: Request, res: Response, next: NextFunction) {
   try {
     _mysql
       .executeQuery({
-        query: `select IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id= S.hims_d_services_id   order by hims_adm_ip_bed_id desc `,
+        query: `select IP.hims_adm_ip_bed_id,IP.bed_desc,IP.bed_short_name,IP.services_id,IP.bed_status,S.service_name   from hims_adm_ip_bed IP left join hims_d_services S on  IP.services_id= S.hims_d_services_id   order by hims_adm_ip_bed_id desc `,
         printQuery: true,
       })
       .then((result) => {
@@ -153,7 +153,7 @@ export function getWardHeaderData(
     _mysql
       .executeQuery({
         query: `select WH.hims_adm_ward_header_id,IB.services_id,IB.bed_desc,WH.ward_desc,S.service_name, WH.ward_short_name,IB.bed_desc,WH.ward_type,WD.hims_adm_ward_detail_id,WD.ward_header_id,
-        WD.bed_id,WD.bed_no,WD.status  from hims_adm_ward_header as WH left join hims_adm_ward_detail as WD on 
+        WD.bed_id,WD.bed_no,WD.status,IB.bed_short_name  from hims_adm_ward_header as WH left join hims_adm_ward_detail as WD on 
        WD.ward_header_id= WH.hims_adm_ward_header_id 
        left join hims_adm_ip_bed IB on WD.bed_id=IB.hims_adm_ip_bed_id
        left join hims_d_services S on IB.services_id= S.hims_d_services_id  where WH.ward_status='A' ${strQuery} `,
@@ -177,6 +177,7 @@ export function getWardHeaderData(
               bed_no: number;
               status: string;
               bed_desc: string;
+              bed_short_name: string;
               service_name: string;
               hims_adm_ward_detail_id: number;
               isInserted: number;
@@ -188,6 +189,7 @@ export function getWardHeaderData(
                 status: item.status,
                 service_name: item.service_name,
                 bed_desc: item.bed_desc,
+                bed_short_name: item.bed_short_name,
                 hims_adm_ward_detail_id: item.hims_adm_ward_detail_id,
                 isInserted: 1,
               };
@@ -486,10 +488,14 @@ export async function onDeleteDetails(
   }
 }
 
-export function getBedService(req: Request, res: Response, next: NextFunction) {
+export async function getBedService(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const _mysql = new algaehMysql();
   try {
-    _mysql
+    const result = await _mysql
       .executeQuery({
         query: `select hims_d_services_id, service_code, arabic_service_name, S.cpt_code, CPT.cpt_code as cpt_p_code,
          service_name, service_desc, sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent,
@@ -498,21 +504,21 @@ export function getBedService(req: Request, res: Response, next: NextFunction) {
             WHERE S.record_status ='A' and service_type_id='9' order by hims_d_services_id desc `,
         printQuery: true,
       })
-      .then((result) => {
-        req["records"] = result;
-        _mysql.releaseConnection();
-        next();
-      })
+      // .then((result) => {
+      //   req["records"] = result;
+      //   _mysql.releaseConnection();
+      //   next();
+      // })
       .catch((e) => {
         throw e;
       });
+    req["records"] = result;
+    next();
   } catch (e) {
     next(e);
+  } finally {
     _mysql.releaseConnection();
   }
-  // } finally {
-  //   _mysql.releaseConnection();
-  // }
 }
 export function bedDataFromMaster(
   req: Request,

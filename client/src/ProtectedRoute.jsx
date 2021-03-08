@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Redirect, Route } from "react-router-dom";
 import { MainContext } from "algaeh-react-components";
-
+import "./Components/common/BreadCrumb/breadcrumb.scss";
 export const ProtectedRoute = ({
   render,
   path,

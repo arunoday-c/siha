@@ -121,6 +121,7 @@ export default function BedManagement(props: any) {
         />{" "}
         <button
           className="btn btn-default btn-small"
+          style={{ marginTop: 21 }}
           onClick={() => setValue("hims_adm_ward_header_id", undefined)}
         >
           clear
@@ -172,10 +173,10 @@ export default function BedManagement(props: any) {
           <div className="col-12">
             <div className="row">
               {wardHeaderData.map((item: any, key: number) => (
-                <div className="col WardCol" key={key}>
+                <div className="col-1 WardCol" key={key}>
                   <>
                     <div className="row">
-                      <div className="col-12">
+                      <div className="col-12 WardHdg">
                         <h3>{item.ward_desc}</h3>
                       </div>
                     </div>
@@ -185,19 +186,23 @@ export default function BedManagement(props: any) {
                           {item.groupDetail.map((data: any, index: number) => {
                             const {
                               bed_desc,
+                              bed_short_name,
                               // bed_id,
                               bed_no,
-                              service_name,
+                              // service_name,
                             } = data;
                             return (
                               <div className="col-12 bedBox" key={index}>
-                                <span>
+                                {/* <span>
                                   <b>{service_name}</b>
-                                </span>
+                                </span> */}
                                 <span>
-                                  <b>{bed_no}</b>
+                                  <b>
+                                    {bed_short_name}-{bed_no}
+                                  </b>
                                 </span>
                                 <span>{bed_desc}</span>
+                                {/* <span>{bed_short_name}</span> */}
                               </div>
                             );
                           })}

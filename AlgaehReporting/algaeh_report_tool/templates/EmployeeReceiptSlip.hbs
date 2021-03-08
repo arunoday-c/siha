@@ -1,0 +1,74 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px"> 
+        {{#hasElement result}}
+         {{#each result}}
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
+                    </td>
+                    <td colspan="2"><label class="textEnLft">Employee Name:</label><span
+                            class="valueText">{{employee_name}}</span></td>
+                </tr>
+            </table>
+        </section>
+  <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                
+                <tr>
+                    <td><label class="textEnLft">Receipt No.</label><span class="valueText">{{emp_recp_number}} </span></td>
+
+                    <td><label class="textEnLft">Receipt Type: </label><span class="valueText">
+                            {{reciepts_type}}</span></td>
+                    <td ><label class="textEnLft">Application No: </label><span class="valueText">
+                            {{appl_no}}</span></td>
+
+                </tr>
+                
+                <tr>  <td ><label class="textEnLft">Mode of Receipt & No.: </label><span class="valueText">
+                            {{reciepts_mode}} - {{paymentNo}}</span></td>
+                    <td><label class="textEnLft">Write off Amount:</label><span class="valueText">{{write_off_amount}} </span></td>
+
+                    <td><label class="textEnLft">Recevied Amount:</label><span class="valueText">
+                            {{recievable_amount}}</span></td>
+                 
+
+                </tr>
+
+            </table>
+        </section>
+        </br>
+        </br>
+        <section>
+            <table class="tableForLabelSignature labelBlock" cell-padding="0">
+                <tr>
+                    <td width="50%">
+                        <p>I hereby confirm that I have paid all the dues.</p>
+                       
+                        <span>{{full_name}}</span>
+                        <span>{{employee_code}}</span>
+                        <small>{{designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
+                    <td width="50%" class="numberFld">
+                        <p>.أؤكد بموجب ذلك أنني سددت جميع المستحقات</p>
+                      
+                        <span>{{arabic_name}}</span>
+                        <span>{{employee_code}}</span>
+                        <small>{{designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
+                </tr>
+
+
+            </table>
+        </section>
+        <p style="text-align: center">This is a system generated Employee Receipt Slip on {{currentDateTime 'date'}}. </p> {{/each }}
+        {{else}}abcd{{/hasElement }}
+    </div>
+</body>

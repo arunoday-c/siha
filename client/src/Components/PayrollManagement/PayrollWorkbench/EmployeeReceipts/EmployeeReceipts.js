@@ -15,6 +15,7 @@ import GlobalVariables, {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { AlgaehValidation, getYears } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components";
+import { generateEmployeeReceipt } from "./EmployeeReceiptsEvent.js";
 
 // import { MONTHS } from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
@@ -154,6 +155,7 @@ class EmployeeReceipts extends Component {
               balance_amount: balance_amount,
               reciepts_mode: this.state.reciepts_mode,
               cheque_number: this.state.cheque_number,
+              salary_id: this.state.salary_id,
             },
             onSuccess: (res) => {
               if (res.data.success) {
@@ -232,7 +234,7 @@ class EmployeeReceipts extends Component {
           //
           this.setState(
             {
-              employee_name: row.employee_name,
+              employee_name: row.full_name,
               hims_d_employee_id: row.employee_id,
               current_loan: row,
               hims_f_loan_application_id: row.hims_f_loan_application_id,
@@ -417,8 +419,13 @@ class EmployeeReceipts extends Component {
         this.setState(
           {
             reciepts_type: e.target.value,
+            employee_name: null,
+            employee_code: null,
           },
-          () => this.getEmployeeReceipts()
+          () => {
+            this.getEmployeeReceipts();
+            this.clearSaveState();
+          }
         );
         break;
 
@@ -813,12 +820,12 @@ class EmployeeReceipts extends Component {
                   />
 
                   <div className="col form-group">
-                    <button
+                    {/* <button
                       style={{ marginTop: 20 }}
                       className="btn btn-default"
                     >
                       Print
-                    </button>{" "}
+                    </button>{" "} */}
                     <button
                       onClick={this.addEmployeeReceipts.bind(this)}
                       style={{ marginTop: 20, marginLeft: 10 }}
@@ -860,9 +867,11 @@ class EmployeeReceipts extends Component {
                                 {" "}
                                 <i
                                   className="fas fa-print"
-                                  onClick={() => {
-                                    return;
-                                  }}
+                                  onClick={generateEmployeeReceipt.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )}
                                 ></i>
                               </span>
                             );

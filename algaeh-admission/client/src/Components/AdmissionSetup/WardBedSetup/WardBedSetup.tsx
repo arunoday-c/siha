@@ -32,8 +32,14 @@ export default function WardBedSetup(Props: any) {
   const [wardHeaderData, setWardHeaderData] = useState([]);
   const [wardDetailsData, setWardDetailsData] = useState<any>([]);
   const [bedDropDown, setBedDropDown] = useState([]);
+  const [disabledSave, setDisabledSave] = useState(false);
   const { control, errors, reset, handleSubmit } = useForm({
     shouldFocusError: true,
+    defaultValues: {
+      ward_desc: "",
+      ward_short_name: "",
+      ward_type: null,
+    },
   });
   const {
     control: control2,
@@ -44,7 +50,12 @@ export default function WardBedSetup(Props: any) {
     // register: register2,
     errors: errors2,
     handleSubmit: handleSubmit2,
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      bed_id: null,
+      bed_no: null,
+    },
+  });
 
   useEffect(() => {
     getWardHeaderData();
@@ -122,6 +133,7 @@ export default function WardBedSetup(Props: any) {
     }
     console.log("response", response);
     if (response.data.success) {
+      setDisabledSave(false);
       AlgaehMessagePop({
         display: "Successfully updated",
         type: "success",
@@ -332,13 +344,25 @@ export default function WardBedSetup(Props: any) {
               return;
             });
           });
-          reset({ ward_desc: null, ward_short_name: null, ward_type: null });
-        } else {
-          AlgaehMessagePop({
-            display: "Updated Successfully",
-            type: "error",
+          reset({
+            ward_desc: "",
+            ward_short_name: "",
+            ward_type: null,
           });
-          return;
+        } else {
+          getWardHeaderData().then(() => {
+            AlgaehMessagePop({
+              display: "Successfully Updated",
+              type: "success",
+            });
+            setWardDetailsData([]);
+          });
+
+          reset({
+            ward_desc: "",
+            ward_short_name: "",
+            ward_type: null,
+          });
         }
       });
     } else {
@@ -355,7 +379,7 @@ export default function WardBedSetup(Props: any) {
             return;
           });
         });
-        reset({ ward_desc: null, ward_short_name: null, ward_type: null });
+        reset({ ward_desc: "", ward_short_name: "", ward_type: null });
       });
     }
   };
@@ -626,7 +650,9 @@ export default function WardBedSetup(Props: any) {
                               onCancel: (row) => {},
                               onDeleteShow: (row) => {},
                               onSaveShow: (row) => {},
-                              onEdit: (row) => {},
+                              onEdit: (row) => {
+                                setDisabledSave(true);
+                              },
                               onSave: (row) => {
                                 if (row.isInserted === 1 && row.bed_id) {
                                   updateWardDetails(row);
@@ -673,10 +699,27 @@ export default function WardBedSetup(Props: any) {
                   <div className="col-12" style={{ textAlign: "right" }}>
                     <button
                       type="button"
+                      onClick={() => {
+                        setWardDetailsData([]);
+                        setWardHeaderRow({});
+                        reset({
+                          ward_desc: "",
+                          ward_short_name: "",
+                          ward_type: null,
+                        });
+                      }}
+                      className="btn btn-default btn-small"
+                      // disabled={disabledSave}
+                    >
+                      clear
+                    </button>
+                    <button
+                      type="button"
                       onClick={handleSubmit(wardHeader)}
                       className="btn btn-primary btn-small"
+                      disabled={disabledSave}
                     >
-                      Save Ward
+                      {wardDetailsData.length > 0 ? "Update Ward" : "Save Ward"}
                     </button>
                   </div>
                 </div>
@@ -691,25 +734,30 @@ export default function WardBedSetup(Props: any) {
                   <h3 className="caption-subject">List of Wards</h3>
                 </div>
               </div>
-              <Collapse className="accCntr">
+              <Collapse className="wardBedListAcc">
                 {wardHeaderData.map((item: any, key: number) => (
                   <Panel
                     header={
                       <div className="portlet-body">
-                        <i
-                          className="fas fa-pen"
-                          onClick={() => {
-                            let filteredItem = item.groupDetail.filter(
-                              (f: any) => {
-                                return f.bed_id !== null || undefined;
-                              }
-                            );
-                            setWardDetailsData(filteredItem);
-                            setWardHeaderRow(item);
-                            reset({ ...item });
-                          }}
-                        ></i>
-                        <h3>{item.ward_desc}</h3>
+                        <h3>
+                          {item.ward_desc}{" "}
+                          <span
+                            className="ediIcon"
+                            onClick={() => {
+                              let filteredItem = item.groupDetail.filter(
+                                (f: any) => {
+                                  return f.bed_id !== null || undefined;
+                                }
+                              );
+                              setWardDetailsData(filteredItem);
+                              setWardHeaderRow(item);
+                              reset({ ...item });
+                            }}
+                          >
+                            {" "}
+                            <i className="fas fa-pen"></i>
+                          </span>
+                        </h3>
                       </div>
                     }
                     key={key}

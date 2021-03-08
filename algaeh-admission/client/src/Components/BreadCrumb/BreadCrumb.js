@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
-// import "./breadcrumb.scss";
-import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+// // import "./breadcrumb.scss";
+// import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "algaeh-react-components";
 import { SearchDetails, EditDetails } from "./BreadCurmbFunctionality";
 class BreadCrumb extends PureComponent {
   constructor(props) {
