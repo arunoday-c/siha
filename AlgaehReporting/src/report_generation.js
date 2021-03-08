@@ -1262,6 +1262,16 @@ export default {
                       _inputParam.reportName,
                       resultData
                     );
+
+                    //ToDo need to remove only for testing purposes
+                    // fs.writeFileSync(
+                    //   path.resolve(outputFolder, "test.html"),
+                    //   rawData,
+                    //   {
+                    //     encoding: "utf8",
+                    //   }
+                    // );
+                    // remove till above
                     if (rawData === undefined) {
                       _mysql.releaseConnection();
                       res.status(500).json({
@@ -1322,7 +1332,7 @@ export default {
                         $(this)
                           .find("th")
                           .map(function (theadIdx, thead) {
-                            let text = $(this).text();
+                            let text = $(this).text().replace(/\n/g, "").trim();
                             let widthAttr = $(this).attr("excelwidth");
 
                             rows.push(text);
@@ -1337,6 +1347,7 @@ export default {
                                   : parseInt(widthAttr),
                             });
                           });
+
                         worksheet.columns = columns;
                         worksheet.addRow(rows);
                         var lastRow = worksheet.rowCount;
@@ -1366,6 +1377,8 @@ export default {
                             var rowID = worksheet.rowCount + 1;
                             const itemRow = worksheet.getRow(rowID);
                             let skipOnMerdge = null;
+
+                            debugger;
                             $(this)
                               .find("td")
                               .map(function (cellIndex, td) {
@@ -1375,9 +1388,10 @@ export default {
                                     ? celllIdx
                                     : skipOnMerdge
                                 );
-                                if (skipOnMerdge) {
-                                  skipOnMerdge = skipOnMerdge + 1;
-                                }
+
+                                // if (skipOnMerdge) {
+                                //   skipOnMerdge = skipOnMerdge + 1;
+                                // }
                                 if ($(this).attr("excelfonts") !== undefined) {
                                   cell.font = JSON.parse(
                                     $(this).attr("excelfonts")
@@ -1429,17 +1443,27 @@ export default {
 
                                     const numberOfCols =
                                       parseInt($(this).attr("colspan")) - 1;
-                                    const added = lastcharacter + numberOfCols;
-                                    const character = String.fromCharCode(
-                                      added
-                                    );
+                                    let added = lastcharacter + numberOfCols;
+                                    let character = String.fromCharCode(added);
+
+                                    if (added > 90) {
+                                      const remaining = added - 90;
+                                      for (
+                                        let cI = 65;
+                                        cI < 65 + remaining;
+                                        cI++
+                                      ) {
+                                        character += `A${String.fromCharCode(
+                                          cI
+                                        )}`;
+                                      }
+                                    }
+
                                     skipOnMerdge =
-                                      celllIdx +
-                                      parseInt($(this).attr("colspan"));
-                                    // const allColumns = worksheet.columns.length;
-                                    //  const merge = `A${rowID}:${columnToLetter(
-                                    //  allColumns
-                                    //)}${rowID}`;
+                                      // celllIdx +
+                                      (skipOnMerdge ? skipOnMerdge : 0) +
+                                      parseInt($(this).attr("colspan")) +
+                                      (cellIndex === 0 ? 1 : 0);
 
                                     const merge = `${cell.address}:${prefixes}${character}${rowID}`;
                                     try {
@@ -1471,6 +1495,13 @@ export default {
                                       horizontal: "right",
                                     };
                                   }
+
+                                  // if (skipOnMerdge) {
+                                  skipOnMerdge =
+                                    skipOnMerdge === null
+                                      ? 2
+                                      : skipOnMerdge + 1;
+                                  // }
                                 }
 
                                 if (
