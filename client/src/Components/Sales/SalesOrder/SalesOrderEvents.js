@@ -544,7 +544,6 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
-        $this.getDocuments(docNumber);
         const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 
@@ -614,10 +613,10 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
         data.organizations = $this.props.hospitaldetails;
 
         $this.setState(data, () => {
-          // console.log("test", test);
           if (saveDocument) {
             $this.saveDocument();
           } else {
+            $this.getDocuments(docNumber);
             return;
           }
         });
