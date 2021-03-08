@@ -316,9 +316,9 @@ export default class ExaminationDiagram extends Component {
     if (e.target.value === "new") {
       this.setState({
         saveAsChecked: e.currentTarget.value,
-        // diagram_desc: "",
-        // diagram_id: null,
-        // hims_f_examination_diagram_header_id: null,
+        diagram_desc: "",
+        diagram_id: null,
+        hims_f_examination_diagram_header_id: null,
       });
     } else {
       this.setState({
