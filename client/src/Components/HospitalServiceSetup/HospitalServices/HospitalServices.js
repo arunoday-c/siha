@@ -16,6 +16,7 @@ import {
   VatAppilicable,
   InsertServices,
   CptCodesSearch,
+  NPHIESCodesSearch,
   clearData,
   numberEventHandaler,
   getFinanceHeaders,
@@ -48,11 +49,11 @@ class HospitalServices extends PureComponent {
       arabic_service_name: null,
       hospital_id: null,
       service_type_id: null,
-
       standard_fee: 0,
       vat_applicable: "N",
       vat_percent: 0,
       cpt_code_data: null,
+      nphies_id: null,
       sub_department_id: null,
       record_status: "A",
       direct_call: true,
@@ -102,8 +103,8 @@ class HospitalServices extends PureComponent {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -302,12 +303,21 @@ class HospitalServices extends PureComponent {
                     </label>
                   </div>
                 </div>
-                <div className="col-4 globalSearchCntr">
+                <div className="col-3 globalSearchCntr">
                   <AlgaehLabel label={{ forceLabel: "Search CPT COde" }} />
                   <h6 onClick={CptCodesSearch.bind(this, this)}>
                     {this.state.cpt_code_data
                       ? this.state.cpt_code_data
                       : "Select CPT Code"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+                <div className="col-3 globalSearchCntr">
+                  <AlgaehLabel label={{ fieldName: "nphies_id" }} />
+                  <h6 onClick={NPHIESCodesSearch.bind(this, this)}>
+                    {this.state.nphies_id
+                      ? this.state.nphies_id
+                      : "Select NPHIES"}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
@@ -493,8 +503,8 @@ class HospitalServices extends PureComponent {
                       {this.state.hims_d_services_id === null ? (
                         <AlgaehLabel label={{ fieldName: "btnSave" }} />
                       ) : (
-                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                        )}
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                     </button>
                     <button
                       onClick={(e) => {
@@ -515,8 +525,8 @@ class HospitalServices extends PureComponent {
                         <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button>
                     ) : (
-                        ""
-                      )}
+                      ""
+                    )}
                   </div>
                 </div>
               </div>
