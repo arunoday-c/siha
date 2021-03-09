@@ -854,9 +854,9 @@ export default function JournalVoucher() {
                 }
               },
             }}
-            others={{
-              disabled: disableFiled,
-            }}
+            // others={{
+            //   disabled: disableFiled,
+            // }}
           />
           <AlgaehAutoComplete
             div={{ className: "col-2" }}
