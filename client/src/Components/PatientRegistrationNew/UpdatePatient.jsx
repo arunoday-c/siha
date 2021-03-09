@@ -131,7 +131,7 @@ export function UpdatePatient({
       }
       if (
         patientIdCard.current !== null &&
-        patientImage.current?.state?.fileExtention
+        patientIdCard.current?.state?.fileExtention
       ) {
         images.push(
           new Promise((resolve, reject) => {
@@ -226,7 +226,7 @@ export function UpdatePatient({
               {
                 label: "ID Card",
                 events: {
-                  onClick: () => { },
+                  onClick: () => {},
                 },
               },
             ],

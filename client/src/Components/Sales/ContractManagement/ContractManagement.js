@@ -804,11 +804,12 @@ class ContractManagement extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-3">
+                  <div className="col-12 contractAttachmentDragger">
                     {" "}
                     <Dragger
                       accept=".doc,.docx,application/msword,.pdf"
                       name="contract_file"
+                      multiple={false}
                       onRemove={(file) => {
                         this.setState((state) => {
                           const index = state.contract_files.indexOf(file);
@@ -835,13 +836,12 @@ class ContractManagement extends Component {
                       </p>
                       <p className="ant-upload-text">
                         {this.state.contract_file
-                          ? `Click or Drag a file to replace the current file`
-                          : `Click or Drag a file to this area to upload`}
+                          ? `Click to Attach File`
+                          : `Click to Attach File`}
                       </p>
                     </Dragger>
                   </div>
-                  <div className="col-3"></div>
-                  <div className="col-6">
+                  <div className="col-12">
                     <div className="row">
                       <div className="col-12">
                         <ul className="contractAttachmentList">

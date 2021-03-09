@@ -79,7 +79,7 @@ export default function Inventory({
             },
           },
           {
-            className: "col-3 form-group",
+            className: "col-3 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,

@@ -3,19 +3,19 @@ import TreeComponent from "./TreeComponent";
 import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
 export default function FinanceAccounts({ inDrawer = false }) {
   const TABS = [
-    { label: "Assets", assetCode: 1 },
-    { label: "Liabilities", assetCode: 2 },
-    { label: "Income", assetCode: 4 },
-    { label: "Capital", assetCode: 3 },
-    { label: "Expense", assetCode: 5 }
+    { label: "assets", assetCode: 1 },
+    { label: "liabilities", assetCode: 2 },
+    { label: "income", assetCode: 4 },
+    { label: "capital", assetCode: 3 },
+    { label: "expense", assetCode: 5 },
   ];
 
-  const content = TABS.map(tab => {
+  const content = TABS.map((tab) => {
     return {
       title: (
         <AlgaehLabel
           label={{
-            forceLabel: tab.label
+            fieldName: tab.label,
           }}
         />
       ),
@@ -25,7 +25,7 @@ export default function FinanceAccounts({ inDrawer = false }) {
           title={`${tab.label} Accounts`}
           inDrawer={inDrawer}
         />
-      )
+      ),
     };
   });
 

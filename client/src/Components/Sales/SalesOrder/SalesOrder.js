@@ -892,11 +892,11 @@ class SalesOrder extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-3">
-                    {" "}
+                  <div className="col-12 salesAttachmentDragger">
                     <Dragger
+                      className=""
                       accept=".doc,.docx,application/msword,.pdf,jpg,.png,"
-                      name="contract_file"
+                      name="sales_file"
                       multiple={false}
                       onRemove={() => {
                         this.setState((state) => {
@@ -922,17 +922,16 @@ class SalesOrder extends Component {
                         <i className="fas fa-file-upload"></i>
                       </p>
                       <p className="ant-upload-text">
-                        {this.state.contract_file
-                          ? `Click or Drag a file to replace the current file`
-                          : `Click or Drag a file to this area to upload`}
+                        {this.state.sales_file
+                          ? `Click to Attach File`
+                          : `Click to Attach File`}
                       </p>
                     </Dragger>
                   </div>
-                  <div className="col-3"></div>
-                  <div className="col-6">
+                  <div className="col-12">
                     <div className="row">
                       <div className="col-12">
-                        <ul className="contractAttachmentList">
+                        <ul className="salesAttachmentList">
                           {this.state.invoice_docs.length ? (
                             this.state.invoice_docs.map((doc) => (
                               <li>

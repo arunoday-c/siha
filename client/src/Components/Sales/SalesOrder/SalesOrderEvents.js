@@ -613,10 +613,10 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
         data.organizations = $this.props.hospitaldetails;
 
         $this.setState(data, () => {
-          // console.log("test", test);
           if (saveDocument) {
             $this.saveDocument();
           } else {
+            $this.getDocuments(docNumber);
             return;
           }
         });
