@@ -162,6 +162,7 @@
   "amount": "Amount",
   "unbalanced_amount": "Unbalanced Amount",
   "service_type_id": "Service Type",
+  "nphies_id": "NPHIES ID",
   "services_id": "Service",
   "quantity": "Quantity",
   "unit_cost": "Unit Cost",

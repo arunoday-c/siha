@@ -9,7 +9,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -27,11 +27,11 @@ const VatAppilicable = ($this, e) => {
   $this.setState({
     [e.target.name]: Value,
     Applicable: Applicable,
-    vat_percent: 0
+    vat_percent: 0,
   });
 };
 
-const Validations = $this => {
+const Validations = ($this) => {
   let isError = false;
 
   AlgaehValidation({
@@ -40,7 +40,7 @@ const Validations = $this => {
     alertTypeIcon: "warning", // error icon
     onCatch: () => {
       isError = true;
-    }
+    },
   });
 
   if (
@@ -51,13 +51,13 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       title: "Vat Percentage is mandatory , if Vat Applicable",
-      type: "warning"
+      type: "warning",
     });
   }
   return isError;
 };
 
-const InsertServices = $this => {
+const InsertServices = ($this) => {
   const err = Validations($this);
 
   if (!err) {
@@ -68,7 +68,7 @@ const InsertServices = $this => {
       ) {
         swalMessage({
           title: "Please Select G/L Account",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -90,16 +90,16 @@ const InsertServices = $this => {
         uri: "/serviceType/addServices",
         module: "masterSettings",
         data: inputObj,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             clearData($this);
             $this.props.onClose && $this.props.onClose(true);
             swalMessage({
               title: "Saved successfully . .",
-              type: "success"
+              type: "success",
             });
           }
-        }
+        },
       });
     } else {
       algaehApiCall({
@@ -107,40 +107,58 @@ const InsertServices = $this => {
         module: "masterSettings",
         data: inputObj,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             swalMessage({
               title: "Updated successfully . .",
-              type: "success"
+              type: "success",
             });
             $this.props.onClose && $this.props.onClose(true);
           }
-        }
+        },
       });
     }
   }
 };
 
-const CptCodesSearch = $this => {
+const CptCodesSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Services.CptCodes
+      columns: spotlightSearch.Services.CptCodes,
     },
     searchName: "CptCodes",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState({
         cpt_code: row.hims_d_cpt_code_id,
-        cpt_code_data: row.cpt_code
+        cpt_code_data: row.cpt_code,
       });
-    }
+    },
+  });
+};
+const NPHIESCodesSearch = ($this) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Services.NPHIESCodes,
+    },
+    searchName: "NPHIESCodes",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: (row) => {
+      $this.setState({
+        nphies_code: row.hims_d_nphies_code_id,
+        nphies_code_data: row.nphies_code,
+      });
+    },
   });
 };
 
-const clearData = $this => {
+const clearData = ($this) => {
   $this.cashPatientMap = {};
   $this.insurancePatientMap = {};
   $this.setState({
@@ -167,7 +185,7 @@ const clearData = $this => {
     head_id: null,
     child_id: null,
     insurance_head_id: null,
-    insurance_child_id: null
+    insurance_child_id: null,
   });
 };
 
@@ -178,14 +196,14 @@ const numberEventHandaler = ($this, e) => {
   if (value < 0) {
     swalMessage({
       type: "warning",
-      title: "Vat % cannot be less than zero."
+      title: "Vat % cannot be less than zero.",
     });
     $this.setState({
-      [name]: 0
+      [name]: 0,
     });
   } else {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 };
@@ -203,7 +221,7 @@ const PhyThryAppilicable = ($this, e) => {
   }
   $this.setState({
     [e.target.name]: Value,
-    PhyService: PhyService
+    PhyService: PhyService,
   });
 };
 
@@ -213,13 +231,13 @@ const getFinanceHeaders = ($this, head_id) => {
     data: { finance_account_head_id: head_id },
     method: "GET",
     module: "finance",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
-          finance_account: response.data.result
+          finance_account: response.data.result,
         });
       }
-    }
+    },
   });
 };
 
@@ -229,7 +247,8 @@ export {
   InsertServices,
   clearData,
   CptCodesSearch,
+  NPHIESCodesSearch,
   numberEventHandaler,
   PhyThryAppilicable,
-  getFinanceHeaders
+  getFinanceHeaders,
 };

@@ -139,6 +139,7 @@
   "unbalanced_amount": "المبلغ غير المتوازن",
   "bill_date": "تاريخ الفاتورة",
   "service_type_id": "نوع الخدمة",
+  "nphies_id": "معرف النفيس",
   "services_id": "الخدمات",
   "quantity": "كمية",
   "unit_cost": "تكلفة الوحدة",
