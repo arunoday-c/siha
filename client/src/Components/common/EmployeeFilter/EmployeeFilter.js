@@ -5,6 +5,7 @@ import { getEmpGroups } from "../../PayrollManagement/AttendanceMgmt/BulkTimeShe
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import moment from "moment";
+// import _ from "lodash";
 import { MainContext, RawSecurityComponent } from "algaeh-react-components";
 
 export const FilterContext = createContext(null);
@@ -88,14 +89,15 @@ export default function EmployeeFilter(props) {
           method: "GET",
           onSuccess: (res) => {
             if (res.data.success) {
-              res.data.records.push({
+              res.data.records.unshift({
                 hims_d_hospital_id: -1,
                 hospital_name: "All",
               });
+
               setHospitals(res.data.records);
             }
           },
-          onFailure: (err) => { },
+          onFailure: (err) => {},
         });
       } else {
         algaehApiCall({
@@ -106,12 +108,10 @@ export default function EmployeeFilter(props) {
               setHospitals(res.data.records);
             }
           },
-          onFailure: (err) => { },
+          onFailure: (err) => {},
         });
       }
     });
-
-
   }
 
   function getBranchDetails() {
@@ -162,8 +162,8 @@ export default function EmployeeFilter(props) {
     const { name, value, selected } = e;
     const hosName = name.includes("hospital_id")
       ? {
-        hospital_name: selected.hospital_name,
-      }
+          hospital_name: selected.hospital_name,
+        }
       : {};
     setInputs((state) => ({
       ...state,
@@ -217,7 +217,8 @@ export default function EmployeeFilter(props) {
       document.querySelector("[name='hospital_id']").focus();
       return;
     }
-    let input_data = " hospital_id=" + inputs.hospital_id;
+    let input_data =
+      " hospital_id=" + inputs.hospital_id === -1 ? null : inputs.hospital_id;
     if (inputs.sub_department_id !== null) {
       input_data += " and  sub_department_id=" + inputs.sub_department_id;
       if (inputs.designation_id !== null) {
@@ -262,7 +263,7 @@ export default function EmployeeFilter(props) {
 
   function loadFunc() {
     if (inputs.hospital_id) {
-      inputs.hospitals = hospitals
+      inputs.hospitals = hospitals;
       props.loadFunc(inputs);
     } else {
       swalMessage({
