@@ -39,7 +39,7 @@ import {
 import { Upload, Modal } from "antd";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, Spin } from "algaeh-react-components";
 import SalesOrdListItems from "./SalesOrdListItems/SalesOrdListItems";
 import SalesOrdListService from "./SalesOrdListService/SalesOrdListService";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
@@ -104,6 +104,7 @@ class SalesOrder extends Component {
       canceled_reason_sales: "",
       rejectVisible: false,
       cancelVisible: false,
+      loading: false,
       is_posted: "N",
       is_revert: "N",
     };
@@ -182,45 +183,58 @@ class SalesOrder extends Component {
 
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("sales_order_number")) {
+      debugger;
       getCtrlCode(this, false, queryParams.get("sales_order_number"));
       this.getDocuments(queryParams.get("sales_order_number"));
     }
   }
 
   getDocuments = (number) => {
-    newAlgaehApi({
-      uri: "/getInvoiceDoc",
-      module: "documentManagement",
-      method: "GET",
-      data: {
-        serial_no: this.state.sales_order_number
-          ? this.state.sales_order_number
-          : number,
-      },
-    })
-      .then((res) => {
-        if (res.data.success) {
-          let { data } = res.data;
+    debugger;
+    this.setState({ loading: true }, () => {
+      newAlgaehApi({
+        uri: "/getInvoiceDoc",
+        module: "documentManagement",
+        method: "GET",
+        data: {
+          serial_no: this.state.sales_order_number
+            ? this.state.sales_order_number
+            : number,
+        },
+      })
+        .then((res) => {
+          if (res.data.success) {
+            let { data } = res.data;
+            this.setState(
+              {
+                invoice_docs: data,
+                invoice_files: [],
+                saveEnable: this.state.saveEnable,
+                docChanged: false,
+                loading: false,
+              },
+              () => {
+                AlgaehLoader({ show: false });
+              }
+            );
+          }
+        })
+        .catch((e) => {
           this.setState(
             {
-              invoice_docs: data,
-              invoice_files: [],
-              saveEnable: this.state.saveEnable,
-              docChanged: false,
+              loading: false,
             },
             () => {
               AlgaehLoader({ show: false });
             }
           );
-        }
-      })
-      .catch((e) => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: e.message,
-          type: "error",
+
+          swalMessage({
+            title: e.message,
+            type: "error",
+          });
         });
-      });
+    });
   };
 
   saveDocument = (files = [], number, id) => {
@@ -890,79 +904,83 @@ class SalesOrder extends Component {
                   <h3 className="caption-subject">Attachments</h3>
                 </div>
               </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12 salesAttachmentDragger">
-                    <Dragger
-                      className=""
-                      accept=".doc,.docx,application/msword,.pdf,jpg,.png,"
-                      name="sales_file"
-                      multiple={false}
-                      onRemove={() => {
-                        this.setState((state) => {
-                          return {
-                            invoice_files: [],
-                            docChanged: false,
-                            // saveEnable: state.dataExists && !newFileList.length,
-                          };
-                        });
-                      }}
-                      beforeUpload={(file) => {
-                        this.setState((state) => ({
-                          invoice_files: [file],
-                          docChanged: true,
+              <Spin spinning={this.state.loading}>
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-12 salesAttachmentDragger">
+                      <Dragger
+                        className=""
+                        accept=".doc,.docx,application/msword,.pdf,jpg,.png,"
+                        name="sales_file"
+                        multiple={false}
+                        onRemove={() => {
+                          this.setState((state) => {
+                            return {
+                              invoice_files: [],
+                              docChanged: false,
+                              // saveEnable: state.dataExists && !newFileList.length,
+                            };
+                          });
+                        }}
+                        beforeUpload={(file) => {
+                          this.setState((state) => ({
+                            invoice_files: [file],
+                            docChanged: true,
 
-                          // saveEnable: false,
-                        }));
-                        return false;
-                      }}
-                      fileList={this.state.invoice_files}
-                    >
-                      <p className="upload-drag-icon">
-                        <i className="fas fa-file-upload"></i>
-                      </p>
-                      <p className="ant-upload-text">
-                        {this.state.sales_file
-                          ? `Click to Attach File`
-                          : `Click to Attach File`}
-                      </p>
-                    </Dragger>
-                  </div>
-                  <div className="col-12">
-                    <div className="row">
-                      <div className="col-12">
-                        <ul className="salesAttachmentList">
-                          {this.state.invoice_docs.length ? (
-                            this.state.invoice_docs.map((doc) => (
-                              <li>
-                                <b> {doc.filename} </b>
-                                <span>
-                                  <i
-                                    className="fas fa-download"
-                                    onClick={() => this.downloadDoc(doc)}
-                                  ></i>
-                                  <i
-                                    className="fas fa-eye"
-                                    onClick={() => this.downloadDoc(doc, true)}
-                                  ></i>
-                                  <i
-                                    className="fas fa-trash"
-                                    onClick={() => this.deleteDoc(doc)}
-                                  ></i>
-                                </span>
-                              </li>
-                            ))
-                          ) : (
-                            <div className="col-12 noAttachment" key={1}>
-                              <p>No Attachments Available</p>
-                            </div>
-                          )}
-                        </ul>
+                            // saveEnable: false,
+                          }));
+                          return false;
+                        }}
+                        fileList={this.state.invoice_files}
+                      >
+                        <p className="upload-drag-icon">
+                          <i className="fas fa-file-upload"></i>
+                        </p>
+                        <p className="ant-upload-text">
+                          {this.state.sales_file
+                            ? `Click to Attach File`
+                            : `Click to Attach File`}
+                        </p>
+                      </Dragger>
+                    </div>
+                    <div className="col-12">
+                      <div className="row">
+                        <div className="col-12">
+                          <ul className="salesAttachmentList">
+                            {this.state.invoice_docs.length ? (
+                              this.state.invoice_docs.map((doc) => (
+                                <li>
+                                  <b> {doc.filename} </b>
+                                  <span>
+                                    <i
+                                      className="fas fa-download"
+                                      onClick={() => this.downloadDoc(doc)}
+                                    ></i>
+                                    <i
+                                      className="fas fa-eye"
+                                      onClick={() =>
+                                        this.downloadDoc(doc, true)
+                                      }
+                                    ></i>
+                                    <i
+                                      className="fas fa-trash"
+                                      onClick={() => this.deleteDoc(doc)}
+                                    ></i>
+                                  </span>
+                                </li>
+                              ))
+                            ) : (
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Attachments Available</p>
+                              </div>
+                            )}
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Spin>
             </div>
           </div>
           <div className="col-6">

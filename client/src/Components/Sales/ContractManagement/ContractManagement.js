@@ -38,7 +38,7 @@ import {
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, Spin } from "algaeh-react-components";
 
 const { Dragger } = Upload;
 const { confirm } = Modal;
@@ -87,6 +87,8 @@ class ContractManagement extends Component {
 
       organizations: [],
       delete_services: [],
+
+      loading: false,
     };
   }
 
@@ -802,76 +804,79 @@ class ContractManagement extends Component {
                   <h3 className="caption-subject">Contract Attachments</h3>
                 </div>
               </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12 contractAttachmentDragger">
-                    {" "}
-                    <Dragger
-                      accept=".doc,.docx,application/msword,.pdf"
-                      name="contract_file"
-                      multiple={false}
-                      onRemove={(file) => {
-                        this.setState((state) => {
-                          const index = state.contract_files.indexOf(file);
-                          const newFileList = [...state.contract_files];
-                          newFileList.splice(index, 1);
-                          return {
-                            contract_files: newFileList,
-                            saveEnable: state.dataExists && !newFileList.length,
-                          };
-                        });
-                      }}
-                      beforeUpload={(file) => {
-                        this.setState((state) => ({
-                          contract_files: [...state.contract_files, file],
-                          saveEnable: false,
-                        }));
-                        return false;
-                      }}
-                      disabled={this.state.dataExists && !this.state.editMode}
-                      fileList={this.state.contract_files}
-                    >
-                      <p className="upload-drag-icon">
-                        <i className="fas fa-file-upload"></i>
-                      </p>
-                      <p className="ant-upload-text">
-                        {this.state.contract_file
-                          ? `Click to Attach File`
-                          : `Click to Attach File`}
-                      </p>
-                    </Dragger>
-                  </div>
-                  <div className="col-12">
-                    <div className="row">
-                      <div className="col-12">
-                        <ul className="contractAttachmentList">
-                          {this.state.contract_docs.length ? (
-                            this.state.contract_docs.map((doc) => (
-                              <li>
-                                <b> {doc.filename} </b>
-                                <span>
-                                  <i
-                                    className="fas fa-download"
-                                    onClick={() => this.downloadDoc(doc)}
-                                  ></i>
-                                  <i
-                                    className="fas fa-trash"
-                                    onClick={() => this.deleteDoc(doc)}
-                                  ></i>
-                                </span>
-                              </li>
-                            ))
-                          ) : (
-                            <div className="col-12 noAttachment" key={1}>
-                              <p>No Attachments Available</p>
-                            </div>
-                          )}
-                        </ul>
+              <Spin spinning={this.state.loading}>
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-12 contractAttachmentDragger">
+                      {" "}
+                      <Dragger
+                        accept=".doc,.docx,application/msword,.pdf"
+                        name="contract_file"
+                        multiple={false}
+                        onRemove={(file) => {
+                          this.setState((state) => {
+                            const index = state.contract_files.indexOf(file);
+                            const newFileList = [...state.contract_files];
+                            newFileList.splice(index, 1);
+                            return {
+                              contract_files: newFileList,
+                              saveEnable:
+                                state.dataExists && !newFileList.length,
+                            };
+                          });
+                        }}
+                        beforeUpload={(file) => {
+                          this.setState((state) => ({
+                            contract_files: [...state.contract_files, file],
+                            saveEnable: false,
+                          }));
+                          return false;
+                        }}
+                        disabled={this.state.dataExists && !this.state.editMode}
+                        fileList={this.state.contract_files}
+                      >
+                        <p className="upload-drag-icon">
+                          <i className="fas fa-file-upload"></i>
+                        </p>
+                        <p className="ant-upload-text">
+                          {this.state.contract_file
+                            ? `Click to Attach File`
+                            : `Click to Attach File`}
+                        </p>
+                      </Dragger>
+                    </div>
+                    <div className="col-12">
+                      <div className="row">
+                        <div className="col-12">
+                          <ul className="contractAttachmentList">
+                            {this.state.contract_docs.length ? (
+                              this.state.contract_docs.map((doc) => (
+                                <li>
+                                  <b> {doc.filename} </b>
+                                  <span>
+                                    <i
+                                      className="fas fa-download"
+                                      onClick={() => this.downloadDoc(doc)}
+                                    ></i>
+                                    <i
+                                      className="fas fa-trash"
+                                      onClick={() => this.deleteDoc(doc)}
+                                    ></i>
+                                  </span>
+                                </li>
+                              ))
+                            ) : (
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Attachments Available</p>
+                              </div>
+                            )}
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Spin>
             </div>
           </div>
           <div className="col-3">
