@@ -65,6 +65,7 @@ class PurchaseOrderEntry extends Component {
       send_attachment: true,
       vendorDetails: [],
       close_pop_visible: false,
+      vendorDisable: false,
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
@@ -240,8 +241,7 @@ class PurchaseOrderEntry extends Component {
                   data: this.props.povendors,
                 },
                 others: {
-                  disabled:
-                    this.state.po_entry_detail.length > 0 ? true : false,
+                  disabled: this.state.vendorDisable,
                 },
                 onChange: vendortexthandle.bind(this, this),
                 onClear: () => {
@@ -742,10 +742,7 @@ class PurchaseOrderEntry extends Component {
                           data: this.props.povendors,
                         },
                         others: {
-                          disabled:
-                            this.state.po_entry_detail.length > 0
-                              ? true
-                              : false,
+                          disabled: this.state.vendorDisable,
                         },
                         onChange: vendortexthandle.bind(this, this),
                         onClear: () => {
