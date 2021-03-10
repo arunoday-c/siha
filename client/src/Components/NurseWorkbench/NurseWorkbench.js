@@ -98,7 +98,7 @@ class NurseWorkbench extends Component {
     };
     this.getVitalsRef = undefined;
     this.baseState = this.state;
-    this.chiefComplaintMaxLength = 500;
+    this.chiefComplaintMaxLength = 1500;
 
     this.handleSearch = debounce(() => {
       const value = this.searchTextRef.state.value;
