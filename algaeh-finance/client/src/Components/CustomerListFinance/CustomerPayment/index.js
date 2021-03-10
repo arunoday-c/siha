@@ -5,7 +5,7 @@ import {
   AlgaehTable,
   AlgaehButton,
   RawSecurityComponent,
-  Tooltip
+  Tooltip,
 } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
@@ -17,7 +17,7 @@ import { Button, Spin, Checkbox, Modal } from "antd";
 import _ from "lodash";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import { newAlgaehApi } from "../../../hooks";
-
+import CreditNotes from "./creditNotes";
 export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
@@ -34,43 +34,51 @@ export default memo(function (props) {
     past_payments: "0.00",
     day_end_pending: "",
   });
+  const [showCreditNotes, setShowCreditNotes] = useState(false);
+  const [selectedChildId, setSelectedChildId] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [allCreditNotes, setAllCreditNote] = useState([]);
   const { confirm } = Modal;
 
   useEffect(() => {
-    RawSecurityComponent({ componentCode: "REVERT_OPTION" }).then(
-      (result) => {
-        if (result === "show") {
-          setRevertOption([
-            {
-              fieldName: "checked",
-              indeterminate: indeterminate.toString(),
-              label: "Revert",
-              sortable: false,
-              filterable: false,
-              displayTemplate: (row) => {
-                return (
-                  // row.invoice_status === "open" && row.day_end_header_id > 0 ?
-                  <Tooltip title="Revert">
-                    <span
-                      style={{
-                        pointerEvents:
-                          row.invoice_status === "open" && row.day_end_header_id > 0 ? "" : "none",
-                        opacity:
-                          row.invoice_status === "open" && row.day_end_header_id > 0 ? "" : "0.1",
-                      }}
-                      onClick={() => rejectInvoice(row)}>
-                      <i className="fas fa-undo-alt"></i>
-                    </span >
-                  </Tooltip >
-                  // : null
-                );
-              },
+    RawSecurityComponent({ componentCode: "REVERT_OPTION" }).then((result) => {
+      if (result === "show") {
+        setRevertOption([
+          {
+            fieldName: "checked",
+            indeterminate: indeterminate.toString(),
+            label: "Revert",
+            sortable: false,
+            filterable: false,
+            displayTemplate: (row) => {
+              return (
+                // row.invoice_status === "open" && row.day_end_header_id > 0 ?
+                <Tooltip title="Revert">
+                  <span
+                    style={{
+                      pointerEvents:
+                        row.invoice_status === "open" &&
+                        row.day_end_header_id > 0
+                          ? ""
+                          : "none",
+                      opacity:
+                        row.invoice_status === "open" &&
+                        row.day_end_header_id > 0
+                          ? ""
+                          : "0.1",
+                    }}
+                    onClick={() => rejectInvoice(row)}
+                  >
+                    <i className="fas fa-undo-alt"></i>
+                  </span>
+                </Tooltip>
+                // : null
+              );
             },
-          ]);
-        }
+          },
+        ]);
       }
-    );
+    });
 
     if (location.state) {
       setLoading(true);
@@ -82,7 +90,7 @@ export default memo(function (props) {
       setChildName(child_name);
       getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
         .then((res) => {
-          debugger
+          debugger;
           if (res.data.success) {
             const { result } = res.data;
             setData(result.result);
@@ -105,8 +113,6 @@ export default memo(function (props) {
     }
   }, [location.state]);
 
-
-
   const rejectInvoice = (row) => {
     confirm({
       okText: "Revert",
@@ -119,7 +125,10 @@ export default memo(function (props) {
       maskClosable: true,
       onOk: async () => {
         try {
-          await revrtInvocieBack(row.day_end_header_id, row.finance_voucher_header_id);
+          await revrtInvocieBack(
+            row.day_end_header_id,
+            row.finance_voucher_header_id
+          );
         } catch (e) {
           AlgaehMessagePop({
             type: "error",
@@ -130,7 +139,10 @@ export default memo(function (props) {
     });
   };
 
-  const revrtInvocieBack = async (day_end_header_id, finance_voucher_header_id) => {
+  const revrtInvocieBack = async (
+    day_end_header_id,
+    finance_voucher_header_id
+  ) => {
     try {
       const res = await newAlgaehApi({
         uri: "/finance_customer/revrtInvocieBack",
@@ -138,19 +150,17 @@ export default memo(function (props) {
         module: "finance",
         data: {
           day_end_header_id: day_end_header_id,
-          finance_voucher_header_id: finance_voucher_header_id
+          finance_voucher_header_id: finance_voucher_header_id,
         },
       });
       if (res.data.success) {
-        debugger
         setLoading(true);
         const {
           finance_account_child_id,
-          is_opening_bal
+          is_opening_bal,
         } = location.state.data;
         getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
           .then((res) => {
-
             if (res.data.success) {
               const { result } = res.data;
               setData(result.result);
@@ -233,13 +243,40 @@ export default memo(function (props) {
       );
     }
   }
-  function onClickSendSelected() {
+  function onClickSendSelected(isFromProcessed) {
+    isFromProcessed = isFromProcessed || false;
     const filterCheck = data.filter((f) => f.checked === true);
+    if (filterCheck.length === 0) {
+      AlgaehMessagePop({
+        type: "warning",
+        display: "Please select at least one Invoice.",
+      });
+      return;
+    }
     if (filterCheck.length > 0) {
       const totalAmount = _.sumBy(filterCheck, (s) => {
         return parseFloat(s.balance_amount);
       });
-
+      let creditNoteTotal = 0;
+      let grandTotal = 0;
+      let filterCreditNotes = [];
+      if (isFromProcessed === true) {
+        filterCreditNotes = allCreditNotes.map((item) => {
+          const { invoice_no, amount, finance_voucher_header_id } = item;
+          return {
+            invoice_no,
+            balance_amount: amount,
+            finance_voucher_header_id,
+            voucher_type: "credit_note",
+          };
+        });
+        if (filterCreditNotes) {
+          creditNoteTotal = _.sumBy(filterCreditNotes, (s) =>
+            parseFloat(s.balance_amount)
+          );
+        }
+        grandTotal = totalAmount - creditNoteTotal;
+      }
       const {
         narration,
         child_id,
@@ -249,16 +286,49 @@ export default memo(function (props) {
       } = filterCheck[0];
       Modal.confirm({
         title: "Are you sure do you want to process ?",
+        className: "debitNoteConfirmModal",
         content: (
-          <span>
-            Total amount{" "}
-            <b>
-              {getAmountFormart(totalAmount, {
-                appendSymbol: false,
-              })}{" "}
-            </b>
-            {/* for the <b>{narration}</b> */}
-          </span>
+          <div className="debitNoteConfirmWindow">
+            {isFromProcessed === true ? (
+              <div className="row">
+                <div className="col">
+                  <label className="style_Label ">Payment Amount</label>
+                  <h6>
+                    {getAmountFormart(totalAmount, {
+                      appendSymbol: false,
+                    })}
+                  </h6>
+                </div>
+                <i className="fas fa-minus calcSybmbol"></i>
+                <div className="col">
+                  <label className="style_Label ">Credit Note Amount</label>
+                  <h6>
+                    {getAmountFormart(creditNoteTotal, {
+                      appendSymbol: false,
+                    })}
+                  </h6>
+                </div>
+                <i className="fas fa-equals calcSybmbol"></i>
+                <div className="col">
+                  <label className="style_Label ">Net Total</label>
+                  <h6>
+                    {getAmountFormart(grandTotal, {
+                      appendSymbol: false,
+                    })}
+                  </h6>
+                </div>
+              </div>
+            ) : (
+              <span>
+                Payment amount
+                <b>
+                  {getAmountFormart(totalAmount, {
+                    appendSymbol: false,
+                  })}
+                </b>
+              </span>
+            )}
+          </div>
         ),
         okText: "Proceed",
         cancelText: "Cancel",
@@ -271,18 +341,26 @@ export default memo(function (props) {
             } = item;
             return { invoice_no, balance_amount, finance_voucher_header_id };
           });
+          let merdgeData = merdge;
+          if (isFromProcessed === true) {
+            for (let i = 0; i < filterCreditNotes.length; i++)
+              merdgeData.push(filterCreditNotes[i]);
+          }
           history.push("/JournalVoucher", {
             data: {
               narration,
               child_id,
               head_id,
-              balance_amount: totalAmount,
+              balance_amount:
+                isFromProcessed === true ? grandTotal : totalAmount,
               voucher_type: voucher_type,
               invoice_no,
               disabled: true,
             },
-            merdge,
+            merdge: merdgeData,
+            filterDebitNotes: filterCreditNotes,
             type: "customer",
+            debitNoteTotal: creditNoteTotal > 0 ? creditNoteTotal : null,
           });
         },
       });
@@ -313,9 +391,32 @@ export default memo(function (props) {
   //     return [...list];
   //   });
   // }
-
+  function onClickCreditNotes() {
+    try {
+      const filterData = data.filter((f) => f.checked === true);
+      if (filterData.length === 0) {
+        setShowCreditNotes(false);
+        throw new Error("Please select at least one record.");
+      }
+      const { child_id } = _.head(filterData);
+      setSelectedChildId(child_id);
+      setShowCreditNotes(true);
+    } catch (e) {
+      AlgaehMessagePop({ type: "error", display: e.message });
+    }
+  }
   return (
     <Spin spinning={loading} delay={500}>
+      <CreditNotes
+        show={showCreditNotes}
+        hide={() => {
+          setShowCreditNotes(false);
+        }}
+        child_id={selectedChildId}
+        getAllCreditNotes={(creditNotesArray) => {
+          setAllCreditNote(creditNotesArray);
+        }}
+      />
       <LedgerReport
         data={location.state.data}
         visible={visible}
@@ -496,6 +597,13 @@ export default memo(function (props) {
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-12">
+            <AlgaehButton
+              className="btn btn-default"
+              loading={loading}
+              onClick={onClickCreditNotes}
+            >
+              Include Credit Note
+            </AlgaehButton>
             <AlgaehButton
               className="btn btn-primary"
               // disabled={!processList.length}
