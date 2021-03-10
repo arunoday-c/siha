@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { AlgaehModal, AlgaehMessagePop } from "algaeh-react-components";
+import {
+  AlgaehModal,
+  AlgaehMessagePop,
+  AlgaehDateHandler,
+} from "algaeh-react-components";
 import { Checkbox, Spin } from "antd";
 import "./addnewaccount.scss";
 import { AlgaehFormGroup, AlgaehDropDown } from "../../../Wrappers";
@@ -8,7 +12,7 @@ import { AccountType } from "../../../utils/GlobalVariables";
 import { AddNewAccountDetails } from "./AddNewAccEvent";
 import { newAlgaehApi } from "../../../hooks";
 // import { swalMessage } from "../../../utils/algaehApiCall";
-
+import moment from "moment";
 export default function AddNewAccount({
   showPopup,
   onClose,
@@ -39,6 +43,7 @@ export default function AddNewAccount({
       ? "CR"
       : ""
   );
+  const [obDate, setObDate] = useState(moment().format("YYYY-MM-DD"));
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
 
   useEffect(() => {
@@ -131,6 +136,7 @@ export default function AddNewAccount({
         insertInVoucherHeader,
         type,
         ledgerCode: ledger_code,
+        obDate: account_type === "G" ? undefined : obDate,
       };
       if (account_type === "G") {
         input = {
@@ -142,6 +148,7 @@ export default function AddNewAccount({
           insertInVoucherHeader,
           type,
           ledgerCode: ledger_code,
+          obDate: account_type === "G" ? undefined : obDate,
         };
       }
       if (enableOP) {
@@ -164,6 +171,7 @@ export default function AddNewAccount({
           leaf_node: account_type === "G" ? "N" : "Y",
           opening_bal: opening_balance,
           ledger_code: ledger_code,
+          obDate: account_type === "G" ? undefined : obDate,
         },
         (errorMessage) => {
           // setAccountCode("");
@@ -407,6 +415,27 @@ export default function AddNewAccount({
                       { name: "CR", value: "CR" },
                       { name: "DR", value: "DR" },
                     ],
+                  }}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col-6 algaeh-date-fld" }}
+                  label={{
+                    forceLabel: "Opening Balance Date",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    name: "enter_date",
+                    className: "form-control",
+                    value: obDate,
+                  }}
+                  maxDate={moment().add(1, "days")}
+                  others={{
+                    disabled: !enableOP && accountName,
+                  }}
+                  events={{
+                    onChange: (momentDate) => {
+                      setObDate(momentDate?.format("YYYY-MM-DD"));
+                    },
                   }}
                 />
               </div>
