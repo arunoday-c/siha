@@ -40,7 +40,8 @@ export default {
             PH.secondary_card_number,PH.secondary_effective_start_date,PH.secondary_effective_end_date,\
             PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\
             PH.secondary_sub_insurance_provider_id,PH.secondary_network_office_id, \
-            PH.advance_amount, PH.advance_adjust from  hims_f_pharmacy_pos_header PH \
+            PH.advance_amount, PH.advance_adjust, PH.primary_identity_id, \
+            PH.primary_id_no from  hims_f_pharmacy_pos_header PH \
             inner join hims_d_pharmacy_location L on PH.location_id=L.hims_d_pharmacy_location_id \
             left outer join hims_f_patient_visit V on PH.visit_id=V.hims_f_patient_visit_id \
             left outer join hims_f_patient P on PH.patient_id=P.hims_d_patient_id \
@@ -154,17 +155,18 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_pharmacy_pos_header` (pos_number,pos_date,patient_id,visit_id,ip_id,`year`,period,\
-                location_id, location_type, sub_total, discount_percentage, discount_amount, net_total, copay_amount, patient_responsibility,\
-                patient_tax, patient_payable,company_responsibility,company_tax,company_payable,comments, sec_company_responsibility,\
-                sec_company_tax,sec_company_payable,sec_copay_amount,net_tax,gross_total,sheet_discount_amount,\
-                sheet_discount_percentage,advance_amount, advance_adjust, net_amount,credit_amount,balance_credit,receiveable_amount, card_number,effective_start_date,effective_end_date,\
-                insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
-                secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
-                secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
-                 pos_customer_type,patient_name,referal_doctor,mobile_number,nationality_id,receipt_header_id,posted,\
-                 insurance_yesno,s_patient_tax,created_date,\
-                 created_by,updated_date,updated_by,hospital_id) \
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                  location_id, location_type, sub_total, discount_percentage, discount_amount, net_total, copay_amount, patient_responsibility,\
+                  patient_tax, patient_payable,company_responsibility,company_tax,company_payable,comments, sec_company_responsibility,\
+                  sec_company_tax,sec_company_payable,sec_copay_amount,net_tax,gross_total,sheet_discount_amount,\
+                  sheet_discount_percentage,advance_amount, advance_adjust, net_amount,credit_amount,balance_credit,receiveable_amount, card_number,effective_start_date,effective_end_date,\
+                  insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
+                  secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
+                  secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
+                  pos_customer_type,patient_name,referal_doctor,mobile_number,nationality_id,receipt_header_id,posted,\
+                  insurance_yesno,s_patient_tax,primary_identity_id,primary_id_no,created_date,\
+                  created_by,updated_date,updated_by,hospital_id) \
+                  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,\
+                    ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 pos_number,
                 new Date(),
@@ -227,6 +229,8 @@ export default {
                 input.posted,
                 input.insurance_yesno,
                 input.s_patient_tax,
+                input.primary_identity_id,
+                input.primary_id_no,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
@@ -1025,15 +1029,17 @@ export default {
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
           ) {
-            console.log("inputParam.receiptdetails", inputParam.receiptdetails)
-            let bank_card_id = inputParam.receiptdetails.find(f =>
-              f.pay_type == "CD"
-            )
+            console.log("inputParam.receiptdetails", inputParam.receiptdetails);
+            let bank_card_id = inputParam.receiptdetails.find(
+              (f) => f.pay_type == "CD"
+            );
 
-            console.log("bank_card_id === ", bank_card_id)
-            let strQuery = "select 1=1"
+            console.log("bank_card_id === ", bank_card_id);
+            let strQuery = "select 1=1";
             if (bank_card_id !== undefined) {
-              strQuery = "select * from hims_d_bank_card where hims_d_bank_card_id=" + bank_card_id.bank_card_id
+              strQuery =
+                "select * from hims_d_bank_card where hims_d_bank_card_id=" +
+                bank_card_id.bank_card_id;
             }
 
             _mysql
@@ -1045,7 +1051,8 @@ export default {
                   SELECT location_description, head_id, child_id, hospital_id FROM hims_d_pharmacy_location \
                   where hims_d_pharmacy_location_id=?;\
                   SELECT hims_d_sub_department_id from hims_d_sub_department where department_type='PH';\
-                  SELECT cost_center_type, cost_center_required from finance_options limit 1;" + strQuery,
+                  SELECT cost_center_type, cost_center_required from finance_options limit 1;" +
+                  strQuery,
                 values: [_all_service_id, _all_item_id, inputParam.location_id],
                 printQuery: true,
               })
@@ -1117,9 +1124,9 @@ export default {
                       inputParam.pos_number,
                       inputParam.ScreenCode,
                       "Pharmacy Sales for " +
-                      location_acc[0].location_description +
-                      "/" +
-                      inputParam.net_amount,
+                        location_acc[0].location_description +
+                        "/" +
+                        inputParam.net_amount,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                     ],
@@ -1194,10 +1201,8 @@ export default {
 
                     console.log("inputParam", inputParam.insured);
                     console.log("inputParam", inputParam.company_payble);
-                    if (
-                      parseFloat(inputParam.company_payble) > 0
-                    ) {
-                      console.log("Insurance")
+                    if (parseFloat(inputParam.company_payble) > 0) {
+                      console.log("Insurance");
                       insertSubDetail.push({
                         payment_date: new Date(),
                         head_id: pos_ctrl_acc.head_id,
@@ -1212,7 +1217,9 @@ export default {
                     for (let i = 0; i < inputParam.receiptdetails.length; i++) {
                       if (inputParam.receiptdetails[i].pay_type === "CA") {
                         //POS Cash in Hand
-                        if (parseFloat(inputParam.receiptdetails[i].amount) > 0) {
+                        if (
+                          parseFloat(inputParam.receiptdetails[i].amount) > 0
+                        ) {
                           insertSubDetail.push({
                             payment_date: new Date(),
                             head_id: cash_in_acc.head_id,
@@ -1227,13 +1234,22 @@ export default {
                       if (inputParam.receiptdetails[i].pay_type === "CD") {
                         //POS Card
 
-                        console.log("service_charge", card_data)
-                        let service_charge = (parseFloat(inputParam.receiptdetails[i].amount) * parseFloat(card_data[0].service_charge)) / 100
-                        let vat_charge = (parseFloat(service_charge) * parseFloat(card_data[0].vat_percentage)) / 100
+                        console.log("service_charge", card_data);
+                        let service_charge =
+                          (parseFloat(inputParam.receiptdetails[i].amount) *
+                            parseFloat(card_data[0].service_charge)) /
+                          100;
+                        let vat_charge =
+                          (parseFloat(service_charge) *
+                            parseFloat(card_data[0].vat_percentage)) /
+                          100;
 
-                        console.log("service_charge", service_charge)
-                        console.log("vat_charge", vat_charge)
-                        const final_amount = parseFloat(inputParam.receiptdetails[i].amount) - parseFloat(service_charge) - parseFloat(vat_charge)
+                        console.log("service_charge", service_charge);
+                        console.log("vat_charge", vat_charge);
+                        const final_amount =
+                          parseFloat(inputParam.receiptdetails[i].amount) -
+                          parseFloat(service_charge) -
+                          parseFloat(vat_charge);
                         if (parseFloat(final_amount) > 0) {
                           insertSubDetail.push({
                             payment_date: new Date(),
@@ -1307,7 +1323,11 @@ export default {
                           parseInt(inputParam.pharmacy_stock_detail[i].item_id)
                       );
 
-                      if (parseFloat(inputParam.pharmacy_stock_detail[i].net_extended_cost) > 0) {
+                      if (
+                        parseFloat(
+                          inputParam.pharmacy_stock_detail[i].net_extended_cost
+                        ) > 0
+                      ) {
                         //Income Entry
                         insertSubDetail.push({
                           payment_date: new Date(),
@@ -1316,7 +1336,8 @@ export default {
                           debit_amount: 0,
                           payment_type: "CR",
                           credit_amount:
-                            inputParam.pharmacy_stock_detail[i].net_extended_cost,
+                            inputParam.pharmacy_stock_detail[i]
+                              .net_extended_cost,
                           hospital_id: req.userIdentity.hospital_id,
                         });
                       }
@@ -1325,11 +1346,11 @@ export default {
                         parseFloat(
                           inputParam.pharmacy_stock_detail[i].quantity
                         ) *
-                        parseFloat(
-                          inputParam.pharmacy_stock_detail[i]
-                            .conversion_factor
-                        ) *
-                        parseFloat(item_avg_cost.waited_avg_cost),
+                          parseFloat(
+                            inputParam.pharmacy_stock_detail[i]
+                              .conversion_factor
+                          ) *
+                          parseFloat(item_avg_cost.waited_avg_cost),
                         decimal_places
                       );
 

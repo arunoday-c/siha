@@ -29,7 +29,7 @@ export default {
       referal_doctor: null,
       mobile_number: null,
 
-      mode_of_pay: "",
+      mode_of_pay: "1",
       patient_tax: 0,
       patient_payable: 0,
       company_responsibility: 0,
@@ -127,8 +127,10 @@ export default {
       patInsuranceFrontImg: undefined,
       patInsuranceBackImg: undefined,
       prescribed_item_list: [],
-      prescribed_item: false
+      prescribed_item: false,
+      primary_id_no: null,
+      primary_identity_id: null,
     };
     return output;
-  }
+  },
 };

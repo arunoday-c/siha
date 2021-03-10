@@ -196,6 +196,12 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "hims_d_cpt_code_id desc",
       },
       {
+        searchName: "NPHIESCodes",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS hims_d_nphies_code_id, nphies_code, nphies_desc from hims_d_nphies_code where record_status='A'",
+        orderBy: "hims_d_nphies_code_id desc",
+      },
+      {
         searchName: "InvoiceGen",
         searchQuery:
           "select hims_f_invoice_header_id, invoice_number, invoice_date, pat.patient_code, pat.full_name,\

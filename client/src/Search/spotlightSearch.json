@@ -445,6 +445,16 @@
         "label": "CPT Description"
       }
     ],
+    "NPHIESCodes": [
+      {
+        "fieldName": "nphies_code",
+        "label": "NPHIES Code"
+      },
+      {
+        "fieldName": "nphies_desc",
+        "label": "NPHIES Description"
+      }
+    ],
     "servicemaster": [
       {
         "fieldName": "service_code",

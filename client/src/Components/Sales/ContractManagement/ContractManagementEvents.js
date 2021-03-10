@@ -22,7 +22,6 @@ export const texthandle = ($this, ctrl, e) => {
       $this.setState({
         [name]: value,
         organizations: e.selected.branches,
-
       });
       break;
     default:
@@ -290,40 +289,55 @@ export function saveDocument(files = [], contract_no, contract_id, $this) {
 }
 
 export function getDocuments(contract_no, $this) {
-  newAlgaehApi({
-    uri: "/getContractDoc",
-    module: "documentManagement",
-    method: "GET",
-    data: {
-      contract_no,
+  $this.setState(
+    {
+      loading: true,
     },
-  })
-    .then((res) => {
-      if (res.data.success) {
-        let { data } = res.data;
-        $this.setState(
-          {
-            contract_docs: data,
-            contract_files: [],
-            saveEnable: $this.state.dataExists,
-          },
-          () => {
-            AlgaehLoader({ show: false });
+    () => {
+      newAlgaehApi({
+        uri: "/getContractDoc",
+        module: "documentManagement",
+        method: "GET",
+        data: {
+          contract_no,
+        },
+      })
+        .then((res) => {
+          if (res.data.success) {
+            let { data } = res.data;
+            $this.setState(
+              {
+                contract_docs: data,
+                contract_files: [],
+                saveEnable: $this.state.dataExists,
+                loading: false,
+              },
+              () => {
+                AlgaehLoader({ show: false });
+              }
+            );
           }
-        );
-      }
-    })
-    .catch((e) => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: e.message,
-        type: "error",
-      });
-    });
+        })
+        .catch((e) => {
+          $this.setState(
+            {
+              loading: false,
+            },
+            () => {
+              AlgaehLoader({ show: false });
+            }
+          );
+          swalMessage({
+            title: e.message,
+            type: "error",
+          });
+        });
+    }
+  );
 }
 
 export const getCtrlCode = ($this, docNumber) => {
-  debugger
+  debugger;
   AlgaehLoader({ show: true });
   ClearData($this);
   algaehApiCall({

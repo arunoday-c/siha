@@ -26,6 +26,7 @@ export default function FilterComponent(props) {
           isImp: true,
         }}
         selector={{
+          sort: "off",
           name: "hospital_id",
           className: "select-fld",
           value: inputs.hospital_id,

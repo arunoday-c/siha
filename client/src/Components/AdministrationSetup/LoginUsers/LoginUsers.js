@@ -1173,6 +1173,15 @@ class LoginUsers extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">Login Users List</h3>
                 </div>
+                <div className="actions">
+                  <button
+                    // href="javascript"
+                    className="btn btn-default btn-circle active"
+                    //onClick={this.ShowModel.bind(this)}
+                  >
+                    <i className="fas fa-print" />
+                  </button>
+                </div>
               </div>
               <div className="portlet-body">
                 <div className="row">
