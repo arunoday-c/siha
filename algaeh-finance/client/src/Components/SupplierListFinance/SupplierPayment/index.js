@@ -149,7 +149,7 @@ export default memo(function (props) {
     if (filterCheck.length === 0) {
       AlgaehMessagePop({
         type: "warning",
-        display: "Please select atleast one Invoice.",
+        display: "Please select at least one Invoice.",
       });
       return;
     }
