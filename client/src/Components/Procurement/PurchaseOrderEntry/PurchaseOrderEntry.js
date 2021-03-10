@@ -700,6 +700,33 @@ class PurchaseOrderEntry extends Component {
                     </div>
                   </div>
                 )}
+
+                {this.state.po_type === "MR" || this.state.po_type === "PR" ? (
+                  <div className={"col-2 globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Search Requisition No." }}
+                    />
+                    <h6 onClick={RequisitionSearch.bind(this, this)}>
+                      {this.state.material_requisition_number
+                        ? this.state.material_requisition_number
+                        : "Requisition No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                ) : this.state.po_type === "VQ" ? (
+                  <div className={"col-2 globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Search Vendor Quotation No." }}
+                    />
+                    <h6 onClick={VendorQuotationSearch.bind(this, this)}>
+                      {this.state.vendor_quotation_number
+                        ? this.state.vendor_quotation_number
+                        : "Vendor Quotation No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                ) : null}
+
                 <div className="col-3">
                   <div className="row hoverVendor">
                     <AlagehAutoComplete
@@ -820,33 +847,6 @@ class PurchaseOrderEntry extends Component {
                       : null}
                   </div>
                 </div>
-
-                {this.state.po_type === "MR" || this.state.po_type === "PR" ? (
-                  <div className={"col-2 globalSearchCntr" + class_finder}>
-                    <AlgaehLabel
-                      label={{ forceLabel: "Search Requisition No." }}
-                    />
-                    <h6 onClick={RequisitionSearch.bind(this, this)}>
-                      {this.state.material_requisition_number
-                        ? this.state.material_requisition_number
-                        : "Requisition No."}
-                      <i className="fas fa-search fa-lg"></i>
-                    </h6>
-                  </div>
-                ) : this.state.po_type === "VQ" ? (
-                  <div className={"col-2 globalSearchCntr" + class_finder}>
-                    <AlgaehLabel
-                      label={{ forceLabel: "Search Vendor Quotation No." }}
-                    />
-                    <h6 onClick={VendorQuotationSearch.bind(this, this)}>
-                      {this.state.vendor_quotation_number
-                        ? this.state.vendor_quotation_number
-                        : "Vendor Quotation No."}
-                      <i className="fas fa-search fa-lg"></i>
-                    </h6>
-                  </div>
-                ) : null}
-
                 <AlagehFormGroup
                   div={{ className: "col-2  form-group" }}
                   label={{

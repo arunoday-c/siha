@@ -468,7 +468,8 @@ const onClickProcess = ($this) => {
   } else if (inputOb.trans_type === "PR") {
     debugger;
     swal({
-      title: "Are you sure you want to Raise Purchase Request ?",
+      title: "Are you sure?",
+      text: "You want to Raise Purchase Request ?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
