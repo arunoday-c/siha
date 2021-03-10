@@ -21,6 +21,7 @@ import Enumerable from "linq";
 import _ from "lodash";
 import { MainContext } from "algaeh-react-components";
 import { Button, Input, AlgaehSecurityElement } from "algaeh-react-components";
+import { generateUserListReport } from "./LoginUsersEvent.js";
 class LoginUsers extends Component {
   _isMounted = false;
   constructor(props) {
@@ -1177,7 +1178,8 @@ class LoginUsers extends Component {
                   <button
                     // href="javascript"
                     className="btn btn-default btn-circle active"
-                    //onClick={this.ShowModel.bind(this)}
+                    // onClick={this.ShowModel.bind(this)}
+                    onClick={generateUserListReport.bind(this, this)}
                   >
                     <i className="fas fa-print" />
                   </button>
