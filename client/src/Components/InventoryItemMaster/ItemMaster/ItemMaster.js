@@ -53,6 +53,7 @@ class InvItemMaster extends Component {
       child_id: null,
       inv_item_image: [],
       disabledDragger: false,
+      consumption_factor: 0,
       // diagramsDataBase: [],
     };
   }
@@ -590,6 +591,32 @@ class InvItemMaster extends Component {
                         },
                       }}
                     />
+
+                    {this.state.stocking_uom === "Y" &&
+                    this.state.stocking_uom !== null ? (
+                      <AlagehFormGroup
+                        div={{ className: "col-4" }}
+                        label={{
+                          forceLabel: "Consumption Factor",
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ",",
+                          },
+                          className: "txt-fld",
+                          name: "consumption_factor",
+                          value: this.state.consumption_factor,
+                          dontAllowKeys: ["-", "e", "."],
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            exclude: "true",
+                          },
+                        }}
+                      />
+                    ) : null}
 
                     <div className="col-1 actions" style={{ paddingLeft: 0 }}>
                       <button
