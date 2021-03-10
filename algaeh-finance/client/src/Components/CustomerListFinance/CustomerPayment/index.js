@@ -90,7 +90,6 @@ export default memo(function (props) {
       setChildName(child_name);
       getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
         .then((res) => {
-          debugger;
           if (res.data.success) {
             const { result } = res.data;
             setData(result.result);
@@ -112,7 +111,9 @@ export default memo(function (props) {
         });
     }
   }, [location.state]);
-
+  useEffect(() => {
+    if (allCreditNotes.length > 0) onClickSendSelected(true);
+  }, [allCreditNotes]);
   const rejectInvoice = (row) => {
     confirm({
       okText: "Revert",
@@ -260,6 +261,7 @@ export default memo(function (props) {
       let creditNoteTotal = 0;
       let grandTotal = 0;
       let filterCreditNotes = [];
+
       if (isFromProcessed === true) {
         filterCreditNotes = allCreditNotes.map((item) => {
           const { invoice_no, amount, finance_voucher_header_id } = item;
@@ -415,6 +417,7 @@ export default memo(function (props) {
         child_id={selectedChildId}
         getAllCreditNotes={(creditNotesArray) => {
           setAllCreditNote(creditNotesArray);
+          setShowCreditNotes(false);
         }}
       />
       <LedgerReport
