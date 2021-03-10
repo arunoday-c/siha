@@ -2671,7 +2671,7 @@ function getTrialBalanceFunc(
       // } else {
       //   cbDifference = ` date(VD.payment_date) < date('${options.from_date}') `;
       // }
-      cbDifference = ` date(VD.payment_date) < date('${options.from_date}') `;
+      cbDifference = ` date(VD.payment_date) <= date('${options.from_date}') `;
       // console.log(
       //   "====== cbDifference ======",
       //   cbDifference,
@@ -2689,27 +2689,28 @@ function getTrialBalanceFunc(
 
           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
-          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount , 
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places}) as credit_amount , 
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
-          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred,VD.payment_date
+          ROUND((coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred,VD.payment_date
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
-          and ${cbDifference}   where H.root_id=?  group by C.finance_account_child_id,VD.payment_date;
+          and ${cbDifference}   where H.root_id=?  group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount,VD.payment_date          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and ${cbDifference}  where H.root_id=?  group by H.finance_account_head_id,VD.payment_date   ; 
+          and date(VD.payment_date) < date('${options.from_date}') where H.root_id=?  group by H.finance_account_head_id,VD.payment_date   ; 
 
           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
-          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount , 
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places}) as credit_amount , 
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
-          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
+          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred,
+          VD.payment_date,VD.is_opening_bal
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
-          and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id;
+          and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -3010,92 +3011,39 @@ function createHierarchyTransactionTB(
         ///END calculating transaction amount between  from_date  and to_date-----
         //ST calculating closing balance on  to date-----
         let cb_amount = 0;
-        // let minusAmount = false;
-        // if (finance_account_head_id === 1 || finance_account_head_id === 5) {
-        //   if (String(op_amount).includes("Cr")) {
-        //     minusAmount = true;
-        //   }
-        // } else {
-        //   if (String(op_amount).includes("Dr")) {
-        //     minusAmount = true;
-        //   }
-        // }
-        // if (minusAmount) {
+
         cb_amount =
           finance_account_head_id === 1 || finance_account_head_id === 5
             ? parseFloat(
                 parseFloat(op_amount) +
-                  (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
+                  (parseFloat(
+                    TR_BALANCE.is_opening_bal === "Y" &&
+                      TR_BALANCE.payment_date === from_date
+                      ? 0
+                      : tr_debit_amount
+                  ) -
+                    parseFloat(
+                      TR_BALANCE.is_opening_bal === "Y" &&
+                        TR_BALANCE.payment_date === from_date
+                        ? 0
+                        : tr_credit_amount
+                    ))
               ).toFixed(decimal_places)
             : parseFloat(
                 parseFloat(op_amount) +
-                  (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
+                  (parseFloat(
+                    TR_BALANCE.is_opening_bal === "Y" &&
+                      TR_BALANCE.payment_date === from_date
+                      ? 0
+                      : tr_credit_amount
+                  ) -
+                    parseFloat(
+                      TR_BALANCE.is_opening_bal === "Y" &&
+                        TR_BALANCE.payment_date === from_date
+                        ? 0
+                        : tr_debit_amount
+                    ))
               ).toFixed(decimal_places);
-
-        // } else {
-        //   cb_amount =
-        //     trans_symbol === "Dr"
-        //       ? parseFloat(
-        //           parseFloat(op_amount) +
-        //             (parseFloat(tr_debit_amount) - parseFloat(tr_credit_amount))
-        //         ).toFixed(decimal_places)
-        //       : parseFloat(
-        //           parseFloat(op_amount) +
-        //             (parseFloat(tr_credit_amount) - parseFloat(tr_debit_amount))
-        //         ).toFixed(decimal_places);
-        // }
-
-        // const CB_BALANCE = cb_child_data.find((f) => {
-        //   return (
-        //     item.finance_account_head_id == f.head_id &&
-        //     item.finance_account_child_id == f.child_id
-        //   );
-        // });
-        // let cb_amount = default_total;
-        // if (CB_BALANCE) {
-        //   if (trans_symbol == "Dr") {
-        //     if (
-        //       parseFloat(CB_BALANCE.deb_minus_cred) >
-        //       parseFloat(CB_BALANCE.cred_minus_deb)
-        //     ) {
-        //       cb_amount =
-        //         parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
-        //         " Dr";
-        //     } else if (
-        //       parseFloat(CB_BALANCE.deb_minus_cred) <
-        //       parseFloat(CB_BALANCE.cred_minus_deb)
-        //     ) {
-        //       cb_amount =
-        //         parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
-        //         " Cr";
-        //     } else {
-        //       cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
-        //         decimal_places
-        //       );
-        //     }
-        //   } else {
-        //     if (
-        //       parseFloat(CB_BALANCE.cred_minus_deb) >
-        //       parseFloat(CB_BALANCE.deb_minus_cred)
-        //     ) {
-        //       cb_amount =
-        //         parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
-        //         " Cr";
-        //     } else if (
-        //       parseFloat(CB_BALANCE.cred_minus_deb) <
-        //       parseFloat(CB_BALANCE.deb_minus_cred)
-        //     ) {
-        //       cb_amount =
-        //         parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
-        //         " Dr";
-        //     } else {
-        //       cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
-        //         decimal_places
-        //       );
-        //     }
-        //   }
-        // }
-        //END calculating closing balance on  to date-----
 
         //END---calulating Amount
         let OPENING_BALANCE = op_amount;
@@ -3145,8 +3093,16 @@ function createHierarchyTransactionTB(
           child.push({
             finance_account_child_id: item["finance_account_child_id"],
             ledger_code: item.child_ledger_code,
-            tr_debit_amount: tr_debit_amount,
-            tr_credit_amount: tr_credit_amount,
+            tr_debit_amount:
+              TR_BALANCE.is_opening_bal === "Y" &&
+              TR_BALANCE.payment_date === from_date
+                ? 0
+                : tr_debit_amount,
+            tr_credit_amount:
+              TR_BALANCE.is_opening_bal === "Y" &&
+              TR_BALANCE.payment_date === from_date
+                ? 0
+                : tr_credit_amount,
             cb_amount: ` ${
               cr_dr_required === undefined || cr_dr_required === "Y"
                 ? `${Math.abs(cb_amount)} ${trans_symbol} `
