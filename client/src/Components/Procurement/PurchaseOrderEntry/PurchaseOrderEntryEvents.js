@@ -143,19 +143,23 @@ const vendortexthandle = ($this, e) => {
     },
     onSuccess: (result) => {
       let records = result.data.records[0];
-      debugger
+      debugger;
 
       let validate =
         records.vendor_code !== null &&
-          records.contact_number !== null &&
-          records.email_id_1 !== null &&
-          records.address !== "" &&
-          records.business_registration_no !== "" &&
-          records.payment_mode !== "" &&
-          records.country_id !== null &&
-          records.state_id !== null
-          ? records.payment_mode === "BT" ? records.bank_account_no !== null &&
-            records.bank_name !== "" ? true : false : true : false;
+        records.contact_number !== null &&
+        records.email_id_1 !== null &&
+        records.address !== "" &&
+        records.business_registration_no !== "" &&
+        records.payment_mode !== "" &&
+        records.country_id !== null &&
+        records.state_id !== null
+          ? records.payment_mode === "BT"
+            ? records.bank_account_no !== null && records.bank_name !== ""
+              ? true
+              : false
+            : true
+          : false;
       if (validate) {
         let details = {
           [name]: value,
@@ -176,7 +180,7 @@ const vendortexthandle = ($this, e) => {
           swalMessage({
             title: `Please Fill mandatory Details of vendor In vendor master for Vendor ${
               e.selected?.vendor_name ?? name
-              }   `,
+            }   `,
             type: "error",
           })
         );
@@ -461,6 +465,13 @@ const ClearData = ($this, e) => {
 
 const SavePOEnrty = ($this, from) => {
   AlgaehLoader({ show: true });
+
+  if ($this.state.vendor_id === null) {
+    swalMessage({
+      type: "warning",
+      title: "Select Vendor",
+    });
+  }
   if ($this.state.po_from === "PHR") {
     $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
   } else {
@@ -576,10 +587,13 @@ const getCtrlCode = ($this, docNumber) => {
           //   $this.props.purchase_number !== undefined &&
           //   $this.props.purchase_number.length !== 0
           // ) {
-          debugger
+          debugger;
           if (queryParams.get("purchase_number")) {
             data.po_closed = true;
-            if ((data.receipt_generated === "Y" || data.is_completed === "Y") && data.is_revert === "N") {
+            if (
+              (data.receipt_generated === "Y" || data.is_completed === "Y") &&
+              data.is_revert === "N"
+            ) {
               data.purchase_auth = false;
             } else {
               data.purchase_auth = true;
@@ -609,6 +623,7 @@ const getCtrlCode = ($this, docNumber) => {
 
           data.dataFinder = true;
           data.dataExists = true;
+          data.vendorDisable = true;
 
           if (data.is_posted === "Y") {
             data.dataPosted = true;
@@ -618,7 +633,7 @@ const getCtrlCode = ($this, docNumber) => {
             data.dataPosted = false;
             data.saveEnable = false;
             data.dataExitst = data.is_revert === "Y" ? true : false;
-            data.authBtnEnable = true
+            data.authBtnEnable = true;
           }
 
           if (data.po_from === "PHR") {
@@ -823,7 +838,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       "is_completed",
       "po_auth_level",
       "authorize",
-      "is_revert"
+      "is_revert",
     ];
     let sendJsonBody = {};
     procumentInputs.forEach((item) => {
@@ -1094,8 +1109,8 @@ const getReportForMail = (data, vedorData) => {
           vendor_email: email_id_1
             ? email_id_1
             : email_id_2
-              ? email_id_2
-              : email_id_1,
+            ? email_id_2
+            : email_id_1,
           po_from: po_from,
           net_total,
           location_name,
@@ -1213,7 +1228,8 @@ const POClose = ($this) => {
     return;
   }
   swal({
-    title: "If you close PO you can't take delivery, Are you Sure you want to Close?",
+    title:
+      "If you close PO you can't take delivery, Are you Sure you want to Close?",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",
@@ -1226,8 +1242,9 @@ const POClose = ($this) => {
         uri: "/PurchaseOrderEntry/POClosed",
         module: "procurement",
         data: {
-          hims_f_procurement_po_header_id: $this.state.hims_f_procurement_po_header_id,
-          po_close_reason: $this.state.po_close_reason
+          hims_f_procurement_po_header_id:
+            $this.state.hims_f_procurement_po_header_id,
+          po_close_reason: $this.state.po_close_reason,
         },
         method: "PUT",
         onSuccess: (response) => {
@@ -1253,7 +1270,6 @@ const POClose = ($this) => {
       });
     }
   });
-
 };
 
 export {
@@ -1279,5 +1295,5 @@ export {
   CancelPOEntry,
   getCostCenters,
   getReportForMail,
-  POClose
+  POClose,
 };

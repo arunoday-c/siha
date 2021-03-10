@@ -1032,7 +1032,9 @@ class ContractManagement extends Component {
                 <button
                   type="button"
                   className="btn btn-other  "
-                  onClick={() => this.setState({ editMode: true })}
+                  onClick={() =>
+                    this.setState({ editMode: true, saveEnable: false })
+                  }
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Edit Contract", returnText: true }}

@@ -464,7 +464,7 @@ export default {
                                   .balance_leave_salary_amount
                               ) > 0
                                 ? leave_encash_header[0]
-                                  .balance_leave_salary_amount
+                                    .balance_leave_salary_amount
                                 : 0,
                               leave_encash_header[0]
                                 .hims_f_employee_leave_salary_header_id,
@@ -691,7 +691,7 @@ export default {
                         where employee_id=?;\
                         UPDATE `hims_d_employee` SET \
                         `suspend_salary`='Y', `last_salary_process_date`=? where hims_d_employee_id=?; UPDATE `hims_f_salary` SET \
-                        `salary_paid`='Y' where hims_f_salary_id in (?);",
+                        `salary_paid`='Y',`salary_paid_date`=?,`salary_paid_by`=? where hims_f_salary_id in (?);",
                           values: [
                             balance_leave_days,
                             balance_leave_salary_amount,
@@ -705,6 +705,8 @@ export default {
                               "YYYY-MM-DD"
                             ),
                             inputParam.employee_id,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
                             salary_header_id,
                           ],
                           printQuery: true,
@@ -880,7 +882,6 @@ export default {
                           printQuery: true,
                         })
                         .then((LeaveSettleResult) => {
-
                           LoanDeductionLeaveSalary({
                             req: req,
                             salary_header_id: salary_header_id,
@@ -2127,16 +2128,15 @@ export default {
   },
 };
 
-
 function LoanDeductionLeaveSalary(options) {
   return new Promise((resolve, reject) => {
     try {
       const salary_header_id = options.salary_header_id;
       const req = options.req;
       const _mysql = options._mysql;
-      let strQuery = ""
+      let strQuery = "";
 
-      console.log("salary_header_id", salary_header_id)
+      console.log("salary_header_id", salary_header_id);
 
       _mysql
         .executeQueryWithTransaction({
@@ -2147,7 +2147,7 @@ function LoanDeductionLeaveSalary(options) {
           printQuery: true,
         })
         .then((salary_loans) => {
-          console.log("salary_loans", salary_loans)
+          console.log("salary_loans", salary_loans);
           let loan_application_ids = _.map(salary_loans, (o) => {
             return o.loan_application_id;
           });
@@ -2164,18 +2164,16 @@ function LoanDeductionLeaveSalary(options) {
               .then((loan_application) => {
                 // console.log("loan_application", loan_application)
                 for (let i = 0; i < loan_application.length; i++) {
-                  const no_of_loans = salary_loans.filter((f) => f.loan_application_id ===
-                    loan_application[i].hims_f_loan_application_id);
-
+                  const no_of_loans = salary_loans.filter(
+                    (f) =>
+                      f.loan_application_id ===
+                      loan_application[i].hims_f_loan_application_id
+                  );
 
                   // console
-                  let loan_skip_months =
-                    loan_application[i].loan_skip_months;
-                  let pending_loan =
-                    loan_application[i].pending_loan;
+                  let loan_skip_months = loan_application[i].loan_skip_months;
+                  let pending_loan = loan_application[i].pending_loan;
                   let loan_closed = "N";
-
-
 
                   let pending_tenure = 0;
                   if (loan_skip_months > 0) {
@@ -2187,23 +2185,22 @@ function LoanDeductionLeaveSalary(options) {
                     // console.log("installment_amount", loan_application[i].installment_amount)
                     // console.log("no_of_loans", no_of_loans.length)
 
-                    const ins_amount = parseFloat(loan_application[i].installment_amount) * parseFloat(no_of_loans.length)
+                    const ins_amount =
+                      parseFloat(loan_application[i].installment_amount) *
+                      parseFloat(no_of_loans.length);
                     // console.log("ins_amount", ins_amount)
-                    pending_loan =
-                      parseFloat(pending_loan) - ins_amount;
+                    pending_loan = parseFloat(pending_loan) - ins_amount;
 
                     // console.log("pending_loan 2 ", pending_loan)
 
                     if (loan_application[i].pending_tenure > 0) {
                       pending_tenure =
-                        parseFloat(loan_application[i].pending_tenure) - (1 * parseFloat(no_of_loans.length));
+                        parseFloat(loan_application[i].pending_tenure) -
+                        1 * parseFloat(no_of_loans.length);
                     } else {
-                      pending_tenure =
-                        loan_application[i].pending_tenure;
+                      pending_tenure = loan_application[i].pending_tenure;
                     }
                   }
-
-
 
                   if (pending_loan == 0) {
                     loan_closed = "Y";
@@ -2219,8 +2216,7 @@ function LoanDeductionLeaveSalary(options) {
                       pending_tenure,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
-                      loan_application[i]
-                        .hims_f_loan_application_id
+                      loan_application[i].hims_f_loan_application_id,
                     ]
                   );
 
@@ -2231,7 +2227,7 @@ function LoanDeductionLeaveSalary(options) {
                         printQuery: true,
                       })
                       .then((update_loan_application) => {
-                        resolve()
+                        resolve();
                       })
                       .catch((e) => {
                         next(e);

@@ -375,9 +375,13 @@ ul.ul-legend {
   cursor: pointer;
 }
 
-.pat-code:hover {
+.pat-code {
+  color: #049889;
   text-decoration: underline;
-  cursor: pointer;
+  &:hover {
+    text-decoration: none;
+    cursor: pointer;
+  }
 }
 
 .bordered-layout {

@@ -299,6 +299,21 @@ const openExchangePopup = ($this, row) => {
 
 const onClickProcess = ($this) => {
   let inputOb = $this.state;
+
+  debugger;
+  if (inputOb.trans_type === null) {
+    swalMessage({
+      title: "Select Transaction Type.",
+      type: "warning",
+    });
+    return;
+  } else if (parseFloat(inputOb.quantity) === 0) {
+    swalMessage({
+      title: "QTY cannot be Zero.",
+      type: "warning",
+    });
+    return;
+  }
   if (inputOb.trans_type === "C") {
     swal({
       title: "Are you sure you want to Consume ?",
@@ -358,6 +373,13 @@ const onClickProcess = ($this) => {
       }
     });
   } else if (inputOb.trans_type === "T") {
+    if (inputOb.to_location_id === null) {
+      swalMessage({
+        title: "Select Location.",
+        type: "warning",
+      });
+      return;
+    }
     swal({
       title: "Are you sure you want to Tranfer ?",
       type: "warning",
@@ -466,7 +488,13 @@ const onClickProcess = ($this) => {
       }
     });
   } else if (inputOb.trans_type === "PR") {
-    debugger;
+    if (inputOb.to_location_id === null) {
+      swalMessage({
+        title: "Select Location.",
+        type: "warning",
+      });
+      return;
+    }
     swal({
       title: "Are you sure?",
       text: "You want to Raise Purchase Request ?",
