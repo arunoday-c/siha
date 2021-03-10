@@ -376,9 +376,13 @@ ul.ul-legend {
   cursor: pointer;
 }
 
-.pat-code:hover {
+.pat-code {
+  color: #049889;
   text-decoration: underline;
-  cursor: pointer;
+  &:hover {
+    text-decoration: none;
+    cursor: pointer;
+  }
 }
 
 .bordered-layout {
@@ -742,6 +746,19 @@ ul.ul-legend {
       background: lighten($primary-color, 10%);
       border-color: #01968c;
     }
+  }
+}
+.arAction {
+  margin-top: -8px;
+  text-align: right;
+  span {
+    display: inline-block;
+    border-right: 1px DOTTED #adadad;
+    margin-right: 10px;
+    padding-right: 10px;
+  }
+  button {
+    margin-top: -23px;
   }
 }
 

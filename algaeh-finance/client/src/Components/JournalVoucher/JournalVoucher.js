@@ -1050,7 +1050,7 @@ export default function JournalVoucher() {
                     <AlgaehLabel label={{ fieldName: "JVList" }} />
                   </h3>
                 </div>
-                <div className="actions">
+                <div className="actions arAction">
                   <span>
                     <AlgaehLabel label={{ fieldName: "TCredit" }} />
                     <b>
@@ -1058,7 +1058,6 @@ export default function JournalVoucher() {
                         appendSymbol: false,
                       })}
                     </b>{" "}
-                    |
                   </span>
                   <span>
                     <AlgaehLabel label={{ fieldName: "TDebit" }} />
@@ -1067,7 +1066,6 @@ export default function JournalVoucher() {
                         appendSymbol: false,
                       })}
                     </b>{" "}
-                    |
                   </span>
                   <button
                     className="btn btn-default"
