@@ -504,12 +504,6 @@ const AddItems = ($this, context) => {
         type: "warning",
       });
       return;
-    } else if ($this.state.nationality_id === null) {
-      swalMessage({
-        title: "Select Nationality.",
-        type: "warning",
-      });
-      return;
     } else if ($this.state.primary_identity_id === null) {
       swalMessage({
         title: "Select ID Type.",
@@ -523,6 +517,13 @@ const AddItems = ($this, context) => {
       });
       return;
     }
+    // else if ($this.state.nationality_id === null) {
+    //   swalMessage({
+    //     title: "Select Nationality.",
+    //     type: "warning",
+    //   });
+    //   return;
+    // }
   }
 
   if ($this.state.pos_customer_type === "OP") {
