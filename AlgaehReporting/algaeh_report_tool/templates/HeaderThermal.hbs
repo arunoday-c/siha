@@ -1,20 +1,56 @@
+
 <style type="text/css">
-    .hospitalLogo {
-        text-align: center;
+
+    .reportHeaderCntr {
         width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        overflow: hidden;
+        padding: 0;
+        border-bottom: 1px dashed #000;
     }
+
+
+
+    .col-center {
+        width: 100%;
+        text-align: center;
+        float: none;
+        margin: 0 auto;
+    }
+
 
     .hospitalLogo img {
-        margin: 0 0 5px 0;
+        margin: 0;
         padding: 0;
         border: none;
+        height: 35px;
         width: auto;
-        height: 90px;
+        text-align: center;
+    }
+    .reportHeaderCntr p {
+        margin: 2px 0;
+        padding: 0;
+        font-size: 8px;
+        line-height: 10px;
+    }
+
+    .reportHeaderCntr p b {
+        font-size: 8px;
     }
 </style>
+<body>
 
-<center class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></center>
-<center>{{report_name_for_header}}</center>
-<center>{{hospital_address}}</center>
-<center>{{phone1}}</center>
-<br /> <br />
+    
+    <div>
+        <div class="reportHeaderCntr" >
+        <div class="col-center">
+            <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
+            <p><b>{{organization_name}}</b></p>
+            <p>Tel: <span>{{phone1}}</span>, Vat No: <span>{{tax_number}}</span></p>
+        </div>
+        </div>
+    </div>
+</body>
