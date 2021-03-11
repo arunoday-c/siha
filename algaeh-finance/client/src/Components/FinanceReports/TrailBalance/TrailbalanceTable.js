@@ -192,7 +192,7 @@ export default function TrailBalaceReport({
   function OnCloseDrillDown() {
     setShowDrillDown(false);
   }
-  console.log("accounts====>", accounts);
+
   return (
     <>
       <DrillDown
@@ -212,7 +212,8 @@ export default function TrailBalaceReport({
         tableprops={{
           aggregate: (field) => {
             if (field === "label") return null;
-            return _.sumBy(accounts, (f) => f[field]);
+            const val = _.sumBy(accounts, (f) => parseFloat(f[field]));
+            return getAmountFormart(parseFloat(val), { appendSymbol: false });
           },
           footer: true,
         }}
