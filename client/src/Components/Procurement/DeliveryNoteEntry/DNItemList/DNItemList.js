@@ -323,6 +323,24 @@ class DNItemList extends Component {
                                                 item.quantity_outstanding
                                               )}
                                             </strong>
+                                          </small>{" "}
+                                          <br />
+                                          <small>
+                                            Qty Pending to Receive:
+                                            <strong>
+                                              {parseFloat(
+                                                item.quantity_outstanding
+                                              )}
+                                            </strong>
+                                          </small>{" "}
+                                          <br />
+                                          <small>
+                                            Qty. Received Till Date:
+                                            <strong>
+                                              {parseFloat(
+                                                item.quantity_recieved_todate
+                                              )}
+                                            </strong>
                                           </small>
                                         </div>
                                       }
@@ -331,16 +349,19 @@ class DNItemList extends Component {
                                         <p
                                           style={{
                                             width: `${
-                                              (parseFloat(item.dn_quantity) /
+                                              (parseFloat(
+                                                item.quantity_recieved_todate
+                                              ) /
                                                 parseFloat(item.po_quantity)) *
                                               100
                                             }%`,
                                           }}
                                         >
-                                          Pending Qty -{" "}
-                                          {parseFloat(
-                                            item.quantity_outstanding
-                                          )}
+                                          Pending Qty -
+                                          {parseFloat(item.po_quantity) -
+                                            parseFloat(
+                                              item.quantity_recieved_todate
+                                            )}
                                         </p>
                                       </div>
                                     </Popover>
@@ -354,7 +375,9 @@ class DNItemList extends Component {
                                       <small>
                                         Deliverd Qty:
                                         <span>
-                                          {parseFloat(item.dn_quantity)}
+                                          {parseFloat(
+                                            item.quantity_recieved_todate
+                                          )}
                                         </span>
                                       </small>
                                     </div>
