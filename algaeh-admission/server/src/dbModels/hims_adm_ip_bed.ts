@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import db from "../connection";
 import { dateConversions, userDetails } from "./common";
 import hims_d_services from "./hims_d_services";
+// import hims_adm_ward_detail from "./hims_adm_ward_detail";
 
 class hims_adm_ip_bed extends Model {}
 hims_adm_ip_bed.init(
@@ -45,8 +46,11 @@ hims_adm_ip_bed.init(
 
 hims_adm_ip_bed.belongsTo(hims_d_services, {
   foreignKey: "services_id",
+  as: "S",
 });
 hims_d_services.hasOne(hims_adm_ip_bed, {
   foreignKey: "services_id",
+  as: "S",
 });
+
 export default hims_adm_ip_bed;
