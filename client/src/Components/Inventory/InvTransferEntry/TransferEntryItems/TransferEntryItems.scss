@@ -133,3 +133,8 @@
   color: white;
   float: right;
 }
+#itemTransferMapGrid_Cntr {
+  .ReactTable {
+    max-height: 44vh !important;
+  }
+}
