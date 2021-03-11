@@ -484,7 +484,7 @@ class BatchWiseStock extends Component {
               {this.state.trans_type === "MR" ? (
                 <AlagehAutoComplete
                   div={{ className: "col-4 form-group mandatory" }}
-                  label={{ forceLabel: "Request FrToom", isImp: true }}
+                  label={{ forceLabel: "Request From", isImp: true }}
                   selector={{
                     name: "to_location_id",
                     className: "select-fld",
