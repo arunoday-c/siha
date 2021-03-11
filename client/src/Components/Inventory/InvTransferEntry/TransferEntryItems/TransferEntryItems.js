@@ -1121,7 +1121,6 @@ class TransferEntryItems extends Component {
                               id="itemTransferMapGrid_Cntr"
                             >
                               <AlgaehDataGrid
-                                id="itemTransferMapGrid"
                                 datavalidate="itemTransferMapGrid"
                                 columns={[
                                   {
