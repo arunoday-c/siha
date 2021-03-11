@@ -1,3 +1,5 @@
+@import "../../../../styles/algaehCssVariables.scss";
+
 #DNGrid {
   .ReactTable {
     max-height: 32vh !important;
@@ -80,6 +82,88 @@
           color: #fff;
         }
       }
+    }
+  }
+}
+
+.deliveryNoteAttachmentDragger {
+  .upload-drag-icon i {
+    font-size: 16px;
+  }
+  .ant-upload-btn {
+    float: left !important;
+    height: 40px !important;
+    width: 120px !important;
+    padding: 0 !important;
+    border-color: 1px solid #ccc;
+    border-right: none;
+    p.ant-upload-text {
+      margin: 0 !important;
+    }
+    &:hover {
+      background-color: #ccc;
+    }
+  }
+  .ant-upload-list {
+    position: absolute;
+    top: 0;
+    left: 134px;
+    width: calc(100% - 149px);
+    border: 1px solid #ccc;
+    height: 42px !important;
+    min-height: 42px !important;
+    /* max-height: 37px; */
+    overflow: auto;
+    z-index: 9;
+  }
+}
+.deliveryNoteAttachmentList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid lighten($color-black, 70%) !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 106px;
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid lighten($color-black, 70%) !important;
+    b {
+      float: left;
+      width: calc(100% - 110px);
+      padding: 3px 5px;
+      line-height: 28px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    span {
+      display: inline-block;
+      width: 110px;
+      text-align: right;
+      i {
+        padding: 10px;
+        border-left: 1px dashed lighten($color-black, 70%) !important;
+        &:hover {
+          background-color: $primary-color;
+          color: $color-white;
+          cursor: pointer;
+        }
+      }
+    }
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  .noAttachment {
+    min-height: 104px;
+    max-height: 104px;
+    text-align: center;
+    p {
+      line-height: 104px;
+      padding: 0 10px;
     }
   }
 }

@@ -84,9 +84,9 @@ class BasicSubjective extends Component {
       med_units: "",
     };
     this.isMale = Window?.global?.gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
-    this.chiefComplaintMaxLength = 500;
-    this.significantSignsLength = 200;
-    this.otherConditionMaxLength = 200;
+    this.chiefComplaintMaxLength = 1500;
+    this.significantSignsLength = 500;
+    this.otherConditionMaxLength = 500;
     this.getPatientEncounterDetails();
     this.complaintType = [];
     SubjectiveHandler().getPatientChiefComplaints(this);

@@ -68,7 +68,7 @@ export default {
                    and IC.hims_d_inventory_tem_category_id = PD.inv_item_category_id and \
                    IG.hims_d_inventory_item_group_id =PD.inv_item_group_id \
                    and procurement_header_id=?" +
-                  strCondition,
+                    strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               } else if (headerResult[0].po_from == "PHR") {
@@ -88,7 +88,7 @@ export default {
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and \
                 IC.hims_d_item_category_id = PD.phar_item_category and IG.hims_d_item_group_id = PD.phar_item_group and procurement_header_id=?" +
-                  strCondition,
+                    strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               }
@@ -141,8 +141,7 @@ export default {
           if (dn_Result.length === 0) {
             _mysql
               .executeQueryWithTransaction({
-                query:
-                  `UPDATE hims_f_procurement_po_header SET is_completed='Y',receipt_generated='Y', po_close_reason=?, po_closed_by=?, po_closed_date=? \
+                query: `UPDATE hims_f_procurement_po_header SET is_completed='Y',receipt_generated='Y', po_close_reason=?, po_closed_by=?, po_closed_date=? \
                   where hims_f_procurement_po_header_id=?;`,
                 values: [
                   input.po_close_reason,
@@ -165,7 +164,7 @@ export default {
                 });
               });
           } else {
-            let _dn_header_id = []
+            let _dn_header_id = [];
             dn_Result.map((o) => {
               _dn_header_id.push(o.hims_f_procurement_dn_header_id);
             });
@@ -178,15 +177,13 @@ export default {
                 printQuery: true,
               })
               .then((grn_Result) => {
-
-                let strQuery = ""
+                let strQuery = "";
                 if (dn_Result.length === grn_Result.length) {
-                  strQuery = " receipt_generated='Y',"
+                  strQuery = " receipt_generated='Y',";
                 }
                 _mysql
                   .executeQueryWithTransaction({
-                    query:
-                      `UPDATE hims_f_procurement_po_header SET ${strQuery} is_completed='Y', po_close_reason=?, po_closed_by=?, po_closed_date=? \
+                    query: `UPDATE hims_f_procurement_po_header SET ${strQuery} is_completed='Y', po_close_reason=?, po_closed_by=?, po_closed_date=? \
                       where hims_f_procurement_po_header_id=?;`,
                     values: [
                       input.po_close_reason,
@@ -221,8 +218,6 @@ export default {
             next(e);
           });
         });
-
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -443,12 +438,21 @@ export default {
 
         // let today = moment().format("YYYY-MM-DD");
 
+        let strAuth = "";
+        // console.log("POREQ", req.body.po_auth_level);
+        if (req.body.po_auth_level === "N") {
+          strAuth = `,authorize1 ='Y', authorize_by_1='${req.userIdentity.algaeh_d_app_user_id}' , 
+            authorize_by_date=now(), authorize2='Y', authorize2_by='${req.userIdentity.algaeh_d_app_user_id}', authorize2_date=now()`;
+        }
+
         _mysql
           .executeQueryWithTransaction({
             query:
               "UPDATE `hims_f_procurement_po_header` SET payment_terms=?, is_posted= ?, sub_total =? , detail_discount =?, extended_total =?,\
                 sheet_level_discount_percent = ?, sheet_level_discount_amount = ?, net_total = ?, total_tax = ?, \
-                net_payable=?, updated_by=?,updated_date=? where hims_f_procurement_po_header_id=?;",
+                net_payable=?, updated_by=?,updated_date=? " +
+              strAuth +
+              " where hims_f_procurement_po_header_id=?;",
             values: [
               input.payment_terms,
               input.is_posted,
@@ -486,10 +490,12 @@ export default {
               if (update_po_detail.length > 0) {
                 for (let i = 0; i < update_po_detail.length; i++) {
                   strQuery += mysql.format(
-                    "UPDATE hims_f_procurement_po_detail set extended_price=?,sub_discount_percentage=?, \
+                    "UPDATE hims_f_procurement_po_detail set authorize_quantity=?,quantity_outstanding=?,extended_price=?,sub_discount_percentage=?, \
                 sub_discount_amount=?,extended_cost=?,net_extended_cost=?,unit_cost=?,\
                 tax_amount=?,total_amount=? where hims_f_procurement_po_detail_id=?;",
                     [
+                      update_po_detail[i].authorize_quantity,
+                      update_po_detail[i].quantity_outstanding,
                       update_po_detail[i].extended_price,
                       update_po_detail[i].sub_discount_percentage,
                       update_po_detail[i].sub_discount_amount,
@@ -721,14 +727,15 @@ export default {
             `select hims_f_procurement_grn_header_id from hims_f_procurement_grn_header where po_id=?`,
             [inputParam.hims_f_procurement_po_header_id]
           );
-          inputParam.is_completed = "Y"
+          inputParam.is_completed = "Y";
         }
         // console.log("inputParam.authorize", inputParam.authorize);
         // console.log("inputParam.authorize", inputParam.po_auth_level);
         if (inputParam.po_auth_level == "1") {
           strQuery = mysql.format(
             `UPDATE hims_f_procurement_po_header SET ${strUpdQry} is_completed = ?, authorize1=?, authorize_by_date=?, authorize_by_1=?, \
-            authorize2=?, authorize2_date=?, authorize2_by=? WHERE hims_f_procurement_po_header_id=?; ` + strRecptQry,
+            authorize2=?, authorize2_date=?, authorize2_by=? WHERE hims_f_procurement_po_header_id=?; ` +
+              strRecptQry,
             [
               inputParam.is_completed,
               inputParam.authorize1,
@@ -744,7 +751,8 @@ export default {
           if (inputParam.authorize == "authorize1") {
             strQuery = mysql.format(
               "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=? \
-              WHERE `hims_f_procurement_po_header_id`=?;" + "select 1=1",
+              WHERE `hims_f_procurement_po_header_id`=?;" +
+                "select 1=1",
               [
                 inputParam.authorize1,
                 new Date(),
@@ -755,7 +763,8 @@ export default {
           } else if (inputParam.authorize == "authorize2") {
             strQuery = mysql.format(
               `UPDATE hims_f_procurement_po_header SET ${strUpdQry} is_completed = ?, \
-                  authorize2=?, authorize2_date=?, authorize2_by=? WHERE hims_f_procurement_po_header_id=?;` + strRecptQry,
+                  authorize2=?, authorize2_date=?, authorize2_by=? WHERE hims_f_procurement_po_header_id=?;` +
+                strRecptQry,
               [
                 inputParam.is_completed,
                 inputParam.authorize2,
@@ -812,11 +821,9 @@ export default {
                 }
               }
               if (receipt_data.length > 0) {
-                qry += mysql.format("UPDATE hims_f_procurement_grn_header SET is_revert='N', payment_terms=? WHERE hims_f_procurement_grn_header_id in (?); ",
-                  [
-                    inputParam.payment_terms,
-                    receipt_data
-                  ]
+                qry += mysql.format(
+                  "UPDATE hims_f_procurement_grn_header SET is_revert='N', payment_terms=? WHERE hims_f_procurement_grn_header_id in (?); ",
+                  [inputParam.payment_terms, receipt_data]
                 );
               }
 

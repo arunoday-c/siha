@@ -44,7 +44,7 @@ const changeEvent = ($this, ctrl, e) => {
     case "quantity":
       if (
         parseFloat(value) > parseFloat($this.state.item_details.qtyhand) &&
-        $this.state.trans_type !== "PR"
+        $this.state.trans_type !== "MR"
       ) {
         swalMessage({
           title: "Selected QTY cannot be greated than QTY in hand",
@@ -299,6 +299,21 @@ const openExchangePopup = ($this, row) => {
 
 const onClickProcess = ($this) => {
   let inputOb = $this.state;
+
+  debugger;
+  if (inputOb.trans_type === null) {
+    swalMessage({
+      title: "Select Transaction Type.",
+      type: "warning",
+    });
+    return;
+  } else if (parseFloat(inputOb.quantity) === 0) {
+    swalMessage({
+      title: "QTY cannot be Zero.",
+      type: "warning",
+    });
+    return;
+  }
   if (inputOb.trans_type === "C") {
     swal({
       title: "Are you sure you want to Consume ?",
@@ -358,6 +373,13 @@ const onClickProcess = ($this) => {
       }
     });
   } else if (inputOb.trans_type === "T") {
+    if (inputOb.to_location_id === null) {
+      swalMessage({
+        title: "Select Location.",
+        type: "warning",
+      });
+      return;
+    }
     swal({
       title: "Are you sure you want to Tranfer ?",
       type: "warning",
@@ -465,10 +487,17 @@ const onClickProcess = ($this) => {
         });
       }
     });
-  } else if (inputOb.trans_type === "PR") {
-    debugger;
+  } else if (inputOb.trans_type === "MR") {
+    if (inputOb.to_location_id === null) {
+      swalMessage({
+        title: "Select Location.",
+        type: "warning",
+      });
+      return;
+    }
     swal({
-      title: "Are you sure you want to Raise Purchase Request ?",
+      title: "Are you sure?",
+      text: "You want to Raise Purchase Request ?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -491,11 +520,13 @@ const onClickProcess = ($this) => {
         inputOb.item_details.from_qtyhand = inputOb.item_details.qtyhand;
         inputOb.item_details.item_uom = inputOb.item_details.stocking_uom_id;
 
-        inputOb.from_location_id = $this.state.to_location_id;
-        inputOb.from_location_type = $this.props.to_location_type;
+        inputOb.from_location_id = $this.props.location_id;
+        inputOb.from_location_type = $this.props.location_type;
+        // inputOb.from_location_id = $this.state.to_location_id;
+        // inputOb.from_location_type = $this.props.to_location_type;
         inputOb.is_completed = "N";
         inputOb.cancelled = "N";
-        inputOb.requistion_type = "PR";
+        inputOb.requistion_type = "MR";
         inputOb.status = "PEN";
         inputOb.no_of_transfers = 0;
         inputOb.no_of_po = 0;
@@ -545,6 +576,7 @@ const getInventoryOptions = ($this) => {
         $this.setState({
           trans_ack_required: res.data.records[0].trans_ack_required,
           requisition_auth_level: res.data.records[0].requisition_auth_level,
+          req_warehouse: res.data.records[0].req_warehouse,
         });
       }
     },

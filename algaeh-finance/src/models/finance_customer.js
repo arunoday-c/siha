@@ -38,20 +38,20 @@ export default {
         where SD.child_id in(select child_id from hims_d_customer
           union all
           select child_id from hims_d_insurance_sub  where child_id is not null)  and  H.posted='N';   `,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         // req.records = result;
         req.records = {
           result: result[0],
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
-          day_end_pending: result[3][0]["day_end_pending"]
+          day_end_pending: result[3][0]["day_end_pending"],
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -102,9 +102,9 @@ export default {
         inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id
         where SD.child_id in(?)  and  H.posted='N';`,
         values: [child_id, child_id, child_id, child_id, child_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         // req.records = result;
@@ -114,11 +114,11 @@ export default {
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
           past_payments: result[3][0]["past_payments"],
-          day_end_pending: result[4][0]["day_end_pending"]
+          day_end_pending: result[4][0]["day_end_pending"],
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -138,8 +138,8 @@ export default {
           printQuery: true,
         })
         .then((voucher_result) => {
-          const header_data = voucher_result[0][0]
-          const detail_data = voucher_result[1]
+          const header_data = voucher_result[0][0];
+          const detail_data = voucher_result[1];
           _mysql
             .executeQueryWithTransaction({
               query:
@@ -172,24 +172,25 @@ export default {
                 new Date(),
                 finance_voucher_header_id,
                 finance_voucher_header_id,
-                day_end_header_id
+                day_end_header_id,
               ],
               printQuery: true,
             })
             .then((result) => {
-              const header_result = result[0]
-              console.log("header_result", header_result)
-              console.log("result", result)
+              const header_result = result[0];
+              console.log("header_result", header_result);
+              console.log("result", result);
 
               _mysql
                 .executeQueryWithTransaction({
-                  query: "insert into finance_voucher_revert_details (??) values ?;",
+                  query:
+                    "insert into finance_voucher_revert_details (??) values ?;",
                   values: detail_data,
                   bulkInsertOrUpdate: true,
                   printQuery: true,
                   // excludeValues: ["disabled", "paytypedisable"],
                   extraValues: {
-                    revert_header_id: header_result.insertId
+                    revert_header_id: header_result.insertId,
                   },
                 })
                 .then((result2) => {
@@ -219,5 +220,33 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };
+
+export function getAllCreditNotes(req, res, next) {
+  const _mysql = new algaehMysql();
+  const child_id = req.query.child_id;
+  try {
+    _mysql
+      .executeQuery({
+        query: `select H.finance_voucher_header_id,H.voucher_no,H.invoice_no,H.amount,H.payment_date,H.narration,H.settled_amount,D.finance_voucher_id
+from finance_voucher_header as H inner join finance_voucher_details as D
+on H.finance_voucher_header_id = D.voucher_header_id
+where H.voucher_type ='credit_note'  and H.settlement_status ='P' and D.child_id = ? ;`,
+        values: [child_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}

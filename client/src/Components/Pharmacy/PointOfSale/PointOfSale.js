@@ -53,7 +53,7 @@ class PointOfSale extends Component {
     super(props);
 
     this.state = {
-      mode_of_pay: "",
+      mode_of_pay: "1",
       pay_cash: "CA",
       pay_card: "CD",
       pay_cheque: "CH",
@@ -118,6 +118,19 @@ class PointOfSale extends Component {
         mappingName: "poslocations",
       },
     });
+
+    if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
+      this.props.getIDTypes({
+        uri: "/identity/get",
+        module: "masterSettings",
+        data: { identity_status: "A" },
+        method: "GET",
+        redux: {
+          type: "IDTYPE_GET_DATA",
+          mappingName: "idtypes",
+        },
+      });
+    }
 
     let IOputs = {};
     let _screenName = getCookie("ScreenName").replace("/", "");
@@ -387,10 +400,10 @@ class PointOfSale extends Component {
               ) : (
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       forceLabel: "Patient Name",
-                      // isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -404,11 +417,97 @@ class PointOfSale extends Component {
                       },
                     }}
                   />
+                  <AlagehAutoComplete
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      forceLabel: "ID Type",
+                      isImp: true,
+                    }}
+                    selector={{
+                      name: "primary_identity_id",
+                      className: "select-fld",
+                      value: this.state.primary_identity_id,
+                      dataSource: {
+                        textField: "identity_document_name",
+                        valueField: "hims_d_identity_document_id",
+                        data: this.props.idtypes,
+                      },
+                      onChange: changeTexts.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          primary_identity_id: null,
+                        });
+                      },
+                      others: {
+                        disabled: this.state.OTItemAddDis,
+                      },
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      fieldName: "ID Number",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "primary_id_no",
+                      value: this.state.primary_id_no,
+                      events: {
+                        onChange: changeTexts.bind(this, this),
+                      },
+                      others: {
+                        disabled: this.state.OTItemAddDis,
+                        placeholder: "Enter ID Number",
+                      },
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Nationality",
+                      isImp: false,
+                    }}
+                    selector={{
+                      name: "nationality_id",
+                      className: "select-fld",
+                      value: this.state.nationality_id,
+                      dataSource: {
+                        textField: "nationality",
+                        valueField: "hims_d_nationality_id",
+                        data: this.props.nationalities,
+                      },
+                      onChange: nationalityhandle.bind(this, this),
+                      others: {
+                        disabled: this.state.OTItemAddDis,
+                      },
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Payment", isImp: false }}
+                    selector={{
+                      name: "mode_of_pay",
+                      className: "select-fld",
+                      value: this.state.mode_of_pay,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MODE_OF_PAY,
+                      },
+                      onChange: changeTexts.bind(this, this),
+                      others: {
+                        disabled: this.state.OTItemAddDis,
+                      },
+                    }}
+                  />
 
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      forceLabel: "Prescribed Doctor",
+                      forceLabel: "Prescribed By",
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -440,46 +539,6 @@ class PointOfSale extends Component {
                       events: {
                         onChange: changeTexts.bind(this, this),
                       },
-                      others: {
-                        disabled: this.state.OTItemAddDis,
-                      },
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Nationality",
-                      // isImp: true
-                    }}
-                    selector={{
-                      name: "nationality_id",
-                      className: "select-fld",
-                      value: this.state.nationality_id,
-                      dataSource: {
-                        textField: "nationality",
-                        valueField: "hims_d_nationality_id",
-                        data: this.props.nationalities,
-                      },
-                      onChange: nationalityhandle.bind(this, this),
-                      others: {
-                        disabled: this.state.OTItemAddDis,
-                      },
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Mode of Payment" }}
-                    selector={{
-                      name: "mode_of_pay",
-                      className: "select-fld",
-                      value: this.state.mode_of_pay,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.MODE_OF_PAY,
-                      },
-                      onChange: changeTexts.bind(this, this),
                       others: {
                         disabled: this.state.OTItemAddDis,
                       },
@@ -724,6 +783,7 @@ function mapStateToProps(state) {
     existinsurance: state.existinsurance,
     nationalities: state.nationalities,
     hospitalservices: state.hospitalservices,
+    idtypes: state.idtypes,
   };
 }
 
@@ -738,6 +798,7 @@ function mapDispatchToProps(dispatch) {
       getPrescriptionPOS: AlgaehActions,
       PosHeaderCalculations: AlgaehActions,
       getNationalities: AlgaehActions,
+      getIDTypes: AlgaehActions,
     },
     dispatch
   );

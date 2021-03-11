@@ -466,8 +466,8 @@ class BatchWiseStock extends Component {
                         value: "T",
                       },
                       {
-                        name: "Purchase Request",
-                        value: "PR",
+                        name: "Material Request",
+                        value: "MR",
                       },
                     ],
                   },
@@ -481,7 +481,7 @@ class BatchWiseStock extends Component {
                   autoComplete: "off",
                 }}
               />
-              {this.state.trans_type === "PR" ? (
+              {this.state.trans_type === "MR" ? (
                 <AlagehAutoComplete
                   div={{ className: "col-4 form-group mandatory" }}
                   label={{ forceLabel: "Request From", isImp: true }}
@@ -493,7 +493,7 @@ class BatchWiseStock extends Component {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
                       data:
-                        this.state.trans_type === "T"
+                        this.props.req_warehouse === "N"
                           ? this.props.inventorylocations
                           : ware_house,
                     },

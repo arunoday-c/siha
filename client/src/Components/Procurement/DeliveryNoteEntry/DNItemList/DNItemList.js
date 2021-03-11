@@ -323,6 +323,24 @@ class DNItemList extends Component {
                                                 item.quantity_outstanding
                                               )}
                                             </strong>
+                                          </small>{" "}
+                                          <br />
+                                          <small>
+                                            Qty Pending to Receive:
+                                            <strong>
+                                              {parseFloat(
+                                                item.quantity_outstanding
+                                              )}
+                                            </strong>
+                                          </small>{" "}
+                                          <br />
+                                          <small>
+                                            Qty. Received Till Date:
+                                            <strong>
+                                              {parseFloat(
+                                                item.quantity_recieved_todate
+                                              )}
+                                            </strong>
                                           </small>
                                         </div>
                                       }
@@ -331,16 +349,19 @@ class DNItemList extends Component {
                                         <p
                                           style={{
                                             width: `${
-                                              (parseFloat(item.dn_quantity) /
+                                              (parseFloat(
+                                                item.quantity_recieved_todate
+                                              ) /
                                                 parseFloat(item.po_quantity)) *
                                               100
                                             }%`,
                                           }}
                                         >
-                                          Pending Qty -{" "}
-                                          {parseFloat(
-                                            item.quantity_outstanding
-                                          )}
+                                          Pending Qty -
+                                          {parseFloat(item.po_quantity) -
+                                            parseFloat(
+                                              item.quantity_recieved_todate
+                                            )}
                                         </p>
                                       </div>
                                     </Popover>
@@ -354,7 +375,9 @@ class DNItemList extends Component {
                                       <small>
                                         Deliverd Qty:
                                         <span>
-                                          {parseFloat(item.dn_quantity)}
+                                          {parseFloat(
+                                            item.quantity_recieved_todate
+                                          )}
                                         </span>
                                       </small>
                                     </div>
@@ -1270,135 +1293,117 @@ class DNItemList extends Component {
                             </div>
                           </div>
                         </div>
-                        <div className="col">
-                          <div className="row">
-                            <div
-                              className="portlet portlet-bordered"
-                              style={{ marginBottom: 60 }}
-                            >
-                              <div className="portlet-title">
-                                <div className="caption">
-                                  <h3 className="caption-subject">
-                                    Attachments
-                                  </h3>
-                                </div>
-                              </div>
-                              <div className="portlet-body">
-                                <div className="row">
-                                  <div className="col-3">
-                                    {" "}
-                                    <Dragger
-                                      disabled={!this.state.saveEnable}
-                                      accept=".doc,.docx,application/msword,.pdf"
-                                      name="delivery_files"
-                                      multiple={false}
-                                      onRemove={() => {
-                                        this.setState((state) => {
-                                          return {
-                                            delivery_files: [],
-                                            docChanged: false,
-                                            // saveEnable: state.dataExists && !newFileList.length,
-                                          };
-                                        });
-                                      }}
-                                      beforeUpload={(file) => {
-                                        this.setState((state) => ({
-                                          delivery_files: [file],
-                                          docChanged: true,
-
-                                          // saveEnable: false,
-                                        }));
-                                        return false;
-                                      }}
-                                      fileList={this.state.delivery_files}
-                                    >
-                                      <p className="upload-drag-icon">
-                                        <i className="fas fa-file-upload"></i>
-                                      </p>
-                                      <p className="ant-upload-text">
-                                        {this.state.delivery_files
-                                          ? `Click or Drag a file to replace the current file`
-                                          : `Click or Drag a file to this area to upload`}
-                                      </p>
-                                    </Dragger>
-                                  </div>
-                                  <div className="col-3"></div>
-                                  <div className="col-6">
-                                    <div className="row">
-                                      <div className="col-12">
-                                        <ul className="receiptEntryAttachment">
-                                          {this.state.delivery_docs?.length ? (
-                                            this.state.delivery_docs.map(
-                                              (doc) => (
-                                                <li>
-                                                  <b> {doc.filename} </b>
-                                                  <span>
-                                                    <i
-                                                      className="fas fa-download"
-                                                      onClick={() =>
-                                                        this.downloadDoc(doc)
-                                                      }
-                                                    ></i>
-                                                    <i
-                                                      className="fas fa-eye"
-                                                      onClick={() =>
-                                                        this.downloadDoc(
-                                                          doc,
-                                                          true
-                                                        )
-                                                      }
-                                                    ></i>
-                                                    {!this.state.postEnable ? (
-                                                      <i
-                                                        className="fas fa-trash"
-                                                        onClick={() =>
-                                                          this.deleteDoc(doc)
-                                                        }
-                                                      ></i>
-                                                    ) : null}
-                                                  </span>
-                                                </li>
-                                              )
-                                            )
-                                          ) : (
-                                            <div
-                                              className="col-12 noAttachment"
-                                              key={1}
-                                            >
-                                              <p>No Attachments Available</p>
-                                            </div>
-                                          )}
-                                        </ul>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  {/* <AlgaehSecurityComponent componentCode="SALES_INV_MAIN"> */}
-
-                                  {/* </AlgaehSecurityComponent> */}
-                                </div>
-                              </div>
-                            </div>
-                            {this.state.docChanged &&
-                            this.state.delivery_note_number ? (
-                              <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={this.saveDocument}
-                                disabled={!this.state.docChanged}
-                              >
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Upload Documents",
-                                    returnText: true,
-                                  }}
-                                />
-                              </button>
-                            ) : null}
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
+
+                  <div
+                    className="portlet portlet-bordered"
+                    style={{ marginBottom: 60 }}
+                  >
+                    <div className="portlet-title">
+                      <div className="caption">
+                        <h3 className="caption-subject">Attachments</h3>
+                      </div>
+                    </div>
+                    <div className="portlet-body">
+                      <div className="row">
+                        <div className="col-12 deliveryNoteAttachmentDragger">
+                          {" "}
+                          <Dragger
+                            disabled={!this.state.saveEnable}
+                            accept=".doc,.docx,application/msword,.pdf"
+                            name="delivery_files"
+                            multiple={false}
+                            onRemove={() => {
+                              this.setState((state) => {
+                                return {
+                                  delivery_files: [],
+                                  docChanged: false,
+                                  // saveEnable: state.dataExists && !newFileList.length,
+                                };
+                              });
+                            }}
+                            beforeUpload={(file) => {
+                              this.setState((state) => ({
+                                delivery_files: [file],
+                                docChanged: true,
+
+                                // saveEnable: false,
+                              }));
+                              return false;
+                            }}
+                            fileList={this.state.delivery_files}
+                          >
+                            <p className="upload-drag-icon">
+                              <i className="fas fa-file-upload"></i>
+                            </p>
+                            <p className="ant-upload-text">
+                              {this.state.delivery_files
+                                ? `Click to Attach File`
+                                : `Click to Attach File`}
+                            </p>
+                          </Dragger>
+                        </div>
+
+                        <div className="col-12">
+                          <div className="row">
+                            <div className="col-12">
+                              <ul className="deliveryNoteAttachmentList">
+                                {this.state.delivery_docs?.length ? (
+                                  this.state.delivery_docs.map((doc) => (
+                                    <li>
+                                      <b> {doc.filename} </b>
+                                      <span>
+                                        <i
+                                          className="fas fa-download"
+                                          onClick={() => this.downloadDoc(doc)}
+                                        ></i>
+                                        <i
+                                          className="fas fa-eye"
+                                          onClick={() =>
+                                            this.downloadDoc(doc, true)
+                                          }
+                                        ></i>
+                                        {!this.state.postEnable ? (
+                                          <i
+                                            className="fas fa-trash"
+                                            onClick={() => this.deleteDoc(doc)}
+                                          ></i>
+                                        ) : null}
+                                      </span>
+                                    </li>
+                                  ))
+                                ) : (
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        {/* <AlgaehSecurityComponent componentCode="SALES_INV_MAIN"> */}
+
+                        {/* </AlgaehSecurityComponent> */}
+                      </div>
+                    </div>
+                  </div>
+                  {this.state.docChanged && this.state.delivery_note_number ? (
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.saveDocument}
+                      disabled={!this.state.docChanged}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Upload Documents",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>

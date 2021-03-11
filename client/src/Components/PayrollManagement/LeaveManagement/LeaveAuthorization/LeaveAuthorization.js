@@ -642,11 +642,6 @@ export default class LeaveAuthorization extends Component {
                             <span>{row.employee_code}</span>
                           );
                         },
-                        className: (row) => {
-                          return row.status !== "REJ" && row.status !== "CAN"
-                            ? "greenCell"
-                            : null;
-                        },
                       },
                       {
                         fieldName: "employee_name",

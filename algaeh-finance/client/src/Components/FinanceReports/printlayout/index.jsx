@@ -49,6 +49,7 @@ export default function ({
         console.error("error", error);
       });
   }
+
   return (
     <>
       <div className="row" ref={createPrintObject}>

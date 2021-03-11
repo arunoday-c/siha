@@ -55,6 +55,7 @@ class InvStockEnquiry extends Component {
       reorder_qty: "N",
       trans_ack_required: "N",
       trans_required: false,
+      req_warehouse: "N",
     };
     getInventoryOptions(this);
   }
@@ -506,6 +507,7 @@ class InvStockEnquiry extends Component {
           location_type={this.state.location_type}
           trans_ack_required={this.state.trans_ack_required}
           requisition_auth_level={this.state.requisition_auth_level}
+          req_warehouse={this.state.req_warehouse}
           trans_required={this.state.trans_required}
           location_description={this.state.location_description}
           location_description={this.state.location_description}
