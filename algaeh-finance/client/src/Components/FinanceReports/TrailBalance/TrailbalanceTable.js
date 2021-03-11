@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PrintLayout from "../printlayout";
 import DrillDown from "../drillDown";
+import _ from "lodash";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 export default function TrailBalaceReport({
   style,
@@ -208,6 +209,14 @@ export default function TrailBalaceReport({
         columns={columns}
         data={accounts || []}
         layout={layout}
+        tableprops={{
+          aggregate: (field) => {
+            if (field === "label") return null;
+            const val = _.sumBy(accounts, (f) => parseFloat(f[field]));
+            return getAmountFormart(parseFloat(val), { appendSymbol: false });
+          },
+          footer: true,
+        }}
       />
     </>
   );
