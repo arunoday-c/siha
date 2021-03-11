@@ -1144,6 +1144,7 @@ class PurchaseOrderEntry extends Component {
                         visible: true,
                       });
                     }}
+                    disabled={this.state.is_posted === "N" ? true : false}
                   >
                     <AlgaehLabel
                       label={{

@@ -50,6 +50,7 @@ export default {
               "uom_id",
               "stocking_uom",
               "conversion_factor",
+              "consumption_factor",
             ];
             _mysql
               .executeQuery({
@@ -934,6 +935,7 @@ export default {
                     "item_master_id",
                     "stocking_uom",
                     "conversion_factor",
+                    "consumption_factor",
                   ];
 
                   _mysql

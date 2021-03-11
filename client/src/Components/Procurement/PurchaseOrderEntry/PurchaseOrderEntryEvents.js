@@ -471,6 +471,7 @@ const SavePOEnrty = ($this, from) => {
       type: "warning",
       title: "Select Vendor",
     });
+    return;
   }
   if ($this.state.po_from === "PHR") {
     $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
