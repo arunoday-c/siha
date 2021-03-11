@@ -484,12 +484,21 @@ const SavePOEnrty = ($this, from) => {
     $this.state.is_posted = "Y";
     strMessage = "Sent for authorization";
   }
-
   if ($this.state.hims_f_procurement_po_header_id !== null) {
     strUri = "/PurchaseOrderEntry/postPurchaseOrderEntry";
   } else {
     strUri = "/PurchaseOrderEntry/addPurchaseOrderEntry";
   }
+
+  if ($this.state.po_auth_level === "N") {
+    for (let i = 0; i < $this.state.po_entry_detail.length; i++) {
+      $this.state.po_entry_detail[i].authorize_quantity =
+        $this.state.po_entry_detail[i].total_quantity;
+      $this.state.po_entry_detail[i].quantity_outstanding =
+        $this.state.po_entry_detail[i].total_quantity;
+    }
+  }
+
   const procumentInputs = [
     "hims_f_procurement_po_header_id",
     "purchase_number",
@@ -507,7 +516,6 @@ const SavePOEnrty = ($this, from) => {
     "vendor_quotation_header_id",
     "from_multiple_requisition",
     "payment_terms",
-
     "comment",
     "sub_total",
     "detail_discount",
@@ -526,6 +534,7 @@ const SavePOEnrty = ($this, from) => {
     "hospital_id",
     "po_services",
     "delete_po_services",
+    "po_auth_level",
   ];
   let sendJsonBody = {};
   procumentInputs.forEach((item) => {
@@ -802,7 +811,7 @@ const AuthorizePOEntry = ($this, authorize) => {
         authorize2 = "Y";
       }
     }
-
+    debugger;
     const procumentInputs = [
       "hims_f_procurement_po_header_id",
       "purchase_number",
@@ -1061,6 +1070,7 @@ const getPOOptions = ($this) => {
     method: "GET",
     module: "procurement",
     onSuccess: (res) => {
+      debugger;
       if (res.data.success) {
         $this.setState({
           po_auth_level: res.data.records[0].po_auth_level,
