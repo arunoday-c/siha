@@ -7,6 +7,7 @@ import {
   // MainContext,
 } from "algaeh-react-components";
 import { useForm, Controller, useWatch } from "react-hook-form";
+import BedCell from "./BedCell";
 
 interface IFormInputs {
   // name: string;
@@ -49,7 +50,7 @@ export default function BedManagement(props: any) {
     }
 
     if (response.data.success) {
-      setBedStatusData(response.data.records);
+      setBedStatusData(response.data.records.result);
     }
   };
   const getWardHeaderData = async (data?: string) => {
@@ -183,7 +184,7 @@ export default function BedManagement(props: any) {
                     <div className="row ">
                       <div className="col-12 bedCol">
                         <div className="row">
-                          {item.groupDetail.map((data: any, index: number) => {
+                          {/* {item.groupDetail.map((data: any, index: number) => {
                             const {
                               bed_desc,
                               bed_short_name,
@@ -196,17 +197,18 @@ export default function BedManagement(props: any) {
                                 {/* <span>
                                   <b>{service_name}</b>
                                 </span> */}
-                                <span>
+                          {/* <span>
                                   <b>
                                     {bed_short_name}-{bed_no}
                                   </b>
                                 </span>
                                 <span>{bed_desc}</span>
                                 {/* <span>{bed_short_name}</span> */}
-                              </div>
-                            );
-                          })}
-                          {/* </div> */}
+
+                          {/* );
+                          })}  */}
+
+                          <BedCell item={item} />
                         </div>
                       </div>
                     </div>

@@ -242,9 +242,7 @@ export async function getWardHeaderData(
     let whereCondition = {};
     if (req.query.hims_adm_ward_header_id) {
       whereCondition = {
-        where: {
-          hims_adm_ward_header_id: req.query.hims_adm_ward_header_id,
-        },
+        hims_adm_ward_header_id: req.query.hims_adm_ward_header_id,
       };
     }
     const result = await hims_adm_ward_header.findAll({
@@ -291,7 +289,7 @@ export async function getWardHeaderData(
       },
       // nest: false,
       // raw: true,
-      group: ["hims_adm_ward_header_id"],
+      // group: ["hims_adm_ward_header_id"],
     });
     // req["records"] = result;
 
