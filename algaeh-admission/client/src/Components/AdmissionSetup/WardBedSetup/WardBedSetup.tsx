@@ -311,7 +311,6 @@ export default function WardBedSetup(Props: any) {
     );
     if (error) {
       if (error.show === true) {
-        debugger;
         let extendedError: Error | any = error;
         AlgaehMessagePop({
           display: extendedError.response.data.message,
@@ -321,7 +320,6 @@ export default function WardBedSetup(Props: any) {
       }
     }
     if (response.data.success) {
-      debugger;
       setWardHeaderData(response.data.records);
     }
   };
@@ -677,12 +675,13 @@ export default function WardBedSetup(Props: any) {
                                   setWardDetailsData((data: any) => {
                                     const otherDetails = data.filter(
                                       (f: any) =>
-                                        f.hims_adm_ward_header_id !==
-                                        row["hims_adm_ward_header_id"]
+                                        f.hims_adm_ward_detail_id !==
+                                        row["hims_adm_ward_detail_id"]
                                     );
 
                                     return [...otherDetails];
                                   });
+                                  getWardHeaderData();
                                 } else {
                                   setWardDetailsData((data: any) => {
                                     const otherDetails = data
