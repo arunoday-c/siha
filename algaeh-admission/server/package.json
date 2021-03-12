@@ -1,5 +1,5 @@
 {
-  "name": "algaeh-day-care",
+  "name": "algaeh-admission",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
@@ -9,8 +9,8 @@
     "tsc:watch": "tsc",
     "dev:server": "NODE_ENV=development nodemon --watch src -e ts",
     "dev": "run-p  dev:*",
-    "client-build-webpack": "webpack --config webpack.prod.js --env=Client_Builds",
-    "build": "webpack --config webpack.prod.js",
+    "client-build-webpack": "NODE_ENV=production webpack --config webpack.prod.js --env=Client_Builds",
+    "build": "NODE_ENV=production webpack --config webpack.prod.js",
     "bundle": "npm run client-build-webpack"
   },
   "keywords": [],

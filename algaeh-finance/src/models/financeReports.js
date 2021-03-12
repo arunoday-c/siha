@@ -3073,8 +3073,16 @@ function createHierarchyTransactionTB(
           ) {
             child.push({
               finance_account_child_id: item["finance_account_child_id"],
-              tr_debit_amount: tr_debit_amount,
-              tr_credit_amount: tr_credit_amount,
+              tr_debit_amount:
+                TR_BALANCE.is_opening_bal === "Y" &&
+                TR_BALANCE.payment_date === from_date
+                  ? 0
+                  : tr_debit_amount,
+              tr_credit_amount:
+                TR_BALANCE.is_opening_bal === "Y" &&
+                TR_BALANCE.payment_date === from_date
+                  ? 0
+                  : tr_credit_amount,
               cb_amount: ` ${
                 cr_dr_required === undefined || cr_dr_required === "Y"
                   ? `${Math.abs(cb_amount)} ${trans_symbol} `

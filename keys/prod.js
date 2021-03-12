@@ -5,6 +5,7 @@ exports.default = {
   bodyLimit: "15MB",
 
   mysqlDb: {
+    dialect: "mysql",
     connectionLimit: 50,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
