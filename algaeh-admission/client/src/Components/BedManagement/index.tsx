@@ -7,7 +7,7 @@ import {
   // MainContext,
 } from "algaeh-react-components";
 import { useForm, Controller, useWatch } from "react-hook-form";
-import BedCell from "./BedCell";
+import { SingleCell } from "./SingleCell";
 
 interface IFormInputs {
   // name: string;
@@ -184,31 +184,30 @@ export default function BedManagement(props: any) {
                     <div className="row ">
                       <div className="col-12 bedCol">
                         <div className="row">
-                          {/* {item.groupDetail.map((data: any, index: number) => {
+                          {item.groupDetail.map((data: any, index: number) => {
                             const {
                               bed_desc,
                               bed_short_name,
                               // bed_id,
                               bed_no,
                               // service_name,
+                              hims_adm_ward_detail_id,
                             } = data;
                             return (
-                              <div className="col-12 bedBox" key={index}>
-                                {/* <span>
-                                  <b>{service_name}</b>
-                                </span> */}
-                          {/* <span>
-                                  <b>
-                                    {bed_short_name}-{bed_no}
-                                  </b>
-                                </span>
-                                <span>{bed_desc}</span>
-                                {/* <span>{bed_short_name}</span> */}
+                              <div key={hims_adm_ward_detail_id}>
+                                <SingleCell
+                                  hims_adm_ward_detail_id={
+                                    hims_adm_ward_detail_id
+                                  }
+                                  bed_short_name={bed_short_name}
+                                  bed_no={bed_no}
+                                  bed_desc={bed_desc}
+                                />
+                              </div>
+                            );
+                          })}
 
-                          {/* );
-                          })}  */}
-
-                          <BedCell item={item} />
+                          {/* <BedCell item={item} /> */}
                         </div>
                       </div>
                     </div>

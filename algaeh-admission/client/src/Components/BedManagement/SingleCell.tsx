@@ -1,6 +1,6 @@
 import React from "react";
 
-function SingleCell({
+export function SingleCell({
   hims_adm_ward_detail_id,
   bed_short_name,
   bed_no,
@@ -12,21 +12,19 @@ function SingleCell({
   bed_desc: string;
 }) {
   return (
-    <div>
-      <div className="col-12 bedBox" key={hims_adm_ward_detail_id}>
-        {/* <span>
+    <div className="col-12 bedBox" key={hims_adm_ward_detail_id}>
+      {/* <span>
                                   <b>{service_name}</b>
                                 </span> */}
-        <span>
-          <b>
-            {bed_short_name}-{bed_no}
-          </b>
-        </span>
-        <span>{bed_desc}</span>
-        {/* <span>{bed_short_name}</span> */}
-      </div>
+      <span>
+        <b>
+          {bed_short_name}-{bed_no}
+        </b>
+      </span>
+      <span>{bed_desc}</span>
+      {/* <span>{bed_short_name}</span> */}
     </div>
   );
 }
 
-export default SingleCell;
+// export function SingleCell;
