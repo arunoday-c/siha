@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
@@ -27,7 +27,7 @@ class PhysicianList extends Component {
       sub_department_id: null,
       department_error: false,
       department_error_text: "",
-      description: ""
+      description: "",
     };
   }
 
@@ -51,7 +51,7 @@ class PhysicianList extends Component {
   deptDropDownHandler(context, value) {
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
-        .where(w => w.sub_department_id === this.state.sub_department_id)
+        .where((w) => w.sub_department_id === this.state.sub_department_id)
         .firstOrDefault();
       this.setState({ doctors: dept.doctors });
 
@@ -70,20 +70,20 @@ class PhysicianList extends Component {
       uri: "/department/get/get_All_Doctors_DepartmentWise",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
             departments: response.data.records.departmets,
-            doctors: response.data.records.doctors
+            doctors: response.data.records.doctors,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.messag,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -92,7 +92,7 @@ class PhysicianList extends Component {
     if (this.state.sub_department_id === null) {
       this.setState({
         department_error: true,
-        department_error_text: "Please Select a department"
+        department_error_text: "Please Select a department",
       });
     } else {
       AlgaehLoader({ show: true });
@@ -102,9 +102,9 @@ class PhysicianList extends Component {
         data: {
           sub_dept_id: this.state.sub_department_id,
           month: this.state.month,
-          year: this.state.year
+          year: this.state.year,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             AlgaehLoader({ show: false });
 
@@ -112,17 +112,17 @@ class PhysicianList extends Component {
               scheduleList: response.data.records,
 
               department_error_text: "",
-              department_error: false
+              department_error: false,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -136,7 +136,7 @@ class PhysicianList extends Component {
       <div className="physician_list">
         <AlgaehModalPopUp
           events={{
-            onClose: this.handleClose.bind(this)
+            onClose: this.handleClose.bind(this),
           }}
           title="Cancel Working Hours"
           openPopup={this.state.openModal}
@@ -149,18 +149,18 @@ class PhysicianList extends Component {
                     div={{ className: "col-lg-3" }}
                     label={{
                       forceLabel: "Selected Doctor",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "from_time",
                       value: this.state.from_time,
                       events: {
-                        onChange: null
+                        onChange: null,
                       },
                       others: {
-                        disabled: true
-                      }
+                        disabled: true,
+                      },
                     }}
                   />
                   <AlgaehDateHandler
@@ -168,12 +168,12 @@ class PhysicianList extends Component {
                     label={{ forceLabel: "Selected From Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "from_date"
+                      name: "from_date",
                     }}
                     events={{
-                      onChange: selectedDate => {
+                      onChange: (selectedDate) => {
                         this.setState({ from_date: selectedDate });
-                      }
+                      },
                     }}
                     value={this.state.from_date}
                   />
@@ -182,12 +182,12 @@ class PhysicianList extends Component {
                     label={{ forceLabel: "Selected To Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "to_date"
+                      name: "to_date",
                     }}
                     events={{
-                      onChange: selectedDate => {
+                      onChange: (selectedDate) => {
                         this.setState({ to_date: selectedDate });
-                      }
+                      },
                     }}
                     value={this.state.to_date}
                   />
@@ -278,7 +278,7 @@ class PhysicianList extends Component {
 
         <div className="col-lg-12">
           <MyContext.Consumer>
-            {context => (
+            {(context) => (
               <div className="row">
                 <div className="col portlet portlet-bordered">
                   <div className="portlet-title">
@@ -309,7 +309,7 @@ class PhysicianList extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "department_name"
+                            fieldName: "department_name",
                           }}
                           selector={{
                             name: "sub_department_id",
@@ -318,12 +318,12 @@ class PhysicianList extends Component {
                             dataSource: {
                               textField: "sub_department_name",
                               valueField: "sub_department_id",
-                              data: this.state.departments
+                              data: this.state.departments,
                             },
                             onChange: this.deptDropDownHandler.bind(
                               this,
                               context
-                            )
+                            ),
                           }}
                           error={this.state.department_error}
                           helperText={this.state.department_error_text}
@@ -362,7 +362,7 @@ class PhysicianList extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
-                            forceLabel: "Select Month"
+                            fieldName: "select_month",
                           }}
                           selector={{
                             sort: "off",
@@ -372,28 +372,28 @@ class PhysicianList extends Component {
                             dataSource: {
                               textField: "name",
                               valueField: "value",
-                              data: GlobalVariables.MONTHS
+                              data: GlobalVariables.MONTHS,
                             },
-                            onChange: this.dropDownHandler.bind(this)
+                            onChange: this.dropDownHandler.bind(this),
                           }}
                         />
 
                         <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
-                            forceLabel: "Year",
-                            isImp: true
+                            fieldName: "year",
+                            isImp: true,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "year",
                             value: this.state.year,
                             events: {
-                              onChange: this.textHandler.bind(this)
+                              onChange: this.textHandler.bind(this),
                             },
                             others: {
-                              type: "number"
-                            }
+                              type: "number",
+                            },
                           }}
                         />
 
