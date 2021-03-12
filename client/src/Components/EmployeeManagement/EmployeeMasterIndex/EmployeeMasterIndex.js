@@ -581,7 +581,7 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "department_name",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Department" }} />
+                        <AlgaehLabel label={{ fieldName: "department" }} />
                       ),
 
                       others: {
@@ -594,7 +594,7 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "sub_department_name",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Sub Department" }} />
+                        <AlgaehLabel label={{ fieldName: "sub_department" }} />
                       ),
 
                       others: {

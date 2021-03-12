@@ -1021,7 +1021,7 @@ class SelfPersonalDetails extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Designation",
+                        fieldName: "designation",
                       }}
                     />
                     <h6>{empDetails.designation}</h6>
@@ -1029,7 +1029,7 @@ class SelfPersonalDetails extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Department",
+                        fieldName: "department",
                       }}
                     />
                     <h6>{empDetails.sub_department_name}</h6>
@@ -1375,7 +1375,7 @@ class SelfPersonalDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-2 " }}
                     label={{
-                      forceLabel: "Year",
+                      fieldName: "year",
                       isImp: false,
                     }}
                     selector={{
@@ -1393,7 +1393,7 @@ class SelfPersonalDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-3 paddingLeft" }}
                     label={{
-                      forceLabel: "Month",
+                      fieldName: "select_month",
                       isImp: false,
                     }}
                     selector={{
@@ -1816,7 +1816,7 @@ class SelfPersonalDetails extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-2" }}
                       label={{
-                        forceLabel: "Designation",
+                        fieldName: "designation",
                         isImp: true,
                       }}
                       textBox={{
@@ -1835,7 +1835,7 @@ class SelfPersonalDetails extends Component {
                     <AlgaehDateHandler
                       div={{ className: "col-3" }}
                       label={{
-                        forceLabel: "From Date",
+                        fieldName: "from_date",
                         isImp: true,
                       }}
                       textBox={{
@@ -1867,7 +1867,7 @@ class SelfPersonalDetails extends Component {
                     <AlgaehDateHandler
                       div={{ className: "col-3" }}
                       label={{
-                        forceLabel: "To Date",
+                        fieldName: "to_date",
                         isImp: true,
                       }}
                       textBox={{
@@ -2015,9 +2015,7 @@ class SelfPersonalDetails extends Component {
                         {
                           fieldName: "designation",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Designation" }}
-                            />
+                            <AlgaehLabel label={{ fieldName: "designation" }} />
                           ),
                           editorTemplate: (row) => {
                             return (
@@ -2046,7 +2044,7 @@ class SelfPersonalDetails extends Component {
                         {
                           fieldName: "from_date",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "From Date" }} />
+                            <AlgaehLabel label={{ fieldName: "from_date" }} />
                           ),
                           editorTemplate: (row) => {
                             return (
@@ -2067,7 +2065,7 @@ class SelfPersonalDetails extends Component {
                         {
                           fieldName: "to_date",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "To Date" }} />
+                            <AlgaehLabel label={{ fieldName: "to_date" }} />
                           ),
                           editorTemplate: (row) => {
                             return (

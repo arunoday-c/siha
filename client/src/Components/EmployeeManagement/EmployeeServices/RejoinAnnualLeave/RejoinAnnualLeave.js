@@ -437,7 +437,7 @@ export default class RejoinAnnualLeave extends Component {
                     {
                       fieldName: "group_description",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Employee Group" }} />
+                        <AlgaehLabel label={{ fieldName: "employeeGroup" }} />
                       ),
 
                       others: {
@@ -451,7 +451,7 @@ export default class RejoinAnnualLeave extends Component {
                     // {
                     //   fieldName: "department_name",
                     //   label: (
-                    //     <AlgaehLabel label={{ forceLabel: "Department" }} />
+                    //     <AlgaehLabel label={{ fieldName: "department" }} />
                     //   ),
 
                     //   others: {
@@ -463,7 +463,7 @@ export default class RejoinAnnualLeave extends Component {
                     {
                       fieldName: "sub_department_name",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Sub Department" }} />
+                        <AlgaehLabel label={{ fieldName: "sub_department" }} />
                       ),
 
                       others: {

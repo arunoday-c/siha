@@ -400,7 +400,7 @@ class OfficalDetails extends Component {
                 <div className="col-3">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Department",
+                      fieldName: "department",
                     }}
                   />
                   <h6>
@@ -413,7 +413,7 @@ class OfficalDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col-3 mandatory form-group" }}
                   label={{
-                    forceLabel: "Sub Department",
+                    fieldName: "sub_department",
                     isImp: true,
                   }}
                   selector={{
@@ -537,7 +537,7 @@ class OfficalDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory form-group" }}
                     label={{
-                      forceLabel: "Employee Group",
+                      fieldName: "employeeGroup",
                       isImp: this.state.HRMS_Active,
                     }}
                     selector={{

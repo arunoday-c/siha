@@ -117,7 +117,7 @@ class LeaveEncashmentProcess extends Component {
             {/* <AlagehFormGroup
               div={{ className: "col" }}
               label={{
-                forceLabel: "Year",
+                fieldName: "year",
                 isImp: true
               }}
               textBox={{
@@ -196,7 +196,7 @@ class LeaveEncashmentProcess extends Component {
             /> */}
             {this.props.from_screen !== "SS" ? (
               <div className="col globalSearchCntr">
-                <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
                 <h6 onClick={employeeSearch.bind(this, this)}>
                   {this.state.employee_name
                     ? this.state.employee_name

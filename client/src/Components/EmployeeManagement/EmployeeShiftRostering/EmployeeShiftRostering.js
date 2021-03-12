@@ -849,7 +849,7 @@ export default class EmployeeShiftRostering extends Component {
           <AlagehAutoComplete
             div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Year",
+              fieldName: "year",
               isImp: true,
             }}
             selector={{
@@ -873,7 +873,7 @@ export default class EmployeeShiftRostering extends Component {
           <AlagehAutoComplete
             div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Month",
+              fieldName: "select_month",
               isImp: true,
             }}
             selector={{
@@ -898,7 +898,7 @@ export default class EmployeeShiftRostering extends Component {
           <AlagehAutoComplete
             div={{ className: "col form-group  mandatory" }}
             label={{
-              forceLabel: "Filter by Branch",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
@@ -922,7 +922,7 @@ export default class EmployeeShiftRostering extends Component {
 
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
-            label={{ forceLabel: "Sub Department", isImp: true }}
+            label={{ fieldName: "sub_department", isImp: true }}
             selector={{
               name: "sub_department_id",
               value: this.state.sub_department_id,
@@ -942,7 +942,7 @@ export default class EmployeeShiftRostering extends Component {
           />
 
           <div className="col-3 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.emp_name ? this.state.emp_name : "Search Employee"}
               <i className="fas fa-search fa-lg"></i>
@@ -1115,7 +1115,7 @@ export default class EmployeeShiftRostering extends Component {
                   <AlgaehDateHandler
                     div={{ className: "col" }}
                     label={{
-                      forceLabel: "To date",
+                      fieldName: "to_date",
                       isImp: false,
                     }}
                     textBox={{

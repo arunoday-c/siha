@@ -148,7 +148,7 @@ class ProjectPayroll extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
-              forceLabel: "Filter by Branch",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
@@ -171,7 +171,7 @@ class ProjectPayroll extends Component {
           <AlagehAutoComplete
             div={{ className: "col-1 mandatory" }}
             label={{
-              forceLabel: "Year",
+              fieldName: "year",
               isImp: true,
             }}
             selector={{
@@ -196,7 +196,7 @@ class ProjectPayroll extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
-              forceLabel: "Month",
+              fieldName: "select_month",
               isImp: true,
             }}
             selector={{
@@ -244,7 +244,7 @@ class ProjectPayroll extends Component {
           />
 
           <div className="col-3 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6
               onClick={ProjectPayrollEvents().employeeSearch.bind(this, this)}
             >

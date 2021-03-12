@@ -409,7 +409,7 @@ export default function RulesDetails({ EmpMasterIOputs }) {
                 <div className="row">
                   <AlgaehAutoComplete
                     div={{ className: "col-2 form-group mandatory" }}
-                    label={{ forceLabel: "Select Year", isImp: true }}
+                    label={{ fieldName: "year", isImp: true }}
                     selector={{
                       name: "",
                       value: "",
@@ -678,7 +678,7 @@ export default function RulesDetails({ EmpMasterIOputs }) {
 //                   <div className="row">
 //                     <AlagehAutoComplete
 //                       div={{ className: "col-2 form-group mandatory" }}
-//                       label={{ forceLabel: "Select Year", isImp: true }}
+//                       label={{ fieldName: "year", isImp: true }}
 //                       selector={{
 //                         name: "",
 //                         value: "",
