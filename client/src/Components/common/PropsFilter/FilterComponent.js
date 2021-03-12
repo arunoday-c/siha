@@ -9,15 +9,15 @@ export default function FilterComponent() {
     allDepartments,
     subDepts,
     designations,
-    handlers
+    handlers,
   } = useContext(FilterContext);
   return (
     <div className="row  inner-top-search">
       <AlagehAutoComplete
         div={{ className: "col-2 form-group mandatory" }}
         label={{
-          forceLabel: "Branch",
-          isImp: true
+          fieldName: "branch",
+          isImp: true,
         }}
         selector={{
           name: "hospital_id",
@@ -26,16 +26,16 @@ export default function FilterComponent() {
           dataSource: {
             textField: "hospital_name",
             valueField: "hims_d_hospital_id",
-            data: hospitals
+            data: hospitals,
           },
-          onChange: handlers.dropDownHandler
+          onChange: handlers.dropDownHandler,
         }}
         showLoading={true}
       />
 
       <AlagehAutoComplete
         div={{ className: "col-2 form-group mandatory" }}
-        label={{ forceLabel: "Department", isImp: true }}
+        label={{ fieldName: "department", isImp: true }}
         selector={{
           name: "department_id",
           value: inputs.department_id,
@@ -43,7 +43,7 @@ export default function FilterComponent() {
           dataSource: {
             textField: "department_name",
             valueField: "hims_d_department_id",
-            data: allDepartments
+            data: allDepartments,
           },
           onChange: handlers.dropDownHandler,
           onClear: () => {
@@ -52,15 +52,15 @@ export default function FilterComponent() {
               sub_department_id: null,
               designation_id: null,
               emp_name: null,
-              hims_d_employee_id: null
+              hims_d_employee_id: null,
             });
-          }
+          },
         }}
       />
 
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
-        label={{ forceLabel: "Sub Deptartment" }}
+        label={{ fieldName: "sub_department" }}
         selector={{
           name: "sub_department_id",
           value: inputs.sub_department_id,
@@ -68,7 +68,7 @@ export default function FilterComponent() {
           dataSource: {
             textField: "sub_department_name",
             valueField: "hims_d_sub_department_id",
-            data: subDepts
+            data: subDepts,
           },
           onChange: handlers.dropDownHandler,
           onClear: () => {
@@ -76,15 +76,15 @@ export default function FilterComponent() {
               sub_department_id: null,
               designation_id: null,
               emp_name: null,
-              hims_d_employee_id: null
+              hims_d_employee_id: null,
             });
-          }
+          },
         }}
       />
 
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
-        label={{ forceLabel: "Designation" }}
+        label={{ fieldName: "designation" }}
         selector={{
           name: "designation_id",
           value: inputs.designation_id,
@@ -92,16 +92,16 @@ export default function FilterComponent() {
           dataSource: {
             textField: "designation",
             valueField: "hims_d_designation_id",
-            data: designations
+            data: designations,
           },
           onChange: handlers.dropDownHandler,
           onClear: () => {
             handlers.clearState({
               designation_id: null,
               emp_name: null,
-              hims_d_employee_id: null
+              hims_d_employee_id: null,
             });
-          }
+          },
         }}
       />
 
@@ -111,7 +111,7 @@ export default function FilterComponent() {
           style={{
             border: " 1px solid #ced4d9",
             borderRadius: 5,
-            marginLeft: 0
+            marginLeft: 0,
           }}
         >
           <div className="col">
@@ -127,7 +127,7 @@ export default function FilterComponent() {
               style={{
                 paddingTop: 17,
                 paddingLeft: 3,
-                cursor: "pointer"
+                cursor: "pointer",
               }}
               onClick={handlers.employeeSearch}
             />

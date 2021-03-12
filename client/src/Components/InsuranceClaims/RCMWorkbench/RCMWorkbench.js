@@ -963,7 +963,7 @@ class RCMWorkbench extends Component {
                 />
 
                 <div className="col-3 globalSearchCntr">
-                  <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                  <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
                   <h6 onClick={this.patientSearch.bind(this)}>
                     {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
                     {this.state.patient_code
@@ -974,7 +974,7 @@ class RCMWorkbench extends Component {
                 </div>
                 <AlgaehDateHandler
                   div={{ className: "col-2 form-group" }}
-                  label={{ isImp: false, forceLabel: "From Date" }}
+                  label={{ isImp: false, fieldName: "from_date" }}
                   textBox={{
                     className: "txt-fld",
                     name: "from_date",
@@ -992,7 +992,7 @@ class RCMWorkbench extends Component {
                 />
                 <AlgaehDateHandler
                   div={{ className: "col-2 form-group" }}
-                  label={{ isImp: false, forceLabel: "To Date" }}
+                  label={{ isImp: false, fieldName: "to_date" }}
                   textBox={{
                     className: "txt-fld",
                     name: "to_date",

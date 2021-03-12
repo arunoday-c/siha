@@ -531,7 +531,7 @@ class EmployeeReceipts extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Select a Branch",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
@@ -555,7 +555,7 @@ class EmployeeReceipts extends Component {
             }}
           />
           <div className="col globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name ? this.state.employee_name : "------"}
               <i className="fas fa-search fa-lg" />
@@ -725,7 +725,7 @@ class EmployeeReceipts extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-1 mandatory" }}
                         label={{
-                          forceLabel: "Year",
+                          fieldName: "year",
                           isImp: true,
                         }}
                         selector={{
@@ -743,7 +743,7 @@ class EmployeeReceipts extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-2 mandatory" }}
                         label={{
-                          forceLabel: "Month",
+                          fieldName: "select_month",
                           isImp: true,
                         }}
                         selector={{

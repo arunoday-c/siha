@@ -156,7 +156,7 @@ export default class AttendanceRegularization extends Component {
           <AlgaehDateHandler
             div={{ className: "col-3 margin-bottom-15" }}
             label={{
-              forceLabel: "From Date",
+              fieldName: "from_date",
               isImp: true,
             }}
             textBox={{
@@ -179,7 +179,7 @@ export default class AttendanceRegularization extends Component {
           <AlgaehDateHandler
             div={{ className: "col-3 margin-bottom-15" }}
             label={{
-              forceLabel: "To Date",
+              fieldName: "to_date",
               isImp: true,
             }}
             textBox={{

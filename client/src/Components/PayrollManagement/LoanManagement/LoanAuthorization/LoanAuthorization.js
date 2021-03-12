@@ -297,7 +297,7 @@ class LoanAuthorization extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2 form-group mandatory" }}
               label={{
-                forceLabel: "Branch",
+                fieldName: "branch",
                 isImp: true,
               }}
               selector={{
@@ -334,7 +334,7 @@ class LoanAuthorization extends Component {
 
             <AlgaehDateHandler
               div={{ className: "col-2 form-group mandatory" }}
-              label={{ forceLabel: "From Date", isImp: true }}
+              label={{ fieldName: "from_date", isImp: true }}
               textBox={{
                 className: "txt-fld",
                 name: "from_date",
@@ -351,7 +351,7 @@ class LoanAuthorization extends Component {
             />
             <AlgaehDateHandler
               div={{ className: "col-2 form-group mandatory" }}
-              label={{ forceLabel: "To Date", isImp: true }}
+              label={{ fieldName: "to_date", isImp: true }}
               textBox={{
                 className: "txt-fld",
                 name: "to_date",
@@ -387,7 +387,7 @@ class LoanAuthorization extends Component {
             />
 
             <div className="col-2 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
                 {this.state.employee_name

@@ -3,7 +3,7 @@ import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import {
   AlgaehDateHandler,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import "./ShiftAssign.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -15,7 +15,7 @@ class ShiftAssign extends PureComponent {
       employeeList: [],
       employees: [],
       shifts: [],
-      shiftEmp: []
+      shiftEmp: [],
     };
   }
 
@@ -25,12 +25,12 @@ class ShiftAssign extends PureComponent {
       myArray.push(nextProps.sendRow);
       this.setState({
         shiftEmp: myArray,
-        ...nextProps.data
+        ...nextProps.data,
       });
     } else {
       this.setState({
         shiftEmp: [],
-        employeeList: this.state.employees
+        employeeList: this.state.employees,
       });
     }
   }
@@ -41,7 +41,7 @@ class ShiftAssign extends PureComponent {
       shift_end_day: data.shift_end_day,
       shift_start_time: data.in_time1,
       shift_end_time: data.out_time1,
-      shift_time: data.shift_time
+      shift_time: data.shift_time,
     });
   }
 
@@ -49,25 +49,25 @@ class ShiftAssign extends PureComponent {
     switch (e.target.name) {
       case "searchEmployees":
         let search = e.target.value.toLowerCase(),
-          employees = this.state.employees.filter(el => {
+          employees = this.state.employees.filter((el) => {
             let searchValue = el.employee_name.toLowerCase();
             return searchValue.indexOf(search) !== -1;
           });
 
         this.setState({
-          employeeList: employees
+          employeeList: employees,
         });
         break;
 
       default:
         let ShiftSearch = e.target.value.toLowerCase(),
-          shifts = this.state.shifts.filter(el => {
+          shifts = this.state.shifts.filter((el) => {
             let searchValue = el.shift_description.toLowerCase();
             return searchValue.indexOf(ShiftSearch) !== -1;
           });
 
         this.setState({
-          shiftList: shifts
+          shiftList: shifts,
         });
         break;
     }
@@ -84,7 +84,7 @@ class ShiftAssign extends PureComponent {
 
     this.setState(
       {
-        shiftEmp: myArray
+        shiftEmp: myArray,
       },
       () => {}
     );
@@ -94,7 +94,7 @@ class ShiftAssign extends PureComponent {
     if (this.state.shift_id === undefined || this.state.shift_id === null) {
       swalMessage({
         title: "Please Select a shift to assign",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       this.state.shiftEmp.length === 0 ||
@@ -102,7 +102,7 @@ class ShiftAssign extends PureComponent {
     ) {
       swalMessage({
         title: "Please select atleast one employee to asssign shift",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       moment(this.state.from_date).format("YYYYMMDD") >
@@ -110,7 +110,7 @@ class ShiftAssign extends PureComponent {
     ) {
       swalMessage({
         title: "Please select a proper Date Range",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let x = moment.duration(
@@ -131,7 +131,7 @@ class ShiftAssign extends PureComponent {
         shift_start_time: this.state.shift_start_time,
         shift_end_time: this.state.shift_end_time,
         shift_time: hours + "." + mins,
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
       };
 
       algaehApiCall({
@@ -139,21 +139,21 @@ class ShiftAssign extends PureComponent {
         method: "POST",
         data: sendData,
         module: "hrManagement",
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Record Added Successfully",
-              type: "success"
+              type: "success",
             });
             document.getElementById("clsSftAsgn").click();
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
 
       // console.log("SEND DATA:", JSON.stringify(sendData));
@@ -175,7 +175,7 @@ class ShiftAssign extends PureComponent {
       <AlgaehModalPopUp
         openPopup={this.props.open}
         events={{
-          onClose: this.props.onClose
+          onClose: this.props.onClose,
         }}
         title="Assign Shift Rostering"
         className="col-lg-12 ShiftAssign"
@@ -186,22 +186,22 @@ class ShiftAssign extends PureComponent {
               <AlgaehDateHandler
                 div={{ className: "col-3 margin-bottom-15" }}
                 label={{
-                  forceLabel: "From Date",
-                  isImp: true
+                  fieldName: "from_date",
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
                   others: {
-                    tabIndex: "1"
-                  }
+                    tabIndex: "1",
+                  },
                 }}
                 events={{
-                  onChange: selDate => {
+                  onChange: (selDate) => {
                     this.setState({
-                      from_date: selDate
+                      from_date: selDate,
                     });
-                  }
+                  },
                 }}
                 maxDate={new Date()}
                 value={this.state.from_date}
@@ -209,22 +209,22 @@ class ShiftAssign extends PureComponent {
               <AlgaehDateHandler
                 div={{ className: "col-3 margin-bottom-15" }}
                 label={{
-                  forceLabel: "To Date",
-                  isImp: true
+                  fieldName: "to_date",
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
                   others: {
-                    tabIndex: "2"
-                  }
+                    tabIndex: "2",
+                  },
                 }}
                 events={{
-                  onChange: selDate => {
+                  onChange: (selDate) => {
                     this.setState({
-                      to_date: selDate
+                      to_date: selDate,
                     });
-                  }
+                  },
                 }}
                 minDate={this.state.from_date}
                 value={this.state.to_date}
@@ -292,7 +292,7 @@ class ShiftAssign extends PureComponent {
                     {
                       fieldName: "actions",
                       label: <AlgaehLabel label={{ forceLabel: "Actions" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <input
                             id={row.shift_code}
@@ -304,13 +304,13 @@ class ShiftAssign extends PureComponent {
                             }
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "shift_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Shift Code" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "shift_description",
@@ -318,41 +318,41 @@ class ShiftAssign extends PureComponent {
                         <AlgaehLabel
                           label={{ forceLabel: "Shift Description" }}
                         />
-                      )
+                      ),
                     },
                     {
                       fieldName: "shift_abbreviation",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Shift Abbr." }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "in_time1",
                       label: <AlgaehLabel label={{ forceLabel: "In Time" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return moment(row.in_time1, "HH:mm:ss").isValid()
                           ? moment(row.in_time1, "HH:mm:ss").format("hh:mm a")
                           : "----";
-                      }
+                      },
                     },
                     {
                       fieldName: "out_time1",
                       label: <AlgaehLabel label={{ forceLabel: "Out Time" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return moment(row.out_time1, "HH:mm:ss").isValid()
                           ? moment(row.out_time1, "HH:mm:ss").format("hh:mm a")
                           : "----";
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="hims_d_shift_id"
                   dataSource={{
-                    data: this.state.shifts
+                    data: this.state.shifts,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => {}
+                    onEdit: () => {},
                     // onDelete: this.deleteLoanMaster.bind(this),
                     // onDone: this.updateLoanMater.bind(this)
                   }}
@@ -382,7 +382,7 @@ class ShiftAssign extends PureComponent {
                       <label
                         htmlFor={data.employee_code}
                         style={{
-                          width: "80%"
+                          width: "80%",
                         }}
                       >
                         {data.employee_name}

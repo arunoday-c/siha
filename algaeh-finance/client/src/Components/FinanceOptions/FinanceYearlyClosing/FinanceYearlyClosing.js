@@ -41,12 +41,12 @@ export default function FinanceYearlyClosing() {
                   <AlgaehTable
                     columns={[
                       {
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                        label: <AlgaehLabel label={{ fieldName: "year" }} />,
                         fieldName: "current_year",
                       },
                       {
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
+                          <AlgaehLabel label={{ fieldName: "from_date" }} />
                         ),
                         fieldName: "year_start_date",
                         displayTemplate: (record) => (
@@ -58,9 +58,7 @@ export default function FinanceYearlyClosing() {
                         ),
                       },
                       {
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "To Date" }} />
-                        ),
+                        label: <AlgaehLabel label={{ fieldName: "to_date" }} />,
                         fieldName: "year_end_date",
                         displayTemplate: (record) => (
                           <>

@@ -395,7 +395,7 @@ export default class MiscEarningsDeductions extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-12 form-group mandatory" }}
                       label={{
-                        forceLabel: "Select a Branch",
+                        fieldName: "branch",
                         isImp: true,
                       }}
                       selector={{
@@ -421,7 +421,7 @@ export default class MiscEarningsDeductions extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-5  form-group mandatory" }}
                       label={{
-                        forceLabel: "Year",
+                        fieldName: "year",
                         isImp: true,
                       }}
                       selector={{
@@ -447,7 +447,7 @@ export default class MiscEarningsDeductions extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-7 mandatory form-group" }}
                       label={{
-                        forceLabel: "Month",
+                        fieldName: "select_month",
                         isImp: true,
                       }}
                       selector={{
@@ -472,7 +472,7 @@ export default class MiscEarningsDeductions extends Component {
                       }}
                     />
                     <div className="col-12 form-group mandatory globalSearchCntr">
-                      <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                      <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
                       <h6 onClick={this.openSearch}>
                         {this.state.emp_name
                           ? this.state.emp_name
@@ -548,7 +548,7 @@ export default class MiscEarningsDeductions extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-12 mandatory form-group " }}
                       label={{
-                        forceLabel: "Enter Amount",
+                        fieldName: "enterAmt",
                         isImp: true,
                       }}
                       textBox={{

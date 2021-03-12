@@ -212,7 +212,7 @@ class LeaveSalaryProcess extends Component {
         <div className="col-12">
           <div className="row inner-top-search">
             {/* <div className="col-2 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
                 {this.state.employee_name
                   ? this.state.employee_name
@@ -223,7 +223,7 @@ class LeaveSalaryProcess extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2 mandatory form-group" }}
               label={{
-                forceLabel: "Select a Branch.",
+                fieldName: "branch",
                 isImp: true,
               }}
               selector={{
@@ -411,12 +411,14 @@ class LeaveSalaryProcess extends Component {
                       },
                       {
                         fieldName: "year",
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                        label: <AlgaehLabel label={{ fieldName: "year" }} />,
                       },
                       {
                         // fieldsort: "off",
                         fieldName: "month",
-                        label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "select_month" }} />
+                        ),
                         displayTemplate: (row) => {
                           let display = GlobalVariables.MONTHS.filter(
                             (f) => f.value === row.month

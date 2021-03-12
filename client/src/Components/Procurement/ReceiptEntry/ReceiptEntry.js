@@ -379,7 +379,7 @@ class ReceiptEntry extends Component {
                   <div className="col-6">
                     <div className="row">
                       <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                        <AlgaehLabel label={{ fieldName: "branch" }} />
                         <h6>
                           {this.state.hospital_name
                             ? this.state.hospital_name
@@ -388,7 +388,7 @@ class ReceiptEntry extends Component {
                       </div>
 
                       <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Project" }} />
+                        <AlgaehLabel label={{ fieldName: "project" }} />
                         <h6>
                           {this.state.project_desc
                             ? this.state.project_desc

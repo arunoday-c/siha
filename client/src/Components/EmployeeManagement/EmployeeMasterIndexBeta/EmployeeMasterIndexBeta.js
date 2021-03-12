@@ -403,7 +403,7 @@ export default function EmployeeMasterIndex() {
                         filterable: true,
                       },
                       {
-                        forceLabel: "designation",
+                        fieldName: "designation",
                         label: "Designation",
                         sortable: false,
                         filterable: true,

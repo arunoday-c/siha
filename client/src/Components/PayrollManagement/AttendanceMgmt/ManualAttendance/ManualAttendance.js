@@ -216,7 +216,7 @@ class ManualAttendance extends Component {
           <AlagehAutoComplete
             div={{ className: "col-3 mandatory" }}
             label={{
-              forceLabel: "Select a Branch.",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
@@ -265,7 +265,7 @@ class ManualAttendance extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col-3 mandatory" }}
                   label={{
-                    forceLabel: "Select Month.",
+                    fieldName: "select_month",
                     isImp: this.state.select_wise === "M" ? true : false,
                   }}
                   selector={{
@@ -482,7 +482,7 @@ class ManualAttendance extends Component {
                           fieldName: "designation",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Designation" }}
+                              label={{ fieldName: "designation" }}
                             />
                           ),
                           others: {
@@ -492,7 +492,7 @@ class ManualAttendance extends Component {
                         {
                           fieldName: "project_desc",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Project" }} />
+                            <AlgaehLabel label={{ fieldName: "project" }} />
                           ),
                           others: {
                             maxWidth: 200
@@ -659,9 +659,7 @@ class ManualAttendance extends Component {
                         {
                           fieldName: "designation",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Designation" }}
-                            />
+                            <AlgaehLabel label={{ fieldName: "designation" }} />
                           ),
                           others: {
                             maxWidth: 200,
@@ -670,7 +668,7 @@ class ManualAttendance extends Component {
                         {
                           fieldName: "project_desc",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Project" }} />
+                            <AlgaehLabel label={{ fieldName: "project" }} />
                           ),
                           others: {
                             maxWidth: 200,

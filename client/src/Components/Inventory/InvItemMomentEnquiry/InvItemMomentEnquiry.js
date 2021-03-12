@@ -122,7 +122,7 @@ class InvItemMomentEnquiry extends Component {
                 <div className="row">
                   <AlgaehDateHandler
                     div={{ className: "col" }}
-                    label={{ forceLabel: "From Date", isImp: true }}
+                    label={{ fieldName: "from_date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "from_date" }}
                     events={{
                       onChange: datehandle.bind(this, this),
@@ -132,7 +132,7 @@ class InvItemMomentEnquiry extends Component {
                   />
                   <AlgaehDateHandler
                     div={{ className: "col" }}
-                    label={{ forceLabel: "To Date", isImp: true }}
+                    label={{ fieldName: "to_date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "to_date" }}
                     events={{
                       onChange: datehandle.bind(this, this),
@@ -270,32 +270,32 @@ class InvItemMomentEnquiry extends Component {
                         return row.transaction_type === "MR"
                           ? "Material Requisition"
                           : row.transaction_type === "ST"
-                            ? "Stock Transfer"
-                            : row.transaction_type === "POS"
-                              ? "Point of Sale"
-                              : row.transaction_type === "SRT"
-                                ? "Sales Return"
-                                : row.transaction_type === "INT"
-                                  ? "Opening Stock"
-                                  : row.transaction_type === "CS"
-                                    ? "Consumption"
-                                    : row.transaction_type === "CSN"
-                                      ? "Consumption Cancel"
-                                      : row.transaction_type === "REC"
-                                        ? "Receipt"
-                                        : row.transaction_type === "PO"
-                                          ? "Purchase Order"
-                                          : row.transaction_type === "DNA"
-                                            ? "Delivery Note"
-                                            : row.transaction_type === "ACK"
-                                              ? "Transfer Acknowledge"
-                                              : row.transaction_type === "PR"
-                                                ? "Purchase Return"
-                                                : row.transaction_type === "AD"
-                                                  ? "Stock Adjustment"
-                                                  : row.transaction_type === "SDN"
-                                                    ? "Sales Dispatch Note"
-                                                    : "";
+                          ? "Stock Transfer"
+                          : row.transaction_type === "POS"
+                          ? "Point of Sale"
+                          : row.transaction_type === "SRT"
+                          ? "Sales Return"
+                          : row.transaction_type === "INT"
+                          ? "Opening Stock"
+                          : row.transaction_type === "CS"
+                          ? "Consumption"
+                          : row.transaction_type === "CSN"
+                          ? "Consumption Cancel"
+                          : row.transaction_type === "REC"
+                          ? "Receipt"
+                          : row.transaction_type === "PO"
+                          ? "Purchase Order"
+                          : row.transaction_type === "DNA"
+                          ? "Delivery Note"
+                          : row.transaction_type === "ACK"
+                          ? "Transfer Acknowledge"
+                          : row.transaction_type === "PR"
+                          ? "Purchase Return"
+                          : row.transaction_type === "AD"
+                          ? "Stock Adjustment"
+                          : row.transaction_type === "SDN"
+                          ? "Sales Dispatch Note"
+                          : "";
                       },
                       others: {
                         filterable: false,
@@ -325,10 +325,10 @@ class InvItemMomentEnquiry extends Component {
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                              (f) =>
-                                f.hims_d_inventory_location_id ===
-                                row.from_location_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.from_location_id
+                              );
 
                         return (
                           <span>
@@ -352,10 +352,10 @@ class InvItemMomentEnquiry extends Component {
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                              (f) =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.item_code_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_item_master_id ===
+                                  row.item_code_id
+                              );
 
                         return (
                           <span>
@@ -368,13 +368,13 @@ class InvItemMomentEnquiry extends Component {
                                   row.operation === "+"
                                     ? "fas fa-arrow-up green"
                                     : row.operation === "-"
-                                      ? "fas fa-arrow-down red"
-                                      : ""
+                                    ? "fas fa-arrow-down red"
+                                    : ""
                                 }
                               />
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </span>
                         );
                       },
@@ -391,10 +391,10 @@ class InvItemMomentEnquiry extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              (f) =>
-                                f.hims_d_inventory_uom_id ===
-                                row.transaction_uom
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id ===
+                                  row.transaction_uom
+                              );
 
                         return (
                           <span>
@@ -447,18 +447,16 @@ class InvItemMomentEnquiry extends Component {
                     },
                     {
                       fieldName: "average_cost",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Cost" }} />
-                      ),
-                      displayTemplate: row => {
+                      label: <AlgaehLabel label={{ forceLabel: "Cost" }} />,
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {GetAmountFormart(row.average_cost, {
-                              appendSymbol: false
+                              appendSymbol: false,
                             })}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "qtyhand",
@@ -473,8 +471,7 @@ class InvItemMomentEnquiry extends Component {
                       others: {
                         filterable: false,
                       },
-                    }
-
+                    },
                   ]}
                   keyId="item_id"
                   dataSource={{

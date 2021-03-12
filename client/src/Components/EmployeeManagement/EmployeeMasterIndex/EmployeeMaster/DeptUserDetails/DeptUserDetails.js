@@ -235,7 +235,7 @@ class DeptUserDetails extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Department",
+                      fieldName: "department",
                     }}
                   />
                   <h6>
@@ -248,7 +248,7 @@ class DeptUserDetails extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Sub Department",
+                      fieldName: "sub_department",
                     }}
                   />
                   <h6>
@@ -316,7 +316,7 @@ class DeptUserDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
-                    forceLabel: "Employee Group",
+                    fieldName: "employeeGroup",
                     isImp: true,
                   }}
                   selector={{
@@ -398,7 +398,7 @@ class DeptUserDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col " }}
                   label={{
-                    forceLabel: "Sub Department",
+                    fieldName: "sub_department",
                     isImp: true,
                   }}
                   selector={{
@@ -817,7 +817,7 @@ class DeptUserDetails extends Component {
                       {
                         fieldName: "employee_designation_id",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Designation" }} />
+                          <AlgaehLabel label={{ fieldName: "designation" }} />
                         ),
 
                         displayTemplate: (row) => {

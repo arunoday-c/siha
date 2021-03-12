@@ -4,7 +4,7 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "algaeh-react-components";
 // import { incomeSource, incomeDestination } from "../../../data/dropdownList";
 export default function Income() {
@@ -22,34 +22,34 @@ export default function Income() {
             <div className="row">
               <AlgaehFormGroup
                 div={{
-                  className: "form-group algaeh-text-fld col-8"
+                  className: "form-group algaeh-text-fld col-8",
                 }}
                 label={{
                   forceLabel: "Income Description",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   type: "text",
                   className: "form-control",
                   id: "name",
-                  placeholder: "Enter Income Description"
+                  placeholder: "Enter Income Description",
                   // autocomplete: false
                 }}
               />{" "}
               <AlgaehDateHandler
                 div={{
-                  className: "form-group algaeh-email-fld col-4"
+                  className: "form-group algaeh-email-fld col-4",
                 }}
                 label={{
                   forceLabel: "Income Date",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   name: "enter_date",
-                  className: "form-control"
+                  className: "form-control",
                 }}
                 events={{
-                  onChange: e => console.log(e.target)
+                  onChange: (e) => console.log(e.target),
                 }}
                 value={new Date()}
                 maxDate={new Date()}
@@ -62,7 +62,7 @@ export default function Income() {
               style={{
                 maxHeight: "50vh",
                 overflowX: "hidden",
-                overflowY: "auto"
+                overflowY: "auto",
               }}
             >
               <div className="col-12">
@@ -72,7 +72,7 @@ export default function Income() {
                     div={{ className: "col-5 form-group" }}
                     label={{
                       forceLabel: "Source Account 1",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "",
@@ -81,24 +81,24 @@ export default function Income() {
                       dataSource: {
                         data: [],
                         valueField: "",
-                        textField: ""
-                      }
+                        textField: "",
+                      },
                     }}
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "form-group algaeh-text-fld col-4"
+                      className: "form-group algaeh-text-fld col-4",
                     }}
                     label={{
-                      forceLabel: "Enter Amount",
-                      isImp: true
+                      fieldName: "enterAmt",
+                      isImp: true,
                     }}
                     textBox={{
                       type: "number",
                       value: "",
                       className: "form-control",
                       id: "name",
-                      placeholder: "0.00"
+                      placeholder: "0.00",
                       //autocomplete: false
                     }}
                   />{" "}
@@ -125,7 +125,7 @@ export default function Income() {
                     div={{ className: "col-5 form-group" }}
                     label={{
                       forceLabel: "Destination Account 1",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "",
@@ -134,24 +134,24 @@ export default function Income() {
                       dataSource: {
                         data: [],
                         valueField: "",
-                        textField: ""
-                      }
+                        textField: "",
+                      },
                     }}
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "form-group algaeh-text-fld col-4"
+                      className: "form-group algaeh-text-fld col-4",
                     }}
                     label={{
-                      forceLabel: "Enter Amount",
-                      isImp: true
+                      fieldName: "enterAmt",
+                      isImp: true,
                     }}
                     textBox={{
                       type: "number",
                       value: "",
                       className: "form-control",
                       id: "name",
-                      placeholder: "0.00"
+                      placeholder: "0.00",
                       //autocomplete: false
                     }}
                   />{" "}
@@ -199,7 +199,7 @@ export default function Income() {
                   key: "id",
                   title: "Sl No.",
                   sortable: true,
-                  filtered: false
+                  filtered: false,
                 },
                 {
                   key: "id",
@@ -211,14 +211,14 @@ export default function Income() {
                       <input
                         type="text"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
                   key: "desc",
@@ -230,14 +230,14 @@ export default function Income() {
                       <input
                         type="text"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
                   key: "debitAmt",
@@ -249,14 +249,14 @@ export default function Income() {
                       <input
                         type="number"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
                   key: "creditAmt",
@@ -268,14 +268,14 @@ export default function Income() {
                       <input
                         type="number"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
                   key: "narration",
@@ -287,25 +287,25 @@ export default function Income() {
                       <input
                         type="number"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
                   key: "count",
-                  title: "Count" //, sortable: true
-                }
+                  title: "Count", //, sortable: true
+                },
               ]}
               loading={false}
               isEditable={true}
               filter={true}
               dataSource={{
-                data: []
+                data: [],
               }}
               rowUnique="id"
               xaxis={1500}

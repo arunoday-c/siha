@@ -38,7 +38,7 @@ export default class LeaveSalaryAccural extends Component {
         <div className="col-12" data-validate="loadLeaveAccrual">
           <div className="row inner-top-search">
             <div className="col-3 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
                 {this.state.employee_name ? this.state.employee_name : "------"}
                 <i className="fas fa-search fa-lg" />
@@ -82,7 +82,7 @@ export default class LeaveSalaryAccural extends Component {
             <AlagehAutoComplete
               div={{ className: "col-1 mandatory form-group" }}
               label={{
-                forceLabel: "Year",
+                fieldName: "year",
                 isImp: true,
               }}
               selector={{
@@ -106,7 +106,7 @@ export default class LeaveSalaryAccural extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2 mandatory form-group" }}
               label={{
-                forceLabel: "Month",
+                fieldName: "select_month",
                 isImp: true,
               }}
               selector={{

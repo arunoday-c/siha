@@ -159,7 +159,7 @@ class AuthorizationSetup extends Component {
           <div className="row inner-top-search FilterCompnentDiv">
             <AlagehAutoComplete
               div={{ className: "col-3 form-group mandatory" }}
-              label={{ forceLabel: "Department", isImp: true }}
+              label={{ fieldName: "department", isImp: true }}
               selector={{
                 name: "department_id",
                 value: this.state.department_id,
@@ -184,7 +184,7 @@ class AuthorizationSetup extends Component {
 
             <AlagehAutoComplete
               div={{ className: "col-3 form-group" }}
-              label={{ forceLabel: "Sub Deptartment" }}
+              label={{ fieldName: "sub_department" }}
               selector={{
                 name: "sub_department_id",
                 value: this.state.sub_department_id,
@@ -207,7 +207,7 @@ class AuthorizationSetup extends Component {
 
             <AlagehAutoComplete
               div={{ className: "col-3 form-group" }}
-              label={{ forceLabel: "Designation" }}
+              label={{ fieldName: "designation" }}
               selector={{
                 name: "designation_id",
                 value: this.state.designation_id,

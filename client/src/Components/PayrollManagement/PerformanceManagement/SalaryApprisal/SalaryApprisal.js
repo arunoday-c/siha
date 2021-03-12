@@ -111,7 +111,7 @@ class SalaryApprisal extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Branch",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
@@ -128,7 +128,7 @@ class SalaryApprisal extends Component {
             showLoading={true}
           />
           <div className="col-3 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={employeeSearch.bind(this, this)}>
               {this.state.employee_name
                 ? this.state.employee_name

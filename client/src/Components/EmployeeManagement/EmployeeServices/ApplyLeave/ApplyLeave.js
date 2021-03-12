@@ -802,7 +802,7 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <div className="col-12 globalSearchCntr form-group mandatory">
-                    <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                    <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
                     <h6 onClick={this.employeeSearch.bind(this)}>
                       {this.state.employee_name
                         ? this.state.employee_name

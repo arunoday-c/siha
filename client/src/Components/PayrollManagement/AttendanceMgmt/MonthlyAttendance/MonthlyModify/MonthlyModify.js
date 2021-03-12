@@ -96,7 +96,7 @@ class MonthlyModify extends Component {
                   <div className="col-2 form-group">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Year",
+                        fieldName: "year",
                       }}
                     />
                     <h6>{this.state.year}</h6>
@@ -104,7 +104,7 @@ class MonthlyModify extends Component {
                   <div className="col-2 form-group">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Month",
+                        fieldName: "select_month",
                       }}
                     />
                     <h6>{moment(this.state.month, "M").format("MMMM")}</h6>

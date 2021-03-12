@@ -89,7 +89,7 @@ class Location extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Branch",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
@@ -261,7 +261,7 @@ class Location extends Component {
                     },
                     {
                       fieldName: "hospital_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Branch" }} />,
+                      label: <AlgaehLabel label={{ fieldName: "branch" }} />,
                       displayTemplate: (row) => {
                         let display =
                           this.props.organizations === undefined

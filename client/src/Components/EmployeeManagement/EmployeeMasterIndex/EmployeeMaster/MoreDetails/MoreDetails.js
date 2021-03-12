@@ -207,7 +207,7 @@ class MoreDetails extends PureComponent {
                   <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col-2 form-group mandatory" }}
-                      label={{ forceLabel: "Select Year", isImp: true }}
+                      label={{ fieldName: "year", isImp: true }}
                       selector={{
                         name: "",
                         value: "",

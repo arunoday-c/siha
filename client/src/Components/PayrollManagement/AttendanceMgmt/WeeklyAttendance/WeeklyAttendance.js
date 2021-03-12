@@ -746,13 +746,37 @@ export default class WeeklyAttendance extends Component {
               </label>
             </div>
           </div>
+          <AlagehAutoComplete
+            div={{ className: "col mandatory" }}
+            label={{
+              fieldName: "branch",
+              isImp: true,
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.hospitals,
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null,
+                });
+              },
+            }}
+            //showLoading={this.state.branch.loader}
+          />
 
           {this.state.attendance_type === "MW" ? (
             <React.Fragment>
               <AlagehAutoComplete
                 div={{ className: "col mandatory" }}
                 label={{
-                  forceLabel: "Select a Year.",
+                  fieldName: "year",
                   isImp: true,
                 }}
                 selector={{
@@ -776,7 +800,7 @@ export default class WeeklyAttendance extends Component {
               <AlagehAutoComplete
                 div={{ className: "col mandatory" }}
                 label={{
-                  forceLabel: "Select a Month.",
+                  fieldName: "month",
                   isImp: true,
                 }}
                 selector={{
@@ -827,7 +851,7 @@ export default class WeeklyAttendance extends Component {
               <AlgaehDateHandler
                 div={{ className: "col margin-bottom-15" }}
                 label={{
-                  forceLabel: "From Date",
+                  fieldName: "from_date",
                   isImp: true,
                 }}
                 textBox={{
@@ -850,7 +874,7 @@ export default class WeeklyAttendance extends Component {
               <AlgaehDateHandler
                 div={{ className: "col margin-bottom-15" }}
                 label={{
-                  forceLabel: "To Date",
+                  fieldName: "to_date",
                   isImp: true,
                 }}
                 textBox={{
@@ -874,34 +898,9 @@ export default class WeeklyAttendance extends Component {
           )}
 
           <AlagehAutoComplete
-            div={{ className: "col mandatory" }}
-            label={{
-              forceLabel: "Filter by Branch",
-              isImp: true,
-            }}
-            selector={{
-              name: "hospital_id",
-              className: "select-fld",
-              value: this.state.hospital_id,
-              dataSource: {
-                textField: "hospital_name",
-                valueField: "hims_d_hospital_id",
-                data: this.state.hospitals,
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  hospital_id: null,
-                });
-              },
-            }}
-            //showLoading={this.state.branch.loader}
-          />
-
-          <AlagehAutoComplete
             div={{ className: "col-2" }}
             label={{
-              forceLabel: "Select a Sub Dept.",
+              fieldName: "sub_department",
               isImp: false,
             }}
             selector={{
@@ -923,7 +922,7 @@ export default class WeeklyAttendance extends Component {
           />
 
           <div className="col-2 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name
                 ? this.state.employee_name

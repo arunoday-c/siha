@@ -1411,7 +1411,7 @@ class PhySchSetup extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-4" }}
                     label={{
-                      forceLabel: "Year",
+                      fieldName: "year",
                       isImp: true,
                     }}
                     textBox={{
@@ -1430,7 +1430,7 @@ class PhySchSetup extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-5" }}
                     label={{
-                      forceLabel: "Month",
+                      fieldName: "select_month",
                       isImp: false,
                     }}
                     selector={{
@@ -1550,7 +1550,7 @@ class PhySchSetup extends Component {
                               <div className="col-6">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "From Date",
+                                    fieldName: "from_date",
                                     isImp: true,
                                   }}
                                 />
@@ -1567,7 +1567,7 @@ class PhySchSetup extends Component {
                               <div className="col-6">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "To Date",
+                                    fieldName: "to_date",
                                     isImp: true,
                                   }}
                                 />

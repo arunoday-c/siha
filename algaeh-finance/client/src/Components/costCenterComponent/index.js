@@ -191,7 +191,7 @@ function CostCenter({
       <div className="col-4">
         <AlgaehAutoComplete
           div={{ ...div }}
-          label={{ forceLabel: "Select a Branch" }}
+          label={{ fieldName: "branch" }}
           selector={{
             dataSource: {
               data: branch,

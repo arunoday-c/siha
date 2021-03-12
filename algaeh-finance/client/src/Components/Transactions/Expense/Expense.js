@@ -90,7 +90,7 @@ export default function Expense() {
                       className: "form-group algaeh-text-fld col-4",
                     }}
                     label={{
-                      forceLabel: "Enter Amount",
+                      fieldName: "enterAmt",
                       isImp: true,
                     }}
                     textBox={{
@@ -143,7 +143,7 @@ export default function Expense() {
                       className: "form-group algaeh-text-fld col-4",
                     }}
                     label={{
-                      forceLabel: "Enter Amount",
+                      fieldName: "enterAmt",
                       isImp: true,
                     }}
                     textBox={{

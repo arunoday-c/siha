@@ -334,7 +334,7 @@ export default class HolidayMaster extends Component {
                           <AlagehFormGroup
                             div={{ className: "col mandatory" }}
                             label={{
-                              forceLabel: "Year",
+                              fieldName: "year",
                               isImp: true,
                             }}
                             textBox={{
@@ -354,7 +354,7 @@ export default class HolidayMaster extends Component {
                           <AlagehAutoComplete
                             div={{ className: "col mandatory" }}
                             label={{
-                              forceLabel: "Filter by Branch",
+                              fieldName: "branch",
                               isImp: true,
                             }}
                             selector={{

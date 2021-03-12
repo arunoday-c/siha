@@ -173,7 +173,7 @@ export default class AuditLog extends Component {
           <AlgaehDateHandler
             div={{ className: "col-2 form-group mandatory" }}
             isImp={true}
-            label={{ forceLabel: "From Date", isImp: true }}
+            label={{ fieldName: "from_date", isImp: true }}
             textBox={{ className: "txt-fld", name: "from_date" }}
             events={{
               onChange: this.datehandle.bind(this),
@@ -183,7 +183,7 @@ export default class AuditLog extends Component {
           <AlgaehDateHandler
             div={{ className: "col-2 form-group mandatory" }}
             isImp={true}
-            label={{ forceLabel: "To Date", isImp: true }}
+            label={{ fieldName: "to_date", isImp: true }}
             textBox={{ className: "txt-fld", name: "to_date" }}
             events={{
               onChange: this.datehandle.bind(this),
@@ -220,7 +220,7 @@ export default class AuditLog extends Component {
           /> */}
 
           <div className="col globalSearchCntr form-group mandatory">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name
                 ? this.state.employee_name

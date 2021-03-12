@@ -60,11 +60,11 @@ function MonthlyDetail(props) {
                   },
                   // {
                   //   fieldName: "year",
-                  //   label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                  //   label: <AlgaehLabel label={{ fieldName: "year" }} />
                   // },
                   // {
                   //   fieldName: "month",
-                  //   label: <AlgaehLabel label={{ forceLabel: "month" }} />,
+                  //   label: <AlgaehLabel label={{ fieldName: "select_month" }} />,
                   //   displayTemplate: row => {
                   //     return moment(row.month, "M").format("MMMM");
                   //   }

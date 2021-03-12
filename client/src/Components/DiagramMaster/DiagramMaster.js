@@ -301,7 +301,7 @@ export default class DiagramMaster extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-lg-2" }}
                     label={{
-                      forceLabel: "department",
+                      fieldName: "department",
                       isImp: true,
                     }}
                     selector={{
