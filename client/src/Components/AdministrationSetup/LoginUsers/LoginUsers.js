@@ -783,7 +783,7 @@ class LoginUsers extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-12 form-group" }}
                     label={{
-                      forceLabel: "branch",
+                      fieldName: "branch",
                       isImp: true,
                     }}
                     selector={{
