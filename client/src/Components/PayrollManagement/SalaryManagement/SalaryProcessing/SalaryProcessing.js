@@ -139,7 +139,7 @@ class SalaryProcessing extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Select a Month.",
+                fieldName: "month",
                 isImp: true,
               }}
               selector={{
@@ -164,7 +164,7 @@ class SalaryProcessing extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Select a Year.",
+                fieldName: "year",
                 isImp: true,
               }}
               selector={{
@@ -189,7 +189,7 @@ class SalaryProcessing extends Component {
             {/* <AlagehFormGroup
               div={{ className: "col" }}
               label={{
-                forceLabel: "Year",
+                fieldName: "year",
                 isImp: true
               }}
               textBox={{
@@ -208,7 +208,7 @@ class SalaryProcessing extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Select a Branch.",
+                fieldName: "branch",
                 isImp: true,
               }}
               selector={{
@@ -232,7 +232,7 @@ class SalaryProcessing extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Select a Sub Dept.",
+                fieldName: "sub_department",
                 isImp: false,
               }}
               selector={{

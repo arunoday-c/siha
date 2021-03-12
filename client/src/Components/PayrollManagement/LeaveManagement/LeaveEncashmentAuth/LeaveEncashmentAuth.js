@@ -244,7 +244,7 @@ class LeaveEncashmentAuth extends Component {
               div={{
                 className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
               }}
-              label={{ forceLabel: "From Date", isImp: true }}
+              label={{ fieldName: "from_date", isImp: true }}
               textBox={{
                 className: "txt-fld",
                 name: "from_date",
@@ -263,7 +263,7 @@ class LeaveEncashmentAuth extends Component {
               div={{
                 className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
               }}
-              label={{ forceLabel: "To Date", isImp: true }}
+              label={{ fieldName: "to_date", isImp: true }}
               textBox={{
                 className: "txt-fld",
                 name: "to_date",
@@ -284,7 +284,7 @@ class LeaveEncashmentAuth extends Component {
                 className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
               }}
               label={{
-                forceLabel: "Branch",
+                fieldName: "branch",
                 isImp: true,
               }}
               selector={{
@@ -321,7 +321,7 @@ class LeaveEncashmentAuth extends Component {
             />
 
             <div className="col-lg-2 col-md-2 col-sm-12 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {this.state.employee_name
                   ? this.state.employee_name
@@ -480,7 +480,7 @@ class LeaveEncashmentAuth extends Component {
                       {
                         fieldName: "designation",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Designation" }} />
+                          <AlgaehLabel label={{ fieldName: "designation" }} />
                         ),
                         filterable: true,
                       },

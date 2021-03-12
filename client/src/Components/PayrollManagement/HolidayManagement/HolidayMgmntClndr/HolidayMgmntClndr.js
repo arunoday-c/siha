@@ -258,7 +258,7 @@ class EarningsDeductions extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col mandatory" }}
                           label={{
-                            forceLabel: "Filter by Branch",
+                            fieldName: "branch",
                             isImp: false,
                           }}
                           selector={{
