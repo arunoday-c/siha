@@ -15,16 +15,16 @@ export default forwardRef(function CostCenter(props, ref) {
     algaehApiCall({
       uri: `/organization/getOrganizationByUser`,
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         setLoadBranch(false);
         if (response.data.success === true) {
           setBranch(response.data.records);
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         setLoadBranch(false);
         console.log("error", error);
-      }
+      },
     });
   }, []);
 
@@ -35,16 +35,16 @@ export default forwardRef(function CostCenter(props, ref) {
       data: { hims_d_hospital_id: hospitalID },
       method: "GET",
       module: "finance",
-      onSuccess: response => {
+      onSuccess: (response) => {
         setLoading(false);
         if (response.data.success === true) {
           setData(response.data.result);
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         setLoading(false);
         console.log("error", error);
-      }
+      },
     });
   }
 
@@ -57,12 +57,12 @@ export default forwardRef(function CostCenter(props, ref) {
         <div className="col">
           <AlgaehAutoComplete
             div={{ ...div }}
-            label={{ forceLabel: "Select a Branch" }}
+            label={{ fieldName: "branch" }}
             selector={{
               dataSource: {
                 data: branch,
                 valueField: "hims_d_hospital_id",
-                textField: "hospital_name"
+                textField: "hospital_name",
               },
               value: hims_d_hospital_id,
               onChange: (details, value) => {
@@ -72,8 +72,8 @@ export default forwardRef(function CostCenter(props, ref) {
                 onChangeHospitalId(value);
               },
               others: {
-                loading: loadBranch
-              }
+                loading: loadBranch,
+              },
             }}
           />
         </div>
@@ -85,7 +85,7 @@ export default forwardRef(function CostCenter(props, ref) {
               dataSource: {
                 data: data,
                 valueField: "cost_center_id",
-                textField: "cost_center"
+                textField: "cost_center",
               },
               value: costCenter,
               onChange: (details, value) => {
@@ -94,8 +94,8 @@ export default forwardRef(function CostCenter(props, ref) {
                 result["cost_center_id"] = value;
               },
               others: {
-                loading: loading
-              }
+                loading: loading,
+              },
             }}
           />
         </div>

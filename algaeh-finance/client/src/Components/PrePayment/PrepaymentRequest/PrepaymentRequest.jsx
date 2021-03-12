@@ -388,7 +388,7 @@ export function PrepaymentRequest() {
                             <AlgaehAutoComplete
                               div={{ className: "col-12 form-group" }}
                               label={{
-                                forceLabel: "Branch",
+                                fieldName: "branch",
                                 isImp: true,
                               }}
                               selector={{
