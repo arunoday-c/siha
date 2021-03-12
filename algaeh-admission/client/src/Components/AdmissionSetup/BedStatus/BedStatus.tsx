@@ -174,7 +174,14 @@ export default function BedStatus(Props: any) {
 
     if (response.data.success) {
       debugger;
-      setValue("steps", parseInt(response.data.records.last_inserted) + 1);
+      setValue(
+        "steps",
+        parseInt(
+          response.data.records.last_inserted
+            ? response.data.records.last_inserted
+            : 0
+        ) + 1
+      );
       setBedStatusData(response.data.records.result);
       return response.data.records;
     }
