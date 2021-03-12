@@ -5,7 +5,11 @@ import { bindActionCreators } from "redux";
 
 import "./VisitClose.scss";
 import "../../styles/site.scss";
-import { AlgaehLabel, AlgaehDataGrid, AlgaehDateHandler } from "../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlgaehDataGrid,
+  AlgaehDateHandler,
+} from "../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../actions/algaehActions";
 import {
@@ -13,7 +17,7 @@ import {
   SelectVisitToClose,
   ClearData,
   CloseVisits,
-  updateExpiryDate
+  updateExpiryDate,
 } from "./VisitCloseEvent";
 import moment from "moment";
 import Options from "../../Options.json";
@@ -26,7 +30,7 @@ class VisitClose extends Component {
       visitDetails: [],
       saveEnable: true,
       action_details: [],
-      edit_option: false
+      edit_option: false,
     };
   }
 
@@ -41,8 +45,8 @@ class VisitClose extends Component {
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
-          mappingName: "viewproviders"
-        }
+          mappingName: "viewproviders",
+        },
       });
     }
 
@@ -56,8 +60,8 @@ class VisitClose extends Component {
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
-          mappingName: "subDepartments"
-        }
+          mappingName: "subDepartments",
+        },
       });
     }
 
@@ -65,40 +69,43 @@ class VisitClose extends Component {
       if (result === "show") {
         this.setState({
           edit_option: true,
-          action_details: [{
-            fieldName: "action",
-            label: <AlgaehLabel label={{ forceLabel: "Update Expiry Date" }} />,
-            displayTemplate: row => {
-              return (
-                <span>
-                  <i
-                    onClick={updateExpiryDate.bind(this, this, row)}
-                    className="fas fa-check"
-                  />
-                </span>
-              );
+          action_details: [
+            {
+              fieldName: "action",
+              label: (
+                <AlgaehLabel label={{ forceLabel: "Update Expiry Date" }} />
+              ),
+              displayTemplate: (row) => {
+                return (
+                  <span>
+                    <i
+                      onClick={updateExpiryDate.bind(this, this, row)}
+                      className="fas fa-check"
+                    />
+                  </span>
+                );
+              },
+              others: {
+                maxWidth: 140,
+                filterable: false,
+              },
             },
-            others: {
-              maxWidth: 140,
-              filterable: false
-            }
-          }]
-        })
+          ],
+        });
       }
     });
   }
 
   griddatehandle(row, ctrl, e) {
-
-    let visitDetails = this.state.visitDetails
-    const _index = visitDetails.indexOf(row)
+    let visitDetails = this.state.visitDetails;
+    const _index = visitDetails.indexOf(row);
 
     row[e] = moment(ctrl)._d;
-    visitDetails[_index] = row
-    this.setState({ visitDetails: visitDetails })
+    visitDetails[_index] = row;
+    this.setState({ visitDetails: visitDetails });
   }
 
-  DisplayDateFormat = date => {
+  DisplayDateFormat = (date) => {
     if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -165,7 +172,7 @@ class VisitClose extends Component {
                     {
                       fieldName: "close",
                       label: <AlgaehLabel label={{ forceLabel: "Close" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <input
                             type="checkbox"
@@ -177,65 +184,66 @@ class VisitClose extends Component {
                       others: {
                         maxWidth: 50,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
 
                     {
                       fieldName: "visit_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Visit Code" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "visit_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Visit Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.DisplayDateFormat(row.visit_date)}</span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "visit_expiery_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Visit Expiry" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return this.state.edit_option === false ? (
-                          <span>{this.DisplayDateFormat(row.visit_expiery_date)}</span>
-                        ) : <AlgaehDateHandler
+                          <span>
+                            {this.DisplayDateFormat(row.visit_expiery_date)}
+                          </span>
+                        ) : (
+                          <AlgaehDateHandler
                             div={{ className: "col" }}
                             textBox={{
                               className: "txt-fld",
                               name: "visit_expiery_date",
                             }}
                             events={{
-                              onChange: this.griddatehandle.bind(
-                                this,
-                                row
-                              ),
+                              onChange: this.griddatehandle.bind(this, row),
                             }}
                             value={row.visit_expiery_date}
-                          />;
-                      }
+                          />
+                        );
+                      },
                     },
                     {
                       fieldName: "sub_department_id",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Department" }} />
+                        <AlgaehLabel label={{ fieldName: "department" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.subDepartments === undefined
                             ? []
                             : this.props.subDepartments.filter(
-                              f =>
-                                f.hims_d_sub_department_id ===
-                                row.sub_department_id
-                            );
+                                (f) =>
+                                  f.hims_d_sub_department_id ===
+                                  row.sub_department_id
+                              );
 
                         return (
                           <span>
@@ -245,18 +253,18 @@ class VisitClose extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "doctor_id",
                       label: <AlgaehLabel label={{ forceLabel: "Doctor" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.viewproviders === undefined
                             ? []
                             : this.props.viewproviders.filter(
-                              f => f.hims_d_employee_id === row.doctor_id
-                            );
+                                (f) => f.hims_d_employee_id === row.doctor_id
+                              );
 
                         return (
                           <span>
@@ -266,12 +274,12 @@ class VisitClose extends Component {
                           </span>
                         );
                       },
-                      disabled: true
-                    }
+                      disabled: true,
+                    },
                   ])}
                   keyId="hims_f_patient_visit_id"
                   dataSource={{
-                    data: this.state.visitDetails
+                    data: this.state.visitDetails,
                   }}
                   // filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -315,7 +323,7 @@ class VisitClose extends Component {
 function mapStateToProps(state) {
   return {
     subDepartments: state.subDepartments,
-    viewproviders: state.viewproviders
+    viewproviders: state.viewproviders,
   };
 }
 
@@ -323,7 +331,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getProviderDetails: AlgaehActions,
-      getSubDepartment: AlgaehActions
+      getSubDepartment: AlgaehActions,
     },
     dispatch
   );
