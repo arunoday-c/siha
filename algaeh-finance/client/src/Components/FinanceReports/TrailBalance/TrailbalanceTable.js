@@ -131,7 +131,7 @@ export default function TrailBalaceReport({
           fieldName: "cb_amount",
           label: "Closing Balance",
           displayTemplate: (row) => {
-            const opamt = String(row["cb_amount"]).replace(/[^0-9./]+/g, "");
+            const opamt = String(row["cb_amount"]);
 
             if (!isNaN(opamt) && row.leafnode === "Y") {
               return (
@@ -145,9 +145,7 @@ export default function TrailBalaceReport({
                 >
                   {getAmountFormart(parseFloat(opamt), {
                     appendSymbol: false,
-                  }) +
-                    " " +
-                    String(row["cb_amount"]).replace(/[^a-zA-Z]+/g, "")}
+                  })}
                 </a>
               );
             }
