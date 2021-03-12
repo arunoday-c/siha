@@ -221,7 +221,7 @@ class POSCreditSettlement extends Component {
             style={{ paddingTop: 10, paddingBottom: 10 }}
           >
             <div className="col-2 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6
                 onClick={PatientSearch.bind(this, this)}
                 style={{
