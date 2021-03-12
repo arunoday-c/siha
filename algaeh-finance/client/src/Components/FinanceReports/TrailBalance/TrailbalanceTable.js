@@ -199,9 +199,12 @@ export default function TrailBalaceReport({
         layout={layout}
         tableprops={{
           aggregate: (field) => {
-            if (field === "label") return null;
-            const val = _.sumBy(accounts, (f) => parseFloat(f[field]));
-            return getAmountFormart(parseFloat(val), { appendSymbol: false });
+            if (field === "tr_debit_amount" || field === "tr_credit_amount") {
+              const val = _.sumBy(accounts, (f) => parseFloat(f[field]));
+              return getAmountFormart(parseFloat(val), { appendSymbol: false });
+            } else {
+              return null;
+            }
           },
           footer: true,
         }}
