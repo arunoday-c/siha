@@ -22,7 +22,7 @@ export default function FilterComponent(props) {
       <AlagehAutoComplete
         div={{ className: "col-2 form-group mandatory" }}
         label={{
-          forceLabel: "Branch",
+          fieldName: "branch",
           isImp: true,
         }}
         selector={{
@@ -43,7 +43,7 @@ export default function FilterComponent(props) {
       <AlagehAutoComplete
         div={{ className: "col-1 mandatory" }}
         label={{
-          forceLabel: "Year",
+          fieldName: "year",
           isImp: true,
         }}
         selector={{
@@ -61,7 +61,7 @@ export default function FilterComponent(props) {
       <AlagehAutoComplete
         div={{ className: "col-2 mandatory" }}
         label={{
-          forceLabel: "Month",
+          fieldName: "select_month",
           isImp: true,
         }}
         selector={{
@@ -79,7 +79,7 @@ export default function FilterComponent(props) {
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
-        label={{ forceLabel: "Employee Group" }}
+        label={{ fieldName: "employeeGroup" }}
         selector={{
           name: "group_id",
           value: inputs.group_id,
@@ -99,7 +99,7 @@ export default function FilterComponent(props) {
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
-        label={{ forceLabel: "Department", isImp: false }}
+        label={{ fieldName: "department", isImp: false }}
         selector={{
           name: "department_id",
           value: inputs.department_id,
@@ -123,7 +123,7 @@ export default function FilterComponent(props) {
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
-        label={{ forceLabel: "Sub Deptartment" }}
+        label={{ fieldName: "sub_department" }}
         selector={{
           name: "sub_department_id",
           value: inputs.sub_department_id,
@@ -146,7 +146,7 @@ export default function FilterComponent(props) {
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
-        label={{ forceLabel: "Designation" }}
+        label={{ fieldName: "designation" }}
         selector={{
           name: "designation_id",
           value: inputs.designation_id,
@@ -167,7 +167,7 @@ export default function FilterComponent(props) {
         }}
       />
       <div className="col globalSearchCntr">
-        <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+        <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
         <h6 onClick={handlers.employeeSearch}>
           {inputs.emp_name ? inputs.emp_name : "Search Employee"}
           <i className="fas fa-search fa-lg"></i>
