@@ -132,7 +132,7 @@ class PatientRecall extends Component {
           {/* <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
-              forceLabel: "Department"
+              fieldName: "department"
             }}
             selector={{
               name: "sub_department_id",
