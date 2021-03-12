@@ -340,7 +340,7 @@ class LeaveYearlyProcess extends Component {
             <AlagehAutoComplete
               div={{ className: "col-1 form-group mandatory" }}
               label={{
-                forceLabel: "Year",
+                fieldName: "year",
                 isImp: true,
               }}
               selector={{
@@ -388,7 +388,7 @@ class LeaveYearlyProcess extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2" }}
               label={{
-                forceLabel: "Employee Group",
+                fieldName: "employeeGroup",
                 isImp: false,
               }}
               selector={{
@@ -409,7 +409,7 @@ class LeaveYearlyProcess extends Component {
               }}
             />
             <div className="col globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {this.state.employee_name
                   ? this.state.employee_name
@@ -520,7 +520,7 @@ class LeaveYearlyProcess extends Component {
                       },
                       {
                         fieldName: "year",
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                        label: <AlgaehLabel label={{ fieldName: "year" }} />,
                         others: {
                           maxWidth: 70,
                         },
@@ -551,9 +551,7 @@ class LeaveYearlyProcess extends Component {
                       {
                         fieldName: "group_description",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Employee Group" }}
-                          />
+                          <AlgaehLabel label={{ fieldName: "employeeGroup" }} />
                         ),
                         filterable: true,
                         others: {

@@ -459,7 +459,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-12 form-group mandatory" }}
                       label={{
-                        forceLabel: "Select a Branch",
+                        fieldName: "branch",
                         isImp: true,
                       }}
                       selector={{
@@ -485,7 +485,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-5  form-group mandatory" }}
                       label={{
-                        forceLabel: "Year",
+                        fieldName: "year",
                         isImp: true,
                       }}
                       selector={{
@@ -511,7 +511,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-7 mandatory form-group" }}
                       label={{
-                        forceLabel: "Month",
+                        fieldName: "select_month",
                         isImp: true,
                       }}
                       selector={{
@@ -605,7 +605,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                     </div>
                     <AlagehAutoComplete
                       div={{ className: "col-12 form-group mandatory" }}
-                      label={{ forceLabel: "Employee Group", isImp: true }}
+                      label={{ fieldName: "employeeGroup", isImp: true }}
                       selector={{
                         name: "employee_group_id",
                         value: this.state.employee_group_id,
@@ -625,7 +625,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-12 form-group" }}
-                      label={{ forceLabel: "Department", isImp: false }}
+                      label={{ fieldName: "department", isImp: false }}
                       selector={{
                         name: "department_id",
                         value: this.state.department_id,
@@ -648,7 +648,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-12 form-group" }}
                       label={{
-                        forceLabel: "Sub Department",
+                        fieldName: "sub_department",
                         isImp: false,
                       }}
                       selector={{
@@ -669,7 +669,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                       }}
                     />
                     {/* <div className="col-12 globalSearchCntr">
-                      <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                      <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
                       <h6 onClick={this.openSearch}>
                         {this.state.emp_name
                           ? this.state.emp_name
@@ -734,7 +734,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-2" }}
                       label={{
-                        forceLabel: "Enter Amount",
+                        fieldName: "enterAmt",
                         isImp: this.state.isBulk,
                       }}
                       textBox={{
@@ -831,7 +831,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                           //   label: (
                           //     <AlgaehLabel
                           //       label={{
-                          //         forceLabel: "Sub Department"
+                          //         fieldName: "sub_department"
                           //       }}
                           //     />
                           //   ),

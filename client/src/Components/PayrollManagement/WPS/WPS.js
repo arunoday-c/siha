@@ -71,7 +71,7 @@ export default class WPS extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Year",
+              fieldName: "year",
               isImp: true,
             }}
             selector={{
@@ -94,7 +94,7 @@ export default class WPS extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Month",
+              fieldName: "select_month",
               isImp: true,
             }}
             selector={{

@@ -7,7 +7,7 @@ class YearlyLeaveDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      leave_data: []
+      leave_data: [],
     };
   }
 
@@ -19,7 +19,7 @@ class YearlyLeaveDetail extends Component {
 
   getLeaveData(year, id) {
     this.setState({
-      loading: true
+      loading: true,
     });
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveData",
@@ -27,25 +27,25 @@ class YearlyLeaveDetail extends Component {
       module: "hrManagement",
       data: {
         year: year,
-        employee_id: id
+        employee_id: id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
             leave_data: res.data.records,
-            loading: false
+            loading: false,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
         this.setState({
-          loading: false
+          loading: false,
         });
-      }
+      },
     });
   }
 
@@ -54,7 +54,7 @@ class YearlyLeaveDetail extends Component {
       <AlgaehModalPopUp
         openPopup={this.props.open}
         events={{
-          onClose: this.props.onClose
+          onClose: this.props.onClose,
         }}
         title="Employee Yearly Leave"
       >
@@ -64,7 +64,7 @@ class YearlyLeaveDetail extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Employee Name & ID"
+                    forceLabel: "Employee Name & ID",
                   }}
                 />
                 <h6>
@@ -88,10 +88,10 @@ class YearlyLeaveDetail extends Component {
                   columns={[
                     {
                       fieldName: "year",
-                      label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                      label: <AlgaehLabel label={{ fieldName: "year" }} />,
                       others: {
-                        maxWidth: 70
-                      }
+                        maxWidth: 70,
+                      },
                     },
                     // {
                     //   fieldName: "employee_code",
@@ -117,8 +117,8 @@ class YearlyLeaveDetail extends Component {
                         <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
                       ),
                       others: {
-                        maxWidth: 120
-                      }
+                        maxWidth: 120,
+                      },
                     },
                     {
                       fieldName: "leave_description",
@@ -126,7 +126,7 @@ class YearlyLeaveDetail extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Leave Description" }}
                         />
-                      )
+                      ),
                     },
                     {
                       fieldName: "close_balance",
@@ -134,7 +134,7 @@ class YearlyLeaveDetail extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Closing Balance" }}
                         />
-                      )
+                      ),
                     },
                     {
                       fieldName: "availed_till_date",
@@ -142,7 +142,7 @@ class YearlyLeaveDetail extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Avail Till Date" }}
                         />
-                      )
+                      ),
                     },
                     {
                       fieldName: "projected_applied_leaves",
@@ -150,18 +150,18 @@ class YearlyLeaveDetail extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Projected Leave" }}
                         />
-                      )
+                      ),
                     },
 
                     {
                       fieldName: "processed",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Leave Closed" }} />
-                      )
+                      ),
                       // displayTemplate: row => {
                       //   return row.processed === "Y" ? "Yes" : "No";
                       // }
-                    }
+                    },
                   ]}
                   keyId="hims_f_employee_monthly_leave_id"
                   dataSource={{ data: this.state.leave_data }}

@@ -325,7 +325,7 @@ class SickLeave extends Component {
                 <div className="row">
                   <AlgaehDateHandler
                     div={{ className: "col-4 form-group mandatory" }}
-                    label={{ forceLabel: "From Date", isImp: true }}
+                    label={{ fieldName: "from_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
                       name: "from_date",
@@ -342,7 +342,7 @@ class SickLeave extends Component {
                   />
                   <AlgaehDateHandler
                     div={{ className: "col-4 form-group mandatory" }}
-                    label={{ forceLabel: "To Date", isImp: true }}
+                    label={{ fieldName: "to_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
                       name: "to_date",

@@ -614,7 +614,7 @@ class EmployeeDocuments extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-2 form-group mandatory" }}
                 label={{
-                  forceLabel: "Branch",
+                  fieldName: "branch",
                   isImp: true,
                 }}
                 selector={{
@@ -634,7 +634,7 @@ class EmployeeDocuments extends Component {
             ) : null}
             {this.state.document_type === "E" ? (
               <div className="col-2 globalSearchCntr">
-                <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
 
                 <h6 onClick={this.employeeSearch.bind(this)}>
                   {/* {this.state.emp_name ? this.state.emp_name : "------"} */}

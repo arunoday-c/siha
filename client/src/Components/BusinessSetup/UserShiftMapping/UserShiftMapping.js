@@ -352,7 +352,7 @@ class UserShiftMapping extends Component {
 
           <AlgaehDateHandler
             div={{ className: "col-2 form-group mandatory" }}
-            label={{ forceLabel: "From Date", isImp: true }}
+            label={{ fieldName: "from_date", isImp: true }}
             textBox={{ className: "txt-fld", name: "from_date" }}
             events={{
               onChange: this.datehandle.bind(this),
@@ -362,7 +362,7 @@ class UserShiftMapping extends Component {
           />
           <AlgaehDateHandler
             div={{ className: "col-2 form-group mandatory" }}
-            label={{ forceLabel: "To Date", isImp: true }}
+            label={{ fieldName: "to_date", isImp: true }}
             textBox={{ className: "txt-fld", name: "to_date" }}
             events={{
               onChange: this.datehandle.bind(this),
@@ -474,7 +474,7 @@ class UserShiftMapping extends Component {
                       {
                         fieldName: "from_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
+                          <AlgaehLabel label={{ fieldName: "from_date" }} />
                         ),
                         displayTemplate: (row) => {
                           return (
@@ -489,9 +489,7 @@ class UserShiftMapping extends Component {
                       },
                       {
                         fieldName: "to_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "To Date" }} />
-                        ),
+                        label: <AlgaehLabel label={{ fieldName: "to_date" }} />,
                         displayTemplate: (row) => {
                           return <span>{this.dateFormater(row.to_date)}</span>;
                         },

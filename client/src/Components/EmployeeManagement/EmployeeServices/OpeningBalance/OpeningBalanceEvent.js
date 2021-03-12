@@ -158,7 +158,8 @@ export default function ManualAttendanceEvents() {
           ? " hospital_id=" + $this.state.hospital_id
           : "1=1";
       if ($this.state.employee_group_id !== null) {
-        input_data += " and employee_group_id = " + $this.state.employee_group_id;
+        input_data +=
+          " and employee_group_id = " + $this.state.employee_group_id;
       }
 
       AlgaehSearch({
@@ -230,7 +231,7 @@ export default function ManualAttendanceEvents() {
             },
             {
               fieldName: "start_month",
-              label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+              label: <AlgaehLabel label={{ fieldName: "select_month" }} />,
               others: {
                 filterable: false,
               },
@@ -406,7 +407,7 @@ export default function ManualAttendanceEvents() {
             },
             {
               fieldName: "year",
-              label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+              label: <AlgaehLabel label={{ fieldName: "year" }} />,
               editorTemplate: (row) => {
                 return row.year;
               },
@@ -418,7 +419,7 @@ export default function ManualAttendanceEvents() {
 
             {
               fieldName: "month",
-              label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+              label: <AlgaehLabel label={{ fieldName: "select_month" }} />,
               others: {
                 filterable: false,
               },
@@ -843,29 +844,29 @@ function getLeaveMasterData($this) {
                 return row[item.hims_d_leave_id] === "N" ? (
                   "Not Applicable"
                 ) : (
-                    <Input
-                      value={row[item.hims_d_leave_id]}
-                      name={item.hims_d_leave_id}
-                      row={row}
-                    />
+                  <Input
+                    value={row[item.hims_d_leave_id]}
+                    name={item.hims_d_leave_id}
+                    row={row}
+                  />
 
-                    // <AlagehFormGroup
-                    //   div={{ className: "col" }}
-                    //   textBox={{
-                    //     number: {
-                    //       allowNegative: false,
-                    //       thousandSeparator: ","
-                    //     },
-                    //     dontAllowKeys: ["-", "e"],
-                    //     className: "txt-fld",
-                    //     name: item.hims_d_leave_id,
-                    //     value: row[item.hims_d_leave_id],
-                    //     events: {
-                    //       onChange: changeGridEditors.bind($this, $this, row)
-                    //     }
-                    //   }}
-                    // />
-                  );
+                  // <AlagehFormGroup
+                  //   div={{ className: "col" }}
+                  //   textBox={{
+                  //     number: {
+                  //       allowNegative: false,
+                  //       thousandSeparator: ","
+                  //     },
+                  //     dontAllowKeys: ["-", "e"],
+                  //     className: "txt-fld",
+                  //     name: item.hims_d_leave_id,
+                  //     value: row[item.hims_d_leave_id],
+                  //     events: {
+                  //       onChange: changeGridEditors.bind($this, $this, row)
+                  //     }
+                  //   }}
+                  // />
+                );
               },
               others: {
                 filterable: false,

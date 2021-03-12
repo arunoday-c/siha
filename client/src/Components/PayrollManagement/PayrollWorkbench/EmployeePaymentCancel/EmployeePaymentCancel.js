@@ -78,7 +78,7 @@ class EmployeePaymentCancel extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2 mandatory form-group" }}
               label={{
-                forceLabel: "Select a Branch.",
+                fieldName: "branch",
                 isImp: true,
               }}
               selector={{

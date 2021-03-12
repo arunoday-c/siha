@@ -65,7 +65,7 @@ export default class GratuityAccrual extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2 form-group mandatory" }}
               label={{
-                forceLabel: "Select a Branch",
+                fieldName: "branch",
                 isImp: true,
               }}
               selector={{
@@ -90,7 +90,7 @@ export default class GratuityAccrual extends Component {
             />
 
             <div className="col-3 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
                 {this.state.employee_name ? this.state.employee_name : "------"}
                 <i className="fas fa-search fa-lg" />
@@ -100,7 +100,7 @@ export default class GratuityAccrual extends Component {
             <AlagehAutoComplete
               div={{ className: "col-1 mandatory form-group" }}
               label={{
-                forceLabel: "Year",
+                fieldName: "year",
                 isImp: true,
               }}
               selector={{
@@ -124,7 +124,7 @@ export default class GratuityAccrual extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2 mandatory form-group" }}
               label={{
-                forceLabel: "Month",
+                fieldName: "select_month",
                 isImp: true,
               }}
               selector={{
@@ -202,7 +202,9 @@ export default class GratuityAccrual extends Component {
                       },
                       {
                         fieldName: "month",
-                        label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "select_month" }} />
+                        ),
                         others: {
                           filterable: false,
                           maxWidth: 60,
@@ -210,7 +212,7 @@ export default class GratuityAccrual extends Component {
                       },
                       {
                         fieldName: "year",
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                        label: <AlgaehLabel label={{ fieldName: "year" }} />,
                         others: {
                           filterable: false,
                           maxWidth: 50,

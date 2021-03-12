@@ -463,7 +463,7 @@ class EOSGratuity extends Component {
           /> */}
 
           <div className="col-3 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name ? this.state.employee_name : "------"}
               <i className="fas fa-search fa-lg" />

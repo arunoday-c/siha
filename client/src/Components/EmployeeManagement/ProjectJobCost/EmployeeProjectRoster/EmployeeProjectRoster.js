@@ -739,7 +739,7 @@ class EmployeeProjectRoster extends Component {
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
-              forceLabel: "Year",
+              fieldName: "year",
               isImp: true,
             }}
             selector={{
@@ -762,7 +762,7 @@ class EmployeeProjectRoster extends Component {
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
-              forceLabel: "Month",
+              fieldName: "select_month",
               isImp: true,
             }}
             selector={{
@@ -786,7 +786,7 @@ class EmployeeProjectRoster extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
             label={{
-              forceLabel: "Branch",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
@@ -805,7 +805,7 @@ class EmployeeProjectRoster extends Component {
 
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
-            label={{ forceLabel: "Department", isImp: true }}
+            label={{ fieldName: "department", isImp: true }}
             selector={{
               name: "department_id",
               value: this.state.department_id,
@@ -830,7 +830,7 @@ class EmployeeProjectRoster extends Component {
 
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
-            label={{ forceLabel: "Sub Deptartment" }}
+            label={{ fieldName: "sub_department" }}
             selector={{
               name: "sub_department_id",
               value: this.state.sub_department_id,
@@ -853,7 +853,7 @@ class EmployeeProjectRoster extends Component {
 
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
-            label={{ forceLabel: "Designation" }}
+            label={{ fieldName: "designation" }}
             selector={{
               name: "designation_id",
               value: this.state.designation_id,

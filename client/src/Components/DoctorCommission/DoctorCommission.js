@@ -205,7 +205,7 @@ class DoctorCommission extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date", isImp: true }}
+                label={{ fieldName: "to_date", isImp: true }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 maxDate={new Date()}
                 events={{

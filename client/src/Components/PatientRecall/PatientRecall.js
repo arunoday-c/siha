@@ -494,7 +494,7 @@ function PatientRecall() {
               <AlgaehDateHandler
                 div={{ className: "col form-group" }}
                 error={errors}
-                label={{ forceLabel: "From Date" }}
+                label={{ fieldName: "from_date" }}
                 textBox={{
                   className: "txt-fld",
                   name: "recall_start",
@@ -522,7 +522,7 @@ function PatientRecall() {
           {/* 
         <AlgaehDateHandler
           div={{ className: "col-2 form-group" }}
-          label={{ forceLabel: "From Date" }}
+          label={{ fieldName: "from_date" }}
           textBox={{
             className: "txt-fld",
             name: "recall_start",
@@ -537,7 +537,7 @@ function PatientRecall() {
 
           {/* <AlgaehDateHandler
           div={{ className: "col-2 form-group" }}
-          label={{ forceLabel: "To Date" }}
+          label={{ fieldName: "to_date" }}
           textBox={{
             className: "txt-fld",
             name: "recall_end",
@@ -557,7 +557,7 @@ function PatientRecall() {
               <AlgaehDateHandler
                 div={{ className: "col form-group" }}
                 error={errors}
-                label={{ forceLabel: "To Date" }}
+                label={{ fieldName: "to_date" }}
                 textBox={{
                   className: "txt-fld",
                   name: "recall_end",

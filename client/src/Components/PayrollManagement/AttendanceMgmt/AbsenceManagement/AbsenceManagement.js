@@ -5,7 +5,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehFormGroup,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -20,7 +20,7 @@ export default class AbsenceManagement extends Component {
     this.state = {
       year: moment().year(),
       month: moment(new Date()).format("M"),
-      absents: []
+      absents: [],
     };
   }
 
@@ -42,27 +42,27 @@ export default class AbsenceManagement extends Component {
       module: "hrManagement",
       data: {
         hims_f_absent_id: data.hims_f_absent_id,
-        cancel_reason: data.cancel_reason
+        cancel_reason: data.cancel_reason,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Updated Successfully",
-            type: "success"
+            type: "success",
           });
           this.getAbsentList();
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
-  deleteAbsent(data) { }
+  deleteAbsent(data) {}
 
   getAbsentList() {
     let yearAndMonth = this.state.year + "-" + this.state.month + "-01";
@@ -74,43 +74,43 @@ export default class AbsenceManagement extends Component {
       data: {
         year: this.state.year,
         month: this.state.month,
-        yearAndMonth: yearAndMonth
+        yearAndMonth: yearAndMonth,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            absents: res.data.result
+            absents: res.data.result,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState(
           {
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            hims_d_employee_id: row.hims_d_employee_id,
           },
-          () => { }
+          () => {}
         );
-      }
+      },
     });
   }
 
@@ -120,7 +120,7 @@ export default class AbsenceManagement extends Component {
         if (e.target.value.length >= 4) {
           this.setState(
             {
-              [e.target.name]: e.target.value
+              [e.target.name]: e.target.value,
             },
             () => {
               this.getAbsentList();
@@ -128,14 +128,14 @@ export default class AbsenceManagement extends Component {
           );
         } else {
           this.setState({
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
           });
         }
         break;
 
       default:
         this.setState({
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         });
 
         break;
@@ -148,29 +148,29 @@ export default class AbsenceManagement extends Component {
         if (this.state.to_session === "FH" && value.value === "SH") {
           swalMessage({
             title: "Please select a proper range",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
             from_session: null,
-            to_session: null
+            to_session: null,
           });
         } else if (this.state.to_session === "SH" && value.value === "FH") {
           this.setState({
             from_session: "FD",
-            to_session: "FD"
+            to_session: "FD",
           });
         } else if (this.state.to_session === "FD") {
           this.setState({
-            from_session: "FD"
+            from_session: "FD",
           });
         } else if (value.value === "FD") {
           this.setState({
             to_session: "FD",
-            from_session: "FD"
+            from_session: "FD",
           });
         } else {
           this.setState({
-            [value.name]: value.value
+            [value.name]: value.value,
           });
         }
         break;
@@ -179,25 +179,25 @@ export default class AbsenceManagement extends Component {
         if (this.state.from_session === "FH" && value.value === "SH") {
           this.setState({
             from_session: "FD",
-            to_session: "FD"
+            to_session: "FD",
           });
         } else if (this.state.from_session === "SH" && value.value === "FH") {
           swalMessage({
             title: "Please select a proper range",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
             from_session: null,
-            to_session: null
+            to_session: null,
           });
         } else if (this.state.from_session === "FD") {
           this.setState({
             from_session: "FD",
-            to_session: "FD"
+            to_session: "FD",
           });
         } else {
           this.setState({
-            [value.name]: value.value
+            [value.name]: value.value,
           });
         }
 
@@ -206,7 +206,7 @@ export default class AbsenceManagement extends Component {
       case "month":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
           },
           () => {
             this.getAbsentList();
@@ -216,7 +216,7 @@ export default class AbsenceManagement extends Component {
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -229,7 +229,7 @@ export default class AbsenceManagement extends Component {
       from_session: null,
       to_session: null,
       absent_reason: null,
-      absent_date: null
+      absent_date: null,
     });
   }
 
@@ -243,14 +243,14 @@ export default class AbsenceManagement extends Component {
         ) {
           swalMessage({
             title: "Please select an employee to add",
-            type: "warning"
+            type: "warning",
           });
         } else {
           let totalDays =
             this.state.from_session === "FH" ||
-              this.state.to_session === "FH" ||
-              this.state.from_session === "SH" ||
-              this.state.to_session === "SH"
+            this.state.to_session === "FH" ||
+            this.state.from_session === "SH" ||
+            this.state.to_session === "SH"
               ? 0.5
               : 1;
           algaehApiCall({
@@ -263,26 +263,26 @@ export default class AbsenceManagement extends Component {
               from_session: this.state.from_session,
               to_session: this.state.to_session,
               absent_duration: totalDays,
-              absent_reason: this.state.absent_reason
+              absent_reason: this.state.absent_reason,
             },
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 swalMessage({
                   title: "Record added successfully",
-                  type: "success"
+                  type: "success",
                 });
                 this.clearState();
               }
             },
-            onFailure: err => {
+            onFailure: (err) => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 
@@ -291,7 +291,7 @@ export default class AbsenceManagement extends Component {
       <div className="AbsenceManagement">
         <div className="row inner-top-search">
           <div className="col-2 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name
                 ? this.state.employee_name
@@ -339,15 +339,15 @@ export default class AbsenceManagement extends Component {
             label={{ forceLabel: "Select a Date", isImp: true }}
             textBox={{
               className: "txt-fld",
-              name: "absent_date"
+              name: "absent_date",
             }}
             maxDate={new Date()}
             events={{
-              onChange: selDate => {
+              onChange: (selDate) => {
                 this.setState({
-                  absent_date: selDate
+                  absent_date: selDate,
                 });
-              }
+              },
             }}
             value={this.state.absent_date}
           />
@@ -362,14 +362,14 @@ export default class AbsenceManagement extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.LEAVE_SESSIONS
+                data: GlobalVariables.LEAVE_SESSIONS,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  from_session: null
+                  from_session: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
@@ -382,14 +382,14 @@ export default class AbsenceManagement extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.LEAVE_SESSIONS
+                data: GlobalVariables.LEAVE_SESSIONS,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  to_session: null
+                  to_session: null,
                 });
-              }
+              },
             }}
           />
 
@@ -397,18 +397,18 @@ export default class AbsenceManagement extends Component {
             div={{ className: "col form-group" }}
             label={{
               forceLabel: "Absence Reason",
-              isImp: false
+              isImp: false,
             }}
             textBox={{
               className: "txt-fld",
               name: "absent_reason",
               value: this.state.absent_reason,
               events: {
-                onChange: this.textHandler.bind(this)
+                onChange: this.textHandler.bind(this),
               },
               option: {
-                type: "text"
-              }
+                type: "text",
+              },
             }}
           />
 
@@ -449,18 +449,18 @@ export default class AbsenceManagement extends Component {
                     div={{ className: "col-2" }}
                     label={{
                       forceLabel: "Selected Year",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "year",
                       value: this.state.year,
                       events: {
-                        onChange: this.textHandler.bind(this)
+                        onChange: this.textHandler.bind(this),
                       },
                       others: {
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
 
@@ -468,7 +468,7 @@ export default class AbsenceManagement extends Component {
                     div={{ className: "col-2" }}
                     label={{
                       forceLabel: "Selected Month",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       sort: "off",
@@ -478,14 +478,14 @@ export default class AbsenceManagement extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.MONTHS
+                        data: GlobalVariables.MONTHS,
                       },
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          month: null
+                          month: null,
                         });
-                      }
+                      },
                     }}
                   />
                 </div>
@@ -502,7 +502,7 @@ export default class AbsenceManagement extends Component {
                               label={{ forceLabel: "Employee Code" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
 
                         {
@@ -512,7 +512,7 @@ export default class AbsenceManagement extends Component {
                               label={{ forceLabel: "Employee Name" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "absent_date",
@@ -521,7 +521,7 @@ export default class AbsenceManagement extends Component {
                               label={{ forceLabel: "Date of Absent" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "from_session",
@@ -530,33 +530,33 @@ export default class AbsenceManagement extends Component {
                               label={{ forceLabel: "From Leave Session" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.from_session === "FH"
                                   ? "First Half"
                                   : row.from_session === "SH"
-                                    ? "Second Half"
-                                    : row.from_session === "FD"
-                                      ? "Full Day"
-                                      : "------"}
+                                  ? "Second Half"
+                                  : row.from_session === "FD"
+                                  ? "Full Day"
+                                  : "------"}
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>
                                 {row.from_session === "FH"
                                   ? "First Half"
                                   : row.from_session === "SH"
-                                    ? "Second Half"
-                                    : row.from_session === "FD"
-                                      ? "Full Day"
-                                      : "------"}
+                                  ? "Second Half"
+                                  : row.from_session === "FD"
+                                  ? "Full Day"
+                                  : "------"}
                               </span>
                             );
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "to_session",
@@ -565,32 +565,32 @@ export default class AbsenceManagement extends Component {
                               label={{ forceLabel: "To Leave Session" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.to_session === "FH"
                                   ? "First Half"
                                   : row.to_session === "SH"
-                                    ? "Second Half"
-                                    : row.to_session === "FD"
-                                      ? "Full Day"
-                                      : "------"}
+                                  ? "Second Half"
+                                  : row.to_session === "FD"
+                                  ? "Full Day"
+                                  : "------"}
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>
                                 {row.to_session === "FH"
                                   ? "First Half"
                                   : row.to_session === "SH"
-                                    ? "Second Half"
-                                    : row.to_session === "FD"
-                                      ? "Full Day"
-                                      : "------"}
+                                  ? "Second Half"
+                                  : row.to_session === "FD"
+                                  ? "Full Day"
+                                  : "------"}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "absent_duration",
@@ -599,7 +599,7 @@ export default class AbsenceManagement extends Component {
                               label={{ forceLabel: "Absent Duration(Day(s))" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
 
                         {
@@ -607,18 +607,18 @@ export default class AbsenceManagement extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Cancelled" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.cancel === "Y"
                                   ? "Yes"
                                   : row.cancel === "N"
-                                    ? "No"
-                                    : "------"}
+                                  ? "No"
+                                  : "------"}
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 selector={{
@@ -628,16 +628,16 @@ export default class AbsenceManagement extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_YESNO
+                                    data: GlobalVariables.FORMAT_YESNO,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "cancel_reason",
@@ -648,9 +648,9 @@ export default class AbsenceManagement extends Component {
                           ),
                           others: {
                             maxWidth: 200,
-                            filterable: false
-                          }
-                        }
+                            filterable: false,
+                          },
+                        },
                       ]}
                       keyId="hims_f_absent_id"
                       dataSource={{ data: this.state.absents }}
@@ -658,9 +658,9 @@ export default class AbsenceManagement extends Component {
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDone: this.updateAbsent.bind(this),
-                        onDelete: this.deleteAbsent.bind(this)
+                        onDelete: this.deleteAbsent.bind(this),
                       }}
                       others={{}}
                     />

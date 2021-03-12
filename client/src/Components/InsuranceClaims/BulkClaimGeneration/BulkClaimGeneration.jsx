@@ -96,7 +96,7 @@ export default function BulkClaimGeneration() {
   };
 
   const selectAll = () => {
-    debugger
+    debugger;
     if (data?.length === selectedList?.length) {
       setSelectedList([]);
     } else {
@@ -133,7 +133,7 @@ export default function BulkClaimGeneration() {
             />
             {/* <AlgaehDateHandler
             div={{ className: "" }}
-            label={{ isImp: true, forceLabel: "From Date" }}
+            label={{ isImp: true, fieldName: "from_date" }}
             textBox={{
               className: "txt-fld",
               name: "from_date",
@@ -154,7 +154,7 @@ export default function BulkClaimGeneration() {
           />
           <AlgaehDateHandler
             div={{ className: "col-2 form-group mandatory" }}
-            label={{ isImp: true, forceLabel: "To Date" }}
+            label={{ isImp: true, fieldName: "to_date" }}
             textBox={{
               className: "txt-fld",
               name: "to_date",

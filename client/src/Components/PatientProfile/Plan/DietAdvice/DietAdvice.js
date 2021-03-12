@@ -10,7 +10,7 @@ import {
   AlgaehDateHandler,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import "./DietAdvice.scss";
 import "../../../../styles/site.scss";
@@ -21,7 +21,7 @@ import {
   addDiet,
   getDietList,
   deleteDietAdvice,
-  dateValidate
+  dateValidate,
 } from "./DietAdviceEvents";
 
 class DietAdvice extends Component {
@@ -31,7 +31,7 @@ class DietAdvice extends Component {
     this.state = {
       till_date: new Date(),
       diet_id: null,
-      addIcon: false
+      addIcon: false,
     };
   }
 
@@ -41,14 +41,14 @@ class DietAdvice extends Component {
       method: "GET",
       redux: {
         type: "DIET_GET_DATA",
-        mappingName: "dietmaster"
-      }
+        mappingName: "dietmaster",
+      },
     });
 
     getDietList(this, this);
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -65,7 +65,7 @@ class DietAdvice extends Component {
             minDate={new Date()}
             events={{
               onChange: datehandle.bind(this, this),
-              onBlur: dateValidate.bind(this, this)
+              onBlur: dateValidate.bind(this, this),
             }}
             value={this.state.till_date}
           />
@@ -79,9 +79,9 @@ class DietAdvice extends Component {
               dataSource: {
                 textField: "hims_d_diet_description",
                 valueField: "hims_d_diet_master_id",
-                data: this.props.dietmaster
+                data: this.props.dietmaster,
               },
-              onChange: texthandle.bind(this, this)
+              onChange: texthandle.bind(this, this),
             }}
           />
 
@@ -104,7 +104,7 @@ class DietAdvice extends Component {
                 {
                   fieldName: "action",
                   label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                  displayTemplate: row => {
+                  displayTemplate: (row) => {
                     return (
                       <span>
                         <i
@@ -117,13 +117,13 @@ class DietAdvice extends Component {
                   },
                   others: {
                     minWidth: 50,
-                    style: { textAlign: "center" }
-                  }
+                    style: { textAlign: "center" },
+                  },
                 },
                 {
                   fieldName: "created_date",
-                  label: <AlgaehLabel label={{ forceLabel: "From Date" }} />,
-                  displayTemplate: row => {
+                  label: <AlgaehLabel label={{ fieldName: "from_date" }} />,
+                  displayTemplate: (row) => {
                     return (
                       <span>{this.changeDateFormat(row.created_date)}</span>
                     );
@@ -131,31 +131,31 @@ class DietAdvice extends Component {
                   others: {
                     maxWidth: 100,
                     resizable: false,
-                    style: { textAlign: "center" }
-                  }
+                    style: { textAlign: "center" },
+                  },
                 },
                 {
                   fieldName: "till_date",
                   label: <AlgaehLabel label={{ forceLabel: "Till Date" }} />,
-                  displayTemplate: row => {
+                  displayTemplate: (row) => {
                     return <span>{this.changeDateFormat(row.till_date)}</span>;
                   },
                   others: {
                     maxWidth: 100,
                     resizable: false,
-                    style: { textAlign: "center" }
-                  }
+                    style: { textAlign: "center" },
+                  },
                 },
                 {
                   fieldName: "diet_id",
                   label: <AlgaehLabel label={{ forceLabel: "Diet" }} />,
-                  displayTemplate: row => {
+                  displayTemplate: (row) => {
                     let display =
                       this.props.dietmaster === undefined
                         ? []
                         : this.props.dietmaster.filter(
-                          f => f.hims_d_diet_master_id === row.diet_id
-                        );
+                            (f) => f.hims_d_diet_master_id === row.diet_id
+                          );
 
                     return (
                       <span>
@@ -165,13 +165,13 @@ class DietAdvice extends Component {
                       </span>
                     );
                   },
-                  others: { style: { textAlign: "center" } }
-                }
+                  others: { style: { textAlign: "center" } },
+                },
               ]}
               keyId="patient_code"
               dataSource={{
                 data:
-                  this.props.dietList === undefined ? [] : this.props.dietList
+                  this.props.dietList === undefined ? [] : this.props.dietList,
               }}
               paging={{ page: 0, rowsPerPage: 10 }}
             />
@@ -185,7 +185,7 @@ class DietAdvice extends Component {
 function mapStateToProps(state) {
   return {
     dietmaster: state.dietmaster,
-    dietList: state.dietList
+    dietList: state.dietList,
   };
 }
 
@@ -193,15 +193,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getDietMaster: AlgaehActions,
-      getDietList: AlgaehActions
+      getDietList: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(DietAdvice)
+  connect(mapStateToProps, mapDispatchToProps)(DietAdvice)
 );

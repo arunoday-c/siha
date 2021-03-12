@@ -135,7 +135,7 @@ class EmployeePayment extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2 mandatory form-group" }}
               label={{
-                forceLabel: "Select a Branch.",
+                fieldName: "branch",
                 isImp: true,
               }}
               selector={{
@@ -179,7 +179,7 @@ class EmployeePayment extends Component {
             />
 
             {/* <div className="col-3 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
                 {this.state.employee_name ? this.state.employee_name : "------"}
                 <i className="fas fa-search fa-lg" />
@@ -470,7 +470,7 @@ class EmployeePayment extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-4 form-group mandatory" }}
                               label={{
-                                forceLabel: "Year",
+                                fieldName: "year",
                                 isImp:
                                   this.state.sel_payment_type === "AD"
                                     ? true

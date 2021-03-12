@@ -371,7 +371,7 @@ export default class LeaveAuthorization extends Component {
               div={{
                 className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
               }}
-              label={{ forceLabel: "From Date", isImp: true }}
+              label={{ fieldName: "from_date", isImp: true }}
               textBox={{
                 className: "txt-fld",
                 name: "from_date",
@@ -390,7 +390,7 @@ export default class LeaveAuthorization extends Component {
               div={{
                 className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
               }}
-              label={{ forceLabel: "To Date", isImp: true }}
+              label={{ fieldName: "to_date", isImp: true }}
               textBox={{
                 className: "txt-fld",
                 name: "actual_to_date",
@@ -411,7 +411,7 @@ export default class LeaveAuthorization extends Component {
                 className: "col-lg-2 col-md-2  col-sm-12 form-group mandatory",
               }}
               label={{
-                forceLabel: "Branch",
+                fieldName: "branch",
                 isImp: true,
               }}
               selector={{
@@ -448,7 +448,7 @@ export default class LeaveAuthorization extends Component {
             />
 
             <div className="col-lg-2 col-md-2 col-sm-12  globalSearchCntr form-group">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
                 {this.state.employee_name
@@ -655,7 +655,7 @@ export default class LeaveAuthorization extends Component {
                       {
                         fieldName: "designation",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Designation" }} />
+                          <AlgaehLabel label={{ fieldName: "designation" }} />
                         ),
                         filterable: true,
                       },
@@ -705,7 +705,7 @@ export default class LeaveAuthorization extends Component {
                       {
                         fieldName: "from_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
+                          <AlgaehLabel label={{ fieldName: "from_date" }} />
                         ),
                         filterable: true,
                         displayTemplate: (row) => {
@@ -718,9 +718,7 @@ export default class LeaveAuthorization extends Component {
                       },
                       {
                         fieldName: "actual_to_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "To Date" }} />
-                        ),
+                        label: <AlgaehLabel label={{ fieldName: "to_date" }} />,
                         filterable: true,
                         displayTemplate: (row) => {
                           return (

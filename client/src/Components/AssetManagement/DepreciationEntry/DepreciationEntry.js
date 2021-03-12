@@ -157,7 +157,7 @@ class DepreciationEntry extends Component {
           <div className="row">
             <AlgaehDateHandler
               div={{ className: "col" }}
-              label={{ forceLabel: "From Date" }}
+              label={{ fieldName: "from_date" }}
               textBox={{
                 className: "txt-fld",
                 name: "expiry_date",
@@ -172,7 +172,7 @@ class DepreciationEntry extends Component {
 
             <AlgaehDateHandler
               div={{ className: "col" }}
-              label={{ forceLabel: "To Date" }}
+              label={{ fieldName: "to_date" }}
               textBox={{
                 className: "txt-fld",
                 name: "expiry_date",

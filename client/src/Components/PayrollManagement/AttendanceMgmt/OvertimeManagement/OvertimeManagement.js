@@ -54,7 +54,7 @@ class OvertimeManagement extends Component {
       <div className="ot_mgmt">
         <div className="row  inner-top-search">
           <div className="col-3 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={employeeSearch.bind(this, this)}>
               {this.state.employee_name ? this.state.employee_name : "------"}
               <i className="fas fa-search fa-lg" />
@@ -97,7 +97,7 @@ class OvertimeManagement extends Component {
           <AlagehAutoComplete
             div={{ className: "col-1 mandatory" }}
             label={{
-              forceLabel: "Year",
+              fieldName: "year",
               isImp: true,
             }}
             selector={{
@@ -124,7 +124,7 @@ class OvertimeManagement extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
-              forceLabel: "Month",
+              fieldName: "select_month",
               isImp: true,
             }}
             selector={{

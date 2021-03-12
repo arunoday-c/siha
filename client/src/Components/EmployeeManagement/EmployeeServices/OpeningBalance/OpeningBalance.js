@@ -246,7 +246,7 @@ class OpeningBalance extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
-              forceLabel: "Branch",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
@@ -269,7 +269,7 @@ class OpeningBalance extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
             label={{
-              forceLabel: "Employee Group",
+              fieldName: "employeeGroup",
               isImp: false,
             }}
             selector={{
@@ -290,7 +290,7 @@ class OpeningBalance extends Component {
             }}
           />
           <div className="col-3 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name
                 ? this.state.employee_name
