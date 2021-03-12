@@ -952,7 +952,7 @@ export default function OPEncounterDetails({
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Department",
+                      fieldName: "department",
                     }}
                   />
                   <h6>

@@ -846,7 +846,7 @@ class Encounters extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Department",
+                            fieldName: "department",
                           }}
                         />
                         <h6>
