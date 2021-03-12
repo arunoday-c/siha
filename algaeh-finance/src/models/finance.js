@@ -2317,7 +2317,9 @@ export default {
                   }=${input.opening_balance},
                 payment_type ='${input.type === "CR" ? "CR" : "DR"}',${
                     input.type === "CR" ? "debit_amount" : "credit_amount"
-                  }=0  where finance_voucher_id=${data.finance_voucher_id};`;
+                  }=0, payment_date='${
+                    input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
+                  }'  where finance_voucher_id=${data.finance_voucher_id};`;
                 }
               } else if (data.root_id == 2 || data.root_id == 3) {
                 if (data.credit_amount != input.opening_balance) {
@@ -2326,7 +2328,9 @@ export default {
                   }=${input.opening_balance},
                 payment_type ='${input.type === "DR" ? "DR" : "CR"}',${
                     input.type === "DR" ? "credit_amount" : "debit_amount"
-                  }=0 where finance_voucher_id=${data.finance_voucher_id};`;
+                  }=0, payment_date='${
+                    input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
+                  }' where finance_voucher_id=${data.finance_voucher_id};`;
                 }
               }
               executeFunction();
@@ -2632,7 +2636,7 @@ export default {
       .executeQuery({
         query: `select finance_account_head_id,finance_account_child_id,is_opening_bal,
         ROUND(coalesce(debit_amount ,0),${decimal_places}) as debit_amount,  ROUND(coalesce(credit_amount,0),${decimal_places}) as credit_amount,
-      root_id from finance_account_child C inner join 
+      root_id,VD.payment_date from finance_account_child C inner join 
       finance_account_head H on H.finance_account_head_id=C.head_id and C.finance_account_child_id=?
       left join finance_voucher_details VD  on C.finance_account_child_id=VD.child_id 
       and is_opening_bal='Y' limit 1;`,
@@ -2644,10 +2648,16 @@ export default {
 
         if (result.length > 0) {
           if (result[0]["root_id"] == 1) {
-            req.records = { opening_bal: result[0]["debit_amount"] };
+            req.records = {
+              opening_bal: result[0]["debit_amount"],
+              opening_balance_date: result[0]["payment_date"],
+            };
             next();
           } else if (result[0]["root_id"] == 2 || result[0]["root_id"] == 3) {
-            req.records = { opening_bal: result[0]["credit_amount"] };
+            req.records = {
+              opening_bal: result[0]["credit_amount"],
+              opening_balance_date: result[0]["payment_date"],
+            };
             next();
           } else {
             req.records = {
