@@ -25,7 +25,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   authentication(req, res, next);
 });
 app.use("/api/v1", router);
-app.use("/microBuild/", express.static(path.resolve("../", "client/build")));
+
+let clientPath = path.resolve(__dirname, "../../", "client/build");
+console.log("clientPath===>", clientPath);
+if (process.env.NODE_ENV === "development") {
+  clientPath = path.resolve("../", "client/build");
+}
+app.use("/microBuild/", express.static(clientPath));
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   error.status = error.status || 500;
   const errorMessage =
@@ -40,5 +46,5 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     .end();
 });
 app.listen(port, () => {
-  console.log(`Daycare Server started at  http://localhost:${port}`);
+  console.log(`Admission Server started at  http://localhost:${port}`);
 });

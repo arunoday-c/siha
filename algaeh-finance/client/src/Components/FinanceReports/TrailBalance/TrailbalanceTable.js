@@ -108,18 +108,6 @@ export default function TrailBalaceReport({
         {
           fieldName: "op_amount",
           label: "Opening Balance",
-          // displayTemplate: (row) => {
-          //   const opamt = String(row["op_amount"]).replace(/[^0-9./]+/g, "");
-
-          //   if (!isNaN(opamt)) {
-          //     return (
-          //       getAmountFormart(parseFloat(opamt), { appendSymbol: false }) +
-          //       " " +
-          //       String(row["op_amount"]).replace(/[^a-zA-Z]+/g, "")
-          //     );
-          //   }
-          //   return row["op_amount"];
-          // },
         },
         {
           fieldName: "tr_debit_amount",
@@ -211,9 +199,12 @@ export default function TrailBalaceReport({
         layout={layout}
         tableprops={{
           aggregate: (field) => {
-            if (field === "label") return null;
-            const val = _.sumBy(accounts, (f) => parseFloat(f[field]));
-            return getAmountFormart(parseFloat(val), { appendSymbol: false });
+            if (field === "tr_debit_amount" || field === "tr_credit_amount") {
+              const val = _.sumBy(accounts, (f) => parseFloat(f[field]));
+              return getAmountFormart(parseFloat(val), { appendSymbol: false });
+            } else {
+              return null;
+            }
           },
           footer: true,
         }}

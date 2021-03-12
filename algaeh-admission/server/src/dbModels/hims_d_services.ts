@@ -111,8 +111,10 @@ hims_d_services.init(
     ...dateConversions,
   }
 );
-// (async () => {
-//   await hims_d_services.sync();
-// })();
+(async () => {
+  await hims_d_services.sync({
+    alter: true,
+  });
+})();
 
 export default hims_d_services;

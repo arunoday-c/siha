@@ -38,11 +38,11 @@ hims_adm_ip_bed.init(
     ...dateConversions,
   }
 );
-// (async () => {
-//   await hims_adm_ip_bed.sync({
-//     // alter: true,
-//   });
-// })();
+(async () => {
+  await hims_adm_ip_bed.sync({
+    alter: true,
+  });
+})();
 
 hims_adm_ip_bed.belongsTo(hims_d_services, {
   foreignKey: "services_id",
