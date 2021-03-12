@@ -74,6 +74,7 @@ export default function AddNewAccount({
           .then((res) => {
             setLoadingAddtoList(false);
             setOpeningBalance(res.opening_bal);
+            setObDate(res.opening_balance_date);
           })
           .catch((e) => {
             setLoadingAddtoList(false);
