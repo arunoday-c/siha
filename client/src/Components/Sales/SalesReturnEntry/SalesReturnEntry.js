@@ -203,7 +203,7 @@ class SalesReturnEntry extends Component {
                 </div>
 
                 <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                  <AlgaehLabel label={{ fieldName: "branch" }} />
                   <h6>
                     {this.state.hospital_name
                       ? this.state.hospital_name
@@ -212,7 +212,7 @@ class SalesReturnEntry extends Component {
                 </div>
 
                 <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Project" }} />
+                  <AlgaehLabel label={{ fieldName: "project" }} />
                   <h6>
                     {this.state.project_name
                       ? this.state.project_name
