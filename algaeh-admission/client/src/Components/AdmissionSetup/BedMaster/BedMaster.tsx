@@ -597,7 +597,7 @@ export default function BedStatus(Props: any) {
                         disabled: false,
                       },
                       {
-                        fieldName: "service_name",
+                        fieldName: "S.service_name",
 
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Service Name" }} />

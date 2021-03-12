@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../connection";
 import { dateConversions, userDetails } from "./common";
-
+import hims_d_cpt_code from "./hims_d_cpt_code";
 class hims_d_services extends Model {}
 hims_d_services.init(
   {
