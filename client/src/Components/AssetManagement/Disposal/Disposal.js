@@ -123,7 +123,7 @@ class Disposal extends Component {
 
             <AlagehAutoComplete
               div={{ className: "col" }}
-              label={{ forceLabel: "Department" }}
+              label={{ fieldName: "department" }}
               selector={{
                 name: "location_id",
                 className: "select-fld",
