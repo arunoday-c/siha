@@ -37,11 +37,11 @@ hims_adm_ward_header.init(
     ...dateConversions,
   }
 );
-// (async () => {
-//   await hims_adm_ip_bed.sync({
-//     // alter: true,
-//   });
-// })();
+(async () => {
+  await hims_adm_ward_header.sync({
+    alter: true,
+  });
+})();
 
 hims_adm_ward_header.hasMany(hims_adm_ward_detail, {
   foreignKey: "ward_header_id",
