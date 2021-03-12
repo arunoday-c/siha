@@ -81,7 +81,7 @@ class ProjectMapping extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Select a Branch",
+              fieldName: "branch",
               isImp: true,
             }}
             selector={{
