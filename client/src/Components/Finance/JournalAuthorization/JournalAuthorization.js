@@ -314,7 +314,7 @@ class JournalAuthorization extends Component {
               />
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "From Date" }}
+                label={{ fieldName: "from_date" }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
@@ -332,7 +332,7 @@ class JournalAuthorization extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date" }}
+                label={{ fieldName: "to_date" }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
