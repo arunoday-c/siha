@@ -51,7 +51,7 @@ export default function ({ data, generateReport }) {
         <tbody>
           <tr>
             <td colSpan="3" className="numberFld">
-              Opening Balance
+              Previous Balance
             </td>
             <td colSpan="2" className="numberFld">
               <b>{opening_balance}</b>
