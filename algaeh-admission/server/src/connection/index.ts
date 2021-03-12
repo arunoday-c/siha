@@ -1,6 +1,5 @@
 //@ts-ignore
 import keys from "algaeh-keys/keys";
-console.log("keys===>", keys);
 import { Sequelize } from "sequelize";
 
 process.env.MYSQL_KEYS = JSON.stringify(keys?.default?.mysqlDb ?? "");
