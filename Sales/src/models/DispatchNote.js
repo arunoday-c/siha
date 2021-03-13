@@ -438,6 +438,16 @@ export function addDispatchNote(req, res, next) {
                       .then((subResult) => {
                         if (i == input.stock_detail.length - 1) {
                           // console.log("done: ", i);
+                          req.body.invoice_entry_detail_item = [
+                            {
+                              dispatch_note_header_id: dispatch_note_header_id,
+                              sub_total: input.sub_total,
+                              discount_amount: input.discount_amount,
+                              net_total: input.net_total,
+                              total_tax: input.total_tax,
+                              net_payable: input.net_payable,
+                            },
+                          ];
                           req.connection = {
                             connection: _mysql.connection,
                             isTransactionConnection:

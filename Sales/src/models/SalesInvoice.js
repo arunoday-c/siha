@@ -13,14 +13,14 @@ export function getInvoiceEntry(req, res, next) {
         query:
           "SELECT SIH.*, C.customer_name, H.hospital_name, SO.sales_order_number, \
                 P.project_desc as project_name, SO.revert_reason, \
-                max(if(U.algaeh_d_app_user_id = SO.reverted_by, E.full_name,'' )) as reverted_name, \
-                max(if(U.algaeh_d_app_user_id = SO.created_by, E.full_name,'' )) as created_name,SO.sales_person_id \
+                max(if(U.algaeh_d_app_user_id = SIH.reverted_by, E.full_name,'' )) as reverted_name, \
+                max(if(U.algaeh_d_app_user_id = SIH.created_by, E.full_name,'' )) as created_name,SO.sales_person_id \
                 from hims_f_sales_invoice_header SIH \
-                inner join  hims_f_sales_order SO on  SIH.sales_order_id = SO.hims_f_sales_order_id \
+                left join  hims_f_sales_order SO on  SIH.sales_order_id = SO.hims_f_sales_order_id \
                 inner join  hims_d_customer C on  SIH.customer_id = C.hims_d_customer_id \
                 inner join  hims_d_hospital H on  SIH.hospital_id = H.hims_d_hospital_id \
                 inner join hims_d_project P  on SIH.project_id = P.hims_d_project_id \
-                inner join algaeh_d_app_user U on (SO.created_by = U.algaeh_d_app_user_id or SO.reverted_by = U.algaeh_d_app_user_id) \
+                inner join algaeh_d_app_user U on (SIH.created_by = U.algaeh_d_app_user_id or SO.reverted_by = U.algaeh_d_app_user_id) \
                 inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
                 where SIH.invoice_number =? group by hims_f_sales_invoice_header_id;",
         values: [req.query.invoice_number],
@@ -55,6 +55,69 @@ export function getInvoiceEntry(req, res, next) {
               req.records = {
                 ...headerResult[0],
                 ...{ invoice_detail },
+              };
+              next();
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              next(error);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        }
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
+
+export function getInvoiceEntryCash(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    console.log("getInvoiceEntry: ");
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT SIH.*,  H.hospital_name,  \
+                P.project_desc as project_name, \
+                max(if(U.algaeh_d_app_user_id = SIH.reverted_by, E.full_name,'' )) as reverted_name, \
+                max(if(U.algaeh_d_app_user_id = SIH.created_by, E.full_name,'' )) as created_name \
+                from hims_f_sales_invoice_header SIH \
+                inner join  hims_d_hospital H on  SIH.hospital_id = H.hims_d_hospital_id \
+                inner join hims_d_project P  on SIH.project_id = P.hims_d_project_id \
+                inner join algaeh_d_app_user U on (SIH.created_by = U.algaeh_d_app_user_id or SIH.reverted_by = U.algaeh_d_app_user_id) \
+                inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
+                where SIH.invoice_number =? group by hims_f_sales_invoice_header_id;",
+        values: [req.query.invoice_number],
+        printQuery: true,
+      })
+      .then((headerResult) => {
+        if (headerResult.length != 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "select  DNB.*, DNB.dispatch_quantity as quantity, IM.item_description, IU.uom_description from hims_f_sales_invoice_detail SID \
+                  inner join hims_f_sales_dispatch_note_header DNH on DNH.hims_f_dispatch_note_header_id = SID.dispatch_note_header_id \
+                  inner join hims_f_sales_dispatch_note_detail DND on DNH.hims_f_dispatch_note_header_id = DND.dispatch_note_header_id \
+                  inner join hims_f_sales_dispatch_note_batches DNB on DND.hims_f_sales_dispatch_note_detail_id=DNB.sales_dispatch_note_detail_id \
+                  inner join hims_d_inventory_item_master IM on DNB.item_id=IM.hims_d_inventory_item_master_id \
+                  inner join hims_d_inventory_uom IU on DNB.uom_id=IU.hims_d_inventory_uom_id \
+                  where sales_invoice_header_id=?;",
+              values: [headerResult[0].hims_f_sales_invoice_header_id],
+              printQuery: true,
+            })
+            .then((inventory_stock_detail) => {
+              _mysql.releaseConnection();
+              req.records = {
+                ...headerResult[0],
+                ...{ inventory_stock_detail },
               };
               next();
             })
@@ -198,12 +261,12 @@ export function getSalesOrderServiceInvoice(req, res, next) {
 }
 
 export function addInvoiceEntry(req, res, next) {
-  const _mysql = new algaehMysql();
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
 
   try {
     let input = req.body;
     let invoice_number = "";
-    debugger;
     _mysql
       .generateRunningNumber({
         user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -217,9 +280,9 @@ export function addInvoiceEntry(req, res, next) {
           .executeQuery({
             query:
               "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode, cust_good_rec_date,\
-                                sales_order_id, location_id, customer_id, payment_terms, project_id, sub_total, discount_amount, \
+                                sales_order_id, location_id, customer_id, customer_name, payment_terms, project_id, sub_total, discount_amount, \
                                 net_total, total_tax, net_payable, retention_amt, narration,delivery_date, created_date, created_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               invoice_number,
               input.invoice_date,
@@ -228,6 +291,7 @@ export function addInvoiceEntry(req, res, next) {
               input.sales_order_id,
               input.location_id,
               input.customer_id,
+              input.customer_name,
               input.payment_terms,
               input.project_id,
               input.sub_total,
@@ -276,15 +340,24 @@ export function addInvoiceEntry(req, res, next) {
                       next: next,
                     })
                       .then((update_sales_order) => {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
+                        if (req.connection == null) {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = {
+                              invoice_number: invoice_number,
+                              hims_f_sales_invoice_header_id:
+                                headerResult.insertId,
+                            };
+                            return next();
+                          });
+                        } else {
                           req.records = {
                             invoice_number: invoice_number,
                             hims_f_sales_invoice_header_id:
                               headerResult.insertId,
                           };
-                          return next();
-                        });
+                          next();
+                        }
                       })
                       .catch((error) => {
                         _mysql.rollBackTransaction(() => {
@@ -292,14 +365,22 @@ export function addInvoiceEntry(req, res, next) {
                         });
                       });
                   } else {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
+                    if (req.connection == null) {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = {
+                          invoice_number: invoice_number,
+                          hims_f_sales_invoice_header_id: headerResult.insertId,
+                        };
+                        return next();
+                      });
+                    } else {
                       req.records = {
                         invoice_number: invoice_number,
                         hims_f_sales_invoice_header_id: headerResult.insertId,
                       };
-                      return next();
-                    });
+                      next();
+                    }
                   }
                 })
                 .catch((error) => {

@@ -14,7 +14,7 @@ export default {
               where IIU.record_status='A' and IIU.uom_id = IU.hims_d_inventory_uom_id and IIU.item_master_id=? ;\
               SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, \
               batchno, expirydt, barcode, qtyhand, qtypo, cost_uom, avgcost, last_purchase_cost, IL.item_type, \
-              grn_id, grnno, sale_price, mrp_price, sales_uom, IU.uom_description, IL.vendor_batchno  \
+              grn_id, grnno, sale_price, mrp_price, sales_uom, IU.uom_description, IL.vendor_batchno, IM.item_description  \
               from hims_m_inventory_item_location IL, hims_d_inventory_uom IU, hims_d_inventory_item_master IM \
               where IL.sales_uom = IU.hims_d_inventory_uom_id and IL.item_id = IM.hims_d_inventory_item_master_id\
               and IL.record_status='A'  and item_id=? and inventory_location_id=? and qtyhand>0 \
@@ -153,6 +153,10 @@ export default {
             if (req.query.hospital_id != null) {
               _strQry += " and hospital_id=?";
               intValues.push(req.query.hospital_id);
+            }
+
+            if (req.query.allow_pos == "Y") {
+              _strQry += " and allow_pos='Y' ";
             }
 
             if (req.query.git_location == "N") {
