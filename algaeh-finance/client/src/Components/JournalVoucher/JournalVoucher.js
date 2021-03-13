@@ -16,6 +16,7 @@ import {
   AlgaehLabel,
   // AlgaehFormGroupGrid,
   AlgaehButton,
+  i18next,
 } from "algaeh-react-components";
 import { AllAccounts } from "../FinanceAccounts";
 import {
@@ -105,6 +106,13 @@ export default function JournalVoucher() {
   const [fromBank, setFromBank] = useState("");
   const [debitNoteTotal, setDebitNoteTotal] = useState(null);
   const [debitNoteList, setDebitNoteList] = useState([]);
+  /** This code is for changing language */
+  useEffect(() => {
+    if (location.state?.language) {
+      i18next.changeLanguage(location.state?.language);
+    }
+  }, [location.state]);
+  /** above code is for changing language */
   useEffect(() => {
     getCostCentersForVoucher().then((result) => {
       setbranchData(result);
@@ -235,6 +243,10 @@ export default function JournalVoucher() {
     }
 
     if (location.state) {
+      if (!location.state?.type) {
+        return;
+      }
+
       const {
         type,
         data,
@@ -836,7 +848,7 @@ export default function JournalVoucher() {
               className: "col-2 algaeh-date-fld",
             }}
             label={{
-              fieldName: "vochuerDate",
+              fieldName: "voucherDate",
               isImp: true,
             }}
             textBox={{
@@ -861,7 +873,7 @@ export default function JournalVoucher() {
           <AlgaehAutoComplete
             div={{ className: "col-2" }}
             label={{
-              fieldName: "vochuerType",
+              fieldName: "voucherType",
               isImp: true,
             }}
             selector={{
