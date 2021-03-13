@@ -42,7 +42,7 @@ const executePDF = function executePDFMethod(options) {
           CASE WHEN H.is_posted='N' THEN 'Invoice Not Finalized' ELSE '' END as invoice_status
           from  hims_f_sales_invoice_header H 
           inner join hims_d_customer C on H.customer_id = C.hims_d_customer_id
-          inner join hims_f_sales_order SO on H.sales_order_id = SO.hims_f_sales_order_id
+          left join hims_f_sales_order SO on H.sales_order_id = SO.hims_f_sales_order_id
           inner join hims_d_hospital HO on H.hospital_id = HO.hims_d_hospital_id
           where H.invoice_number=?;                    
           select B.*,SUM(round(dispatch_quantity, 0)) as dispatch_quantity, SUM(total_amount) as total_amount, 

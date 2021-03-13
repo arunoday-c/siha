@@ -101,6 +101,10 @@ const InvAcknowledgeList = React.lazy(() =>
   )
 );
 
+const CusPointOfSales = React.lazy(() =>
+  retry(() => import("./Components/Sales/CusPointOfSales/CusPointOfSales"))
+);
+
 const MedicalWorkbenchSetup = React.lazy(() =>
   retry(() =>
     import("./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup")
@@ -850,6 +854,11 @@ const privateRoutes = [
     path: "/InvAcknowledgeList",
     isExactPath: true,
     component: <InvAcknowledgeList />,
+  },
+  {
+    path: "/CusPointOfSales",
+    isExactPath: true,
+    component: <CusPointOfSales />,
   },
   {
     path: "/MedicalWorkbenchSetup",

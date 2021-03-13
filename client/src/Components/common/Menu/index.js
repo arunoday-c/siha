@@ -78,6 +78,7 @@ function NavBars(props) {
     const { lang } = e.target;
     if (userLanguage !== lang) {
       setUserLanguage(lang);
+      location.state = { language: lang };
       i18next.changeLanguage(lang);
     }
   }

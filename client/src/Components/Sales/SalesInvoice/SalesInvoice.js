@@ -351,7 +351,7 @@ class SalesInvoice extends Component {
                   <h6>
                     {this.state.is_cancelled === "Y" ? (
                       <span className="badge badge-danger">
-                        invoice_numberCancelled
+                        Cancelled
                       </span>
                     ) : this.state.is_revert === "Y" ? (
                       <span className="badge badge-danger">Reverted</span>

@@ -307,6 +307,11 @@ export default {
         inputValues.push(input.customer_status);
       }
 
+      if (input.cash_customer != null) {
+        _strAppend += "and cash_customer=?";
+        inputValues.push(input.cash_customer);
+      }
+
       _mysql
         .executeQuery({
           query:
