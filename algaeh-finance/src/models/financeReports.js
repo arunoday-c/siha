@@ -1439,6 +1439,7 @@ function calcAmount(account_heads, levels, decimal_places) {
 
       for (let i = max_account_level - 1; i >= 0; i--) {
         // for (let k = 0; k < levels_group[i].length; k++) {
+        // console.log("levels_group[i]=====>", levels_group[i]);
         if (levels_group[i]) {
           levels_group[i].map((item) => {
             let immediate_childs = levels_group[i + 1].filter((child) => {
@@ -2687,10 +2688,10 @@ function getTrialBalanceFunc(
           and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
-          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
+          ,if(VD.is_opening_bal ='Y' and VD.payment_date ='${options.from_date}',0,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places})) as debit_amount,
+          if(VD.is_opening_bal ='Y' and VD.payment_date ='${options.from_date}',0,ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places}))  as credit_amount,VD.payment_date,VD.is_opening_bal          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and  date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by H.finance_account_head_id   ; 
+          and  date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by H.finance_account_head_id,VD.payment_date,VD.is_opening_bal   ; 
 
           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -3370,6 +3371,7 @@ function createHierarchyTransactionTB(
 
         ///END calculating opening balance of from date-----
         //ST calculating transaction amount between  from_date  and to_date-----
+        // console.log("transaction_head_data====>", transaction_head_data);
         const TR_BALANCE = transaction_head_data.find((f) => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
@@ -3447,6 +3449,7 @@ function createHierarchyTransactionTB(
             });
           }
         } else {
+          // console.log("TR_BALANCE-2=====>", TR_BALANCE);
           target.push({
             ...item,
             // ledger_code: item.header_ledger_code,
