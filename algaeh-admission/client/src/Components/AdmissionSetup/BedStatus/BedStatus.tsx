@@ -231,7 +231,7 @@ export default function BedStatus(Props: any) {
         reset({
           bed_color: "#ffffff",
           description: "",
-          steps: parseInt(result[0].last_inserted) + 1,
+          steps: parseInt(result.last_inserted) + 1,
         });
       });
       AlgaehMessagePop({
