@@ -3,7 +3,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 
@@ -11,7 +11,7 @@ export default function ScheduleModal(props) {
   return (
     <AlgaehModalPopUp
       events={{
-        onClose: props.handleClose
+        onClose: props.handleClose,
       }}
       title={props.title}
       openPopup={props.state.openEdit || props.state.openScheduler}
@@ -25,7 +25,7 @@ export default function ScheduleModal(props) {
                   div={{ className: "col-3" }}
                   label={{
                     forceLabel: "Select Dept.",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "sub_department_id",
@@ -34,12 +34,12 @@ export default function ScheduleModal(props) {
                     dataSource: {
                       textField: "sub_department_name",
                       valueField: "sub_dept_id",
-                      data: props.state.departments
+                      data: props.state.departments,
                     },
                     onChange: props.deptDropDownHandler,
                     others: {
-                      disabled: props.state.openEdit
-                    }
+                      disabled: props.state.openEdit,
+                    },
                   }}
                   error={props.state.department_error}
                   helperText={props.state.department_error_text}
@@ -48,17 +48,17 @@ export default function ScheduleModal(props) {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "sch_desc",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "description",
                     value: props.state.description,
                     events: {
-                      onChange: props.changeTexts
+                      onChange: props.changeTexts,
                     },
                     error: props.state.description_error,
-                    helperText: props.state.description_error_text
+                    helperText: props.state.description_error_text,
                   }}
                 />
                 {/* <div className="col">
@@ -74,13 +74,13 @@ export default function ScheduleModal(props) {
                   <div className="row">
                     <AlgaehDateHandler
                       div={{ className: "col-6" }}
-                      label={{ forceLabel: "From Date", isImp: true }}
+                      label={{ fieldName: "from_date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
-                        name: "from_date"
+                        name: "from_date",
                       }}
                       events={{
-                        onChange: props.changeDate
+                        onChange: props.changeDate,
                       }}
                       value={props.state.from_date}
                       minDate={new Date()}
@@ -88,13 +88,13 @@ export default function ScheduleModal(props) {
                     />
                     <AlgaehDateHandler
                       div={{ className: "col-6" }}
-                      label={{ forceLabel: "To Date", isImp: true }}
+                      label={{ fieldName: "to_date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
-                        name: "to_date"
+                        name: "to_date",
                       }}
                       events={{
-                        onChange: props.changeDate
+                        onChange: props.changeDate,
                       }}
                       value={props.state.to_date}
                       disabled={props.state.openEdit}
@@ -110,18 +110,18 @@ export default function ScheduleModal(props) {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "From Time",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "from_work_hr",
                         value: props.state.from_work_hr,
                         events: {
-                          onChange: props.changeTexts
+                          onChange: props.changeTexts,
                         },
                         others: {
-                          type: "time"
-                        }
+                          type: "time",
+                        },
                       }}
                     />
 
@@ -129,18 +129,18 @@ export default function ScheduleModal(props) {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "To Time",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "to_work_hr",
                         value: props.state.to_work_hr,
                         events: {
-                          onChange: props.changeTexts
+                          onChange: props.changeTexts,
                         },
                         others: {
-                          type: "time"
-                        }
+                          type: "time",
+                        },
                       }}
                     />
                   </div>
@@ -154,18 +154,18 @@ export default function ScheduleModal(props) {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "From Time"
+                        forceLabel: "From Time",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "from_break_hr1",
                         value: props.state.from_break_hr1,
                         events: {
-                          onChange: props.changeTexts
+                          onChange: props.changeTexts,
                         },
                         others: {
-                          type: "time"
-                        }
+                          type: "time",
+                        },
                         // error: props.state.description_error,
                         // helperText: props.state.description_error_text
                       }}
@@ -173,18 +173,18 @@ export default function ScheduleModal(props) {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "To Time"
+                        forceLabel: "To Time",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "to_break_hr1",
                         value: props.state.to_break_hr1,
                         events: {
-                          onChange: props.changeTexts
+                          onChange: props.changeTexts,
                         },
                         others: {
-                          type: "time"
-                        }
+                          type: "time",
+                        },
 
                         // error: props.state.description_error,
                         // helperText: props.state.description_error_text
@@ -198,18 +198,18 @@ export default function ScheduleModal(props) {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "From Time"
+                        forceLabel: "From Time",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "from_break_hr2",
                         value: props.state.from_break_hr2,
                         events: {
-                          onChange: props.changeTexts
+                          onChange: props.changeTexts,
                         },
                         others: {
-                          type: "time"
-                        }
+                          type: "time",
+                        },
                         // error: props.state.description_error,
                         // helperText: props.state.description_error_text
                       }}
@@ -217,18 +217,18 @@ export default function ScheduleModal(props) {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "To Time"
+                        forceLabel: "To Time",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "to_break_hr2",
                         value: props.state.to_break_hr2,
                         events: {
-                          onChange: props.changeTexts
+                          onChange: props.changeTexts,
                         },
                         others: {
-                          type: "time"
-                        }
+                          type: "time",
+                        },
                         // error: props.state.description_error,
                         // helperText: props.state.description_error_text
                       }}
@@ -326,7 +326,7 @@ export default function ScheduleModal(props) {
                     div={{ className: "col-12" }}
                     label={{
                       fieldName: "sel_slot_time",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "slot",
@@ -336,9 +336,9 @@ export default function ScheduleModal(props) {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.SLOTS
+                        data: GlobalVariables.SLOTS,
                       },
-                      onChange: props.dropDownHandler
+                      onChange: props.dropDownHandler,
                     }}
                   />
                 </div>
@@ -351,7 +351,7 @@ export default function ScheduleModal(props) {
                           return (
                             <li
                               key={index}
-                              onClick={e =>
+                              onClick={(e) =>
                                 e.currentTarget.firstElementChild.firstElementChild.click()
                               }
                             >

@@ -358,8 +358,8 @@ class SalesInvoice extends Component {
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                            <span className="badge badge-success">Posted</span>
-                          )}
+                      <span className="badge badge-success">Posted</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
@@ -378,17 +378,17 @@ class SalesInvoice extends Component {
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Invoice",
-                    events: {
-                      onClick: () => {
-                        generateSalesInvoiceReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Invoice",
+                      events: {
+                        onClick: () => {
+                          generateSalesInvoiceReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -449,7 +449,9 @@ class SalesInvoice extends Component {
                       style={{ marginTop: 21 }}
                       onClick={() => {
                         this.props.history.push(
-                          `/SalesOrder?sales_order_number=${this.state.sales_order_number}&disable_all=${true}`
+                          `/SalesOrder?sales_order_number=${
+                            this.state.sales_order_number
+                          }&disable_all=${true}`
                         );
                       }}
                       disabled={this.state.sales_order_number ? false : true}
@@ -467,7 +469,7 @@ class SalesInvoice extends Component {
                     </div>
 
                     <div className="col">
-                      <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                      <AlgaehLabel label={{ fieldName: "branch" }} />
                       <h6>
                         {this.state.hospital_name
                           ? this.state.hospital_name
@@ -476,7 +478,7 @@ class SalesInvoice extends Component {
                     </div>
 
                     <div className="col">
-                      <AlgaehLabel label={{ forceLabel: "Project" }} />
+                      <AlgaehLabel label={{ fieldName: "project" }} />
                       <h6>
                         {this.state.project_name
                           ? this.state.project_name
@@ -527,8 +529,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-                <InvoiceItemList SALESInvoiceIOputs={this.state} />
-              )}
+              <InvoiceItemList SALESInvoiceIOputs={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="row">
@@ -611,10 +613,10 @@ class SalesInvoice extends Component {
                                 </li>
                               ))
                             ) : (
-                                <div className="col-12 noAttachment" key={1}>
-                                  <p>No Attachments Available</p>
-                                </div>
-                              )}
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Attachments Available</p>
+                              </div>
+                            )}
                           </ul>
                         </div>
                       </div>
@@ -689,7 +691,10 @@ class SalesInvoice extends Component {
                   div={{ className: "col-3" }}
                   label={{
                     forceLabel: "Customer Delivery Date",
-                    isImp: this.state.hims_f_sales_invoice_header_id === null ? false : true,
+                    isImp:
+                      this.state.hims_f_sales_invoice_header_id === null
+                        ? false
+                        : true,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -765,22 +770,22 @@ class SalesInvoice extends Component {
                   </button>
                 ) : null}
                 {this.state.hims_f_sales_invoice_header_id > 0 &&
-                  this.state.is_posted === "Y" ? (
-                    <AlgaehSecurityComponent componentCode="SALE_INV_SAV_DELDATE">
-                      <button
-                        type="button"
-                        className="btn btn-other"
-                        onClick={SaveDeliveryDate.bind(this, this)}
-                      >
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Save Delivery Date",
-                            returnText: true,
-                          }}
-                        />
-                      </button>
-                    </AlgaehSecurityComponent>
-                  ) : null}
+                this.state.is_posted === "Y" ? (
+                  <AlgaehSecurityComponent componentCode="SALE_INV_SAV_DELDATE">
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      onClick={SaveDeliveryDate.bind(this, this)}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Save Delivery Date",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  </AlgaehSecurityComponent>
+                ) : null}
               </div>
               <div className="col-8">
                 <AlgaehSecurityComponent componentCode="SALES_INV_MAIN">
@@ -799,20 +804,20 @@ class SalesInvoice extends Component {
                       />
                     </button>
                   ) : (
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={SaveInvoiceEnrty.bind(this, this)}
-                        disabled={this.state.saveEnable}
-                      >
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Generate",
-                            returnText: true,
-                          }}
-                        />
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={SaveInvoiceEnrty.bind(this, this)}
+                      disabled={this.state.saveEnable}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Generate",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  )}
                 </AlgaehSecurityComponent>
                 <button
                   type="button"

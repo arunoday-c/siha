@@ -9,7 +9,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
@@ -23,7 +23,7 @@ import {
   CloseOrderModel,
   getPreAprovalList,
   openUCAFReport,
-  getMedicationAprovalList
+  getMedicationAprovalList,
 } from "./PreApprovalHandaler";
 import moment from "moment";
 import Options from "../../Options.json";
@@ -51,7 +51,7 @@ class PreApproval extends Component {
       selected_services: null,
       OCAFData: false,
       DCAFData: false,
-      UCAFData: false
+      UCAFData: false,
     };
   }
 
@@ -66,8 +66,8 @@ class PreApproval extends Component {
         method: "GET",
         redux: {
           type: "DEPT_DOCTOR_GET_DATA",
-          mappingName: "deptanddoctors"
-        }
+          mappingName: "deptanddoctors",
+        },
       });
     }
 
@@ -81,8 +81,8 @@ class PreApproval extends Component {
         method: "GET",
         redux: {
           type: "INSURANCE_PROVIDER_GET_DATA",
-          mappingName: "insurarProviders"
-        }
+          mappingName: "insurarProviders",
+        },
       });
     }
 
@@ -93,19 +93,19 @@ class PreApproval extends Component {
   ShowSubmitModel(row, e) {
     this.setState({
       isOpen: !this.state.isOpen,
-      selected_services: row
+      selected_services: row,
     });
   }
   CloseSubmitModel(e) {
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   }
 
   CloseEditModel(e) {
     this.setState(
       {
-        isEditOpen: !this.state.isEditOpen
+        isEditOpen: !this.state.isEditOpen,
       },
       () => {
         getPreAprovalList(this, this);
@@ -118,11 +118,11 @@ class PreApproval extends Component {
     this.setState({
       isEditOpen: !this.state.isEditOpen,
       selected_services: row,
-      openFrom: oFrom
+      openFrom: oFrom,
     });
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -136,7 +136,7 @@ class PreApproval extends Component {
         events={{
           onClose: () => {
             this.setState({ openDCAF: false });
-          }
+          },
         }}
       >
         <DcafEditor dataProps={this.state.DCAFData} />
@@ -152,7 +152,7 @@ class PreApproval extends Component {
         events={{
           onClose: () => {
             this.setState({ openOCAF: false });
-          }
+          },
         }}
       >
         <OcafEditor dataProps={this.state.OCAFData} />
@@ -167,7 +167,7 @@ class PreApproval extends Component {
         events={{
           onClose: () => {
             this.setState({ openUCAF: false });
-          }
+          },
         }}
       >
         <UcafEditor dataProps={this.state.UCAFData} />
@@ -183,23 +183,23 @@ class PreApproval extends Component {
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col-2" }}
-                label={{ forceLabel: "From Date" }}
+                label={{ fieldName: "from_date" }}
                 textBox={{ className: "txt-fld", name: "date" }}
                 maxDate={new Date()}
                 dontAllow={"future"}
                 events={{
-                  onChange: datehandle.bind(this, this)
+                  onChange: datehandle.bind(this, this),
                 }}
                 value={this.state.date}
               />
               <AlgaehDateHandler
                 div={{ className: "col-2" }}
-                label={{ forceLabel: "To Date" }}
+                label={{ fieldName: "to_date" }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 maxDate={new Date()}
                 dontAllow={"future"}
                 events={{
-                  onChange: datehandle.bind(this, this)
+                  onChange: datehandle.bind(this, this),
                 }}
                 value={this.state.to_date}
               />
@@ -226,7 +226,7 @@ class PreApproval extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 <i
@@ -258,15 +258,15 @@ class PreApproval extends Component {
                             minWidth: 175,
                             filterable: false,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "apprv_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "dis_status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.apprv_status === "NR" ? (
                               <span className="badge badge-default">
                                 Not Requested
@@ -284,7 +284,7 @@ class PreApproval extends Component {
                                 Rejected
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "patient_code",
@@ -294,8 +294,8 @@ class PreApproval extends Component {
                             />
                           ),
                           others: {
-                            minWidth: 150
-                          }
+                            minWidth: 150,
+                          },
                         },
 
                         {
@@ -306,19 +306,19 @@ class PreApproval extends Component {
                             />
                           ),
                           others: {
-                            minWidth: 250
-                          }
+                            minWidth: 250,
+                          },
                         },
                         {
                           fieldName: "created_date",
                           label: <AlgaehLabel label={{ fieldName: "date" }} />,
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {this.changeDateFormat(row.created_date)}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "doctor_name",
@@ -326,8 +326,8 @@ class PreApproval extends Component {
                             <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                           ),
                           others: {
-                            minWidth: 150
-                          }
+                            minWidth: 150,
+                          },
                         },
                         {
                           fieldName: "insurance_provider_name",
@@ -337,8 +337,8 @@ class PreApproval extends Component {
                             />
                           ),
                           others: {
-                            minWidth: 150
-                          }
+                            minWidth: 150,
+                          },
                         },
                         // {
                         //   fieldName: "icd_code",
@@ -354,12 +354,12 @@ class PreApproval extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "no_of_services" }}
                             />
-                          )
-                        }
+                          ),
+                        },
                       ]}
                       keyId="pre_approval_code"
                       dataSource={{
-                        data: this.state.pre_approval_Services
+                        data: this.state.pre_approval_Services,
                       }}
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 6 }}
@@ -386,7 +386,7 @@ class PreApproval extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 <i
@@ -409,7 +409,7 @@ class PreApproval extends Component {
                                       row.apprv_status === "AP" ||
                                       row.apprv_status === "RJ"
                                         ? ""
-                                        : "0.1"
+                                        : "0.1",
                                   }}
                                   className="fas fa-check"
                                   onClick={VerifyOrderModel.bind(
@@ -430,15 +430,15 @@ class PreApproval extends Component {
                             minWidth: 175,
                             filterable: false,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "apprv_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "dis_status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.apprv_status === "NR" ? (
                               <span className="badge badge-default">
                                 Not Requested
@@ -456,7 +456,7 @@ class PreApproval extends Component {
                                 Rejected
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "patient_code",
@@ -466,8 +466,8 @@ class PreApproval extends Component {
                             />
                           ),
                           others: {
-                            minWidth: 150
-                          }
+                            minWidth: 150,
+                          },
                         },
                         {
                           fieldName: "full_name",
@@ -477,31 +477,31 @@ class PreApproval extends Component {
                             />
                           ),
                           others: {
-                            minWidth: 250
-                          }
+                            minWidth: 250,
+                          },
                         },
                         {
                           fieldName: "created_date",
                           label: <AlgaehLabel label={{ fieldName: "date" }} />,
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {this.changeDateFormat(row.created_date)}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "doctor_id",
                           label: (
                             <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.deptanddoctors === undefined
                                 ? []
                                 : this.props.deptanddoctors.doctors.filter(
-                                    f => f.employee_id === row.doctor_id
+                                    (f) => f.employee_id === row.doctor_id
                                   );
 
                             return (
@@ -511,7 +511,7 @@ class PreApproval extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "insurance_provider_id",
@@ -520,12 +520,12 @@ class PreApproval extends Component {
                               label={{ fieldName: "insurance_id" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.insurarProviders === undefined
                                 ? []
                                 : this.props.insurarProviders.filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_d_insurance_provider_id ===
                                       row.insurance_provider_id
                                   );
@@ -537,7 +537,7 @@ class PreApproval extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "icd_code",
@@ -545,7 +545,7 @@ class PreApproval extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "insurance_code" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "number_of_Services",
@@ -553,12 +553,12 @@ class PreApproval extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "no_of_services" }}
                             />
-                          )
-                        }
+                          ),
+                        },
                       ]}
                       keyId="pre_approval_code"
                       dataSource={{
-                        data: this.state.medca_approval_Services
+                        data: this.state.medca_approval_Services,
                       }}
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 6 }}
@@ -575,7 +575,7 @@ class PreApproval extends Component {
             <AlgaehLabel
               label={{
                 fieldName: "preapprovalsubmit",
-                align: "ltr"
+                align: "ltr",
               }}
             />
           }
@@ -589,7 +589,7 @@ class PreApproval extends Component {
             <AlgaehLabel
               label={{
                 fieldName: "preapprovalstatus",
-                align: "ltr"
+                align: "ltr",
               }}
             />
           }
@@ -603,7 +603,7 @@ class PreApproval extends Component {
             <AlgaehLabel
               label={{
                 fieldName: "updateorders",
-                align: "ltr"
+                align: "ltr",
               }}
             />
           }
@@ -623,7 +623,7 @@ class PreApproval extends Component {
 function mapStateToProps(state) {
   return {
     deptanddoctors: state.deptanddoctors,
-    insurarProviders: state.insurarProviders
+    insurarProviders: state.insurarProviders,
   };
 }
 
@@ -631,7 +631,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getDepartmentsandDoctors: AlgaehActions,
-      getInsuranceProviders: AlgaehActions
+      getInsuranceProviders: AlgaehActions,
     },
     dispatch
   );

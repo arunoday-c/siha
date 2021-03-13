@@ -33,7 +33,7 @@ import {
   AlgaehSecurityComponent,
   persistStorageOnRemove,
   persistStageOnGet,
-  persistStateOnBack
+  persistStateOnBack,
 } from "algaeh-react-components";
 
 class SalesQuotationList extends Component {
@@ -45,13 +45,12 @@ class SalesQuotationList extends Component {
       checkAll: false,
       checkUserWise: false,
       transferPopup: false,
-      quotation_list: []
+      quotation_list: [],
     };
   }
 
   static contextType = MainContext;
   componentDidMount() {
-
     (async () => {
       const records = await persistStageOnGet();
 
@@ -63,10 +62,10 @@ class SalesQuotationList extends Component {
 
         this.HRMNGMT_Active =
           userToken.product_type === "HIMS_ERP" ||
-            userToken.product_type === "HRMS" ||
-            userToken.product_type === "HRMS_ERP" ||
-            userToken.product_type === "FINANCE_ERP" ||
-            userToken.product_type === "NO_FINANCE"
+          userToken.product_type === "HRMS" ||
+          userToken.product_type === "HRMS_ERP" ||
+          userToken.product_type === "FINANCE_ERP" ||
+          userToken.product_type === "NO_FINANCE"
             ? true
             : false;
 
@@ -138,7 +137,7 @@ class SalesQuotationList extends Component {
               <div className="row">
                 <AlgaehDateHandler
                   div={{ className: "col-2" }}
-                  label={{ forceLabel: "From Date" }}
+                  label={{ fieldName: "from_date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
                     onChange: datehandle.bind(this, this),
@@ -147,7 +146,7 @@ class SalesQuotationList extends Component {
                 />
                 <AlgaehDateHandler
                   div={{ className: "col-2" }}
-                  label={{ forceLabel: "To Date" }}
+                  label={{ fieldName: "to_date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
                     onChange: datehandle.bind(this, this),
@@ -309,15 +308,15 @@ class SalesQuotationList extends Component {
                               Cancelled
                             </span>
                           ) : (
-                                  <span className="badge badge-success">Closed</span>
-                                );
+                            <span className="badge badge-success">Closed</span>
+                          );
                         },
                         disabled: true,
                         others: {
                           maxWidth: 100,
                           resizable: false,
                         },
-                        filterable: true
+                        filterable: true,
                       },
                       {
                         fieldName: "sales_quotation_number",
@@ -332,7 +331,7 @@ class SalesQuotationList extends Component {
                           resizable: false,
                           style: { textAlign: "center" },
                         },
-                        filterable: true
+                        filterable: true,
                       },
                       {
                         fieldName: "sales_quotation_date",
@@ -368,22 +367,20 @@ class SalesQuotationList extends Component {
                           resizable: false,
                           style: { textAlign: "center" },
                         },
-                        filterable: true
+                        filterable: true,
                       },
                       {
                         fieldName: "full_name",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sales Person" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Sales Person" }} />
                         ),
                         disabled: true,
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
+                          style: { textAlign: "center" },
                         },
-                        filterable: true
+                        filterable: true,
                       },
                       {
                         fieldName: "quote_validity",
@@ -445,13 +442,13 @@ class SalesQuotationList extends Component {
                     pagination={true}
                     isFilterable={true}
                     persistence={this.state.persistence}
-                  // keyId="sales_quotation_number"
-                  // filter={true}
-                  // dataSource={{
-                  //   data: this.state.quotation_list,
-                  // }}
-                  // noDataText="No data available"
-                  // paging={{ page: 0, rowsPerPage: 10 }}
+                    // keyId="sales_quotation_number"
+                    // filter={true}
+                    // dataSource={{
+                    //   data: this.state.quotation_list,
+                    // }}
+                    // noDataText="No data available"
+                    // paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
               </div>

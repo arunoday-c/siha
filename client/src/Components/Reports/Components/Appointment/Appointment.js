@@ -90,7 +90,7 @@ export default class Appointment extends Component {
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "From Date", isImp: true }}
+                label={{ fieldName: "from_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
@@ -107,7 +107,7 @@ export default class Appointment extends Component {
               />
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date", isImp: true }}
+                label={{ fieldName: "to_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
@@ -184,7 +184,7 @@ export default class Appointment extends Component {
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "From Date", isImp: true }}
+                label={{ fieldName: "from_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
@@ -201,7 +201,7 @@ export default class Appointment extends Component {
               />
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date", isImp: true }}
+                label={{ fieldName: "to_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
@@ -277,7 +277,7 @@ export default class Appointment extends Component {
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "From Date", isImp: true }}
+                label={{ fieldName: "from_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
@@ -314,7 +314,7 @@ export default class Appointment extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date", isImp: true }}
+                label={{ fieldName: "to_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
@@ -382,7 +382,7 @@ export default class Appointment extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Department",
+                  fieldName: "department",
                   isImp: true,
                 }}
                 selector={{
@@ -442,7 +442,7 @@ export default class Appointment extends Component {
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "From Date", isImp: true }}
+                label={{ fieldName: "from_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
@@ -479,7 +479,7 @@ export default class Appointment extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date", isImp: true }}
+                label={{ fieldName: "to_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
@@ -546,7 +546,7 @@ export default class Appointment extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Department",
+                  fieldName: "department",
                   isImp: true,
                 }}
                 selector={{
@@ -606,7 +606,7 @@ export default class Appointment extends Component {
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "From Date", isImp: true }}
+                label={{ fieldName: "from_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
@@ -643,7 +643,7 @@ export default class Appointment extends Component {
 
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date", isImp: true }}
+                label={{ fieldName: "to_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
@@ -730,7 +730,7 @@ export default class Appointment extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Department",
+                  fieldName: "department",
                   isImp: true,
                 }}
                 selector={{
@@ -829,7 +829,7 @@ export default class Appointment extends Component {
             <div className="row">
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "From Date", isImp: true }}
+                label={{ fieldName: "from_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
@@ -846,7 +846,7 @@ export default class Appointment extends Component {
               />
               <AlgaehDateHandler
                 div={{ className: "col" }}
-                label={{ forceLabel: "To Date", isImp: true }}
+                label={{ fieldName: "to_date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
@@ -876,7 +876,7 @@ export default class Appointment extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
-                  forceLabel: "Department",
+                  fieldName: "department",
                   isImp: true,
                 }}
                 selector={{

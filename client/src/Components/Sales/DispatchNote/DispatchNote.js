@@ -20,7 +20,7 @@ import {
   getCtrlCode,
   generateDispatchReport,
   AdjustDisptachEntry,
-  AdjustDispatch
+  AdjustDispatch,
   // CancelDispatchNote
 } from "./DispatchNoteEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -71,8 +71,8 @@ class DispatchNote extends Component {
       adjustEnable: true,
       deleteItem_data: [],
       delete_dispatch_items: [],
-      invoice_generated: 'N',
-      dispatch_adjust: false
+      invoice_generated: "N",
+      dispatch_adjust: false,
     };
     this.baseState = this.state;
   }
@@ -144,8 +144,8 @@ class DispatchNote extends Component {
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-          ? " disableFinder"
-          : "";
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -202,8 +202,8 @@ class DispatchNote extends Component {
                 <h6>
                   {this.state.dispatch_note_date
                     ? moment(this.state.dispatch_note_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -222,17 +222,17 @@ class DispatchNote extends Component {
           printArea={
             this.state.dispatch_note_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Dispatch Report",
-                    events: {
-                      onClick: () => {
-                        generateDispatchReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Dispatch Report",
+                      events: {
+                        onClick: () => {
+                          generateDispatchReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -250,7 +250,6 @@ class DispatchNote extends Component {
             name="adjust_reason"
             onChange={texthandle.bind(this, this)}
           />
-
 
           <div className="popupFooter">
             <div className="col-lg-12">
@@ -340,7 +339,7 @@ class DispatchNote extends Component {
                 </div>
 
                 <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                  <AlgaehLabel label={{ fieldName: "branch" }} />
                   <h6>
                     {this.state.hospital_name
                       ? this.state.hospital_name
@@ -349,7 +348,7 @@ class DispatchNote extends Component {
                 </div>
 
                 <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Project" }} />
+                  <AlgaehLabel label={{ fieldName: "project" }} />
                   <h6>
                     {this.state.project_name
                       ? this.state.project_name
@@ -449,18 +448,21 @@ class DispatchNote extends Component {
                 onClick={SaveDispatchNote.bind(this, this)}
                 disabled={this.state.saveEnable}
               >
-                {this.state.deleteItem_data.length > 0 ? <AlgaehLabel
-                  label={{
-                    forceLabel: "Adjust",
-                    returnText: true,
-                  }}
-                /> : <AlgaehLabel
+                {this.state.deleteItem_data.length > 0 ? (
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Adjust",
+                      returnText: true,
+                    }}
+                  />
+                ) : (
+                  <AlgaehLabel
                     label={{
                       forceLabel: "Dispatch",
                       returnText: true,
                     }}
-                  />}
-
+                  />
+                )}
               </button>
 
               <button
@@ -473,7 +475,7 @@ class DispatchNote extends Component {
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
-              {this.state.invoice_generated === "N" ?
+              {this.state.invoice_generated === "N" ? (
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -486,9 +488,8 @@ class DispatchNote extends Component {
                       returnText: true,
                     }}
                   />
-                </button> : null
-              }
-
+                </button>
+              ) : null}
             </div>
           </div>
         </div>

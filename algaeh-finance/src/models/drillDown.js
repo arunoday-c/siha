@@ -22,7 +22,7 @@ export function generationLedger(req, res, next) {
       .then((result) => {
         _mysql
           .executeQuery({
-            query: `  select finance_voucher_header_id,voucher_type,voucher_no,
+            query: `  select finance_voucher_header_id,voucher_type,if(VD.is_opening_bal='Y','Opening Balance', voucher_no) as voucher_no,
                   VD.head_id,VD.payment_date, VD.child_id, AH.root_id,              
                   ROUND(sum(debit_amount),${decimal_places}) as debit_amount,
                   ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name,C.ledger_code,
@@ -31,7 +31,7 @@ export function generationLedger(req, res, next) {
                   on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
                   VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
                    C.head_id=AH.finance_account_head_id     where  VD.auth_status='A' and
-                  VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no, VD.head_id order by VD.payment_date;
+                  VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no, VD.head_id,VD.is_opening_bal order by VD.payment_date;
                   select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
                   ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
                   from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date < ?;
