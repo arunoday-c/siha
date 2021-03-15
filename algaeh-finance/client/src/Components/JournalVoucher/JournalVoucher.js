@@ -1137,7 +1137,7 @@ export default function JournalVoucher() {
                       {
                         fieldName: "narration",
                         label: (
-                          <AlgaehLabel label={{ fieldName: "Narration" }} />
+                          <AlgaehLabel label={{ fieldName: "narration" }} />
                         ),
                         displayTemplate: NarrationBox,
                       },
@@ -1194,7 +1194,7 @@ export default function JournalVoucher() {
                       });
                     }}
                   >
-                    Add New Entry
+                    <AlgaehLabel label={{ fieldName: "addNewEntry" }} />
                   </button>
                 </div>
               </div>

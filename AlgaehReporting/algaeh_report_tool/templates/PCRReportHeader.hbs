@@ -1,0 +1,108 @@
+<style type="text/css">
+    .reportHeaderCntr {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 18px 18px;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        font-size: 11px;
+        overflow: hidden;
+    }
+
+    .col-left {
+        float: left;
+        width: 25%;
+        text-align: left;
+        background-color: red;
+    }
+    .col-right {
+        float: right;
+        width: 25%;
+        text-align: right;
+        background-color: green;
+    }
+
+    .col-center {
+        width: 50%;
+        text-align: center;
+        float: none;
+        margin: 0 auto;
+    }
+
+    .pcrLogo1 img {
+        height: 65px;
+        border:none;
+        float: left;
+        text-align: left;
+    }
+
+    .pcrLogo2 img {
+        height: 55px;
+        border:none;
+        float: right;
+        text-align: right;
+    }
+    .hospitalLogo img {
+        height: 55px;
+        border:none;
+        float: none;
+        text-align: center;
+    }
+
+    .reportHeaderCntr h5 {
+        margin: 5px 0;
+        padding: 0;
+        font-size: 11px;
+    }
+
+    .reportHeaderCntr p {
+        margin: 2px 0;
+        padding: 0;
+        font-size: 7px;
+        line-height: 10px;
+    }
+
+    .reportHeaderCntr p b {
+        font-size: 8px;
+    }
+
+
+    .headerFooterStyle {
+        width: 100%;
+        height: 10px;
+        float: left;
+        text-align: center;
+        border-top: 0.5rem dotted #ccc;
+        font-size: 8px;
+        margin-top: 5px;
+    }
+</style>
+
+<body>
+
+    <div class="reportHeaderCntr">
+        <div class="col-left">
+          <span class="pcrLogo1"><img src="{{logoUrl 'MOH' identity }}" /></span>
+        </div>
+        <div class="col-right">
+            <span class="pcrLogo2"><img src="{{logoUrl 'PCR' identity }}" /></span>
+        </div>
+        <div class="col-center">
+            <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
+           
+        </div>
+        <div class="headerFooterStyle">
+            {{!-- 
+             <p>{{address1}}, Tel: <span>{{phone1}}</span></p>
+            <h5>{{{report_name_for_header}}}</h5>
+            
+            <p class="showFilterValue">
+                {{#each filter}}
+                <span><small>{{label}}:</small>{{labelValue}} </span>
+                {{/each }}
+            </p> --}}
+        </div>
+        </div>
+
+
+</body>

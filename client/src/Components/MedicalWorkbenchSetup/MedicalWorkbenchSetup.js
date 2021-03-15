@@ -7,6 +7,7 @@ import ReviewofSystems from "./ReviewofSystems/ReviewofSystems";
 import VitalsMaster from "./VitalsMaster/VitalsMaster";
 import Allergies from "./Allergies/Allergies";
 import ICDMaster from "./ICDMaster/ICDMaster";
+import NphiesMaster from "./NphiesMaster/NphiesMaster";
 
 class MedicalWorkbenchSetup extends Component {
   constructor(props) {
@@ -23,13 +24,13 @@ class MedicalWorkbenchSetup extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
   SideMenuBarOpen(sidOpen) {
     this.setState({
-      sidBarOpen: sidOpen
+      sidBarOpen: sidOpen,
     });
   }
 
@@ -47,7 +48,7 @@ class MedicalWorkbenchSetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "vitals_master"
+                      fieldName: "vitals_master",
                     }}
                   />
                 }
@@ -60,7 +61,7 @@ class MedicalWorkbenchSetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "physical_examination"
+                      fieldName: "physical_examination",
                     }}
                   />
                 }
@@ -73,7 +74,7 @@ class MedicalWorkbenchSetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Allergies"
+                      forceLabel: "Allergies",
                     }}
                   />
                 }
@@ -87,12 +88,24 @@ class MedicalWorkbenchSetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "ICD Master"
+                      forceLabel: "ICD Master",
                     }}
                   />
                 }
               </li>
-
+              <li
+                algaehtabs={"NphiesMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "NPHIES master",
+                    }}
+                  />
+                }
+              </li>
 
               {/* <li
                 algaehtabs={"ReviewofSystems"}
@@ -121,6 +134,8 @@ class MedicalWorkbenchSetup extends Component {
             <Allergies />
           ) : this.state.pageDisplay === "ICDMaster" ? (
             <ICDMaster />
+          ) : this.state.pageDisplay === "NphiesMaster" ? (
+            <NphiesMaster />
           ) : null}
         </div>
       </div>

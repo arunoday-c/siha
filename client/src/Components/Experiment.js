@@ -14,7 +14,7 @@ class Experiment extends Component {
       name: "i",
       image: undefined,
       report: undefined,
-      progressPercentage: ""
+      progressPercentage: "",
     };
 
     // console.log("Chunk:", _.chunk(services, 1));
@@ -25,7 +25,7 @@ class Experiment extends Component {
     let value = e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
 
     // Example for functional setState below.
@@ -47,10 +47,10 @@ class Experiment extends Component {
           label={{
             fieldName: "btn_clear",
             forceLabel: "Clear All",
-            returnText: true
+            returnText: true,
           }}
           reportparam={{
-            reportname: "Cash Receipt"
+            reportname: "Cash Receipt",
           }}
         />
         <button
@@ -60,12 +60,12 @@ class Experiment extends Component {
             algaehApiCall({
               uri: "/masters/killDbConnections",
               method: "GET",
-              onSuccess: res => {
+              onSuccess: (res) => {
                 swalMessage({
                   title: "Killed It !!",
-                  type: "success"
+                  type: "success",
                 });
-              }
+              },
             });
           }}
         >
@@ -87,7 +87,7 @@ class Experiment extends Component {
               method: "GET",
               module: "reports",
               headers: {
-                Accept: "blob"
+                Accept: "blob",
               },
               others: { responseType: "blob" },
               data: {
@@ -97,20 +97,20 @@ class Experiment extends Component {
                     { name: "insurance_provider_id", value: 167 },
                     {
                       name: "invoice_from_date",
-                      value: new Date("2018-12-01")
+                      value: new Date("2018-12-01"),
                     },
-                    { name: "invoice_to_date", value: new Date("2018-12-31") }
+                    { name: "invoice_to_date", value: new Date("2018-12-31") },
                   ],
-                  outputFileType: "EXCEL" //"EXCEL", //"PDF",
-                }
+                  outputFileType: "EXCEL", //"EXCEL", //"PDF",
+                },
               },
-              onSuccess: res => {
+              onSuccess: (res) => {
                 const url = URL.createObjectURL(res.data);
                 const link = document.createElement("a");
                 link.setAttribute("href", url);
                 link.setAttribute("download", "Aexcel.xlsx");
                 link.click();
-              }
+              },
             });
           }}
         >
@@ -118,7 +118,7 @@ class Experiment extends Component {
         </button>
         <div
           style={{
-            marginTop: "30px"
+            marginTop: "30px",
           }}
         >
           <AlgaehErrorBoundary>
@@ -136,19 +136,19 @@ class Experiment extends Component {
           <AlagehFormGroup
             div={{ className: "col form-group" }}
             label={{
-              forceLabel: "Enter Amount",
-              isImp: false
+              fieldName: "enterAmt",
+              isImp: false,
             }}
             textBox={{
               className: "txt-fld",
               name: "amount",
               value: this.state.amount,
               events: {
-                onChange: this.texthandle.bind(this)
+                onChange: this.texthandle.bind(this),
               },
               option: {
-                type: "text"
-              }
+                type: "text",
+              },
             }}
           />
           <div className="col">
@@ -159,12 +159,12 @@ class Experiment extends Component {
                   uri: "/algaehMasters/method1",
                   method: "POST",
                   data: { amount: this.state.amount },
-                  onSuccess: res => {
+                  onSuccess: (res) => {
                     swalMessage({
                       title: "Killed It !!",
-                      type: "success"
+                      type: "success",
                     });
-                  }
+                  },
                 });
               }}
             >
@@ -185,11 +185,11 @@ class Experiment extends Component {
                 uri: "/excel/create",
                 method: "POST",
                 headers: {
-                  Accept: "blob"
+                  Accept: "blob",
                 },
                 others: { responseType: "blob" },
                 module: "hrManagement",
-                onSuccess: response => {
+                onSuccess: (response) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
                     var anchor = document.createElement("a");
@@ -198,7 +198,7 @@ class Experiment extends Component {
                     anchor.click();
                   };
                   reader.readAsDataURL(response.data);
-                }
+                },
               });
             }}
           >
@@ -217,12 +217,12 @@ class Experiment extends Component {
               method: "GET",
               module: "reports",
               headers: {
-                Accept: "blob"
+                Accept: "blob",
               },
               timeout: 120000,
               others: {
                 responseType: "blob",
-                onDownloadProgress: progressEvent => {
+                onDownloadProgress: (progressEvent) => {
                   let percentCompleted = Math.round(
                     (progressEvent.loaded * 100) / progressEvent.total
                   );
@@ -231,7 +231,7 @@ class Experiment extends Component {
                   } else {
                     that.setState({ progressPercentage: percentCompleted });
                   }
-                }
+                },
               },
               data: {
                 report: {
@@ -241,40 +241,40 @@ class Experiment extends Component {
                       { name: "hims_d_patient_id", value: 245 },
                       {
                         name: "visit_id",
-                        value: 553
+                        value: 553,
                       },
                       {
                         name: "visit_date",
-                        value: null
-                      }
+                        value: null,
+                      },
                     ],
                     [
                       { name: "hims_d_patient_id", value: 267 },
                       {
                         name: "visit_id",
-                        value: 580
+                        value: 580,
                       },
                       {
                         name: "visit_date",
-                        value: null
-                      }
+                        value: null,
+                      },
                     ],
                     [
                       { name: "hims_d_patient_id", value: 101 },
                       {
                         name: "visit_id",
-                        value: 300
+                        value: 300,
                       },
                       {
                         name: "visit_date",
-                        value: null
-                      }
-                    ]
+                        value: null,
+                      },
+                    ],
                   ],
-                  outputFileType: "PDF" //"EXCEL", //"PDF",
-                }
+                  outputFileType: "PDF", //"EXCEL", //"PDF",
+                },
               },
-              onSuccess: res => {
+              onSuccess: (res) => {
                 // const url = URL.createObjectURL(res.data);
                 // let myWindow = window.open(
                 //   "{{ product.metafields.google.custom_label_0 }}",
@@ -285,11 +285,10 @@ class Experiment extends Component {
                 //   "<iframe src= '" + url + "' width='100%' height='100%' />"
                 // );
                 const urlBlob = URL.createObjectURL(res.data);
-                const documentName = "Algaeh Merdge"
+                const documentName = "Algaeh Merdge";
                 const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${documentName}`;
                 window.open(origin);
-                ;
-              }
+              },
             });
           }}
         >
@@ -304,19 +303,19 @@ class Experiment extends Component {
               method: "GET",
               module: "hrManagement",
               headers: {
-                Accept: "blob"
+                Accept: "blob",
               },
               others: { responseType: "blob" },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 let blob = new Blob([response.data], {
-                  type: "application/octet-stream"
+                  type: "application/octet-stream",
                 });
                 var objectUrl = URL.createObjectURL(blob);
                 var link = document.createElement("a");
                 link.setAttribute("href", objectUrl);
                 link.setAttribute("download", "abc.xlsx");
                 link.click();
-              }
+              },
             });
           }}
         >

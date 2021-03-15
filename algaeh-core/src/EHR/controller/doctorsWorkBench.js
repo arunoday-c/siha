@@ -73,6 +73,12 @@ const {
   getSickLeave,
   getActiveEncounters,
   updateAllergy,
+  updateICDcode,
+  deleteICDMaster,
+  deleteNphies,
+  updateNphies,
+  getNphies,
+  addNphies,
   deleteAllergy,
   checkFollowUPofVisit,
   updateSameFollowUp,
@@ -387,6 +393,51 @@ export default () => {
     });
     next();
   });
+  api.put("/updateICDcode", updateICDcode, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.post("/addNphies", addNphies, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.put("/updateNphies", updateNphies, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.delete("/deleteNphies", deleteNphies, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.get(
+    "/getNphies",
+    getNphies,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
 
   api.delete("/deleteAllergy", deleteAllergy, (req, res, next) => {
     let result = req.records;
@@ -584,6 +635,19 @@ export default () => {
   api.delete(
     "/deletePatientChiefComplaints",
     deletePatientChiefComplaints,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.delete(
+    "/deleteICDMaster",
+    deleteICDMaster,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

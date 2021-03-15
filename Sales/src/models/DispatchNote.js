@@ -347,8 +347,8 @@ export function addDispatchNote(req, res, next) {
                 "INSERT INTO `hims_f_sales_dispatch_note_header` (dispatch_note_number, dispatch_note_date,\
                                     sales_order_id, location_id, customer_id, project_id, \
                                     sub_total, discount_amount, net_total, total_tax, net_payable, narration, \
-                                    created_by, created_date, updated_by, updated_date, hospital_id ) \
-                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                                    invoice_generated,created_by, created_date, updated_by, updated_date, hospital_id ) \
+                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
               values: [
                 dispatch_note_number,
                 new Date(),
@@ -362,6 +362,7 @@ export function addDispatchNote(req, res, next) {
                 input.total_tax,
                 input.net_payable,
                 input.narration,
+                input.invoice_generated,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
@@ -438,6 +439,16 @@ export function addDispatchNote(req, res, next) {
                       .then((subResult) => {
                         if (i == input.stock_detail.length - 1) {
                           // console.log("done: ", i);
+                          req.body.invoice_entry_detail_item = [
+                            {
+                              dispatch_note_header_id: dispatch_note_header_id,
+                              sub_total: input.sub_total,
+                              discount_amount: input.discount_amount,
+                              net_total: input.net_total,
+                              total_tax: input.total_tax,
+                              net_payable: input.net_payable,
+                            },
+                          ];
                           req.connection = {
                             connection: _mysql.connection,
                             isTransactionConnection:

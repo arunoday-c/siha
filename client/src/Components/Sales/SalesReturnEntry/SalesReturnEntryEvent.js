@@ -1,7 +1,4 @@
-import {
-  swalMessage,
-  algaehApiCall
-} from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -12,7 +9,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -22,7 +19,7 @@ const loctexthandle = ($this, e) => {
 
   $this.setState({
     [name]: value,
-    location_type: e.selected.location_type
+    location_type: e.selected.location_type,
   });
 };
 
@@ -34,7 +31,7 @@ const vendortexthandle = ($this, e) => {
     [name]: value,
     vendor_name: e.selected.vendor_name,
     payment_terms: e.selected.payment_terms,
-    tax_percentage: e.selected.vat_percentage
+    tax_percentage: e.selected.vat_percentage,
   });
 };
 
@@ -54,18 +51,18 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({
       sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
+      sheet_discount_amount: sheet_discount_amount,
     });
 
     if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       });
     }
   }
@@ -78,19 +75,19 @@ const numberchangeTexts = ($this, context, e) => {
   if (value < 0) {
     swalMessage({
       title: "Quantity cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else if (value > $this.state.qtyhand) {
     swalMessage({
       title: "Quantity cannot be greater than Quantity in hand",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({ [name]: value });
 
     if (context !== undefined) {
       context.updateState({
-        [name]: value
+        [name]: value,
       });
     }
   }
@@ -98,31 +95,32 @@ const numberchangeTexts = ($this, context, e) => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
 const InvoiceSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Sales.SalesInvoice
+      columns: spotlightSearch.Sales.SalesInvoice,
     },
-    searchName: "SalesInvoice",
+    searchName: "SalesInvoiceReturn",
     uri: "/gloabelSearch/get",
-    inputs: "sales_invoice_mode = 'I' and return_done = 'N' and IH.is_posted='Y' ",
+    inputs:
+      "sales_invoice_mode = 'I' and return_done = 'N' and IH.is_posted='Y' ",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/SalesReturnEntry/getInvoiceEntryItems",
         module: "sales",
         method: "GET",
         data: {
-          hims_f_sales_invoice_header_id: row.hims_f_sales_invoice_header_id
+          hims_f_sales_invoice_header_id: row.hims_f_sales_invoice_header_id,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
 
@@ -137,9 +135,9 @@ const InvoiceSearch = ($this, e) => {
             $this.setState(data);
           }
           AlgaehLoader({ show: false });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -169,18 +167,18 @@ const ClearData = ($this, e) => {
     location_type: null,
     location_id: null,
     saveEnable: true,
-    postEnable: true
+    postEnable: true,
   });
 };
 
-const SaveSalesReutrnEnrty = $this => {
+const SaveSalesReutrnEnrty = ($this) => {
   AlgaehLoader({ show: true });
 
   algaehApiCall({
     uri: "/SalesReturnEntry/addSalesReturn",
     module: "sales",
     data: $this.state,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           sales_return_number: response.data.records.sales_return_number,
@@ -188,23 +186,23 @@ const SaveSalesReutrnEnrty = $this => {
             response.data.records.hims_f_sales_return_header_id,
           saveEnable: true,
           postEnable: false,
-          dataExitst: true
+          dataExitst: true,
         });
 
         swalMessage({
           type: "success",
-          title: "Saved successfully . ."
+          title: "Saved successfully . .",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -237,7 +235,7 @@ const getCtrlCode = ($this, docNumber) => {
 
       location_description: null,
       location_type: null,
-      location_id: null
+      location_id: null,
     },
     () => {
       algaehApiCall({
@@ -245,7 +243,7 @@ const getCtrlCode = ($this, docNumber) => {
         module: "sales",
         method: "GET",
         data: { sales_return_number: docNumber },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
 
@@ -264,26 +262,26 @@ const getCtrlCode = ($this, docNumber) => {
           }
           AlgaehLoader({ show: false });
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   );
 };
 
-const generateSalesInvoice = data => {
+const generateSalesInvoice = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -292,23 +290,23 @@ const generateSalesInvoice = data => {
         reportParams: [
           {
             name: "sales_return_number",
-            value: data.sales_return_number
-          }
+            value: data.sales_return_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.sales_return_number}-Sales Quotation Report`
+      const reportName = `${data.sales_return_number}-Sales Quotation Report`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Return Entry";
-    }
+    },
   });
 };
 
-const PostSalesReturnEntry = $this => {
+const PostSalesReturnEntry = ($this) => {
   AlgaehLoader({ show: true });
   let InputObj = $this.state;
   InputObj.transaction_type = "SRT";
@@ -338,26 +336,26 @@ const PostSalesReturnEntry = $this => {
     module: "sales",
     data: InputObj,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           postEnable: true,
-          inv_is_posted: "Y"
+          inv_is_posted: "Y",
         });
         swalMessage({
           title: "Posted successfully . .",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -373,5 +371,5 @@ export {
   getCtrlCode,
   loctexthandle,
   PostSalesReturnEntry,
-  generateSalesInvoice
+  generateSalesInvoice,
 };
