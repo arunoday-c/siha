@@ -979,6 +979,132 @@ let deleteNphies = (req, res, next) => {
     next(e);
   }
 };
+
+let addReferringMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_referring_institute(institute_name, tel_code, contact_number, \
+            institute_status,inCharge_name, created_by, created_date, updated_by, updated_date) values(?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.institute_name,
+          input.tel_code,
+          input.contact_number,
+          input.institute_status,
+          input.inCharge_name,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+let getReferringMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query: `SELECT RI.*,U.user_display_name FROM hims_d_referring_institute RI left join algaeh_d_app_user U on RI.created_by=U.employee_id  where  RI.institute_status='A' order by hims_d_referring_institute_id desc;        `,
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let updateReferringMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_referring_institute set institute_name = ?, tel_code = ?,contact_number=?,inCharge_name=?,institute_status=?,updated_by = ?, updated_date=? \
+          where hims_d_referring_institute_id=?",
+        values: [
+          input.institute_name,
+          input.tel_code,
+          input.contact_number,
+          input.inCharge_name,
+          input.institute_status,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.hims_d_referring_institute_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let deleteReferringMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_referring_institute set institute_status='I',updated_date=?,updated_by=? where `institute_status`='A' and hims_d_referring_institute_id=?",
+        values: [
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          // req.body.hims_f_episode_chief_complaint_id,
+          input.hims_d_referring_institute_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 //created by irfan:  to add chronical conditions
 let addChronicalConditions = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -4073,6 +4199,10 @@ export default {
   updateNphies,
   getNphies,
   addNphies,
+  addReferringMaster,
+  getReferringMaster,
+  updateReferringMaster,
+  deleteReferringMaster,
   deleteAllergy,
   checkFollowUPofVisit,
   updateSameFollowUp,

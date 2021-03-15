@@ -8,6 +8,7 @@ import VitalsMaster from "./VitalsMaster/VitalsMaster";
 import Allergies from "./Allergies/Allergies";
 import ICDMaster from "./ICDMaster/ICDMaster";
 import NphiesMaster from "./NphiesMaster/NphiesMaster";
+import ReferringMaster from "./ReferringInstituteMaster/RefferingMaster";
 
 class MedicalWorkbenchSetup extends Component {
   constructor(props) {
@@ -106,6 +107,19 @@ class MedicalWorkbenchSetup extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"ReferringMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Referring Institution master",
+                    }}
+                  />
+                }
+              </li>
 
               {/* <li
                 algaehtabs={"ReviewofSystems"}
@@ -136,6 +150,8 @@ class MedicalWorkbenchSetup extends Component {
             <ICDMaster />
           ) : this.state.pageDisplay === "NphiesMaster" ? (
             <NphiesMaster />
+          ) : this.state.pageDisplay === "ReferringMaster" ? (
+            <ReferringMaster />
           ) : null}
         </div>
       </div>

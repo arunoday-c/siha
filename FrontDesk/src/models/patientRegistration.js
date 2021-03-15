@@ -67,10 +67,10 @@ export default {
           , `date_of_birth`, `age`, `blood_group`,`marital_status`, `address1`, `address2`, `tel_code`, `contact_number`\
           , `secondary_contact_number`, `email`, `emergency_contact_name`, `emergency_contact_number`\
           , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
-          , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
+          , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`,referring_institute_id,\
           , `photo_file`, `primary_id_file`, `secondary_id_file`, `patient_type`,`vat_applicable`, `created_by`, `created_date`\
           ,`city_id`,`state_id`,`country_id`,`employee_id`,hospital_id)\
-           VALUES (?,?,?,?, ?, ?, ?,?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
+           VALUES (?,?,?,?, ?, ?, ?,?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
           values: [
             inputparam.patient_code,
             new Date(),
@@ -107,6 +107,7 @@ export default {
             inputparam.primary_id_no,
             inputparam.secondary_identity_id,
             inputparam.secondary_id_no,
+            inputparam.referring_institute_id,
             inputparam.photo_file,
             inputparam.primary_id_file,
             inputparam.secondary_id_file,
@@ -303,7 +304,7 @@ export default {
            `date_of_birth`=?, `age`=?,`blood_group`=?, `marital_status`=?, `address1`=?, `address2`=?, `tel_code`=?, `contact_number`=?,\
            `secondary_contact_number`=?, `email`=?, `emergency_contact_name`=?, `emergency_contact_number`=?,\
            `relationship_with_patient`=?, `visa_type_id`=?, `nationality_id`=?, `postal_code`=?,\
-           `primary_identity_id`=?, `primary_id_no`=?, `secondary_identity_id`=?, `secondary_id_no`=?,\
+           `primary_identity_id`=?, `primary_id_no`=?, `secondary_identity_id`=?, `secondary_id_no`=?,referring_institute_id=?,\
            `photo_file`=?, `primary_id_file`=?, `secondary_id_file`=?, `patient_type`=?,\
           `city_id`=?,`state_id`=?,`country_id` =?, `employee_id`=?,`updated_by`=?, `updated_date`=? where hims_d_patient_id=?",
           values: [
@@ -334,6 +335,7 @@ export default {
             inputparam.primary_id_no,
             inputparam.secondary_identity_id,
             inputparam.secondary_id_no,
+            inputparam.referring_institute_id,
             inputparam.photo_file,
             inputparam.primary_id_file,
             inputparam.secondary_id_file,

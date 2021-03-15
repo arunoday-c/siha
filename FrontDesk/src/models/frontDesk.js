@@ -35,7 +35,7 @@ export default {
           , `gender`, `religion_id`,`date_of_birth`, `age`,`blood_group`, `marital_status`, `address1`\
           , `address2`,`contact_number`, `secondary_contact_number`, `email`\
           , `emergency_contact_name`,`emergency_contact_number`, `relationship_with_patient`\
-          , `visa_type_id`,`nationality_id`, `postal_code`, `primary_identity_id`\
+          , `visa_type_id`,`nationality_id`, `postal_code`, `primary_identity_id`,referring_institute_id\
           , `primary_id_no`,`secondary_identity_id`, `secondary_id_no`, `photo_file`,`vat_applicable`\
           , `primary_id_file`,`secondary_id_file`,`city_id`,`state_id`,`country_id`, `advance_amount`,\
           `patient_type` , `employee_id`, `tel_code` FROM `hims_f_patient` \

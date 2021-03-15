@@ -44,11 +44,16 @@ async function getDemoData() {
       data: { identity_status: "A" },
       method: "GET",
     }),
+    newAlgaehApi({
+      uri: "/doctorsWorkBench/getReferringMaster",
+      method: "GET",
+    }),
   ]);
   return {
     visaTypes: result[0]?.data?.records,
     patientTypes: result[1]?.data?.records,
     identities: result[2]?.data?.records,
+    referringInstitutes: result[3]?.data?.records,
   };
 }
 
@@ -106,7 +111,12 @@ export function Demographics({
       cacheTime: Infinity,
     }
   );
-  const { visaTypes, patientTypes, identities } = dropdownData;
+  const {
+    visaTypes,
+    patientTypes,
+    identities,
+    referringInstitutes,
+  } = dropdownData;
   // const requied_emp_id = isEmpIdRequired;
 
   const states = country
@@ -541,7 +551,48 @@ export function Demographics({
                             />
                           )}
                         />
+                        <Controller
+                          control={control}
+                          name="referring_institute_id"
+                          // rules={{ required: "Please Select Title" }}
+                          render={({ onBlur, onChange, value }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-lg-2 mandatory" }}
+                              label={{
+                                forceLabel: "Referring Institution",
+                                // isImp: true,
+                              }}
+                              // error={errors}
+                              selector={{
+                                name: "referring_institute_id",
+                                className: "select-fld",
+                                placeholder: "Select Title",
+                                dataSource: {
+                                  textField: "institute_name",
+                                  valueField: "hims_d_referring_institute_id",
+                                  data: referringInstitutes,
+                                },
+                                value,
+                                onChange: (_, selected) => {
+                                  onChange(selected);
 
+                                  // if (selected == 1 || selected == 6) {
+                                  //   setValue("gender", "Male");
+                                  // } else {
+                                  //   setValue("gender", "Female");
+                                  // }
+                                },
+                                onClear: () => {
+                                  onChange("");
+                                },
+                                others: {
+                                  disabled,
+                                  tabIndex: "1",
+                                },
+                              }}
+                            />
+                          )}
+                        />
                         <Controller
                           control={control}
                           name="country_id"
@@ -640,7 +691,81 @@ export function Demographics({
                               />
                             )}
                           />
-                        ) : null}
+                        ) : (
+                          <>
+                            <Controller
+                              control={control}
+                              name="secondary_identity_id"
+                              rules={{
+                                required: {
+                                  value: true,
+                                  message: "Please Enter Nationality ID",
+                                },
+                              }}
+                              render={({ onBlur, onChange, value }) => (
+                                <AlgaehAutoComplete
+                                  div={{ className: "col-lg-5 mandatory" }}
+                                  label={{
+                                    fieldName: "secondary_identity_id",
+                                    isImp: true,
+                                  }}
+                                  error={errors}
+                                  selector={{
+                                    name: "secondary_identity_id",
+                                    className: "select-fld",
+                                    dataSource: {
+                                      textField: fieldNameFn(
+                                        "identity_document_name"
+                                      ),
+                                      valueField: "hims_d_identity_document_id",
+                                      data: identities,
+                                    },
+                                    value,
+                                    onChange: (_, selected) => {
+                                      onChange(selected);
+                                    },
+                                    onClear: () => {
+                                      onChange("");
+                                    },
+                                    others: {
+                                      disabled,
+                                      tabIndex: "15",
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+
+                            <Controller
+                              control={control}
+                              name="secondary_id_no"
+                              rules={{
+                                required: {
+                                  value: true,
+                                  message: "Please enter primary id no",
+                                },
+                              }}
+                              render={(props) => (
+                                <AlgaehFormGroup
+                                  div={{ className: "col-lg-7 mandatory" }}
+                                  label={{
+                                    fieldName: "secondary_id_no",
+                                    isImp: true,
+                                  }}
+                                  error={errors}
+                                  textBox={{
+                                    ...props,
+                                    className: "txt-fld",
+                                    name: "secondary_id_no",
+                                    disabled,
+                                    tabIndex: "16",
+                                    placeholder: "Enter ID Number",
+                                  }}
+                                />
+                              )}
+                            />
+                          </>
+                        )}
                       </div>
                       <div className="row paddin-bottom-5">
                         <Controller

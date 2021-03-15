@@ -79,6 +79,10 @@ const {
   updateNphies,
   getNphies,
   addNphies,
+  addReferringMaster,
+  getReferringMaster,
+  updateReferringMaster,
+  deleteReferringMaster,
   deleteAllergy,
   checkFollowUPofVisit,
   updateSameFollowUp,
@@ -428,6 +432,47 @@ export default () => {
   api.get(
     "/getNphies",
     getNphies,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.post("/addReferringMaster", addReferringMaster, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.put("/updateReferringMaster", updateReferringMaster, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.delete(
+    "/deleteReferringMaster",
+    deleteReferringMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
+  api.get(
+    "/getReferringMaster",
+    getReferringMaster,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
