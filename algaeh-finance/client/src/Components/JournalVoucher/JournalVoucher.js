@@ -107,9 +107,12 @@ export default function JournalVoucher() {
   const [debitNoteTotal, setDebitNoteTotal] = useState(null);
   const [debitNoteList, setDebitNoteList] = useState([]);
   /** This code is for changing language */
+
+  const [language, setLanguage] = useState("ltr");
   useEffect(() => {
     if (location.state?.language) {
       i18next.changeLanguage(location.state?.language);
+      setLanguage(location.state?.language === "ar" ? "rtl" : "ltr");
     }
   }, [location.state]);
   /** above code is for changing language */
@@ -1142,6 +1145,7 @@ export default function JournalVoucher() {
                         displayTemplate: NarrationBox,
                       },
                     ]}
+                    direction={language}
                     loading={false}
                     data={journerList}
                     isEditable={"deleteOnly"}
