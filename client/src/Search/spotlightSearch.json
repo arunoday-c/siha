@@ -1203,6 +1203,24 @@
         "label": "Customer Name"
       }
     ],
+    "SalesInvoiceCash": [
+      {
+        "fieldName": "invoice_number",
+        "label": "Invoice Number"
+      },
+      {
+        "fieldName": "invoice_date",
+        "label": "Invoice Date"
+      },
+      {
+        "fieldName": "sales_invoice_mode",
+        "label": "Invoice Mode"
+      },      
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      }
+    ],
     "InvSalesReturn": [
       {
         "fieldName": "sales_return_number",

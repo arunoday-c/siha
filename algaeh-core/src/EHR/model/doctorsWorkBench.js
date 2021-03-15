@@ -791,7 +791,194 @@ let getICDMaster = (req, res, next) => {
     next(e);
   }
 };
+let updateICDcode = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_icd set icd_code = ?, icd_description = ?,updated_by = ?, updated_date=? \
+          where hims_d_icd_id=?",
+        values: [
+          input.icd_code,
+          input.icd_description,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.hims_d_icd_id,
+        ],
+        // printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let deleteICDMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
 
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_icd set record_status='I',updated_date=?,updated_by=? where `record_status`='A' and hims_d_icd_id=?",
+        values: [
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          // req.body.hims_f_episode_chief_complaint_id,
+          input.hims_d_icd_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+let addNphies = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_nphies_code(nphies_code, nphies_desc, long_nphies_desc, \
+            prefLabel,nphies_status, created_by, created_date, updated_by, updated_date) values(?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.nphies_code,
+          input.nphies_desc,
+          input.long_nphies_desc,
+          input.prefLabel,
+          input.nphies_status,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+let getNphies = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query: `SELECT NC.*,U.user_display_name FROM hims_d_nphies_code NC left join algaeh_d_app_user U on NC.created_by=U.employee_id  where NC.record_status='A' order by hims_d_nphies_code_id desc;`,
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let updateNphies = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_nphies_code set nphies_code = ?, nphies_desc = ?,long_nphies_desc=?,prefLabel=?,nphies_status=?,updated_by = ?, updated_date=? \
+          where hims_d_nphies_code_id=?",
+        values: [
+          input.nphies_code,
+          input.nphies_desc,
+          input.long_nphies_desc,
+          input.prefLabel,
+          input.nphies_status,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.hims_d_nphies_code_id,
+        ],
+        // printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+let deleteNphies = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_nphies_code set record_status='I',updated_date=?,updated_by=? where `record_status`='A' and hims_d_nphies_code_id=?",
+        values: [
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          // req.body.hims_f_episode_chief_complaint_id,
+          input.hims_d_nphies_code_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 //created by irfan:  to add chronical conditions
 let addChronicalConditions = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -3880,6 +4067,12 @@ export default {
   updateSickLeave,
   getSickLeave,
   updateAllergy,
+  updateICDcode,
+  deleteICDMaster,
+  deleteNphies,
+  updateNphies,
+  getNphies,
+  addNphies,
   deleteAllergy,
   checkFollowUPofVisit,
   updateSameFollowUp,

@@ -1044,7 +1044,7 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS H.*, L.location_description as location, SO.sales_order_number, \
           C.customer_name, P.project_desc, B.hospital_name, L.location_type from hims_f_sales_dispatch_note_header H \
           inner join hims_d_inventory_location L on L.hims_d_inventory_location_id = H.location_id \
-          inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = H.sales_order_id \
+          left join hims_f_sales_order SO on SO.hims_f_sales_order_id = H.sales_order_id \
           inner join hims_d_customer C on C.hims_d_customer_id = H.customer_id \
           inner join hims_d_project P on P.hims_d_project_id = H.project_id \
           inner join hims_d_hospital B on B.hims_d_hospital_id = H.hospital_id",
@@ -1057,7 +1057,26 @@ let algaehSearchConfig = (searchName, req) => {
           end as sales_invoice_mode, C.customer_name, SO.sales_order_number from hims_f_sales_invoice_header IH \
           inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
           inner join  hims_f_sales_order SO on IH.sales_order_id = SO.hims_f_sales_order_id  \
-          where 1=1",
+          where 1=1 ",
+        orderBy: "hims_f_sales_invoice_header_id desc",
+      },
+      {
+        searchName: "SalesInvoiceReturn",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  IH.*,  date(IH.invoice_date) as invoice_date, CASE IH.sales_invoice_mode WHEN 'I' then 'Items' else 'Services' \
+          end as sales_invoice_mode, C.customer_name, SO.sales_order_number from hims_f_sales_invoice_header IH \
+          inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
+          left join  hims_f_sales_order SO on IH.sales_order_id = SO.hims_f_sales_order_id  \
+          where 1=1 ",
+        orderBy: "hims_f_sales_invoice_header_id desc",
+      },
+      {
+        searchName: "SalesInvoiceCash",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  IH.*,  date(IH.invoice_date) as invoice_date, CASE IH.sales_invoice_mode WHEN 'I' then 'Items' else 'Services' \
+          end as sales_invoice_mode, IH.customer_name from hims_f_sales_invoice_header IH \
+          inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
+          where C.cash_customer='Y' ",
         orderBy: "hims_f_sales_invoice_header_id desc",
       },
       {
