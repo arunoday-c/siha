@@ -36,6 +36,7 @@ export default {
       organizations: [],
       decimal_place: 0,
       itemAdd: false,
+      invoice_generated: "Y",
     };
     return output;
   },

@@ -1,0 +1,153 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+<style>
+   td,
+   span,
+   label {
+   font-size: 12px;
+   }
+   .tableForLabel tr td{
+   padding: 10px 3px !important;
+   font-size: 15px  !important;
+   }
+   .textArbRht label{
+   font-size: 15px  !important;
+   }
+   .tableForDataNoBorder tr td{
+   padding: 10px 3px !important;
+   font-size: 15px  !important;
+   }
+   .pcrTestHead{
+       background-color:paleturquoise;
+       width: 100%;
+       text-align: center;
+       padding: 5px 0 !important;
+       margin: 0 0 10px;
+       font-size: 15px;
+       height: 80px;
+   }
+   .pcrTestHead h4{
+       line-height: 10px;
+   }
+   .QRCodeHere{
+      border: 1px solid #000;
+      height: 150px;
+   } .SealHere{
+      height: 150px;
+   }
+</style>
+<div class="print-body">
+       <section class="pcrTestHead">
+           <h4>(Covid-19)</h4>
+           <h4>Coronavirus (Covid-19) Lab Test Result</h4>
+       </section>
+   <section>
+      <table class="tableForLabel" cell-padding="0">
+         <tr>
+            <td class="textEngLft"><label>Patient Name</label></td>
+            <td class="textEngCtr"><span>{{header.patient_name}}</span></td>
+            <td class="textArbRht"><label>اسم</label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Personal Contact No.</label></td>
+            <td class="textEngCtr"><span>{{header.contact_number}}</span></td>
+            <td class="textArbRht"><label>الرقم الشخصي</label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Date of Birth</label></td>
+            <td class="textEngCtr"><span>{{header.date_of_birth}}</span></td>
+            <td class="textArbRht"><label>تاريخ الولادة</label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Gender</label></td>
+            <td class="textEngCtr"><span>{{header.gender}}</span></td>
+            <td class="textArbRht"><label>الجنس</label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Nationality</label></td>
+            <td class="textEngCtr"><span>{{header.nationality}}</span></td>
+            <td class="textArbRht"><label>جنسية</label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Test Location/ Facility</label></td>
+            <td class="textEngCtr"><span>Here Facility Name will come</span></td>
+            <td class="textArbRht"><label>مركز الفاحص</label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Sample Date/ Time:</label></td>
+            <td class="textEngCtr"><span>{{header.collected_date}}</span></td>
+            <td class="textArbRht"><label>تاريخ / وقت العينة</label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Validation Date/ Time:</label></td>
+            <td class="textEngCtr"><span>{{header.validated_date}}</span></td>
+            <td class="textArbRht"><label>تاريخ / وقت تصديق</label></td>
+         </tr>
+      </table>
+   </section>
+   <section>
+      <table class="tableForLabel" cell-padding="0">
+         <thead>
+            <tr>
+               {{!-- 
+               <th>Sl No.</th>
+               --}}
+                <tr>
+                   <th>
+                      <span class="textEngLft">Test Name</span>
+                      <span class="textArbRht">فحص</span>
+                  </th>
+                    <th>
+                      <span class="textEngLft">Result</span>
+                      <span class="textArbRht">نتيجة</span>
+                  </th>
+               </tr>
+              
+            </tr>
+         </thead>
+         <tbody class="analyteResult">
+            {{#hasElement result}}
+            {{#each result}}
+         
+            {{#each groupWise}}
+           
+            {{#each groupDetail}}
+            <tr>
+               {{!-- 
+               <td>{{inc @index}}</td>
+               --}}
+               <td class="txtFld">{{service_name}}<p><small>Sample Type: {{analyte_name}} - {{investigation_name}}</small></p></td>
+               <td class="textEngCtr">{{result}}</td>
+            </tr>
+            {{/each }}{{/each }}{{/each }}
+            {{else}}
+            <tr>
+               <td colspan="12" class="noResultTextReport">No Records Found</td>
+            </tr>
+            {{/hasElement }}
+         </tbody>
+      </table>
+          <section>
+           <div class="" style="width:35%;float:left;text-align:center;">
+              <p>Scan QR to Validate</p>
+              <p class="QRCodeHere">
+                 {{!-- <img src="{{logoUrl 'ORG' identity }}" /> --}}
+
+                 {{!-- QR COde Here --}}
+                 </p>
+              <small>Or go to: www.moh.gov.sa</small>
+           </div>
+           <div class="" style="width:55%;float:right;text-align:right;">
+                <p class="SealHere">
+                 {{!-- <img src="{{logoUrl 'PCRSEAL' identity }}" /> --}}
+
+                 {{!-- Seal Come Here --}}
+                 </p>
+               <p>معتمد من قبل</p>
+               <p>Authorised by</p>
+            </div>
+       </section>
+   </section>
+   {{!-- 
+   <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
+   --}}
+</div>

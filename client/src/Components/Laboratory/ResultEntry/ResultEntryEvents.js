@@ -24,7 +24,8 @@ export function generateLabResultReport(data) {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: "hematologyTestReport",
+        // reportName: "hematologyTestReport",
+        reportName: "pcrTestReport",
         reportParams: [
           { name: "hims_d_patient_id", value: data.patient_id },
           {
@@ -41,7 +42,7 @@ export function generateLabResultReport(data) {
     },
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Hematology Test Report`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
       window.open(origin);
     },
   });
@@ -106,6 +107,7 @@ const UpdateLabOrder = ($this, value, status) => {
               response.data.records.confirmed_by || $this.state.confirmed_by,
             validated_by:
               response.data.records.validated_by || $this.state.validated_by,
+
             run_type: status === "N" ? last.runtype : $this.state.run_type,
             edit_range: false,
           },
@@ -127,7 +129,7 @@ const UpdateLabOrder = ($this, value, status) => {
 const onvalidate = ($this) => {
   console.time("valid");
   let test_analytes = $this.state.test_analytes;
-  let intNoofAnalytes = 0
+  let intNoofAnalytes = 0;
   let strTitle = "Are you sure want to Validate?";
 
   for (let k = 0; k < test_analytes.length; k++) {
@@ -181,7 +183,6 @@ const onvalidate = ($this) => {
   });
 };
 
-
 const reloadAnalytesMaster = ($this) => {
   AlgaehLoader({ show: true });
 
@@ -190,8 +191,8 @@ const reloadAnalytesMaster = ($this) => {
     test_id: $this.state.hims_d_investigation_test_id,
     date_of_birth: $this.state.date_of_birth,
     gender: $this.state.gender,
-    order_id: $this.state.hims_f_lab_order_id
-  }
+    order_id: $this.state.hims_f_lab_order_id,
+  };
   algaehApiCall({
     uri: "/laboratory/reloadAnalytesMaster",
     module: "laboratory",
@@ -228,18 +229,18 @@ const getAnalytes = ($this) => {
           if (response.data.records[i].analyte_type === "T") {
             response.data.records[i].dis_text_value =
               response.data.records[i].text_value !== null &&
-                response.data.records[i].text_value !== ""
+              response.data.records[i].text_value !== ""
                 ? response.data.records[i].text_value.split("<br/>")
                 : [];
 
             // response.data.records[i].text_value = response.data.records[i].text_value.replace("<br/>", "\n/g")
             response.data.records[i].text_value =
               response.data.records[i].text_value !== null &&
-                response.data.records[i].text_value !== ""
+              response.data.records[i].text_value !== ""
                 ? response.data.records[i].text_value.replace(
-                  new RegExp("<br/>|<br />", "g"),
-                  "\n"
-                )
+                    new RegExp("<br/>|<br />", "g"),
+                    "\n"
+                  )
                 : null;
           } else {
             response.data.records[i].dis_text_value = [];
@@ -250,6 +251,7 @@ const getAnalytes = ($this) => {
           (f) => f.formula !== null
         );
 
+        console.log("response", response.data.records);
         $this.setState(
           {
             records_test_formula,
@@ -259,6 +261,9 @@ const getAnalytes = ($this) => {
             entered_by_name: response.data.records[0].entered_by_name,
             confirm_by_name: response.data.records[0].confirm_by_name,
             validate_by_name: response.data.records[0].validate_by_name,
+            entered_date: response.data.records[0].entered_date,
+            confirmed_date: response.data.records[0].confirmed_date,
+            validated_date: response.data.records[0].validated_date,
           },
           () => {
             AlgaehLoader({ show: false });
@@ -706,5 +711,5 @@ export {
   deleteComment,
   ongridEditRanges,
   eidtRanges,
-  reloadAnalytesMaster
+  reloadAnalytesMaster,
 };

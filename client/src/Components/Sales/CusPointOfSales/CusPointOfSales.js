@@ -20,6 +20,7 @@ import {
   generateSalesInvoiceReport,
   getCostCenters,
   PostSalesInvoice,
+  getCashCustomer,
   // CancelSalesInvoice,
 } from "./CusPointOfSalesEvent";
 // import "./CusPointOfSales.scss";
@@ -58,27 +59,7 @@ class CusPointOfSales extends Component {
   static contextType = MainContext;
   componentDidMount() {
     getCostCenters(this);
-
-    if (
-      this.props.customer_data === undefined ||
-      this.props.customer_data.length === 0
-    ) {
-      this.props.getCustomerMaster({
-        uri: "/customer/getCustomerMaster",
-        module: "masterSettings",
-        data: { customer_status: "A", cash_customer: "Y" },
-        method: "GET",
-        redux: {
-          type: "CUSTOMER_GET_DATA",
-          mappingName: "customer_data",
-        },
-        afterSuccess: (data) => {
-          if (data.length !== 0) {
-            this.setState({ customer_id: data[0].hims_d_customer_id });
-          }
-        },
-      });
-    }
+    getCashCustomer(this);
 
     if (
       this.props.oplocations === undefined ||
@@ -113,7 +94,6 @@ class CusPointOfSales extends Component {
 
     this.setState({
       decimal_place: userToken.decimal_places,
-      // hospital_id: userToken.hims_d_hospital_id
     });
   }
 
@@ -660,7 +640,6 @@ class CusPointOfSales extends Component {
 function mapStateToProps(state) {
   return {
     oplocations: state.oplocations,
-    customer_data: state.customer_data,
     hospitaldetails: state.hospitaldetails,
   };
 }
@@ -669,7 +648,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getCustomerMaster: AlgaehActions,
       getHospitalDetails: AlgaehActions,
     },
     dispatch
