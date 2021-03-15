@@ -793,5 +793,6 @@
   "Debit": "Debit",
   "AddNewAccount": "Add New Account",
   "narration": "Narration",
-  "costCenter": "Cost Center"
+  "costCenter": "Cost Center",
+  "addNewEntry": "Add New Entry"
 }

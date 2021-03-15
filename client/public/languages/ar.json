@@ -520,5 +520,6 @@
   "Debit": "الخصم",
   "AddNewAccount": "إضافة حساب جديد",
   "narration": "السرد",
-  "costCenter": "مركز التسعير"
+  "costCenter": "مركز التسعير",
+  "addNewEntry": "أضف مدخل جديد"
 }
