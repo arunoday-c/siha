@@ -358,7 +358,10 @@ const AddItems = ($this, context) => {
       uom_description: $this.state.uom_description,
       batchno: $this.state.batchno,
       barcode: $this.state.barcode,
-      expiry_date: moment($this.state.expiry_date).format("YYYY-MM-DD"),
+      expiry_date:
+        $this.state.expiry_date === null
+          ? null
+          : moment($this.state.expiry_date).format("YYYY-MM-DD"),
       discount_percentage: $this.state.discount_percentage,
       unit_cost: $this.state.unit_cost,
       extended_cost: extended_cost,

@@ -1389,42 +1389,14 @@ function calcAmount(account_heads, levels, decimal_places) {
   return new Promise((resolve, reject) => {
     try {
       const max_account_level = parseInt(levels[0]["account_level"]);
-      // console.log("===== account_heads =====", account_heads);
       let levels_group = _.chain(account_heads)
         .groupBy((g) => g.account_level)
         .value();
-      // console.log("<<<<<<----levels_group---->>>>>>>", levels_group);
       if (levels_group[max_account_level]) {
         levels_group[max_account_level].map((m) => {
           m["total_debit_amount"] = m["debit_amount"];
           m["total_credit_amount"] = m["credit_amount"];
 
-          // if (
-          //   options &&
-          //   m.payment_date &&
-          //   (finance_account_head_id === 4 || finance_account_head_id === 5)
-          // ) {
-
-          //   if (
-          //     parseInt(moment().format("YYYY")) === options.current_year &&
-          //     parseInt(
-          //       moment(m.payment_date, "YYYY-MM-DD").format("YYYYMMDD")
-          //     ) >= parseInt(options.current_from_date) &&
-          //     parseInt(
-          //       moment(m.payment_date, "YYYY-MM-DD").format("YYYYMMDD")
-          //     ) <= parseInt(options.current_to_date)
-          //   ) {
-          //     m["cred_minus_deb"] = parseFloat(
-          //       parseFloat(m["credit_amount"]) - parseFloat(m["debit_amount"])
-          //     ).toFixed(decimal_places);
-          //     m["deb_minus_cred"] = parseFloat(
-          //       parseFloat(m["debit_amount"]) - parseFloat(m["credit_amount"])
-          //     ).toFixed(decimal_places);
-          //   } else {
-          //     m["cred_minus_deb"] = 0;
-          //     m["deb_minus_cred"] = 0;
-          //   }
-          // } else {
           m["cred_minus_deb"] = parseFloat(
             parseFloat(m["credit_amount"]) - parseFloat(m["debit_amount"])
           ).toFixed(decimal_places);
@@ -1438,8 +1410,6 @@ function calcAmount(account_heads, levels, decimal_places) {
       }
 
       for (let i = max_account_level - 1; i >= 0; i--) {
-        // for (let k = 0; k < levels_group[i].length; k++) {
-        // console.log("levels_group[i]=====>", levels_group[i]);
         if (levels_group[i]) {
           levels_group[i].map((item) => {
             let immediate_childs = levels_group[i + 1].filter((child) => {
@@ -2675,7 +2645,7 @@ function getTrialBalanceFunc(
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount,VD.payment_date          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and date(VD.payment_date) < date('${options.from_date}') where H.root_id=?  group by H.finance_account_head_id,VD.payment_date   ; 
+          and date(VD.payment_date) <= date('${options.from_date}') where H.root_id=?  group by H.finance_account_head_id,VD.payment_date   ; 
 
           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -2688,8 +2658,8 @@ function getTrialBalanceFunc(
           and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-          ,if(VD.is_opening_bal ='Y' and VD.payment_date ='${options.from_date}',0,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places})) as debit_amount,
-          if(VD.is_opening_bal ='Y' and VD.payment_date ='${options.from_date}',0,ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places}))  as credit_amount,VD.payment_date,VD.is_opening_bal          from finance_account_head H              
+          ,if(VD.is_opening_bal ='Y' ,0, ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places})) as debit_amount,
+          if(VD.is_opening_bal ='Y' ,0,ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places}))  as credit_amount,VD.payment_date,VD.is_opening_bal          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
           and  date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by H.finance_account_head_id,VD.payment_date,VD.is_opening_bal   ; 
 

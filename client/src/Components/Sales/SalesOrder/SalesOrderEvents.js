@@ -588,7 +588,6 @@ const getCtrlCode = ($this, saveDocument, docNumber) => {
         data.itemAdd = false;
 
         if (data.is_revert === "Y" || data.is_reject === "Y") {
-          data.itemAdd = true;
           data.serviceAdd = false;
           data.dataExists = false;
         }

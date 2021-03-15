@@ -53,7 +53,7 @@ const ClearData = ($this, e) => {
 
 const Validations = ($this) => {
   let isError = false;
-  debugger;
+
   if ($this.state.invoice_date === null) {
     isError = true;
 
@@ -149,7 +149,7 @@ const SaveCashSalesInvoice = ($this) => {
         inventory_stock_detail: item_data,
       });
     }
-    debugger;
+
     const settings = { header: undefined, footer: undefined };
     // AlgaehLoader({ show: false });
     AlgaehLoader({ show: true });
@@ -190,7 +190,6 @@ const closePopup = ($this) => {
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
-  debugger;
   let IOputs = CashSaleInvIOputs.inputParam();
 
   $this.setState(IOputs, () => {
@@ -322,6 +321,28 @@ const getCostCenters = ($this) => {
   });
 };
 
+const getCashCustomer = ($this) => {
+  algaehApiCall({
+    uri: "/customer/getCustomerMaster",
+    module: "masterSettings",
+    method: "GET",
+    data: { customer_status: "A", cash_customer: "Y" },
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        $this.setState({
+          customer_id: response.data.records[0].hims_d_customer_id,
+        });
+      }
+    },
+    onFailure: (error) => {
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
+
 const PostSalesInvoice = ($this) => {
   if ($this.state.delivery_date === null) {
     swalMessage({
@@ -425,4 +446,5 @@ export {
   getCostCenters,
   PostSalesInvoice,
   CancelSalesInvoice,
+  getCashCustomer,
 };
