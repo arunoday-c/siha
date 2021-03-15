@@ -158,8 +158,8 @@ class ResultEntry extends Component {
         payment_type: "cash",
         patient_code: this.state.patient_code,
         full_name: this.state.full_name,
-        advance_amount: "PAT-00000asdfadsf",
-        receipt_number: "123456",
+        advance_amount: "",
+        receipt_number: "",
         receipt_date: this.state.ordered_date,
         doctor_name: refBy,
         test_name: this.state.service_name,
@@ -368,7 +368,7 @@ class ResultEntry extends Component {
                             style={{ display: "block", fontStyle: "italic" }}
                           >
                             On{" "}
-                            {moment(this.state.entered_date).format(
+                            {moment(this.state.validated_date).format(
                               `${Options.dateFormat} ${Options.timeFormat}`
                             )}
                           </small>
