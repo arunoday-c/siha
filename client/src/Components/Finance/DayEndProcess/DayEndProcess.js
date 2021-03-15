@@ -1070,18 +1070,13 @@ class DayEndProcess extends Component {
                           ),
                           disabled: true,
                           filterable: true,
-                          // others: {
-                          //   width: 140,
-                          // },
                         },
                       ]}
-                      // rowUniqueId="finance_day_end_header_id"
                       data={this.state.dayEnd}
-                      // height="80vh"
                       pagination={true}
+                      pageOptions={{ rows: 20, page: 1 }}
                       isFilterable={true}
                       persistence={this.state.persistence}
-                      // paging={{ page: 3, rowsPerPage: 20 }}
                     />
                     {/* <AlgaehDataGrid
                       id="dayEndProcessGrid"
