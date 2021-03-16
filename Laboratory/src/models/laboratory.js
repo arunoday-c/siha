@@ -1882,26 +1882,74 @@ export default {
 
   updateMicroResultEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
-    utilities.logger().log("updateMicroResultEntry: ");
+    // const utilities = new algaehUtilities();
+    console.log("updateMicroResultEntry: ");
     try {
       let inputParam = req.body;
 
-      let qry = "";
+      let qry = {
+        query: "select 1=1;",
+        printQuery: true,
+      };
       let entered_by = null;
       let confirmed_by = null;
       let validated_by = null;
       let strQuery = "";
       let updateQuery = "";
 
-      utilities.logger().log("inputParam.status: ", inputParam.status);
+      console.log("inputParam.status: ", inputParam.status);
       if (inputParam.status == "E") {
-        utilities.logger().log("data_exists: ", inputParam.data_exists);
-        if (inputParam.data_exists == true) {
+        console.log("data_exists: ", inputParam.data_exists);
+        if (inputParam.bacteria_type === "G") {
+          if (inputParam.data_exists == true) {
+            for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
+              updateQuery += mysql.format(
+                "UPDATE `hims_f_micro_result` SET susceptible=?,\
+            `intermediate`=?,`resistant`=? where hims_f_micro_result_id=?;",
+                [
+                  inputParam.microAntbiotic[i].susceptible,
+                  inputParam.microAntbiotic[i].intermediate,
+                  inputParam.microAntbiotic[i].resistant,
+                  inputParam.microAntbiotic[i].hims_f_micro_result_id,
+                ]
+              );
+            }
+            qry = {
+              query: updateQuery,
+              printQuery: true,
+            };
+          } else {
+            let insertedValues = [
+              "antibiotic_id",
+              "susceptible",
+              "intermediate",
+              "resistant",
+            ];
+            qry = {
+              query: "INSERT INTO hims_f_micro_result(??) VALUES ?",
+              values: inputParam.microAntbiotic,
+              includeValues: insertedValues,
+              extraValues: {
+                order_id: inputParam.hims_f_lab_order_id,
+              },
+              bulkInsertOrUpdate: true,
+              printQuery: true,
+            };
+          }
+        }
+        entered_by = req.userIdentity.algaeh_d_app_user_id;
+        strQuery +=
+          " ,status = 'CL', entered_by='" +
+          req.userIdentity.algaeh_d_app_user_id +
+          "', entered_date = '" +
+          moment().format("YYYY-MM-DD HH:mm") +
+          "' ";
+      } else if (inputParam.status == "CF") {
+        if (inputParam.bacteria_type === "G") {
           for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
             updateQuery += mysql.format(
               "UPDATE `hims_f_micro_result` SET susceptible=?,\
-            `intermediate`=?,`resistant`=? where hims_f_micro_result_id=?;",
+          `intermediate`=?,`resistant`=? where hims_f_micro_result_id=?;",
               [
                 inputParam.microAntbiotic[i].susceptible,
                 inputParam.microAntbiotic[i].intermediate,
@@ -1914,48 +1962,7 @@ export default {
             query: updateQuery,
             printQuery: true,
           };
-        } else {
-          let insertedValues = [
-            "antibiotic_id",
-            "susceptible",
-            "intermediate",
-            "resistant",
-          ];
-          qry = {
-            query: "INSERT INTO hims_f_micro_result(??) VALUES ?",
-            values: inputParam.microAntbiotic,
-            includeValues: insertedValues,
-            extraValues: {
-              order_id: inputParam.hims_f_lab_order_id,
-            },
-            bulkInsertOrUpdate: true,
-            printQuery: true,
-          };
         }
-        entered_by = req.userIdentity.algaeh_d_app_user_id;
-        strQuery +=
-          " ,status = 'CL', entered_by='" +
-          req.userIdentity.algaeh_d_app_user_id +
-          "', entered_date = '" +
-          moment().format("YYYY-MM-DD HH:mm") +
-          "' ";
-      } else if (inputParam.status == "CF") {
-        for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
-          updateQuery += mysql.format(
-            "UPDATE `hims_f_micro_result` SET susceptible=?,\
-          `intermediate`=?,`resistant`=? where hims_f_micro_result_id=?;",
-            [
-              inputParam.microAntbiotic[i].susceptible,
-              inputParam.microAntbiotic[i].intermediate,
-              inputParam.microAntbiotic[i].resistant,
-              inputParam.microAntbiotic[i].hims_f_micro_result_id,
-            ]
-          );
-        }
-        qry = {
-          query: updateQuery,
-          printQuery: true,
-        };
         confirmed_by = req.userIdentity.algaeh_d_app_user_id;
         strQuery +=
           " ,status = 'CF', confirmed_by='" +
@@ -1964,22 +1971,24 @@ export default {
           moment().format("YYYY-MM-DD HH:mm") +
           "'  ";
       } else if (inputParam.status == "V") {
-        for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
-          updateQuery += mysql.format(
-            "UPDATE `hims_f_micro_result` SET susceptible=?,\
+        if (inputParam.bacteria_type === "G") {
+          for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
+            updateQuery += mysql.format(
+              "UPDATE `hims_f_micro_result` SET susceptible=?,\
           `intermediate`=?,`resistant`=? where hims_f_micro_result_id=?;",
-            [
-              inputParam.microAntbiotic[i].susceptible,
-              inputParam.microAntbiotic[i].intermediate,
-              inputParam.microAntbiotic[i].resistant,
-              inputParam.microAntbiotic[i].hims_f_micro_result_id,
-            ]
-          );
+              [
+                inputParam.microAntbiotic[i].susceptible,
+                inputParam.microAntbiotic[i].intermediate,
+                inputParam.microAntbiotic[i].resistant,
+                inputParam.microAntbiotic[i].hims_f_micro_result_id,
+              ]
+            );
+          }
+          qry = {
+            query: updateQuery,
+            printQuery: true,
+          };
         }
-        qry = {
-          query: updateQuery,
-          printQuery: true,
-        };
         validated_by = req.userIdentity.algaeh_d_app_user_id;
         strQuery +=
           " ,status = 'V', validated_by='" +
@@ -1989,12 +1998,12 @@ export default {
           "'  ";
       }
 
-      utilities.logger().log("qry: ", qry);
+      console.log("qry: ", qry);
 
       _mysql
         .executeQueryWithTransaction(qry)
         .then((results) => {
-          utilities.logger().log("results: ", results);
+          console.log("results: ", results);
           if (results != null) {
             _mysql
               .executeQuery({
@@ -2016,7 +2025,7 @@ export default {
                 printQuery: true,
               })
               .then((update_lab_order) => {
-                utilities.logger().log("update_lab_order: ", update_lab_order);
+                console.log("update_lab_order: ", update_lab_order);
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = {
