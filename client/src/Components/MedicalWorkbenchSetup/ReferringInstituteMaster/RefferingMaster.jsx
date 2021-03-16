@@ -422,7 +422,7 @@ export default function ReferringMaster() {
                       filterable: true,
                       sortable: true,
                       displayTemplate: (row) => {
-                        return `${row.tel_code}${row.contact_number}`;
+                        return `${row.tel_code}-${row.contact_number}`;
                       },
                       editorTemplate: (row) => {
                         return (
