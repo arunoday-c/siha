@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
+import Excel from "exceljs/dist/es5/exceljs.browser";
 // import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
@@ -2723,6 +2724,216 @@ export default {
       };
       next();
     }
+  },
+  getAccountsExport: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const input = req.query;
+
+      //-------------------start
+      _mysql
+        .executeQuery({
+          query: `select  ledger_code, child_name,root_id, now() as payment_date, finance_account_child_id,
+                CASE WHEN finance_voucher_id >0 THEN payment_type WHEN AH.root_id='1' THEN 'DR' else 'CR' END as payment_type,
+                CASE WHEN finance_voucher_id >0 and payment_type = 'DR' THEN debit_amount WHEN finance_voucher_id >0 and payment_type = 'CR' THEN credit_amount else '0.00' END as opening_balance,finance_voucher_id
+                from finance_account_child AC 
+                inner join finance_account_head AH on AH.finance_account_head_id = AC.head_id 
+                left join finance_voucher_details VD on VD.child_id = AC.finance_account_child_id 
+                where root_id in (1,2,3)  group by finance_account_child_id;`,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+
+          if (result.length > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              message: "No Record Found",
+              invalid_input: true,
+            };
+            next();
+            return;
+          }
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+  excelAccountsExport(req, res, next) {
+    new Promise((resolve, reject) => {
+      // const selected_type = req.query.selected_type;
+
+      const sheetName = "Accounts";
+
+      try {
+        (async () => {
+          //Create instance of excel
+
+          var workbook = new Excel.Workbook();
+          workbook.creator = "Algaeh technologies private limited";
+          workbook.lastModifiedBy = "Accounts Opening Balance";
+          workbook.created = new Date();
+          workbook.modified = new Date();
+          // Set workbook dates to 1904 date system
+          // workbook.properties.date1904 = true;
+
+          //Work worksheet creation
+          var worksheet = workbook.addWorksheet(sheetName, {
+            properties: { tabColor: { argb: "FFC0000" } },
+          });
+          //Adding columns
+          worksheet.columns = [
+            {
+              header: "Account Code",
+              key: "ledger_code",
+              width: 20,
+              horizontal: "center",
+            },
+            {
+              header: "Account Name",
+              key: "child_name",
+              width: 20,
+              horizontal: "center",
+            },
+            {
+              header: "Payment Date",
+              key: "payment_date",
+              width: 20,
+              horizontal: "center",
+            },
+            {
+              header: "Payment Type",
+              key: "payment_type",
+              width: 20,
+              horizontal: "center",
+            },
+            {
+              header: "Amount",
+              key: "opening_balance",
+              width: 20,
+              horizontal: "center",
+            },
+            {
+              header: "Voucher Id",
+              key: "finance_voucher_id",
+              width: 20,
+              horizontal: "center",
+            },
+            {
+              header: "Root Id",
+              key: "root_id",
+              width: 0,
+            },
+          ];
+
+          //Differencate headers
+          worksheet.getRow(1).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "000000" },
+          };
+          worksheet.getRow(1).font = {
+            name: "calibri",
+            family: 4,
+            size: 12,
+            bold: true,
+            color: { argb: "FFFFFF" },
+          };
+          worksheet.getRow(1).alignment = {
+            vertical: "middle",
+            horizontal: "center",
+          };
+
+          //To freez first column
+          worksheet.views = [
+            {
+              state: "frozen",
+              xSplit: 2,
+              ySplit: 0,
+              activeCell: "A1",
+              topLeftCell: "C1",
+            },
+            {
+              state: "frozen",
+              xSplit: 0,
+              ySplit: 1,
+              activeCell: "A1",
+            },
+          ];
+
+          const data = req.records; //require("../../testDB/data.json");
+
+          // Add a couple of Rows by key-value, after the last current row, using the column keys
+          for (let i = 0; i < data.length; i++) {
+            const rest = data[i];
+
+            let account_details = {
+              ledger_code: rest.ledger_code,
+              child_name: rest.child_name,
+              root_id: rest.root_id,
+              payment_date: rest.payment_date,
+              payment_type: rest.payment_type,
+              opening_balance: rest.opening_balance,
+              finance_voucher_id: rest.finance_voucher_id,
+            };
+
+            worksheet.addRow(account_details);
+          }
+
+          worksheet.eachRow(function (row, rowNumber) {
+            if (rowNumber === 1) {
+              row.protection = { locked: true };
+            } else {
+              row.protection = { locked: false };
+              row.eachCell((cell, colNumber) => {
+                let value = cell.value;
+
+                cell.alignment = {
+                  vertical: "middle",
+                  horizontal: "center",
+                };
+                if (
+                  colNumber === 1 ||
+                  colNumber === 2 ||
+                  colNumber === 3 ||
+                  colNumber === 4
+                ) {
+                  cell.protection = { locked: true };
+                }
+              });
+            }
+          });
+
+          // worksheet.addRow(["", selected_type]);
+          worksheet.lastRow.hidden = true;
+          await worksheet.protect("algaeh@2019", {
+            selectLockedCells: true,
+            selectUnlockedCells: true,
+          });
+
+          res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          );
+          res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=" + "Report.xlsx"
+          );
+          workbook.xlsx.write(res).then(function (data) {
+            res.end();
+          });
+        })();
+      } catch (e) {
+        next(e);
+      }
+    });
   },
 };
 //created by :IRFAN to build tree hierarchy
