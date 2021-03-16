@@ -1199,7 +1199,7 @@
         "label": "Sales Order Number"
       },
       {
-        "fieldName": "customer_name",
+        "fieldName": "C.customer_name",
         "label": "Customer Name"
       }
     ],
@@ -1215,7 +1215,7 @@
       {
         "fieldName": "sales_invoice_mode",
         "label": "Invoice Mode"
-      },      
+      },
       {
         "fieldName": "customer_name",
         "label": "Customer Name"
