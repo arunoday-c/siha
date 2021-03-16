@@ -11,12 +11,16 @@ import Options from "../../../../Options.json";
 // import Summary from "../Summary/Summary";
 import { Dimmer, Loader } from "semantic-ui-react";
 import {
+  // AlgaehAutoComplete,
   // AlgaehDataGrid,
-  // AlgaehModal,
+  AlgaehModal,
   AlgaehDataGrid,
+  Menu,
+  Dropdown,
   AlgaehLabel,
 } from "algaeh-react-components";
 import { ViewAttachmentsModal } from "./viewAttachmentsModal";
+import ReferralDataGrid from "../../../PatientProfile/Plan/Referal/ReferralDataGrid";
 // import { newAlgaehApi } from "../../../../hooks";
 
 export default function OPEncounterDetails({
@@ -60,6 +64,8 @@ export default function OPEncounterDetails({
   const [patientProcedures, setPatientProcedures] = useState([]);
   const [patientVital, setPatientVital] = useState([]);
   const [loaderChiefComp, setLoaderChiefComp] = useState(false);
+  // const [referralData, setReferralData] = useState([]);
+  const [referringTo, setReferringTo] = useState(false);
   const [
     loaderSignificantSigns_Others,
     setLoaderSignificantSigns_Others,
@@ -745,6 +751,9 @@ export default function OPEncounterDetails({
   const showAttachments = () => {
     setattachmentOpen((pre) => !pre);
   };
+  const showReferringTo = () => {
+    setReferringTo((pre) => !pre);
+  };
   const showAttachmentsOfServices = (row, attachment_type) => {
     setOpenAttachmentsModal((pre) => !pre);
     setCurrentRow({ ...row, attach_type: attachment_type });
@@ -857,6 +866,62 @@ export default function OPEncounterDetails({
   //       });
   //     });
   // };
+  // const handleMenuClick = (e) => {
+  //   switch (e.key) {
+  //     case "1":
+  //       showAttachments();
+
+  //       break;
+  //     case "2":
+  //       printPatSummary();
+  //       break;
+  //     case "3":
+  //       printSickleave();
+  //       break;
+  //     case "4":
+  //       printPrescription();
+  //       break;
+  //     case "5":
+  //       break;
+  //     // case "":
+  //     //   age = age_data["years"];
+  //     //   break;
+  //   }
+  // };
+  const menu = (
+    <Menu>
+      <Menu.Item key="1">
+        <i class="fas fa-user" on onClick={showAttachments}>
+          {" "}
+          view Patient Attachments
+        </i>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <i class="fas fa-print" onClick={printPatSummary}>
+          {" "}
+          Print Summary Report
+        </i>
+      </Menu.Item>
+      <Menu.Item key="3">
+        <i class="fas fa-print" onClick={printSickleave}>
+          {" "}
+          Print Sick Leave
+        </i>{" "}
+      </Menu.Item>
+      <Menu.Item key="4">
+        <i class="fas fa-print" onClick={printPrescription}>
+          {" "}
+          Print Prescription
+        </i>{" "}
+      </Menu.Item>
+      <Menu.Item key="5">
+        <i class="fas fa-print" onClick={showReferringTo}>
+          {" "}
+          Print Recommendation
+        </i>
+      </Menu.Item>
+    </Menu>
+  );
   return (
     <div className="col componentRenderArea" style={{ margin: 0 }}>
       <PatientAttachments
@@ -880,13 +945,40 @@ export default function OPEncounterDetails({
                               ).format("DD-MM-YYYY HH:mm A")
                             : "----------"} */}
         </div>
-
+        {referringTo ? (
+          <AlgaehModal
+            title={"Referring To"}
+            visible={referringTo}
+            mask={true}
+            maskClosable={true}
+            onCancel={showReferringTo}
+            // onOk={() => {
+            //   saveDocument(
+            //     fileList,
+            //     patientData?.patient_code,
+            //     patientData?.hims_d_patient_id
+            //   );
+            // }}
+            // okButtonProps={{
+            //   disabled: !fileList.length,
+            //   loading: loading,
+            // }}
+            // okText="Upload"
+            // class={this.state.lang_sets}
+          >
+            <ReferralDataGrid patient_id={patient_id} />
+            {/* </div> */}
+          </AlgaehModal>
+        ) : null}
         <div className="portlet-body encounterDetailCntr">
           <div className="row">
             <div className="col-12" style={{ marginBottom: 5 }}>
               {generalInfo !== undefined ? (
                 <div style={{ float: "right" }}>
-                  <button
+                  <Dropdown overlay={menu}>
+                    <button>Print Patient Documents</button>
+                  </Dropdown>
+                  {/* <button
                     className="btn btn-default"
                     style={{ marginRight: 10 }}
                     onClick={showAttachments}
@@ -914,6 +1006,13 @@ export default function OPEncounterDetails({
                   >
                     Print Prescription
                   </button>
+                  <button
+                    className="btn btn-default"
+                    style={{ marginRight: 10 }}
+                    // onClick={printPrescription}
+                  >
+                    Print Recommendation
+                  </button> */}
                 </div>
               ) : null}
             </div>
