@@ -37,6 +37,7 @@ import AlgaehReport from "../../Wrapper/printReports";
 import {
   // AlgaehSecurityElement,
   AlgaehSecurityComponent,
+  AlgaehButton,
 } from "algaeh-react-components";
 
 class ResultEntry extends Component {
@@ -56,6 +57,7 @@ class ResultEntry extends Component {
       validate_by_name: "",
       edit_range: false,
       records_test_formula: [],
+      loading: false,
     };
   }
 
@@ -194,7 +196,16 @@ class ResultEntry extends Component {
       return moment(value).format(Options.dateFormat);
     }
   }
-
+  onClickPrintHandle() {
+    this.setState({ loading: true });
+    generateLabResultReport(this.state)
+      .then(() => {
+        this.setState({ loading: false });
+      })
+      .catch(() => {
+        this.setState({ loading: false });
+      });
+  }
   render() {
     // let display =
     //   this.props.providers === undefined
@@ -1047,13 +1058,21 @@ class ResultEntry extends Component {
                 <div className="col-lg-6 leftBtnGroup">
                   {" "}
                   <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
-                    <button
+                    <AlgaehButton
                       className="btn btn-default"
-                      onClick={generateLabResultReport.bind(this, this.state)}
+                      loading={this.state.loading}
+                      onClick={this.onClickPrintHandle.bind(this)}
                       disabled={this.state.status === "V" ? false : true}
                     >
                       Print
-                    </button>
+                    </AlgaehButton>
+                    {/* <button
+                      className="btn btn-default"
+                      onClick={this.onClickPrintHandle.bind(this)}
+                      disabled={this.state.status === "V" ? false : true}
+                    >
+                      Print
+                    </button> */}
                   </AlgaehSecurityComponent>
                   <AlgaehSecurityComponent componentCode="EDIT_RANGE_LAB_RES">
                     <button
