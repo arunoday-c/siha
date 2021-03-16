@@ -29,6 +29,7 @@ class Referal extends PureComponent {
       reason: "",
       radio: true,
       external_doc_name: "",
+      changed: false,
       // referralData: [],
     };
   }
@@ -299,6 +300,7 @@ class Referal extends PureComponent {
             <ReferralDataGrid
               // referralData={this.state.referralData}
               patient_id={current_patient}
+              changed={this.state.changed}
             />
           }
         </div>

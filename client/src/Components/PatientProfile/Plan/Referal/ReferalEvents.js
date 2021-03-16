@@ -62,10 +62,11 @@ const addReferal = ($this) => {
                 reason: "",
                 external_doc_name: "",
                 doctor_department: "",
-              },
-              () => {
-                $this.getPatientReferralDoc();
+                changed: true,
               }
+              // () => {
+              //   $this.getPatientReferralDoc();
+              // }
             );
           },
           onFailure: (error) => {

@@ -4,9 +4,16 @@ import { AlgaehLabel, AlgaehDataGrid } from "algaeh-react-components";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
-function ReferralDataGrid({ patient_id }) {
+function ReferralDataGrid({ patient_id, changed }) {
+  debugger;
   const [referralData, setReferralData] = useState([]);
   useEffect(() => {
+    getPatientReferralDoc();
+  }, []);
+  useEffect(() => {
+    getPatientReferralDoc();
+  }, [changed === true]);
+  const getPatientReferralDoc = () => {
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientReferralDoc",
       data: { patient_id: patient_id },
@@ -25,7 +32,7 @@ function ReferralDataGrid({ patient_id }) {
         });
       },
     });
-  }, []);
+  };
   const printReferral = (row) => {
     algaehApiCall({
       uri: "/report",
