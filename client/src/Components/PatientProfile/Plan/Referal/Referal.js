@@ -9,13 +9,14 @@ import {
   texthandle,
   addReferal,
   radioChange,
-  printReferral,
+  // printReferral,
 } from "./ReferalEvents";
-import { AlgaehLabel, AlgaehDataGrid } from "algaeh-react-components";
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+// import { AlgaehLabel, AlgaehDataGrid } from "algaeh-react-components";
+// import { successfulMessage } from "../../../../utils/GlobalFunctions";
+// import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import Options from "../../../../Options.json";
 import moment from "moment";
+import ReferralDataGrid from "./ReferralDataGrid";
 class Referal extends PureComponent {
   constructor(props) {
     super(props);
@@ -28,12 +29,12 @@ class Referal extends PureComponent {
       reason: "",
       radio: true,
       external_doc_name: "",
-      referralData: [],
+      // referralData: [],
     };
   }
-  componentDidMount() {
-    this.getPatientReferralDoc();
-  }
+  // componentDidMount() {
+  //   this.getPatientReferralDoc();
+  // }
   doctorDepartmentChangeHandler(item) {
     this.setState({
       sub_department_id: item.hims_d_sub_department_id,
@@ -53,30 +54,31 @@ class Referal extends PureComponent {
       return moment(value).format(Options.dateFormat);
     }
   }
-  getPatientReferralDoc() {
-    const { current_patient } = Window.global;
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientReferralDoc",
-      data: { patient_id: current_patient },
-      method: "GET",
-      onSuccess: (response) => {
-        if (response.data.success) {
-          this.setState({
-            referralData: response.data.records,
-          });
-          return;
-        }
-      },
-      onFailure: (error) => {
-        successfulMessage({
-          message: error.message,
-          title: "Error",
-          icon: "error",
-        });
-      },
-    });
-  }
+  // getPatientReferralDoc() {
+  //   const { current_patient } = Window.global;
+  //   algaehApiCall({
+  //     uri: "/doctorsWorkBench/getPatientReferralDoc",
+  //     data: { patient_id: current_patient },
+  //     method: "GET",
+  //     onSuccess: (response) => {
+  //       if (response.data.success) {
+  //         this.setState({
+  //           referralData: response.data.records,
+  //         });
+  //         return;
+  //       }
+  //     },
+  //     onFailure: (error) => {
+  //       successfulMessage({
+  //         message: error.message,
+  //         title: "Error",
+  //         icon: "error",
+  //       });
+  //     },
+  //   });
+  // }
   render() {
+    const { current_patient } = Window.global;
     return (
       <div className="hptl-referal-doctor-form" data-validate="referalValidate">
         <div className="row">
@@ -220,7 +222,7 @@ class Referal extends PureComponent {
           </div>
         </div>
         <div className="portlet-body ReferalTable">
-          <AlgaehDataGrid
+          {/* <AlgaehDataGrid
             columns={[
               {
                 fieldName: "actions",
@@ -292,7 +294,13 @@ class Referal extends PureComponent {
             rowUnique=""
             pagination={true}
             isFilterable={true}
-          />
+          /> */}
+          {
+            <ReferralDataGrid
+              // referralData={this.state.referralData}
+              patient_id={current_patient}
+            />
+          }
         </div>
       </div>
     );
