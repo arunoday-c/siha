@@ -428,14 +428,14 @@ export default function ReferringMaster() {
                         return (
                           <Input.Group compact>
                             <Select
-                              value={row.tel_code}
+                              defaultValue={row.tel_code}
                               onChange={(e, value) => {
                                 row.tel_code = e;
                               }}
                               name="tel_code"
                               virtual={true}
                               // disabled={disabled}
-                              //   updateInternally={true}
+                              // updateInternally={true}
                               showSearch
                               filterOption={(input, option) => {
                                 return (
