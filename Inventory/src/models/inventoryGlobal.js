@@ -458,7 +458,8 @@ export default {
       let intValues = [];
       let strAppend = "",
         strOrder = "",
-        strGroup = "";
+        strGroup = "",
+        zeroQuantity = "";
 
       if (req.query.inventory_location_id != null) {
         strOrder = ` and location_id=${req.query.inventory_location_id} `;
@@ -473,6 +474,11 @@ export default {
         strAppend += " and IL.item_id=?";
         intValues.push(req.query.item_id);
         strGroup = " group by inventory_location_id";
+      }
+      if (req.query.zeroStock === "Y") {
+        zeroQuantity = "and qtyhand<= 0";
+      } else {
+        zeroQuantity = "and qtyhand > 0";
       }
 
       _mysql
@@ -489,7 +495,9 @@ export default {
             left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id " +
             strOrder +
             " left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id \
-            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand> 0 and item_status ='A' " +
+            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) " +
+            zeroQuantity +
+            " and item_status ='A' " +
             strAppend +
             strGroup +
             " order by date(expirydt)",

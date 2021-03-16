@@ -62,10 +62,11 @@ const addReferal = ($this) => {
                 reason: "",
                 external_doc_name: "",
                 doctor_department: "",
-              },
-              () => {
-                $this.getPatientReferralDoc();
+                changed: true,
               }
+              // () => {
+              //   $this.getPatientReferralDoc();
+              // }
             );
           },
           onFailure: (error) => {
@@ -99,56 +100,56 @@ const radioChange = ($this, e) => {
   });
 };
 
-const printReferral = ($this, row) => {
-  console.log(row);
-  algaehApiCall({
-    uri: "/report",
-    method: "GET",
-    module: "reports",
-    headers: {
-      Accept: "blob",
-    },
-    others: { responseType: "blob" },
-    data: {
-      report: {
-        reportName: "doctorReferralReport",
-        reportParams: [
-          {
-            name: "hims_f_patient_referral_id",
-            value: row.hims_f_patient_referral_id,
-          },
-          {
-            name: "patient_id",
-            value: row.patient_id,
-          },
-          {
-            name: "episode_id",
-            value: row.episode_id,
-          },
-          {
-            name: "visit_id",
-            value: row.visit_id,
-          },
-        ],
-        outputFileType: "PDF",
-      },
-    },
-    onSuccess: (res) => {
-      // const url = URL.createObjectURL(res.data);
-      // let myWindow = window.open(
-      //   "{{ product.metafields.google.custom_label_0 }}",
-      //   "_blank"
-      // );
+// const printReferral = ($this, row) => {
+//   console.log(row);
+//   algaehApiCall({
+//     uri: "/report",
+//     method: "GET",
+//     module: "reports",
+//     headers: {
+//       Accept: "blob",
+//     },
+//     others: { responseType: "blob" },
+//     data: {
+//       report: {
+//         reportName: "doctorReferralReport",
+//         reportParams: [
+//           {
+//             name: "hims_f_patient_referral_id",
+//             value: row.hims_f_patient_referral_id,
+//           },
+//           {
+//             name: "patient_id",
+//             value: row.patient_id,
+//           },
+//           {
+//             name: "episode_id",
+//             value: row.episode_id,
+//           },
+//           {
+//             name: "visit_id",
+//             value: row.visit_id,
+//           },
+//         ],
+//         outputFileType: "PDF",
+//       },
+//     },
+//     onSuccess: (res) => {
+//       // const url = URL.createObjectURL(res.data);
+//       // let myWindow = window.open(
+//       //   "{{ product.metafields.google.custom_label_0 }}",
+//       //   "_blank"
+//       // );
 
-      // myWindow.document.write(
-      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
-      // );
-      const urlBlob = URL.createObjectURL(res.data);
-      // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Doctor Referral Letter`;
-      window.open(origin);
-    },
-  });
-};
+//       // myWindow.document.write(
+//       //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+//       // );
+//       const urlBlob = URL.createObjectURL(res.data);
+//       // const documentName="Salary Slip"
+//       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Doctor Referral Letter`;
+//       window.open(origin);
+//     },
+//   });
+// };
 
-export { texthandle, addReferal, radioChange, printReferral };
+export { texthandle, addReferal, radioChange };

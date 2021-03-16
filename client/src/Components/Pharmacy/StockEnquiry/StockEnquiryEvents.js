@@ -51,7 +51,6 @@ const getBatchWiseData = ($this, row) => {
 
 const getItemLocationStock = ($this) => {
   if ($this.state.location_id !== null || $this.state.item_id !== null) {
-    debugger;
     let inputObj = { reorder_qty: $this.state.reorder_qty };
 
     if ($this.state.location_id !== null) {
@@ -61,7 +60,9 @@ const getItemLocationStock = ($this) => {
     if ($this.state.item_id !== null) {
       inputObj.item_id = $this.state.item_id;
     }
-
+    if ($this.state.zeroStock === "Y") {
+      inputObj.zeroStock = $this.state.zeroStock;
+    }
     algaehApiCall({
       uri: "/pharmacyGlobal/getItemLocationStock",
       module: "pharmacy",

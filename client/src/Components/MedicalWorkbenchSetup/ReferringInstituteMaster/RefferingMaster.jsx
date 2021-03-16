@@ -189,8 +189,8 @@ export default function ReferringMaster() {
   );
   return (
     <div className="lab_section">
-      <div className="row inner-top-search margin-bottom-15">
-        <form onSubmit={handleSubmit(addReferring)}>
+      <form onSubmit={handleSubmit(addReferring)}>
+        <div className="row inner-top-search margin-bottom-15">
           <Controller
             name="institute_name"
             control={control}
@@ -212,8 +212,9 @@ export default function ReferringMaster() {
               />
             )}
           />
+
           {!!countries?.length && (
-            <div className="col-10 algaehInputGroup">
+            <div className="col-3 algaehInputGroup mandatory">
               <AlgaehLabel
                 label={{
                   fieldName: "contact_number",
@@ -293,7 +294,7 @@ export default function ReferringMaster() {
             rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehFormGroup
-                div={{ className: "col form-group mandatory" }}
+                div={{ className: "col-3 form-group mandatory" }}
                 error={errors}
                 label={{
                   forceLabel: "Incharge Name",
@@ -315,9 +316,9 @@ export default function ReferringMaster() {
             rules={{ required: "Select bed" }}
             render={({ value, onChange }) => (
               <AlgaehAutoComplete
-                div={{ className: "col form-group mandatory" }}
+                div={{ className: "col-1 form-group mandatory" }}
                 label={{
-                  forceLabel: "Institute Status",
+                  forceLabel: "Status",
                   isImp: true,
                 }}
                 error={errors}
@@ -347,11 +348,9 @@ export default function ReferringMaster() {
             )}
           />
 
-          <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
-            <button type="submit" className="btn btn-primary">
-              Add to List
-            </button>
+          <div className="col-2 align-middle" style={{ paddingTop: 19 }}>
             <button
+              className="btn btn-default"
               type="button"
               onClick={() => {
                 return (
@@ -372,10 +371,13 @@ export default function ReferringMaster() {
               }}
             >
               Clear
+            </button>{" "}
+            <button type="submit" className="btn btn-primary">
+              Add to List
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
 
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-body">
@@ -422,20 +424,20 @@ export default function ReferringMaster() {
                       filterable: true,
                       sortable: true,
                       displayTemplate: (row) => {
-                        return `${row.tel_code}${row.contact_number}`;
+                        return `${row.tel_code}-${row.contact_number}`;
                       },
                       editorTemplate: (row) => {
                         return (
                           <Input.Group compact>
                             <Select
-                              value={row.tel_code}
+                              defaultValue={row.tel_code}
                               onChange={(e, value) => {
                                 row.tel_code = e;
                               }}
                               name="tel_code"
                               virtual={true}
                               // disabled={disabled}
-                              //   updateInternally={true}
+                              // updateInternally={true}
                               showSearch
                               filterOption={(input, option) => {
                                 return (
