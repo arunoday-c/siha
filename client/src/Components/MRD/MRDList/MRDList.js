@@ -4,13 +4,14 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehLabel,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import algaehLoader from "../../Wrapper/fullPageLoader";
 import moment from "moment";
 import { setGlobal } from "../../../utils/GlobalFunctions";
+import { AlgaehDataGrid } from "algaeh-react-components";
 
 class MRDList extends Component {
   constructor(props) {
@@ -247,7 +248,8 @@ class MRDList extends Component {
                           label={{ forceLabel: "Registration Date" }}
                         />
                       ),
-
+                      filterable: true,
+                      sortable: true,
                       others: {
                         resizable: false,
                         style: { textAlign: "center" },
@@ -258,7 +260,8 @@ class MRDList extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Primary ID No." }} />
                       ),
-
+                      sortable: true,
+                      filterable: true,
                       others: { resizable: false },
                     },
                     {
@@ -267,6 +270,8 @@ class MRDList extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Patient code" }} />
                       ),
+                      sortable: true,
+                      filterable: true,
                       displayTemplate: (row) => {
                         return (
                           <span
@@ -305,7 +310,8 @@ class MRDList extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
                       ),
-
+                      filterable: true,
+                      sortable: true,
                       others: {
                         resizable: false,
                         style: { textAlign: "left" },
@@ -314,7 +320,19 @@ class MRDList extends Component {
                     {
                       fieldName: "gender",
                       label: <AlgaehLabel label={{ forceLabel: "Gender" }} />,
-
+                      filterable: true,
+                      sortable: true,
+                      // filterType: "choices",
+                      // choices: [
+                      //   {
+                      //     name: "M",
+                      //     value: "Male",
+                      //   },
+                      //   {
+                      //     name: "F",
+                      //     value: "N",
+                      //   },
+                      // ],
                       others: {
                         resizable: false,
                         style: { textAlign: "center" },
@@ -325,7 +343,8 @@ class MRDList extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Date of Birth" }} />
                       ),
-
+                      filterable: true,
+                      sortable: true,
                       others: {
                         resizable: false,
                         style: { textAlign: "center" },
@@ -334,7 +353,8 @@ class MRDList extends Component {
                     {
                       fieldName: "age",
                       label: <AlgaehLabel label={{ forceLabel: "Age" }} />,
-
+                      filterable: true,
+                      sortable: true,
                       others: {
                         resizable: false,
                         style: { textAlign: "center" },
@@ -345,7 +365,8 @@ class MRDList extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Phone Number" }} />
                       ),
-
+                      filterable: true,
+                      sortable: true,
                       others: {
                         resizable: false,
                         style: { textAlign: "center" },
@@ -353,12 +374,14 @@ class MRDList extends Component {
                     },
                   ]}
                   keyId="mrdListGrid"
-                  dataSource={{
-                    data: this.state.patientData,
-                  }}
-                  filter={true}
-                  isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 20 }}
+                  // dataSource={{
+                  data={this.state.patientData}
+                  // }}
+                  pagination={true}
+                  isFilterable={true}
+                  // filter={true}
+                  // isEditable={false}
+                  // paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>
             </div>

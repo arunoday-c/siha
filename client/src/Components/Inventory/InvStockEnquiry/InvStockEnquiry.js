@@ -53,6 +53,7 @@ class InvStockEnquiry extends Component {
       item_description: null,
       total_quantity: 0,
       reorder_qty: "N",
+      zeroStock: "N",
       trans_ack_required: "N",
       trans_required: false,
       req_warehouse: "N",
@@ -213,6 +214,27 @@ class InvStockEnquiry extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "Re Order Items",
+                        }}
+                      />
+                    </span>
+                  </label>
+                </div>
+                <div
+                  className="col customCheckbox"
+                  style={{ marginTop: 23, border: "none" }}
+                >
+                  <label className="checkbox inline">
+                    <input
+                      type="checkbox"
+                      name="zeroStock"
+                      value={this.state.zeroStock}
+                      checked={this.state.zeroStock === "Y" ? true : false}
+                      onChange={checkBoxEvent.bind(this, this)}
+                    />
+                    <span>
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Zero Item Stock",
                         }}
                       />
                     </span>

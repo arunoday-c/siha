@@ -514,7 +514,8 @@ export default {
       let intValues = [];
       let strAppend = "",
         strOrder = "",
-        strGroup = "";
+        strGroup = "",
+        zeroQuantity = "";
       if (req.query.item_id != null) {
         strAppend += " and IL.item_id=?";
         intValues.push(req.query.item_id);
@@ -528,7 +529,11 @@ export default {
         intValues.push(req.query.pharmacy_location_id);
         strGroup = " group by item_id";
       }
-
+      if (req.query.zeroStock === "Y") {
+        zeroQuantity = "and qtyhand<= 0";
+      } else {
+        zeroQuantity = "and qtyhand > 0";
+      }
       _mysql
         .executeQuery({
           query:
@@ -543,7 +548,9 @@ export default {
             left join hims_d_pharmacy_uom IU on IU.hims_d_pharmacy_uom_id = IM.stocking_uom_id \
             left  join hims_d_phar_location_reorder PLR on PLR.item_id=IL.item_id " +
             strOrder +
-            " where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) and qtyhand>0 and IM.item_status ='A' " +
+            " where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) " +
+            zeroQuantity +
+            " and IM.item_status ='A' " +
             strAppend +
             strGroup +
             " order by date(expirydt)",

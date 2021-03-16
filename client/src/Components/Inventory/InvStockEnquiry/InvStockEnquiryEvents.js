@@ -115,7 +115,9 @@ const getItemLocationStock = ($this) => {
     if ($this.state.item_id !== null) {
       inputObj.item_id = $this.state.item_id;
     }
-
+    if ($this.state.zeroStock === "Y") {
+      inputObj.zeroStock = $this.state.zeroStock;
+    }
     algaehApiCall({
       uri: "/inventoryGlobal/getItemLocationStock",
       module: "inventory",
