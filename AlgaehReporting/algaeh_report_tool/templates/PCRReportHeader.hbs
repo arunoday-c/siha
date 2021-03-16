@@ -11,26 +11,28 @@
 
     .col-left {
         float: left;
-        width: 25%;
+        width: 70px;
         text-align: left;
-        background-color: red;
     }
     .col-right {
         float: right;
-        width: 25%;
+        width: 130px;
         text-align: right;
-        background-color: green;
     }
 
     .col-center {
-        width: 50%;
-        text-align: center;
+        width: calc(100% - 300px);
+        text-align:center;
         float: none;
         margin: 0 auto;
     }
+    .col-center b{
+        font-size: 15px!important;
+        line-height: 20px;
+    }
 
     .pcrLogo1 img {
-        height: 65px;
+        height: 55px;
         border:none;
         float: left;
         text-align: left;
@@ -82,13 +84,13 @@
 
     <div class="reportHeaderCntr">
         <div class="col-left">
-          <span class="pcrLogo1"><img src="{{logoUrl 'MOH' identity }}" /></span>
+          <span class="pcrLogo1"><img src="{{logoUrl 'PCR_ORG' identity }}" /></span>
         </div>
         <div class="col-right">
             <span class="pcrLogo2"><img src="{{logoUrl 'PCR' identity }}" /></span>
         </div>
-        <div class="col-center">
-            <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
+        <div class="col-center"> <p><b>{{legal_name}}</b></p>
+           <p><b>{{organization_name}}</b></p>
            
         </div>
         <div class="headerFooterStyle">
