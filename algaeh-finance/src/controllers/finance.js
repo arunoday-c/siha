@@ -11,6 +11,7 @@ import {
 } from "../models/finance_year_ending";
 //Add voucher for YearEnd
 import voucher from "../models/voucher";
+import { generateExcel } from "../excels/index";
 const { addVoucher } = voucher;
 const {
   getAccountHeads,
@@ -29,6 +30,8 @@ const {
   revertDayEnd,
   getFinanceAccountMapingSingle,
   SaveNarration,
+  excelAccountsExport,
+  getAccountsExport,
 } = finance;
 
 export default () => {
@@ -389,5 +392,119 @@ export default () => {
       records: req.records,
     });
   });
+
+  // api.get(
+  //   "/getAccountsExport",
+  //   getAccountsExport,
+
+  //   (req, res, next) => {
+  //     if (req.records.invalid_input == true) {
+  //       res
+  //         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+  //         .json({
+  //           success: false,
+  //           message: req.records.message,
+  //         })
+  //         .end();
+  //     } else {
+  //       const { excel } = req.query;
+  //       if (excel === "true") {
+  //         req.reportName = "Accounts Opening Balance";
+  //         req.sheetName = "Accounts Opening Balance";
+  //         req.columns = [
+  //           {
+  //             header: "Account Code",
+  //             key: "ledger_code",
+  //             width: 20,
+  //             horizontal: "center",
+  //           },
+  //           {
+  //             header: "Account Name",
+  //             key: "child_name",
+  //             width: 20,
+  //             horizontal: "center",
+  //           },
+  //           {
+  //             header: "Payment Date",
+  //             key: "payment_date",
+  //             width: 20,
+  //             horizontal: "center",
+  //           },
+  //           {
+  //             header: "Payment Type",
+  //             key: "payment_type",
+  //             width: 20,
+  //             horizontal: "center",
+  //           },
+  //           {
+  //             header: "Amount",
+  //             key: "opening_balance",
+  //             width: 20,
+  //             horizontal: "center",
+  //           },
+  //           {
+  //             header: "Voucher Id",
+  //             key: "finance_voucher_id",
+  //             width: 20,
+  //             horizontal: "center",
+  //           },
+  //           {
+  //             header: "Root Id",
+  //             key: "root_id",
+  //             width: 0,
+  //           },
+  //         ];
+  //         // req.columns = [
+  //         //   {
+  //         //     header: "Account Name",
+  //         //     key: "title",
+  //         //     width: accountNameWidth,
+  //         //   },
+  //         //   {
+  //         //     header: "Arabic Name",
+  //         //     key: "arabic_name",
+  //         //     width: accountNameArabicWidth,
+  //         //   },
+  //         //   {
+  //         //     header: "Amount",
+  //         //     key: "subtitle",
+  //         //     width: amountWidth,
+  //         //     others: {
+  //         //       alignment: { vertical: "middle", horizontal: "right" },
+  //         //     },
+  //         //   },
+  //         // ];
+  //         next();
+  //       } else {
+  //         res
+  //           .status(utlities.AlgaehUtilities().httpStatus().ok)
+  //           .json({
+  //             success: true,
+  //             result: req.records,
+  //           })
+  //           .end();
+  //       }
+  //     }
+  //   },
+  //   generateExcel
+  // );
+  api.get(
+    "/getAccountsExport",
+    getAccountsExport,
+
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            result: req.records,
+          });
+      } else {
+        next();
+      }
+    },
+    excelAccountsExport
+  );
   return api;
 };

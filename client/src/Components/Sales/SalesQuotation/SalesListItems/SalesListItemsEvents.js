@@ -167,6 +167,7 @@ const itemchangeText = ($this, e, ctrl) => {
             unit_cost: e.standard_fee,
             Real_unit_cost: e.standard_fee,
             uom_description: e.uom_description,
+            purchase_cost: e.purchase_cost,
             tax_percentage: e.vat_percent,
             ItemUOM: data,
             sales_conversion_factor: sales_conversion_factor,
@@ -240,8 +241,9 @@ const AddItems = ($this, context) => {
   } else {
     let sales_quotation_items = $this.state.sales_quotation_items;
 
-    const extended_cost =
-      (parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)).toFixed($this.state.decimal_place);
+    const extended_cost = (
+      parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)
+    ).toFixed($this.state.decimal_place);
     const discount_amount = (
       (parseFloat(extended_cost) *
         parseFloat($this.state.discount_percentage)) /
@@ -306,6 +308,7 @@ const AddItems = ($this, context) => {
       discount_percentage: 0,
       unit_cost: 0,
       tax_percent: 0,
+      purchase_cost: 0,
     });
 
     // sub_total: sub_total,
@@ -435,7 +438,8 @@ const calculateAmount = ($this, context, row, _index) => {
     parseFloat(s.total_amount)
   );
 
-  const net_payable = total_item_amount + parseFloat($this.state.total_service_amount);
+  const net_payable =
+    total_item_amount + parseFloat($this.state.total_service_amount);
   if (context !== undefined) {
     context.updateState({
       sales_quotation_items: sales_quotation_items,
@@ -444,7 +448,7 @@ const calculateAmount = ($this, context, row, _index) => {
       net_total: net_total,
       total_tax: total_tax,
       net_payable: net_payable,
-      total_item_amount: total_item_amount
+      total_item_amount: total_item_amount,
     });
   }
 };
