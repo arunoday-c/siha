@@ -952,6 +952,7 @@ export default function OPEncounterDetails({
             mask={true}
             maskClosable={true}
             onCancel={showReferringTo}
+            footer={null}
             // onOk={() => {
             //   saveDocument(
             //     fileList,
