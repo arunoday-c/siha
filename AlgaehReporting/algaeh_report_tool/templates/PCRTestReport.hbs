@@ -130,11 +130,11 @@
            <div class="" style="width:35%;float:left;text-align:center;">
               <p>Scan QR to Validate</p>
               <p class="QRCodeHere">
-                 {{!-- <img src="{{logoUrl 'ORG' identity }}" /> --}}
+                <img src={{barcode "qrcode" shortUrl false }} />
 
                  {{!-- QR COde Here --}}
                  </p>
-              <small>Or go to: www.moh.gov.sa</small>
+              <small>Or go to: {{shortUrl}}</small>
            </div>
            <div class="" style="width:55%;float:right;text-align:right;">
                 <p class="SealHere">

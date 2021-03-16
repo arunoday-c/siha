@@ -15,6 +15,7 @@ keys/dev.js
 # ignore *-lock.json
 package-lock.json
 yarn.lock
+algaeh-qr-scanner/templates
 ### Linux ###
 *~
 *.backup

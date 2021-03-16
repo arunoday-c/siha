@@ -6,12 +6,14 @@ import path from "path";
 import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
+import shortid from "shortid";
 // import "babel-polyfill";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 // import chrome from "algaeh-keys";
 import writtenForm from "written-number";
 import cheerio from "cheerio";
+import axios from "axios";
 import Excel from "exceljs/modern.browser";
 import utilitites from "algaeh-utilities/utilities";
 import { convertMilimetersToPixel } from "algaeh-utilities/reportConvetions";
@@ -348,7 +350,7 @@ export default {
 
     try {
       const _inputParam = JSON.parse(input.report);
-      const { others, multiMerdgeReport } = _inputParam;
+      const { others, multiMerdgeReport, qrCodeReport } = _inputParam;
       let usehbs = "";
       let singleHeaderFooter = false;
       if (others) {
@@ -358,6 +360,8 @@ export default {
             ? false
             : others.singleHeaderFooter;
       }
+
+      let shortUrl = "";
       _mysql
         .executeQuery({
           query:
@@ -648,10 +652,18 @@ export default {
                         </div>`;
                       }
                     }
+                    let detailResult = result;
+                    if (qrCodeReport) {
+                      const qrUrl =
+                        process.env.QR_CODE_CLIENT ??
+                        "http://192.168.0.116:3023/";
+                      shortUrl = shortid.generate();
+                      detailResult["shortUrl"] = `${qrUrl}${shortUrl}`;
+                    }
                     let pageContent = await compile(
                       `${_data.report_name}${usehbs}`,
                       {
-                        ...result,
+                        ...detailResult,
                         reqHeader: _header,
                       }
                     );
@@ -661,7 +673,6 @@ export default {
 
                     await page.setContent(pageContent);
 
-                    // await page.emulateMedia("screen");
                     let pageOrentation = {
                       landscape:
                         styleObj.pageOrientation === "landscape" ||
@@ -738,7 +749,18 @@ export default {
                                     "attachment;filename=" + _outfileName,
                                 });
                                 const _fs = fs.createReadStream(_rOut);
-                                _fs.on("end", () => {
+                                _fs.on("end", async () => {
+                                  const axiosRes = await axios(
+                                    "http://localhost:3023/fileShare",
+                                    {
+                                      method: "POST",
+                                      data: {
+                                        filePath: _rOut,
+                                        shortUrl: shortUrl,
+                                      },
+                                    }
+                                  );
+                                  console.log("axiosRes11====>", axiosRes);
                                   fs.unlink(_rOut);
                                   for (
                                     let f = 0;
@@ -748,6 +770,7 @@ export default {
                                     fs.unlink(_reportOutput[f]);
                                   }
                                 });
+
                                 _fs.pipe(res);
                               } else {
                                 res
@@ -777,7 +800,17 @@ export default {
                                   "attachment;filename=" + _outfileName,
                               });
                               const _fs = fs.createReadStream(_reportOutput[0]);
-                              _fs.on("end", () => {
+                              _fs.on("end", async () => {
+                                const rptPath = _reportOutput[0];
+
+                                const axiosRes = await axios
+                                  .post("http://localhost:3023/fileShare", {
+                                    filePath: rptPath,
+                                    shortUrl: shortUrl,
+                                  })
+                                  .catch((error) => {
+                                    console.error(error.message);
+                                  });
                                 fs.unlink(_reportOutput[0]);
                               });
                               _fs.pipe(res);

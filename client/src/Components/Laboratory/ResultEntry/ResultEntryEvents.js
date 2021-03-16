@@ -14,6 +14,7 @@ const texthandle = ($this, e) => {
 };
 
 export function generateLabResultReport(data) {
+  console.log("data=====>", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -37,6 +38,7 @@ export function generateLabResultReport(data) {
             value: data.hims_f_lab_order_id,
           },
         ],
+        qrCodeReport: true,
         outputFileType: "PDF",
       },
     },
