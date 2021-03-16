@@ -659,10 +659,10 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, \
           IM.sales_uom_id, IM.service_id, IM.group_id, IC.category_desc, SR.vat_percent,\
-          IG.group_description, PU.uom_description, SR.standard_fee, IM.purchase_cost from hims_d_inventory_item_master IM, \
+          IG.group_description, PU.uom_description, SR.standard_fee, IM.purchase_cost from hims_d_inventory_item_master IM \
           inner join hims_d_inventory_tem_category IC on IM.category_id = IC.hims_d_inventory_tem_category_id \
           inner join hims_d_inventory_item_group IG on IM.group_id = IG.hims_d_inventory_item_group_id \
-          inner join hims_d_inventory_uom PU on and IM.sales_uom_id=PU.hims_d_inventory_uom_id  \
+          inner join hims_d_inventory_uom PU on IM.sales_uom_id=PU.hims_d_inventory_uom_id  \
           inner join hims_d_services SR on IM.service_id= SR.hims_d_services_id where IM.item_status='A' and \
           IM.record_status='A' and IC.record_status='A' and IG.record_status='A'",
         orderBy: "IM.hims_d_inventory_item_master_id desc",
