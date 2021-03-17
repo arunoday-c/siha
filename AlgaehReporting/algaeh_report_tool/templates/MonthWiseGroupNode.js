@@ -1,5 +1,5 @@
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
 
@@ -7,9 +7,13 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
 
       const params = options.args.reportParams;
-
-      const decimal_places = options.args.crypto.decimal_places;
-      params.forEach(para => {
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
+      // const decimal_places = options.args.crypto.decimal_places;
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -27,9 +31,9 @@ const executePDF = function executePDFMethod(options) {
           .executeQuery({
             query: `SELECT cost_center_type  FROM finance_options limit 1;`,
             values: [input.head_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             if (result.length > 0) {
               //ST-cost center
               if (
@@ -58,9 +62,9 @@ const executePDF = function executePDFMethod(options) {
                   )select * from cte ) ${strQry}   group by month,child_id ;`,
 
                   values: [input.head_id],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(final_result => {
+                .then((final_result) => {
                   let total_debit = parseFloat(0).toFixed(decimal_places);
                   let total_credit = parseFloat(0).toFixed(decimal_places);
                   if (final_result.length > 0) {
@@ -69,7 +73,7 @@ const executePDF = function executePDFMethod(options) {
                     // if (input.parent_id == 1 || input.parent_id == 5) {
                     //   //DR
                     // }
-                    final_result.forEach(item => {
+                    final_result.forEach((item) => {
                       total_credit = (
                         parseFloat(total_credit) +
                         parseFloat(item.credit_amount)
@@ -80,7 +84,7 @@ const executePDF = function executePDFMethod(options) {
                     });
 
                     const monthWiseGroup = _.chain(final_result)
-                      .groupBy(g => g.month_name)
+                      .groupBy((g) => g.month_name)
                       .value();
 
                     const outputArray = [];
@@ -93,33 +97,45 @@ const executePDF = function executePDFMethod(options) {
                     resolve({
                       details: outputArray,
                       total_debit: total_debit,
-                      total_credit: total_credit
+                      total_credit: total_credit,
+                      decimalOnly: {
+                        decimal_places,
+                        addSymbol: false,
+                        symbol_position,
+                        currency_symbol,
+                      },
+                      currencyOnly: {
+                        decimal_places,
+                        addSymbol: false,
+                        symbol_position,
+                        currency_symbol,
+                      },
                     });
                   } else {
                     resolve({
-                      details: []
+                      details: [],
                     });
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   console.log("IRFAN :", e);
                   options.mysql.releaseConnection();
                   next(e);
                 });
             } else {
               resolve({
-                details: []
+                details: [],
               });
             }
           })
-          .catch(e => {
+          .catch((e) => {
             console.log("IRFAN :", e);
             options.mysql.releaseConnection();
             next(e);
           });
       } else {
         resolve({
-          details: []
+          details: [],
         });
       }
     } catch (e) {

@@ -33,7 +33,6 @@ export default function FinanceAccounts({ inDrawer = false }) {
   });
 
   function exportExcelAccountOB() {
-    debugger;
     algaehApiCall({
       uri: "/finance/getAccountsExport",
       method: "GET",
