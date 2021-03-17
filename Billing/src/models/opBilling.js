@@ -257,20 +257,39 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select D.*,service_id as services_id, now() as created_date, package_header_id as ordered_package_id, hims_d_investigation_test_id as test_id from hims_f_package_detail D left join hims_d_investigation_test IT on D.service_id=IT.services_id where package_header_id in (?)",
+                  "select D.*,service_id as services_id, now() as created_date, package_header_id as \
+                  ordered_package_id, hims_d_investigation_test_id as test_id from hims_f_package_detail D \
+                  left join hims_d_investigation_test IT on D.service_id=IT.services_id \
+                  where package_header_id in (?)",
                 values: [package_header_id],
                 printQuery: true,
               })
               .then((package_details) => {
-                // console.log("package_details", package_details)
+                const lab_data = package_details.filter(
+                  (f) => f.service_type_id == "5"
+                );
+                const rad_data = package_details.filter(
+                  (f) => f.service_type_id == "11"
+                );
+                console.log("lab_data", lab_data);
+                if (lab_data.length > 0) {
+                  req.body.LAB_Package = true;
+                }
+                if (rad_data.length > 0) {
+                  req.body.RAD_Package = true;
+                }
+                // consol.log("rad_data", rad_data);
+
                 req.body.billdetails = req.body.billdetails.concat(
                   package_details
                 );
 
                 if (req.connection == null) {
+                  // console.log("1");
                   req.records = updateOrder;
                   next();
                 } else {
+                  // console.log("2");
                   next();
                 }
               })
@@ -298,10 +317,12 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-
       // console.log("req.body.pack_advance_adjust", req.body.pack_advance_adjust)
       if (req.body.pack_advance_adjust > 0) {
-        const package_details = req.body.billdetails.filter(f => f.ordered_package_id !== null || f.ordered_package_id !== undefined)
+        const package_details = req.body.billdetails.filter(
+          (f) =>
+            f.ordered_package_id !== null || f.ordered_package_id !== undefined
+        );
 
         // console.log("package_details ======> ", package_details)
         let qry = "";
@@ -311,7 +332,7 @@ export default {
               "UPDATE `hims_f_package_header` SET utilized_advance=utilized_advance+(?) where hims_f_package_header_id=?;",
               [
                 package_details[i].gross_amount,
-                package_details[i].ordered_package_id
+                package_details[i].ordered_package_id,
               ]
             );
           }
@@ -334,9 +355,8 @@ export default {
         } else {
           next();
         }
-      }
-      else {
-        next()
+      } else {
+        next();
       }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
@@ -596,18 +616,17 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-
       _mysql
         .executeQuery({
           query: `update hims_f_billing_header set adjusted=?,adjusted_by=?,
           adjusted_date=? where hims_f_billing_header_id=?`,
           values: [
-            'Y',
+            "Y",
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.from_bill_id
+            req.body.from_bill_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
         .then((adjust_done) => {
           _mysql.commitTransaction(() => {
@@ -622,7 +641,6 @@ export default {
             next(error);
           });
         });
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(error);
@@ -661,18 +679,20 @@ export default {
                 values: [
                   inputParam.from_bill_id,
                   inputParam.from_bill_id,
-                  inputParam.from_bill_id
+                  inputParam.from_bill_id,
                 ],
                 printQuery: true,
               })
               .then((bill_Result) => {
-
                 const bill_header = bill_Result[0][0];
                 const bill_detail = bill_Result[1];
                 const receipt_details = bill_Result[2];
 
                 const servicesIds = ["0"];
-                if (inputParam.billdetails && inputParam.billdetails.length > 0) {
+                if (
+                  inputParam.billdetails &&
+                  inputParam.billdetails.length > 0
+                ) {
                   inputParam.billdetails.forEach((item) => {
                     servicesIds.push(item.services_id);
                   });
@@ -722,13 +742,13 @@ export default {
                     voucher_type = "sales";
 
                     amount = inputParam.receiveable_amount;
-                    narration = "Bill Adjustment Done From :" + bill_header.bill_number;
+                    narration =
+                      "Bill Adjustment Done From :" + bill_header.bill_number;
 
                     //BOOKING INCOME AND TAX
                     // New Bill Booking
                     //Starts Here
                     serviceData.forEach((curService) => {
-
                       const bill = inputParam.billdetails.filter((f) => {
                         if (f.services_id == curService.hims_d_services_id)
                           return f;
@@ -834,7 +854,6 @@ export default {
                     //Old Bill revert
                     //Starts Here
                     serviceData.forEach((curService) => {
-
                       const bill = bill_detail.filter((f) => {
                         if (f.services_id == curService.hims_d_services_id)
                           return f;
@@ -869,7 +888,6 @@ export default {
                     }
                     //PROVIDING OP SERVICE ON CREDIT
                     if (bill_header.credit_amount > 0) {
-
                       EntriesArray.push({
                         payment_date: new Date(),
                         head_id: OP_REC.head_id,
