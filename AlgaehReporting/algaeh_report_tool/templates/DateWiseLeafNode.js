@@ -8,10 +8,14 @@ const executePDF = function executePDFMethod(options) {
 
       const moment = options.moment;
       let input = {};
-
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
       const params = options.args.reportParams;
 
-      const decimal_places = options.args.crypto.decimal_places;
+      // const decimal_places = options.args.crypto.decimal_places;
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
@@ -211,6 +215,18 @@ const executePDF = function executePDFMethod(options) {
                     to_date: moment(input.to_date, "YYYY-MM-DD").format(
                       "DD-MM-YYYY"
                     ),
+                    decimalOnly: {
+                      decimal_places,
+                      addSymbol: false,
+                      symbol_position,
+                      currency_symbol,
+                    },
+                    currencyOnly: {
+                      decimal_places,
+                      addSymbol: false,
+                      symbol_position,
+                      currency_symbol,
+                    },
                   });
                 } else {
                   resolve({

@@ -3,6 +3,7 @@ import TreeComponent from "./TreeComponent";
 import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import moment from "moment";
+import "./alice.scss";
 
 export default function FinanceAccounts({ inDrawer = false }) {
   const TABS = [
@@ -31,9 +32,9 @@ export default function FinanceAccounts({ inDrawer = false }) {
       ),
     };
   });
+  let fileInput = React.createRef();
 
   function exportExcelAccountOB() {
-    debugger;
     algaehApiCall({
       uri: "/finance/getAccountsExport",
       method: "GET",
@@ -69,6 +70,79 @@ export default function FinanceAccounts({ inDrawer = false }) {
     });
   }
 
+  function importExcelAccountOB(files) {
+    // AlgaehLoader({ show: true });
+    debugger;
+    const reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+    reader.onload = (e) => {
+      const data = e.target.result.split(",")[1];
+
+      algaehApiCall({
+        uri: "/finance/excelOBAccImport",
+        module: "finance",
+        headers: {
+          Accept: "blob",
+        },
+        // header: {
+        //   "x-leaves-data": leaves_data,
+        // },
+        data:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," +
+          data,
+        method: "post",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            swalMessage({
+              title: "Uploded Successfully...",
+              type: "success",
+            });
+          } else {
+            swalMessage({
+              title: "Error while upload",
+              type: "error",
+            });
+          }
+        },
+      });
+    };
+  }
+  // function importExcelAccountOB() {
+  //   algaehApiCall({
+  //     uri: "/finance/getAccountsExport",
+  //     method: "GET",
+  //     module: "finance",
+  //     headers: {
+  //       Accept: "blob",
+  //     },
+  //     others: { responseType: "blob" },
+  //     onSuccess: (response) => {
+  //       const urlBlob = URL.createObjectURL(response.data);
+  //       const a = document.createElement("a");
+  //       a.href = urlBlob;
+  //       a.download = `AccountsOpeningBalance-${moment(new Date()).format(
+  //         "YYYY-MM-DD"
+  //       )}.xlsx`;
+  //       a.click();
+
+  //       // AlgaehLoader({ show: false });
+  //     },
+  //     onCatch: (error) => {
+  //       var reader = new FileReader();
+  //       reader.onload = function () {
+  //         // AlgaehLoader({ show: false });
+  //         const parse = JSON.parse(reader.result);
+
+  //         swalMessage({
+  //           type: "error",
+  //           title: parse !== undefined ? parse.result.message : parse,
+  //         });
+  //       };
+  //       reader.readAsText(error.response.data);
+  //     },
+  //   });
+  // }
+
   return (
     <div className="">
       <AlgaehTabs content={content} />
@@ -83,6 +157,30 @@ export default function FinanceAccounts({ inDrawer = false }) {
             >
               <AlgaehLabel label={{ forceLabel: "Export" }} />
             </button>
+
+            <div className="uploadManualDiv   btn-with-icon">
+              <input
+                className="inputfile"
+                type="file"
+                name="manualTimeSheet"
+                ref={fileInput}
+                onChange={(e) => {
+                  if (e.target.files.length > 0)
+                    importExcelAccountOB(e.target.files);
+                }}
+                // onChange={importExcelAccountOB}
+              />
+              <label onClick={() => fileInput.current.click()}>
+                <i className="fas fa-file-upload"></i> Upload
+              </label>
+            </div>
+            {/* <button
+              type="button"
+              className="btn btn-primary"
+              onClick={importExcelAccountOB}
+            >
+              <AlgaehLabel label={{ forceLabel: "Import " }} />
+            </button> */}
           </div>
         </div>
       </div>

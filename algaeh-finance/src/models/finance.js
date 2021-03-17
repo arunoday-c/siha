@@ -2734,13 +2734,15 @@ export default {
       //-------------------start
       _mysql
         .executeQuery({
-          query: `select  ledger_code, child_name,root_id, now() as payment_date, finance_account_child_id,
+          query: `select  ledger_code, child_name,root_id, CAST( NOW() AS Date ) as payment_date, finance_account_child_id,
                 CASE WHEN finance_voucher_id >0 THEN payment_type WHEN AH.root_id='1' THEN 'DR' else 'CR' END as payment_type,
-                CASE WHEN finance_voucher_id >0 and payment_type = 'DR' THEN debit_amount WHEN finance_voucher_id >0 and payment_type = 'CR' THEN credit_amount else '0.00' END as opening_balance,finance_voucher_id
+                CASE WHEN finance_voucher_id >0 and payment_type = 'DR' THEN debit_amount 
+                WHEN finance_voucher_id >0 and payment_type = 'CR' THEN credit_amount else '0.00' END as opening_balance,                
+                finance_voucher_id, is_opening_bal, 'N' as insert_into_header 
                 from finance_account_child AC 
                 inner join finance_account_head AH on AH.finance_account_head_id = AC.head_id 
-                left join finance_voucher_details VD on VD.child_id = AC.finance_account_child_id 
-                where root_id in (1,2,3)  group by finance_account_child_id;`,
+                left join finance_voucher_details VD on VD.child_id = AC.finance_account_child_id  and is_opening_bal='Y'
+                where root_id in (1,2,3) and finance_account_child_id < 135  group by finance_account_child_id;`,
           printQuery: true,
         })
         .then((result) => {
@@ -2766,7 +2768,235 @@ export default {
       next(e);
     }
   },
-  excelAccountsExport(req, res, next) {
+  uploadOBAccounts: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const input = req.body;
+      let voucherStr = "SELECT 1=1";
+      console.log("input", input[0]);
+
+      for (let i = 0; i < input.length; i++) {
+        if (input[i].finance_voucher_id.length > 0) {
+          const data = input[i];
+
+          if (data.root_id == 1) {
+            if (data.amount != data.opening_balance) {
+              voucherStr = `update finance_voucher_details set ${
+                data.payment_type === "CR" ? "credit_amount" : "debit_amount"
+              }=${input.opening_balance},
+          payment_type ='${data.payment_type === "CR" ? "CR" : "DR"}',${
+                data.payment_type === "CR" ? "debit_amount" : "credit_amount"
+              }=0, payment_date='${
+                input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
+              }'  where finance_voucher_id=${data.finance_voucher_id};`;
+            }
+          } else if (data.root_id == 2 || data.root_id == 3) {
+            if (data.credit_amount != input.opening_balance) {
+              voucherStr = `update finance_voucher_details set ${
+                data.payment_type === "DR" ? "debit_amount" : "credit_amount"
+              }=${input.opening_balance},
+          payment_type ='${data.payment_type === "DR" ? "DR" : "CR"}',${
+                data.payment_type === "DR" ? "credit_amount" : "debit_amount"
+              }=0, payment_date='${
+                input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
+              }' where finance_voucher_id=${data.finance_voucher_id};`;
+            }
+          }
+        } else {
+          const voucher_type = input.assetCode === 2 ? "purchase" : "sales";
+          const { algaeh_d_app_user_id } = req.userIdentity;
+          _mysql
+            .generateRunningNumber({
+              user_id: algaeh_d_app_user_id,
+              numgen_codes: [voucher_type.toUpperCase()],
+              table_name: "finance_numgen",
+            })
+            .then((numgen) => {
+              const month = moment().format("MM");
+              const year = moment().format("YYYY");
+              const oblStringNumber =
+                "OBL" +
+                numgen[voucher_type.toUpperCase()].replace(/[^\d.-]/g, "");
+              let queryGen = { query: "select 1;" };
+              if (input.insertInVoucherHeader === true) {
+                queryGen = {
+                  query: ` insert into finance_voucher_header(voucher_type,voucher_no,amount,payment_date,
+                          month,year,narration,from_screen,posted_from,created_by,updated_by,invoice_no)
+                          value(?,?,?,?,?,?,'Opening Balance Added from Accounts','ACCOUNTS OPENING BALANCE','V',?,?,?)`,
+                  values: [
+                    voucher_type,
+                    numgen[voucher_type.toUpperCase()],
+                    input.opening_balance,
+                    input.obDate ? input.obDate : new Date(),
+                    month,
+                    year,
+                    algaeh_d_app_user_id,
+                    algaeh_d_app_user_id,
+                    oblStringNumber,
+                  ],
+                  printQuery: true,
+                };
+              }
+              _mysql
+                .executeQuery(queryGen)
+                .then((headerResult) => {
+                  const { insertId } = headerResult;
+
+                  //Added existing statements
+                  let insert_data = result[0][0];
+
+                  let debit_amount = 0;
+                  let credit_amount = 0;
+                  let payment_type = "CR";
+                  if (
+                    insert_data["root_id"] == 1 &&
+                    input.opening_balance > 0
+                  ) {
+                    debit_amount = input.opening_balance;
+                    payment_type = "DR";
+
+                    switch (data.payment_type) {
+                      case "CR":
+                        debit_amount = 0;
+                        credit_amount = input.opening_balance;
+                        payment_type = "CR";
+                        break;
+                    }
+
+                    voucherStr = _mysql.mysqlQueryFormat(
+                      "INSERT INTO finance_voucher_details (voucher_header_id,payment_date,head_id,child_id,debit_amount,credit_amount,\
+                    payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      [
+                        insertId,
+                        input.obDate ? input.obDate : new Date(),
+                        insert_data.head_id,
+                        insert_data.finance_account_child_id,
+                        debit_amount,
+                        credit_amount,
+                        payment_type,
+                        result[2][0]["default_branch_id"],
+                        moment().format("YYYYY"),
+                        moment().format("M"),
+                        "Y",
+                        algaeh_d_app_user_id,
+                        "A",
+                      ]
+                    );
+                  } else if (
+                    (insert_data["root_id"] == 2 ||
+                      insert_data["root_id"] == 3) &&
+                    input.opening_balance > 0
+                  ) {
+                    credit_amount = input.opening_balance;
+                    switch (data.payment_type) {
+                      case "DR":
+                        credit_amount = 0;
+                        debit_amount = input.opening_balance;
+                        payment_type = "DR";
+                        break;
+                    }
+                    voucherStr = _mysql.mysqlQueryFormat(
+                      "INSERT INTO finance_voucher_details (voucher_header_id,payment_date,head_id,child_id,debit_amount,credit_amount,\
+                  payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      [
+                        insertId,
+                        input.obDate ? input.obDate : new Date(),
+                        insert_data.head_id,
+                        insert_data.finance_account_child_id,
+                        debit_amount,
+                        credit_amount,
+                        payment_type,
+                        result[2][0]["default_branch_id"],
+                        moment().format("YYYYY"),
+                        moment().format("M"),
+                        "Y",
+                        algaeh_d_app_user_id,
+                        "A",
+                      ]
+                    );
+                  }
+                  executeFunction((rest) => {
+                    _mysql.commitTransaction((error) => {
+                      if (error) {
+                        _mysql.rollBackTransaction();
+                        next(error);
+                      } else {
+                        req.records = rest;
+                        next();
+                      }
+                    });
+                  });
+                  //End of existing statements
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction((error) => {
+                    next(error);
+                  });
+                });
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction((error) => {
+                next(error);
+              });
+            });
+        }
+
+        _mysql
+          .executeQuery({
+            query: voucherStr,
+            printQuery: true,
+          })
+          .then((result2) => {
+            _mysql.releaseConnection();
+            req.records = result2;
+            next();
+          })
+          .catch((e) => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      }
+
+      // //-------------------start
+      // _mysql
+      //   .executeQuery({
+      //     query: `select  ledger_code, child_name,root_id, CAST( NOW() AS Date ) as payment_date, finance_account_child_id,
+      //           CASE WHEN finance_voucher_id >0 THEN payment_type WHEN AH.root_id='1' THEN 'DR' else 'CR' END as payment_type,
+      //           CASE WHEN finance_voucher_id >0 and payment_type = 'DR' THEN debit_amount
+      //           WHEN finance_voucher_id >0 and payment_type = 'CR' THEN credit_amount else '0.00' END as opening_balance,
+      //           finance_voucher_id, is_opening_bal, 'N' as insert_into_header
+      //           from finance_account_child AC
+      //           inner join finance_account_head AH on AH.finance_account_head_id = AC.head_id
+      //           left join finance_voucher_details VD on VD.child_id = AC.finance_account_child_id  and is_opening_bal='Y'
+      //           where root_id in (1,2,3)  group by finance_account_child_id;`,
+      //     printQuery: true,
+      //   })
+      //   .then((result) => {
+      //     _mysql.releaseConnection();
+
+      //     if (result.length > 0) {
+      //       req.records = result;
+      //       next();
+      //     } else {
+      //       req.records = {
+      //         message: "No Record Found",
+      //         invalid_input: true,
+      //       };
+      //       next();
+      //       return;
+      //     }
+      //   })
+      //   .catch((e) => {
+      //     _mysql.releaseConnection();
+      //     next(e);
+      //   });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  excelOBAccExport(req, res, next) {
     new Promise((resolve, reject) => {
       // const selected_type = req.query.selected_type;
 
@@ -2799,7 +3029,7 @@ export default {
             {
               header: "Account Name",
               key: "child_name",
-              width: 20,
+              width: 50,
               horizontal: "center",
             },
             {
@@ -2809,22 +3039,32 @@ export default {
               horizontal: "center",
             },
             {
+              header: "Insert into Header",
+              key: "insert_into_header",
+              width: 20,
+              // horizontal: "center",
+            },
+            {
               header: "Payment Type",
               key: "payment_type",
               width: 20,
               horizontal: "center",
             },
             {
-              header: "Amount",
+              header: "Opening Balance",
               key: "opening_balance",
               width: 20,
               horizontal: "center",
             },
             {
+              header: "Amount",
+              key: "amount",
+              width: 0,
+            },
+            {
               header: "Voucher Id",
               key: "finance_voucher_id",
-              width: 20,
-              horizontal: "center",
+              width: 0,
             },
             {
               header: "Root Id",
@@ -2852,21 +3092,21 @@ export default {
           };
 
           //To freez first column
-          worksheet.views = [
-            {
-              state: "frozen",
-              xSplit: 2,
-              ySplit: 0,
-              activeCell: "A1",
-              topLeftCell: "C1",
-            },
-            {
-              state: "frozen",
-              xSplit: 0,
-              ySplit: 1,
-              activeCell: "A1",
-            },
-          ];
+          // worksheet.views = [
+          //   {
+          //     state: "frozen",
+          //     xSplit: 2,
+          //     ySplit: 0,
+          //     activeCell: "A1",
+          //     topLeftCell: "C1",
+          //   },
+          //   {
+          //     state: "frozen",
+          //     xSplit: 0,
+          //     ySplit: 1,
+          //     activeCell: "A1",
+          //   },
+          // ];
 
           const data = req.records; //require("../../testDB/data.json");
 
@@ -2879,8 +3119,10 @@ export default {
               child_name: rest.child_name,
               root_id: rest.root_id,
               payment_date: rest.payment_date,
+              insert_into_header: rest.insert_into_header,
               payment_type: rest.payment_type,
               opening_balance: rest.opening_balance,
+              amount: rest.opening_balance,
               finance_voucher_id: rest.finance_voucher_id,
             };
 
@@ -2933,6 +3175,62 @@ export default {
       } catch (e) {
         next(e);
       }
+    });
+  },
+
+  excelOBAccImport(req, res, next) {
+    let buffer = "";
+    // const utilities = new algaehUtilities();
+
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
+    req.on("end", () => {
+      const buff = new Buffer.from(buffer, "base64");
+      var workbook = new Excel.Workbook();
+      let excelArray = [];
+      let properFile = true;
+
+      workbook.xlsx
+        .load(buff)
+        .then(() => {
+          var worksheet = workbook.getWorksheet(1);
+          let columns = [];
+
+          worksheet.eachRow(function (row, rowNumber) {
+            if (rowNumber === 1) {
+              columns = row.values;
+            } else {
+              let internal = {};
+
+              for (let i = 0; i < columns.length; i++) {
+                if (columns[i] !== undefined) {
+                  const columnName = columns[i]
+                    .replace("Account Code", "ledger_code")
+                    .replace("Amount", "opening_balance")
+                    .replace("Voucher Id", "finance_voucher_id")
+                    .replace("Root Id", "root_id")
+                    .replace("Insert into Header", "insert_into_header")
+                    .replace("Amount", "amount");
+                  internal[columnName] = row.values[i];
+                  if (i === columns.length - 1) {
+                    excelArray.push(internal);
+                  }
+                }
+              }
+            }
+          });
+        })
+        .then(() => {
+          if (properFile) {
+            excelArray.pop();
+            req.body = excelArray;
+            next();
+          }
+        })
+        .catch((error) => {
+          next(error);
+        });
     });
   },
 };
