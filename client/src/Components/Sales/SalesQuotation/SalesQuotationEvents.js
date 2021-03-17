@@ -15,12 +15,12 @@ const changeTexts = ($this, ctrl, e) => {
     case "hims_f_terms_condition_id":
       $this.setState({
         [name]: value,
-        selected_terms_conditions: e.selected.terms_cond_description
+        selected_terms_conditions: e.selected.terms_cond_description,
       });
       break;
     default:
       $this.setState({
-        [name]: value
+        [name]: value,
       });
       break;
   }
@@ -78,15 +78,19 @@ const ClearData = ($this, e) => {
     service_frequency: null,
     cancelEnable: true,
     total_item_amount: 0,
-    total_service_amount: 0
+    total_service_amount: 0,
+
+    qtyhand: 0,
+    stock_uom: null,
+    purchase_cost: 0,
   };
 
   $this.setState(IOputs);
 };
 
-const SaveSalesQuotation = $this => {
+const SaveSalesQuotation = ($this) => {
   const settings = { header: undefined, footer: undefined };
-  debugger
+  debugger;
   if ($this.state.hims_f_sales_quotation_id !== null) {
     if ($this.state.edit_mode === true) {
       AlgaehValidation({
@@ -96,29 +100,29 @@ const SaveSalesQuotation = $this => {
           if ($this.HRMNGMT_Active && $this.state.sales_person_id === null) {
             swalMessage({
               type: "warning",
-              title: "Please select Sales Person"
+              title: "Please select Sales Person",
             });
             return;
           }
 
-          let qty_exists = Enumerable.from($this.state.sales_quotation_items).any(
-            w => parseFloat(w.quantity) === 0 || w.quantity === ""
-          );
+          let qty_exists = Enumerable.from(
+            $this.state.sales_quotation_items
+          ).any((w) => parseFloat(w.quantity) === 0 || w.quantity === "");
           if (qty_exists === true) {
             swalMessage({
               title: "Please enter Quantity In Item list.",
-              type: "warning"
+              type: "warning",
             });
             return;
           }
-          qty_exists = Enumerable.from($this.state.sales_quotation_services).any(
-            w => parseFloat(w.quantity) === 0 || w.quantity === ""
-          );
+          qty_exists = Enumerable.from(
+            $this.state.sales_quotation_services
+          ).any((w) => parseFloat(w.quantity) === 0 || w.quantity === "");
 
           if (qty_exists === true) {
             swalMessage({
               title: "Please enter Quantity In Service list.",
-              type: "warning"
+              type: "warning",
             });
             return;
           }
@@ -132,14 +136,16 @@ const SaveSalesQuotation = $this => {
           $this.state.quote_validity = moment(
             $this.state.quote_validity,
             "YYYY-MM-DD"
-          ).format("YYYY-MM-DD")
+          ).format("YYYY-MM-DD");
 
-          $this.state.delivery_date = $this.state.delivery_date !== null ? moment(
-            $this.state.delivery_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD") : null
+          $this.state.delivery_date =
+            $this.state.delivery_date !== null
+              ? moment($this.state.delivery_date, "YYYY-MM-DD").format(
+                  "YYYY-MM-DD"
+                )
+              : null;
 
-          $this.state.update_type = "ED"
+          $this.state.update_type = "ED";
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/SalesQuotation/updateSalesQuotation",
@@ -149,9 +155,9 @@ const SaveSalesQuotation = $this => {
             data: Buffer.from(JSON.stringify($this.state), "utf8"),
             header: {
               "content-type": "application/octet-stream",
-              ...settings
+              ...settings,
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 $this.setState({
                   sales_quotation_number:
@@ -159,44 +165,43 @@ const SaveSalesQuotation = $this => {
                   hims_f_sales_quotation_id:
                     response.data.records.hims_f_sales_quotation_id,
                   saveEnable: true,
-                  dataExists: true
+                  dataExists: true,
                 });
                 swalMessage({
                   type: "success",
-                  title: "Saved successfully ..."
+                  title: "Saved successfully ...",
                 });
                 AlgaehLoader({ show: false });
               } else {
                 AlgaehLoader({ show: false });
                 swalMessage({
                   type: "error",
-                  title: response.data.records.message
+                  title: response.data.records.message,
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
-        }
+        },
       });
-    }
-    else {
+    } else {
       if ($this.state.comments === null || $this.state.comments === "") {
         swalMessage({
           type: "warning",
-          title: "To update comments is mandatory"
+          title: "To update comments is mandatory",
         });
         return;
       }
       AlgaehLoader({ show: true });
       let inputObj = {
         hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id,
-        comments: $this.state.comments
+        comments: $this.state.comments,
       };
       algaehApiCall({
         uri: "/SalesQuotation/updateSalesQuotation",
@@ -206,23 +211,23 @@ const SaveSalesQuotation = $this => {
         data: Buffer.from(JSON.stringify(inputObj), "utf8"),
         header: {
           "content-type": "application/octet-stream",
-          ...settings
+          ...settings,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             swalMessage({
               type: "success",
-              title: "Updated successfully ..."
+              title: "Updated successfully ...",
             });
             AlgaehLoader({ show: false });
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
               type: "error",
-              title: response.data.records.message
+              title: response.data.records.message,
             });
           }
-        }
+        },
       });
     }
   } else {
@@ -233,29 +238,29 @@ const SaveSalesQuotation = $this => {
         if ($this.HRMNGMT_Active && $this.state.sales_person_id === null) {
           swalMessage({
             type: "warning",
-            title: "Please select Sales Person"
+            title: "Please select Sales Person",
           });
           return;
         }
 
         let qty_exists = Enumerable.from($this.state.sales_quotation_items).any(
-          w => parseFloat(w.quantity) === 0 || w.quantity === ""
+          (w) => parseFloat(w.quantity) === 0 || w.quantity === ""
         );
         if (qty_exists === true) {
           swalMessage({
             title: "Please enter Quantity In Item list.",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
         qty_exists = Enumerable.from($this.state.sales_quotation_services).any(
-          w => parseFloat(w.quantity) === 0 || w.quantity === ""
+          (w) => parseFloat(w.quantity) === 0 || w.quantity === ""
         );
 
         if (qty_exists === true) {
           swalMessage({
             title: "Please enter Quantity In Service list.",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
@@ -269,12 +274,14 @@ const SaveSalesQuotation = $this => {
         $this.state.quote_validity = moment(
           $this.state.quote_validity,
           "YYYY-MM-DD"
-        ).format("YYYY-MM-DD")
+        ).format("YYYY-MM-DD");
 
-        $this.state.delivery_date = $this.state.delivery_date !== null ? moment(
-          $this.state.delivery_date,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD") : null
+        $this.state.delivery_date =
+          $this.state.delivery_date !== null
+            ? moment($this.state.delivery_date, "YYYY-MM-DD").format(
+                "YYYY-MM-DD"
+              )
+            : null;
         AlgaehLoader({ show: true });
 
         algaehApiCall({
@@ -285,9 +292,9 @@ const SaveSalesQuotation = $this => {
           data: Buffer.from(JSON.stringify($this.state), "utf8"),
           header: {
             "content-type": "application/octet-stream",
-            ...settings
+            ...settings,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               $this.setState({
                 sales_quotation_number:
@@ -295,30 +302,30 @@ const SaveSalesQuotation = $this => {
                 hims_f_sales_quotation_id:
                   response.data.records.hims_f_sales_quotation_id,
                 saveEnable: true,
-                dataExists: true
+                dataExists: true,
               });
               swalMessage({
                 type: "success",
-                title: "Saved successfully ..."
+                title: "Saved successfully ...",
               });
               AlgaehLoader({ show: false });
             } else {
               AlgaehLoader({ show: false });
               swalMessage({
                 type: "error",
-                title: response.data.records.message
+                title: response.data.records.message,
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 };
@@ -329,13 +336,13 @@ const customerTexthandle = ($this, e) => {
 
   $this.setState({
     [name]: value,
-    payment_terms: e.selected.payment_terms
+    payment_terms: e.selected.payment_terms,
   });
 };
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -347,9 +354,9 @@ const getCtrlCode = ($this, docNumber) => {
     method: "GET",
     data: {
       sales_quotation_number: docNumber,
-      HRMNGMT_Active: $this.HRMNGMT_Active
+      HRMNGMT_Active: $this.HRMNGMT_Active,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         const queryParams = new URLSearchParams($this.props.location.search);
@@ -371,13 +378,13 @@ const getCtrlCode = ($this, docNumber) => {
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -386,34 +393,34 @@ const dateValidate = ($this, value, event) => {
   if (inRange) {
     swalMessage({
       title: "Selected Date cannot be past Date.",
-      type: "warning"
+      type: "warning",
     });
     event.target.focus();
     $this.setState({
-      [event.target.name]: null
+      [event.target.name]: null,
     });
   }
 };
 
-const getSalesOptions = $this => {
+const getSalesOptions = ($this) => {
   algaehApiCall({
     uri: "/SalesSettings/getSalesOptions",
     method: "GET",
     module: "sales",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         $this.setState({
-          services_required: res.data.records[0].services_required
+          services_required: res.data.records[0].services_required,
         });
       }
-    }
+    },
   });
 };
 
-const employeeSearch = $this => {
+const employeeSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Employee_details.employee
+      columns: spotlightSearch.Employee_details.employee,
     },
     searchName: "employee_branch_wise",
     uri: "/gloabelSearch/get",
@@ -421,23 +428,23 @@ const employeeSearch = $this => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState({
         employee_name: row.full_name,
-        sales_person_id: row.hims_d_employee_id
+        sales_person_id: row.hims_d_employee_id,
       });
-    }
+    },
   });
 };
 
-const addToTermCondition = $this => {
+const addToTermCondition = ($this) => {
   if (
     $this.state.hims_f_terms_condition_id === null &&
     $this.state.selected_terms_conditions === ""
   ) {
     swalMessage({
       title: "Select or Enter T&C.",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
@@ -447,7 +454,7 @@ const addToTermCondition = $this => {
   $this.setState({
     hims_f_terms_condition_id: null,
     selected_terms_conditions: "",
-    comment_list: comment_list
+    comment_list: comment_list,
   });
 };
 
@@ -457,7 +464,7 @@ const deleteComment = ($this, row) => {
   comment_list.splice(_index, 1);
 
   $this.setState({
-    comment_list: comment_list
+    comment_list: comment_list,
   });
 };
 
@@ -467,7 +474,7 @@ const generateSalesQuotation = ($this, data) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -476,29 +483,28 @@ const generateSalesQuotation = ($this, data) => {
         reportParams: [
           {
             name: "hims_f_sales_quotation_id",
-            value: data.hims_f_sales_quotation_id
+            value: data.hims_f_sales_quotation_id,
           },
           {
             name: "HRMNGMT_Active",
-            value: $this.HRMNGMT_Active
-          }
+            value: $this.HRMNGMT_Active,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // console.log("gg",data)
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.sales_quotation_number}-Sales Quotation Report`
+      const reportName = `${data.sales_quotation_number}-Sales Quotation Report`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
       // window.document.title = "Sales Quotation Report";
-    }
+    },
   });
 };
 
 const CancelQuotation = ($this) => {
-
   swal({
     title: "Do you want to Cancel Quotation?",
     type: "warning",
@@ -506,13 +512,12 @@ const CancelQuotation = ($this) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willUpdate => {
+    cancelButtonText: "No",
+  }).then((willUpdate) => {
     if (willUpdate.value) {
-
       let inputObj = {
         hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id,
-        cancelled: "Y"
+        cancelled: "Y",
       };
       const settings = { header: undefined, footer: undefined };
       algaehApiCall({
@@ -523,27 +528,27 @@ const CancelQuotation = ($this) => {
         data: Buffer.from(JSON.stringify(inputObj), "utf8"),
         header: {
           "content-type": "application/octet-stream",
-          ...settings
+          ...settings,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             swalMessage({
               type: "success",
-              title: "Cancelled successfully ..."
+              title: "Cancelled successfully ...",
             });
             AlgaehLoader({ show: false });
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
               type: "error",
-              title: response.data.records.message
+              title: response.data.records.message,
             });
           }
-        }
+        },
       });
     }
   });
-}
+};
 
 export {
   changeTexts,
@@ -558,5 +563,5 @@ export {
   addToTermCondition,
   deleteComment,
   generateSalesQuotation,
-  CancelQuotation
+  CancelQuotation,
 };

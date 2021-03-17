@@ -14,39 +14,45 @@ const texthandle = ($this, e) => {
 };
 
 export function generateLabResultReport(data) {
-  console.log("data=====>", data);
-  algaehApiCall({
-    uri: "/report",
-    method: "GET",
-    module: "reports",
-    headers: {
-      Accept: "blob",
-    },
-    others: { responseType: "blob" },
-    data: {
-      report: {
-        // reportName: "hematologyTestReport",
-        reportName: "pcrTestReport",
-        reportParams: [
-          { name: "hims_d_patient_id", value: data.patient_id },
-          {
-            name: "visit_id",
-            value: data.visit_id,
-          },
-          {
-            name: "hims_f_lab_order_id",
-            value: data.hims_f_lab_order_id,
-          },
-        ],
-        qrCodeReport: true,
-        outputFileType: "PDF",
+  return new Promise((resolve, reject) => {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
       },
-    },
-    onSuccess: (res) => {
-      const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
-      window.open(origin);
-    },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          // reportName: "hematologyTestReport",
+          reportName:
+            data?.isPCR === "Y" ? "pcrTestReport" : "hematologyTestReport",
+          reportParams: [
+            { name: "hims_d_patient_id", value: data.patient_id },
+            {
+              name: "visit_id",
+              value: data.visit_id,
+            },
+            {
+              name: "hims_f_lab_order_id",
+              value: data.hims_f_lab_order_id,
+            },
+          ],
+          qrCodeReport: true,
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
+        window.open(origin);
+        resolve();
+      },
+      onCatch: (err) => {
+        reject(err);
+      },
+    });
   });
 }
 

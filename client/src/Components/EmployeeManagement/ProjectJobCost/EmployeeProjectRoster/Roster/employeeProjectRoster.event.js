@@ -109,36 +109,45 @@ export function generateReports(dates, employees) {
   const columns = dates.map((item, index) => {
     return {
       label: item,
-      fieldName: item
+      fieldName: item,
     };
-  })
+  });
 
-  let employee_data = []
+  let employee_data = [];
 
   for (let i = 0; i < employees.length; i++) {
     let Obj = {
       employee_code: employees[i].employee_code,
       employee_name: employees[i].employee_name,
-      designation: employees[i].designation
-    }
+      designation: employees[i].designation,
+      identity_no: employees[i].identity_no,
+    };
     for (let j = 0; j < employees[i].projects.length; j++) {
-      Obj[employees[i].projects[j].attendance_date] = employees[i].projects[j].abbreviation
+      Obj[employees[i].projects[j].attendance_date] =
+        employees[i].projects[j].abbreviation;
     }
-    employee_data.push(Obj)
+    employee_data.push(Obj);
   }
-  console.log("columns", columns)
+  // console.log("columns", columns);
   GenerateExcel({
-    columns: [{
-      label: "Employee Code",
-      fieldName: "employee_code"
-    },
-    {
-      label: "Employee Name",
-      fieldName: "employee_name"
-    }, {
-      label: "Designation",
-      fieldName: "designation"
-    }].concat(columns),
+    columns: [
+      {
+        label: "Employee Code",
+        fieldName: "employee_code",
+      },
+      {
+        label: "Employee Name",
+        fieldName: "employee_name",
+      },
+      {
+        label: "Designation",
+        fieldName: "designation",
+      },
+      {
+        label: "Primary ID",
+        fieldName: "identity_no",
+      },
+    ].concat(columns),
     data: employee_data,
 
     excelBodyRender: (records, cb) => {
