@@ -1074,12 +1074,12 @@ export function Demographics({
                         <Controller
                           control={control}
                           name="secondary_identity_id"
-                          rules={{
-                            required: {
-                              value: true,
-                              message: "Please Enter Nationality ID",
-                            },
-                          }}
+                          // rules={{
+                          //   required: {
+                          //     value: true,
+                          //     message: "Please Enter Nationality ID",
+                          //   },
+                          // }}
                           render={({ onBlur, onChange, value }) => (
                             <AlgaehAutoComplete
                               div={{ className: "col-lg-5" }}
@@ -1087,7 +1087,7 @@ export function Demographics({
                                 fieldName: "secondary_identity_id",
                                 isImp: false,
                               }}
-                              error={errors}
+                              // error={errors}
                               selector={{
                                 name: "secondary_identity_id",
                                 className: "select-fld",
@@ -1117,12 +1117,12 @@ export function Demographics({
                         <Controller
                           control={control}
                           name="secondary_id_no"
-                          rules={{
-                            required: {
-                              value: true,
-                              message: "Please enter primary id no",
-                            },
-                          }}
+                          // rules={{
+                          //   required: {
+                          //     value: true,
+                          //     message: "Please enter primary id no",
+                          //   },
+                          // }}
                           render={(props) => (
                             <AlgaehFormGroup
                               div={{ className: "col-lg-7" }}
@@ -1130,7 +1130,7 @@ export function Demographics({
                                 fieldName: "secondary_id_no",
                                 isImp: false,
                               }}
-                              error={errors}
+                              // error={errors}
                               textBox={{
                                 ...props,
                                 className: "txt-fld",
