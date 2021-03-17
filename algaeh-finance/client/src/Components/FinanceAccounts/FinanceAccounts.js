@@ -38,21 +38,19 @@ export default function FinanceAccounts({ inDrawer = false }) {
       uri: "/finance/getAccountsExport",
       method: "GET",
       module: "finance",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
       onSuccess: (response) => {
-        let blob = new Blob([response.data], {
-          type: "application/octet-stream",
-        });
+        const urlBlob = URL.createObjectURL(response.data);
+        const a = document.createElement("a");
+        a.href = urlBlob;
+        a.download = `AccountsOpeningBalance-${moment(new Date()).format(
+          "YYYY-MM-DD"
+        )}.xlsx`;
+        a.click();
 
-        var objectUrl = URL.createObjectURL(blob);
-        var link = document.createElement("a");
-        link.setAttribute("href", objectUrl);
-        link.setAttribute(
-          "download",
-          `AccountsOpeningBalance-${moment(new Date()).format(
-            "YYYY-MM-DD"
-          )}.xlsx`
-        );
-        link.click();
         // AlgaehLoader({ show: false });
       },
       onCatch: (error) => {
