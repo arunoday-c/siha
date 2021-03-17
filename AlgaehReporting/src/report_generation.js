@@ -803,8 +803,9 @@ export default {
                               _fs.on("end", async () => {
                                 const rptPath = _reportOutput[0];
                                 if (qrCodeReport) {
+                                  // console.log
                                   await axios
-                                    .post("http://localhost:3024/fileShare", {
+                                    .post("http://localhost:3024=/fileShare", {
                                       filePath: rptPath,
                                       shortUrl: shortUrl,
                                     })
