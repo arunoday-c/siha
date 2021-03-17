@@ -19,7 +19,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `
          
-          select P.patient_code,trim(E.full_name) as doctor_name,P.full_name as patient_name,P.date_of_birth,P.contact_number,
+          select P.patient_code,trim(E.full_name) as doctor_name,P.full_name as patient_name,P.arabic_name as patient_ar_name,P.date_of_birth,P.contact_number,
           N.nationality,N.arabic_nationality,SD.sub_department_name,gender, age_in_years,   age_in_months,age_in_days, IP.insurance_provider_name,
           P.primary_id_no,ID.identity_document_name as primaryIDName,ID.arabic_identity_document_name as primaryAraIDName,
           P.secondary_id_no,IDD.identity_document_name as secondaryIDName,IDD.arabic_identity_document_name  as secondaryAraIDName,
@@ -37,7 +37,7 @@ const executePDF = function executePDFMethod(options) {
           where P.hims_d_patient_id=? and V.hims_f_patient_visit_id=?;
           select LO.lab_id_number,MS.hims_d_lab_specimen_id, MS.description as investigation_name,LA.description as analyte_name,LA.reference_range_required,
           LM.analyte_report_group, CASE WHEN LM.analyte_report_group = 'P' THEN 'Physical Appearance' WHEN LM.analyte_report_group = 'M' THEN 'Microscopic Examination' WHEN LM.analyte_report_group = 'D' THEN 'Differential Leukocyte Count'  WHEN LM.analyte_report_group = 'C' THEN 'Chemical Examination' ELSE '' END AS analyte_report_group_desc,
-          LO.ordered_date,LS.collected_date,LO.entered_date,LO.validated_date, LO.critical_status,LO.comments,
+          LO.ordered_date,LS.collected_date,LO.entered_date,date(LO.validated_date) as validated_date, LO.critical_status,LO.comments,
           OA.result,CASE WHEN OA.result_unit = 'NULL'  THEN '--' WHEN OA.result_unit IS NULL THEN '--' ELSE OA.result_unit END result_unit,
           TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_low)) as normal_low,
           TRIM(TRAILING '.' FROM TRIM(TRAILING '0' from OA.normal_high)) as normal_high, OA.critical_low,OA.critical_high,
