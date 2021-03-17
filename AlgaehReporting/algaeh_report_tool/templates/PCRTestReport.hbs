@@ -1,13 +1,20 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
+
 <style>
+
+  
    td,
    span,
    label {
    font-size: 12px;
+   font-style: normal;
+   font-weight: 400;
    }
    .tableForLabel tr td{
-   padding: 10px 3px !important;
+   padding: 6px !important;
    font-size: 15px  !important;
+   font-style: normal;
+   font-weight: 400;
    }
    .textArbRht label{
    font-size: 15px  !important;
@@ -34,118 +41,122 @@
    } .SealHere{
       height: 150px;
    }
+   .tableNoBorder2 p.textEngLft{font-size: 15px; line-height:20px; padding-right: 20px;}
+   .tableNoBorder2 p.textArbRht{font-size: 18px; line-height:24px; padding-left: 40px;}
 </style>
 <div class="print-body">
-       <section class="pcrTestHead">
-           <h4>(Covid-19)</h4>
-           <h4>Coronavirus (Covid-19) Lab Test Result</h4>
+       <section class="">
+        <table class="tableNoBorder2" cell-padding="0">
+         <tr>
+            <td width="50%" style="vertical-align: top;"><p  class="textEngLft"  >{{header.organization_name}} <br/>
+Based on Laboratory results {{header.organization_name}} Confirms that the information and data provided and contained in this report are complete and accurate, and the medical centre bears full responsibility if such information and data appear otherwise.
+</p></td>
+            <td width="50%" style="vertical-align: top;"><p  class="textArbRht">{{header.legal_name}}<br/>
+بناء على النتائج المخبرية يشهد {{header.legal_name}} بأن البيانات والمعلومات الواردة بهذا التقرير كاملة وصحيحة ودقيقة,وتتحمل المنشأة المسؤولية الكاملة إن ظهر خلاف ذلك
+</p></td>
+         </tr>
+         </table>
+
        </section>
    <section>
       <table class="tableForLabel" cell-padding="0">
          <tr>
-            <td class="textEngLft"><label>Patient Name</label></td>
-            <td class="textEngCtr"><span>{{header.patient_name}}</span></td>
-            <td class="textArbRht"><label>اسم</label></td>
+            <td class="textEngLft"><label>Lab Order No.</label></td>
+            <td class="textEngCtr" colspan="2"><span>{{header.lab_id_number}}</span></td>
+            <td class="textArbRht"><label>رقم طلب المعمل</label></td>
          </tr>
          <tr>
-            <td class="textEngLft"><label>Personal Contact No.</label></td>
-            <td class="textEngCtr"><span>{{header.contact_number}}</span></td>
-            <td class="textArbRht"><label>الرقم الشخصي</label></td>
+            <td class="textEngLft"><label>National ID\Iqama</label></td>
+            <td class="textEngCtr" colspan="2"><span>{{header.primary_id_no}}</span></td>
+            <td class="textArbRht"><label>رقم الهوية/الاقامة </label></td>
+         </tr>
+           <tr>
+            <td class="textEngLft"><label>Passport No.</label></td>
+            <td class="textEngCtr" colspan="2"><span>{{header.secondary_id_no}}</span></td>
+            <td class="textArbRht"><label>رقم جواز السفر</label></td>
          </tr>
          <tr>
-            <td class="textEngLft"><label>Date of Birth</label></td>
-            <td class="textEngCtr"><span>{{header.date_of_birth}}</span></td>
-            <td class="textArbRht"><label>تاريخ الولادة</label></td>
-         </tr>
-         <tr>
-            <td class="textEngLft"><label>Gender</label></td>
-            <td class="textEngCtr"><span>{{header.gender}}</span></td>
-            <td class="textArbRht"><label>الجنس</label></td>
+            <td class="textEngLft" width="30%"><label>Full Name</label></td>
+            <td class="textEngCtr"  width="20%"><span>{{header.patient_name}}</span></td>
+            <td class="textEngCtr"  width="20%"><span>{{header.patient_ar_name}}</span></td>
+            <td class="textArbRht"  width="30%"><label>الاسم الكامل</label></td>
          </tr>
          <tr>
             <td class="textEngLft"><label>Nationality</label></td>
             <td class="textEngCtr"><span>{{header.nationality}}</span></td>
-            <td class="textArbRht"><label>جنسية</label></td>
+            <td class="textEngCtr"><span>{{header.arabic_nationality}}</span></td>
+            <td class="textArbRht"><label>الجنسية</label></td>
          </tr>
          <tr>
-            <td class="textEngLft"><label>Test Location/ Facility</label></td>
-            <td class="textEngCtr"><span>Here Facility Name will come</span></td>
-            <td class="textArbRht"><label>مركز الفاحص</label></td>
+            <td class="textEngLft"><label>Contact Number</label></td>
+            <td class="textEngCtr" colspan="2"><span>{{header.tel_code}} {{header.contact_number}}</span></td>
+            <td class="textArbRht"><label>رقم التواصل</label></td>
          </tr>
-         <tr>
-            <td class="textEngLft"><label>Sample Date/ Time:</label></td>
-            <td class="textEngCtr"><span>{{header.collected_date}}</span></td>
-            <td class="textArbRht"><label>تاريخ / وقت العينة</label></td>
-         </tr>
-         <tr>
-            <td class="textEngLft"><label>Validation Date/ Time:</label></td>
-            <td class="textEngCtr"><span>{{header.validated_date}}</span></td>
-            <td class="textArbRht"><label>تاريخ / وقت تصديق</label></td>
-         </tr>
-      </table>
-   </section>
-   <section>
-      <table class="tableForLabel" cell-padding="0">
-         <thead>
-            <tr>
-               {{!-- 
-               <th>Sl No.</th>
-               --}}
-                <tr>
-                   <th>
-                      <span class="textEngLft">Test Name</span>
-                      <span class="textArbRht">فحص</span>
-                  </th>
-                    <th>
-                      <span class="textEngLft">Result</span>
-                      <span class="textArbRht">نتيجة</span>
-                  </th>
-               </tr>
-              
-            </tr>
-         </thead>
-         <tbody class="analyteResult">
-            {{#hasElement result}}
+
+ {{#hasElement result}}
             {{#each result}}
          
             {{#each groupWise}}
            
             {{#each groupDetail}}
-            <tr>
-               {{!-- 
-               <td>{{inc @index}}</td>
-               --}}
-               <td class="txtFld">{{service_name}}<p><small>Sample Type: {{analyte_name}} - {{investigation_name}}</small></p></td>
-               <td class="textEngCtr">{{result}}</td>
-            </tr>
+
+     {{#if result "Negative"}}
+        <tr>
+            <td class="textEngLft" bgcolor="#009688" text="white"><label  style="color: white;">Test Result</label></td>
+            <td class="textEngCtr" bgcolor="#009688" text="white" colspan="2"><span  style="color: white;">{{result}}</span></td>
+            <td class="textArbRht" bgcolor="#009688" text="white"><label  style="color: white;">نتيجة الاختبار</label></td>
+         </tr>
+      {{else}}
+       <tr>
+            <td class="textEngLft" bgcolor="#f44336" text="white"><label style="color: white;">Test Result</label></td>
+            <td class="textEngCtr" bgcolor="#f44336" text="white" colspan="2"><span  style="color: white;">{{result}}</span></td>
+            <td class="textArbRht" bgcolor="#f44336" text="white"><label  style="color: white;">نتيجة الاختبار</label></td>
+         </tr>
+      {{/if}}
+
             {{/each }}{{/each }}{{/each }}
             {{else}}
-            <tr>
-               <td colspan="12" class="noResultTextReport">No Records Found</td>
+           <tr>
+            <td class="textEngLft" ><label>Test Result</label></td>
+            <td class="textEngCtr" colspan="2"></td>
+            <td class="textArbRht"><label>نتيجة الاختبار</label></td>
             </tr>
             {{/hasElement }}
-         </tbody>
+
+         <tr>
+            <td class="textEngLft"><label>Test Date/ Time:</label></td>
+            <td class="textEngCtr" colspan="2"><span>{{header.collected_date}}</span></td>
+            <td class="textArbRht"><label>تاريخ-وقت النتيجة</label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Result Date:</label></td>
+            <td class="textEngCtr" colspan="2"><span>{{dateTime header.validated_date "date"}}</span></td>
+            <td class="textArbRht"><label>تاريخ نتيجة الفحص </label></td>
+         </tr>
+         <tr>
+            <td class="textEngLft"><label>Referral institution</label></td>
+            <td class="textEngCtr" colspan="2"><span>{{header.institute_name}}</span></td>
+            <td class="textArbRht"><label>الجهة المحولة</label></td>
+         </tr>
       </table>
-          <section>
-           <div class="" style="width:35%;float:left;text-align:center;">
-              <p>Scan QR to Validate</p>
-              <p class="QRCodeHere">
-                <img src={{barcode "qrcode" shortUrl false }} />
+   </section>
+   <section>
 
-                 {{!-- QR COde Here --}}
-                 </p>
-              <small>Or go to: {{shortUrl}}</small>
-           </div>
-           <div class="" style="width:55%;float:right;text-align:right;">
-                <p class="SealHere">
-                 {{!-- <img src="{{logoUrl 'PCRSEAL' identity }}" /> --}}
-
-                 {{!-- Seal Come Here --}}
-                 </p>
-               <p>معتمد من قبل</p>
-               <p>Authorised by</p>
-            </div>
-       </section>
+<table class="tableNoBorder">
+<tr>
+   <td  class="textEngCtr"><img style="height: 100px;" src="{{imageSource 'images/1_PCRSEAL.png'}}" /><p>{{header.legal_name}}</p></td>
+   <td  class="textEngCtr" width="50%"></td>
+   <td class="textEngCtr"><img style="height: 80px;" src="{{imageSource 'images/1_MOH.png'}}" /><p>أحد المؤسسات المرخصة من وزارة الصحة السعودية</p><p>Accredited by Saudi Ministry of Health</p></td>
+</tr>
+<tr>
+   <td  class="textEngLft"><p>Scan the QR Code to electronically check the report</p>
+   <p>Match sure the data on this report matches the onces in the passport</p></td>
+   <td   class="textEngCtr" width="50%"> <img style="height: 100px;border:1px solid #000;padding:5px;border-radius:2px;" src={{barcode "qrcode" shortUrl false }} /></td>
+   <td   class="textArbRht"><p>قم بمسح الباركود للتحقق من التقرير الكترونيا</p><p>تأكد من مطابقة البيانات في هذا التقرير
+بمعلومات جواز السفر أو الهوية الوطنية
+</p></td>
+</tr>
+</table> 
    </section>
    {{!-- 
    <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
