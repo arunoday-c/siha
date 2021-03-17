@@ -3,7 +3,7 @@ const common = require("./webpack.common.js");
 const path = require("path");
 const fs = require("fs");
 module.exports = (env) => {
-  const cPath = "../Client_Builds/algaeh-jobs";
+  const cPath = "../Client_Builds/algaeh-qr-scanner";
   const _path =
     env && env["Client_Builds"] === true
       ? path.resolve(__dirname, cPath, "build")
