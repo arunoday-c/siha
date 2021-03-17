@@ -26,8 +26,12 @@
         float: none;
         margin: 0 auto;
     }
-    .col-center b{
-        font-size: 15px!important;
+    .col-center b.orgArName{
+        font-size: 16px!important;
+        line-height: 20px;
+    }
+     .col-center b.orgEnName{
+        font-size: 10px!important;
         line-height: 20px;
     }
 
@@ -89,8 +93,8 @@
         <div class="col-right">
             <span class="pcrLogo2"><img src="{{logoUrl 'PCR' identity }}" /></span>
         </div>
-        <div class="col-center"> <p><b>{{legal_name}}</b></p>
-           <p><b>{{organization_name}}</b></p>
+        <div class="col-center"> <p><b class="orgArName">{{legal_name}}</b></p>
+           <p><b  class="orgEnName">{{organization_name}}</b></p>
            
         </div>
         <div class="headerFooterStyle">

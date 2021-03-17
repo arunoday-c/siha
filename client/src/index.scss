@@ -2167,3 +2167,27 @@ td {
     }
   }
 }
+.algaehInputGroup {
+  .ant-select-single {
+    width: 89px !important;
+    .ant-select-selector {
+      border: 1px solid $gold-color;
+    }
+  }
+  input {
+    width: calc(100% - 89px) !important;
+    border: 1px solid $gold-color;
+  }
+  .errorMsg {
+    position: absolute;
+    top: 53px !important;
+    left: 15px !important;
+    right: 15px !important;
+    font-size: 7px !important;
+    color: $color-white !important;
+    background: #ff3956 !important;
+    padding: 0 3px;
+    border-radius: 0 0 2px 2px;
+    font-weight: bold;
+  }
+}
