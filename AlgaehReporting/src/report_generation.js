@@ -802,15 +802,17 @@ export default {
                               const _fs = fs.createReadStream(_reportOutput[0]);
                               _fs.on("end", async () => {
                                 const rptPath = _reportOutput[0];
+                                if (qrCodeReport) {
+                                  await axios
+                                    .post("http://localhost:3024/fileShare", {
+                                      filePath: rptPath,
+                                      shortUrl: shortUrl,
+                                    })
+                                    .catch((error) => {
+                                      console.error(error.message);
+                                    });
+                                }
 
-                                const axiosRes = await axios
-                                  .post("http://localhost:3023/fileShare", {
-                                    filePath: rptPath,
-                                    shortUrl: shortUrl,
-                                  })
-                                  .catch((error) => {
-                                    console.error(error.message);
-                                  });
                                 fs.unlink(_reportOutput[0]);
                               });
                               _fs.pipe(res);
