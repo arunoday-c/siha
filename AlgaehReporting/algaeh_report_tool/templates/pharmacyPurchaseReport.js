@@ -53,6 +53,24 @@ const executePDF = function executePDFMethod(options) {
 
             resolve({
               result: nationgWiseEmp,
+              decimalOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
+              currencyOnly: {
+                decimal_places,
+                addSymbol: true,
+                symbol_position,
+                currency_symbol,
+              },
+              currencyOnlyWithoutSymbol: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
             });
           } else {
             resolve({
@@ -66,6 +84,12 @@ const executePDF = function executePDFMethod(options) {
               currencyOnly: {
                 decimal_places,
                 addSymbol: true,
+                symbol_position,
+                currency_symbol,
+              },
+              currencyOnlyWithoutSymbol: {
+                decimal_places,
+                addSymbol: false,
                 symbol_position,
                 currency_symbol,
               },

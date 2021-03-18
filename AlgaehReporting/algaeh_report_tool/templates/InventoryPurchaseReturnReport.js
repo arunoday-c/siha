@@ -7,7 +7,11 @@ const executePDF = function executePDFMethod(options) {
 
       // const utilities = new algaehUtilities();
       let input = {};
-
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
       const params = options.args.reportParams;
 
       params.forEach((para) => {
@@ -55,10 +59,22 @@ const executePDF = function executePDFMethod(options) {
                 _.sumBy(nationgWiseEmp, (s) => parseFloat(s.net_total)),
                 options.args.crypto
               ),
+              currencyOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
             });
           } else {
             resolve({
               result: result,
+              currencyOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
             });
           }
         })

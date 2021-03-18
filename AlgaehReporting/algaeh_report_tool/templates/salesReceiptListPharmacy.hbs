@@ -35,10 +35,10 @@
                         <td>{{mrn_no}}</td>
                         <td>{{cashier}}</td>
                         <td>{{collected_time}}</td>
-                        <td>{{cash}}</td>
-                        <td>{{card}}</td>
-                        <td>{{check}}</td>
-                        <td>{{total_amount}}</td>
+                        <td>{{numberFormating cash ../currencyOnly }}</td>
+                        <td>{{numberFormating card ../currencyOnly}}</td>
+                        <td>{{numberFormating check ../currencyOnly}}</td>
+                        <td>{{numberFormating total_amount ../currencyOnly}}</td>
                     </tr>
                     {{/each }}
                 </tbody>
@@ -46,22 +46,22 @@
             <table class="tableTotal">
                 <tr>
                     <td>Total Cash Amount</td>
-                    <td>{{total_cash}}</td>
+                    <td>{{numberFormating total_cash currencyOnlyWithSymbol}}</td>
                     <td>الإجمالي قبل الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Total Card Amount</td>
-                    <td>{{total_card}}</td>
+                    <td>{{numberFormating total_card currencyOnlyWithSymbol}}</td>
                     <td>الخصم</td>
                 </tr>
                 <tr>
                     <td>Total Cheque Amount</td>
-                    <td>{{total_check}}</td>
+                    <td>{{numberFormating total_check currencyOnlyWithSymbol}}</td>
                     <td>نسبة التحمل</td>
                 </tr>
                 <tr>
                     <td>Total Net Amount</td>
-                    <td>{{total_sum}}</td>
+                    <td>{{numberFormating total_sum currencyOnlyWithSymbol}}</td>
                     <td>المبلغ المدفوع</td>
                 </tr>
             </table>

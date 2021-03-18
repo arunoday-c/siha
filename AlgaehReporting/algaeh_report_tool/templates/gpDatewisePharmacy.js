@@ -1,15 +1,19 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const _ = options.loadash;
     // const utilities = new algaehUtilities();
     try {
       //  let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -38,20 +42,20 @@ const executePDF = function executePDFMethod(options) {
 		  date(?) and date(?))   as A
 		  group by transaction_date;`,
           values: [input.from_date, input.to_date],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           // utilities.logger().log("result:", result);
 
-          const sum_purchase = _.sumBy(result, s =>
+          const sum_purchase = _.sumBy(result, (s) =>
             parseFloat(s.purchase_amount)
           ).toFixed(decimal_places);
 
-          const sum_sold_amount = _.sumBy(result, s =>
+          const sum_sold_amount = _.sumBy(result, (s) =>
             parseFloat(s.sold_amount)
           ).toFixed(decimal_places);
 
-          const sum_gp_profit_amount_aftr_vat = _.sumBy(result, s =>
+          const sum_gp_profit_amount_aftr_vat = _.sumBy(result, (s) =>
             parseFloat(s.gp_profit_amount_aftr_vat)
           ).toFixed(decimal_places);
 
@@ -64,10 +68,22 @@ const executePDF = function executePDFMethod(options) {
             sum_purchase: sum_purchase,
             sum_sold_amount: sum_sold_amount,
             sum_gp_profit_amount_aftr_vat: sum_gp_profit_amount_aftr_vat,
-            sum_gp_percent: sum_gp_percent
+            sum_gp_percent: sum_gp_percent,
+            currencyOnly: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyOnlyWithSymbol: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

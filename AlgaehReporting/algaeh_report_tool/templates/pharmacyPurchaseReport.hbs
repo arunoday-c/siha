@@ -50,12 +50,12 @@
                         <td>{{uom_description}}</td>
                         {{!-- <td class="numberFld">{{numberFormating authorize_quantity ../currencyOnly}}</td> --}}
                         <td class="numberFld">{{authorize_quantity}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td>
+                        <td class="numberFld">{{numberFormating unit_cost ../../currencyOnlyWithoutSymbol}}</td>
+                        <td class="numberFld">{{numberFormating net_extended_cost ../../currencyOnlyWithoutSymbol}}</td>
                     </tr>
                     {{/each }} <tr class="tableSubHdg2">
                         <td colspan="6"></td>
-                        <td class="numberFld"><b>{{net_total}}</b></td>
+                        <td class="numberFld"><b>{{numberFormating net_total ../currencyOnly}}</b></td>
                     </tr>{{/each }}
                    
                     {{else}}

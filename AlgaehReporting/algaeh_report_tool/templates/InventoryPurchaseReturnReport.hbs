@@ -51,12 +51,12 @@
                         <td>{{uom_description}}</td>
                         <td>{{expiry_date}}</td>
                         <td class="numberFld">{{return_qty}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td>
+                        <td class="numberFld">{{numberFormating unit_cost ../../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_extended_cost ../../currencyOnly}}</td>
                     </tr>
                     {{/each }}<tr class="tableSubHdg2">
                         <td colspan="7"></td>
-                        <td class="numberFld"><b>{{net_total}}</b></td>
+                        <td class="numberFld"><b>{{numberFormating net_total ../currencyOnly}}</b></td>
                     </tr>{{/each }}
                     {{else}}
                     <tr>

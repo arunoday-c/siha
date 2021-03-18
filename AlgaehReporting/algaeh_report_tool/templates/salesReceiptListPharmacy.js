@@ -1,12 +1,17 @@
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const decimal_places = options.args.crypto.decimal_places;
-      params.forEach(para => {
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
+      // const decimal_places = options.args.crypto.decimal_places;
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -39,12 +44,12 @@ const executePDF = function executePDFMethod(options) {
             input.from_date,
             input.to_date,
             input.from_date + " " + input.from_time,
-            input.to_date + " " + input.to_time
+            input.to_date + " " + input.to_time,
           ],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(rawResult => {
+        .then((rawResult) => {
           let result = [];
 
           if (
@@ -53,13 +58,13 @@ const executePDF = function executePDFMethod(options) {
             input.pay_type == "CA"
           ) {
             let ids = _.chain(rawResult)
-              .filter(f => f.pay_type == input.pay_type)
-              .map(obj => obj.hims_f_receipt_header_id)
+              .filter((f) => f.pay_type == input.pay_type)
+              .map((obj) => obj.hims_f_receipt_header_id)
               .value();
 
-            ids.map(val => {
+            ids.map((val) => {
               result.push(
-                ..._.filter(rawResult, f => f.hims_f_receipt_header_id == val)
+                ..._.filter(rawResult, (f) => f.hims_f_receipt_header_id == val)
               );
             });
           } else {
@@ -67,22 +72,22 @@ const executePDF = function executePDFMethod(options) {
           }
 
           const data = _.chain(result)
-            .groupBy(g => g.hims_f_receipt_header_id)
-            .map(function(item, key) {
+            .groupBy((g) => g.hims_f_receipt_header_id)
+            .map(function (item, key) {
               const cash = _.chain(item)
-                .filter(f => f.pay_type == "CA")
-                .sumBy(s => parseFloat(s.amount))
+                .filter((f) => f.pay_type == "CA")
+                .sumBy((s) => parseFloat(s.amount))
                 .value()
                 .toFixed(decimal_places);
 
               const card = _.chain(item)
-                .filter(f => f.pay_type == "CD")
-                .sumBy(s => parseFloat(s.amount))
+                .filter((f) => f.pay_type == "CD")
+                .sumBy((s) => parseFloat(s.amount))
                 .value()
                 .toFixed(decimal_places);
               const check = _.chain(item)
-                .filter(f => f.pay_type == "CH")
-                .sumBy(s => parseFloat(s.amount))
+                .filter((f) => f.pay_type == "CH")
+                .sumBy((s) => parseFloat(s.amount))
                 .value()
                 .toFixed(decimal_places);
               return {
@@ -96,26 +101,26 @@ const executePDF = function executePDFMethod(options) {
                 card: card,
                 check: check,
                 cashier: item[0]["cashier"],
-                collected_time: item[0]["collected_time"]
+                collected_time: item[0]["collected_time"],
               };
             })
             .value();
 
           const total_cash = _.chain(result)
-            .filter(f => f.pay_type == "CA")
-            .sumBy(s => parseFloat(s.amount))
+            .filter((f) => f.pay_type == "CA")
+            .sumBy((s) => parseFloat(s.amount))
             .value()
             .toFixed(decimal_places);
 
           const total_card = _.chain(result)
-            .filter(f => f.pay_type == "CD")
-            .sumBy(s => parseFloat(s.amount))
+            .filter((f) => f.pay_type == "CD")
+            .sumBy((s) => parseFloat(s.amount))
             .value()
             .toFixed(decimal_places);
 
           const total_check = _.chain(result)
-            .filter(f => f.pay_type == "CH")
-            .sumBy(s => parseFloat(s.amount))
+            .filter((f) => f.pay_type == "CH")
+            .sumBy((s) => parseFloat(s.amount))
             .value()
             .toFixed(decimal_places);
           const total_sum =
@@ -128,13 +133,24 @@ const executePDF = function executePDFMethod(options) {
             total_cash: total_cash,
             total_card: total_card,
             total_check: total_check,
-            total_sum: total_sum.toFixed(decimal_places)
+            total_sum: total_sum.toFixed(decimal_places),
+            currencyOnly: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyOnlyWithSymbol: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           };
           resolve(output);
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
-          
         });
 
       //----------------------------------

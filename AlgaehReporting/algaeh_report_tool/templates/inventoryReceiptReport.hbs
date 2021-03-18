@@ -49,9 +49,9 @@
                         <td>{{invoice_date}}</td>
                         <td  class="txtFld">{{vendor_name}}</td>
                         <td class="txtFld">{{created_user}}</td>
-                        <td  class="numberFld">{{net_total}}</td>
-                        <td  class="numberFld">{{total_tax}}</td>
-                        <td  class="numberFld">{{net_payable}}</td>
+                        <td  class="numberFld">{{ numberFormating net_total ../currencyOnly }}</td>
+                        <td  class="numberFld">{{numberFormating total_tax ../currencyOnly}}</td>
+                        <td  class="numberFld">{{ numberFormating net_payable ../currencyOnly}}</td>
                         <td  class="">{{return_done}}</td>
                         <td  class="">{{is_posted}}</td>
                     </tr>

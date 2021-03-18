@@ -5,7 +5,12 @@ const executePDF = function executePDFMethod(options) {
       const _ = options.loadash;
       //  const utilities = new algaehUtilities();
       let str = "";
-      const decimal_places = options.args.crypto.decimal_places;
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
+      // const decimal_places = options.args.crypto.decimal_places;
       let input = {};
       let params = options.args.reportParams;
 
@@ -61,7 +66,16 @@ const executePDF = function executePDFMethod(options) {
             .value()
             .toFixed(decimal_places);
 
-          resolve({ detail: result, grandTotal: grandTotal });
+          resolve({
+            detail: result,
+            grandTotal: grandTotal,
+            currencyOnly: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+          });
           // utilities
           //   .logger()
           //   .log("results: ", { detail: result, grandTotal: grandTotal });
