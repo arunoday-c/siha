@@ -45,15 +45,15 @@
                         <td class="txtFld">{{item_description}}</th>
                         <td>{{uom_description}}</td>
                         <td class="numberFld">{{quantity_transfer}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td>
+                        <td class="numberFld">{{numberFormating unit_cost ../../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating net_extended_cost ../../currencyOnly}}</td>
                         {{!-- <td class="">{{from_location}}</td>
                         <td class="">{{to_location}}</td> --}}
                     </tr>
                     {{/each }}
                     <tr class="tableSubHdg2">
                         <td colspan="6"></td>
-                        <td class="numberFld"><b>{{sum_total_net_extended_cost}}</b></td>
+                        <td class="numberFld"><b>{{ sum_total_net_extended_cost }}</b></td>
                     </tr>
                     {{/each }}
                     {{else}}

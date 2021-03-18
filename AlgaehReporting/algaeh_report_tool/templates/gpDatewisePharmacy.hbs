@@ -25,10 +25,10 @@
                         <td>{{inc @index}}</td>
                         <td>{{transaction_date}}</td>
                         <td>{{purchase_amount}}</td>
-                        <td>{{sold_amount}}</td>
-                        <td>{{vat_amount}}</td>
-                        <td>{{profit_amount}}</td>
-                        <td>{{gp_profit_amount_aftr_vat}}</td>
+                        <td>{{numberFormating sold_amount ../currencyOnly}}</td>
+                        <td>{{numberFormating vat_amount ../currencyOnly}}</td>
+                        <td>{{numberFormating profit_amount ../currencyOnly}}</td>
+                        <td>{{numberFormating gp_profit_amount_aftr_vat ../currencyOnly}}</td>
                         <td>{{gp_profit_percentage}}</td>
                     </tr>
                     {{/each }}
@@ -40,17 +40,17 @@
 
                 <tr>
                     <td>Total Purchase Amount</td>
-                    <td>{{sum_purchase}}</td>
+                    <td>{{numberFormating sum_purchase currencyOnlyWithSymbol}}</td>
                     <td>الخصم</td>
                 </tr>
                 <tr>
                     <td>Total Sales Amount</td>
-                    <td>{{sum_sold_amount}}</td>
+                    <td>{{numberFormating sum_sold_amount currencyOnlyWithSymbol}}</td>
                     <td>الإجمالي قبل الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Total GP</td>
-                    <td>{{sum_gp_profit_amount_aftr_vat}}</td>
+                    <td>{{numberFormating sum_gp_profit_amount_aftr_vat currencyOnlyWithSymbol}}</td>
                     <td>نسبة التحمل</td>
                 </tr>
                 <tr>

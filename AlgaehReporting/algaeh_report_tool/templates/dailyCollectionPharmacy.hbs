@@ -15,9 +15,9 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{total_cash}}</td>
-                    <td>{{total_card}}</td>
-                    <td>{{total_check}}</td>
+                    <td>{{numberFormating total_cash currencyOnly}}</td>
+                    <td>{{numberFormating total_card currencyOnly}}</td>
+                    <td>{{numberFormating total_check currencyOnly}}</td>
                 </tr>
             </tbody>
         </table>
@@ -25,17 +25,17 @@
         <table class="tableTotal">
             <tr class="">
                 <td>Total Sales Invoice Amt.</td>
-                <td>{{total_collection}}</td>
+                <td>{{numberFormating total_collection currencyOnly}}</td>
                 <td>إجمالي المبيعات</td>
             </tr>
             <tr class="">
                 <td>Total Return Invoice Amt.</td>
-                <td>{{total_returned}}</td>
+                <td>{{numberFormating total_returned currencyOnly}}</td>
                 <td>إجمالي العائد المبلغ</td>
             </tr>
             <tr class="">
                 <td>Total Income Amount</td>
-                <td>{{income}}</td>
+                <td>{{numberFormating income currencyOnly}}</td>
                 <td>إجمالي الدخل</td>
             </tr>
 
