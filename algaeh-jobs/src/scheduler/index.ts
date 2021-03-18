@@ -125,6 +125,7 @@ async function ReadAndExecuteTemplate(
       throw new Error("There is no message Template exist");
     }
   } catch (e) {
+    connection.release();
     throw e;
   }
 }
