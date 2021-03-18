@@ -564,10 +564,13 @@ export default {
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
 
+      // console.log("Services", Services);
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
-          appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab &&
+          (f.hims_f_ordered_services_id === undefined ||
+            f.hims_f_ordered_services_id === null)
       ).map((s) => {
         return {
           ordered_services_id: s.hims_f_ordered_services_id || null,
@@ -583,6 +586,9 @@ export default {
           test_id: s.test_id,
         };
       });
+
+      // console.log("labServices", labServices);
+      // conseol.log("labServices", labServices);
 
       if (labServices.length > 0) {
         const IncludeValues = [
@@ -2110,7 +2116,14 @@ export default {
             printQuery: true,
           })
           .then((result) => {
-            req.records = { LAB: false };
+            // console.log("req.records.LAB_Package", req.body.LAB_Package);
+            if (req.body.LAB_Package === true) {
+              req.records = { LAB: true };
+            } else {
+              req.records = { LAB: false };
+            }
+            // console.log("req.records.LAB_Package", req.records.LAB);
+            // consol.log("1");
             next();
           })
           .catch((e) => {

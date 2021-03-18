@@ -369,7 +369,7 @@ export default {
             report_header_file_name,report_footer_file_name,report_props from algaeh_d_reports where status='A' and report_name in (?);\
             select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
-            O.email,O.website,O.phone1,O.fax from hims_d_hospital H,hims_d_organization O \
+            O.email,O.website,O.phone1,O.phone2,O.fax from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
           printQuery: true,
@@ -803,8 +803,9 @@ export default {
                               _fs.on("end", async () => {
                                 const rptPath = _reportOutput[0];
                                 if (qrCodeReport) {
+                                  // console.log
                                   await axios
-                                    .post("http://localhost:3023/fileShare", {
+                                    .post("http://localhost:3024=/fileShare", {
                                       filePath: rptPath,
                                       shortUrl: shortUrl,
                                     })

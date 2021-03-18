@@ -20,7 +20,7 @@
    font-size: 15px  !important;
    }
    .tableForDataNoBorder tr td{
-   padding: 10px 3px !important;
+   padding: 5px 3px !important;
    font-size: 15px  !important;
    }
    .pcrTestHead{
@@ -41,10 +41,16 @@
    } .SealHere{
       height: 150px;
    }
-   .tableNoBorder2 p.textEngLft{font-size: 15px; line-height:20px; padding-right: 20px;}
-   .tableNoBorder2 p.textArbRht{font-size: 18px; line-height:24px; padding-left: 40px;}
+   .tableNoBorder2 p.textEngLft{font-size: 13px; line-height:20px; padding-right: 20px;}
+   .tableNoBorder2 p.textArbRht{font-size: 15px; line-height:24px; padding-left: 40px;}
 </style>
 <div class="print-body">
+   <section  style="text-align: center;">
+      <p><img style="height: 25px;" src="{{imageSource 'images/KSA_AR.png'}}" /></p>
+      <p><img style="height:50px;" src="{{imageSource 'images/KSA_EN.png'}}" /></p>
+      <h1 style="line-height: 30px;">PCR-RT شهادة فحص فيروس كورونا المستجد ( كوفيد ١٩) بتقنية<br/>
+Covid-19 Test Result Certificate-By Real-Time PCR</h1>
+   </section>
        <section class="">
         <table class="tableNoBorder2" cell-padding="0">
          <tr>
@@ -126,7 +132,7 @@ Based on Laboratory results {{header.organization_name}} Confirms that the infor
          <tr>
             <td class="textEngLft"><label>Test Date/ Time:</label></td>
             <td class="textEngCtr" colspan="2"><span>{{header.collected_date}}</span></td>
-            <td class="textArbRht"><label>تاريخ-وقت النتيجة</label></td>
+            <td class="textArbRht"><label>تاريخ/وقت الفحص</label></td>
          </tr>
          <tr>
             <td class="textEngLft"><label>Result Date:</label></td>
@@ -145,13 +151,13 @@ Based on Laboratory results {{header.organization_name}} Confirms that the infor
 <table class="tableNoBorder">
 <tr>
    <td  class="textEngCtr"><img style="height: 100px;" src="{{imageSource 'images/1_PCRSEAL.png'}}" /><p>{{header.legal_name}}</p></td>
-   <td  class="textEngCtr" width="50%"></td>
+   <td  class="textEngCtr" width="50%"> <img style="height: 100px;border:1px solid #000;padding:5px;border-radius:2px;" src={{barcode "qrcode" shortUrl false }} /></td>
    <td class="textEngCtr"><img style="height: 80px;" src="{{imageSource 'images/1_MOH.png'}}" /><p>أحد المؤسسات المرخصة من وزارة الصحة السعودية</p><p>Accredited by Saudi Ministry of Health</p></td>
 </tr>
 <tr>
    <td  class="textEngLft"><p>Scan the QR Code to electronically check the report</p>
    <p>Match sure the data on this report matches the onces in the passport</p></td>
-   <td   class="textEngCtr" width="50%"> <img style="height: 100px;border:1px solid #000;padding:5px;border-radius:2px;" src={{barcode "qrcode" shortUrl false }} /></td>
+   <td class="textEngCtr" width="50%"></td>
    <td   class="textArbRht"><p>قم بمسح الباركود للتحقق من التقرير الكترونيا</p><p>تأكد من مطابقة البيانات في هذا التقرير
 بمعلومات جواز السفر أو الهوية الوطنية
 </p></td>
