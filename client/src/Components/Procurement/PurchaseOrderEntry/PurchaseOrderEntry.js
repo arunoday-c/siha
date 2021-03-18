@@ -109,7 +109,7 @@ class PurchaseOrderEntry extends Component {
           if (result === "show") {
             getData(this, "PHR");
             po_from = "PHR";
-            bothExisits = bothExisits === false ? false : true;
+            // bothExisits = bothExisits === false ? false : true;
           } else {
             getData(this, "INV");
             bothExisits = true;
