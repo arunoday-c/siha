@@ -71,11 +71,23 @@ const executePDF = function executePDFMethod(options) {
 
             resolve({
               result: item_details,
+              currencyOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
               // sum_total_net_extended_cost,
             });
           } else {
             resolve({
               result: result,
+              currencyOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
               // sum_total_net_extended_cost: 0,
             });
           }

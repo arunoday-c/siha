@@ -61,7 +61,16 @@ const executePDF = function executePDFMethod(options) {
             _.sumBy(result, (s) => parseFloat(s.net_amount)),
             options.args.crypto
           );
-          resolve({ detail: result, net_total: net_total });
+          resolve({
+            detail: result,
+            net_total: net_total,
+            currencyOnly: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
+          });
         })
         .catch((error) => {
           options.mysql.releaseConnection();

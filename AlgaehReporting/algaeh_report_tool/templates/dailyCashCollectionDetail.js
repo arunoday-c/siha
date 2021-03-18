@@ -97,7 +97,7 @@ const executePDF = function executePDFMethod(options) {
             },
             currencyOnly: {
               decimal_places,
-              addSymbol: true,
+              addSymbol: false,
               symbol_position,
               currency_symbol,
             },

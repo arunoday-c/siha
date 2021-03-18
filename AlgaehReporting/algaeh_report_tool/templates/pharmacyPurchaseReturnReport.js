@@ -9,7 +9,11 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
 
       const params = options.args.reportParams;
-
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
@@ -55,10 +59,22 @@ const executePDF = function executePDFMethod(options) {
                 _.sumBy(nationgWiseEmp, (s) => parseFloat(s.net_total)),
                 options.args.crypto
               ),
+              currencyOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
             });
           } else {
             resolve({
               result: result,
+              currencyOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
             });
           }
         })

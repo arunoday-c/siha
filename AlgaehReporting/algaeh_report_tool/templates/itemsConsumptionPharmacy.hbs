@@ -32,20 +32,20 @@
                         <td>{{item_description}}</td>
                         <td>{{sub_department_name}}</td>
                         <td>{{quantity}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
-                        <td class="numberFld">{{extended_cost}}</td>
+                        <td class="numberFld">{{numberFormating unit_cost ../../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating extended_cost ../../currencyOnly}}</td>
                     </tr>
                     {{/each }}
                     <tr class="tableSubHdg2">
                         <td colspan="8" class="numberFld">Total Net Amount</td>
-                        <td class="numberFld">{{total_cost}}</td>
+                        <td class="numberFld">{{numberFormating total_cost ../currencyOnly}}</td>
                     </tr>
                     {{/each }}
               
                 </tbody>
             </table>
             <table class="tableTotal">
-                <tr class="bold"><td>Grand Total</td><td>{{grandTotal}}</td><td>المبلغ الإجمالي الكلي</td></tr>
+                <tr class="bold"><td>Grand Total</td><td>{{numberFormating grandTotal currencyOnly}}</td><td>المبلغ الإجمالي الكلي</td></tr>
                </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}

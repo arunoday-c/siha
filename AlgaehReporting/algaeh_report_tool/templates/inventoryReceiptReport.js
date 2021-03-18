@@ -93,6 +93,12 @@ const executePDF = function executePDFMethod(options) {
                 _.sumBy(nationgWiseEmp, (s) => parseFloat(s.net_payable)),
                 options.args.crypto
               ),
+              currencyOnly: {
+                decimal_places,
+                addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
             });
           } else {
             resolve({
