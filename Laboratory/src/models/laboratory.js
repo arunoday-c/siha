@@ -568,9 +568,7 @@ export default {
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Lab &&
-          (f.hims_f_ordered_services_id === undefined ||
-            f.hims_f_ordered_services_id === null)
+          appsettings.hims_d_service_type.service_type_id.Lab
       ).map((s) => {
         return {
           ordered_services_id: s.hims_f_ordered_services_id || null,
