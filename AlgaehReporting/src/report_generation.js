@@ -655,8 +655,7 @@ export default {
                     let detailResult = result;
                     if (qrCodeReport) {
                       const qrUrl =
-                        process.env.QR_CODE_CLIENT ??
-                        "http://192.168.0.116:3023/";
+                        process.env.QR_CODE_CLIENT ?? "http://localhost:3024/";
                       shortUrl = shortid.generate();
                       detailResult["shortUrl"] = `${qrUrl}${shortUrl}`;
                     }
@@ -751,7 +750,7 @@ export default {
                                 const _fs = fs.createReadStream(_rOut);
                                 _fs.on("end", async () => {
                                   const axiosRes = await axios(
-                                    "http://localhost:3023/fileShare",
+                                    "http://localhost:3024/fileShare",
                                     {
                                       method: "POST",
                                       data: {
@@ -803,9 +802,8 @@ export default {
                               _fs.on("end", async () => {
                                 const rptPath = _reportOutput[0];
                                 if (qrCodeReport) {
-                                  // console.log
                                   await axios
-                                    .post("http://localhost:3024=/fileShare", {
+                                    .post("http://localhost:3024/fileShare", {
                                       filePath: rptPath,
                                       shortUrl: shortUrl,
                                     })
