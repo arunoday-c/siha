@@ -64,12 +64,21 @@ export default function SalesOrder() {
     });
   });
 
-  api.post("/addInvoiceEntry", addInvoiceEntry, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records,
-    });
-  });
+  api.post(
+    "/addInvoiceEntry",
+    (req, res, next) => {
+      req.connection = null;
+      delete req.connection;
+      next();
+    },
+    addInvoiceEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.put(
     "/postSalesInvoice",

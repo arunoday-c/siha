@@ -27,10 +27,10 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
       return module_id;
     });
   }
-  function redirectToScreen(item, display, others) {
+  async function redirectToScreen(item, display, others) {
     const screenName = display.replace(/ /g, "");
     const selMenu = { ...item, ...others };
-    setItem("userSelectedMenu", selMenu);
+    await setItem("userSelectedMenu", selMenu);
     setSelectedMenuItem(selMenu);
     setActiveScreen(item.screen_name);
     document.cookie = "Tab=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
