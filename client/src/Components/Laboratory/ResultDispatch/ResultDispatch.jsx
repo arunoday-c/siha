@@ -70,6 +70,7 @@ export default memo(function () {
     setIsLoading(true);
     const records = await loadPatientRecords({ patient_id: patientId });
     setIsLoading(false);
+
     setData(records);
   }
 
@@ -125,9 +126,9 @@ export default memo(function () {
                 </div>
                 <div className="portlet-body">
                   <Spin spinning={isLoading}>
-                    {data.map((item, index) => (
-                      <Accordion key={index} details={item} />
-                    ))}
+                    {data.map((item, index) => {
+                      return <Accordion key={index} details={item} />;
+                    })}
                   </Spin>
                 </div>
               </>
