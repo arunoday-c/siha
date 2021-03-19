@@ -1112,7 +1112,41 @@ let selectOrderServices = (req, res, next) => {
 //     next(e);
 //   }
 // };
-
+let getAllServicesDateRange = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query: `SELECT  OS.hims_f_ordered_services_id,LO.lab_id_number,E.full_name as doc_name,
+          E.arabic_name as doc_arabicName,P.patient_code, P.full_name,P.arabic_name,OS.patient_id, OS.visit_id, OS.doctor_id, OS.service_type_id
+          , OS.services_id, OS.test_type, OS.insurance_yesno,OS.insurance_provider_id, OS.insurance_sub_id, OS.network_id,
+           OS.policy_number, OS.pre_approval, OS.apprv_status,OS.billed, OS.created_by, OS.created_date, OS.updated_by,           
+           OS.updated_date,  S.hims_d_services_id, S.service_code, S.cpt_code,S.service_name, S.arabic_service_name, S.service_desc,
+            S.sub_department_id, S.hospital_id,S.service_type_id, S.procedure_type, S.standard_fee, S.followup_free_fee,
+            S.followup_paid_fee, S.discount, S.vat_applicable, S.vat_percent, S.service_status, OS.trans_package_detail_id, 
+            ST.service_type FROM hims_f_ordered_services OS            inner join  hims_d_services S on OS.services_id = S.hims_d_services_id 
+            inner join  hims_d_service_type ST on OS.service_type_id = ST.hims_d_service_type_id           
+             left join  hims_f_lab_order LO on OS.hims_f_ordered_services_id=LO.ordered_services_id left join hims_f_patient P on  
+              OS.patient_id=P.hims_d_patient_id left join hims_d_employee E on OS.doctor_id = E.hims_d_employee_id
+          WHERE OS.record_status='A' and date(OS.created_date)  = date(?) 
+          ;`,
+        values: [req.query.selectedHDate],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 let selectOrderServicesbyDoctor = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
@@ -2597,4 +2631,5 @@ export default {
   deleteInvOrderedItems,
   deleteOrderedPackage,
   checkOrderedDetails,
+  getAllServicesDateRange,
 };

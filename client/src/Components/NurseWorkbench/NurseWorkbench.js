@@ -54,7 +54,7 @@ import {
 } from "algaeh-react-components";
 import VitalsHistory from "../PatientProfile/Vitals/VitalsHistory";
 import ModalMedicalRecord from "../DoctorsWorkbench/ModalForMedicalRecordPat";
-
+import AllServicesModal from "./AllServicesModal";
 class NurseWorkbench extends Component {
   constructor(props) {
     super(props);
@@ -95,6 +95,7 @@ class NurseWorkbench extends Component {
       patient_provider_id: undefined,
       openVitalHistoryPop: false,
       openMrdModal: false,
+      openAllserviceModal: false,
     };
     this.getVitalsRef = undefined;
     this.baseState = this.state;
@@ -735,6 +736,7 @@ class NurseWorkbench extends Component {
   }
   onSelectedDateHandler(e) {
     const fromDate = e.currentTarget.getAttribute("date");
+
     this.setState(
       {
         activeDateHeader: e.currentTarget.getAttribute("date"),
@@ -1092,13 +1094,23 @@ class NurseWorkbench extends Component {
       openMrdModal: !this.state.openMrdModal,
     });
   }
+  onCloseAllServiceModal(e) {
+    this.setState({
+      openAllserviceModal: !this.state.openAllserviceModal,
+    });
+  }
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
       this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
-
+    // const dateRangeFor =
+    //   localStorage.getItem("workbenchDateRange") !== null
+    //     ? JSON.parse(localStorage.getItem("workbenchDateRange"))
+    //     : {
+    //         activeDateHeader: this.state.fromDate,
+    //       };
     const patientListArray =
       this.state.searchText === "" ? this.state.data : this.state.filterList;
     return (
@@ -1220,7 +1232,14 @@ class NurseWorkbench extends Component {
                     },
                   }}
                 />
-
+                <button
+                  onClick={() => {
+                    this.onCloseAllServiceModal();
+                  }}
+                >
+                  {" "}
+                  Open All Services Today{" "}
+                </button>
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Search Patient" }} />
                   <Input
@@ -2147,6 +2166,33 @@ class NurseWorkbench extends Component {
             </div>
           </div>
         </div>
+        {this.state.openAllserviceModal ? (
+          <AlgaehModal
+            title="Medical Record List"
+            visible={this.state.openAllserviceModal}
+            mask={true}
+            maskClosable={false}
+            onCancel={() => this.onCloseAllServiceModal()}
+            key="1"
+            footer={[
+              <div className="col-12">
+                <button
+                  onClick={() => this.onCloseAllServiceModal()}
+                  className="btn btn-default btn-sm"
+                >
+                  Cancel
+                </button>
+              </div>,
+            ]}
+            className={`algaehNewModal`}
+          >
+            <AllServicesModal
+              selectedHDate={moment(this.state.activeDateHeader).format(
+                "YYYY-MM-DD"
+              )}
+            />
+          </AlgaehModal>
+        ) : null}
       </div>
     );
   }
