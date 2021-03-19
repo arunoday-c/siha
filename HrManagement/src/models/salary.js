@@ -90,7 +90,7 @@ export default {
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id  where \
             A.`year`=? and A.`month`=? and A.hospital_id=?" +
             _stringData +
-            " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y' or date(E.last_salary_process_date ) <= date('" +
+            " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y' or date(E.last_salary_process_date ) < date('" +
             month_end +
             "'))";
           // and (S.salary_processed is null or  S.salary_processed='N');
