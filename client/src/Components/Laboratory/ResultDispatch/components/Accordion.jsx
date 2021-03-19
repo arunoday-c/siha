@@ -190,71 +190,96 @@ export default memo(function ({ details }) {
         key="1"
       >
         {listOfDetails?.length > 0 ? (
-          <table className="accrTable">
-            <thead>
-              <tr>
-                <th>
-                  <Checkbox
-                    indeterminate={indeterminate}
-                    checked={selectAll}
-                    onChange={changeSelectStatus}
-                  ></Checkbox>
-                </th>
-                <th>Test Name</th>
-                <th>Test Category</th>
-                <th>Critical</th>
-                <th>Status</th>
-                <th>Billed</th>
-                <th>Send Out</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listOfDetails?.map((item, index) => {
-                const {
-                  status,
-                  service_name,
-                  category_name,
-                  critical_status,
-                  billed,
-                  send_out_test,
-                } = item;
+          <>
+            <table className="accrTable">
+              <thead>
+                <tr>
+                  <th>
+                    <Checkbox
+                      indeterminate={indeterminate}
+                      checked={selectAll}
+                      onChange={changeSelectStatus}
+                    ></Checkbox>
+                  </th>
+                  <th>Test Name</th>
+                  <th>Test Category</th>
+                  <th>Critical</th>
+                  <th>Status</th>
+                  <th>Billed</th>
+                  <th>Send Out</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listOfDetails?.map((item, index) => {
+                  const {
+                    status,
+                    service_name,
+                    category_name,
+                    critical_status,
+                    billed,
+                    send_out_test,
+                  } = item;
 
-                return (
-                  <tr key={index}>
-                    <td width="10">
-                      <CheckBoxCheck
-                        item={item}
-                        setSelectAll={setSelectAll}
-                        setIndeterminate={setIndeterminate}
-                        items={listOfDetails}
-                        setEnablePrintButton={setEnablePrintButton}
-                      />
-                    </td>
-                    <td style={{ textAlign: "left", fontWeight: "bold" }}>
-                      {service_name}
-                    </td>
-                    <td width="150">{category_name}</td>
-                    <td width="20">{critical_status === "Y" ? "Yes" : "No"}</td>
-                    <td width="120">
-                      {status === "O"
-                        ? "Ordered"
-                        : status === "CL"
-                        ? "Sample Collected"
-                        : status === "CN"
-                        ? "Test Cancelled"
-                        : status === "CF"
-                        ? "Confirmed"
-                        : status === "V"
-                        ? "Validated"
-                        : "Validation Pending"}
-                    </td>
-                    <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
-                    <td width="70">{send_out_test === "Y" ? "Yes" : "No"}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                  return (
+                    <tr key={index}>
+                      <td width="10">
+                        <CheckBoxCheck
+                          item={item}
+                          setSelectAll={setSelectAll}
+                          setIndeterminate={setIndeterminate}
+                          items={listOfDetails}
+                          setEnablePrintButton={setEnablePrintButton}
+                        />
+                      </td>
+                      <td style={{ textAlign: "left", fontWeight: "bold" }}>
+                        {service_name}
+                      </td>
+                      <td width="150">{category_name}</td>
+                      <td width="20">
+                        {critical_status === "Y" ? "Yes" : "No"}
+                      </td>
+                      <td width="120">
+                        {status === "O"
+                          ? "Ordered"
+                          : status === "CL"
+                          ? "Sample Collected"
+                          : status === "CN"
+                          ? "Test Cancelled"
+                          : status === "CF"
+                          ? "Confirmed"
+                          : status === "V"
+                          ? "Validated"
+                          : "Validation Pending"}
+                      </td>
+                      <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
+                      <td width="70">{send_out_test === "Y" ? "Yes" : "No"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <div className="accFooter">
+              <AlgaehButton
+                className="btn btn-default btn-sm"
+                report="merge"
+                onClick={showReport}
+                disabled={enablePrintButton}
+                loading={loading}
+              >
+                Print as merge report
+              </AlgaehButton>
+              <AlgaehButton
+                className="btn btn-default btn-sm"
+                report="separate"
+                onClick={showReport}
+                disabled={enablePrintButton}
+                loading={loading}
+                style={{ marginLeft: 10 }}
+              >
+                Print as separate report
+              </AlgaehButton>
+            </div>
+          </>
         ) : null}
         {detailsOf?.filter((f) => {
           return f.isPCR === "Y";
@@ -335,27 +360,6 @@ export default memo(function ({ details }) {
             </table>
           </Spin>
         ) : null}
-        <div className="accFooter">
-          <AlgaehButton
-            className="btn btn-default btn-sm"
-            report="merge"
-            onClick={showReport}
-            disabled={enablePrintButton}
-            loading={loading}
-          >
-            Print as merge report
-          </AlgaehButton>{" "}
-          <AlgaehButton
-            className="btn btn-default btn-sm"
-            report="separate"
-            onClick={showReport}
-            disabled={enablePrintButton}
-            loading={loading}
-            style={{ marginLeft: 10 }}
-          >
-            Print as separate report
-          </AlgaehButton>
-        </div>
       </Panel>
     </Collapse>
   );
