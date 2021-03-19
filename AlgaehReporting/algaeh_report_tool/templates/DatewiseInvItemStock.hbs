@@ -1,0 +1,31 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{item_code}}</td>
+                        <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
+                            class="txtFld">{{item_description}}</td>
+                        <td>{{quantity}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+</body>

@@ -1,5 +1,5 @@
 import path from "path";
-// import fs from "fs-extra";
+import fs from "fs-extra";
 import { Request, Response, NextFunction } from "express";
 import { PoolConnection, format } from "mysql2/promise";
 import { select } from "easy-db-node";
@@ -114,13 +114,18 @@ async function ReadAndExecuteTemplate(
         "templates",
         templateFile + ".js"
       );
-      const execTemplate = __non_webpack_require__(fullTemplatePath);
-      const records = await execTemplate({ data }, connection);
-      return records;
+      if (fs.existsSync(fullTemplatePath)) {
+        const execTemplate = __non_webpack_require__(fullTemplatePath);
+        const records = await execTemplate({ data }, connection);
+        return records;
+      } else {
+        return {};
+      }
     } else {
       throw new Error("There is no message Template exist");
     }
   } catch (e) {
+    connection.release();
     throw e;
   }
 }
@@ -142,6 +147,7 @@ async function queryExecuter(
 
     return data;
   } catch (e) {
+    connection.release();
     throw e;
   }
 }
