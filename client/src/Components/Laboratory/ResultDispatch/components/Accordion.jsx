@@ -68,6 +68,7 @@ export default memo(function ({ details }) {
   }
 
   function showReportPcr(e, data) {
+    // debugger;
     setLoadingPcr(true);
 
     algaehApiCall({
@@ -86,7 +87,7 @@ export default memo(function ({ details }) {
             { name: "hims_d_patient_id", value: data.patient_id },
             {
               name: "visit_id",
-              value: data.visit_id,
+              value: data.hims_f_patient_visit_id,
             },
             {
               name: "hims_f_lab_order_id",
