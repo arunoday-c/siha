@@ -22,7 +22,7 @@ export function labResultDispatch(req, res, next) {
         printQuery: true,
       })
       .then((result) => {
-        // _mysql.releaseConnection();
+        _mysql.releaseConnection();
 
         const arrangedData = _.chain(result)
           .groupBy((g) => g.hims_f_patient_visit_id)

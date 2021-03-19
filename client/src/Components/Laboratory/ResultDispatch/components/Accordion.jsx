@@ -175,21 +175,21 @@ export default memo(function ({ details }) {
   }
   return (
     <Collapse className="accCntr">
-      {listOfDetails?.length > 0 ? (
-        <Panel
-          header={
-            <div>
-              <b>
-                {visit_date && moment(visit_date).format("DD-MM-YYYY HH:mm:ss")}
-              </b>{" "}
-              <small>By {doc_name}</small>
-              <small>
-                {mlc_accident_reg_no ? `/MLC NO.:${mlc_accident_reg_no}` : ""}
-              </small>
-            </div>
-          }
-          key="1"
-        >
+      <Panel
+        header={
+          <div>
+            <b>
+              {visit_date && moment(visit_date).format("DD-MM-YYYY HH:mm:ss")}
+            </b>{" "}
+            <small>By {doc_name}</small>
+            <small>
+              {mlc_accident_reg_no ? `/MLC NO.:${mlc_accident_reg_no}` : ""}
+            </small>
+          </div>
+        }
+        key="1"
+      >
+        {listOfDetails?.length > 0 ? (
           <table className="accrTable">
             <thead>
               <tr>
@@ -255,108 +255,108 @@ export default memo(function ({ details }) {
               })}
             </tbody>
           </table>
-          {detailsOf?.filter((f) => {
-            return f.isPCR === "Y";
-          })[0]?.list ? (
-            <Spin spinning={loadingPcr}>
-              <table className="accrTable">
-                <thead>
-                  <tr>
-                    {/* <th>
+        ) : null}
+        {detailsOf?.filter((f) => {
+          return f.isPCR === "Y";
+        })[0]?.list ? (
+          <Spin spinning={loadingPcr}>
+            <table className="accrTable">
+              <thead>
+                <tr>
+                  {/* <th>
                 <Checkbox
                   indeterminate={indeterminatePcr}
                   checked={selectAllPcr}
                   onChange={changeSelectStatusPcr}
                 ></Checkbox>
               </th> */}
-                    <th>Test Name</th>
-                    <th>Test Category</th>
-                    <th>Critical</th>
-                    <th>Status</th>
-                    <th>Billed</th>
-                    <th>Send Out</th>
-                    <th>Print PCR Report</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {detailsOf
-                    .filter((f) => {
-                      return f.isPCR === "Y";
-                    })[0]
-                    .list.map((item, index) => {
-                      const {
-                        status,
-                        service_name,
-                        category_name,
-                        critical_status,
-                        billed,
-                        send_out_test,
-                      } = item;
+                  <th>Test Name</th>
+                  <th>Test Category</th>
+                  <th>Critical</th>
+                  <th>Status</th>
+                  <th>Billed</th>
+                  <th>Send Out</th>
+                  <th>Print PCR Report</th>
+                </tr>
+              </thead>
+              <tbody>
+                {detailsOf
+                  .filter((f) => {
+                    return f.isPCR === "Y";
+                  })[0]
+                  .list.map((item, index) => {
+                    const {
+                      status,
+                      service_name,
+                      category_name,
+                      critical_status,
+                      billed,
+                      send_out_test,
+                    } = item;
 
-                      return (
-                        <tr key={index}>
-                          <td style={{ textAlign: "left", fontWeight: "bold" }}>
-                            {service_name}
-                          </td>
-                          <td width="150">{category_name}</td>
-                          <td width="20">
-                            {critical_status === "Y" ? "Yes" : "No"}
-                          </td>
-                          <td width="120">
-                            {status === "O"
-                              ? "Ordered"
-                              : status === "CL"
-                              ? "Sample Collected"
-                              : status === "CN"
-                              ? "Test Cancelled"
-                              : status === "CF"
-                              ? "Confirmed"
-                              : status === "V"
-                              ? "Validated"
-                              : "Validation Pending"}
-                          </td>
-                          <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
-                          <td width="70">
-                            {send_out_test === "Y" ? "Yes" : "No"}
-                          </td>
-                          <td width="70">
-                            <i
-                              className="fas fa-print"
-                              onClick={(e) => {
-                                showReportPcr(e, item);
-                              }}
-                            ></i>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </Spin>
-          ) : null}
-          <div className="accFooter">
-            <AlgaehButton
-              className="btn btn-default btn-sm"
-              report="merge"
-              onClick={showReport}
-              disabled={enablePrintButton}
-              loading={loading}
-            >
-              Print as merge report
-            </AlgaehButton>{" "}
-            <AlgaehButton
-              className="btn btn-default btn-sm"
-              report="separate"
-              onClick={showReport}
-              disabled={enablePrintButton}
-              loading={loading}
-              style={{ marginLeft: 10 }}
-            >
-              Print as separate report
-            </AlgaehButton>
-          </div>
-        </Panel>
-      ) : null}
+                    return (
+                      <tr key={index}>
+                        <td style={{ textAlign: "left", fontWeight: "bold" }}>
+                          {service_name}
+                        </td>
+                        <td width="150">{category_name}</td>
+                        <td width="20">
+                          {critical_status === "Y" ? "Yes" : "No"}
+                        </td>
+                        <td width="120">
+                          {status === "O"
+                            ? "Ordered"
+                            : status === "CL"
+                            ? "Sample Collected"
+                            : status === "CN"
+                            ? "Test Cancelled"
+                            : status === "CF"
+                            ? "Confirmed"
+                            : status === "V"
+                            ? "Validated"
+                            : "Validation Pending"}
+                        </td>
+                        <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
+                        <td width="70">
+                          {send_out_test === "Y" ? "Yes" : "No"}
+                        </td>
+                        <td width="70">
+                          <i
+                            className="fas fa-print"
+                            onClick={(e) => {
+                              showReportPcr(e, item);
+                            }}
+                          ></i>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </Spin>
+        ) : null}
+        <div className="accFooter">
+          <AlgaehButton
+            className="btn btn-default btn-sm"
+            report="merge"
+            onClick={showReport}
+            disabled={enablePrintButton}
+            loading={loading}
+          >
+            Print as merge report
+          </AlgaehButton>{" "}
+          <AlgaehButton
+            className="btn btn-default btn-sm"
+            report="separate"
+            onClick={showReport}
+            disabled={enablePrintButton}
+            loading={loading}
+            style={{ marginLeft: 10 }}
+          >
+            Print as separate report
+          </AlgaehButton>
+        </div>
+      </Panel>
     </Collapse>
   );
 });
