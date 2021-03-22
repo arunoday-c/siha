@@ -51,6 +51,8 @@ import {
   Tooltip,
   AlgaehModal,
   AlgaehSecurityComponent,
+  Menu,
+  Dropdown,
 } from "algaeh-react-components";
 import VitalsHistory from "../PatientProfile/Vitals/VitalsHistory";
 import ModalMedicalRecord from "../DoctorsWorkbench/ModalForMedicalRecordPat";
@@ -1100,7 +1102,31 @@ class NurseWorkbench extends Component {
     });
   }
   render() {
-    // console.log("patient_profile", this.props.patient_profile);
+    const menu = (
+      <Menu>
+        <Menu.Item key="1">
+          <span onClick={printSickleave.bind(this, this)}>
+            Print Sick Leave
+          </span>
+        </Menu.Item>
+        <Menu.Item key="2">
+          <span onClick={printPrescription.bind(this, this)}>
+            {" "}
+            Print Prescription
+          </span>
+        </Menu.Item>
+        {/* <Menu.Item key="3">
+          <span onClick={printSickleave}>Sick Leave Report</span>
+        </Menu.Item>
+        <Menu.Item key="4">
+          <span onClick={printPrescription}>Prescription</span>
+        </Menu.Item>
+        <Menu.Item key="5">
+          <span onClick={showReferringTo}>Referral Letter</span>
+        </Menu.Item> */}
+      </Menu>
+    );
+    console.log("patient_profile", this.props.patient_profile);
     const _department_viatals =
       this.props.department_vitals === undefined ||
       this.props.department_vitals.length === 0
@@ -1335,6 +1361,16 @@ class NurseWorkbench extends Component {
                   <div className="portlet-body">
                     <div className="row">
                       <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Primary Id No." }} />
+                        <h6>
+                          {patient_profile.primary_id_no !== undefined ? (
+                            <span>{patient_profile.primary_id_no} </span>
+                          ) : (
+                            "----------"
+                          )}
+                        </h6>
+                      </div>
+                      <div className="col">
                         <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
                         <h6>
                           {" "}
@@ -1373,6 +1409,7 @@ class NurseWorkbench extends Component {
                             "----------"
                           )}
                         </h6>
+                        {/* primary_id_no */}
                       </div>
                       <div className="col">
                         <AlgaehLabel label={{ forceLabel: "Gender" }} />
@@ -1385,25 +1422,30 @@ class NurseWorkbench extends Component {
                         </h6>
                       </div>
                       {this.state.patient_code !== undefined ? (
-                        <div
-                          className="col-5"
-                          style={{ textAlign: "right", marginTop: 10 }}
-                        >
-                          <button
-                            className="btn btn-small btn-default"
-                            style={{ marginRight: 10 }}
-                            onClick={printSickleave.bind(this, this)}
-                          >
-                            Print Sick Leave
+                        <Dropdown overlay={menu}>
+                          <button className="btn btn-default btn-circle active">
+                            <i className="fas fa-print" />
                           </button>
-                          <button
-                            className="btn btn-small btn-default"
-                            onClick={printPrescription.bind(this, this)}
-                          >
-                            Print Prescription
-                          </button>
-                        </div>
-                      ) : null}
+                        </Dropdown>
+                      ) : // <div
+                      //   className="col-5"
+                      //   style={{ textAlign: "right", marginTop: 10 }}
+                      // >
+                      //   <button
+                      //     className="btn btn-small btn-default"
+                      //     style={{ marginRight: 10 }}
+                      //     onClick={printSickleave.bind(this, this)}
+                      //   >
+                      //     Print Sick Leave
+                      //   </button>
+                      //   <button
+                      //     className="btn btn-small btn-default"
+                      //     onClick={printPrescription.bind(this, this)}
+                      //   >
+                      //     Print Prescription
+                      //   </button>
+                      // </div>
+                      null}
                     </div>
                   </div>
                 </div>
