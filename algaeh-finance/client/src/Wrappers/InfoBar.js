@@ -3,7 +3,8 @@ import "./infobar.scss";
 import { getAmountFormart } from "../utils/GlobalFunctions";
 
 export default function InfoBar({ data }) {
-  const { over_due, total_receivable, past_payments, day_end_pending } = data;
+  // day_end_pending
+  const { over_due, total_receivable, past_payments } = data;
   if (data) {
     return (
       <div className="row infoBar">
@@ -11,9 +12,12 @@ export default function InfoBar({ data }) {
           <div className="col">
             <div className="infoValCntr green">
               <div className="label">Paid Last 30 days</div>
-              <h5> {getAmountFormart(past_payments, {
-                appendSymbol: false,
-              })}</h5>
+              <h5>
+                {" "}
+                {getAmountFormart(past_payments, {
+                  appendSymbol: false,
+                })}
+              </h5>
             </div>
           </div>
         ) : null}
@@ -21,9 +25,11 @@ export default function InfoBar({ data }) {
           <div className="col">
             <div className="infoValCntr yellow">
               <div className="label">Open Invoices</div>
-              <h5>{getAmountFormart(total_receivable, {
-                appendSymbol: false,
-              })}</h5>
+              <h5>
+                {getAmountFormart(total_receivable, {
+                  appendSymbol: false,
+                })}
+              </h5>
             </div>
           </div>
         ) : null}
@@ -31,9 +37,11 @@ export default function InfoBar({ data }) {
           <div className="col">
             <div className="infoValCntr red">
               <div className="label">Overdue</div>
-              <h5>{getAmountFormart(over_due, {
-                appendSymbol: false,
-              })}</h5>
+              <h5>
+                {getAmountFormart(over_due, {
+                  appendSymbol: false,
+                })}
+              </h5>
             </div>
           </div>
         ) : null}
