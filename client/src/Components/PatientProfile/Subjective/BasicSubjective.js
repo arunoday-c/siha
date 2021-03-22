@@ -153,6 +153,13 @@ class BasicSubjective extends Component {
       });
     }
   }
+  componentWillUnmount() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
+  }
   instructionItems() {
     const frequency = _.find(
       PRESCRIPTION_FREQ_PERIOD,
