@@ -1100,6 +1100,7 @@ class NurseWorkbench extends Component {
     });
   }
   render() {
+    // console.log("patient_profile", this.props.patient_profile);
     const _department_viatals =
       this.props.department_vitals === undefined ||
       this.props.department_vitals.length === 0
@@ -1111,6 +1112,10 @@ class NurseWorkbench extends Component {
     //     : {
     //         activeDateHeader: this.state.fromDate,
     //       };
+    const patient_profile =
+      this.props.patient_profile?.length > 0
+        ? this.props.patient_profile[0]
+        : {};
     const patientListArray =
       this.state.searchText === "" ? this.state.data : this.state.filterList;
     return (
@@ -1287,7 +1292,9 @@ class NurseWorkbench extends Component {
                                 {data.patient_code}/ {data.primary_id_no}
                               </small>
                               {data.full_name} Age:{" "}
-                              <span>{data.age_now}years</span> Gender:{" "}
+                              <span>{data.age_in_years}years</span>{" "}
+                              <span>{data.age_in_months}Months</span>{" "}
+                              <span>{data.age_in_days}days</span> Gender:{" "}
                               <span>{data.gender}</span>
                               <small style={{ display: "block" }}>
                                 Dr.{data.doctor_name}
@@ -1350,7 +1357,33 @@ class NurseWorkbench extends Component {
                           )}
                         </h6>
                       </div>
-
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Patient Age" }} />
+                        <h6>
+                          {" "}
+                          {patient_profile.age_in_years !== undefined ? (
+                            <>
+                              <span>{patient_profile.age_in_years} Years</span>{" "}
+                              <span>
+                                {patient_profile.age_in_months} Months
+                              </span>{" "}
+                              <span>{patient_profile.age_in_days} Days</span>{" "}
+                            </>
+                          ) : (
+                            "----------"
+                          )}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Gender" }} />
+                        <h6>
+                          {patient_profile.gender !== undefined ? (
+                            <span>{patient_profile.gender} </span>
+                          ) : (
+                            "----------"
+                          )}
+                        </h6>
+                      </div>
                       {this.state.patient_code !== undefined ? (
                         <div
                           className="col-5"
@@ -2208,6 +2241,7 @@ function mapStateToProps(state) {
     department_vitals: state.department_vitals,
     allallergies: state.allallergies,
     patient_allergies: state.patient_allergies,
+    patient_profile: state.patient_profile,
     consumableorderedList: state.consumableorderedList,
     pakageList: state.pakageList,
     orderedList: state.orderedList,
