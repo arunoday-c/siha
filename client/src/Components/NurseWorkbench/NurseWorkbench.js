@@ -1232,14 +1232,7 @@ class NurseWorkbench extends Component {
                     },
                   }}
                 />
-                <button
-                  onClick={() => {
-                    this.onCloseAllServiceModal();
-                  }}
-                >
-                  {" "}
-                  Open All Services Today{" "}
-                </button>
+
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Search Patient" }} />
                   <Input
@@ -2162,6 +2155,14 @@ class NurseWorkbench extends Component {
                 onClick={this.savePatientExamn.bind(this)}
               >
                 <AlgaehLabel label={{ forceLabel: "Save All" }} />
+              </button>{" "}
+              <button
+                className="btn btn-other"
+                onClick={() => {
+                  this.onCloseAllServiceModal();
+                }}
+              >
+                View Ordered Services
               </button>
             </div>
           </div>
