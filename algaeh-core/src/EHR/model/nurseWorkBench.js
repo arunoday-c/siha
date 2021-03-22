@@ -907,7 +907,7 @@ let getNurseMyDay = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select  EMP.full_name as doctor_name,E.hims_f_patient_encounter_id,P.patient_code,P.full_name,P.gender,P.age,E.patient_id, \
+          "select  EMP.full_name as doctor_name,E.hims_f_patient_encounter_id,P.patient_code,P.date_of_birth,P.full_name,P.gender,P.age,E.patient_id, \
           P.primary_id_no, V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
           E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id, \
           V.sub_department_id, visit_type_desc, inventory_location_id, L.location_type \
@@ -925,7 +925,13 @@ let getNurseMyDay = (req, res, next) => {
       })
       .then((result) => {
         _mysql.releaseConnection();
-        req.records = result;
+        req.records = result.map((patient) => {
+          let today = new Date();
+          let birthDate = new Date(patient.date_of_birth);
+          let age_now = today.getFullYear() - birthDate.getFullYear();
+
+          return { age_now, ...patient };
+        });
         next();
       })
       .catch((error) => {

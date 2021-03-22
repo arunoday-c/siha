@@ -1286,7 +1286,9 @@ class NurseWorkbench extends Component {
                                 {" "}
                                 {data.patient_code}/ {data.primary_id_no}
                               </small>
-                              {data.full_name}
+                              {data.full_name} Age:{" "}
+                              <span>{data.age_now}years</span> Gender:{" "}
+                              <span>{data.gender}</span>
                               <small style={{ display: "block" }}>
                                 Dr.{data.doctor_name}
                               </small>
