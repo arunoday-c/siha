@@ -650,11 +650,12 @@ export default {
                 let strQry = "";
 
                 for (let i = 0; i < rad_data_result.length; i++) {
-                  strQry += _mysql.mysqlQueryFormat(
-                    "DELETE FROM hims_f_rad_order where hims_f_rad_order_id=?;",
-                    [rad_data_result[i].hims_f_rad_order_id]
-                  );
-                  if (rad_data_result[i].ordered_services_id != null) {
+                  if (rad_data_result[i].ordered_services_id == null) {
+                    strQry += _mysql.mysqlQueryFormat(
+                      "DELETE FROM hims_f_rad_order where hims_f_rad_order_id=?;",
+                      [rad_data_result[i].hims_f_rad_order_id]
+                    );
+                  } else {
                     strQry += _mysql.mysqlQueryFormat(
                       "UPDATE hims_f_ordered_services SET billed='N' where hims_f_ordered_services_id=?;",
                       [rad_data_result[i].ordered_services_id]

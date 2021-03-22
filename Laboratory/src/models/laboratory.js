@@ -564,7 +564,7 @@ export default {
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
 
-      // console.log("Services", Services);
+      console.log("Services", Services);
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
@@ -585,7 +585,7 @@ export default {
         };
       });
 
-      // console.log("labServices", labServices);
+      console.log("labServices", labServices);
       // conseol.log("labServices", labServices);
 
       if (labServices.length > 0) {
