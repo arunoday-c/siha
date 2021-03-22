@@ -4,6 +4,7 @@ import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import moment from "moment";
 import "./alice.scss";
+// import { getAccounts } from ".././FinanceAccountEvent";
 
 export default function FinanceAccounts({ inDrawer = false }) {
   const TABS = [
@@ -155,7 +156,7 @@ export default function FinanceAccounts({ inDrawer = false }) {
               className="btn btn-primary"
               onClick={exportExcelAccountOB}
             >
-              <AlgaehLabel label={{ forceLabel: "Export" }} />
+              <AlgaehLabel label={{ forceLabel: "OB Export" }} />
             </button>
 
             <div className="uploadManualDiv   btn-with-icon">
@@ -171,7 +172,7 @@ export default function FinanceAccounts({ inDrawer = false }) {
                 // onChange={importExcelAccountOB}
               />
               <label onClick={() => fileInput.current.click()}>
-                <i className="fas fa-file-upload"></i> Upload
+                <i className="fas fa-file-upload"></i> OB Import
               </label>
             </div>
             {/* <button

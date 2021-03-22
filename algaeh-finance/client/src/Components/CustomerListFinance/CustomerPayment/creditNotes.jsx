@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect } from "react";
 import {
   Modal,
   Spin,
-  AlgaehMessagePop,
+  // AlgaehMessagePop,
   AlgaehTable,
   Checkbox,
 } from "algaeh-react-components";

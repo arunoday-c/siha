@@ -10,9 +10,9 @@ import _ from "lodash";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForSupplier, getDebitNotes } from "./SupPaymentEvents";
-import { Button, Spin, Checkbox, Modal } from "antd";
+import { Spin, Checkbox, Modal } from "antd";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
-import { VerifyAuthorization } from "../../CustomerListFinance/CustomerPayment/CusPaymentEvents";
+// import { VerifyAuthorization } from "../../CustomerListFinance/CustomerPayment/CusPaymentEvents";
 
 export default memo(function (props) {
   const location = useLocation();
@@ -68,33 +68,33 @@ export default memo(function (props) {
     setShowDebitNote(false);
     onClickSendSelected(true);
   }
-  const receive = (row) => {
-    return (
-      <Button
-        disabled={row.invoice_status === "closed"}
-        type="link"
-        onClick={() => {
-          setLoading(true);
-          VerifyAuthorization(row)
-            .then(() => {
-              history.push("/JournalVoucher", {
-                data: { ...row, disabled: true },
-                type: "supplier",
-              });
-            })
-            .catch((error) => {
-              setLoading(false);
-              AlgaehMessagePop({
-                type: "Error",
-                display: error,
-              });
-            });
-        }}
-      >
-        Send Payment
-      </Button>
-    );
-  };
+  // const receive = (row) => {
+  //   return (
+  //     <Button
+  //       disabled={row.invoice_status === "closed"}
+  //       type="link"
+  //       onClick={() => {
+  //         setLoading(true);
+  //         VerifyAuthorization(row)
+  //           .then(() => {
+  //             history.push("/JournalVoucher", {
+  //               data: { ...row, disabled: true },
+  //               type: "supplier",
+  //             });
+  //           })
+  //           .catch((error) => {
+  //             setLoading(false);
+  //             AlgaehMessagePop({
+  //               type: "Error",
+  //               display: error,
+  //             });
+  //           });
+  //       }}
+  //     >
+  //       Send Payment
+  //     </Button>
+  //   );
+  // };
   async function onClickDebitNotes() {
     const filterCheck = data.filter((f) => f.checked === true);
     if (filterCheck.length > 0) {

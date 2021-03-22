@@ -55,15 +55,15 @@
                         <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
                             class="txtFld">{{item_description}}</td>
                         <td>{{qty_hand}}</td>
-                        <td class="numberFld">{{weighted_cost}}</td>
-                        <td class="numberFld">{{stock_value}}</td>
+                        <td class="numberFld">{{numberFormating weighted_cost ../../../currencyOnlyWithoutSymbol}}</td>
+                        <td class="numberFld">{{numberFormating stock_value ../../../currencyOnlyWithoutSymbol}}</td>
                     </tr>
                     {{/each }}
                       <tr class="numberFldTotalBottom">
                         <td colspan="5"></td>
                         {{!-- <td class="numberFld">{{qty_hand}}</td> --}}
                         {{!-- <td class="numberFld">{{net_weighted_cost}}</td> --}}
-                        <td class="numberFld">{{total_stock_value}}</td>
+                        <td class="numberFld">{{numberFormating total_stock_value ../../currencyOnly}}</td>
                     </tr>
                     {{/each }}{{/each }}
                   
@@ -77,7 +77,7 @@
              <table class="tableTotal">
                 <tr class="bold">
                     <td>Net Stock Value</td>
-                    <td class="numberFld">{{net_stock_value}}</td>
+                    <td class="numberFld">{{numberFormating net_stock_value currencyOnly }}</td>
                    
                 </tr>
                

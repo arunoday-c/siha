@@ -22,14 +22,14 @@ import {
   LoadVoucherData,
 } from "./event";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-import { useLocation, useHistory } from "react-router-dom";
-
+import { useHistory } from "react-router-dom";
+// useLocation
 const { confirm } = Modal;
 let rejectText = "";
 let finance_voucher_header_id = "";
 export default memo(function (props) {
   const history = useHistory();
-  const location = useLocation();
+  // const location = useLocation();
   const [search, setSearch] = useState(null);
   const [data, setData] = useState([]);
   const [accounts, setAccounts] = useState([]);

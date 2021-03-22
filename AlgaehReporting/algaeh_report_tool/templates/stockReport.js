@@ -7,7 +7,11 @@ const executePDF = function executePDFMethod(options) {
       const moment = options.moment;
 
       let input = {};
-
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
       const params = options.args.reportParams;
 
       params.forEach((para) => {
@@ -64,14 +68,8 @@ const executePDF = function executePDFMethod(options) {
                     docs: docs.map((n) => {
                       return {
                         ...n,
-                        weighted_cost: options.currencyFormat(
-                          n.weighted_cost,
-                          options.args.crypto
-                        ),
-                        stock_value: options.currencyFormat(
-                          n.stock_value,
-                          options.args.crypto
-                        ),
+                        weighted_cost: n.weighted_cost,
+                        stock_value: n.stock_value,
                       };
                     }),
                   };
@@ -98,14 +96,26 @@ const executePDF = function executePDFMethod(options) {
             })
             .value();
 
-          const net_stock_value = options.currencyFormat(
-            _.sumBy(locationWise, (s) => parseFloat(s.stock_value_total)),
-            options.args.crypto
+          const net_stock_value = _.sumBy(locationWise, (s) =>
+            parseFloat(s.stock_value_total)
           );
+
           // , net_total: net_total
           // console.log("locationWise==", locationWise);
           resolve({
             result: locationWise,
+            currencyOnly: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyOnlyWithoutSymbol: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
             // net_qty_hand: net_qty_hand,
             // net_weighted_cost: net_weighted_cost,
             net_stock_value: net_stock_value,
