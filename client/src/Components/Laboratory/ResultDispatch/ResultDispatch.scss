@@ -20,7 +20,10 @@
     max-height: 65vh !important;
   }
 }
-
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}
 .investigationAttachmentModal {
   min-width: 80vw !important;
 

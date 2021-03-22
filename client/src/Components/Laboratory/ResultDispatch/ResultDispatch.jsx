@@ -45,6 +45,7 @@ export default memo(function () {
       searchGrid: {
         columns: spotlightSearch.frontDesk.patients,
       },
+
       searchName: "patients",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
@@ -73,11 +74,11 @@ export default memo(function () {
 
     setData(records);
   }
-
+  const class_finder = patientCode !== "" ? " disableFinder" : "";
   return (
     <div className="hptl-phase1-result-entry-form">
       <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
-        <div className="col-2 globalSearchCntr">
+        <div className={"col-2 globalSearchCntr" + class_finder}>
           <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
           <h6 onClick={showPatientFinder}>
             {patientCode === "" ? (
