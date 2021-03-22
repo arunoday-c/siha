@@ -21,14 +21,32 @@ export default function AllServicesModal({ selectedHDate }) {
     <div>
       <Spin spinning={serviceLoading}>
         <AlgaehDataGrid
-          //   id="hospitalservices_grid"
+          className="viewAllOrder_grid"
           columns={[
             {
-              fieldName: "service_code",
-              label: <AlgaehLabel label={{ fieldName: "service_code" }} />,
+              fieldName: "primary_id_no",
+              label: <AlgaehLabel label={{ fieldName: "Primary ID" }} />,
               others: {
-                Width: 150,
+                // Width: 130,
                 style: { textAlign: "center" },
+              },
+              filterable: true,
+            },
+            {
+              fieldName: "patient_code",
+              label: <AlgaehLabel label={{ fieldName: "Patient Code" }} />,
+              others: {
+                // Width: 130,
+                style: { textAlign: "center" },
+              },
+              filterable: true,
+            },
+            {
+              fieldName: "full_name",
+              label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
+
+              others: {
+                style: { textAlign: "left" },
               },
               filterable: true,
             },
@@ -36,6 +54,7 @@ export default function AllServicesModal({ selectedHDate }) {
               fieldName: "service_name",
               label: <AlgaehLabel label={{ fieldName: "service_name" }} />,
               others: {
+                // Width: 250,
                 style: { textAlign: "left" },
               },
               filterable: true,
@@ -45,7 +64,7 @@ export default function AllServicesModal({ selectedHDate }) {
               label: <AlgaehLabel label={{ fieldName: "Service type" }} />,
 
               others: {
-                Width: 150,
+                // Width: 150,
                 style: { textAlign: "center" },
               },
               filterable: true,
@@ -62,30 +81,11 @@ export default function AllServicesModal({ selectedHDate }) {
               ],
             },
             {
-              fieldName: "full_name",
-              label: <AlgaehLabel label={{ fieldName: "Patient Name" }} />,
-
-              others: {
-                Width: 130,
-                style: { textAlign: "center" },
-              },
-              filterable: true,
-            },
-            {
-              fieldName: "patient_code",
-              label: <AlgaehLabel label={{ fieldName: "Patient Code" }} />,
-              others: {
-                Width: 110,
-                style: { textAlign: "right" },
-              },
-              filterable: true,
-            },
-            {
               fieldName: "doc_name",
               label: <AlgaehLabel label={{ fieldName: "Doctor Name" }} />,
               others: {
-                Width: 120,
-                style: { textAlign: "right" },
+                // Width: 120,
+                style: { textAlign: "left" },
               },
               filterable: true,
             },

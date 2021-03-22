@@ -1118,7 +1118,7 @@ let getAllServicesDateRange = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `SELECT  OS.hims_f_ordered_services_id,LO.lab_id_number,E.full_name as doc_name,
-          E.arabic_name as doc_arabicName,P.patient_code, P.full_name,P.arabic_name,OS.patient_id, OS.visit_id, OS.doctor_id, OS.service_type_id
+          E.arabic_name as doc_arabicName,P.patient_code, P.full_name,P.arabic_name,P.primary_id_no,OS.patient_id, OS.visit_id, OS.doctor_id, OS.service_type_id
           , OS.services_id, OS.test_type, OS.insurance_yesno,OS.insurance_provider_id, OS.insurance_sub_id, OS.network_id,
            OS.policy_number, OS.pre_approval, OS.apprv_status,OS.billed, OS.created_by, OS.created_date, OS.updated_by,           
            OS.updated_date,  S.hims_d_services_id, S.service_code, S.cpt_code,S.service_name, S.arabic_service_name, S.service_desc,

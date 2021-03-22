@@ -130,3 +130,14 @@
     max-height: 150px !important;
   }
 }
+.ViewAllOrderModal {
+  min-width: 90vw !important;
+  .ant-modal-body {
+    padding: 15px !important;
+    .viewAllOrder_grid {
+      min-height: 60vh !important;
+      max-height: 60vh !important;
+      overflow: auto;
+    }
+  }
+}
