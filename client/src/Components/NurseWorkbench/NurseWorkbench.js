@@ -1291,11 +1291,11 @@ class NurseWorkbench extends Component {
                                 {" "}
                                 {data.patient_code}/ {data.primary_id_no}
                               </small>
-                              {data.full_name} Age:{" "}
-                              <span>{data.age_in_years}years</span>{" "}
-                              <span>{data.age_in_months}Months</span>{" "}
-                              <span>{data.age_in_days}days</span> Gender:{" "}
-                              <span>{data.gender}</span>
+                              {data.full_name}
+                              <small style={{ display: "block" }}>
+                                {data.gender} - {data.age_in_years}Y/
+                                {data.age_in_months}M/{data.age_in_days}D
+                              </small>
                               <small style={{ display: "block" }}>
                                 Dr.{data.doctor_name}
                               </small>
@@ -2204,23 +2204,23 @@ class NurseWorkbench extends Component {
         </div>
         {this.state.openAllserviceModal ? (
           <AlgaehModal
-            title="Medical Record List"
+            title={`View ordered list for the date - ${moment(
+              this.state.activeDateHeader
+            ).format("DD-MM-YYYY")}`}
             visible={this.state.openAllserviceModal}
             mask={true}
             maskClosable={false}
             onCancel={() => this.onCloseAllServiceModal()}
             key="1"
             footer={[
-              <div className="col-12">
-                <button
-                  onClick={() => this.onCloseAllServiceModal()}
-                  className="btn btn-default btn-sm"
-                >
-                  Cancel
-                </button>
-              </div>,
+              <button
+                onClick={() => this.onCloseAllServiceModal()}
+                className="btn btn-default btn-sm"
+              >
+                Cancel
+              </button>,
             ]}
-            className={`algaehNewModal`}
+            className={`row algaehNewModal ViewAllOrderModal`}
           >
             <AllServicesModal
               selectedHDate={moment(this.state.activeDateHeader).format(
