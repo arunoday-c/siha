@@ -629,6 +629,7 @@ let insertOrderedServices = (req, res, next) => {
                         // }
                       });
 
+                      console.log("services", services)
                       if (services.length > 0) {
                         _mysql
                           .executeQueryWithTransaction({
