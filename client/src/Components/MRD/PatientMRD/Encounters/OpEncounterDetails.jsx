@@ -759,166 +759,22 @@ export default function OPEncounterDetails({
     setCurrentRow({ ...row, attach_type: attachment_type });
   };
 
-  // const downloadDoc = (doc, isPreview) => {
-  //   if (doc.fromPath === true) {
-  //     // this.setState({ pdfLoading: true }, () => {
-  //     newAlgaehApi({
-  //       uri: "/getContractDoc",
-  //       module: "documentManagement",
-  //       method: "GET",
-  //       extraHeaders: {
-  //         Accept: "blon",
-  //       },
-  //       others: {
-  //         responseType: "blob",
-  //       },
-  //       data: {
-  //         contract_no: doc.contract_no,
-  //         filename: doc.filename,
-  //         download: true,
-  //       },
-  //     })
-  //       .then((resp) => {
-  //         const urlBlob = URL.createObjectURL(resp.data);
-  //         if (isPreview) {
-  //           window.open(urlBlob);
-  //         } else {
-  //           const link = document.createElement("a");
-  //           link.download = doc.filename;
-  //           link.href = urlBlob;
-  //           document.body.appendChild(link);
-  //           link.click();
-  //           document.body.removeChild(link);
-  //         }
-  //         // this.setState({ pdfLoading: false });
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //         // this.setState({ pdfLoading: false });
-  //       });
-  //     // });
-  //   } else {
-  //     const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-  //     const link = document.createElement("a");
-  //     if (!isPreview) {
-  //       link.download = doc.filename;
-  //       link.href = fileUrl;
-  //       document.body.appendChild(link);
-  //       link.click();
-  //       document.body.removeChild(link);
-  //     } else {
-  //       fetch(fileUrl)
-  //         .then((res) => res.blob())
-  //         .then((fblob) => {
-  //           const newUrl = URL.createObjectURL(fblob);
-  //           window.open(newUrl);
-  //         });
-  //     }
-  //   }
-  // };
-  // const getSavedDocument = (row) => {
-  //   newAlgaehApi({
-  //     uri: "/getContractDoc",
-  //     module: "documentManagement",
-  //     method: "GET",
-  //     data: {
-  //       contract_no: row.lab_id_number,
-  //     },
-  //   })
-  //     .then((res) => {
-  //       if (res.data.success) {
-  //         let { data } = res.data;
-  //         setAttached_docs(data);
-  //         //   attached_docs: data,
-  //         // });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       swalMessage({
-  //         title: e.message,
-  //         type: "error",
-  //       });
-  //     });
-  // };
-  // const getDocuments = (row) => {
-  //   newAlgaehApi({
-  //     uri: "/getRadiologyDoc",
-  //     module: "documentManagement",
-  //     method: "GET",
-  //     data: {
-  //       hims_f_rad_order_id: row.hims_f_rad_order_id,
-  //     },
-  //   })
-  //     .then((res) => {
-  //       if (res.data.success) {
-  //         let { data } = res.data;
-  //         setAttached_docs(data);
-  //         // this.setState({
-  //         //   attached_docs: data,
-  //         // });
-  //       }
-  //     })
-  //     .catch((e) => {
-  //       // AlgaehLoader({ show: false });
-  //       swalMessage({
-  //         title: e.message,
-  //         type: "error",
-  //       });
-  //     });
-  // };
-  // const handleMenuClick = (e) => {
-  //   switch (e.key) {
-  //     case "1":
-  //       showAttachments();
-
-  //       break;
-  //     case "2":
-  //       printPatSummary();
-  //       break;
-  //     case "3":
-  //       printSickleave();
-  //       break;
-  //     case "4":
-  //       printPrescription();
-  //       break;
-  //     case "5":
-  //       break;
-  //     // case "":
-  //     //   age = age_data["years"];
-  //     //   break;
-  //   }
-  // };
   const menu = (
     <Menu>
       <Menu.Item key="1">
-        <i class="fas fa-user" on onClick={showAttachments}>
-          {" "}
-          view Patient Attachments
-        </i>
+        <span onClick={showAttachments}>View Attachments</span>
       </Menu.Item>
       <Menu.Item key="2">
-        <i class="fas fa-print" onClick={printPatSummary}>
-          {" "}
-          Print Summary Report
-        </i>
+        <span onClick={printPatSummary}>Summary Report</span>
       </Menu.Item>
       <Menu.Item key="3">
-        <i class="fas fa-print" onClick={printSickleave}>
-          {" "}
-          Print Sick Leave
-        </i>{" "}
+        <span onClick={printSickleave}>Sick Leave Report</span>
       </Menu.Item>
       <Menu.Item key="4">
-        <i class="fas fa-print" onClick={printPrescription}>
-          {" "}
-          Print Prescription
-        </i>{" "}
+        <span onClick={printPrescription}>Prescription</span>
       </Menu.Item>
       <Menu.Item key="5">
-        <i class="fas fa-print" onClick={showReferringTo}>
-          {" "}
-          Print Recommendation
-        </i>
+        <span onClick={showReferringTo}>Referral Letter</span>
       </Menu.Item>
     </Menu>
   );
@@ -938,6 +794,15 @@ export default function OPEncounterDetails({
           <div className="caption">
             <h3 className="caption-subject">OP Encounter Details </h3>
           </div>
+          <div className="actions">
+            {generalInfo !== undefined ? (
+              <Dropdown overlay={menu}>
+                <button className="btn btn-default btn-circle active">
+                  <i className="fas fa-print" />
+                </button>
+              </Dropdown>
+            ) : null}
+          </div>
 
           {/* {generalInfo !== undefined
                             ? moment(
@@ -953,71 +818,15 @@ export default function OPEncounterDetails({
             maskClosable={true}
             onCancel={showReferringTo}
             footer={null}
-            // onOk={() => {
-            //   saveDocument(
-            //     fileList,
-            //     patientData?.patient_code,
-            //     patientData?.hims_d_patient_id
-            //   );
-            // }}
-            // okButtonProps={{
-            //   disabled: !fileList.length,
-            //   loading: loading,
-            // }}
-            // okText="Upload"
-            // class={this.state.lang_sets}
+            className={`row algaehNewModal refferalModal`}
           >
-            <ReferralDataGrid patient_id={patient_id} />
-            {/* </div> */}
+            <div className="col" style={{ marginTop: 15, marginBottom: 15 }}>
+              {" "}
+              <ReferralDataGrid patient_id={patient_id} />
+            </div>
           </AlgaehModal>
         ) : null}
         <div className="portlet-body encounterDetailCntr">
-          <div className="row">
-            <div className="col-12" style={{ marginBottom: 5 }}>
-              {generalInfo !== undefined ? (
-                <div style={{ float: "right" }}>
-                  <Dropdown overlay={menu}>
-                    <button>Print Patient Documents</button>
-                  </Dropdown>
-                  {/* <button
-                    className="btn btn-default"
-                    style={{ marginRight: 10 }}
-                    onClick={showAttachments}
-                  >
-                    view Patient Attachments
-                  </button>
-                  <button
-                    className="btn btn-default"
-                    style={{ marginRight: 10 }}
-                    onClick={printPatSummary}
-                  >
-                    Print Summary Report
-                  </button>
-                  <button
-                    className="btn btn-default"
-                    style={{ marginRight: 10 }}
-                    onClick={printSickleave}
-                  >
-                    Print Sick Leave
-                  </button>
-                  <button
-                    className="btn btn-default"
-                    style={{ marginRight: 10 }}
-                    onClick={printPrescription}
-                  >
-                    Print Prescription
-                  </button>
-                  <button
-                    className="btn btn-default"
-                    style={{ marginRight: 10 }}
-                    // onClick={printPrescription}
-                  >
-                    Print Recommendation
-                  </button> */}
-                </div>
-              ) : null}
-            </div>
-          </div>
           <div className="row generalInfo">
             <div className="col-lg-12">
               <h6 className="smallh6">General Information</h6>

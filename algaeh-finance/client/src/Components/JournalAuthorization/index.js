@@ -274,6 +274,7 @@ export default memo(function (props) {
                 : "JVReport_expense",
             // pageOrentation: "landscape",
             reportParams: [
+              { name: "receipt_type", value: record.receipt_type },
               {
                 name: "voucher_header_id",
                 value: record.finance_voucher_header_id,
