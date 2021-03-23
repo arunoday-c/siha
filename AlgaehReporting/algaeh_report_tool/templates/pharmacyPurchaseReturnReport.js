@@ -55,13 +55,18 @@ const executePDF = function executePDFMethod(options) {
 
             resolve({
               result: nationgWiseEmp,
-              net_total: options.currencyFormat(
-                _.sumBy(nationgWiseEmp, (s) => parseFloat(s.net_total)),
-                options.args.crypto
+              net_total: _.sumBy(nationgWiseEmp, (s) =>
+                parseFloat(s.net_total)
               ),
               currencyOnly: {
                 decimal_places,
                 addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
+              currencyOnlyWithSymbol: {
+                decimal_places,
+                addSymbol: true,
                 symbol_position,
                 currency_symbol,
               },
@@ -72,6 +77,12 @@ const executePDF = function executePDFMethod(options) {
               currencyOnly: {
                 decimal_places,
                 addSymbol: false,
+                symbol_position,
+                currency_symbol,
+              },
+              currencyOnlyWithSymbol: {
+                decimal_places,
+                addSymbol: true,
                 symbol_position,
                 currency_symbol,
               },
