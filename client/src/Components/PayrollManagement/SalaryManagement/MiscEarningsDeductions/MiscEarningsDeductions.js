@@ -574,9 +574,7 @@ export default class MiscEarningsDeductions extends Component {
                         onClick={this.clearState.bind(this)}
                         style={{ marginRight: 10 }}
                       >
-                        <AlgaehLabel
-                          label={{ forceLabel: "Clear", returnText: true }}
-                        />
+                        <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button>
                       <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                         <button
@@ -585,7 +583,7 @@ export default class MiscEarningsDeductions extends Component {
                           onClick={this.ApplyEarningsDeds.bind(this)}
                           disabled={this.state.addBtnEnable}
                         >
-                          Add
+                          <AlgaehLabel label={{ fieldName: "Addbutton" }} />
                         </button>
                       </AlgaehSecurityElement>
                     </div>
