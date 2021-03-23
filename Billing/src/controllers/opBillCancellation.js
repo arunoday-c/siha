@@ -12,6 +12,7 @@ const {
   generateAccountingEntry,
   checkDentalProcedure,
   cancelPackage,
+  updateOrderServices,
 } = opModels;
 import recModels from "../models/receiptentry";
 const { getReceiptEntry, addReceiptEntry } = recModels;
@@ -24,6 +25,7 @@ export default () => {
     "/addOpBillCancellation",
     addReceiptEntry,
     addOpBillCancellation,
+    updateOrderServices,
     updateEncounterDetails,
     (req, res, next) => {
       if (req.patientencounter.internal_error == true) {

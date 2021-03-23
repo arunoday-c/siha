@@ -125,6 +125,9 @@ export default {
                 "sec_copay_amount",
               ];
 
+              // console.log("inputParam.billdetails", inputParam.billdetails);
+              // consoe.log("inputParam.billdetails", inputParam.billdetails);
+
               _mysql
                 .executeQuery({
                   query: "INSERT INTO hims_f_bill_cancel_details(??) VALUES ?",
@@ -432,8 +435,8 @@ export default {
             printQuery: true,
           })
           .then((patient_encounter) => {
-            console.log("checked_in", patient_encounter[0].checked_in);
-            console.log("cancel_checkin", inputParam.cancel_checkin);
+            // console.log("checked_in", patient_encounter[0].checked_in);
+            // console.log("cancel_checkin", inputParam.cancel_checkin);
             if (
               patient_encounter[0].checked_in == "Y" &&
               inputParam.cancel_checkin == "N"
@@ -698,6 +701,48 @@ export default {
         req.radiology = {
           internal_error: false,
         };
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updateOrderServices: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      // console.log("checkDentalProcedure: ", inputParam.billdetails);
+
+      const ordered_Services = _.filter(
+        inputParam.billdetails,
+        (f) => f.ordered_services_id != null
+      );
+      // console.log("ordered_Services: ", ordered_Services.length);
+      if (ordered_Services.length > 0) {
+        let ordered_services_id = _.map(ordered_Services, (o) => {
+          return o.ordered_services_id;
+        });
+        // console.log("ordered_services_id: ", ordered_services_id);
+        _mysql
+          .executeQuery({
+            query:
+              "UPDATE`hims_f_ordered_services` set billed='N' WHERE hims_f_ordered_services_id in (?)",
+            values: [ordered_services_id],
+            printQuery: true,
+          })
+          .then((ordr_result) => {
+            next();
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
         next();
       }
     } catch (e) {
