@@ -333,7 +333,7 @@ class SickLeave extends Component {
                         // disabled: this.state.disableEdit,
                       },
                     }}
-                    minDate={new Date()}
+                    // minDate={new Date()}
                     events={{
                       onChange: this.datehandle.bind(this),
                       onBlur: this.dateValidate.bind(this),
