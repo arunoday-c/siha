@@ -34,6 +34,7 @@ const getBillDetails = async (
     promo_code,
     discount_amout,
     sub_department_id,
+    from_package,
   }
 ) => {
   debugger;
@@ -41,6 +42,10 @@ const getBillDetails = async (
     FollowUp = false;
 
   if (consultation !== "Y") {
+    zeroBill = true;
+  }
+
+  if (from_package === true) {
     zeroBill = true;
   }
 
@@ -139,6 +144,7 @@ export function BillDetails({
     savedPatient,
     consultationInfo,
     setCardDataGlobal: setCardDataGlobal,
+    from_package,
   } = useContext(FrontdeskContext);
   // const disabled = !!bill_number && !!receipt_number;
   const { fieldNameFn } = useLangFieldName();
@@ -189,6 +195,7 @@ export function BillDetails({
         promo_code: promoCode,
         discount_amout: discount_amout,
         sub_department_id,
+        from_package,
         // discount_percentage: discount_percentage,
       },
     ],
@@ -434,14 +441,14 @@ export function BillDetails({
                     paddingTop: 4,
                   }}
                 >
-                  {/* {this.state.from_package === true ? (
-                  <span
-                    className="alert alert-warning animated flash slow infinite utalizeStatus"
-                    role="alert"
-                  >
-                    Utilized From Package
-                  </span> 
-                   ) : null} */}
+                  {from_package === true ? (
+                    <span
+                      className="alert alert-warning animated flash slow infinite utalizeStatus"
+                      role="alert"
+                    >
+                      Utilized From Package
+                    </span>
+                  ) : null}
                   {follow_up ? (
                     <span
                       className="alert alert-warning animated flash slow infinite utalizeStatus"
