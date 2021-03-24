@@ -2311,7 +2311,7 @@ export default {
             if (result[1].length > 0) {
               const data = result[1][0];
 
-              if (data.root_id == 1) {
+              if (data.root_id == 1 || data.root_id == 5) {
                 if (data.debit_amount != input.opening_balance) {
                   voucherStr = `update finance_voucher_details set ${
                     input.type === "CR" ? "credit_amount" : "debit_amount"
@@ -2322,7 +2322,7 @@ export default {
                     input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
                   }'  where finance_voucher_id=${data.finance_voucher_id};`;
                 }
-              } else if (data.root_id == 2 || data.root_id == 3) {
+              } else if (data.root_id == 2 || data.root_id == 3 || data.root_id == 4) {
                 if (data.credit_amount != input.opening_balance) {
                   voucherStr = `update finance_voucher_details set ${
                     input.type === "DR" ? "debit_amount" : "credit_amount"
@@ -2384,7 +2384,7 @@ export default {
                       let credit_amount = 0;
                       let payment_type = "CR";
                       if (
-                        insert_data["root_id"] == 1 &&
+                        (insert_data["root_id"] == 1 || insert_data["root_id"] ==5) &&
                         input.opening_balance > 0
                       ) {
                         debit_amount = input.opening_balance;
@@ -2419,7 +2419,7 @@ export default {
                         );
                       } else if (
                         (insert_data["root_id"] == 2 ||
-                          insert_data["root_id"] == 3) &&
+                          insert_data["root_id"] == 3|| insert_data["root_id"] == 4) &&
                         input.opening_balance > 0
                       ) {
                         credit_amount = input.opening_balance;
