@@ -85,6 +85,7 @@ const savePatient = async (data) => {
 };
 
 const updatePatient = async (data) => {
+  debugger;
   data.ScreenCode = "BL0001";
   const result = await newAlgaehApi({
     uri: "/frontDesk/update",
@@ -252,6 +253,10 @@ export function PatientRegistration() {
     clearState,
     setServiceInfo,
     cardData,
+    setFromPackage,
+    setPackageDetail,
+    from_package,
+    package_details,
   } = useContext(FrontdeskContext);
   console.log(cardData, "cardData");
   const [currentCountry] = countries?.filter(
@@ -527,6 +532,7 @@ export function PatientRegistration() {
   };
 
   const onSubmit = (input) => {
+    debugger;
     let inputData;
     const receiptdetails = [];
 
@@ -620,6 +626,8 @@ export function PatientRegistration() {
         card_amount,
         card_number,
         card_date,
+        from_package,
+        package_details,
       };
       update({
         ...inputData,
@@ -848,15 +856,16 @@ export function PatientRegistration() {
     // ];
 
     // AlgaehLoader({ show: true });
-    debugger;
     const doctor = `${e.sub_department_id}-${e.services_id}-${e.doctor_id}-${
       e.department_type
     }-${e?.department_id}-${"1"}`;
     const service = `${e.sub_department_id}-${e.services_id}-${e.doctor_id}-${e.department_type}-${e?.department_id}-${e.service_type_id}`;
 
+    debugger;
     setValue("doctor", doctor);
     setValue("doctor_id", e.doctor_id);
-    setValue("from_package", e.package_utilize === true ? false : true);
+    setFromPackage(!e.package_utilize);
+    setPackageDetail(e.package_details);
 
     setServiceInfo(service);
     // algaehApiCall({
