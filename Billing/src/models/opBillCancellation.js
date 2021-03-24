@@ -356,16 +356,19 @@ export default {
       bill_package.map((o) => {
         _ordered_package_id.push(o.ordered_package_id);
       });
+      console.log("_ordered_package_id", _ordered_package_id);
       if (_ordered_package_id.length > 0) {
         _mysql
           .executeQuery({
-            query:
-              "SELECT hims_f_lab_order_id FROM hims_f_lab_order WHERE `ordered_package_id` in (?)",
-            values: [_ordered_package_id],
+            query: `SELECT hims_f_lab_order_id FROM hims_f_lab_order WHERE ordered_package_id in (?);
+              SELECT hims_f_rad_order_id FROM hims_f_rad_order WHERE ordered_package_id in (?);`,
+            values: [_ordered_package_id, _ordered_package_id],
             printQuery: true,
           })
-          .then((lab_data_result) => {
+          .then((data_result) => {
             let strQry = "";
+            const lab_data_result = data_result[0];
+            const rad_data_result = data_result[1];
             for (let i = 0; i < lab_data_result.length; i++) {
               strQry += _mysql.mysqlQueryFormat(
                 "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
@@ -377,10 +380,16 @@ export default {
                 ]
               );
             }
+            for (let i = 0; i < rad_data_result.length; i++) {
+              strQry += _mysql.mysqlQueryFormat(
+                `DELETE FROM hims_f_rad_order where hims_f_rad_order_id=?;`,
+                [rad_data_result[i].hims_f_rad_order_id]
+              );
+            }
             _mysql
               .executeQuery({
                 query:
-                  "UPDATE hims_f_package_header set closed = 'Y', closed_type='C' WHERE `hims_f_package_header_id` in (?); " +
+                  "UPDATE hims_f_package_header set billed = 'N' WHERE `hims_f_package_header_id` in (?); " +
                   strQry,
                 values: [_ordered_package_id],
                 printQuery: true,
@@ -552,12 +561,8 @@ export default {
                     );
                   } else {
                     strQry += _mysql.mysqlQueryFormat(
-                      "UPDATE hims_f_ordered_services SET billed='N' where hims_f_ordered_services_id=?;\
-                      UPDATE hims_f_lab_order SET billed='N' where hims_f_lab_order_id=?;",
-                      [
-                        lab_data_result[i].ordered_services_id,
-                        lab_data_result[i].hims_f_lab_order_id,
-                      ]
+                      "UPDATE hims_f_lab_order SET billed='N' where hims_f_lab_order_id=?;",
+                      [lab_data_result[i].hims_f_lab_order_id]
                     );
                   }
                 }
@@ -660,8 +665,8 @@ export default {
                     );
                   } else {
                     strQry += _mysql.mysqlQueryFormat(
-                      "UPDATE hims_f_ordered_services SET billed='N' where hims_f_ordered_services_id=?;",
-                      [rad_data_result[i].ordered_services_id]
+                      "UPDATE hims_f_rad_order SET billed='N' where hims_f_rad_order_id=?;",
+                      [rad_data_result[i].hims_f_rad_order_id]
                     );
                   }
                 }
@@ -878,6 +883,7 @@ export default {
       const _mysql = new algaehMysql(_options);
       // const utilities = new algaehUtilities();
       const { closeConnection } = req.body;
+      console.log("closeConnection", closeConnection);
       _mysql
         .executeQuery({
           query:
@@ -1149,6 +1155,7 @@ export default {
                         // console.log("FOUR");
 
                         if (closeConnection) {
+                          console.log("111111---");
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
                           });
