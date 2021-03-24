@@ -794,5 +794,7 @@
   "AddNewAccount": "Add New Account",
   "narration": "Narration",
   "costCenter": "Cost Center",
-  "addNewEntry": "Add New Entry"
+  "addNewEntry": "Add New Entry",
+  "AddMiscellaneous": "Add Miscellaneous",
+  "Miscellaneous List": "Miscellaneous List"
 }

@@ -180,7 +180,7 @@ export default function FilterComponent(props) {
           className="btn btn-primary"
         >
           {!inputs.loading ? (
-            <span>Load</span>
+            <AlgaehLabel label={{ fieldName: "loadData" }} />
           ) : (
             <i className="fas fa-spinner fa-spin" />
           )}
@@ -190,7 +190,7 @@ export default function FilterComponent(props) {
           style={{ float: "right" }}
           className="btn btn-default"
         >
-          Clear
+          <AlgaehLabel label={{ fieldName: "btn_clear" }} />
         </button>
       </div>
     </div>
