@@ -34,7 +34,9 @@ const executePDF = function executePDFMethod(options) {
       } else if (input.is_local === "N") {
         is_local = " and H.default_nationality<>E.nationality ";
       }
-
+      if (input.employee_type) {
+        strData += ` and E.employee_type= '${input.employee_type}'`;
+      }
       options.mysql
         .executeQuery({
           query: `Select hims_f_project_wise_payroll_id,employee_id,  month, year,group_description,

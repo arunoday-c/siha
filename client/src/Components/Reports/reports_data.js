@@ -111,6 +111,7 @@ export default function loadActiveReports(
           result = Payroll({
             hospital_id: hims_d_hospital_id,
             LOCAL_TYPE,
+            EMPLOYEE_TYPE,
             allYears,
             MONTHS,
             LEAVE_STATUS,
@@ -135,6 +136,7 @@ export default function loadActiveReports(
           result = Project({
             hospital_id: hims_d_hospital_id,
             LOCAL_TYPE,
+            EMPLOYEE_TYPE,
             moment,
             allYears,
             MONTHS,

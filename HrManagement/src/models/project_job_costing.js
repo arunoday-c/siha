@@ -418,6 +418,9 @@ export default {
     if (input.employee_group_id > 0) {
       strQry += " and E.employee_group_id=" + input.employee_group_id;
     }
+    if (input.employee_type) {
+      strQry += ` and E.employee_type= '${input.employee_type}'`;
+    }
 
     console.log("input", input);
     if (
@@ -438,7 +441,7 @@ export default {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query: `select PR.hims_f_project_roster_id, PR.hospital_id, E.hims_d_employee_id as employee_id,PR.attendance_date,P.abbreviation,
+          query: `select PR.hims_f_project_roster_id,E.employee_type, PR.hospital_id, E.hims_d_employee_id as employee_id,PR.attendance_date,P.abbreviation,
           E.employee_code,E.full_name,E.sub_department_id,E.identity_no,
         E.religion_id,E.exit_date, E.date_of_joining,PR.project_id,P.project_desc,D.designation
         from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
@@ -528,6 +531,7 @@ export default {
                         abbreviation: null,
                         designation: employ.designation,
                         identity_no: employ.identity_no,
+                        employee_type: employ.employee_type,
                         exit_date: employ.exit_date,
                         hims_f_project_roster_id: null,
                       });
@@ -554,6 +558,7 @@ export default {
                         abbreviation: null,
                         designation: emp[0].designation,
                         identity_no: emp[0].identity_no,
+                        employee_type: emp[0].employee_type,
                         exit_date: emp[0].exit_date,
                         hims_f_project_roster_id: null,
                       });
@@ -708,6 +713,17 @@ export default {
                 date_of_joining: employee[0].date_of_joining,
                 designation: employee[0].designation,
                 identity_no: employee[0].identity_no,
+                employee_type: employee[0].employee_type,
+                employee_type_description:
+                  employee[0].employee_type === "PE"
+                    ? "PERMANENT"
+                    : employee[0].employee_type === "CO"
+                    ? "CONTRACT"
+                    : employee[0].employee_type === "PB"
+                    ? "PROBATION"
+                    : employee[0].employee_type === "LC"
+                    ? "LOCUM"
+                    : "VISITING CONSULTANT",
                 exit_date: employee[0].exit_date,
 
                 projects: projectList,
