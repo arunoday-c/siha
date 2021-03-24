@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { ProjectRosterContext } from "../../index";
 import TD from "../td";
-export default React.memo(function(props) {
+export default React.memo(function (props) {
   const { getProjectRosterState } = useContext(ProjectRosterContext);
   const { employees, filterEmployees, filterTrue } = getProjectRosterState();
   const loadEmployees = filterTrue === false ? employees : filterEmployees;
@@ -15,6 +15,9 @@ export default React.memo(function(props) {
             {row.employee_code}
             <br></br>
             <small>{row.designation}</small>
+            primaryId: <small>{row.identity_no}</small>
+            Employee Type:
+            <small>{row.employee_type_description}</small>
           </td>
           <TD {...row} {...props} />
           <td>{row.date_of_joining} </td>

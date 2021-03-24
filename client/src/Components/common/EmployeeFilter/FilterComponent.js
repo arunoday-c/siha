@@ -3,6 +3,7 @@ import "./FilterComponent.scss";
 import { FilterContext } from ".";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import { AlagehAutoComplete, AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import variableJson from "../../../utils/GlobalVariables.json";
 import { getYears } from "../../../utils/GlobalFunctions";
 
 export default function FilterComponent(props) {
@@ -162,6 +163,29 @@ export default function FilterComponent(props) {
               designation_id: null,
               emp_name: null,
               hims_d_employee_id: null,
+            });
+          },
+        }}
+      />
+      <AlagehAutoComplete
+        div={{ className: "col mandatory form-group" }}
+        label={{
+          forceLabel: "Employee Type",
+          // isImp: true,
+        }}
+        selector={{
+          name: "employee_type",
+          className: "select-fld",
+          value: inputs.employee_type,
+          dataSource: {
+            textField: "name",
+            valueField: "value",
+            data: variableJson.EMPLOYEE_TYPE,
+          },
+          onChange: handlers.dropDownHandler,
+          onClear: () => {
+            handlers.clearState({
+              employee_type: null,
             });
           },
         }}

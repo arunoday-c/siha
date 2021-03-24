@@ -30,6 +30,7 @@ export default function EmployeeFilter(props) {
     emp_name: null,
     inputChanged: false,
     hospital_name: userToken.hospital_name,
+    employee_type: null,
     // sel_hospital_name: hospital_name,
   };
   const [inputs, setInputs] = useState({ ...baseInput });
@@ -227,6 +228,9 @@ export default function EmployeeFilter(props) {
     }
     if (inputs.group_id !== null) {
       input_data += " and employee_group_id=" + inputs.group_id;
+    }
+    if (inputs.employee_type !== null) {
+      input_data += ` and E.employee_type= '${inputs.employee_type}'`;
     }
     AlgaehSearch({
       searchGrid: {
