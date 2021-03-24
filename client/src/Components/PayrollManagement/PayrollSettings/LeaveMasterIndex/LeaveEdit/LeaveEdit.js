@@ -21,7 +21,7 @@ class LeaveEdit extends Component {
       leaveRules: [],
       earning_deductions: [],
       encash_calc_method: undefined,
-      leave_accrual_calc:undefined,
+      leave_accrual_calc: undefined,
     };
     this.getEarningsDeds();
   }
@@ -46,6 +46,8 @@ class LeaveEdit extends Component {
 
         if (this.state.type === "EE") {
           this.getLeaveEncashment();
+
+          this.getLeaveEncashment("final");
         }
 
         if (this.state.type === "ER") {
@@ -82,17 +84,26 @@ class LeaveEdit extends Component {
     });
   }
 
-  getLeaveEncashment() {
+  getLeaveEncashment(final) {
     algaehApiCall({
       uri: "/leave/getLeaveEncashmentMaster",
       method: "GET",
-      data: { leave_id: this.state.hims_d_leave_id },
+      data: {
+        final: final === "final" ? final : null,
+        leave_id: this.state.hims_d_leave_id,
+      },
       module: "hrManagement",
       onSuccess: (res) => {
         if (res.data.success) {
-          this.setState({
-            leaveEncash: res.data.records,
-          });
+          if (final === "final") {
+            this.setState({
+              leaveEncashFinal: res.data.records,
+            });
+          } else {
+            this.setState({
+              leaveEncash: res.data.records,
+            });
+          }
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records,
@@ -233,7 +244,7 @@ class LeaveEdit extends Component {
           document_mandatory: this.isItReallyChecked(document_mandatory),
           reset_leave: this.state.reset_leave,
           encash_calc_method: this.state.encash_calc_method,
-          leave_accrual_calc:this.state.leave_accrual_calc,
+          leave_accrual_calc: this.state.leave_accrual_calc,
         };
 
         algaehApiCall({
@@ -283,11 +294,11 @@ class LeaveEdit extends Component {
       },
     });
   }
-  updateLeaveEncash(data) {
+  updateLeaveEncash(final, data) {
     algaehApiCall({
       uri: "/leave/updateLeaveEncashMaster",
       method: "PUT",
-      data: data,
+      data: { ...data, final: final === "final" ? final : null },
       module: "hrManagement",
       onSuccess: (res) => {
         if (res.data.success) {
@@ -296,7 +307,7 @@ class LeaveEdit extends Component {
             type: "success",
           });
 
-          this.getLeaveEncashment();
+          this.getLeaveEncashment(final);
         }
       },
       onFailure: (err) => {
@@ -369,42 +380,44 @@ class LeaveEdit extends Component {
     });
   }
 
-  deleteLeaveEncash(row) {
-    swal({
-      title: "Delete Leave Encashment?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-    }).then((willDelete) => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/leave/deleteLeaveEncash",
-          method: "DELETE",
-          module: "hrManagement",
-          data: {
-            hims_d_leave_encashment_id: row.hims_d_leave_encashment_id,
-          },
-          onSuccess: (res) => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Record Deleted Successfully",
-                type: "success",
-              });
-              this.getLeaveEncashment();
-            }
-          },
-          onFailure: (err) => {
-            swalMessage({
-              title: err.message,
-              type: "error",
-            });
-          },
+  deleteLeaveEncash(final, row) {
+    // swal({
+    //   title: "Delete Leave Encashment?",
+    //   type: "warning",
+    //   showCancelButton: true,
+    //   confirmButtonText: "Yes",
+    //   confirmButtonColor: "#44b8bd",
+    //   cancelButtonColor: "#d33",
+    //   cancelButtonText: "No",
+    // }).then((willDelete) => {
+    //   if (willDelete.value) {
+    algaehApiCall({
+      uri: "/leave/deleteLeaveEncash",
+      method: "DELETE",
+      module: "hrManagement",
+      data: {
+        // hims_d_leave_encashment_id: row.hims_d_leave_encashment_id,
+        ...row,
+        final: final === "final" ? final : null,
+      },
+      onSuccess: (res) => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Deleted Successfully",
+            type: "success",
+          });
+          this.getLeaveEncashment(final);
+        }
+      },
+      onFailure: (err) => {
+        swalMessage({
+          title: err.message,
+          type: "error",
         });
-      }
+      },
     });
+    // }
+    // });
   }
 
   addLeaveRules() {
@@ -511,18 +524,28 @@ class LeaveEdit extends Component {
     });
   }
 
-  addLeaveEncash() {
+  addLeaveEncash(final) {
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='LvEdtGrd'",
+      skip: final === "final" ? true : false,
       onSuccess: () => {
         let send_data = {
           leave_id: this.state.hims_d_leave_id,
           earnings_id: this.state.earnings_id,
           percent: this.state.percent,
         };
+        if (final === "final") {
+          send_data = {
+            leave_id: this.state.hims_d_leave_id,
+            earnings_id: this.state.earnings_id_final,
+            percent: this.state.percent_final,
+            final: "final",
+          };
+        }
+
         algaehApiCall({
-          uri: "/leave/addLeaveEncashmentMaster",
+          uri: `/leave/addLeaveEncashmentMaster`,
           method: "POST",
           module: "hrManagement",
           data: send_data,
@@ -532,7 +555,7 @@ class LeaveEdit extends Component {
                 title: "Record Added Successfully",
                 type: "success",
               });
-              this.getLeaveEncashment();
+              this.getLeaveEncashment(final);
               this.setState({
                 earnings_id: null,
                 percent: null,
