@@ -2320,7 +2320,12 @@ export default {
                     input.type === "CR" ? "debit_amount" : "credit_amount"
                   }=0, payment_date='${
                     input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
-                  }'  where finance_voucher_id=${data.finance_voucher_id};`;
+                  }', updated_by='${
+                    req.userIdentity.algaeh_d_app_user_id
+                  }', updated_date='${moment(new Date()).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )}'  
+                  where finance_voucher_id=${data.finance_voucher_id};`;
                 }
               } else if (
                 data.root_id == 2 ||
@@ -2335,7 +2340,12 @@ export default {
                     input.type === "DR" ? "credit_amount" : "debit_amount"
                   }=0, payment_date='${
                     input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
-                  }' where finance_voucher_id=${data.finance_voucher_id};`;
+                  }', updated_by='${
+                    req.userIdentity.algaeh_d_app_user_id
+                  }', updated_date='${moment(new Date()).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )}' 
+                  where finance_voucher_id=${data.finance_voucher_id};`;
                 }
               }
               executeFunction();
@@ -3530,7 +3540,12 @@ export async function uploadOBAccounts(req, res, next) {
               data.payment_date
                 ? moment(data.payment_date).format("YYYY-MM-DD")
                 : moment().format("YYYY-MM-DD")
-            }'  where finance_voucher_id=${
+            }', updated_by='${
+              req.userIdentity.algaeh_d_app_user_id
+            }', updated_date='${moment(new Date()).format(
+              "YYYY-MM-DD HH:mm:ss"
+            )}' 
+            where finance_voucher_id=${
               finance_voucher_exit[0].finance_voucher_id
             };`;
           }
@@ -3550,7 +3565,12 @@ export async function uploadOBAccounts(req, res, next) {
               data.payment_date
                 ? moment(data.payment_date).format("YYYY-MM-DD")
                 : moment().format("YYYY-MM-DD")
-            }' where finance_voucher_id=${
+            }', updated_by='${
+              req.userIdentity.algaeh_d_app_user_id
+            }', updated_date='${moment(new Date()).format(
+              "YYYY-MM-DD HH:mm:ss"
+            )}' 
+            where finance_voucher_id=${
               finance_voucher_exit[0].finance_voucher_id
             };`;
           }
