@@ -1435,13 +1435,14 @@ export default function Inventory({
             type: "date",
             name: "till_date",
             isImp: true,
+            label: "Till Date",
             others: {
               maxDate: new Date(),
               minDate: null,
             },
           },
           {
-            className: "col-3 form-group",
+            className: "col-3 mandatory form-group",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
