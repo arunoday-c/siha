@@ -11,13 +11,11 @@ export default React.memo(function (props) {
         <tr key={row.hims_d_employee_id}>
           <td>
             <b> {row.employee_name} </b>
-            <br></br>
-            {row.employee_code}
-            <br></br>
-            <small>{row.designation}</small>
-            primaryId: <small>{row.identity_no}</small>
-            Employee Type:
-            <small>{row.employee_type_description}</small>
+            <small>{row.designation} </small>
+            <small>
+              {row.employee_code} / {row.identity_no} /{" "}
+              {row.employee_type_description}
+            </small>
           </td>
           <TD {...row} {...props} />
           <td>{row.date_of_joining} </td>

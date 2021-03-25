@@ -308,3 +308,17 @@
     border: 1px solid red;
   }
 }
+
+.ar_component {
+  #bulkRosterPreview {
+    tbody {
+      tr {
+        td {
+          &:first-child {
+            text-align: right !important;
+          }
+        }
+      }
+    }
+  }
+}

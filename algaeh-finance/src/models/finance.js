@@ -2311,7 +2311,7 @@ export default {
             if (result[1].length > 0) {
               const data = result[1][0];
 
-              if (data.root_id == 1) {
+              if (data.root_id == 1 || data.root_id == 5) {
                 if (data.debit_amount != input.opening_balance) {
                   voucherStr = `update finance_voucher_details set ${
                     input.type === "CR" ? "credit_amount" : "debit_amount"
@@ -2322,7 +2322,11 @@ export default {
                     input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
                   }'  where finance_voucher_id=${data.finance_voucher_id};`;
                 }
-              } else if (data.root_id == 2 || data.root_id == 3) {
+              } else if (
+                data.root_id == 2 ||
+                data.root_id == 3 ||
+                data.root_id == 4
+              ) {
                 if (data.credit_amount != input.opening_balance) {
                   voucherStr = `update finance_voucher_details set ${
                     input.type === "DR" ? "debit_amount" : "credit_amount"
@@ -2384,7 +2388,8 @@ export default {
                       let credit_amount = 0;
                       let payment_type = "CR";
                       if (
-                        insert_data["root_id"] == 1 &&
+                        (insert_data["root_id"] == 1 ||
+                          insert_data["root_id"] == 5) &&
                         input.opening_balance > 0
                       ) {
                         debit_amount = input.opening_balance;
@@ -2419,7 +2424,8 @@ export default {
                         );
                       } else if (
                         (insert_data["root_id"] == 2 ||
-                          insert_data["root_id"] == 3) &&
+                          insert_data["root_id"] == 3 ||
+                          insert_data["root_id"] == 4) &&
                         input.opening_balance > 0
                       ) {
                         credit_amount = input.opening_balance;
@@ -2648,13 +2654,17 @@ export default {
         _mysql.releaseConnection();
 
         if (result.length > 0) {
-          if (result[0]["root_id"] == 1) {
+          if (result[0]["root_id"] == 1 || result[0]["root_id"] == 5) {
             req.records = {
               opening_bal: result[0]["debit_amount"],
               opening_balance_date: result[0]["payment_date"],
             };
             next();
-          } else if (result[0]["root_id"] == 2 || result[0]["root_id"] == 3) {
+          } else if (
+            result[0]["root_id"] == 2 ||
+            result[0]["root_id"] == 3 ||
+            result[0]["root_id"] == 4
+          ) {
             req.records = {
               opening_bal: result[0]["credit_amount"],
               opening_balance_date: result[0]["payment_date"],
@@ -2734,15 +2744,17 @@ export default {
       //-------------------start
       _mysql
         .executeQuery({
-          query: `select  ledger_code, child_name,root_id, CAST( NOW() AS Date ) as payment_date, finance_account_child_id,
-                CASE WHEN finance_voucher_id >0 THEN payment_type WHEN AH.root_id='1' THEN 'DR' else 'CR' END as payment_type,
-                CASE WHEN finance_voucher_id >0 and payment_type = 'DR' THEN debit_amount 
-                WHEN finance_voucher_id >0 and payment_type = 'CR' THEN credit_amount else '0.00' END as opening_balance,                
-                finance_voucher_id, is_opening_bal, 'N' as insert_into_header, AC.head_id, finance_account_child_id
-                from finance_account_child AC 
-                inner join finance_account_head AH on AH.finance_account_head_id = AC.head_id 
-                left join finance_voucher_details VD on VD.child_id = AC.finance_account_child_id  and is_opening_bal='Y'
-                where root_id in (1,2,3) group by finance_account_child_id;`,
+          query: `select  ledger_code, child_name,root_id, 
+            CASE WHEN finance_voucher_id > 0 THEN payment_date else CAST( NOW() AS Date ) END as payment_date, 
+            finance_account_child_id,
+            CASE WHEN finance_voucher_id >0 THEN payment_type WHEN AH.root_id='1' THEN 'DR' else 'CR' END as payment_type,
+            CASE WHEN finance_voucher_id >0 and payment_type = 'DR' THEN debit_amount 
+            WHEN finance_voucher_id >0 and payment_type = 'CR' THEN credit_amount else '0.00' END as opening_balance,                
+            finance_voucher_id, is_opening_bal, 'N' as insert_into_header, AC.head_id, finance_account_child_id
+            from finance_account_child AC 
+            inner join finance_account_head AH on AH.finance_account_head_id = AC.head_id 
+            left join finance_voucher_details VD on VD.child_id = AC.finance_account_child_id  and is_opening_bal='Y'
+            where root_id in (1,2,3)  group by finance_account_child_id order by root_id;`,
           printQuery: true,
         })
         .then((result) => {
@@ -2996,7 +3008,8 @@ export default {
                     .replace("Insert into Header", "insert_into_header")
                     .replace("Amount", "amount")
                     .replace("Head Id", "head_id")
-                    .replace("Child Id", "finance_account_child_id");
+                    .replace("Child Id", "finance_account_child_id")
+                    .replace("Payment Date", "payment_date");
                   internal[columnName] = row.values[i];
                   if (i === columns.length - 1) {
                     excelArray.push(internal);
@@ -3472,25 +3485,40 @@ export async function uploadOBAccounts(req, res, next) {
   const _mysql = new algaehMysql();
 
   try {
+    const input = req.body;
+    let _child_id = [];
+    input.map((o) => {
+      _child_id.push(o.finance_account_child_id);
+    });
     const result = await _mysql
       .executeQuery({
-        query: `select default_branch_id FROM finance_options limit 1;`,
+        query: `select default_branch_id FROM finance_options limit 1;
+        select finance_voucher_id, child_id, debit_amount, credit_amount from finance_voucher_details where 
+        is_opening_bal='Y' and child_id in (${_child_id});`,
       })
       .catch((error) => {
         throw error;
       });
 
-    console.log("result", result);
-    const input = req.body;
+    // debit_amount,credit_amount
+    // console.log("result", result);
+    // consol.log("result", result);
     let voucherStr = "SELECT 1=1;";
     // console.log("input", input);
 
     for (let i = 0; i < input.length; i++) {
       const data = input[i];
       // console.log("data", data);
-      if (data.finance_voucher_id > 0) {
+      const finance_voucher_exit = result[1].filter(
+        (f) => f.child_id === data.finance_account_child_id
+      );
+      // console.log("finance_voucher_exit", finance_voucher_exit);
+      if (finance_voucher_exit.length > 0) {
         if (data.root_id == 1) {
-          if (parseFloat(data.amount) != parseFloat(data.opening_balance)) {
+          if (
+            parseFloat(finance_voucher_exit[0].debit_amount) !=
+            parseFloat(data.opening_balance)
+          ) {
             voucherStr += `update finance_voucher_details set ${
               data.payment_type === "CR" ? "credit_amount" : "debit_amount"
             }=${data.opening_balance},
@@ -3500,12 +3528,17 @@ export async function uploadOBAccounts(req, res, next) {
               data.payment_type === "CR" ? "debit_amount" : "credit_amount"
             }=0, payment_date='${
               data.payment_date
-                ? data.payment_date
+                ? moment(data.payment_date).format("YYYY-MM-DD")
                 : moment().format("YYYY-MM-DD")
-            }'  where finance_voucher_id=${data.finance_voucher_id};`;
+            }'  where finance_voucher_id=${
+              finance_voucher_exit[0].finance_voucher_id
+            };`;
           }
         } else if (data.root_id == 2 || data.root_id == 3) {
-          if (parseFloat(data.amount) != parseFloat(data.opening_balance)) {
+          if (
+            parseFloat(finance_voucher_exit[0].credit_amount) !=
+            parseFloat(data.opening_balance)
+          ) {
             voucherStr += `update finance_voucher_details set ${
               data.payment_type === "DR" ? "debit_amount" : "credit_amount"
             }=${data.opening_balance},
@@ -3515,9 +3548,11 @@ export async function uploadOBAccounts(req, res, next) {
               data.payment_type === "DR" ? "credit_amount" : "debit_amount"
             }=0, payment_date='${
               data.payment_date
-                ? data.payment_date
+                ? moment(data.payment_date).format("YYYY-MM-DD")
                 : moment().format("YYYY-MM-DD")
-            }' where finance_voucher_id=${data.finance_voucher_id};`;
+            }' where finance_voucher_id=${
+              finance_voucher_exit[0].finance_voucher_id
+            };`;
           }
         }
       } else {
@@ -3547,12 +3582,14 @@ export async function uploadOBAccounts(req, res, next) {
           queryGen = {
             query: ` insert into finance_voucher_header(voucher_type,voucher_no,amount,payment_date,
                         month,year,narration,from_screen,posted_from,created_by,updated_by,invoice_no)
-                        value(?,?,?,?,?,?,'Opening Balance Added from Accounts','ACCOUNTS OPENING BALANCE','V',?,?,?)`,
+                        value(?,?,?,?,?,?,'Opening Balance Added from Accounts','ACCOUNTS OPENING BALANCE','V',?,?,?);`,
             values: [
               voucher_type,
               numgen[voucher_type.toUpperCase()],
               data.opening_balance,
-              data.payment_date ? data.payment_date : new Date(),
+              data.payment_date
+                ? moment(data.payment_date).format("YYYY-MM-DD")
+                : new Date(),
               month,
               year,
               algaeh_d_app_user_id,
@@ -3575,7 +3612,7 @@ export async function uploadOBAccounts(req, res, next) {
               next(error);
             });
           });
-        console.log("headerResult", headerResult);
+        // console.log("headerResult", headerResult);
         const { insertId } = headerResult;
 
         //Added existing statements
@@ -3584,10 +3621,10 @@ export async function uploadOBAccounts(req, res, next) {
         let debit_amount = 0;
         let credit_amount = 0;
         let payment_type = "CR";
-        console.log("data.root_id", data.root_id);
-        console.log("data.opening_balance", data.opening_balance);
+        // console.log("data.root_id", data.root_id);
+        // console.log("data.opening_balance", data.opening_balance);
         if (data.root_id == 1 && parseFloat(data.opening_balance) > 0) {
-          console.log("11");
+          // console.log("11");
           debit_amount = data.opening_balance;
           payment_type = "DR";
 
@@ -3599,19 +3636,22 @@ export async function uploadOBAccounts(req, res, next) {
               break;
           }
 
+          // console.log("data.payment_date", data.payment_date);
           voucherStr += _mysql.mysqlQueryFormat(
             "INSERT INTO finance_voucher_details (voucher_header_id, payment_date, head_id, child_id, \
                             debit_amount, credit_amount, payment_type,hospital_id, year, month, is_opening_bal, \
-                            entered_by, auth_status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            entered_by, auth_status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?);",
             [
               insertId,
-              data.payment_date ? data.payment_date : new Date(),
+              data.payment_date
+                ? moment(data.payment_date).format("YYYY-MM-DD")
+                : new Date(),
               data.head_id,
               data.finance_account_child_id,
               debit_amount,
               credit_amount,
               payment_type,
-              result[0]["default_branch_id"],
+              result[0][0]["default_branch_id"],
               moment().format("YYYYY"),
               moment().format("M"),
               "Y",
@@ -3634,16 +3674,18 @@ export async function uploadOBAccounts(req, res, next) {
           voucherStr += _mysql.mysqlQueryFormat(
             "INSERT INTO finance_voucher_details (voucher_header_id, payment_date, head_id, child_id, \
                             debit_amount, credit_amount, payment_type, hospital_id, year, month, is_opening_bal, \
-                            entered_by, auth_status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            entered_by, auth_status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?);",
             [
               insertId,
-              data.payment_date ? data.payment_date : new Date(),
+              data.payment_date
+                ? moment(data.payment_date).format("YYYY-MM-DD")
+                : new Date(),
               data.head_id,
               data.finance_account_child_id,
               debit_amount,
               credit_amount,
               payment_type,
-              result[0]["default_branch_id"],
+              result[0][0]["default_branch_id"],
               moment().format("YYYYY"),
               moment().format("M"),
               "Y",

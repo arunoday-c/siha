@@ -8,6 +8,7 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
+                        <th>Ledger Code</th>
                         <th>Ledger</th>
                         <th>Ledger Arabic</th>
                         <th>Debit Amount</th>
@@ -21,6 +22,7 @@
                     {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
+                        <td>{{ledger_code}}</td> {{!--{{account_name}} >  --}}
                         <td>{{child_name}}</td> {{!--{{account_name}} >  --}}
                         <td>{{arabic_child_name}}</td> {{!--{{arabic_account_name}} >  --}}
                         <td>{{numberFormating debit_amount ../currency}}</td>

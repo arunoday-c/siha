@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import TreeComponent from "./TreeComponent";
-import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
+import { AlgaehTabs, AlgaehLabel, Spin } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import moment from "moment";
 import "./alice.scss";
 // import { getAccounts } from ".././FinanceAccountEvent";
 
 export default function FinanceAccounts({ inDrawer = false }) {
+  const [loading, setLoading] = useState(false);
   const TABS = [
     { label: "assets", assetCode: 1 },
     { label: "liabilities", assetCode: 2 },
@@ -72,6 +73,7 @@ export default function FinanceAccounts({ inDrawer = false }) {
   }
 
   function importExcelAccountOB(files) {
+    setLoading(true);
     // AlgaehLoader({ show: true });
     debugger;
     const reader = new FileReader();
@@ -94,6 +96,7 @@ export default function FinanceAccounts({ inDrawer = false }) {
         method: "post",
         onSuccess: (response) => {
           if (response.data.success === true) {
+            setLoading(false);
             swalMessage({
               title: "Uploded Successfully...",
               type: "success",
@@ -151,30 +154,31 @@ export default function FinanceAccounts({ inDrawer = false }) {
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-lg-12">
+            <div className="uploadManualDiv   btn-with-icon">
+              <Spin spinning={loading}>
+                <input
+                  className="inputfile"
+                  type="file"
+                  name="manualTimeSheet"
+                  ref={fileInput}
+                  onChange={(e) => {
+                    if (e.target.files.length > 0)
+                      importExcelAccountOB(e.target.files);
+                  }}
+                  // onChange={importExcelAccountOB}
+                />
+                <label onClick={() => fileInput.current.click()}>
+                  <i className="fas fa-file-upload"></i> Upload Template
+                </label>
+              </Spin>
+            </div>{" "}
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-other"
               onClick={exportExcelAccountOB}
             >
-              <AlgaehLabel label={{ forceLabel: "OB Export" }} />
+              <AlgaehLabel label={{ forceLabel: "Download Template" }} />
             </button>
-
-            <div className="uploadManualDiv   btn-with-icon">
-              <input
-                className="inputfile"
-                type="file"
-                name="manualTimeSheet"
-                ref={fileInput}
-                onChange={(e) => {
-                  if (e.target.files.length > 0)
-                    importExcelAccountOB(e.target.files);
-                }}
-                // onChange={importExcelAccountOB}
-              />
-              <label onClick={() => fileInput.current.click()}>
-                <i className="fas fa-file-upload"></i> OB Import
-              </label>
-            </div>
             {/* <button
               type="button"
               className="btn btn-primary"

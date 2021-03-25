@@ -387,7 +387,9 @@ export default class MiscEarningsDeductions extends Component {
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
-                    <h3 className="caption-subject">Add Miscellaneous</h3>
+                    <h3 className="caption-subject">
+                      <AlgaehLabel label={{ fieldName: "AddMiscellaneous" }} />
+                    </h3>
                   </div>
                 </div>
                 <div className="portlet-body">
@@ -595,7 +597,11 @@ export default class MiscEarningsDeductions extends Component {
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
-                    <h3 className="caption-subject">Miscellaneous List</h3>
+                    <h3 className="caption-subject">
+                      <AlgaehLabel
+                        label={{ fieldName: "Miscellaneous List" }}
+                      />
+                    </h3>
                   </div>
                 </div>
 

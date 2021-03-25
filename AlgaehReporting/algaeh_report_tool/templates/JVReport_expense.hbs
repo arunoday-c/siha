@@ -15,6 +15,8 @@
                         <td  class="txtFld">
                             <p>Payment From:</p>
                             <p><b>{{resultHeader.child_name}}</b></p>
+                            <p><b>{{resultHeader.arabic_child_name}}</b></p>
+                            <p>{{resultHeader.ledger_code}}</p>
                         </td>
                     </tr>
                 </table>
@@ -69,7 +71,6 @@
                         <td>{{inc @index}}</td>
                         <td>{{cost_center_name}}</td>
                         <td>{{ledger_code}}</td>
-                        
                         <td>{{child_name}}</td> {{!--{{account_name}} >  --}}
                         <td>{{arabic_child_name}}</td> {{!--{{arabic_account_name}} >  --}}
                         <td>{{numberFormating debit_amount ../currency}}</td>

@@ -716,14 +716,14 @@ export default {
                 employee_type: employee[0].employee_type,
                 employee_type_description:
                   employee[0].employee_type === "PE"
-                    ? "PERMANENT"
+                    ? "Permanent"
                     : employee[0].employee_type === "CO"
-                    ? "CONTRACT"
+                    ? "Contract"
                     : employee[0].employee_type === "PB"
-                    ? "PROBATION"
+                    ? "Probation"
                     : employee[0].employee_type === "LC"
-                    ? "LOCUM"
-                    : "VISITING CONSULTANT",
+                    ? "locum"
+                    : "Visiting Consultants",
                 exit_date: employee[0].exit_date,
 
                 projects: projectList,

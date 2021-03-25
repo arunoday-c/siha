@@ -68,7 +68,7 @@ export default function AddNewAccount({
       setLedgerCode(ledgerCode);
       setArabicAccountName(arabicName);
       // eslint-disable-next-line eqeqeq
-      if (accountType !== "G" && !(accountCode === 4 || accountCode === 5)) {
+      if (accountType !== "G") {
         setLoadingAddtoList(true);
         getOpeningBalance(selectedNode.node.finance_account_child_id)
           .then((res) => {
@@ -346,102 +346,100 @@ export default function AddNewAccount({
             />
           </div>
           {account_type === "C" ? (
-            accountCode !== 4 && accountCode !== 5 ? (
-              <div className="row">
-                {accountName ? (
-                  <>
-                    <div className="col-6">
-                      <Checkbox
-                        style={{ marginBottom: 10 }}
-                        checked={enableOP}
-                        onChange={() => setEnableOP((state) => !state)}
-                      >
-                        Edit Balance
-                      </Checkbox>
-                    </div>
-                    <div className="col-6">
-                      <Checkbox
-                        style={{ marginBottom: 10 }}
-                        checked={insertInVoucherHeader}
-                        onChange={() =>
-                          setinsertInvoiceHeader((state) => !state)
-                        }
-                      >
-                        Insert To Header
-                      </Checkbox>
-                    </div>
-                  </>
-                ) : null}
-                <AlgaehFormGroup
-                  div={{
-                    className: "col-6 form-group  mandatory",
-                  }}
-                  label={{
-                    forceLabel: "Opening Balance",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    type: "number",
-                    value: opening_balance,
-                    className: "form-control",
-                    id: "name",
-                    onChange: (e) => {
-                      setOpeningBalance(e.target.value);
-                    },
-                    placeholder: " Enter Opening Balance",
-                    autoComplete: false,
-                    disabled: !enableOP && accountName,
-                  }}
-                />
-                <AlgaehDropDown
-                  div={{
-                    className: "col-6 form-group mandatory",
-                  }}
-                  label={{
-                    forceLabel: "Type",
-                    isImp: true,
-                  }}
-                  selector={{
-                    className: "form-control",
-                    value: type,
-                    name: "type",
-                    onChange: (e) => {
-                      setType(e.target.value);
-                    },
-                  }}
-                  dataSource={{
-                    textField: "name",
-                    valueField: "value",
-                    data: [
-                      { name: "CR", value: "CR" },
-                      { name: "DR", value: "DR" },
-                    ],
-                  }}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-6 algaeh-date-fld" }}
-                  label={{
-                    forceLabel: "Opening Balance Date",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    name: "enter_date",
-                    className: "form-control",
-                    value: obDate,
-                  }}
-                  maxDate={moment().add(1, "days")}
-                  others={{
-                    disabled: !enableOP && accountName,
-                  }}
-                  events={{
-                    onChange: (momentDate) => {
-                      setObDate(momentDate?.format("YYYY-MM-DD"));
-                    },
-                  }}
-                />
-              </div>
-            ) : null
-          ) : null}
+            // accountCode !== 4 && accountCode !== 5 ? (
+            <div className="row">
+              {accountName ? (
+                <>
+                  <div className="col-6">
+                    <Checkbox
+                      style={{ marginBottom: 10 }}
+                      checked={enableOP}
+                      onChange={() => setEnableOP((state) => !state)}
+                    >
+                      Edit Balance
+                    </Checkbox>
+                  </div>
+                  <div className="col-6">
+                    <Checkbox
+                      style={{ marginBottom: 10 }}
+                      checked={insertInVoucherHeader}
+                      onChange={() => setinsertInvoiceHeader((state) => !state)}
+                    >
+                      Insert To Header
+                    </Checkbox>
+                  </div>
+                </>
+              ) : null}
+              <AlgaehFormGroup
+                div={{
+                  className: "col-6 form-group  mandatory",
+                }}
+                label={{
+                  forceLabel: "Opening Balance",
+                  isImp: true,
+                }}
+                textBox={{
+                  type: "number",
+                  value: opening_balance,
+                  className: "form-control",
+                  id: "name",
+                  onChange: (e) => {
+                    setOpeningBalance(e.target.value);
+                  },
+                  placeholder: " Enter Opening Balance",
+                  autoComplete: false,
+                  disabled: !enableOP && accountName,
+                }}
+              />
+              <AlgaehDropDown
+                div={{
+                  className: "col-6 form-group mandatory",
+                }}
+                label={{
+                  forceLabel: "Type",
+                  isImp: true,
+                }}
+                selector={{
+                  className: "form-control",
+                  value: type,
+                  name: "type",
+                  onChange: (e) => {
+                    setType(e.target.value);
+                  },
+                }}
+                dataSource={{
+                  textField: "name",
+                  valueField: "value",
+                  data: [
+                    { name: "CR", value: "CR" },
+                    { name: "DR", value: "DR" },
+                  ],
+                }}
+              />
+              <AlgaehDateHandler
+                div={{ className: "col-6 algaeh-date-fld" }}
+                label={{
+                  forceLabel: "Opening Balance Date",
+                  isImp: true,
+                }}
+                textBox={{
+                  name: "enter_date",
+                  className: "form-control",
+                  value: obDate,
+                }}
+                maxDate={moment().add(1, "days")}
+                others={{
+                  disabled: !enableOP && accountName,
+                }}
+                events={{
+                  onChange: (momentDate) => {
+                    setObDate(momentDate?.format("YYYY-MM-DD"));
+                  },
+                }}
+              />
+            </div>
+          ) : // ) : null
+          null}
         </div>
       </Spin>
     </AlgaehModal>
