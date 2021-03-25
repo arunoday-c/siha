@@ -490,7 +490,7 @@ export function Organization(props) {
                         <img
                           src={app_logo}
                           alt="avatar"
-                          style={{ width: "100%" }}
+                          style={{ height: "100%" }}
                         />
                       ) : (
                         <>
@@ -525,7 +525,7 @@ export function Organization(props) {
                         <img
                           src={org_image}
                           alt="avatar"
-                          style={{ width: "100%" }}
+                          style={{ height: "100%" }}
                         />
                       ) : (
                         <>
@@ -559,7 +559,7 @@ export function Organization(props) {
                         <img
                           src={seal_logo}
                           alt="avatar"
-                          style={{ width: "100%" }}
+                          style={{ height: "100%" }}
                         />
                       ) : (
                         <>

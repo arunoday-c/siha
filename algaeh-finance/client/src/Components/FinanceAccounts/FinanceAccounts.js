@@ -151,14 +151,6 @@ export default function FinanceAccounts({ inDrawer = false }) {
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-lg-12">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={exportExcelAccountOB}
-            >
-              <AlgaehLabel label={{ forceLabel: "OB Export" }} />
-            </button>
-
             <div className="uploadManualDiv   btn-with-icon">
               <input
                 className="inputfile"
@@ -172,9 +164,16 @@ export default function FinanceAccounts({ inDrawer = false }) {
                 // onChange={importExcelAccountOB}
               />
               <label onClick={() => fileInput.current.click()}>
-                <i className="fas fa-file-upload"></i> OB Import
+                <i className="fas fa-file-upload"></i> Upload Template
               </label>
-            </div>
+            </div>{" "}
+            <button
+              type="button"
+              className="btn btn-other"
+              onClick={exportExcelAccountOB}
+            >
+              <AlgaehLabel label={{ forceLabel: "Download Template" }} />
+            </button>
             {/* <button
               type="button"
               className="btn btn-primary"
