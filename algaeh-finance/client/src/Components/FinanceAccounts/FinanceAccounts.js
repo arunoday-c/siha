@@ -7,6 +7,7 @@ import "./alice.scss";
 // import { getAccounts } from ".././FinanceAccountEvent";
 
 export default function FinanceAccounts({ inDrawer = false }) {
+  let fileInput = React.createRef();
   const [loading, setLoading] = useState(false);
   const TABS = [
     { label: "assets", assetCode: 1 },
@@ -34,7 +35,6 @@ export default function FinanceAccounts({ inDrawer = false }) {
       ),
     };
   });
-  let fileInput = React.createRef();
 
   function exportExcelAccountOB() {
     algaehApiCall({
@@ -162,8 +162,10 @@ export default function FinanceAccounts({ inDrawer = false }) {
                   name="manualTimeSheet"
                   ref={fileInput}
                   onChange={(e) => {
-                    if (e.target.files.length > 0)
+                    if (e.target.files.length > 0) {
                       importExcelAccountOB(e.target.files);
+                      // fileInput = React.createRef();
+                    }
                   }}
                   // onChange={importExcelAccountOB}
                 />
