@@ -97,6 +97,26 @@ export default function FilterComponent(props) {
             });
           },
         }}
+      />{" "}
+      <AlagehAutoComplete
+        div={{ className: "col-2 form-group" }}
+        label={{ fieldName: "employeeType" }}
+        selector={{
+          name: "employee_type",
+          className: "select-fld",
+          value: inputs.employee_type,
+          dataSource: {
+            textField: "name",
+            valueField: "value",
+            data: variableJson.EMPLOYEE_TYPE,
+          },
+          onChange: handlers.dropDownHandler,
+          onClear: () => {
+            handlers.clearState({
+              employee_type: null,
+            });
+          },
+        }}
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
@@ -163,29 +183,6 @@ export default function FilterComponent(props) {
               designation_id: null,
               emp_name: null,
               hims_d_employee_id: null,
-            });
-          },
-        }}
-      />
-      <AlagehAutoComplete
-        div={{ className: "col mandatory form-group" }}
-        label={{
-          forceLabel: "Employee Type",
-          // isImp: true,
-        }}
-        selector={{
-          name: "employee_type",
-          className: "select-fld",
-          value: inputs.employee_type,
-          dataSource: {
-            textField: "name",
-            valueField: "value",
-            data: variableJson.EMPLOYEE_TYPE,
-          },
-          onChange: handlers.dropDownHandler,
-          onClear: () => {
-            handlers.clearState({
-              employee_type: null,
             });
           },
         }}
