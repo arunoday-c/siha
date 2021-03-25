@@ -96,8 +96,8 @@ LD.month ='8' then ML.august when
 LD.month ='9' then ML.september when
 LD.month ='10' then ML.october when
 LD.month ='11' then ML.november
-else ML.december end as ml_month
--- LEC.leave_days as enc_leave_days,LEC.leave_amount as enc_leave_amount,LEC.airfare_amount as enc_airfare_amount
+else ML.december end as ml_month,
+ LEC.leave_days as enc_leave_days,LEC.leave_amount as enc_leave_amount,LEC.airfare_amount as enc_airfare_amount
           FROM hims_f_employee_leave_salary_header LH
           left join hims_f_employee_leave_salary_detail LD on LD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id 
           and LD.year = ?  and LD.month <= ?
@@ -107,7 +107,7 @@ else ML.december end as ml_month
           left join hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
           left join hims_f_salary as SL on SL.employee_id = LH.employee_id and SL.year=? and SL.month=? and salary_paid='Y'
           left join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
-          -- left join hims_f_leave_encash_header LEC on LEC.year=? and MONTH(CONCAT(LEC.encashment_date))=? and LEC.leave_id = (select hims_d_leave_id from hims_d_leave where leave_category='A')
+         left join hims_f_leave_encash_header LEC on LEC.employee=EM.hims_d_employee_id and LEC.year=? and MONTH(CONCAT(LEC.encashment_date))=? and LEC.leave_id = (select hims_d_leave_id from hims_d_leave where leave_category='A')
           left join hims_f_employee_monthly_leave as ML on ML.employee_id = EM.hims_d_employee_id and ML.year=? and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
           where EM.employee_status <> 'I'  ${str}
           group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id
