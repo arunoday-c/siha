@@ -307,10 +307,10 @@ export default memo(function ({ details }) {
               </thead>
               <tbody>
                 {detailsOf
-                  .filter((f) => {
+                  ?.filter((f) => {
                     return f.isPCR === "Y";
                   })[0]
-                  .list.map((item, index) => {
+                  ?.list.map((item, index) => {
                     const {
                       status,
                       service_name,
