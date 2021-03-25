@@ -126,6 +126,7 @@ class ApplyLeaveEncashment extends Component {
             leave_id: null,
             leave_days: 0,
             reporting_to_id: row.reporting_to_id,
+            leave_final: row.employee_status === "A" ? "N" : "Y",
           },
           () => {
             this.getEmployeeLeaveData();
@@ -195,6 +196,7 @@ class ApplyLeaveEncashment extends Component {
       employee_id: this.state.employee_id,
       year: this.state.year,
       leave_id: this.state.leave_id,
+      leave_final: this.state.leave_final,
     };
 
     algaehApiCall({
@@ -246,6 +248,7 @@ class ApplyLeaveEncashment extends Component {
       Request_enable: true,
       is_projected_leave: "N",
       loading_Process: false,
+      leave_final: "N",
     });
   }
 

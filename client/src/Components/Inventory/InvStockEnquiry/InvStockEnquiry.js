@@ -532,7 +532,6 @@ class InvStockEnquiry extends Component {
           req_warehouse={this.state.req_warehouse}
           trans_required={this.state.trans_required}
           location_description={this.state.location_description}
-          location_description={this.state.location_description}
           currentRow={this.state.currentRow}
         />
       </React.Fragment>

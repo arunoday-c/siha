@@ -2181,14 +2181,26 @@ export default {
   //created by irfan:
   deleteLeaveEncash: (req, res, next) => {
     const utilities = new algaehUtilities();
-
-    if (req.body.hims_d_leave_encashment_id > 0) {
+    let input = req.body;
+    if (
+      input.hims_d_leave_encashment_id > 0 ||
+      input.hims_d_leave_encashment_final_id > 0
+    ) {
+      let string = "hims_d_leave_encashment";
+      let final_id = "hims_d_leave_encashment_id";
+      if (input.final === "final") {
+        string = "hims_d_leave_encashment_final";
+        final_id = "hims_d_leave_encashment_final_id";
+      }
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query:
-            "DELETE from  hims_d_leave_encashment WHERE hims_d_leave_encashment_id=?",
-          values: [req.body.hims_d_leave_encashment_id],
+          query: `DELETE from ${string}  WHERE ${final_id}=?`,
+          values: [
+            input.hims_d_leave_encashment_id > 0
+              ? input.hims_d_leave_encashment_id
+              : input.hims_d_leave_encashment_final_id,
+          ],
 
           printQuery: false,
         })
@@ -2310,12 +2322,17 @@ export default {
     let input = req.body;
     if (input.leave_id > 0) {
       const _mysql = new algaehMysql();
+
+      let string = "hims_d_leave_encashment";
+      if (input.final === "final") {
+        string = "hims_d_leave_encashment_final";
+      }
+
       _mysql
         .executeQuery({
-          query:
-            "INSERT  INTO hims_d_leave_encashment ( leave_header_id,\
+          query: `INSERT  INTO ${string} ( leave_header_id,\
           earnings_id, percent,created_date, created_by, updated_date, updated_by) values(\
-          ?,?,?,?,?,?,?)",
+          ?,?,?,?,?,?,?)`,
           values: [
             input.leave_id,
             input.earnings_id,
@@ -2397,16 +2414,21 @@ export default {
   getLeaveEncashmentMaster: (req, res, next) => {
     if (req.query.leave_id > 0) {
       const _mysql = new algaehMysql();
+      let string = "hims_d_leave_encashment";
+      let final_id = "hims_d_leave_encashment_id";
+      if (req.query.final === "final") {
+        string = "hims_d_leave_encashment_final";
+        final_id = "hims_d_leave_encashment_final_id";
+      }
       _mysql
         .executeQuery({
-          query:
-            "Select hims_d_leave_encashment_id, leave_header_id,\
-        earnings_id, percent\
-       from hims_d_leave_encashment where leave_header_id=?",
+          query: `Select ${final_id}, leave_header_id,
+        earnings_id, percent
+       from ${string} where leave_header_id=?`,
 
           values: [req.query.leave_id],
 
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -2523,24 +2545,34 @@ export default {
   //created by irfan:
   updateLeaveEncashMaster: (req, res, next) => {
     let input = req.body;
-    if (input.hims_d_leave_encashment_id > 0) {
+    let string = "hims_d_leave_encashment";
+    let final_id = "hims_d_leave_encashment_id";
+    if (input.final === "final") {
+      string = "hims_d_leave_encashment_final";
+      final_id = "hims_d_leave_encashment_final_id";
+    }
+    if (
+      input.hims_d_leave_encashment_id ||
+      input.hims_d_leave_encashment_final_id > 0
+    ) {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query:
-            "UPDATE hims_d_leave_encashment SET leave_header_id = ?,\
-        earnings_id = ?, percent = ?,\
-          updated_date=?, updated_by=?  WHERE hims_d_leave_encashment_id = ?",
+          query: `UPDATE ${string} SET leave_header_id = ?,
+        earnings_id = ?, percent = ?,
+          updated_date=?, updated_by=?  WHERE ${final_id} = ?`,
           values: [
             input.leave_header_id,
             input.earnings_id,
             input.percent,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_leave_encashment_id,
+            input.hims_d_leave_encashment_id
+              ? input.hims_d_leave_encashment_id
+              : input.hims_d_leave_encashment_final_id,
           ],
 
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();

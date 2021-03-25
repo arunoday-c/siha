@@ -34,6 +34,9 @@ const executePDF = function executePDFMethod(options) {
       if (input.project_id > 0) {
         strData += " and PR.project_id=" + input.project_id;
       }
+      if (input.employee_type) {
+        strData += ` and PR.employee_type= '${input.employee_type}'`;
+      }
       // if (input.department_id > 0) {
       //   strData += " and SD.department_id=" + input.department_id;
       // }

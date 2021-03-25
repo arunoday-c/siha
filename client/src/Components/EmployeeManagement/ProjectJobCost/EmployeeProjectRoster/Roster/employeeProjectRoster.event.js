@@ -21,6 +21,7 @@ export function getEmployeesForProjectRoster(inputs) {
         department_id,
         designation_id,
         group_id,
+        employee_type,
         hospitals,
       } = inputs;
       const { fromDate, toDate } = getInputDates(inputs);
@@ -39,6 +40,7 @@ export function getEmployeesForProjectRoster(inputs) {
           department_id: department_id,
           fromDate: fromDate,
           toDate: toDate,
+          employee_type: employee_type,
           designation_id: designation_id,
           employee_group_id: group_id,
         };
@@ -50,6 +52,7 @@ export function getEmployeesForProjectRoster(inputs) {
           department_id: department_id,
           fromDate: fromDate,
           toDate: toDate,
+          employee_type: employee_type,
           designation_id: designation_id,
           employee_group_id: group_id,
           show_all_status: true,
@@ -121,6 +124,7 @@ export function generateReports(dates, employees) {
       employee_name: employees[i].employee_name,
       designation: employees[i].designation,
       identity_no: employees[i].identity_no,
+      employee_type_description: employees[i].employee_type_description,
     };
     for (let j = 0; j < employees[i].projects.length; j++) {
       Obj[employees[i].projects[j].attendance_date] =
@@ -146,6 +150,10 @@ export function generateReports(dates, employees) {
       {
         label: "Primary ID",
         fieldName: "identity_no",
+      },
+      {
+        label: "Employee Type",
+        fieldName: "employee_type_description",
       },
     ].concat(columns),
     data: employee_data,
