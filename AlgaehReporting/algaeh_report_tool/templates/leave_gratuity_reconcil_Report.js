@@ -107,7 +107,7 @@ else ML.december end as ml_month,
           left join hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
           left join hims_f_salary as SL on SL.employee_id = LH.employee_id and SL.year=? and SL.month=? and salary_paid='Y'
           left join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
-         left join hims_f_leave_encash_header LEC on LEC.employee=EM.hims_d_employee_id and LEC.year=? and MONTH(CONCAT(LEC.encashment_date))=? and LEC.leave_id = (select hims_d_leave_id from hims_d_leave where leave_category='A')
+         left join hims_f_leave_encash_header LEC on LEC.employee_id=EM.hims_d_employee_id and LEC.year=? and MONTH(CONCAT(LEC.encashment_date))=? and LEC.leave_id = (select hims_d_leave_id from hims_d_leave where leave_category='A')
           left join hims_f_employee_monthly_leave as ML on ML.employee_id = EM.hims_d_employee_id and ML.year=? and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
           where EM.employee_status <> 'I'  ${str}
           group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id
@@ -151,26 +151,19 @@ else ML.december end as ml_month,
 
               const lastObject = _.maxBy(item, (m) => parseInt(m.month));
 
-              const year_open_leave_salary_amount =
-                parseFloat(last_leave_salary_amount) +
-                parseFloat(opening_leave_salary);
+              const utilized_leave_days =
+                parseFloat(lastObject.ml_month) +
+                parseFloat(lastObject.enc_leave_days);
+
+              const total_utilized_leave_days =
+                _.sumBy(item, (s) => parseFloat(s.ml_month)) +
+                _.sumBy(item, (s) => parseFloat(s.enc_leave_days)) -
+                parseFloat(utilized_leave_days);
+
+              // Leave Days
 
               const year_open_leave_days =
                 parseFloat(last_leave_days) + parseFloat(opening_leave_days);
-
-              const year_open_airticket_amount =
-                parseFloat(last_airticket_amount) +
-                parseFloat(opening_airticket);
-
-              const leavesalary_opening_balance =
-                _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
-                parseFloat(opening_leave_salary) -
-                parseFloat(lastObject.leave_salary_amount);
-
-              const airefare_opening_balance =
-                _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
-                parseFloat(opening_airticket) -
-                parseFloat(lastObject.airticket_amount);
 
               const leavedays_opening_balance =
                 _.sumBy(item, (s) => parseFloat(s.leave_days)) +
@@ -178,20 +171,40 @@ else ML.december end as ml_month,
                 parseFloat(lastObject.leave_days) -
                 _.sumBy(item, (s) => parseFloat(s.ml_month));
 
-              const total_leave_salary_amount =
-                _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
-                parseFloat(opening_leave_salary);
-
-              const total_airticket_amount =
-                _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
-                parseFloat(opening_airticket);
-
               const total_leave_days =
                 parseFloat(lastObject.leave_days) +
                 parseFloat(leavedays_opening_balance) -
                 parseFloat(lastObject.ml_month);
 
-              const utilized_leave_days = parseFloat(lastObject.ml_month);
+              // Leave Salary
+
+              const year_open_leave_salary_amount =
+                parseFloat(last_leave_salary_amount) +
+                parseFloat(opening_leave_salary);
+
+              const leavesalary_opening_balance =
+                _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
+                parseFloat(opening_leave_salary) -
+                parseFloat(lastObject.leave_salary_amount);
+
+              const total_leave_salary_amount =
+                _.sumBy(item, (s) => parseFloat(s.leave_salary_amount)) +
+                parseFloat(opening_leave_salary);
+
+              // Airfare
+
+              const year_open_airticket_amount =
+                parseFloat(last_airticket_amount) +
+                parseFloat(opening_airticket);
+
+              const airefare_opening_balance =
+                _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
+                parseFloat(opening_airticket) -
+                parseFloat(lastObject.airticket_amount);
+
+              const total_airticket_amount =
+                _.sumBy(item, (s) => parseFloat(s.airticket_amount)) +
+                parseFloat(opening_airticket);
 
               return {
                 ...lastObject,
@@ -205,6 +218,7 @@ else ML.december end as ml_month,
                 year_open_airticket_amount,
                 year_open_leave_days,
                 utilized_leave_days,
+                total_utilized_leave_days,
               };
             })
             .value();
