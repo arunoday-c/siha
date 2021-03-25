@@ -23,6 +23,9 @@ export default {
 
       _stringData +=
         inputParam.group_id != null ? " and emp.employee_group_id=? " : "";
+      _stringData += inputParam.employee_type
+        ? " and emp.employee_type=? "
+        : "";
       /* Select statemwnt  */
 
       _mysql

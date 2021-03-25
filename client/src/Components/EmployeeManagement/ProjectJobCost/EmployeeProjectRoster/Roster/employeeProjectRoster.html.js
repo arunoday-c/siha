@@ -57,7 +57,6 @@ export default function EmpProjectRoster(props) {
     <div className="EmployeeProjectRoster">
       <EmployeeFilter
         loadFunc={(inputs) => {
-          debugger;
           AlgaehLoader({ show: true });
           setFilterStatus("0");
           getEmployeesForProjectRoster(inputs)

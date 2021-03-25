@@ -458,6 +458,7 @@ class NewEmployeeProjectRoster extends Component {
             sub_department_id: inputs.sub_department_id,
             department_id: inputs.department_id,
             fromDate: fromDate,
+            employee_type: inputs.employee_type,
             toDate: toDate,
             designation_id: inputs.designation_id,
           },

@@ -44,6 +44,9 @@ const SalaryProcess = ($this, inputs, from) => {
           if (inputs.group_id !== null) {
             inputObj.group_id = inputs.group_id;
           }
+          if (inputs.employee_type) {
+            inputObj.employee_type = inputs.employee_type;
+          }
 
           algaehApiCall({
             uri: "/salary/processSalary",
@@ -53,6 +56,7 @@ const SalaryProcess = ($this, inputs, from) => {
             onSuccess: (response) => {
               if (response.data.success) {
                 if (response.data.result.length > 0) {
+                  debugger;
                   let data = response.data.result[0];
                   let finalizeBtn = true;
                   let strMessage =
@@ -389,7 +393,6 @@ const generateMonthlyLoanReport = ($this) => {
     },
   });
 };
-
 
 export {
   SalaryProcess,

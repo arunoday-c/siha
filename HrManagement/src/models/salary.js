@@ -62,6 +62,10 @@ export default {
             inputValues.push(input.group_id);
           }
 
+          if (input.employee_type != null) {
+            _stringData += " and E.employee_type=?";
+            inputValues.push(input.employee_type);
+          }
           // IF(S.salary_type = 'LS' and S.salary_processed='Y', null, S.hims_f_salary_id) as S.hims_f_salary_id ,  \
           //   IF(S.salary_type = 'LS' and S.salary_processed='Y', null, S.salary_processed) as S.salary_processed, \
           //   IF(S.salary_type = 'LS' and S.salary_processed='Y', null, S.salary_type) as S.salary_type, \
@@ -1144,6 +1148,10 @@ export default {
           ? ""
           : "emp.suspend_salary='N' and";
 
+      _stringData +=
+        inputParam.employee_type != null
+          ? ` and emp.employee_type = '${inputParam.employee_type}' `
+          : "";
       // left join hims_f_leave_application as LEA on AL.leave_application_id = LEA.hims_f_leave_application_id \ and date(now()) between date(LEA.from_date) and date(LEA.to_date)
       _mysql
         .executeQueryWithTransaction({

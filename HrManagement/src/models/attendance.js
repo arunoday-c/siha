@@ -2190,6 +2190,9 @@ export default {
       if (input.employee_group_id > 0) {
         strQry += ` and E.employee_group_id=${input.employee_group_id}`;
       }
+      if (input.employee_type) {
+        strQry += ` and E.employee_type= '${input.employee_type}'`;
+      }
 
       // let from_date = null;
       // let to_date = null;

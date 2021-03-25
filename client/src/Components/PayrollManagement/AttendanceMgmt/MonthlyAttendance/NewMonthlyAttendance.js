@@ -77,6 +77,7 @@ export default class NewMonthlyAttendance extends Component {
             designation_id: inputs.designation_id,
             group_id: inputs.group_id,
             employee_group_id: inputs.group_id,
+            employee_type: inputs.employee_type,
           },
           module: "hrManagement",
           onSuccess: (res) => {

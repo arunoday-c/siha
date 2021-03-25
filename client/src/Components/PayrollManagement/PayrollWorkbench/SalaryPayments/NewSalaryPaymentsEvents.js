@@ -40,7 +40,9 @@ const LoadSalaryPayment = ($this, inputs) => {
           if (inputs.group_id !== null) {
             inputObj.group_id = inputs.group_id;
           }
-
+          if (inputs.employee_type) {
+            inputObj.employee_type = inputs.employee_type;
+          }
           algaehApiCall({
             uri: "/salarypayment/getSalaryProcessToPay",
             module: "hrManagement",
