@@ -2654,13 +2654,17 @@ export default {
         _mysql.releaseConnection();
 
         if (result.length > 0) {
-          if (result[0]["root_id"] == 1) {
+          if (result[0]["root_id"] == 1 || result[0]["root_id"] == 5) {
             req.records = {
               opening_bal: result[0]["debit_amount"],
               opening_balance_date: result[0]["payment_date"],
             };
             next();
-          } else if (result[0]["root_id"] == 2 || result[0]["root_id"] == 3) {
+          } else if (
+            result[0]["root_id"] == 2 ||
+            result[0]["root_id"] == 3 ||
+            result[0]["root_id"] == 4
+          ) {
             req.records = {
               opening_bal: result[0]["credit_amount"],
               opening_balance_date: result[0]["payment_date"],
@@ -2750,7 +2754,7 @@ export default {
             from finance_account_child AC 
             inner join finance_account_head AH on AH.finance_account_head_id = AC.head_id 
             left join finance_voucher_details VD on VD.child_id = AC.finance_account_child_id  and is_opening_bal='Y'
-            where root_id in (1,2,3)  group by finance_account_child_id;`,
+            where root_id in (1,2,3)  group by finance_account_child_id order by root_id;`,
           printQuery: true,
         })
         .then((result) => {

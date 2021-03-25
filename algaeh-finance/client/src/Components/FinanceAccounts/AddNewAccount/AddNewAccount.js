@@ -68,7 +68,7 @@ export default function AddNewAccount({
       setLedgerCode(ledgerCode);
       setArabicAccountName(arabicName);
       // eslint-disable-next-line eqeqeq
-      if (accountType !== "G" && !(accountCode === 4 || accountCode === 5)) {
+      if (accountType !== "G") {
         setLoadingAddtoList(true);
         getOpeningBalance(selectedNode.node.finance_account_child_id)
           .then((res) => {
