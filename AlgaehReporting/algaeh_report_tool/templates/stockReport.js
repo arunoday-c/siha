@@ -35,12 +35,16 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `SELECT ILM.item_id,ILM.inventory_location_id,IL.location_description,IM.item_code,IM.item_description,IM.item_type,IM.purchase_cost, sum(ILM.qtyhand) as qty_hand,IM.waited_avg_cost as weighted_cost,(sum(ILM.qtyhand)*IM.waited_avg_cost) as stock_value,IM.category_id,IC.category_desc,IM.group_id,IG.group_description
+          query: `SELECT ILM.item_id,ILM.inventory_location_id,IL.location_description,
+          IM.item_code,IM.item_description,IM.item_type,IM.purchase_cost, sum(ILM.qtyhand) as qty_hand,
+          coalesce(IM.waited_avg_cost,0) as weighted_cost,(sum(ILM.qtyhand)*coalesce(IM.waited_avg_cost,0)) as stock_value,
+          IM.category_id,IC.category_desc,IM.group_id,IG.group_description
           FROM hims_m_inventory_item_location as ILM
           inner join hims_d_inventory_item_master IM on ILM.item_id = IM.hims_d_inventory_item_master_id
           inner join hims_d_inventory_tem_category IC on IM.category_id = IC.hims_d_inventory_tem_category_id
           inner join hims_d_inventory_item_group IG on IM.group_id = IG.hims_d_inventory_item_group_id
-          inner join hims_d_inventory_location IL on ILM.inventory_location_id = IL.hims_d_inventory_location_id  where ${strQuery} group by ILM.item_id;`,
+          inner join hims_d_inventory_location IL on ILM.inventory_location_id = IL.hims_d_inventory_location_id 
+          where ${strQuery} group by ILM.item_id;`,
           // values: [],
           printQuery: true,
         })
