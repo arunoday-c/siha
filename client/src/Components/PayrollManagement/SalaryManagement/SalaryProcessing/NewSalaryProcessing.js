@@ -474,7 +474,7 @@ class NewSalaryProcessing extends Component {
                     onClick={ClearData.bind(this, this)}
                   >
                     <AlgaehLabel
-                      label={{ forceLabel: "Clear", returnText: true }}
+                      label={{ fieldName: "btn_clear", returnText: true }}
                     />
                   </button>
                   {/* this.state.salaryprocess_header */}
