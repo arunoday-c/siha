@@ -67,19 +67,17 @@ const executePDF = function executePDFMethod(options) {
                 const minus = details.filter((f) => f.operation === "-");
                 const plus = details.filter((f) => f.operation === "+");
 
-                if (minus.length === 0 && plus.length === 0) {
-                  quantity = parseFloat(first_record.quantity);
-                } else {
-                  if (minus.length > 0) {
-                    quantity =
-                      parseFloat(first_record.quantity) +
-                      _.sumBy(minus, (s) => parseFloat(s.transaction_qty));
-                  }
-                  if (plus.length > 0) {
-                    quantity =
-                      parseFloat(quantity) -
-                      _.sumBy(plus, (s) => parseFloat(s.transaction_qty));
-                  }
+                quantity = parseFloat(first_record.quantity);
+
+                if (minus.length > 0) {
+                  quantity =
+                    parseFloat(quantity) +
+                    _.sumBy(minus, (s) => parseFloat(s.transaction_qty));
+                }
+                if (plus.length > 0) {
+                  quantity =
+                    parseFloat(quantity) -
+                    _.sumBy(plus, (s) => parseFloat(s.transaction_qty));
                 }
 
                 const waited_avg_cost =
@@ -93,6 +91,9 @@ const executePDF = function executePDFMethod(options) {
                 return { ...first_record, quantity, waited_avg_cost };
               })
               .value();
+            const total_quantity = _.sumBy(outputArray, (s) =>
+              parseFloat(s.quantity)
+            );
             const total_stock = _.sumBy(outputArray, (s) =>
               parseFloat(s.avgcost)
             );
@@ -101,6 +102,7 @@ const executePDF = function executePDFMethod(options) {
             );
             resolve({
               result: outputArray,
+              total_quantity: total_quantity,
               total_stock: total_stock,
               total_waited_stock: total_waited_stock,
               currencyOnly: {
@@ -109,8 +111,8 @@ const executePDF = function executePDFMethod(options) {
                 symbol_position,
                 currency_symbol,
               },
-              currencyOnlyWithoutSymbol: {
-                decimal_places_6,
+              decimalOnly: {
+                decimal_places,
                 addSymbol: false,
                 symbol_position,
                 currency_symbol,
