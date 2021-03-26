@@ -52,6 +52,7 @@ export default memo(function () {
         callBack(text);
       },
       onRowSelect: (row) => {
+        setData([]);
         history.push(
           `${location.pathname}?patient_code=${row.patient_code}&patientId=${row.hims_d_patient_id}&full_name=${row.full_name}&primary_id_no=${row.primary_id_no}`
         );
@@ -78,11 +79,11 @@ export default memo(function () {
 
     setData(records);
   }
-  const class_finder = patientCode !== "" ? " disableFinder" : "";
+  // const class_finder = patientCode !== "" ? " disableFinder" : "";
   return (
     <div className="hptl-phase1-result-entry-form">
       <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
-        <div className={"col-2 globalSearchCntr" + class_finder}>
+        <div className={"col-2 globalSearchCntr"}>
           <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
           <h6 onClick={showPatientFinder}>
             {patientCode === "" ? (
