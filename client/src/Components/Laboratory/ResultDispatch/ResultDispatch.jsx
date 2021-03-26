@@ -65,7 +65,11 @@ export default memo(function () {
   }
   function onClearHandle() {
     history.push(`${location.pathname}`);
-    window.location.reload(true);
+    setData([]);
+    setPatientCode("");
+    setPatientId(0);
+    setPatientName("");
+    // window.location.reload(true);
   }
   async function funLoadPatientRecords() {
     setIsLoading(true);
