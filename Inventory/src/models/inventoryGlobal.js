@@ -491,13 +491,13 @@ export default {
             CASE WHEN sum(qtyhand)<=coalesce(ILR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder \
             from hims_d_inventory_item_master IM \
             left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
+            and (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null)  \
             inner join hims_d_inventory_location ILO on ILO.hims_d_inventory_location_id=IL.inventory_location_id \
             left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id " +
             strOrder +
             " left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id \
-            where (date(IL.expirydt) > date(CURDATE()) or IL.expirydt is null) " +
+            where  item_status ='A' " +
             zeroQuantity +
-            " and item_status ='A' " +
             strAppend +
             strGroup +
             " order by date(expirydt)",

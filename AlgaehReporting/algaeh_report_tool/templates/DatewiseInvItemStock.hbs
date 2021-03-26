@@ -11,36 +11,38 @@
                         <th>Item Name</th>
                         <th>Quantity</th>
                         <th>Cost</th>
-                        <th>Waited Cost</th>
+                        <th>Weighted Avg. Cost</th>
                     </tr>
 
                 </thead>
-                <tbody>
+                <tbody>   <tr class="numberFld numberFldTotalBottom">
+                    <td colspan="3"></td>
+                    <td class="numberFld">{{total_quantity}}</td>
+                    <td class="numberFld">{{numberFormating total_stock currencyOnly }}</td>
+                    <td class="numberFld">{{numberFormating total_waited_stock currencyOnly }}</td></tr>
+                    </tr>
                     {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{item_code}}</td>
                         <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
                             class="txtFld">{{item_description}}</td>
-                        <td>{{quantity}}</td>
-                        <td>{{avgcost}}</td>
-                        <td>{{waited_avg_cost}}</td>
+                        <td class="numberFld">{{quantity}}</td>
+                        <td  class="numberFld"> {{numberFormating avgcost ../decimalOnly }}</td>
+                        <td class="numberFld">{{numberFormating waited_avg_cost ../decimalOnly }}</td>
                         {{!-- <td class="numberFld">{{numberFormating avgcost ../currencyOnlyWithoutSymbol}}</td>
                         <td class="numberFld">{{numberFormating waited_avg_cost ../currencyOnlyWithoutSymbol}}</td> --}}
                     </tr>
                     {{/each }}
+                       <tr class="numberFld numberFldTotalBottom">
+                    <td colspan="3"></td>
+                    <td class="numberFld">{{total_quantity}}</td>
+                    <td class="numberFld">{{numberFormating total_stock currencyOnly }}</td>
+                    <td class="numberFld">{{numberFormating total_waited_stock currencyOnly }}</td></tr>
+                    </tr>
                 </tbody>
             </table>
-            <table class="tableTotal">
-                <tr class="bold">
-                    <td>Net Stock Value</td>
-                    <td class="numberFld">{{numberFormating total_stock currencyOnly }}</td>
-                    <td>Net Waited Value</td>
-                    <td class="numberFld">{{numberFormating total_waited_stock currencyOnly }}</td>
-
-                </tr>
-
-            </table>
+           
         </section>
 
     </div>

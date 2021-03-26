@@ -2320,7 +2320,12 @@ export default {
                     input.type === "CR" ? "debit_amount" : "credit_amount"
                   }=0, payment_date='${
                     input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
-                  }'  where finance_voucher_id=${data.finance_voucher_id};`;
+                  }', updated_by='${
+                    req.userIdentity.algaeh_d_app_user_id
+                  }', updated_date='${moment(new Date()).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )}'  
+                  where finance_voucher_id=${data.finance_voucher_id};`;
                 }
               } else if (
                 data.root_id == 2 ||
@@ -2335,7 +2340,12 @@ export default {
                     input.type === "DR" ? "credit_amount" : "debit_amount"
                   }=0, payment_date='${
                     input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
-                  }' where finance_voucher_id=${data.finance_voucher_id};`;
+                  }', updated_by='${
+                    req.userIdentity.algaeh_d_app_user_id
+                  }', updated_date='${moment(new Date()).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )}' 
+                  where finance_voucher_id=${data.finance_voucher_id};`;
                 }
               }
               executeFunction();
@@ -2754,7 +2764,7 @@ export default {
             from finance_account_child AC 
             inner join finance_account_head AH on AH.finance_account_head_id = AC.head_id 
             left join finance_voucher_details VD on VD.child_id = AC.finance_account_child_id  and is_opening_bal='Y'
-            where root_id in (1,2,3)  group by finance_account_child_id order by root_id;`,
+            group by finance_account_child_id order by root_id;`,
           printQuery: true,
         })
         .then((result) => {
@@ -3530,7 +3540,12 @@ export async function uploadOBAccounts(req, res, next) {
               data.payment_date
                 ? moment(data.payment_date).format("YYYY-MM-DD")
                 : moment().format("YYYY-MM-DD")
-            }'  where finance_voucher_id=${
+            }', updated_by='${
+              req.userIdentity.algaeh_d_app_user_id
+            }', updated_date='${moment(new Date()).format(
+              "YYYY-MM-DD HH:mm:ss"
+            )}' 
+            where finance_voucher_id=${
               finance_voucher_exit[0].finance_voucher_id
             };`;
           }
@@ -3550,7 +3565,12 @@ export async function uploadOBAccounts(req, res, next) {
               data.payment_date
                 ? moment(data.payment_date).format("YYYY-MM-DD")
                 : moment().format("YYYY-MM-DD")
-            }' where finance_voucher_id=${
+            }', updated_by='${
+              req.userIdentity.algaeh_d_app_user_id
+            }', updated_date='${moment(new Date()).format(
+              "YYYY-MM-DD HH:mm:ss"
+            )}' 
+            where finance_voucher_id=${
               finance_voucher_exit[0].finance_voucher_id
             };`;
           }

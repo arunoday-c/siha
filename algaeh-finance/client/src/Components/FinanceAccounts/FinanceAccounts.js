@@ -12,6 +12,7 @@ import "./alice.scss";
 // import { getAccounts } from ".././FinanceAccountEvent";
 
 export default function FinanceAccounts({ inDrawer = false }) {
+  let fileInput = React.createRef();
   const [loading, setLoading] = useState(false);
   const TABS = [
     { label: "assets", assetCode: 1 },
@@ -39,7 +40,6 @@ export default function FinanceAccounts({ inDrawer = false }) {
       ),
     };
   });
-  let fileInput = React.createRef();
 
   function exportExcelAccountOB() {
     algaehApiCall({
