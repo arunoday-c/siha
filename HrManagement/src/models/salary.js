@@ -786,8 +786,8 @@ export default {
                                                 present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                                 unpaid_leave,pending_unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, leave_salary_accrual_amount, leave_salary_days,\
                                                 shortage_hours,display_present_days,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
-                                                total_contributions,net_salary, total_paid_days, salary_type, hospital_id) \
-                                               VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
+                                                total_contributions,net_salary, total_paid_days, salary_type, hospital_id,created_by, created_date,updated_by,updated_date) \
+                                               VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
                                                 [
                                                   _salary_number,
                                                   parseInt(month_number),
@@ -846,12 +846,20 @@ export default {
                                                   final_earning_amount, //Gross salary = total earnings
                                                   final_deduction_amount,
                                                   final_contribution_amount,
+                                                  // user created
+
                                                   _net_salary,
                                                   empResult[i][
                                                     "total_paid_days"
                                                   ],
                                                   salary_type,
                                                   input.hospital_id,
+                                                  req.userIdentity
+                                                    .algaeh_d_app_user_id,
+                                                  new Date(),
+                                                  req.userIdentity
+                                                    .algaeh_d_app_user_id,
+                                                  new Date(),
                                                 ]
                                               );
 
@@ -937,13 +945,17 @@ export default {
                               ) {
                                 execute_query += _mysql.mysqlQueryFormat(
                                   "INSERT INTO `hims_f_salary_earnings` (salary_header_id, earnings_id, amount, \
-                                per_day_salary) VALUE(?,?,?,?); ",
+                                per_day_salary,created_by, created_date,updated_by,updated_date) VALUE(?,?,?,?,?,?,?,?); ",
                                   [
                                     inserted_salary[k].insertId,
                                     final_earning_amt_array[k][l].earnings_id,
                                     final_earning_amt_array[k][l].amount,
                                     final_earning_amt_array[k][l]
                                       .per_day_salary,
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    new Date(),
                                   ]
                                 );
                               }
@@ -957,7 +969,7 @@ export default {
                               ) {
                                 execute_query += _mysql.mysqlQueryFormat(
                                   "INSERT INTO `hims_f_salary_deductions` (salary_header_id, deductions_id, amount,\
-                                per_day_salary) VALUE(?,?,?,?); ",
+                                per_day_salary,created_by, created_date,updated_by,updated_date) VALUE(?,?,?,?,?,?,?,?); ",
                                   [
                                     inserted_salary[k].insertId,
                                     final_deduction_amt_array[k][m]
@@ -965,6 +977,10 @@ export default {
                                     final_deduction_amt_array[k][m].amount,
                                     final_deduction_amt_array[k][m]
                                       .per_day_salary,
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    new Date(),
                                   ]
                                 );
                               }
@@ -977,12 +993,16 @@ export default {
                               ) {
                                 execute_query += _mysql.mysqlQueryFormat(
                                   "INSERT INTO `hims_f_salary_contributions` (salary_header_id, contributions_id, \
-                                amount) VALUE(?,?,?); ",
+                                amount,created_by, created_date,updated_by,updated_date) VALUE(?,?,?,?,?,?,?); ",
                                   [
                                     inserted_salary[k].insertId,
                                     final_contribution_amt_array[k][n]
                                       .contributions_id,
                                     final_contribution_amt_array[k][n].amount,
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    new Date(),
                                   ]
                                 );
                               }
@@ -996,12 +1016,16 @@ export default {
                               ) {
                                 execute_query += _mysql.mysqlQueryFormat(
                                   "INSERT INTO `hims_f_salary_loans` (salary_header_id, loan_application_id, \
-                                loan_due_amount, balance_amount) VALUE(?,?,?,?); ",
+                                loan_due_amount, balance_amount,created_by, created_date,updated_by,updated_date) VALUE(?,?,?,?,?,?,?,?); ",
                                   [
                                     inserted_salary[k].insertId,
                                     final_loan_array[k][o].loan_application_id,
                                     final_loan_array[k][o].loan_due_amount,
                                     final_loan_array[k][o].balance_amount,
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    new Date(),
                                   ]
                                 );
                               }
@@ -5113,7 +5137,7 @@ function InsertGratuityProvision(options) {
 
                       strQry += mysql.format(
                         "INSERT INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
-                      `month`,`gratuity_amount`, `acc_gratuity`) VALUE(?,?,?,?,?) \
+                      `month`,`gratuity_amount`, `acc_gratuity`,created_by, created_date,updated_by,updated_date) VALUE(?,?,?,?,?) \
                       ON DUPLICATE KEY UPDATE `gratuity_amount`=?,`acc_gratuity`=?;",
                         [
                           _employee[k].hims_d_employee_id,
@@ -5123,6 +5147,10 @@ function InsertGratuityProvision(options) {
                           _computatedAmoutSum,
                           gratuity_amount,
                           _computatedAmoutSum,
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
                         ]
                       );
 

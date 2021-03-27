@@ -2018,14 +2018,18 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_f_gratuity_provision` (employee_id, year, month, gratuity_amount, acc_gratuity)\
-          VALUE(?,?,?,?,?)",
+          "INSERT INTO `hims_f_gratuity_provision` (employee_id, year, month, gratuity_amount, acc_gratuity,created_by, created_date,updated_by,updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?)",
         values: [
           input.employee_id,
           input.year,
           input.month,
           input.gratuity_amount,
           input.gratuity_amount,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
         ],
         printQuery: true,
       })
@@ -2099,11 +2103,13 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "UPDATE hims_f_gratuity_provision set month=?,acc_gratuity=? \
+          "UPDATE hims_f_gratuity_provision set month=?,acc_gratuity=?,updated_by= ?,updated_date= ? \
           WHERE hims_f_gratuity_provision_id = ?",
         values: [
           input.month,
           input.acc_gratuity,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
           input.hims_f_gratuity_provision_id,
         ],
         printQuery: true,
