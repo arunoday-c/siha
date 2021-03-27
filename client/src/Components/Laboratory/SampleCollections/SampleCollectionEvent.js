@@ -2,6 +2,7 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import Options from "../../../Options.json";
 import moment from "moment";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import sockets from "../../../sockets";
 
 const CollectSample = ($this, context, row) => {
   if (row.container_id === null || row.container_id === undefined) {
@@ -55,6 +56,12 @@ const CollectSample = ($this, context, row) => {
         }
 
         $this.setState({ test_details: test_details }, () => {
+          if (sockets.connected) {
+            sockets.emit("specimen_acknowledge", {
+              test_details: test_details,
+              collected_date: response.data.records.collected_date,
+            });
+          }
           swalMessage({
             title: "Collected Successfully",
             type: "success",

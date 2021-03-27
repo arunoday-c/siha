@@ -324,7 +324,6 @@ export default class AddOPBillingForm extends Component {
     e.persist();
     let details = this.state.billdetails;
 
-
     if (details.length === 1) {
       swalMessage({
         title: "Minimum 1 Service requiried in bill.",
@@ -335,7 +334,7 @@ export default class AddOPBillingForm extends Component {
     e.target.classList.remove("fa-trash-alt");
     e.target.classList.add("fa-spinner");
     swal({
-      title: `Do you want to exclude '${row.service_name}' of amount ${row.net_amout} from cancelation?`,
+      title: `Do you want to exclude '${row.service_name}' of amount ${row.net_amout} from cancetion?`,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -952,4 +951,3 @@ export default class AddOPBillingForm extends Component {
     );
   }
 }
-

@@ -23,10 +23,16 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import _ from "lodash";
+import sockets from "../../../sockets";
+// import {
+//   persistStageOnGet,
+//   persistStorageOnRemove,
+// } from "algaeh-react-components";
 
 class RadOrderedList extends Component {
   constructor(props) {
     super(props);
+    this.socket = sockets;
     let month = moment().format("MM");
     let year = moment().format("YYYY");
     this.state = {
@@ -45,7 +51,41 @@ class RadOrderedList extends Component {
   }
 
   componentDidMount() {
+    // (async () => {
+    //   const records = await persistStageOnGet();
+
+    //   if (records) {
+    //     this.setState({ ...records }, () => {
+    //       // this.loadListofData();
+    //     });
+    //     persistStorageOnRemove();
+    //   } else {
     getRadTestList(this, this);
+
+    this.socket.on("reload_radiology_entry", (billData) => {
+      const { bill_date } = billData;
+      const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
+
+      const start = new Date(moment(this.state.from_date).format("YYYY-MM-DD"));
+      const end = new Date(moment(this.state.to_date).format("YYYY-MM-DD"));
+
+      if (date > start && date <= end) {
+        // if (window.location.pathname === "/RadOrderedList")
+        getRadTestList(this, this);
+      } else {
+        return;
+      }
+      // const dateCheck = moment(bill_date).isSame(
+      //   moment(this.state.from_date),
+      //   "days"
+      // );
+      // console.log(dateCheck, "date check mwb");
+      // if (dateCheck) {
+
+      // }
+    });
+    // }
+    // })();
   }
   changeDateFormat = (date) => {
     if (date != null) {

@@ -12,6 +12,7 @@ import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/BillCancellation";
 import PatRegIOputs from "../../Models/RegistrationPatient";
+import sockets from "../../sockets";
 import {
   ClearData,
   Validations,
@@ -99,7 +100,6 @@ class OPBillCancellation extends Component {
     }
 
     RawSecurityComponent({ componentCode: "OP_CAL_CON" }).then((result) => {
-      debugger;
       if (result === "show") {
         getCashiersAndShiftMAP(this, "Y");
       } else {
@@ -185,7 +185,8 @@ class OPBillCancellation extends Component {
     if (!err) {
       this.GenerateReciept(($this) => {
         let Inputobj = $this.state;
-
+        // debugger;
+        // return;
         Inputobj.patient_payable = $this.state.patient_payable_h;
         Inputobj.payable_amount = $this.state.receiveable_amount;
         Inputobj.pay_type = "P";
@@ -207,6 +208,13 @@ class OPBillCancellation extends Component {
                   response.data.records.hims_f_bill_cancel_header_id,
                 saveEnable: true,
               });
+              if (sockets.connected) {
+                sockets.emit("opBill_cancel", {
+                  billdetails: Inputobj.billdetails,
+                  bill_date: Inputobj.bill_date,
+                });
+              }
+
               swalMessage({
                 title: "Cancelled Successfully",
                 type: "success",

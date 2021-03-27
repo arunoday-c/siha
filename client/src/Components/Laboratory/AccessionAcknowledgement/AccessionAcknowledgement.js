@@ -26,12 +26,13 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import _ from "lodash";
+import sockets from "../../../sockets";
 // import { swalMessage } from "../../../utils/algaehApiCall";
 
 class AccessionAcknowledgement extends Component {
   constructor(props) {
     super(props);
-
+    this.socket = sockets;
     this.state = {
       to_date: new Date(),
       // from_date: moment("01" + month + year, "DDMMYYYY")._d,
@@ -76,6 +77,19 @@ class AccessionAcknowledgement extends Component {
 
   componentDidMount() {
     getSampleCollectionDetails(this, this);
+    this.socket.on("reload_specimen_acknowledge", (billData) => {
+      const { bill_date } = billData;
+      const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
+
+      const start = new Date(moment(this.state.from_date).format("YYYY-MM-DD"));
+      const end = new Date(moment(this.state.to_date).format("YYYY-MM-DD"));
+
+      if (date >= start && date <= end) {
+        getSampleCollectionDetails(this, this);
+      } else {
+        return;
+      }
+    });
   }
 
   render() {

@@ -35,13 +35,14 @@ import Options from "../../../Options.json";
 import ResultEntry from "../ResultEntry/ResultEntry";
 import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResultEntry";
 import _ from "lodash";
+import sockets from "../../../sockets";
 // import { AlgaehMessagePop } from "algaeh-react-components";
 const { Dragger } = Upload;
 const { confirm } = Modal;
 class ResultEntryList extends Component {
   constructor(props) {
     super(props);
-
+    this.socket = sockets;
     this.state = {
       to_date: new Date(),
       from_date: new Date(),
@@ -87,6 +88,19 @@ class ResultEntryList extends Component {
 
   componentDidMount() {
     getSampleCollectionDetails(this, this);
+    this.socket.on("reload_result_entry", (specimenData) => {
+      const { collected_date } = specimenData;
+      const date = new Date(moment(collected_date).format("YYYY-MM-DD"));
+
+      const start = new Date(moment(this.state.from_date).format("YYYY-MM-DD"));
+      const end = new Date(moment(this.state.to_date).format("YYYY-MM-DD"));
+
+      if (date >= start && date <= end) {
+        getSampleCollectionDetails(this, this);
+      } else {
+        return;
+      }
+    });
   }
   downloadDoc(doc, isPreview) {
     if (doc.fromPath === true) {
