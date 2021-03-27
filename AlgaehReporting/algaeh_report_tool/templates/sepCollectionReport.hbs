@@ -1,0 +1,51 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+     
+
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Doctor Name</th>
+                        <th>Test Name</th>
+                        <th>Ordered Date & Time</th>
+                        <th>Collected Date & Time</th>
+                        <th>Collected / Rejected By</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#hasElement result}}
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{patient_code}}</td>
+                        <td style="text-align: left;">{{pat_name}}</td>
+                        <td style="text-align: left;">{{doc_name}}</td>
+                        <td style="text-align: left;">{{description}}</td>
+                        <td>{{ordered_date}}</td>
+                        <td>{{collected_date}}</td>
+                        <td>{{collected_by}}</td>
+                        <td>{{sam_status}}</td>
+                        <td>{{remarks}}</td>
+                    </tr>
+                    {{/each }}
+                    {{else}}
+                    <tr>
+                        <td colspan="9" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>
