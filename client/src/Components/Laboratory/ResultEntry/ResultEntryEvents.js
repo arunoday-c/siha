@@ -105,6 +105,7 @@ const UpdateLabOrder = ($this, value, status) => {
           value.pop();
         }
 
+        getAnalytes($this);
         $this.setState(
           {
             test_analytes: value,

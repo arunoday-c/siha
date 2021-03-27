@@ -50,6 +50,7 @@ export default {
       gender: null,
       from_age: 0,
       to_age: 0,
+      tat_standard_time: "00:00:00",
     };
     return output;
   },

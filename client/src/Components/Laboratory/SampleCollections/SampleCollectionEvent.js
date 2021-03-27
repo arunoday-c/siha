@@ -9,13 +9,13 @@ const CollectSample = ($this, context, row) => {
       title: "Please select Container",
       type: "warining",
     });
-    return
+    return;
   } else if (row.sample_id === null || row.sample_id === undefined) {
     swalMessage({
       title: "Please select Sample",
       type: "warining",
     });
-    return
+    return;
   }
   let inputobj = {
     hims_f_lab_order_id: row.hims_f_lab_order_id,
@@ -30,7 +30,8 @@ const CollectSample = ($this, context, row) => {
     send_out_test: row.send_out_test,
     container_id: row.container_id,
     test_id: row.hims_d_investigation_test_id,
-    container_code: row.container_code
+    container_code: row.container_code,
+    lab_id_number: row.lab_id_number,
   };
 
   AlgaehLoader({ show: true });
@@ -77,8 +78,6 @@ const CollectSample = ($this, context, row) => {
 };
 
 const printBarcode = ($this, row) => {
-
-  debugger
   if (row.lab_id_number !== null) {
     algaehApiCall({
       uri: "/report",
@@ -126,7 +125,7 @@ const printBarcode = ($this, row) => {
       send_out_test: row.send_out_test,
       container_id: row.container_id,
       test_id: row.hims_d_investigation_test_id,
-      container_code: row.container_code
+      container_code: row.container_code,
     };
 
     AlgaehLoader({ show: true });
@@ -143,7 +142,7 @@ const printBarcode = ($this, row) => {
 
           row["lab_id_number"] = response.data.records.lab_id_number;
           test_details[_index] = row;
-          $this.setState({ test_details: test_details })
+          $this.setState({ test_details: test_details });
 
           algaehApiCall({
             uri: "/report",
@@ -188,8 +187,6 @@ const printBarcode = ($this, row) => {
       },
     });
   }
-
-
 };
 
 // const printBarcode = ($this, row, e) => {
@@ -219,15 +216,12 @@ const dateFormater = (value) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-
-
   let test_details = $this.state.test_details;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let _index = test_details.indexOf(row);
   row[name] = value;
 
-  debugger
   switch (name) {
     case "container_id":
       row["container_code"] = e.selected.container_id;
@@ -240,7 +234,6 @@ const onchangegridcol = ($this, row, e) => {
       $this.setState({ test_details: test_details });
       break;
   }
-
 };
 
 export { CollectSample, printBarcode, dateFormater, onchangegridcol };

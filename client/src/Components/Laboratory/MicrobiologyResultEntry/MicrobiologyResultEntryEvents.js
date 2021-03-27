@@ -1,6 +1,12 @@
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
+const ChangeHandel = ($this, e) => {
+  $this.setState({
+    [e.target.name]: e.target.value,
+  });
+};
+
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -11,24 +17,24 @@ const texthandle = ($this, e) => {
       module: "laboratory",
       data: {
         micro_group_id: value,
-        urine_specimen: $this.state.urine_specimen
+        urine_specimen: $this.state.urine_specimen,
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           $this.setState({
             [name]: value,
             organism_type: e.selected.group_type,
-            microAntbiotic: response.data.records
+            microAntbiotic: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
 
     algaehApiCall({
@@ -36,25 +42,23 @@ const texthandle = ($this, e) => {
       module: "laboratory",
       data: { micro_group_id: value },
       method: "GET",
-      onSuccess: response => {
-
+      onSuccess: (response) => {
         if (response.data.success) {
           $this.setState({
-            comments_data: response.data.records
+            comments_data: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
-
   } else if (name === "bacteria_name") {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 };
@@ -65,7 +69,7 @@ export function generateLabResultReport(data) {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -75,17 +79,17 @@ export function generateLabResultReport(data) {
           { name: "hims_d_patient_id", value: data.patient_id },
           {
             name: "visit_id",
-            value: data.visit_id
+            value: data.visit_id,
           },
           {
             name: "hims_f_lab_order_id",
-            value: data.hims_f_lab_order_id
-          }
+            value: data.hims_f_lab_order_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -99,24 +103,24 @@ export function generateLabResultReport(data) {
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
       window.open(origin);
       // window.document.title = "Lab Test Report";
-    }
+    },
   });
 }
 
 const UpdateLabOrder = ($this, status) => {
   $this.state.status = status;
 
-  $this.state.comments = $this.state.comment_list.join("<br/>")
+  $this.state.comments = $this.state.comment_list.join("<br/>");
   algaehApiCall({
     uri: "/laboratory/updateMicroResultEntry",
     module: "laboratory",
     data: $this.state,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         swalMessage({
           type: "success",
-          title: "Done successfully . ."
+          title: "Done successfully . .",
         });
         getMicroResult($this);
         $this.setState({
@@ -126,20 +130,20 @@ const UpdateLabOrder = ($this, status) => {
           confirmed_by:
             response.data.records.confirmed_by || $this.state.confirmed_by,
           validated_by:
-            response.data.records.validated_by || $this.state.validated_by
+            response.data.records.validated_by || $this.state.validated_by,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         type: "error",
-        title: error.response.data.message || error.message
+        title: error.response.data.message || error.message,
       });
-    }
+    },
   });
 };
 
-const onvalidate = $this => {
+const onvalidate = ($this) => {
   swal({
     title: "Are you sure want to Validate?",
     type: "warning",
@@ -147,19 +151,19 @@ const onvalidate = $this => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willProceed => {
+    cancelButtonText: "No",
+  }).then((willProceed) => {
     if (willProceed.value) {
       UpdateLabOrder($this, "V");
     }
   });
 };
 
-const resultEntryUpdate = $this => {
+const resultEntryUpdate = ($this) => {
   UpdateLabOrder($this, "E");
 };
 
-const onconfirm = $this => {
+const onconfirm = ($this) => {
   swal({
     title: "Are you sure want to Confirm?",
     type: "warning",
@@ -167,8 +171,8 @@ const onconfirm = $this => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willProceed => {
+    cancelButtonText: "No",
+  }).then((willProceed) => {
     if (willProceed.value) {
       UpdateLabOrder($this, "CF");
     }
@@ -223,7 +227,7 @@ const radioChange = ($this, e) => {
   $this.setState({
     radioNoGrowth: radioNoGrowth,
     radioGrowth: radioGrowth,
-    bacteria_type: bacteria_type
+    bacteria_type: bacteria_type,
   });
 };
 
@@ -233,7 +237,7 @@ const getMicroResult = ($this, e) => {
     module: "laboratory",
     method: "GET",
     data: { order_id: $this.state.hims_f_lab_order_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data_exists = false;
         if (response.data.records.length > 0) {
@@ -241,10 +245,10 @@ const getMicroResult = ($this, e) => {
         }
         $this.setState({
           microAntbiotic: response.data.records,
-          data_exists: data_exists
+          data_exists: data_exists,
         });
       }
-    }
+    },
   });
 
   algaehApiCall({
@@ -252,13 +256,16 @@ const getMicroResult = ($this, e) => {
     module: "laboratory",
     method: "GET",
     data: { hims_f_lab_order_id: $this.state.hims_f_lab_order_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
-          comment_list: response.data.records.comments !== null ? response.data.records.comments.split("<br/>") : []
-        })
+          comment_list:
+            response.data.records.comments !== null
+              ? response.data.records.comments.split("<br/>")
+              : [],
+        });
       }
-    }
+    },
   });
 };
 
@@ -266,43 +273,39 @@ const addComments = ($this) => {
   if ($this.state.selcted_comments === "") {
     swalMessage({
       type: "warning",
-      title: "Comment cannot be blank."
+      title: "Comment cannot be blank.",
     });
-    return
+    return;
   }
-  let comment_list = $this.state.comment_list
-  comment_list.push($this.state.selcted_comments)
+  let comment_list = $this.state.comment_list;
+  comment_list.push($this.state.selcted_comments);
 
   $this.setState({
     comment_list: comment_list,
     selcted_comments: "",
-    group_comments_id: null
-  })
-}
-
+    group_comments_id: null,
+  });
+};
 
 const selectCommentEvent = ($this, e) => {
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   $this.setState({
     [name]: value,
-    selcted_comments: e.selected.commet
+    selcted_comments: e.selected.commet,
   });
-}
-
+};
 
 const deleteComment = ($this, row) => {
-
-  let comment_list = $this.state.comment_list
-  let _index = comment_list.indexOf(row)
-  comment_list.splice(_index, 1)
+  let comment_list = $this.state.comment_list;
+  let _index = comment_list.indexOf(row);
+  comment_list.splice(_index, 1);
 
   $this.setState({
-    comment_list: comment_list
-  })
-}
+    comment_list: comment_list,
+  });
+};
 
 export {
   texthandle,
@@ -314,5 +317,6 @@ export {
   getMicroResult,
   addComments,
   selectCommentEvent,
-  deleteComment
+  deleteComment,
+  ChangeHandel,
 };
