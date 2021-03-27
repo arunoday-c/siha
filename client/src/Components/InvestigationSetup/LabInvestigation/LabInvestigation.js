@@ -9,7 +9,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  // AlagehFormGroup,
+  AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
 import {
   texthandle,
@@ -100,6 +100,11 @@ class LabInvestigation extends Component {
       });
     }
   }
+
+  // UNSAFE_componentWillReceiveProps(newProps) {
+  //   let IOputs = newProps.InvestigationPop;
+  //   this.setState({ ...this.state, ...IOputs });
+  // }
 
   // events
   texthandle = texthandle.bind(this);
@@ -228,6 +233,24 @@ class LabInvestigation extends Component {
                     data: variableJson.FORMAT_YESNO,
                   },
                   onChange: this.texthandle,
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-12 form-group" }}
+                label={{
+                  forceLabel: "TAT Standard",
+                  isImp: false,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "tat_standard_time",
+                  value: state.tat_standard_time,
+                  events: {
+                    onChange: this.texthandle,
+                  },
+                  others: {
+                    tabIndex: "2",
+                  },
                 }}
               />
             </div>
