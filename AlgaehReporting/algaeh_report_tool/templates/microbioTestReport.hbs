@@ -47,12 +47,14 @@
          </tr>
       </table>
    </section>
+   
    <section>
       <table class="tableForLabel" cell-padding="0">
          <tr>
-            <td><small>Growth Type</small> <span style="display: block;">{{bacteria_type}}</span></td>
-            <td><small>Organism Type</small><span style="display: block;">{{organism_type}}</span></td>
-            <td><small>Bacteria Name</small><span style="display: block;">{{bacteria_name}}</span></td>
+            <td><small>Growth Type</small> <span style="display: block;">{{header.bacteria_type}}</span></td>
+            <td><small>Contaminated Culture</small> <span style="display: block;">{{header.contaminated_culture}}</span></td>
+            <td><small>Organism Type</small><span style="display: block;">{{header.organism_type}}</span></td>
+            <td><small>Bacteria Name</small><span style="display: block;">{{header.bacteria_name}}</span></td>
          </tr>
       </table>
    </section>
@@ -67,10 +69,10 @@
             </tr>
          </thead>
          <tbody>
-            {{!-- {{#hasElement result}} --}}
+            {{#hasElement result}}
             <tr>
                <td colspan="6" class="tableSubHdg">
-                  {{specimen}}
+                  {{header.specimen}}
                </td>
             </tr>
             {{#each result}}
@@ -98,7 +100,7 @@
                    
                
             {{/each}}
-            {{!-- {{/hasElement }} --}}
+            {{/hasElement }}
          </tbody>
       </table>
       <table class="tableForData">
@@ -107,14 +109,14 @@
                <td class="txtFld">
                   Comments:
                   <ol>
-                     {{#each (commentBreakUp comments commentBreakUp)}}
+                     {{#each (commentBreakUp header.comments commentBreakUp)}}
                      <li>{{this}}</li>
                      {{/each}}
                   </ol>
                </td>
             </tr>
             <tr>
-               <td class="txtFld">Validated By: <b>{{validated_by}}</b></td>
+               <td class="txtFld">Validated By: <b>{{header.validated_by}}</b></td>
             </tr>
          </tbody>
       </table>

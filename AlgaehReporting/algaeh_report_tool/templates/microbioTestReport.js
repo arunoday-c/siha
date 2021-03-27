@@ -34,14 +34,17 @@ const executePDF = function executePDFMethod(options) {
           MR.resistant, case MR.resistant when 'Y' then 'YES' else 'NO' end as  resistantText, 
           CASE WHEN LO.organism_type='F' THEN 'Fascideous' else 'Non-Fascideous' END as organism_type, 
           CASE WHEN LO.bacteria_type='G' THEN 'Growth' else 'No Growth' END as bacteria_type,LO.bacteria_name, 
-          E.full_name as validated_by, LO.ordered_date,LO.entered_date,LO.validated_date,LO.comments 
+          CASE WHEN LO.contaminated_culture='Y' THEN 'Yes' else 'No' END as contaminated_culture,
+          E.full_name as validated_by,TC.category_name, LO.ordered_date,LS.collected_date,LO.entered_date,LO.validated_date,LO.comments 
           from hims_f_lab_order LO 
           inner join hims_f_lab_sample LS on LO.hims_f_lab_order_id = LS.order_id 
           left join hims_f_micro_result MR on  LO.hims_f_lab_order_id = MR.order_id 
           inner join hims_d_lab_specimen MS on LS.sample_id = MS.hims_d_lab_specimen_id 
           left join hims_d_antibiotic A on MR.antibiotic_id = A.hims_d_antibiotic_id 
           inner join algaeh_d_app_user U on LO.validated_by=U.algaeh_d_app_user_id 
-          inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id 
+          inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id
+          inner join hims_d_investigation_test IT on IT.services_id= LO.service_id
+          inner join hims_d_test_category TC on TC.hims_d_test_category_id= IT.category_id
           inner join  hims_d_services S on LO.service_id=S.hims_d_services_id where LO.visit_id = ?;`,
           values: [input.hims_d_patient_id, input.visit_id, input.visit_id],
           printQuery: true,
@@ -50,6 +53,7 @@ const executePDF = function executePDFMethod(options) {
           options.mysql.releaseConnection();
           const header = {
             ..._.head(res[0]),
+            ..._.head(res[1]),
           };
           const result = res[1];
           resolve({
