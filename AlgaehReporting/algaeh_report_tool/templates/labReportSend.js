@@ -11,35 +11,34 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      // let is_SendOut = "";
+      let is_SendOut = "";
 
-      // if (input.is_SendOut === "Y") {
-      //     is_SendOut = " and H.default_nationality=E.nationality ";
-      // } else if (input.SENDOUT_TYPE === "N") {
-      //     SENDOUT_TYPE = " and H.default_nationality<>E.nationality ";
-      // }
+      if (input.is_SendOut === "Y") {
+        is_SendOut = " and LO.send_out_test = 'Y'";
+      } else if (input.SENDOUT_TYPE === "N") {
+        is_SendOut = " and LO.send_out_test ='N'";
+      }
 
       options.mysql
         .executeQuery({
           query: ` 
-            SELECT P.patient_code,P.full_name as pat_name, E.full_name as doc_name,S.service_name, case when LO.test_type='R' then 'Routine' else 'Stat' end as test_type, CLE.full_name as collected_by, LS.collected_date, CNE.full_name as confirmed_by,LO.confirmed_date, VLE.full_name as validated_by, LO.validated_date 
-            from hims_f_lab_order LO inner join hims_f_patient P on P.hims_d_patient_id = LO.patient_id
-            left join hims_d_employee E on E.hims_d_employee_id = LO.provider_id
-            left join hims_d_services S on S.hims_d_services_id = LO.service_id
-            left join hims_f_lab_sample LS on LS.order_id = LO.hims_f_lab_order_id
-            left join algaeh_d_app_user CL on CL.algaeh_d_app_user_id = LS.collected_by
-            left join hims_d_employee CLE on CLE.hims_d_employee_id = CL.employee_id
-            left join algaeh_d_app_user CN on CN.algaeh_d_app_user_id = LO.created_by
-            left join hims_d_employee CNE on CNE.hims_d_employee_id = CN.employee_id
-            left join algaeh_d_app_user VL on VL.algaeh_d_app_user_id = LO.validated_by
-            left join hims_d_employee VLE on VLE.hims_d_employee_id = VL.employee_id
-            where LO.billed='Y' and date(LO.ordered_date) between date(?) and date(?) and LO.hospital_id=? and LO.send_out_test = ? ; `,
-          values: [
-            input.from_date,
-            input.to_date,
-            input.hospital_id,
-            input.is_SendOut,
-          ],
+          SELECT P.patient_code,P.full_name as pat_name, E.full_name as doc_name,S.service_name, 
+          case when LO.test_type='R' then 'Routine' else 'Stat' end as test_type,
+          CLE.full_name as collected_by, LS.collected_date, CNE.full_name as confirmed_by,
+          LO.confirmed_date, VLE.full_name as validated_by, LO.validated_date,
+          case when LO.send_out_test='Y' then 'Send-Out' else 'Send-In' end as send_out_test
+          from hims_f_lab_order LO inner join hims_f_patient P on P.hims_d_patient_id = LO.patient_id
+          left join hims_d_employee E on E.hims_d_employee_id = LO.provider_id
+          left join hims_d_services S on S.hims_d_services_id = LO.service_id
+          left join hims_f_lab_sample LS on LS.order_id = LO.hims_f_lab_order_id
+          left join algaeh_d_app_user CL on CL.algaeh_d_app_user_id = LS.collected_by
+          left join hims_d_employee CLE on CLE.hims_d_employee_id = CL.employee_id
+          left join algaeh_d_app_user CN on CN.algaeh_d_app_user_id = LO.created_by
+          left join hims_d_employee CNE on CNE.hims_d_employee_id = CN.employee_id
+          left join algaeh_d_app_user VL on VL.algaeh_d_app_user_id = LO.validated_by
+          left join hims_d_employee VLE on VLE.hims_d_employee_id = VL.employee_id
+          where LO.billed='Y' and date(LO.ordered_date) between date(?) and date(?) and LO.hospital_id=?  ${is_SendOut}; `,
+          values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,
         })
         .then((res) => {
