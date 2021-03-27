@@ -1,4 +1,10 @@
-export default function Laboratory({ hospital_id, SENDOUT_TYPE,FORMAT_PRIORITY }) {
+export default function Laboratory({
+  hospital_id,
+  SENDOUT_TYPE,
+  FORMAT_PRIORITY,
+  LAB_SAMPLE_COLL,
+  LAB_RE_RUN,
+}) {
   return {
     name: "Laboratory",
     excel: "true",
@@ -48,11 +54,11 @@ export default function Laboratory({ hospital_id, SENDOUT_TYPE,FORMAT_PRIORITY }
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_SendOut",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Send Out Type",
             dataSource: {
               textField: "name",
@@ -117,6 +123,141 @@ export default function Laboratory({ hospital_id, SENDOUT_TYPE,FORMAT_PRIORITY }
               textField: "name",
               valueField: "value",
               data: FORMAT_PRIORITY,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "is_reRun",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter By",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LAB_RE_RUN,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Specimen Collection Report",
+        reportName: "sepCollectionReport",
+        // reportQuery: "subDepartmentIncome",
+        componentCode: "RPT_LAB_SPEC",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            label: "Ordered From Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            label: "Ordered To Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "is_specimenRej",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter By",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LAB_SAMPLE_COLL,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Result Re-run Report",
+        reportName: "resRerunReport",
+        // reportQuery: "subDepartmentIncome",
+        componentCode: "RPT_LAB_RERUN",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            label: "Ordered From Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            label: "Ordered To Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "is_reRun",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter By",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LAB_RE_RUN,
             },
           },
         ],

@@ -61,7 +61,9 @@ export default {
             concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
             lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id, LS.container_id, \
             LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
-            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id,IT.isPCR from hims_f_lab_order LO \
+            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id,IT.isPCR, \
+            case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types\
+            from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
             inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\

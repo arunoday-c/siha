@@ -15,6 +15,8 @@ import {
   SENDOUT_TYPE,
   FORMAT_PRIORITY,
   FORMAT_YESNO,
+  LAB_SAMPLE_COLL,
+  LAB_RE_RUN,
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -83,7 +85,12 @@ export default function loadActiveReports(
           result = Clinical({});
           break;
         case "laboratory":
-          result = Laboratory({ SENDOUT_TYPE, FORMAT_PRIORITY });
+          result = Laboratory({
+            SENDOUT_TYPE,
+            FORMAT_PRIORITY,
+            LAB_SAMPLE_COLL,
+            LAB_RE_RUN,
+          });
           break;
         case "inventory":
           result = Inventory({

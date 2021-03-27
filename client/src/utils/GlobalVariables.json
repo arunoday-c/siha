@@ -5784,5 +5784,33 @@
       "name": "Test In",
       "value": "N"
     }
+  ],
+  "LAB_SAMPLE_COLL": [
+    {
+      "name": "Accepted",
+      "value": "A"
+    },
+    {
+      "name": "Rejected",
+      "value": "R"
+    }
+  ],
+  "LAB_RE_RUN": [
+    {
+      "name": "All",
+      "value": "N"
+    },
+    {
+      "name": "Run 1",
+      "value": "1"
+    },
+    {
+      "name": "Run 2",
+      "value": "2"
+    },
+    {
+      "name": "Run 3",
+      "value": "3"
+    }
   ]
 }
