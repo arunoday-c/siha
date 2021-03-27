@@ -633,6 +633,16 @@ class ResultEntryList extends Component {
                         },
                       },
                       {
+                        fieldName: "run_types",
+                        label: <AlgaehLabel label={{ forceLabel: "Re-run" }} />,
+
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: (row) => {

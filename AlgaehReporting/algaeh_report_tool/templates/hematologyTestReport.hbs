@@ -1,148 +1,140 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 <style>
-    td,
-    span,
-    label {
-        font-size: 12px;
-    }
+   td,
+   span,
+   label {
+   font-size: 12px;
+   }
 </style>
 <div class="print-body">
-    <section>
-        <table class="tableForLabel" cell-padding="0">
+   <section>
+      <table class="tableForLabel" cell-padding="0">
+         <tr>
+            <td><label>MRN Number</label></td>
+            <td> <span>{{header.patient_code}}</span></td>
+            <td><label>Identity No.</label></td>
+            <td><span>{{header.primary_id_no}}</span></td>
+         </tr>
+         <tr>
+            <td><label>Patient Name</label></td>
+            <td><span>{{header.patient_name}}</span></td>
+            <td><label>Company name</label></td>
+            <td> <span>{{header.insurance_provider_name}}</span></td>
+         </tr>
+         <tr>
+            <td><label>Age</label></td>
+            <td><span>{{header.age_in_years}}Y/ {{header.age_in_months}}M/ {{header.age_in_days}}D</span></td>
+            <td><label>Doctor Ordered by</label></td>
+            <td> <span>{{header.doctor_name}}</span></td>
+            {{!--  {{header.sub_department_name}} --}}
+         </tr>
+         <tr>
+            <td><label>Gender</label></td>
+            <td> <span>{{header.gender}}</span></td>
+            <td><label>Ordered Date & Time</label></td>
+            <td> <span>{{header.ordered_date}}</span></td>
+         </tr>
+         <tr>
+            <td><label>Collected Date & Time</label></td>
+            <td> <span>{{header.collected_date}}</span></td>
+            <td><label>Validated Date & Time</label></td>
+            <td> <span>{{header.validated_date}}</span></td>
+         </tr>
+         <tr>
+            <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+         </tr>
+         <tr>
+            <td><label>Test Name</label></td>
+            <td> <span>{{header.service_name}} </span></td>
+            <td><label>Test Category</label></td>
+            <td> <span>{{header.category_name}} </span></td>
+            {{!-- {{#if header.critical_status "Y"}} <b style="color:red;">
+            (Critical Result)
+            </b> {{/if}} --}}
+         </tr>
+      </table>
+   </section>
+   <section>
+      <table class="tableForDataNoBorder" cell-padding="0">
+         <thead>
             <tr>
-                <td><label>MRN Number</label></td>
-                <td> <span>{{header.patient_code}}</span></td>
-
-                <td><label>Identity No.</label></td>
-                <td><span>{{header.primary_id_no}}</span></td>
+               {{!-- 
+               <th>Sl No.</th>
+               --}}
+               <th class="txtFld">Analyte</th>
+               <th class="numberFld">Result</th>
+               <th class="txtFld"></th>
+               <th class="numberFld">Unit</th>
+               <th class="numberFld">Reference Range</th>
+               {{!-- 
+               <th>Critical Range</th>
+               --}}
+            </tr>
+         </thead>
+         <tbody class="analyteResult">
+            {{#hasElement result}}
+            {{#each result}}
+            <tr>
+               <td colspan="5" class="tableSubHdg">{{investigation_name}}
+               </td>
+            </tr>
+            {{#each groupWise}}
+            {{#if hims_d_lab_specimen_id "N" }}
+            {{else}}
+            <tr>
+               <td colspan="5" class="tableSubHdg2 txtFld">{{analyte_report_group_desc}}</td>
+            </tr>
+            {{/if}}
+            {{#each groupDetail}}
+            <tr>
+               {{!-- 
+               <td>{{inc @index}}</td>
+               --}}
+               <td class="txtFld" style="width: 55%">{{analyte_name}}</td>
+               <td class="numberFld">{{result}}</td>
+               <td class="txtFld" data-value="{{critical_type}}"><sup>{{critical_type}}</sup></td>
+               <td class="numberFld">{{#if reference_range_required "Y"}} {{result_unit}} {{else}} -- {{/if}}</td>
+               <td class="numberFld">
+                  {{#if reference_range_required "Y"}}
+                  {{#if analyte_type "T"}}
+                  <ul class="rangeUl">
+                     {{#each (commentBreakUp text_value commentBreakUp)}}
+                     <li>{{this}}</li>
+                     {{/each}}
+                  </ul>
+                  {{else}}
+                  {{analyte_ranges }}
+                  {{/if}}
+                  {{else}} -- {{/if}}
+               </td>
+            </tr>
+            {{/each }}{{/each }}{{/each }}
+            {{else}}
+            <tr>
+               <td colspan="12" class="noResultTextReport">No Records Found</td>
+            </tr>
+            {{/hasElement }}
+         </tbody>
+      </table>
+      <table class="tableForData">
+         <tbody>
+            <tr>
+               <td class="txtFld">
+                  Comments:
+                  <ol>
+                     {{#each (commentBreakUp header.comments commentBreakUp)}}
+                     <li>{{this}}</li>
+                     {{/each}}
+                  </ol>
+               </td>
             </tr>
             <tr>
-                <td><label>Patient Name</label></td>
-                <td><span>{{header.patient_name}}</span></td>
-
-                <td><label>Company name</label></td>
-                <td> <span>{{header.insurance_provider_name}}</span></td>
+               <td class="txtFld">Validated By: <b>{{header.validated_by}}</b></td>
             </tr>
-            <tr>
-                <td><label>Age</label></td>
-                <td><span>{{header.age_in_years}}Y/ {{header.age_in_months}}M/ {{header.age_in_days}}D</span></td>
-
-
-                <td><label>Doctor Ordered by</label></td>
-                <td> <span>{{header.doctor_name}}</span></td>
-                {{!--  {{header.sub_department_name}} --}}
-
-
-
-
-            </tr>
-            <tr>
-                <td><label>Gender</label></td>
-                <td> <span>{{header.gender}}</span></td>
-
-                <td><label>Ordered Date & Time</label></td>
-                <td> <span>{{header.ordered_date}}</span></td>
-            </tr>
-            <tr>
-                <td><label>Collected Date & Time</label></td>
-                <td> <span>{{header.collected_date}}</span></td>
-
-                <td><label>Validated Date & Time</label></td>
-                <td> <span>{{header.validated_date}}</span></td>
-            </tr>
-            <tr>
-                <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-            </tr>
-            <tr>
-                <td><label>Test Name</label></td>
-                <td> <span>{{header.service_name}} </span></td>
-
-                <td><label>Test Category</label></td>
-                <td> <span>{{header.category_name}} </span></td>
-
-
-
-                {{!-- {{#if header.critical_status "Y"}} <b style="color:red;">
-                    (Critical Result)
-                </b> {{/if}} --}}
-            </tr>
-        </table>
-    </section>
-    <section>
-        <table class="tableForDataNoBorder" cell-padding="0">
-            <thead>
-                <tr>
-                    {{!-- <th>Sl No.</th> --}}
-                    <th class="txtFld">Analyte</th>
-                    <th class="numberFld">Result</th>
-                    <th class="txtFld"></th>
-                    <th class="numberFld">Unit</th>
-                    <th class="numberFld">Reference Range</th>
-                    {{!-- <th>Critical Range</th> --}}
-                </tr>
-            </thead>
-            <tbody class="analyteResult">
-                {{#hasElement result}}
-                {{#each result}}
-                <tr>
-                    <td colspan="5" class="tableSubHdg">{{investigation_name}}
-
-                    </td>
-
-                </tr>
-                {{#each groupWise}}
-
-                {{#if hims_d_lab_specimen_id "N" }}
-
-                {{else}}
-                <tr>
-                    <td colspan="5" class="tableSubHdg2 txtFld">{{analyte_report_group_desc}}</td>
-                </tr>
-                {{/if}}
-
-                {{#each groupDetail}}
-                <tr>
-                    {{!-- <td>{{inc @index}}</td> --}}
-                    <td class="txtFld" style="width: 55%">{{analyte_name}}</td>
-                    <td class="numberFld">{{result}}</td>
-                    <td class="txtFld" data-value="{{critical_type}}"><sup>{{critical_type}}</sup></td>
-                    <td class="numberFld">{{#if reference_range_required "Y"}} {{result_unit}} {{else}} -- {{/if}}</td>
-                     <td class="numberFld">
-                        {{#if reference_range_required "Y"}}
-                            {{#if analyte_type "T"}}
-                                <ul class="rangeUl">
-                                {{#each (commentBreakUp text_value commentBreakUp)}}
-                                    <li>{{this}}</li>
-                                {{/each}}
-                                </ul>
-                            {{else}}
-                        {{analyte_ranges }}
-                        {{/if}}
-                        {{else}} -- {{/if}}
-                    </td>
-                </tr>
-                {{/each }}{{/each }}{{/each }}
-                {{else}}
-                <tr>
-                    <td colspan="12" class="noResultTextReport">No Records Found</td>
-                </tr>{{/hasElement }}
-            </tbody>
-        </table>
-        <table class="tableForData">
-            <tbody>
-                <tr>
-                    <td class="txtFld">Comments:<ol> {{#each (commentBreakUp header.comments commentBreakUp)}}
-                            <li>{{this}}</li>{{/each}}
-                        </ol>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td class="txtFld">Validated By: <b>{{header.validated_by}}</b></td>
-
-                </tr>
-            </tbody>
-        </table>
-    </section>
-    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+         </tbody>
+      </table>
+   </section>
+   {{!-- 
+   <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
+   --}}
 </div>

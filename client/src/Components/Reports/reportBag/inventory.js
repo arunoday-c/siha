@@ -347,8 +347,8 @@ export default function Inventory({
             label: "Item",
 
             link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy",
+              uri: "/inventory/getItemMaster",
+              module: "inventory",
             },
             dataSource: {
               textField: "item_description",
