@@ -109,6 +109,49 @@ export default memo(function ({ details }) {
       },
     });
   }
+  function printMicroBiologyReport(e, data) {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "microbioTestReport",
+          reportParams: [
+            { name: "hims_d_patient_id", value: data.patient_id },
+            {
+              name: "visit_id",
+              value: data.hims_f_patient_visit_id,
+            },
+            {
+              name: "hims_f_lab_order_id",
+              value: data.hims_f_lab_order_id,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        // const url = URL.createObjectURL(res.data);
+        // let myWindow = window.open(
+        //   "{{ product.metafields.google.custom_label_0 }}",
+        //   "_blank"
+        // );
+
+        // myWindow.document.write(
+        //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+        // );
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
+        window.open(origin);
+        // window.document.title = "Lab Test Report";
+      },
+    });
+  }
   function showReport(e) {
     setLoading(true);
     const reportType = e.currentTarget.getAttribute("report");
@@ -169,7 +212,8 @@ export default memo(function ({ details }) {
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Visit wise lab report`;
         window.open(origin);
       },
-      onCatch: () => {
+      onCatch: (err) => {
+        debugger;
         setLoading(false);
       },
     });
@@ -351,6 +395,85 @@ export default memo(function ({ details }) {
                             className="fas fa-print"
                             onClick={(e) => {
                               showReportPcr(e, item);
+                            }}
+                          ></i>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </Spin>
+        ) : null}
+        {detailsOf?.filter((f) => {
+          return f.isPCR === "MI";
+        })[0]?.list ? (
+          <Spin spinning={loadingPcr}>
+            <table className="accrTable">
+              <thead>
+                <tr>
+                  {/* <th>
+                <Checkbox
+                  indeterminate={indeterminatePcr}
+                  checked={selectAllPcr}
+                  onChange={changeSelectStatusPcr}
+                ></Checkbox>
+              </th> */}
+                  <th>Test Name</th>
+                  <th>Test Category</th>
+                  <th>Critical</th>
+                  <th>Status</th>
+                  <th>Billed</th>
+                  <th>Send Out</th>
+                  <th>Print PCR Report</th>
+                </tr>
+              </thead>
+              <tbody>
+                {detailsOf
+                  ?.filter((f) => {
+                    return f.isPCR === "MI";
+                  })[0]
+                  ?.list.map((item, index) => {
+                    const {
+                      status,
+                      service_name,
+                      category_name,
+                      critical_status,
+                      billed,
+                      send_out_test,
+                    } = item;
+
+                    return (
+                      <tr key={index}>
+                        <td style={{ textAlign: "left", fontWeight: "bold" }}>
+                          {service_name}
+                        </td>
+                        <td width="150">{category_name}</td>
+                        <td width="20">
+                          {critical_status === "Y" ? "Yes" : "No"}
+                        </td>
+                        <td width="120">
+                          {status === "O"
+                            ? "Ordered"
+                            : status === "CL"
+                            ? "Sample Collected"
+                            : status === "CN"
+                            ? "Test Cancelled"
+                            : status === "CF"
+                            ? "Confirmed"
+                            : status === "V"
+                            ? "Validated"
+                            : "Validation Pending"}
+                        </td>
+                        <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
+                        <td width="70">
+                          {send_out_test === "Y" ? "Yes" : "No"}
+                        </td>
+                        <td width="70">
+                          <i
+                            className="fas fa-print"
+                            onClick={(e) => {
+                              printMicroBiologyReport(e, item);
                             }}
                           ></i>
                         </td>

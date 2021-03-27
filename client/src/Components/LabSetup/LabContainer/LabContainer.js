@@ -30,6 +30,8 @@ class LabContainer extends Component {
       hims_d_lab_container_id: "",
       description: "",
       container_id: null,
+      color_code: "#FFFFFF",
+      color_name: "",
     };
     this.baseState = this.state;
   }
@@ -93,6 +95,43 @@ class LabContainer extends Component {
               className: "txt-fld",
               name: "container_id",
               value: this.state.container_id,
+
+              events: {
+                onChange: changeTexts.bind(this, this),
+              },
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 form-group" }}
+            label={{
+              fieldName: "color_code",
+              // isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "color_code",
+              value: this.state.color_code,
+              events: {
+                onChange: changeTexts.bind(this, this),
+              },
+              others: {
+                type: "color",
+                // required: true,
+                // checkvalidation: "$value === #ffffff",
+                // errormessage: "Please Select a color",
+              },
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 " }}
+            label={{
+              fieldName: "color_name",
+              // isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "color_name",
+              value: this.state.color_name,
 
               events: {
                 onChange: changeTexts.bind(this, this),
@@ -175,6 +214,77 @@ class LabContainer extends Component {
                         );
                       },
                       others: { maxWidth: 120 },
+                    },
+                    {
+                      fieldName: "color_code",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Container Color" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <div
+                            className="col"
+                            style={{
+                              backgroundColor: "" + row.color_code,
+                              height: "20px",
+                              margin: "auto",
+                            }}
+                          />
+                        );
+                      },
+                      editorTemplate: (row) => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.color_code,
+                              className: "txt-fld",
+                              name: "color_code",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row),
+                              },
+                              others: {
+                                type: "color",
+                              },
+                            }}
+                          />
+                        );
+                      },
+                      others: {
+                        minWidth: 600,
+                      },
+                    },
+                    {
+                      fieldName: "color_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Container Color Name" }}
+                        />
+                      ),
+                      editorTemplate: (row) => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.color_name,
+                              className: "txt-fld",
+                              name: "color_name",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row),
+                              },
+                              // others: {
+                              //   errormessage: "Description - cannot be blank",
+                              //   required: true,
+                              // },
+                            }}
+                          />
+                        );
+                      },
+                      others: {
+                        minWidth: 600,
+                      },
                     },
                     {
                       fieldName: "created_by",
