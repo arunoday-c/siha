@@ -343,7 +343,7 @@ export default {
                         debit_amount,
                         payment_type,
                         credit_amount,
-                        "Opening Balance",
+                        "Opening Balance Added from Accounts",
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                       ],
@@ -2415,7 +2415,7 @@ export default {
 
                         voucherStr = _mysql.mysqlQueryFormat(
                           "INSERT INTO finance_voucher_details (voucher_header_id,payment_date,head_id,child_id,debit_amount,credit_amount,\
-                        payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        payment_type,hospital_id,year,month,is_opening_bal,narration,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                           [
                             insertId,
                             input.obDate ? input.obDate : new Date(),
@@ -2428,6 +2428,7 @@ export default {
                             moment().format("YYYYY"),
                             moment().format("M"),
                             "Y",
+                            "Opening Balance Added from Accounts",
                             algaeh_d_app_user_id,
                             "A",
                           ]
@@ -2448,7 +2449,7 @@ export default {
                         }
                         voucherStr = _mysql.mysqlQueryFormat(
                           "INSERT INTO finance_voucher_details (voucher_header_id,payment_date,head_id,child_id,debit_amount,credit_amount,\
-                      payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      payment_type,hospital_id,year,month,is_opening_bal,narration,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                           [
                             insertId,
                             input.obDate ? input.obDate : new Date(),
@@ -2461,6 +2462,7 @@ export default {
                             moment().format("YYYYY"),
                             moment().format("M"),
                             "Y",
+                            "Opening Balance Added from Accounts",
                             algaeh_d_app_user_id,
                             "A",
                           ]
@@ -3524,7 +3526,7 @@ export async function uploadOBAccounts(req, res, next) {
       );
       // console.log("finance_voucher_exit", finance_voucher_exit);
       if (finance_voucher_exit.length > 0) {
-        if (data.root_id == 1) {
+        if (data.root_id == 1 || data.root_id == 5) {
           if (
             parseFloat(finance_voucher_exit[0].debit_amount) !=
             parseFloat(data.opening_balance)
@@ -3549,7 +3551,11 @@ export async function uploadOBAccounts(req, res, next) {
               finance_voucher_exit[0].finance_voucher_id
             };`;
           }
-        } else if (data.root_id == 2 || data.root_id == 3) {
+        } else if (
+          data.root_id == 2 ||
+          data.root_id == 3 ||
+          data.root_id == 4
+        ) {
           if (
             parseFloat(finance_voucher_exit[0].credit_amount) !=
             parseFloat(data.opening_balance)
@@ -3643,7 +3649,10 @@ export async function uploadOBAccounts(req, res, next) {
         let payment_type = "CR";
         // console.log("data.root_id", data.root_id);
         // console.log("data.opening_balance", data.opening_balance);
-        if (data.root_id == 1 && parseFloat(data.opening_balance) > 0) {
+        if (
+          (data.root_id == 1 || data.root_id == 5) &&
+          parseFloat(data.opening_balance) > 0
+        ) {
           // console.log("11");
           debit_amount = data.opening_balance;
           payment_type = "DR";
@@ -3660,7 +3669,7 @@ export async function uploadOBAccounts(req, res, next) {
           voucherStr += _mysql.mysqlQueryFormat(
             "INSERT INTO finance_voucher_details (voucher_header_id, payment_date, head_id, child_id, \
                             debit_amount, credit_amount, payment_type,hospital_id, year, month, is_opening_bal, \
-                            entered_by, auth_status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                            narration, entered_by, auth_status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
             [
               insertId,
               data.payment_date
@@ -3675,12 +3684,13 @@ export async function uploadOBAccounts(req, res, next) {
               moment().format("YYYYY"),
               moment().format("M"),
               "Y",
+              "Opening Balance Added from Accounts",
               algaeh_d_app_user_id,
               "A",
             ]
           );
         } else if (
-          (data.root_id == 2 || data.root_id == 3) &&
+          (data.root_id == 2 || data.root_id == 3 || data.root_id == 4) &&
           data.opening_balance > 0
         ) {
           credit_amount = data.opening_balance;
@@ -3694,7 +3704,7 @@ export async function uploadOBAccounts(req, res, next) {
           voucherStr += _mysql.mysqlQueryFormat(
             "INSERT INTO finance_voucher_details (voucher_header_id, payment_date, head_id, child_id, \
                             debit_amount, credit_amount, payment_type, hospital_id, year, month, is_opening_bal, \
-                            entered_by, auth_status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                            narration,entered_by, auth_status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
             [
               insertId,
               data.payment_date
@@ -3709,6 +3719,7 @@ export async function uploadOBAccounts(req, res, next) {
               moment().format("YYYYY"),
               moment().format("M"),
               "Y",
+              "Opening Balance Added from Accounts",
               algaeh_d_app_user_id,
               "A",
             ]
