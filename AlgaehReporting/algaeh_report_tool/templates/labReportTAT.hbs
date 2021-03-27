@@ -19,6 +19,7 @@
                         <th>Confirmed Date & Time</th>
                         <th>Validated Date & Time</th>
                         <th>TAT</th>
+                        <th>Run Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,11 +37,12 @@
                         <td>{{confirmed_date}}</td>
                         <td>{{validated_date}}</td>
                         <td>{{TAT}}</td>
+                        <td>{{run_type}}</td>
                     </tr>
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="9" class="noResultTextReport">No Records Found</td>
+                        <td colspan="11" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 
