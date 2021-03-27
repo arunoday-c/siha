@@ -27,7 +27,7 @@ class SampleCollectionPatient extends PureComponent {
     this.state = {
       collected: true,
       hospital_id: null,
-      send_out_test: "N"
+      send_out_test: "N",
     };
   }
 
@@ -77,8 +77,8 @@ class SampleCollectionPatient extends PureComponent {
         method: "GET",
         redux: {
           type: "CONTAINER_GET_DATA",
-          mappingName: "labcontainer"
-        }
+          mappingName: "labcontainer",
+        },
       });
     }
 
@@ -209,23 +209,22 @@ class SampleCollectionPatient extends PureComponent {
                                             row
                                           )}
                                         />
-                                      ) : null}
-
-                                      <i
-                                        style={{
-                                          pointerEvents:
-                                            row.billed === "N" ? "none" : "",
-                                          opacity:
-                                            row.billed === "N" ? "0.1" : "",
-                                        }}
-                                        className="fas fa-barcode"
-                                        onClick={printBarcode.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      />
-
+                                      ) : (
+                                        <i
+                                          style={{
+                                            pointerEvents:
+                                              row.billed === "N" ? "none" : "",
+                                            opacity:
+                                              row.billed === "N" ? "0.1" : "",
+                                          }}
+                                          className="fas fa-barcode"
+                                          onClick={printBarcode.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        />
+                                      )}
                                     </span>
                                   );
                                 },
@@ -311,37 +310,37 @@ class SampleCollectionPatient extends PureComponent {
                                     this.props.labspecimen === undefined
                                       ? []
                                       : this.props.labspecimen.filter(
-                                        (f) =>
-                                          f.hims_d_lab_specimen_id ===
-                                          row.sample_id
-                                      );
+                                          (f) =>
+                                            f.hims_d_lab_specimen_id ===
+                                            row.sample_id
+                                        );
                                   return row.collected === "Y" ||
                                     row.billed === "N" ? (
-                                      <span>
-                                        {display !== null && display.length !== 0
-                                          ? display[0].SpeDescription
-                                          : ""}
-                                      </span>
-                                    ) : (
-                                      <AlagehAutoComplete
-                                        div={{ className: "noLabel" }}
-                                        selector={{
-                                          name: "sample_id",
-                                          className: "select-fld",
-                                          value: row.sample_id,
-                                          dataSource: {
-                                            textField: "SpeDescription",
-                                            valueField: "hims_d_lab_specimen_id",
-                                            data: this.props.labspecimen,
-                                          },
-                                          onChange: onchangegridcol.bind(
-                                            this,
-                                            this,
-                                            row
-                                          ),
-                                        }}
-                                      />
-                                    );
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].SpeDescription
+                                        : ""}
+                                    </span>
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
+                                      selector={{
+                                        name: "sample_id",
+                                        className: "select-fld",
+                                        value: row.sample_id,
+                                        dataSource: {
+                                          textField: "SpeDescription",
+                                          valueField: "hims_d_lab_specimen_id",
+                                          data: this.props.labspecimen,
+                                        },
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }}
+                                    />
+                                  );
                                 },
                                 others: {
                                   maxWidth: 200,
@@ -361,37 +360,37 @@ class SampleCollectionPatient extends PureComponent {
                                     this.props.labcontainer === undefined
                                       ? []
                                       : this.props.labcontainer.filter(
-                                        (f) =>
-                                          f.hims_d_lab_container_id ===
-                                          row.container_id
-                                      );
+                                          (f) =>
+                                            f.hims_d_lab_container_id ===
+                                            row.container_id
+                                        );
                                   return row.collected === "Y" ||
                                     row.billed === "N" ? (
-                                      <span>
-                                        {display !== null && display.length !== 0
-                                          ? display[0].ConDescription
-                                          : ""}
-                                      </span>
-                                    ) : (
-                                      <AlagehAutoComplete
-                                        div={{ className: "noLabel" }}
-                                        selector={{
-                                          name: "container_id",
-                                          className: "select-fld",
-                                          value: row.container_id,
-                                          dataSource: {
-                                            textField: "ConDescription",
-                                            valueField: "hims_d_lab_container_id",
-                                            data: this.props.labcontainer,
-                                          },
-                                          onChange: onchangegridcol.bind(
-                                            this,
-                                            this,
-                                            row
-                                          ),
-                                        }}
-                                      />
-                                    );
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].ConDescription
+                                        : ""}
+                                    </span>
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
+                                      selector={{
+                                        name: "container_id",
+                                        className: "select-fld",
+                                        value: row.container_id,
+                                        dataSource: {
+                                          textField: "ConDescription",
+                                          valueField: "hims_d_lab_container_id",
+                                          data: this.props.labcontainer,
+                                        },
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }}
+                                    />
+                                  );
                                 },
                                 others: {
                                   maxWidth: 200,
@@ -409,35 +408,35 @@ class SampleCollectionPatient extends PureComponent {
                                 displayTemplate: (row) => {
                                   return row.collected === "Y" ||
                                     row.billed === "N" ? (
-                                      row.send_out_test === "Y" ? (
-                                        <span className="badge badge-success" >
-                                          Yes
-                                        </span>
-                                      ) : (
-                                          <span className="badge badge-danger">
-                                            No
-                                          </span>
-                                        )
+                                    row.send_out_test === "Y" ? (
+                                      <span className="badge badge-success">
+                                        Yes
+                                      </span>
                                     ) : (
-                                      <AlagehAutoComplete
-                                        div={{ className: "noLabel" }}
-                                        selector={{
-                                          name: "send_out_test",
-                                          className: "select-fld",
-                                          value: row.send_out_test,
-                                          dataSource: {
-                                            textField: "name",
-                                            valueField: "value",
-                                            data: variableJson.FORMAT_YESNO,
-                                          },
-                                          onChange: onchangegridcol.bind(
-                                            this,
-                                            this,
-                                            row
-                                          ),
-                                        }}
-                                      />
-                                    );
+                                      <span className="badge badge-danger">
+                                        No
+                                      </span>
+                                    )
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
+                                      selector={{
+                                        name: "send_out_test",
+                                        className: "select-fld",
+                                        value: row.send_out_test,
+                                        dataSource: {
+                                          textField: "name",
+                                          valueField: "value",
+                                          data: variableJson.FORMAT_YESNO,
+                                        },
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }}
+                                    />
+                                  );
                                 },
                                 others: {
                                   maxWidth: 200,
@@ -454,14 +453,14 @@ class SampleCollectionPatient extends PureComponent {
                                 ),
                                 displayTemplate: (row) => {
                                   return row.collected === "Y" ? (
-                                    <span className="badge badge-success" >
+                                    <span className="badge badge-success">
                                       Yes
                                     </span>
                                   ) : (
-                                      <span className="badge badge-danger">
-                                        No
-                                      </span>
-                                    );
+                                    <span className="badge badge-danger">
+                                      No
+                                    </span>
+                                  );
                                 },
                                 // others: {
                                 //   resizable: false,
@@ -480,10 +479,10 @@ class SampleCollectionPatient extends PureComponent {
                                     this.props.userdrtails === undefined
                                       ? []
                                       : this.props.userdrtails.filter(
-                                        (f) =>
-                                          f.algaeh_d_app_user_id ===
-                                          row.collected_by
-                                      );
+                                          (f) =>
+                                            f.algaeh_d_app_user_id ===
+                                            row.collected_by
+                                        );
 
                                   return (
                                     <span>
@@ -510,8 +509,8 @@ class SampleCollectionPatient extends PureComponent {
                                     <span>
                                       {moment(row.collected_date).isValid()
                                         ? moment(row.collected_date).format(
-                                          "DD-MM-YYYY hh:mm"
-                                        )
+                                            "DD-MM-YYYY hh:mm"
+                                          )
                                         : "------"}
                                     </span>
                                   );
@@ -533,8 +532,8 @@ class SampleCollectionPatient extends PureComponent {
                                     <span>
                                       {moment(row.barcode_gen).isValid()
                                         ? moment(row.barcode_gen).format(
-                                          "DD-MM-YYYY hh:mm"
-                                        )
+                                            "DD-MM-YYYY hh:mm"
+                                          )
                                         : "------"}
                                     </span>
                                   );
@@ -601,7 +600,7 @@ function mapStateToProps(state) {
     deptanddoctors: state.deptanddoctors,
     labspecimen: state.labspecimen,
     userdrtails: state.userdrtails,
-    labcontainer: state.labcontainer
+    labcontainer: state.labcontainer,
   };
 }
 
@@ -611,7 +610,7 @@ function mapDispatchToProps(dispatch) {
       getDepartmentsandDoctors: AlgaehActions,
       getLabSpecimen: AlgaehActions,
       getUserDetails: AlgaehActions,
-      getLabContainer: AlgaehActions
+      getLabContainer: AlgaehActions,
     },
     dispatch
   );

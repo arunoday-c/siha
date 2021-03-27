@@ -20,6 +20,7 @@ import {
   updateMicroGroup,
   getmicroGroups,
   updateGroupAntiMap,
+  deleteGroupAntiMap,
   changeGridEditors,
   addGroupAntibiotic,
   addGroupAntiMap,
@@ -285,12 +286,12 @@ class MicroGroupType extends Component {
                           data: this.state.microAntbiotic,
                         }}
                         isEditable={true}
-                        actions={{
-                          allowDelete: false,
-                        }}
+                        // actions={{
+                        //   allowDelete: false,
+                        // }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          //onDelete: this.deleteSubDepartment.bind(this),
+                          onDelete: deleteGroupAntiMap.bind(this, this),
                           onEdit: (row) => {},
                           onDone: updateGroupAntiMap.bind(this, this),
                         }}

@@ -186,12 +186,14 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_lab_container` (`description`, `container_id`, \
+            "INSERT INTO `hims_d_lab_container` (`description`, `container_id`,color_code,color_name, \
           `created_by` ,`created_date`) \
-       VALUES ( ?, ?, ?, ?)",
+       VALUES ( ?, ?, ?, ?,?,?)",
           values: [
             inputParam.description,
             inputParam.container_id,
+            inputParam.color_code,
+            inputParam.color_name,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
           ],
@@ -219,11 +221,13 @@ export default {
         .executeQuery({
           query:
             "UPDATE `hims_d_lab_container` \
-          SET `description`=?, `container_id`=?,`updated_by`=?, `updated_date`=?,container_status=? \
+          SET `description`=?, `container_id`=?,color_code=?,color_name=?,`updated_by`=?, `updated_date`=?,container_status=? \
           WHERE `record_status`='A' and `hims_d_lab_container_id`=?",
           values: [
             inputParam.description,
             inputParam.container_id,
+            inputParam.color_code,
+            inputParam.color_name,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.container_status,
@@ -1064,7 +1068,31 @@ export default {
       next(e);
     }
   },
-
+  deleteGroupAntiMap: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_m_group_antibiotic` set record_status='I' where `hims_m_group_antibiotic_id`=?",
+          values: [inputParam.hims_m_group_antibiotic_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   selectMachineAnalytesMap: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

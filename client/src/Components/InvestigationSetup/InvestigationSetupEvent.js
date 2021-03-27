@@ -72,6 +72,7 @@ const getInvestigations = ($this) => {
               services_id: firstRecordSet.services_id,
               service_name: firstRecordSet.service_name,
               hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
+              tat_standard_time: firstRecordSet.tat_standard_time,
               analytes_required:
                 firstRecordSet.test_section === "M" ? false : true,
               container_id: firstRecordSet.container_id,

@@ -11,14 +11,19 @@ export default {
     const utilities = new algaehUtilities();
 
     try {
-      const rawdata = req.body.map(item => {
+      const rawdata = req.body.map((item) => {
         return {
-          ...item, acc_gratuity: item.gratuity_amount
-        }
+          ...item,
+          acc_gratuity: item.gratuity_amount,
+          created_by: req.userIdentity.algaeh_d_app_user_id,
+          created_date: new Date(),
+          updated_by: req.userIdentity.algaeh_d_app_user_id,
+          updated_date: new Date(),
+        };
       });
 
       const input = rawdata
-        .filter(item => {
+        .filter((item) => {
           return (
             !parseInt(item.employee_id) > 0 ||
             !parseInt(item.month) > 0 ||
@@ -26,14 +31,14 @@ export default {
             !parseInt(item.year) > 0
           );
         })
-        .map(m => {
+        .map((m) => {
           return m.employee_code;
         });
 
       if (input.length > 0) {
         req.records = {
           invalid_input: true,
-          message: `Please Provide valid input for ${input}`
+          message: `Please Provide valid input for ${input}`,
         };
         next();
       } else {
@@ -42,9 +47,13 @@ export default {
           "year",
           "month",
           "gratuity_amount",
-          "acc_gratuity"
+          "acc_gratuity",
+          "created_by",
+          "created_date",
+          "updated_by",
+          "updated_date",
         ];
-
+        // console.log("opening balance check for gratuity bul insert");
         _mysql
           .executeQuery({
             query:
@@ -53,14 +62,14 @@ export default {
             values: rawdata,
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(finalResult => {
+          .then((finalResult) => {
             _mysql.releaseConnection();
             req.records = finalResult;
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
@@ -78,15 +87,15 @@ export default {
       const rawdata = req.body;
 
       const input = rawdata
-        .filter(item => {
+        .filter((item) => {
           return item.employee_id > 0;
         })
-        .map(m => {
+        .map((m) => {
           return {
             ...m,
             leave_days: m.balance_leave_days,
             leave_salary_amount: m.balance_leave_salary_amount,
-            airticket_amount: m.balance_airticket_amount
+            airticket_amount: m.balance_airticket_amount,
           };
         });
 
@@ -100,7 +109,7 @@ export default {
           "balance_leave_salary_amount",
           "balance_airticket_amount",
           "airfare_months",
-          "hospital_id"
+          "hospital_id",
         ];
 
         _mysql
@@ -114,21 +123,21 @@ export default {
             values: input,
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
-            printQuery: false
+            printQuery: false,
           })
-          .then(finalResult => {
+          .then((finalResult) => {
             _mysql.releaseConnection();
             req.records = finalResult;
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: `Please Provide valid input `
+          message: `Please Provide valid input `,
         };
         next();
       }
@@ -145,7 +154,7 @@ export default {
       const rawdata = req.body;
 
       let strQuery = "";
-      rawdata.forEach(item => {
+      rawdata.forEach((item) => {
         let x;
         for (x in item) {
           if (x > 0 && item[x] != "N") {
@@ -157,21 +166,21 @@ export default {
       if (strQuery == "") {
         req.records = {
           invalid_input: true,
-          message: `Please Provide valid input `
+          message: `Please Provide valid input `,
         };
         next();
       } else {
         _mysql
           .executeQuery({
             query: strQuery,
-            printQuery: false
+            printQuery: false,
           })
-          .then(finalResult => {
+          .then((finalResult) => {
             _mysql.releaseConnection();
             req.records = finalResult[0];
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
@@ -179,5 +188,5 @@ export default {
     } catch (e) {
       next(e);
     }
-  }
+  },
 };

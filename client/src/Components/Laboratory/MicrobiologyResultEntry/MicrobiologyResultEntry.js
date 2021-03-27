@@ -27,9 +27,10 @@ import {
   addComments,
   selectCommentEvent,
   deleteComment,
+  ChangeHandel,
 } from "./MicrobiologyResultEntryEvents";
 import AlgaehReport from "../../Wrapper/printReports";
-
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 class MicrobiologyResultEntry extends Component {
   constructor(props) {
     super(props);
@@ -44,6 +45,7 @@ class MicrobiologyResultEntry extends Component {
       group_comments_id: null,
       comment_list: [],
       selcted_comments: "",
+      contaminated_culture: "N",
     };
   }
 
@@ -222,7 +224,87 @@ class MicrobiologyResultEntry extends Component {
                   {this.state.service_name ? this.state.service_name : "------"}
                 </h6>
               </div>
-              <AlagehAutoComplete
+              <div className="col-2">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Entered By",
+                  }}
+                />
+
+                <h6>
+                  {this.state.entered_by_name
+                    ? this.state.entered_by_name
+                    : "------"}
+
+                  {this.state.entered_by_name ? (
+                    <small style={{ display: "block", fontStyle: "italic" }}>
+                      On{" "}
+                      {moment(this.state.entered_date).format(
+                        `${Options.dateFormat} ${Options.timeFormat}`
+                      )}
+                    </small>
+                  ) : (
+                    <small style={{ display: "block", fontStyle: "italic" }}>
+                      -------
+                    </small>
+                  )}
+                </h6>
+              </div>
+
+              <div className="col-2">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Confirmed By",
+                  }}
+                />
+
+                <h6>
+                  {this.state.confirm_by_name
+                    ? this.state.confirm_by_name
+                    : "------"}
+
+                  {this.state.confirm_by_name ? (
+                    <small style={{ display: "block", fontStyle: "italic" }}>
+                      On{" "}
+                      {moment(this.state.confirmed_date).format(
+                        `${Options.dateFormat} ${Options.timeFormat}`
+                      )}
+                    </small>
+                  ) : (
+                    <small style={{ display: "block", fontStyle: "italic" }}>
+                      -------
+                    </small>
+                  )}
+                </h6>
+              </div>
+
+              <div className="col-2">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Validated By",
+                  }}
+                />
+
+                <h6>
+                  {this.state.validate_by_name
+                    ? this.state.validate_by_name
+                    : "------"}
+
+                  {this.state.validate_by_name ? (
+                    <small style={{ display: "block", fontStyle: "italic" }}>
+                      On{" "}
+                      {moment(this.state.validated_date).format(
+                        `${Options.dateFormat} ${Options.timeFormat}`
+                      )}
+                    </small>
+                  ) : (
+                    <small style={{ display: "block", fontStyle: "italic" }}>
+                      -------
+                    </small>
+                  )}
+                </h6>
+              </div>
+              {/* <AlagehAutoComplete
                 div={{ className: "col-2 form-group" }}
                 label={{
                   forceLabel: "Entered By",
@@ -282,7 +364,7 @@ class MicrobiologyResultEntry extends Component {
                     disabled: true,
                   },
                 }}
-              />
+              /> */}
               <div className="col">
                 <label>Growth Type</label>
                 <div className="customRadio" style={{ borderBottom: 0 }}>
@@ -315,6 +397,51 @@ class MicrobiologyResultEntry extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "growth",
+                        }}
+                      />
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="col">
+                <label>Contaminated Culture</label>
+                <div className="customRadio" style={{ borderBottom: 0 }}>
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      value="N"
+                      name="contaminated_culture"
+                      checked={
+                        this.state.contaminated_culture === "N" ? true : false
+                      }
+                      onChange={ChangeHandel.bind(this, this)}
+                      disabled={this.state.data_exists}
+                    />
+                    <span>
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "No",
+                        }}
+                      />
+                    </span>
+                  </label>
+
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      value="Y"
+                      name="contaminated_culture"
+                      checked={
+                        this.state.contaminated_culture === "Y" ? true : false
+                      }
+                      onChange={ChangeHandel.bind(this, this)}
+                      disabled={this.state.data_exists}
+                    />
+                    <span>
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Yes",
                         }}
                       />
                     </span>
@@ -622,45 +749,54 @@ class MicrobiologyResultEntry extends Component {
 
           <div className="popupFooter">
             <div className="col-lg-12">
-              <button
-                className="btn btn-primary"
-                onClick={generateLabResultReport.bind(this, this.state)}
-                disabled={this.state.status === "V" ? false : true}
-              >
-                Print
-              </button>
+              <AlgaehSecurityComponent componentCode="PRI_LAB_RES">
+                <button
+                  className="btn btn-primary"
+                  onClick={generateLabResultReport.bind(this, this.state)}
+                  disabled={this.state.status === "V" ? false : true}
+                >
+                  Print
+                </button>
+              </AlgaehSecurityComponent>
+              <AlgaehSecurityComponent componentCode="VAL_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={onvalidate.bind(this, this)}
+                  disabled={this.state.status === "V" ? true : false}
+                >
+                  Validate
+                </button>
+              </AlgaehSecurityComponent>
 
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onvalidate.bind(this, this)}
-                disabled={this.state.status === "V" ? true : false}
-              >
-                Validate
-              </button>
+              <AlgaehSecurityComponent componentCode="CONF_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={onconfirm.bind(this, this)}
+                  disabled={
+                    this.state.status === "C"
+                      ? true
+                      : this.state.status === "V"
+                      ? true
+                      : false
+                  }
+                >
+                  Confirm
+                </button>
+              </AlgaehSecurityComponent>
 
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onconfirm.bind(this, this)}
-                disabled={
-                  this.state.status === "C"
-                    ? true
-                    : this.state.status === "V"
-                    ? true
-                    : false
-                }
-              >
-                Confirm
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={resultEntryUpdate.bind(this, this)}
-                disabled={this.state.status !== "CL" ? true : false}
-              >
-                Save
-              </button>
+              <AlgaehSecurityComponent componentCode="SAVE_LAB_RES">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={resultEntryUpdate.bind(this, this)}
+                  disabled={this.state.status !== "CL" ? true : false}
+                >
+                  Save
+                </button>
+              </AlgaehSecurityComponent>
+
               <button
                 type="button"
                 className="btn btn-default"
