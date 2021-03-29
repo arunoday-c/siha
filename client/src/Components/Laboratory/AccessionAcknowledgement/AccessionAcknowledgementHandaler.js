@@ -146,6 +146,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
             visit_id: row.visit_id,
             date_of_birth: row.date_of_birth,
             gender: row.gender,
+            barcode_gen: row.barcode_gen,
             remarks: $this.state.remarks,
             status: AccRej,
           };

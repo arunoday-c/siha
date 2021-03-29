@@ -52,6 +52,7 @@ const CollectSample = ($this, context, row) => {
             test_details[i].collected_by = response.data.records.collected_by;
             test_details[i].collected_date =
               response.data.records.collected_date;
+            test_details[i].barcode_gen = response.data.records.barcode_gen;
           }
         }
 
@@ -114,8 +115,8 @@ const printBarcode = ($this, row) => {
       onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
-        window.open(origin);
-        window.document.title = "Specimen Barcode";
+        window.open(origin, "Specimen Barcode");
+        // window.document.title = "Specimen Barcode";
       },
     });
   } else {
