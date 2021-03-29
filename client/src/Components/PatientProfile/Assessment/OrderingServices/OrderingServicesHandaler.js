@@ -666,6 +666,7 @@ const SaveOrdersServices = ($this, e) => {
     deleteserviceInput: $this.state.deleteserviceInput,
     date_of_birth: $this.props.date_of_birth,
     gender: $this.props.gender,
+    bill_date: new Date(),
   };
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({

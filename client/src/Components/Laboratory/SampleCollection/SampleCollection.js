@@ -24,11 +24,11 @@ import Options from "../../../Options.json";
 import SampleCollectionModal from "../SampleCollections/SampleCollections";
 import MyContext from "../../../utils/MyContext.js";
 import _ from "lodash";
-
+import sockets from "../../../sockets";
 class SampleCollection extends Component {
   constructor(props) {
     super(props);
-
+    this.socket = sockets;
     this.state = {
       to_date: new Date(),
       // from_date: moment("01" + month + year, "DDMMYYYY")._d,
@@ -75,6 +75,19 @@ class SampleCollection extends Component {
 
   componentDidMount() {
     getSampleCollectionDetails(this, this);
+    this.socket.on("reload_specimen_collection", (billData) => {
+      const { bill_date } = billData;
+      const date = new Date(moment(bill_date).format("YYYY-MM-DD"));
+      const start = new Date(moment(this.state.from_date).format("YYYY-MM-DD"));
+      const end = new Date(moment(this.state.to_date).format("YYYY-MM-DD"));
+
+      if (date >= start && date <= end) {
+        // if (window.location.pathname === "/RadOrderedList")
+        getSampleCollectionDetails(this, this);
+      } else {
+        return;
+      }
+    });
   }
 
   render() {
@@ -380,10 +393,10 @@ class SampleCollection extends Component {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                              <span className="badge badge-secondary">
-                                Routine
-                              </span>
-                            );
+                            <span className="badge badge-secondary">
+                              Routine
+                            </span>
+                          );
                         },
                         disabled: true,
                         others: {
@@ -446,10 +459,10 @@ class SampleCollection extends Component {
                               Confirmed
                             </span>
                           ) : (
-                                    <span className="badge badge-success">
-                                      Validated
-                                    </span>
-                                  );
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
+                          );
                         },
                         disabled: true,
                         others: {

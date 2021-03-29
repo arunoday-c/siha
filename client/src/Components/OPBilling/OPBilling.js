@@ -42,6 +42,7 @@ import {
   AlgaehSecurityComponent,
   RawSecurityComponent,
 } from "algaeh-react-components";
+import sockets from "../../sockets";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -416,6 +417,7 @@ class OPBilling extends Component {
           Inputobj.company_payable = $this.state.company_payble;
           Inputobj.insurance_yesno = $this.state.insured;
           Inputobj.ScreenCode = "BL0001";
+
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
@@ -432,10 +434,17 @@ class OPBilling extends Component {
                     response.data.records.hims_f_billing_header_id,
                   saveEnable: true,
                 });
+
                 this.setState({
                   addNewService: true,
                   Billexists: true,
                 });
+                if (sockets.connected) {
+                  sockets.emit("opBill_add", {
+                    billdetails: Inputobj.billdetails,
+                    bill_date: Inputobj.bill_date,
+                  });
+                }
                 successfulMessage({
                   message: "Done Successfully",
                   title: "Success",

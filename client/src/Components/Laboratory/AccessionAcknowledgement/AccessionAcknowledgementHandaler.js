@@ -5,6 +5,7 @@ import Options from "../../../Options.json";
 // import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import sockets from "../../../sockets";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -162,6 +163,11 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
                   remarks: "",
                   reject_popup: false,
                 });
+                if (sockets.connected) {
+                  sockets.emit("result_entry", {
+                    collected_date: new Date(),
+                  });
+                }
                 swalMessage({
                   title: "Record Updated",
                   type: "success",
