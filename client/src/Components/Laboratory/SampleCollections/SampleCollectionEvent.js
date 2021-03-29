@@ -107,8 +107,8 @@ const printBarcode = ($this, row) => {
       onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
-        window.open(origin);
-        window.document.title = "Specimen Barcode";
+        window.open(origin, "Specimen Barcode");
+        // window.document.title = "Specimen Barcode";
       },
     });
   } else {
