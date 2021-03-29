@@ -2658,8 +2658,9 @@ function getTrialBalanceFunc(
           and date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
 
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-          ,if(VD.is_opening_bal ='Y' ,0, ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places})) as debit_amount,
-          if(VD.is_opening_bal ='Y' ,0,ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places}))  as credit_amount,VD.payment_date,VD.is_opening_bal          from finance_account_head H              
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,-- if(VD.is_opening_bal ='Y' ,0, ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places})) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount,-- if(VD.is_opening_bal ='Y' ,0,ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places}))  as credit_amount
+          VD.payment_date,VD.is_opening_bal          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
           and  date(VD.payment_date) between date(?) and date(?) where H.root_id=?  group by H.finance_account_head_id,VD.payment_date,VD.is_opening_bal   ; 
 
@@ -3419,7 +3420,6 @@ function createHierarchyTransactionTB(
             });
           }
         } else {
-          // console.log("TR_BALANCE-2=====>", TR_BALANCE);
           target.push({
             ...item,
             // ledger_code: item.header_ledger_code,
