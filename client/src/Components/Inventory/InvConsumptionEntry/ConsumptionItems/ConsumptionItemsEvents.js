@@ -205,6 +205,7 @@ export default function ConsumptionItemsEvents() {
           grn_no: null,
           unit_cost: 0,
           extended_cost: 0,
+          item_description: "",
         });
 
         if (context !== undefined) {
@@ -223,6 +224,7 @@ export default function ConsumptionItemsEvents() {
             expiry_date: null,
             batchno: null,
             grn_no: null,
+            item_description: "",
           });
         }
       }
@@ -237,7 +239,9 @@ export default function ConsumptionItemsEvents() {
     deleteConsumptionDetail: ($this, context, row) => {
       let inventory_stock_detail = $this.state.inventory_stock_detail;
       let saveEnable = false;
-      inventory_stock_detail.splice(row.rowIdx, 1);
+
+      const _index = inventory_stock_detail.indexOf(row);
+      inventory_stock_detail.splice(_index, 1);
 
       if (inventory_stock_detail.length === 0) {
         saveEnable = true;

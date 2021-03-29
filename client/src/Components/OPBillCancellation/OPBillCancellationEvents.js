@@ -129,7 +129,6 @@ const Validations = ($this) => {
 };
 
 const getCashiersAndShiftMAP = ($this, cancel_checkin) => {
-  debugger
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
@@ -140,7 +139,7 @@ const getCashiersAndShiftMAP = ($this, cancel_checkin) => {
         $this.setState(
           {
             shift_assinged: response.data.records,
-            cancel_checkin: cancel_checkin
+            cancel_checkin: cancel_checkin,
           },
           () => {
             $this.setState({
