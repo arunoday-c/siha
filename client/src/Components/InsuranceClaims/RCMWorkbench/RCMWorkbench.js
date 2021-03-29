@@ -23,6 +23,8 @@ import ValidateBills from "./ValidateBills/ValidateBills";
 import moment from "moment";
 import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
 import _ from "lodash";
+// import Enumerable from "linq";
+import { Checkbox } from "algaeh-react-components";
 import { StatementTable } from "../InsuranceStatement/StatementTable";
 // let validatedClaims = [];
 
@@ -40,6 +42,8 @@ class RCMWorkbench extends Component {
       submitted: false,
       insurance_statement_number: null,
       insurance_status: null,
+      indeterminate: false,
+      checkAll: false,
     };
     this.select = true;
     this.dropDownHandler = this.dropDownHandler.bind(this);
@@ -88,7 +92,93 @@ class RCMWorkbench extends Component {
       },
     });
   };
+  selectAll = (e) => {
+    const isChecked = e.target.checked;
+    let { validatedClaims } = this.state;
+    let data = this.state.claims;
 
+    const newData = data.map((item, index) => {
+      return {
+        ...item,
+        chkselect:
+          item.claim_validated === "P" ||
+          item.claim_validated === "X" ||
+          item.claim_validated === "E"
+            ? 0
+            : isChecked
+            ? 1
+            : 0,
+      };
+    });
+    let filteredData = newData.filter((item) => item.chkselect === 1);
+    // let listOfinclude = Enumerable.from(newData)
+    //   .where((w) => w.select_to_claim === "Y")
+    //   .toArray();
+    // let paysalaryBtn = listOfinclude.length > 0 ? false : true;
+    if (filteredData.length > 0) {
+      filteredData.map((row) => {
+        const currentIdx = validatedClaims?.findIndex(
+          (item) =>
+            item.hims_f_invoice_header_id === row.hims_f_invoice_header_id
+        );
+        if (currentIdx > -1) {
+          validatedClaims.splice(currentIdx, 1);
+          return this.setState({
+            generateReport: !validatedClaims?.length,
+            validatedClaims,
+          });
+        } else {
+          validatedClaims.push(row);
+          return this.setState({
+            generateReport: !validatedClaims.length,
+            validatedClaims,
+          });
+        }
+      });
+    } else {
+      this.setState({
+        validatedClaims: [],
+      });
+    }
+
+    if (filteredData.length < data.length) {
+      this.setState({
+        claims: newData,
+        checkAll: false,
+        indeterminate: true,
+        // generateReport: paysalaryBtn,
+        // paysalaryBtn: paysalaryBtn,
+      });
+    } else {
+      this.setState({
+        claims: newData,
+        checkAll: true,
+        indeterminate: false,
+      });
+    }
+
+    if (filteredData.length > 0) {
+      return;
+    } else {
+      this.setState({
+        claims: newData,
+        indeterminate: false,
+      });
+    }
+    // if (filteredData.length === data.length) {
+    //   this.setState({
+    //     indeterminate: false,
+    //   });
+    // } else {
+    //   this.setState({ indeterminate: true });
+    // }
+    // this.setState({
+    //   // claims: newData,
+    //   checkAll: isChecked,
+    //   // generateReport: paysalaryBtn,
+    //   // paysalaryBtn: paysalaryBtn,
+    // });
+  };
   addToResubmissionlist = (row) => {
     const currentList = [...this.state.resubmissionList];
     const currentIdx = currentList?.findIndex(
@@ -176,6 +266,47 @@ class RCMWorkbench extends Component {
         type: "warning",
       });
     } else {
+      let _claims = this.state.claims;
+      // let paysalaryBtn = true;
+      if (e.target.checked === true) {
+        row["chkselect"] = 1;
+      } else if (e.target.checked === false) {
+        row["chkselect"] = 0;
+      }
+      // row.update();
+      _claims[row.rowIdx] = row;
+      // for (let k = 0; k < _criedtdetails.length; k++) {
+      //   if (_criedtdetails[k].bill_header_id === row.bill_header_id) {
+      //     _criedtdetails[k] = row;
+      //   }
+      // }
+
+      // let listOfinclude = Enumerable.from(_claims)
+      //   .where((w) => w.select_to_claim === "Y")
+      //   .toArray();
+      // if (listOfinclude.length > 0) {
+      //   // paysalaryBtn = false;
+      // }
+      this.setState({
+        // generateReport: paysalaryBtn,
+        claims: _claims,
+      });
+      const checkList = _claims.filter((f) => f.chkselect === 1);
+      if (checkList.length === this.state.claims.length) {
+        this.setState({
+          indeterminate: false,
+          checkAll: true,
+        });
+        // setIndeterminate(false);
+        // setSelectAll(true);
+      } else {
+        this.setState({
+          indeterminate: true,
+          checkAll: false,
+        });
+        // setIndeterminate(true);
+        // setSelectAll(false);
+      }
       const currentIdx = validatedClaims?.findIndex(
         (item) => item.hims_f_invoice_header_id === row.hims_f_invoice_header_id
       );
@@ -271,6 +402,7 @@ class RCMWorkbench extends Component {
       claims: [],
       validatedClaims: [],
       submitted: false,
+      checkAll: false,
     });
   }
 
@@ -398,10 +530,17 @@ class RCMWorkbench extends Component {
               type: "success",
             });
             AlgaehLoader({ show: false });
-            this.setState({
-              validatedClaims: [],
-              submitted: true,
-            });
+            this.setState(
+              {
+                validatedClaims: [],
+                submitted: true,
+                selectAll: false,
+                indeterminate: false,
+              },
+              () => {
+                this.getInvoicesForClaims();
+              }
+            );
           } else {
             swalMessage({
               title: response.data.records,
@@ -538,16 +677,17 @@ class RCMWorkbench extends Component {
         fieldName: "chkselect",
         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
         displayTemplate: (row) => {
-          debugger;
           if (this.state.rcmMode === "C" && !this.state.submitted) {
             return (
               <input
                 type="checkbox"
+                // checked={row.chkselect === 1 ? true : false}
                 checked={this.state.validatedClaims.some(
                   (item) =>
                     item.hims_f_invoice_header_id ===
                     row.hims_f_invoice_header_id
                 )}
+                disabled={row.claim_validated === "V" ? false : true}
                 onChange={this.addClaimsArray.bind(this, row)}
               />
             );
@@ -862,12 +1002,25 @@ class RCMWorkbench extends Component {
           openPopup={this.state.openClaims}
           insuranceId={this.state.insurance_statement_id}
         />
-        <ClaimSubmission
-          data={this.validatedClaims}
-          claimSubmission={this.state.openSubmit}
-          closeSubmissionModal={this.handleSubmitClose.bind(this)}
-        />
+        {/* <div className="customCheckbox"> */}
+        {/* <label className="checkbox inline" style={{ marginRight: 20 }}>
+            <input
+              type="checkbox"
+              value=""
+              name=""
+              checked={this.state.checkAll}
+              onChange={this.selectAll.bind(this)}
+            />
+            <span>Select All</span>
+          </label> */}
 
+        <div className="col-12">
+          <ClaimSubmission
+            data={this.validatedClaims}
+            claimSubmission={this.state.openSubmit}
+            closeSubmissionModal={this.handleSubmitClose.bind(this)}
+          />
+        </div>
         <div className="col-12">
           <div className="row inner-top-search">
             <div className="col-5">
@@ -974,7 +1127,7 @@ class RCMWorkbench extends Component {
                 </div>
                 <AlgaehDateHandler
                   div={{ className: "col-2 form-group" }}
-                  label={{ isImp: false, fieldName: "from_date" }}
+                  label={{ isImp: true, fieldName: "from_date" }}
                   textBox={{
                     className: "txt-fld",
                     name: "from_date",
@@ -992,7 +1145,7 @@ class RCMWorkbench extends Component {
                 />
                 <AlgaehDateHandler
                   div={{ className: "col-2 form-group" }}
-                  label={{ isImp: false, fieldName: "to_date" }}
+                  label={{ isImp: true, fieldName: "to_date" }}
                   textBox={{
                     className: "txt-fld",
                     name: "to_date",
@@ -1075,7 +1228,6 @@ class RCMWorkbench extends Component {
             )}
           </div>
         </div>
-
         {this.state.rcmMode === "S" ? (
           <div className="col-12">
             <StatementTable
@@ -1089,6 +1241,17 @@ class RCMWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="row">
                 <div className="col-12" id="rcmDesktopGrid_Cntr">
+                  {!!this.state.claims?.length && (
+                    <div className="col">
+                      <Checkbox
+                        checked={this.state.checkAll}
+                        onChange={this.selectAll.bind(this)}
+                        indeterminate={this.state.indeterminate}
+                      >
+                        Select All
+                      </Checkbox>
+                    </div>
+                  )}
                   <AlgaehDataGrid
                     id="rcmDesktopGrid"
                     columns={columns}
@@ -1225,6 +1388,7 @@ class RCMWorkbench extends Component {
           </div>
         )}
       </div>
+      // </div>
     );
   }
 }
