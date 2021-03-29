@@ -58,8 +58,9 @@ export default {
             concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
             lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id, LS.container_id, \
             LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
-            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id, \
-            IT.isPCR, case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, LO.contaminated_culture, LS.barcode_gen, \
+            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id, IT.isPCR, \
+            case when LO.run_type='1' then '1 Time' when LO.run_type='2' then '2 Times' when LO.run_type='3' then '3 times' else '-' end as run_types, \
+            LO.contaminated_culture, LS.barcode_gen, \
             max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.confirmed_by, EM.full_name,'')) as confirm_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.validated_by, EM.full_name,'')) as validate_by_name, \
@@ -1014,6 +1015,7 @@ export default {
                     collected: inputParam.collected,
                     collected_by: req.userIdentity.algaeh_d_app_user_id,
                     collected_date: new Date(),
+                    barcode_gen: new Date(),
                   };
                   next();
                 });
@@ -1423,7 +1425,8 @@ export default {
 
         strHisQry = mysql.format(
           "insert into hims_f_sample_can_history (`order_id`,`sample_id`, \
-          `lab_sample_id`,`patient_id`,`visit_id`, `remarks`, `rejected_by`, `rejected_date`) values (?,?,?,?,?,?,?,?);",
+          `lab_sample_id`,`patient_id`,`visit_id`, `remarks`, `barcode_gen`,`rejected_by`, `rejected_date`) \
+          values (?,?,?,?,?,?,?,?,?);",
           [
             input.order_id,
             input.sample_id,
@@ -1431,6 +1434,7 @@ export default {
             input.patient_id,
             input.visit_id,
             input.remarks,
+            input.barcode_gen,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
           ]
