@@ -1129,7 +1129,8 @@ export default function Inventory({
 
                   onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records,
+                      from_location_id_list: result.data.records,
+                      to_location_id_list: result.data.records,
                     });
                   },
                 });
@@ -1151,10 +1152,23 @@ export default function Inventory({
           {
             className: "col-3 form-group",
             type: "dropdown",
-            name: "location_id",
+            name: "from_location_id",
             initialLoad: true,
             isImp: false,
             label: "From Location ",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: [],
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "to_location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "To Location ",
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_inventory_location_id",

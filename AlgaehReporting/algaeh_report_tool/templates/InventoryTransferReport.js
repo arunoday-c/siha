@@ -23,8 +23,11 @@ const executePDF = function executePDFMethod(options) {
 
       let strQuery = "";
 
-      if (input.location_id > 0) {
-        strQuery += ` and from_location_id= ${input.location_id}`;
+      if (input.from_location_id > 0) {
+        strQuery += ` and H.from_location_id= ${input.from_location_id}`;
+      }
+      if (input.to_location_id > 0) {
+        strQuery += ` and H.to_location_id= ${input.to_location_id}`;
       }
 
       options.mysql
