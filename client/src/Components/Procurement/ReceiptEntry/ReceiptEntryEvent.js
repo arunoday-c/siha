@@ -8,6 +8,7 @@ import ReceiptEntryInv from "../../../Models/ReceiptEntry";
 import _ from "lodash";
 import { newAlgaehApi } from "../../../hooks";
 import swal from "sweetalert2";
+import extend from "extend";
 
 let texthandlerInterval = null;
 
@@ -38,8 +39,8 @@ const textEventhandle = ($this, e) => {
     e.value === ""
       ? null
       : e.value || e.target.value === ""
-        ? null
-        : e.target.value;
+      ? null
+      : e.target.value;
 
   $this.setState({
     [name]: value,
@@ -214,17 +215,17 @@ const DeliverySearch = ($this, e) => {
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? 0
                     : Math.abs(
-                      data.dn_entry_detail[i].dn_quantity -
-                      data.dn_entry_detail[i].quantity_outstanding
-                    );
+                        data.dn_entry_detail[i].dn_quantity -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].recieved_quantity =
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? data.dn_entry_detail[i].dn_quantity
                     : Math.abs(
-                      data.dn_entry_detail[i].quantity_recieved_todate -
-                      data.dn_entry_detail[i].quantity_outstanding
-                    );
+                        data.dn_entry_detail[i].quantity_recieved_todate -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].dn_header_id =
                   data.hims_f_procurement_dn_header_id;
@@ -280,11 +281,13 @@ const SaveReceiptEnrty = ($this) => {
     });
     return;
   }
+  let Inputobj = extend({}, $this.state);
+  delete Inputobj.recepit_files;
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/ReceiptEntry/addReceiptEntry",
     module: "procurement",
-    data: $this.state,
+    data: Inputobj,
     onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
@@ -296,7 +299,7 @@ const SaveReceiptEnrty = ($this) => {
           saveEnable: true,
           postEnable: false,
           dataExitst: true,
-          dataRevert: false
+          dataRevert: false,
         });
         swalMessage({
           type: "success",
@@ -497,7 +500,7 @@ const getData = ($this) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "receiptitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -565,8 +568,9 @@ const generateReceiptEntryReport = (data) => {
 };
 
 const PostReceiptEntry = ($this) => {
+  debugger;
   AlgaehLoader({ show: true });
-  let Inputobj = $this.state;
+  let Inputobj = extend({}, $this.state);
 
   Inputobj.posted = "Y";
   Inputobj.ScreenCode = "PR0004";
@@ -574,6 +578,7 @@ const PostReceiptEntry = ($this) => {
     .add($this.state.payment_terms, "days")
     .format("YYYY-MM-DD");
 
+  delete Inputobj.recepit_files;
   algaehApiCall({
     uri: "/ReceiptEntry/postReceiptEntry",
     module: "procurement",
