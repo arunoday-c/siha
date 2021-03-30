@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TreeComponent from "./TreeComponent";
 import {
   AlgaehTabs,
@@ -14,6 +14,14 @@ import "./alice.scss";
 export default function FinanceAccounts({ inDrawer = false }) {
   let fileInput = React.createRef();
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  useEffect(() => {
+    if (message !== "") {
+      setInterval(() => {
+        window.location.reload(true);
+      }, 2500);
+    }
+  }, [message]);
   const TABS = [
     { label: "assets", assetCode: 1 },
     { label: "liabilities", assetCode: 2 },
@@ -103,14 +111,16 @@ export default function FinanceAccounts({ inDrawer = false }) {
           if (response.data.success === true) {
             setLoading(false);
             swalMessage({
-              title: "Uploded Successfully...",
+              title: "Uploded Successfully,page will refresh automatically...",
               type: "success",
             });
+            setMessage("Uploded Successfully...");
           } else {
             swalMessage({
-              title: "Error while upload",
+              title: "Error while upload,page will refresh automatically",
               type: "error",
             });
+            setMessage("Error while upload");
           }
         },
       });
