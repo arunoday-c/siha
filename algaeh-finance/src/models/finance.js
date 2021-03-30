@@ -3021,7 +3021,8 @@ export default {
                     .replace("Amount", "amount")
                     .replace("Head Id", "head_id")
                     .replace("Child Id", "finance_account_child_id")
-                    .replace("Payment Date", "payment_date");
+                    .replace("Payment Date", "payment_date")
+                    .replace("Payment Type", "payment_type");
                   internal[columnName] = row.values[i];
                   if (i === columns.length - 1) {
                     excelArray.push(internal);
@@ -3520,7 +3521,7 @@ export async function uploadOBAccounts(req, res, next) {
 
     for (let i = 0; i < input.length; i++) {
       const data = input[i];
-      // console.log("data", data);
+      console.log("data", data);
       const finance_voucher_exit = result[1].filter(
         (f) => f.child_id === data.finance_account_child_id
       );
