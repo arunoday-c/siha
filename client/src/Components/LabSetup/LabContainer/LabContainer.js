@@ -189,9 +189,6 @@ class LabContainer extends Component {
                           />
                         );
                       },
-                      others: {
-                        minWidth: 600,
-                      },
                     },
                     {
                       fieldName: "container_id",
@@ -252,9 +249,6 @@ class LabContainer extends Component {
                           />
                         );
                       },
-                      others: {
-                        minWidth: 600,
-                      },
                     },
                     {
                       fieldName: "color_name",
@@ -281,9 +275,6 @@ class LabContainer extends Component {
                             }}
                           />
                         );
-                      },
-                      others: {
-                        minWidth: 600,
                       },
                     },
                     {

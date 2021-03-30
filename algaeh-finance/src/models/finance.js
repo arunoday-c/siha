@@ -3505,7 +3505,7 @@ export async function uploadOBAccounts(req, res, next) {
     const result = await _mysql
       .executeQuery({
         query: `select default_branch_id FROM finance_options limit 1;
-        select finance_voucher_id, child_id, debit_amount, credit_amount from finance_voucher_details where 
+        select finance_voucher_id, child_id from finance_voucher_details where 
         is_opening_bal='Y' and child_id in (${_child_id});`,
       })
       .catch((error) => {
@@ -3527,59 +3527,59 @@ export async function uploadOBAccounts(req, res, next) {
       // console.log("finance_voucher_exit", finance_voucher_exit);
       if (finance_voucher_exit.length > 0) {
         if (data.root_id == 1 || data.root_id == 5) {
-          if (
-            parseFloat(finance_voucher_exit[0].debit_amount) !=
-            parseFloat(data.opening_balance)
-          ) {
-            voucherStr += `update finance_voucher_details set ${
-              data.payment_type === "CR" ? "credit_amount" : "debit_amount"
-            }=${data.opening_balance},
+          // if (
+          //   parseFloat(finance_voucher_exit[0].debit_amount) !=
+          //   parseFloat(data.opening_balance)
+          // ) {
+          voucherStr += `update finance_voucher_details set ${
+            data.payment_type === "CR" ? "credit_amount" : "debit_amount"
+          }=${data.opening_balance},
                    payment_type ='${
                      data.payment_type === "CR" ? "CR" : "DR"
                    }',${
-              data.payment_type === "CR" ? "debit_amount" : "credit_amount"
-            }=0, payment_date='${
-              data.payment_date
-                ? moment(data.payment_date).format("YYYY-MM-DD")
-                : moment().format("YYYY-MM-DD")
-            }', updated_by='${
-              req.userIdentity.algaeh_d_app_user_id
-            }', updated_date='${moment(new Date()).format(
-              "YYYY-MM-DD HH:mm:ss"
-            )}' 
+            data.payment_type === "CR" ? "debit_amount" : "credit_amount"
+          }=0, payment_date='${
+            data.payment_date
+              ? moment(data.payment_date).format("YYYY-MM-DD")
+              : moment().format("YYYY-MM-DD")
+          }', updated_by='${
+            req.userIdentity.algaeh_d_app_user_id
+          }', updated_date='${moment(new Date()).format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}' 
             where finance_voucher_id=${
               finance_voucher_exit[0].finance_voucher_id
             };`;
-          }
+          // }
         } else if (
           data.root_id == 2 ||
           data.root_id == 3 ||
           data.root_id == 4
         ) {
-          if (
-            parseFloat(finance_voucher_exit[0].credit_amount) !=
-            parseFloat(data.opening_balance)
-          ) {
-            voucherStr += `update finance_voucher_details set ${
-              data.payment_type === "DR" ? "debit_amount" : "credit_amount"
-            }=${data.opening_balance},
+          // if (
+          //   parseFloat(finance_voucher_exit[0].credit_amount) !=
+          //   parseFloat(data.opening_balance)
+          // ) {
+          voucherStr += `update finance_voucher_details set ${
+            data.payment_type === "DR" ? "debit_amount" : "credit_amount"
+          }=${data.opening_balance},
                     payment_type ='${
                       data.payment_type === "DR" ? "DR" : "CR"
                     }',${
-              data.payment_type === "DR" ? "credit_amount" : "debit_amount"
-            }=0, payment_date='${
-              data.payment_date
-                ? moment(data.payment_date).format("YYYY-MM-DD")
-                : moment().format("YYYY-MM-DD")
-            }', updated_by='${
-              req.userIdentity.algaeh_d_app_user_id
-            }', updated_date='${moment(new Date()).format(
-              "YYYY-MM-DD HH:mm:ss"
-            )}' 
+            data.payment_type === "DR" ? "credit_amount" : "debit_amount"
+          }=0, payment_date='${
+            data.payment_date
+              ? moment(data.payment_date).format("YYYY-MM-DD")
+              : moment().format("YYYY-MM-DD")
+          }', updated_by='${
+            req.userIdentity.algaeh_d_app_user_id
+          }', updated_date='${moment(new Date()).format(
+            "YYYY-MM-DD HH:mm:ss"
+          )}' 
             where finance_voucher_id=${
               finance_voucher_exit[0].finance_voucher_id
             };`;
-          }
+          // }
         }
       } else {
         // console.log("data", data);
