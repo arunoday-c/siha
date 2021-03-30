@@ -71,9 +71,9 @@ export default function TrailBalaceReport({
           fieldName: "cb_amount",
           label: "Closing Balance",
           displayTemplate: (row) => {
-            const opamt = String(row["cb_amount"]).replace(/[^0-9./]+/g, "");
+            const opamt = String(row["cb_amount"]).trim(); //.replace(/[^0-9./]+/g, "");
 
-            if (!isNaN(opamt) && row.leafnode === "Y") {
+            if (!isNaN(parseFloat(opamt)) && row.leafnode === "Y") {
               return (
                 <a
                   className="underLine"
@@ -84,11 +84,12 @@ export default function TrailBalaceReport({
                     OpenDrillDown(row);
                   }}
                 >
-                  {getAmountFormart(parseFloat(opamt), {
+                  {String(row["cb_amount"]).trim()}
+                  {/* {getAmountFormart(parseFloat(opamt), {
                     appendSymbol: false,
                   }) +
                     " " +
-                    String(row["cb_amount"]).replace(/[^a-zA-Z]+/g, "")}
+                    String(row["cb_amount"]).replace(/[^a-zA-Z]+/g, "")} */}
                 </a>
               );
             }
@@ -131,9 +132,9 @@ export default function TrailBalaceReport({
           fieldName: "cb_amount",
           label: "Closing Balance",
           displayTemplate: (row) => {
-            const opamt = String(row["cb_amount"]);
+            const opamt = String(row["cb_amount"]).trim();
 
-            if (!isNaN(opamt) && row.leafnode === "Y") {
+            if (!isNaN(parseFloat(opamt)) && row.leafnode === "Y") {
               return (
                 <a
                   className="underLine"
@@ -143,9 +144,10 @@ export default function TrailBalaceReport({
                     OpenDrillDown(row);
                   }}
                 >
-                  {getAmountFormart(parseFloat(opamt), {
+                  {String(row["cb_amount"]).trim()}
+                  {/* {getAmountFormart(parseFloat(opamt), {
                     appendSymbol: false,
-                  })}
+                  })} */}
                 </a>
               );
             }
