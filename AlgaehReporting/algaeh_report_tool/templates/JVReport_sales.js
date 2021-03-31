@@ -31,7 +31,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_sub_department SD on SD.hims_d_sub_department_id = FD.sub_department_id
           left join hims_d_project PR on PR.hims_d_project_id = FD.project_id
           left join finance_options FO on FO.default_branch_id = FD.hospital_id
-          where VD.finance_voucher_header_id=?;`,
+          where VD.finance_voucher_header_id=? and FD.pl_entry ='N';`,
           values: [input.voucher_header_id],
           printQuery: true,
         })
