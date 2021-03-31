@@ -11,7 +11,7 @@ export default function TrailBalaceReport({
   style,
   data,
   nonZero = true,
-  layout
+  layout,
 }) {
   // const [organisation, setOrganisation] = useState({});
   useEffect(() => {
@@ -51,25 +51,25 @@ export default function TrailBalaceReport({
         columns={[
           {
             fieldName: "label",
-            label: "Paticulars",
-            filterable: true
+            label: "Particulars",
+            filterable: true,
           },
           {
             fieldName: "op_amount",
-            label: "Opening Balance"
+            label: "Opening Balance",
           },
           {
             fieldName: "tr_debit_amount",
-            label: "Transactions Debit"
+            label: "Transactions Debit",
           },
           {
             fieldName: "tr_credit_amount",
-            label: "Transaction Credit"
+            label: "Transaction Credit",
           },
           {
             fieldName: "cb_amount",
-            label: "Closing Balance"
-          }
+            label: "Closing Balance",
+          },
         ]}
       />
       // <>
@@ -82,7 +82,7 @@ export default function TrailBalaceReport({
       //       columns={[
       //         {
       //           fieldName: "label",
-      //           label: "Paticulars",
+      //           label: "Particulars",
       //           filterable: true,
       //         },
       //         {

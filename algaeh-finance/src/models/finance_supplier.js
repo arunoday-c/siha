@@ -34,20 +34,20 @@ export default {
         select count(finance_day_end_header_id) as day_end_pending from finance_day_end_header H
         inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id
         where SD.child_id in(select child_id from hims_d_vendor)  and  H.posted='N';    `,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         req.records = {
           result: result[0],
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
-          day_end_pending: result[3][0]["day_end_pending"]
+          day_end_pending: result[3][0]["day_end_pending"],
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -65,7 +65,7 @@ export default {
         round(amount-settled_amount,${decimal_places})as balance_amount,
         round(settled_amount,${decimal_places}) as settled_amount,
         invoice_no ,voucher_type,H.narration,H.payment_date as invoice_date,
-        due_date, updated_date as last_modified,
+        due_date, H.updated_date as last_modified,
         case when settlement_status='S' then 'closed'
         when settlement_status='P' and curdate()> due_date then 'over due'
         when settlement_status='P' and settled_amount<1 then 'open'
@@ -102,9 +102,9 @@ export default {
         inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id
         where SD.child_id in(?)  and  H.posted='N';`,
         values: [child_id, child_id, child_id, child_id, child_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         req.records = {
@@ -112,15 +112,15 @@ export default {
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
           past_payments: result[3][0]["past_payments"],
-          day_end_pending: result[4][0]["day_end_pending"]
+          day_end_pending: result[4][0]["day_end_pending"],
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };
 
 export function getAllDebitNotes(req, res, next) {
@@ -134,14 +134,14 @@ from finance_voucher_header as H inner join finance_voucher_details as D
 on H.finance_voucher_header_id = D.voucher_header_id
 where H.voucher_type ='debit_note' and D.child_id = ? and H.settlement_status ='P';`,
         values: [child_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });

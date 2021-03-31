@@ -2834,7 +2834,7 @@ function createHierarchyTransactionTB(
           )
           .sumBy((s) => parseFloat(s.deb_minus_cred))
           .value();
-
+        debugger;
         const SUM_CREDIT_DEBIT = _.chain(op_child_data)
           .filter(
             (f) =>
@@ -2930,8 +2930,18 @@ function createHierarchyTransactionTB(
         let tr_debit_amount = default_total;
         let tr_credit_amount = default_total;
         if (TR_BALANCE != undefined) {
-          tr_debit_amount = TR_BALANCE.debit_amount;
-          tr_credit_amount = TR_BALANCE.credit_amount;
+          const filteredArray = _.filter(
+            transaction_child_data,
+            (f) =>
+              item.finance_account_head_id == f.head_id &&
+              item.finance_account_child_id == f.child_id
+          );
+          tr_debit_amount = _.sumBy(filteredArray, (s) =>
+            parseFloat(s.debit_amount)
+          ); //TR_BALANCE.debit_amount;
+          tr_credit_amount = _.sumBy(filteredArray, (s) =>
+            parseFloat(s.credit_amount)
+          ); //TR_BALANCE.credit_amount;
         }
         ///END calculating transaction amount between  from_date  and to_date-----
         //ST calculating closing balance on  to date-----
@@ -3161,8 +3171,17 @@ function createHierarchyTransactionTB(
           let tr_debit_amount = default_total;
           let tr_credit_amount = default_total;
           if (TR_BALANCE != undefined) {
-            tr_debit_amount = TR_BALANCE.total_debit_amount;
-            tr_credit_amount = TR_BALANCE.total_credit_amount;
+            const headerArrayFilter = _.filter(
+              transaction_head_data,
+              (f) => item.finance_account_head_id === f.finance_account_head_id
+            );
+
+            tr_debit_amount = _.sumBy(headerArrayFilter, (f) =>
+              parseFloat(f.total_debit_amount)
+            ); //TR_BALANCE.total_debit_amount;
+            tr_credit_amount = _.sumBy(headerArrayFilter, (f) =>
+              parseFloat(f.total_credit_amount)
+            ); //TR_BALANCE.total_credit_amount;
           }
           ///END calculating transaction amount between  from_date  and to_date-----
           //ST calculating closing balance on  to date-----
