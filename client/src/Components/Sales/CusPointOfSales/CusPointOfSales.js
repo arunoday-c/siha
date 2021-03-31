@@ -121,6 +121,7 @@ class CusPointOfSales extends Component {
 
   // onKeyPress={this.onKeyPress}
   render() {
+    const class_finder = this.state.dataExitst === true ? " disableFinder" : "";
     return (
       <React.Fragment>
         <div>
@@ -359,7 +360,11 @@ class CusPointOfSales extends Component {
                 },
               }}
             />
-            <div className={"col globalSearchCntr form-group mandatory"}>
+            <div
+              className={
+                "col globalSearchCntr form-group mandatory" + class_finder
+              }
+            >
               <AlgaehLabel
                 label={{ forceLabel: "Sales Person", isImp: true }}
               />

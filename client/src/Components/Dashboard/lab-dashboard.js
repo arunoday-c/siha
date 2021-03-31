@@ -553,7 +553,6 @@ export default function Dashboard() {
               title: "Successfully Sent",
               type: "success",
             });
-
             resolve();
           },
           onCatch: (error) => {
@@ -675,7 +674,6 @@ export default function Dashboard() {
         <span
           onClick={() => {
             let objDataTop10Orders = getValues().today_date_Top_10;
-
             printLabDashboardReport({
               reportName: "labDashTop10Orders",
               MailName: "Lab Dashboard Top 10 Orders Report",
