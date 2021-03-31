@@ -24,6 +24,7 @@ const {
   getOrderByTestCategory,
   getSendInAndSendOutTestDetails,
   top10LabOrders,
+  labDashBoardWithAttachment,
 } = labModels;
 
 export default () => {
@@ -230,6 +231,16 @@ export default () => {
       records: req.records,
     });
   });
+  api.get(
+    "/labDashBoardWithAttachment",
+    labDashBoardWithAttachment,
+    (req, res) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: "Message Sent Successfully",
+      });
+    }
+  );
 
   return api;
 };
