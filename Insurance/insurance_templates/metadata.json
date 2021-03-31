@@ -1,14 +1,15 @@
 {
   "common": {
     "#CLINICNAME": { "name": "Clininc Name", "mapping": "hospital_name" },
+    "#COMPANYNAME": { "name": "Company Name", "mapping": "file_name" },
     "#FDATE": {
       "name": "From Date",
-      "format": "MMM-YYYY",
+      "format": "DD-MM-YYYY",
       "mapping": "from_date"
     },
     "#TDATE": {
       "name": "From Date",
-      "format": "MMM-YYYY",
+      "format": "DD-MM-YYYY",
       "mapping": "to_date"
     }
   },
@@ -30,6 +31,31 @@
       { "name": "Gross Total", "mapping": "gross_amount" },
       { "name": "Deductable", "mapping": "" },
       { "name": "Net Amt", "mapping": "net_amount" }
+    ]
+  },
+  "arabiandrillingcompany(adc)": {
+    "type": "overview",
+    "column_starts": 0,
+    "combineservices": {
+      "service_type": {
+        "name": "details_of_service",
+        "delimiter": ","
+      }
+    },
+
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "Policy No.", "mapping": "policy_number" },
+      { "name": "Company Name", "mapping": "file_name" },
+      { "name": "MCN Number", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Deductable/ Co-Insurance", "mapping": "patient_payable" },
+      { "name": "Total Amt.", "mapping": "company_resp" },
+      { "name": "VAT Rate", "mapping": "comp_tax_percent" },
+      { "name": "VAT Amount", "mapping": "company_tax_amount" },
+      { "name": "Net Amt", "mapping": "company_payable" }
     ]
   },
   "nextcare": {

@@ -164,6 +164,7 @@ export async function generateInsuranceStatement(req, res, next) {
               let _lastRow = 0;
               const clinincNameMapping =
                 identity[common["#CLINICNAME"]["mapping"]];
+              const companyNameMapping = common["#COMPANYNAME"]["mapping"];
               const date_format = common["#FDATE"]["format"]
                 ? common["#FDATE"]["format"]
                 : "DD-MM-YYYY";
@@ -179,6 +180,7 @@ export async function generateInsuranceStatement(req, res, next) {
                   if (typeof cell.value === "string") {
                     cell.value = String(cell.value)
                       .replace("#CLINICNAME", clinincNameMapping)
+                      .replace("#COMPANYNAME", fileName)
                       .replace("#FDATE", currentFDate)
                       .replace("#TDATE", currentTDate);
                   }

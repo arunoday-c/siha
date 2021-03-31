@@ -51,8 +51,8 @@ const executePDF = function executePDFMethod(options) {
           SO.sales_person_id,EM.full_name as sales_per_name, CO.customer_name
           from hims_f_sales_invoice_header SI
           inner join hims_d_customer as CO on SI.customer_id = CO.hims_d_customer_id 
-          inner join hims_f_sales_order as SO on SI.sales_order_id = SO.hims_f_sales_order_id 
-          inner join hims_d_employee as EM on SO.sales_person_id = EM.hims_d_employee_id 
+          left join hims_f_sales_order as SO on SI.sales_order_id = SO.hims_f_sales_order_id 
+          left join hims_d_employee as EM on SO.sales_person_id = EM.hims_d_employee_id 
           where date(SI.invoice_date) between date(?) and date(?) and SI.return_done='N'` +
             str,
           values: [input.from_date, input.to_date],

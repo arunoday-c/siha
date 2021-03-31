@@ -1072,7 +1072,7 @@ class RCMWorkbench extends Component {
             {this.state.rcmMode === "C" ? (
               <>
                 <AlagehAutoComplete
-                  div={{ className: "col-3 form-group mandatory" }}
+                  div={{ className: "col-4 form-group mandatory" }}
                   label={{ isImp: true, forceLabel: "Company Name" }}
                   selector={{
                     name: "insurance_provider_id",
@@ -1114,19 +1114,8 @@ class RCMWorkbench extends Component {
                     },
                   }}
                 />
-
-                <div className="col-3 globalSearchCntr">
-                  <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
-                  <h6 onClick={this.patientSearch.bind(this)}>
-                    {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "Search Patient"}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
                 <AlgaehDateHandler
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-2 form-group mandatory" }}
                   label={{ isImp: true, fieldName: "from_date" }}
                   textBox={{
                     className: "txt-fld",
@@ -1144,7 +1133,7 @@ class RCMWorkbench extends Component {
                   value={this.state.from_date}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-2 form-group mandatory" }}
                   label={{ isImp: true, fieldName: "to_date" }}
                   textBox={{
                     className: "txt-fld",
@@ -1161,6 +1150,17 @@ class RCMWorkbench extends Component {
                   }}
                   value={this.state.to_date}
                 />
+
+                <div className="col-3 globalSearchCntr">
+                  <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
+                  <h6 onClick={this.patientSearch.bind(this)}>
+                    {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                    {this.state.patient_code
+                      ? this.state.patient_code
+                      : "Search Patient"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
                 <div className="col">
                   <button
                     onClick={this.getInvoicesForClaims}

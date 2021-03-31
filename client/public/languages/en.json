@@ -236,6 +236,7 @@
   "appointment_rooms": "Appointment Rooms",
   "appointment_clinics": "Appointment Clinics",
   "color_code": "Color Code",
+  "color_name": "Color Name",
   "description": "Description",
   "roomName": "Room Name / No.",
   "default_status": "Default Status",
