@@ -28,7 +28,7 @@ export default function TrailBalaceReport({
         },
         {
           fieldName: showArabic ? "arabic_name" : "label",
-          label: "Paticulars",
+          label: "Particulars",
           filterable: true,
           freezable: true,
         },
@@ -101,7 +101,7 @@ export default function TrailBalaceReport({
       setColumns([
         {
           fieldName: showArabic ? "arabic_name" : "label",
-          label: "Paticulars",
+          label: "Particulars",
           filterable: true,
           freezable: true,
         },
