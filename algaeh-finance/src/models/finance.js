@@ -2292,7 +2292,7 @@ export default {
           query:
             "select finance_account_child_id,C.created_from,H.root_id,C.head_id from finance_account_child C inner join finance_account_head H \
             on C.head_id=H.finance_account_head_id where finance_account_child_id=?;\
-            select finance_voucher_id,debit_amount,credit_amount,payment_type,head_id,H.root_id\
+            select finance_voucher_id,debit_amount,credit_amount,payment_type,head_id,H.root_id,payment_date \
             from finance_voucher_details VD inner join finance_account_head H\
             on VD.head_id=H.finance_account_head_id  where VD.auth_status='A'\
             and VD.is_opening_bal='Y' and VD.child_id=?;\
@@ -2312,42 +2312,43 @@ export default {
               const data = result[1][0];
 
               if (data.root_id == 1 || data.root_id == 5) {
-                if (data.debit_amount != input.opening_balance) {
-                  voucherStr = `update finance_voucher_details set ${
-                    input.type === "CR" ? "credit_amount" : "debit_amount"
-                  }=${input.opening_balance},
-                payment_type ='${input.type === "CR" ? "CR" : "DR"}',${
-                    input.type === "CR" ? "debit_amount" : "credit_amount"
-                  }=0, payment_date='${
-                    input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
-                  }', updated_by='${
-                    req.userIdentity.algaeh_d_app_user_id
-                  }', updated_date='${moment(new Date()).format(
-                    "YYYY-MM-DD HH:mm:ss"
-                  )}'  
+                // if (data.debit_amount != input.opening_balance) {
+                voucherStr = `update finance_voucher_details set ${
+                  input.type === "CR" ? "credit_amount" : "debit_amount"
+                }=${input.opening_balance},
+                payment_type ='${input.type.toUpperCase()}',${
+                  input.type === "CR" ? "debit_amount" : "credit_amount"
+                }=0, payment_date='${
+                  input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
+                }', updated_by='${
+                  req.userIdentity.algaeh_d_app_user_id
+                }', updated_date='${moment(new Date()).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )}'  
                   where finance_voucher_id=${data.finance_voucher_id};`;
-                }
+                // }
               } else if (
                 data.root_id == 2 ||
                 data.root_id == 3 ||
                 data.root_id == 4
               ) {
-                if (data.credit_amount != input.opening_balance) {
-                  voucherStr = `update finance_voucher_details set ${
-                    input.type === "DR" ? "debit_amount" : "credit_amount"
-                  }=${input.opening_balance},
-                payment_type ='${input.type === "DR" ? "DR" : "CR"}',${
-                    input.type === "DR" ? "credit_amount" : "debit_amount"
-                  }=0, payment_date='${
-                    input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
-                  }', updated_by='${
-                    req.userIdentity.algaeh_d_app_user_id
-                  }', updated_date='${moment(new Date()).format(
-                    "YYYY-MM-DD HH:mm:ss"
-                  )}' 
+                // if (data.credit_amount != input.opening_balance) {
+                voucherStr = `update finance_voucher_details set ${
+                  input.type === "DR" ? "debit_amount" : "credit_amount"
+                }=${input.opening_balance},
+                payment_type ='${input.type.toUpperCase()}',${
+                  input.type === "DR" ? "credit_amount" : "debit_amount"
+                }=0, payment_date='${
+                  input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
+                }', updated_by='${
+                  req.userIdentity.algaeh_d_app_user_id
+                }', updated_date='${moment(new Date()).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )}' 
                   where finance_voucher_id=${data.finance_voucher_id};`;
-                }
+                // }
               }
+              
               executeFunction();
             }
             //inserting new opening balance
@@ -2499,6 +2500,7 @@ export default {
 
           function executeFunction(callBack) {
             // if (result[0][0]["created_from"] == "U") {
+            
             _mysql
               .executeQuery({
                 query: `update finance_account_child set  child_name=?,arabic_child_name=?,updated_by=?,updated_date=?,ledger_code=? where\
