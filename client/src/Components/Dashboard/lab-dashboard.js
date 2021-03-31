@@ -3,7 +3,7 @@ import { Bar, HorizontalBar } from "react-chartjs-2";
 // import { swalMessage } from "../../../../../utils/algaehApiCall";
 import "./dashboard.scss";
 import moment from "moment";
-
+import swal from "sweetalert2";
 // import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 
 import {
@@ -14,11 +14,17 @@ import {
   Spin,
   MainContext,
   DatePicker,
+  Menu,
+  Dropdown,
+  AlgaehModal,
+  AlgaehButton,
+  AlgaehFormGroup,
+  // Spin,
 } from "algaeh-react-components";
-// import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 import { useForm, Controller } from "react-hook-form";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import { newAlgaehApi } from "../../hooks";
 import { useQuery } from "react-query";
 // import _ from "lodash";
@@ -32,6 +38,17 @@ export default function Dashboard() {
     send_in: [],
     send_out: [],
   });
+  const [visible, setVisible] = useState(false);
+  const [body_mail, setBody_mail] = useState("");
+  const [reportParams, setReportParams] = useState({
+    reportName: "",
+    MailName: "",
+    paramName1: "",
+    paramValue1: "",
+    paramName2: "",
+    paramValue2: "",
+  });
+  const [loading, setLoading] = useState(false);
   const [axisForSendInAndSendOut, setAxisForSendInAndSendOut] = useState([]);
 
   const {
@@ -478,494 +495,882 @@ export default function Dashboard() {
     ],
   };
   // render() {
+
+  const printLabDashboardReport = ({
+    reportName,
+    paramName1,
+    paramValue1,
+    paramName2,
+    paramValue2,
+  }) => {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: reportName,
+          pageSize: "A4",
+          pageOrentation: "portrait",
+          reportParams: [
+            {
+              name: paramName1,
+              value: paramValue1,
+            },
+            {
+              name: paramName2,
+              value: paramValue2,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+        window.open(origin);
+      },
+    });
+  };
+
+  const labDashBoardWithAttachment = (reportParams) => {
+    return new Promise((resolve, reject) => {
+      setLoading(true);
+      try {
+        algaehApiCall({
+          uri: "/laboratory/labDashBoardWithAttachment",
+          module: "laboratory",
+          method: "GET",
+          data: {
+            ...reportParams,
+          },
+          onSuccess: (res) => {
+            swal({
+              title: "Successfully Sent",
+              type: "success",
+            });
+
+            resolve();
+          },
+          onCatch: (error) => {
+            swal({
+              title: error.message,
+              type: "error",
+            });
+            reject();
+          },
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  };
+  const menuTestCategory = (
+    <Menu>
+      <Menu.Item key="1">
+        <span
+          onClick={() => {
+            let objDataOrderByTestCategory = getValues().order_category;
+            const startOfWeekOrderByTestCategory = objDataOrderByTestCategory
+              .startOf("week")
+              .toDate();
+            const endOfWeekOrderByTestCategory = objDataOrderByTestCategory
+              .endOf("week")
+              .toDate();
+            printLabDashboardReport({
+              reportName: "LabOrderTestCategory",
+              MailName: "Lab Dashboard Lab Test Category Report",
+              paramName1: "startOfWeekOrderByTestCategory",
+              paramValue1: startOfWeekOrderByTestCategory,
+              paramName2: "endOfWeekOrderByTestCategory",
+              paramValue2: endOfWeekOrderByTestCategory,
+            });
+          }}
+        >
+          Print LabDashboard
+        </span>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <span
+          onClick={() => {
+            let objDataOrderByTestCategory = getValues().order_category;
+            const startOfWeekOrderByTestCategory = objDataOrderByTestCategory
+              .startOf("week")
+              .toDate();
+            const endOfWeekOrderByTestCategory = objDataOrderByTestCategory
+              .endOf("week")
+              .toDate();
+            setVisible(true);
+            setReportParams({
+              reportName: "LabOrderTestCategory",
+              MailName: "Lab Dashboard Lab Test Category Report",
+              paramName1: "startOfWeekOrderByTestCategory",
+              paramValue1: startOfWeekOrderByTestCategory,
+              paramName2: "endOfWeekOrderByTestCategory",
+              paramValue2: endOfWeekOrderByTestCategory,
+            });
+          }}
+        >
+          Send Report Through Email
+        </span>
+      </Menu.Item>
+    </Menu>
+  );
+  const menuSendInSendOut = (
+    <Menu>
+      <Menu.Item key="1">
+        <span
+          onClick={() => {
+            let objDataSendInOut = getValues().sendIn_sendOut;
+            const startOfWeekSendInOut = objDataSendInOut
+              .startOf("week")
+              .toDate();
+            const endOfWeekSendInOut = objDataSendInOut.endOf("week").toDate();
+            printLabDashboardReport({
+              reportName: "labDashSendInSendOut",
+              MailName: "Lab Dashboard Send-In send-Out Report",
+              paramName1: "startOfWeekSendInOut",
+              paramValue1: startOfWeekSendInOut,
+              paramName2: "endOfWeekSendInOut",
+              paramValue2: endOfWeekSendInOut,
+            });
+          }}
+        >
+          Print LabDashboard
+        </span>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <span
+          onClick={() => {
+            let objDataSendInOut = getValues().sendIn_sendOut;
+            const startOfWeekSendInOut = objDataSendInOut
+              .startOf("week")
+              .toDate();
+
+            const endOfWeekSendInOut = objDataSendInOut.endOf("week").toDate();
+            setVisible(true);
+            setReportParams({
+              reportName: "labDashSendInSendOut",
+              MailName: "Lab Dashboard Send-In send-Out Report",
+              paramName1: "startOfWeekSendInOut",
+              paramValue1: startOfWeekSendInOut,
+              paramName2: "endOfWeekSendInOut",
+              paramValue2: endOfWeekSendInOut,
+            });
+          }}
+        >
+          Send Report Through Email
+        </span>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const menuTop10 = (
+    <Menu>
+      <Menu.Item key="1">
+        <span
+          onClick={() => {
+            let objDataTop10Orders = getValues().today_date_Top_10;
+
+            printLabDashboardReport({
+              reportName: "labDashTop10Orders",
+              MailName: "Lab Dashboard Top 10 Orders Report",
+              paramName1: "objDataTop10OrdersFrom",
+              paramValue1: moment(objDataTop10Orders).format("YYYY-MM-DD"),
+              paramName2: "objDataTop10OrdersTo",
+              paramValue2: moment(objDataTop10Orders).format("YYYY-MM-DD"),
+            });
+          }}
+        >
+          Print LabDashboard
+        </span>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <span
+          onClick={() => {
+            let objDataTop10Orders = getValues().today_date_Top_10;
+            setVisible(true);
+            setReportParams({
+              reportName: "labDashTop10Orders",
+              MailName: "Lab Dashboard Top 10 Orders Report",
+              paramName1: "objDataTop10OrdersFrom",
+              paramValue1: moment(objDataTop10Orders).format("YYYY-MM-DD"),
+              paramName2: "objDataTop10OrdersTo",
+              paramValue2: moment(objDataTop10Orders).format("YYYY-MM-DD"),
+            });
+          }}
+        >
+          Send Report Through Email
+        </span>
+      </Menu.Item>
+    </Menu>
+  );
+  const menuTodayOrderStatus = (
+    <Menu>
+      <Menu.Item key="1">
+        <span
+          onClick={() => {
+            const dateGetLabOrderServices = getValues().today_date_orderStatus;
+            printLabDashboardReport({
+              reportName: "labDashTodayOrderStatus",
+              MailName: "Lab Dashboard Today Order Status Report",
+              paramName1: "dateGetLabOrderServicesStart",
+              paramValue1: moment(dateGetLabOrderServices).format("YYYY-MM-DD"),
+              paramName2: "dateGetLabOrderServicesEnd",
+              paramValue2: moment(dateGetLabOrderServices).format("YYYY-MM-DD"),
+            });
+          }}
+        >
+          Print LabDashboard
+        </span>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <span
+          onClick={() => {
+            const dateGetLabOrderServices = getValues().today_date_orderStatus;
+            setVisible(true);
+            setReportParams({
+              reportName: "labDashTodayOrderStatus",
+              MailName: "Lab Dashboard Today Order Status Report",
+              paramName1: "dateGetLabOrderServicesStart",
+              paramValue1: moment(dateGetLabOrderServices).format("YYYY-MM-DD"),
+              paramName2: "dateGetLabOrderServicesEnd",
+              paramValue2: moment(dateGetLabOrderServices).format("YYYY-MM-DD"),
+            });
+            // labDashBoardWithAttachment();
+          }}
+        >
+          Send Report Through Email
+        </span>
+      </Menu.Item>
+    </Menu>
+  );
   return (
     <>
-      <div className="dashboard lab-dash">
-        <div className="row card-deck">
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  {/* <div className="icon-big text-center">
-                    <i className="fas fa-hospital" />
-                  </div> */}
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Ordered</p>
-                    {labOrderServicesData?.length}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  {/* <div className="icon-big text-center">
-                    <i className="fas fa-hospital" />
-                  </div> */}
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Collected</p>
-                    {
-                      labOrderServicesData?.filter((f) => {
-                        return f.status === "CL";
-                      }).length
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  {/* <div className="icon-big text-center">
-                    <i className="fas fa-hospital" />
-                  </div> */}
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Confirmed</p>
-                    {
-                      labOrderServicesData?.filter((f) => {
-                        return f.status === "CF";
-                      }).length
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  {/* <div className="icon-big text-center">
-                    <i className="fas fa-hospital" />
-                  </div> */}
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Rejected</p>
-                    {
-                      labOrderServicesData?.filter((f) => {
-                        return f.status === "CN";
-                      }).length
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  {/* <div className="icon-big text-center">
-                    <i className="fas fa-hospital" />
-                  </div> */}
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Validated</p>
-                    {
-                      labOrderServicesData?.filter((f) => {
-                        return f.status === "V";
-                      }).length
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <AlgaehModal
+        title={`Send mail`}
+        visible={visible}
+        destroyOnClose={true}
+        // okText="Confirm"
+        // onOk={() => {
+        footer={[
+          <AlgaehButton
+            className="btn btn-other"
+            onClick={() => {
+              setVisible(false);
+            }}
+          >
+            Cancel
+          </AlgaehButton>,
+          <AlgaehButton
+            loading={loading}
+            className="btn btn-primary"
+            onClick={() => {
+              labDashBoardWithAttachment({
+                ...reportParams,
+                to_mail_id: getValues().to_mail_id,
+                body_mail: body_mail,
+              })
+                .then(() => {
+                  setVisible(false);
+                  setBody_mail("");
+                  setLoading(false);
+                })
+                .catch(() => {
+                  setVisible(false);
+                  setBody_mail("");
+                  setLoading(false);
+                });
+            }}
+          >
+            <AlgaehLabel
+              label={{
+                forceLabel: "Send Mail with Attachment",
+                returnText: true,
+              }}
+            />
+          </AlgaehButton>,
+        ]}
+        onCancel={() => {
+          // finance_voucher_header_id = "";
+          // rejectText = "";
+          setVisible(false);
+        }}
+      >
         <div className="row">
-          <div className="col-4">
+          <form>
+            <Controller
+              name="to_mail_id"
+              control={control}
+              rules={{ required: "Required" }}
+              render={(props) => (
+                <AlgaehFormGroup
+                  div={{ className: "col form-group mandatory" }}
+                  error={errors}
+                  label={{
+                    forceLabel: "Enter To mail Id",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    ...props,
+                    className: "txt-fld",
+                    name: "to_mail_id",
+                  }}
+                />
+              )}
+            />
+
+            <div className="col-12">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Enter Body of the mail",
+                }}
+              />
+
+              <textarea
+                value={body_mail}
+                name="body_mail"
+                onChange={(e) => {
+                  setBody_mail(e.target.value);
+                }}
+              />
+            </div>
+          </form>
+        </div>
+      </AlgaehModal>
+      <Spin spinning={loading}>
+        <div className="dashboard lab-dash">
+          <div className="row card-deck">
             <div className="card animated fadeInUp faster">
-              <h6>
-                Order by Test Category{" "}
-                <span className="portletTopAction">
-                  <Controller
-                    control={control}
-                    name="order_category"
-                    rules={{ required: "Please Select " }}
-                    render={({ onChange, value }) => (
-                      <div className="col mandatory " tabIndex="5">
-                        <label
-                          htmlFor="order_category"
-                          className="style_Label "
-                        />
-
-                        <DatePicker
-                          name="order_category"
-                          value={value}
-                          onChange={(date) => {
-                            if (date) {
-                              onChange(date);
-                              refetchForPatCount();
-                            } else {
-                              onChange(undefined);
-                            }
-                          }}
-                          onClear={() => {
-                            onChange(undefined);
-                          }}
-                          picker="week"
-                          size={"small"}
-                          maxDate={new Date()}
-                        />
-                      </div>
-                    )}
-                  />
-                </span>
-              </h6>
-
-              <div className="dashboardChartsCntr">
-                <Spin spinning={loadingOrderCategory}>
-                  <HorizontalBar data={OrderBYTestCategory} />
-                </Spin>
+              <div className="content">
+                <div className="row">
+                  <div className="col-4">
+                    {/* <div className="icon-big text-center">
+                    <i className="fas fa-hospital" />
+                  </div> */}
+                  </div>
+                  <div className="col-8">
+                    <div className="numbers">
+                      <p>Total Ordered</p>
+                      {labOrderServicesData?.length}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="col-4">
             <div className="card animated fadeInUp faster">
-              <h6>
-                Send-In vs Send Out
-                <span className="portletTopAction">
-                  <Controller
-                    control={control}
-                    name="sendIn_sendOut"
-                    rules={{ required: "Please Select DOB" }}
-                    render={({ onChange, value }) => (
-                      <div className="col mandatory " tabIndex="5">
-                        <label
-                          htmlFor="sendIn_sendOut"
-                          className="style_Label "
-                        />
-
-                        <DatePicker
-                          name="sendIn_sendOut"
-                          value={value}
-                          onChange={(date) => {
-                            if (date) {
-                              onChange(date);
-                              refetchForSendInAndSendOut();
-                            } else {
-                              onChange(undefined);
-                            }
-                          }}
-                          onClear={() => {
-                            onChange(undefined);
-                          }}
-                          picker="week"
-                          size={"small"}
-                          maxDate={new Date()}
-                        />
-                      </div>
-                    )}
-                  />
-                </span>
-              </h6>
-              <div className="dashboardChartsCntr">
-                <Spin spinning={sendInOutLoad}>
-                  <Bar data={AppoWalkInData} options={AppoWalkInDataOptions} />
-                </Spin>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-4">
-            <div className="card animated fadeInUp faster">
-              <h6>
-                Today Top 10 Orders
-                <span className="portletTopAction">
-                  <Controller
-                    control={control}
-                    name="today_date_Top_10"
-                    rules={{ required: "Please Select DOB" }}
-                    render={({ onChange, value }) => (
-                      <AlgaehDateHandler
-                        size={"small"}
-                        div={{
-                          className: "col mandatory",
-                          tabIndex: "5",
-                        }}
-                        error={errors}
-                        label={{}}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "today_date_Top_10",
-                          value,
-                          others: {
-                            tabIndex: "4",
-                          },
-                        }}
-                        // others={{ disabled }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: (mdate) => {
-                            if (mdate) {
-                              onChange(mdate._d);
-                              top10OrderRefetch();
-                            } else {
-                              onChange(undefined);
-                            }
-                          },
-                          onClear: () => {
-                            onChange(undefined);
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </span>
-              </h6>
-              <div className="dashboardChartsCntr">
-                <Spin spinning={false}>
-                  <HorizontalBar data={RevenuebyDoctor} />
-                </Spin>
-              </div>
-            </div>
-          </div>
-          <div className="col-12">
-            <div className="card animated fadeInUp faster">
-              <h6>
-                Today's Order Status{" "}
-                <span className="portletTopAction">
-                  <Controller
-                    control={control}
-                    name="today_date_orderStatus"
-                    rules={{ required: "Please Select" }}
-                    render={({ onChange, value }) => (
-                      <AlgaehDateHandler
-                        size={"small"}
-                        div={{
-                          className: "col mandatory",
-                          tabIndex: "5",
-                        }}
-                        error={errors}
-                        label={{}}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "today_date_orderStatus",
-                          value,
-                          others: {
-                            tabIndex: "4",
-                          },
-                        }}
-                        // others={{ disabled }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: (mdate) => {
-                            if (mdate) {
-                              onChange(mdate._d);
-                              refetchForOrderStatus();
-                            } else {
-                              onChange(undefined);
-                            }
-                          },
-                          onClear: () => {
-                            onChange(undefined);
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </span>
-              </h6>
-              <div className="portlet-body">
-                <div className="col-12" id="ResultViewForDocGrid">
-                  <AlgaehDataGrid
-                    columns={[
+              <div className="content">
+                <div className="row">
+                  <div className="col-4">
+                    {/* <div className="icon-big text-center">
+                    <i className="fas fa-hospital" />
+                  </div> */}
+                  </div>
+                  <div className="col-8">
+                    <div className="numbers">
+                      <p>Total Collected</p>
                       {
-                        fieldName: "ordered_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          if (row.ordered_date != null) {
-                            return moment(row.ordered_date).format(
-                              Options.datetimeFormat
+                        labOrderServicesData?.filter((f) => {
+                          return f.status === "CL";
+                        }).length
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="card animated fadeInUp faster">
+              <div className="content">
+                <div className="row">
+                  <div className="col-4">
+                    {/* <div className="icon-big text-center">
+                    <i className="fas fa-hospital" />
+                  </div> */}
+                  </div>
+                  <div className="col-8">
+                    <div className="numbers">
+                      <p>Total Confirmed</p>
+                      {
+                        labOrderServicesData?.filter((f) => {
+                          return f.status === "CF";
+                        }).length
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="card animated fadeInUp faster">
+              <div className="content">
+                <div className="row">
+                  <div className="col-4">
+                    {/* <div className="icon-big text-center">
+                    <i className="fas fa-hospital" />
+                  </div> */}
+                  </div>
+                  <div className="col-8">
+                    <div className="numbers">
+                      <p>Total Rejected</p>
+                      {
+                        labOrderServicesData?.filter((f) => {
+                          return f.status === "CN";
+                        }).length
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="card animated fadeInUp faster">
+              <div className="content">
+                <div className="row">
+                  <div className="col-4">
+                    {/* <div className="icon-big text-center">
+                    <i className="fas fa-hospital" />
+                  </div> */}
+                  </div>
+                  <div className="col-8">
+                    <div className="numbers">
+                      <p>Total Validated</p>
+                      {
+                        labOrderServicesData?.filter((f) => {
+                          return f.status === "V";
+                        }).length
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-4">
+              <div className="card animated fadeInUp faster">
+                <h6>
+                  Order by Test Category{" "}
+                  <span className="portletTopAction">
+                    <Controller
+                      control={control}
+                      name="order_category"
+                      rules={{ required: "Please Select " }}
+                      render={({ onChange, value }) => (
+                        <div className="col mandatory " tabIndex="5">
+                          <label
+                            htmlFor="order_category"
+                            className="style_Label "
+                          />
+
+                          <DatePicker
+                            name="order_category"
+                            value={value}
+                            onChange={(date) => {
+                              if (date) {
+                                onChange(date);
+                                refetchForPatCount();
+                              } else {
+                                onChange(undefined);
+                              }
+                            }}
+                            onClear={() => {
+                              onChange(undefined);
+                            }}
+                            picker="week"
+                            size={"small"}
+                            maxDate={new Date()}
+                          />
+                        </div>
+                      )}
+                    />
+                  </span>
+                  <div className="row">
+                    <Dropdown overlay={menuTestCategory}>
+                      <button className="btn btn-default btn-circle active">
+                        <i className="fas fa-print" />
+                      </button>
+                    </Dropdown>
+                  </div>
+                </h6>
+
+                <div className="dashboardChartsCntr">
+                  <Spin spinning={loadingOrderCategory}>
+                    <HorizontalBar data={OrderBYTestCategory} />
+                  </Spin>
+                </div>
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="card animated fadeInUp faster">
+                <h6>
+                  Send-In vs Send Out
+                  <span className="portletTopAction">
+                    <Controller
+                      control={control}
+                      name="sendIn_sendOut"
+                      rules={{ required: "Please Select DOB" }}
+                      render={({ onChange, value }) => (
+                        <div className="col mandatory " tabIndex="5">
+                          <label
+                            htmlFor="sendIn_sendOut"
+                            className="style_Label "
+                          />
+
+                          <DatePicker
+                            name="sendIn_sendOut"
+                            value={value}
+                            onChange={(date) => {
+                              if (date) {
+                                onChange(date);
+                                refetchForSendInAndSendOut();
+                              } else {
+                                onChange(undefined);
+                              }
+                            }}
+                            onClear={() => {
+                              onChange(undefined);
+                            }}
+                            picker="week"
+                            size={"small"}
+                            maxDate={new Date()}
+                          />
+                        </div>
+                      )}
+                    />
+                  </span>
+                  <div className="row">
+                    <Dropdown overlay={menuSendInSendOut}>
+                      <button className="btn btn-default btn-circle active">
+                        <i className="fas fa-print" />
+                      </button>
+                    </Dropdown>
+                  </div>
+                </h6>
+                <div className="dashboardChartsCntr">
+                  <Spin spinning={sendInOutLoad}>
+                    <Bar
+                      data={AppoWalkInData}
+                      options={AppoWalkInDataOptions}
+                    />
+                  </Spin>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-4">
+              <div className="card animated fadeInUp faster">
+                <h6>
+                  Today Top 10 Orders
+                  <span className="portletTopAction">
+                    <Controller
+                      control={control}
+                      name="today_date_Top_10"
+                      rules={{ required: "Please Select DOB" }}
+                      render={({ onChange, value }) => (
+                        <AlgaehDateHandler
+                          size={"small"}
+                          div={{
+                            className: "col mandatory",
+                            tabIndex: "5",
+                          }}
+                          error={errors}
+                          label={{}}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "today_date_Top_10",
+                            value,
+                            others: {
+                              tabIndex: "4",
+                            },
+                          }}
+                          // others={{ disabled }}
+                          maxDate={new Date()}
+                          events={{
+                            onChange: (mdate) => {
+                              if (mdate) {
+                                onChange(mdate._d);
+                                top10OrderRefetch();
+                              } else {
+                                onChange(undefined);
+                              }
+                            },
+                            onClear: () => {
+                              onChange(undefined);
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </span>
+                  <div className="col">
+                    <Dropdown overlay={menuTop10}>
+                      <button className="btn btn-default btn-circle active">
+                        <i className="fas fa-print" />
+                      </button>
+                    </Dropdown>
+                  </div>
+                </h6>
+                <div className="dashboardChartsCntr">
+                  <Spin spinning={false}>
+                    <HorizontalBar data={RevenuebyDoctor} />
+                  </Spin>
+                </div>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="card animated fadeInUp faster">
+                <h6>
+                  Today's Order Status{" "}
+                  <span className="portletTopAction">
+                    <Controller
+                      control={control}
+                      name="today_date_orderStatus"
+                      rules={{ required: "Please Select" }}
+                      render={({ onChange, value }) => (
+                        <AlgaehDateHandler
+                          size={"small"}
+                          div={{
+                            className: "col mandatory",
+                            tabIndex: "5",
+                          }}
+                          error={errors}
+                          label={{}}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "today_date_orderStatus",
+                            value,
+                            others: {
+                              tabIndex: "4",
+                            },
+                          }}
+                          // others={{ disabled }}
+                          maxDate={new Date()}
+                          events={{
+                            onChange: (mdate) => {
+                              if (mdate) {
+                                onChange(mdate._d);
+                                refetchForOrderStatus();
+                              } else {
+                                onChange(undefined);
+                              }
+                            },
+                            onClear: () => {
+                              onChange(undefined);
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </span>
+                  <span className="portletTopAction">
+                    <Dropdown overlay={menuTodayOrderStatus}>
+                      <button className="btn btn-default btn-circle active">
+                        <i className="fas fa-print" />
+                      </button>
+                    </Dropdown>
+                  </span>
+                </h6>
+                <div className="portlet-body">
+                  <div className="col-12" id="ResultViewForDocGrid">
+                    <AlgaehDataGrid
+                      columns={[
+                        {
+                          fieldName: "ordered_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "ordered_date" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            if (row.ordered_date != null) {
+                              return moment(row.ordered_date).format(
+                                Options.datetimeFormat
+                              );
+                            } else {
+                              return "--";
+                            }
+                            // <span>
+                            //   {this.changeDateFormat(row.ordered_date)}
+                            // </span>
+                          },
+                          disabled: true,
+
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "test_type",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.test_type === "S" ? (
+                              <span className="badge badge-danger">Stat</span>
+                            ) : (
+                              <span className="badge badge-secondary">
+                                Routine
+                              </span>
                             );
-                          } else {
-                            return "--";
-                          }
-                          // <span>
-                          //   {this.changeDateFormat(row.ordered_date)}
-                          // </span>
+                          },
+                          disabled: true,
+                          others: {
+                            maxWidth: 90,
+                            resizable: false,
+                            style: { textAlign: "center" },
+                          },
                         },
-                        disabled: true,
+                        {
+                          fieldName: "sample_status",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Specimen Status" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.sample_status === "N" ? (
+                              <span className="badge badge-light">
+                                Not Done
+                              </span>
+                            ) : row.sample_status === "A" ? (
+                              <span className="badge badge-success">
+                                Accepted
+                              </span>
+                            ) : row.sample_status === "R" ? (
+                              <span className="badge badge-danger">
+                                Rejected
+                              </span>
+                            ) : null;
+                          },
+                          disabled: true,
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "lab_id_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Lab ID Number" }}
+                            />
+                          ),
+                          disabled: true,
+                          others: {
+                            maxWidth: 130,
+                            resizable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_code" }}
+                            />
+                          ),
+                          disabled: false,
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_name" }}
+                            />
+                          ),
+                          disabled: true,
+                          others: {
+                            resizable: false,
+                            style: { textAlign: "left" },
+                          },
+                        },
+                        {
+                          fieldName: "service_name",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Test Name" }} />
+                          ),
 
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" },
+                          disabled: true,
+                          others: {
+                            resizable: false,
+                            style: { textAlign: "center" },
+                          },
                         },
-                      },
-                      {
-                        fieldName: "test_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.test_type === "S" ? (
-                            <span className="badge badge-danger">Stat</span>
-                          ) : (
-                            <span className="badge badge-secondary">
-                              Routine
-                            </span>
-                          );
+                        {
+                          fieldName: "status",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "status" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.status === "CL" ? (
+                              <span className="badge badge-secondary">
+                                Collected
+                              </span>
+                            ) : row.status === "CN" ? (
+                              <span className="badge badge-danger">
+                                Cancelled
+                              </span>
+                            ) : row.status === "CF" ? (
+                              <span className="badge badge-primary">
+                                Confirmed
+                              </span>
+                            ) : (
+                              <span className="badge badge-success">
+                                Validated
+                              </span>
+                            );
+                          },
+                          disabled: true,
+                          others: {
+                            maxWidth: 130,
+                            resizable: false,
+                            style: { textAlign: "center" },
+                          },
                         },
-                        disabled: true,
-                        others: {
-                          maxWidth: 90,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "sample_status",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Specimen Status" }}
-                          />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.sample_status === "N" ? (
-                            <span className="badge badge-light">Not Done</span>
-                          ) : row.sample_status === "A" ? (
-                            <span className="badge badge-success">
-                              Accepted
-                            </span>
-                          ) : row.sample_status === "R" ? (
-                            <span className="badge badge-danger">Rejected</span>
-                          ) : null;
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "lab_id_number",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Lab ID Number" }}
-                          />
-                        ),
-                        disabled: true,
-                        others: {
-                          maxWidth: 130,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "patient_code",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                        ),
-                        disabled: false,
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "full_name",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "left" },
-                        },
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Test Name" }} />
-                        ),
-
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      {
-                        fieldName: "status",
-                        label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                        displayTemplate: (row) => {
-                          return row.status === "CL" ? (
-                            <span className="badge badge-secondary">
-                              Collected
-                            </span>
-                          ) : row.status === "CN" ? (
-                            <span className="badge badge-danger">
-                              Cancelled
-                            </span>
-                          ) : row.status === "CF" ? (
-                            <span className="badge badge-primary">
-                              Confirmed
-                            </span>
-                          ) : (
-                            <span className="badge badge-success">
-                              Validated
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 130,
-                          resizable: false,
-                          style: { textAlign: "center" },
-                        },
-                      },
-                      // {
-                      //   fieldName: "critical_status",
-                      //   label: (
-                      //     <AlgaehLabel
-                      //       label={{ forceLabel: "Critical Result" }}
-                      //     />
-                      //   ),
-                      //   displayTemplate: (row) => {
-                      //     return row.critical_status === "N" ? (
-                      //       <span className="badge badge-primary">No</span>
-                      //     ) : (
-                      //       <span className="badge badge-danger">Yes</span>
-                      //     );
-                      //   },
-                      //   disabled: true,
-                      //   others: {
-                      //     maxWidth: 130,
-                      //     resizable: false,
-                      //     style: { textAlign: "center" },
-                      //   },
-                      // },
-                    ]}
-                    keyId="patient_code"
-                    data={Enumerable.from(labOrderServicesDataForReportView)
-                      .where((w) => w.sample_status === "A")
-                      .toArray()}
-                    filterable={true}
-                    pagination={true}
-                  />
+                        // {
+                        //   fieldName: "critical_status",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Critical Result" }}
+                        //     />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return row.critical_status === "N" ? (
+                        //       <span className="badge badge-primary">No</span>
+                        //     ) : (
+                        //       <span className="badge badge-danger">Yes</span>
+                        //     );
+                        //   },
+                        //   disabled: true,
+                        //   others: {
+                        //     maxWidth: 130,
+                        //     resizable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                      ]}
+                      keyId="patient_code"
+                      data={labOrderServicesDataForReportView ?? []}
+                      filterable={true}
+                      pagination={true}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </Spin>
     </>
   );
 }
