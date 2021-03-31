@@ -21,6 +21,7 @@ import {
   getCostCenters,
   PostSalesInvoice,
   getCashCustomer,
+  employeeSearch,
   // CancelSalesInvoice,
 } from "./CusPointOfSalesEvent";
 // import "./CusPointOfSales.scss";
@@ -358,6 +359,17 @@ class CusPointOfSales extends Component {
                 },
               }}
             />
+            <div className={"col globalSearchCntr form-group mandatory"}>
+              <AlgaehLabel
+                label={{ forceLabel: "Sales Person", isImp: true }}
+              />
+              <h6 onClick={employeeSearch.bind(this, this)}>
+                {this.state.employee_name
+                  ? this.state.employee_name
+                  : "Search Employee"}
+                <i className="fas fa-search fa-lg" />
+              </h6>
+            </div>
           </div>
 
           <div className="hptl-phase1-pos-form">

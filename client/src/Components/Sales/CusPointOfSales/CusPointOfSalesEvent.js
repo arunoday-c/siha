@@ -4,6 +4,8 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import _ from "lodash";
 import swal from "sweetalert2";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 // import Enumerable from "linq";
 
 const changeTexts = ($this, ctrl, e) => {
@@ -182,7 +184,25 @@ const SaveCashSalesInvoice = ($this) => {
     });
   }
 };
-
+const employeeSearch = ($this) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Employee_details.employee,
+    },
+    searchName: "employee_branch_wise",
+    uri: "/gloabelSearch/get",
+    // inputs: "hospital_id = " + $this.state.hospital_id,
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: (row) => {
+      $this.setState({
+        employee_name: row.full_name,
+        sales_person_id: row.hims_d_employee_id,
+      });
+    },
+  });
+};
 const closePopup = ($this) => {
   $this.setState({ popUpGenereted: false });
 };
@@ -447,4 +467,5 @@ export {
   PostSalesInvoice,
   CancelSalesInvoice,
   getCashCustomer,
+  employeeSearch,
 };

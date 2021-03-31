@@ -147,7 +147,7 @@ export function getDispatchForInvoice(req, res, next) {
     _mysql
       .executeQuery({
         query:
-          "SELECT SQ.*, SQ.hims_f_dispatch_note_header_id as dispatch_note_header_id, C.customer_name, \
+          "SELECT SQ.*,SO.sales_person_id, SQ.hims_f_dispatch_note_header_id as dispatch_note_header_id, C.customer_name, \
                     H.hospital_name, SO.sales_order_number, SO.hims_f_sales_order_id,SO.payment_terms,\
                     P.project_desc as project_name, SO.is_completed from hims_f_sales_dispatch_note_header SQ \
                     inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = SQ.sales_order_id \
@@ -279,14 +279,15 @@ export function addInvoiceEntry(req, res, next) {
         _mysql
           .executeQuery({
             query:
-              "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode, cust_good_rec_date,\
+              "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode,sales_person_id, cust_good_rec_date,\
                                 sales_order_id, location_id, customer_id, customer_name, payment_terms, project_id, sub_total, discount_amount, \
                                 net_total, total_tax, net_payable, retention_amt, narration,delivery_date, created_date, created_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               invoice_number,
               input.invoice_date,
               input.sales_invoice_mode,
+              input.sales_person_id,
               input.cust_good_rec_date,
               input.sales_order_id,
               input.location_id,
