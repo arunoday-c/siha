@@ -2,6 +2,40 @@
 
 .dashboard {
   margin-top: 15px;
+
+  .card-deck {
+    .card {
+      &:nth-child(1) {
+        .fas {
+          &:before {
+            color: #c655cc;
+          }
+        }
+      }
+      &:nth-child(2) {
+        .fas {
+          &:before {
+            color: #7455cc;
+          }
+        }
+      }
+      &:nth-child(3) {
+        .fas {
+          &:before {
+            color: #3c67dd;
+          }
+        }
+      }
+      &:nth-child(4) {
+        .fas {
+          &:before {
+            color: #9d3cdd;
+          }
+        }
+      }
+    }
+  }
+
   .card {
     border-radius: 6px;
     box-shadow: 0 2px 2px rgba(204, 197, 185, 0.5);
@@ -69,6 +103,16 @@
       line-height: 26px;
       margin: 10px 0;
       font-size: 1rem;
+      .dashPortletDrop {
+        color: #000;
+        padding: 6px 0px 6px 10px;
+        border-left: 1px solid #ccc;
+        margin-left: 10px;
+        &:hover {
+          color: $primary-color;
+          cursor: pointer;
+        }
+      }
     }
     .dashboardChartsCntr {
       margin: 10px;
@@ -90,34 +134,6 @@
       position: relative;
       h6 {
         text-align: center;
-      }
-    }
-    &:nth-child(1) {
-      .fas {
-        &:before {
-          color: #c655cc;
-        }
-      }
-    }
-    &:nth-child(2) {
-      .fas {
-        &:before {
-          color: #7455cc;
-        }
-      }
-    }
-    &:nth-child(3) {
-      .fas {
-        &:before {
-          color: #3c67dd;
-        }
-      }
-    }
-    &:nth-child(4) {
-      .fas {
-        &:before {
-          color: #9d3cdd;
-        }
       }
     }
     .table {
@@ -206,7 +222,7 @@
   }
 
   .portletTopAction {
-    width: 150px;
+    width: 142px;
     float: right;
   }
 
@@ -325,7 +341,7 @@
 
 .lab-dash {
   .portletTopAction {
-    width: 150px;
+    width: 142px;
     float: right;
   }
 
@@ -383,7 +399,16 @@
 }
 .front-dash {
   .portletTopAction {
-    width: 150px;
+    width: 142px;
     float: right;
+  }
+}
+
+.dashboardEmailSend {
+  min-width: 20vw !important;
+  max-width: 20vw !important;
+
+  .ant-modal-footer {
+    padding: 5px 15px !important;
   }
 }
