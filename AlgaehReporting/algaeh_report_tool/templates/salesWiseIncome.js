@@ -48,7 +48,7 @@ const executePDF = function executePDFMethod(options) {
           case when SI.is_revert='Y' then 'Yes' else 'No' end as is_revert,
           case when SI.is_posted='Y' then 'Yes' else 'No' end as is_posted,
           case when SI.is_cancelled='Y' then 'Yes' else 'No' end as is_cancelled,
-          SO.sales_person_id,EM.full_name as sales_per_name, CO.customer_name
+          SI.sales_person_id,EM.full_name as sales_per_name, CO.customer_name
           from hims_f_sales_invoice_header SI
           inner join hims_d_customer as CO on SI.customer_id = CO.hims_d_customer_id 
           left join hims_f_sales_order as SO on SI.sales_order_id = SO.hims_f_sales_order_id 
