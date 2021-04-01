@@ -49,6 +49,7 @@ class CusPointOfSales extends Component {
     this.state = {
       cost_projects: [],
       customer_id: null,
+      employee_name: null,
     };
   }
 
@@ -121,7 +122,7 @@ class CusPointOfSales extends Component {
 
   // onKeyPress={this.onKeyPress}
   render() {
-    const class_finder = this.state.dataExitst === true ? " disableFinder" : "";
+    const class_finder = this.state.dataExitst ? " disableFinder" : "";
     return (
       <React.Fragment>
         <div>

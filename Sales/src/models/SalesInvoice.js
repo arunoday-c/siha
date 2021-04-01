@@ -86,7 +86,7 @@ export function getInvoiceEntryCash(req, res, next) {
       .executeQuery({
         query:
           "SELECT SIH.*,  H.hospital_name,  \
-                P.project_desc as project_name, \
+                P.project_desc as project_name,EM.full_name as sales_person_name, \
                 max(if(U.algaeh_d_app_user_id = SIH.reverted_by, E.full_name,'' )) as reverted_name, \
                 max(if(U.algaeh_d_app_user_id = SIH.created_by, E.full_name,'' )) as created_name \
                 from hims_f_sales_invoice_header SIH \
@@ -94,6 +94,7 @@ export function getInvoiceEntryCash(req, res, next) {
                 inner join hims_d_project P  on SIH.project_id = P.hims_d_project_id \
                 inner join algaeh_d_app_user U on (SIH.created_by = U.algaeh_d_app_user_id or SIH.reverted_by = U.algaeh_d_app_user_id) \
                 inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
+                inner join hims_d_employee EM on EM.hims_d_employee_id = SIH.sales_person_id  \
                 where SIH.invoice_number =? group by hims_f_sales_invoice_header_id;",
         values: [req.query.invoice_number],
         printQuery: true,

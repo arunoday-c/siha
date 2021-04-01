@@ -253,7 +253,7 @@ const getCtrlCode = ($this, docNumber) => {
             data.invoice_entry_detail_services = data.invoice_detail;
           }
 
-          $this.setState(data);
+          $this.setState({ ...data, employee_name: data.sales_person_name });
           AlgaehLoader({ show: false });
 
           // $this.setState({ ...response.data.records });
