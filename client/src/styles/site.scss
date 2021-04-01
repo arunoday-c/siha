@@ -20,6 +20,10 @@ body {
 .fixed-top {
   z-index: 990;
 }
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}
 
 #hisapp {
   padding-bottom: 5px;
