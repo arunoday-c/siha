@@ -537,37 +537,38 @@ export default function Dashboard() {
     });
   };
 
-  const labDashBoardWithAttachment = (reportParams) => {
-    return new Promise((resolve, reject) => {
-      setLoading(true);
-      try {
-        algaehApiCall({
-          uri: "/laboratory/labDashBoardWithAttachment",
-          module: "laboratory",
-          method: "GET",
-          data: {
-            ...reportParams,
-          },
-          onSuccess: (res) => {
-            swal({
-              title: "Successfully Sent",
-              type: "success",
-            });
-            resolve();
-          },
-          onCatch: (error) => {
-            swal({
-              title: error.message,
-              type: "error",
-            });
-            reject();
-          },
-        });
-      } catch (e) {
-        reject(e);
-      }
+  async function labDashBoardWithAttachment(reportParams) {
+    // return new Promise((resolve, reject) => {
+    setLoading(true);
+    // try {
+    const result = await newAlgaehApi({
+      uri: "/laboratory/labDashBoardWithAttachment",
+      module: "laboratory",
+      method: "GET",
+      data: {
+        ...reportParams,
+      },
+      // onSuccess: (res) => {
+      //   swal({
+      //     title: "Successfully Sent",
+      //     type: "success",
+      //   });
+      //   // resolve();
+      // },
+      // onCatch: (error) => {
+      //   swal({
+      //     title: error.message,
+      //     type: "error",
+      //   });
+      //   reject();
+      // },
     });
-  };
+    return result?.data?.records;
+    // } catch (e) {
+    //   reject(e);
+    // }
+    // })
+  }
   const menuTestCategory = (
     <Menu>
       <Menu.Item key="1">
@@ -775,10 +776,18 @@ export default function Dashboard() {
               })
                 .then(() => {
                   setVisible(false);
+                  swal({
+                    title: "Successfully Sent",
+                    type: "success",
+                  });
                   setBody_mail("");
                   setLoading(false);
                 })
-                .catch(() => {
+                .catch((error) => {
+                  swal({
+                    title: error.message,
+                    type: "error",
+                  });
                   setVisible(false);
                   setBody_mail("");
                   setLoading(false);
