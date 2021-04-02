@@ -33,6 +33,7 @@ class SampleCollection extends Component {
       to_date: new Date(),
       // from_date: moment("01" + month + year, "DDMMYYYY")._d,
       from_date: new Date(),
+      primary_id_no: null,
       patient_code: null,
       patient_name: null,
       patient_id: null,
@@ -401,6 +402,19 @@ class SampleCollection extends Component {
                         disabled: true,
                         others: {
                           maxWidth: 80,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                        },
+                      },
+
+                      {
+                        fieldName: "primary_id_no",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
+                        ),
+                        disabled: false,
+                        others: {
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" },
                         },

@@ -570,7 +570,7 @@ class RadScheduledList extends Component {
                                 //       ? "none"
                                 //       : "",
                                 // }}
-                                className="fas fa-info"
+                                className="fas fa-eye"
                                 aria-hidden="true"
                                 onClick={(e) => {
                                   setGlobal({
@@ -590,7 +590,7 @@ class RadScheduledList extends Component {
                         },
                         others: {
                           fixed: "left",
-                          maxWidth: 90,
+                          maxWidth: 130,
                           resizable: false,
                           filterable: false,
                         },
@@ -654,6 +654,18 @@ class RadScheduledList extends Component {
                         disabled: true,
                         others: {
                           maxWidth: 90,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
+                        fieldName: "primary_id_no",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" },
                         },

@@ -2312,43 +2312,43 @@ export default {
               const data = result[1][0];
 
               if (data.root_id == 1 || data.root_id == 5) {
-                // if (data.debit_amount != input.opening_balance) {
-                voucherStr = `update finance_voucher_details set ${
-                  input.type === "CR" ? "credit_amount" : "debit_amount"
-                }=${input.opening_balance},
+                if (parseFloat(input.opening_balance) > 0) {
+                  voucherStr = `update finance_voucher_details set ${
+                    input.type === "CR" ? "credit_amount" : "debit_amount"
+                  }=${input.opening_balance},
                 payment_type ='${input.type.toUpperCase()}',${
-                  input.type === "CR" ? "debit_amount" : "credit_amount"
-                }=0, payment_date='${
-                  input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
-                }', updated_by='${
-                  req.userIdentity.algaeh_d_app_user_id
-                }', updated_date='${moment(new Date()).format(
-                  "YYYY-MM-DD HH:mm:ss"
-                )}'  
+                    input.type === "CR" ? "debit_amount" : "credit_amount"
+                  }=0, payment_date='${
+                    input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
+                  }', updated_by='${
+                    req.userIdentity.algaeh_d_app_user_id
+                  }', updated_date='${moment(new Date()).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )}'  
                   where finance_voucher_id=${data.finance_voucher_id};`;
-                // }
+                }
               } else if (
                 data.root_id == 2 ||
                 data.root_id == 3 ||
                 data.root_id == 4
               ) {
-                // if (data.credit_amount != input.opening_balance) {
-                voucherStr = `update finance_voucher_details set ${
-                  input.type === "DR" ? "debit_amount" : "credit_amount"
-                }=${input.opening_balance},
+                if (parseFloat(input.opening_balance) > 0) {
+                  voucherStr = `update finance_voucher_details set ${
+                    input.type === "DR" ? "debit_amount" : "credit_amount"
+                  }=${input.opening_balance},
                 payment_type ='${input.type.toUpperCase()}',${
-                  input.type === "DR" ? "credit_amount" : "debit_amount"
-                }=0, payment_date='${
-                  input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
-                }', updated_by='${
-                  req.userIdentity.algaeh_d_app_user_id
-                }', updated_date='${moment(new Date()).format(
-                  "YYYY-MM-DD HH:mm:ss"
-                )}' 
+                    input.type === "DR" ? "credit_amount" : "debit_amount"
+                  }=0, payment_date='${
+                    input.obDate ? input.obDate : moment().format("YYYY-MM-DD")
+                  }', updated_by='${
+                    req.userIdentity.algaeh_d_app_user_id
+                  }', updated_date='${moment(new Date()).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )}' 
                   where finance_voucher_id=${data.finance_voucher_id};`;
-                // }
+                }
               }
-              
+
               executeFunction();
             }
             //inserting new opening balance
@@ -2500,7 +2500,7 @@ export default {
 
           function executeFunction(callBack) {
             // if (result[0][0]["created_from"] == "U") {
-            
+
             _mysql
               .executeQuery({
                 query: `update finance_account_child set  child_name=?,arabic_child_name=?,updated_by=?,updated_date=?,ledger_code=? where\
@@ -3530,59 +3530,53 @@ export async function uploadOBAccounts(req, res, next) {
       // console.log("finance_voucher_exit", finance_voucher_exit);
       if (finance_voucher_exit.length > 0) {
         if (data.root_id == 1 || data.root_id == 5) {
-          // if (
-          //   parseFloat(finance_voucher_exit[0].debit_amount) !=
-          //   parseFloat(data.opening_balance)
-          // ) {
-          voucherStr += `update finance_voucher_details set ${
-            data.payment_type === "CR" ? "credit_amount" : "debit_amount"
-          }=${data.opening_balance},
+          if (parseFloat(data.opening_balance) > 0) {
+            voucherStr += `update finance_voucher_details set ${
+              data.payment_type === "CR" ? "credit_amount" : "debit_amount"
+            }=${data.opening_balance},
                    payment_type ='${
                      data.payment_type === "CR" ? "CR" : "DR"
                    }',${
-            data.payment_type === "CR" ? "debit_amount" : "credit_amount"
-          }=0, payment_date='${
-            data.payment_date
-              ? moment(data.payment_date).format("YYYY-MM-DD")
-              : moment().format("YYYY-MM-DD")
-          }', updated_by='${
-            req.userIdentity.algaeh_d_app_user_id
-          }', updated_date='${moment(new Date()).format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}' 
+              data.payment_type === "CR" ? "debit_amount" : "credit_amount"
+            }=0, payment_date='${
+              data.payment_date
+                ? moment(data.payment_date).format("YYYY-MM-DD")
+                : moment().format("YYYY-MM-DD")
+            }', updated_by='${
+              req.userIdentity.algaeh_d_app_user_id
+            }', updated_date='${moment(new Date()).format(
+              "YYYY-MM-DD HH:mm:ss"
+            )}' 
             where finance_voucher_id=${
               finance_voucher_exit[0].finance_voucher_id
             };`;
-          // }
+          }
         } else if (
           data.root_id == 2 ||
           data.root_id == 3 ||
           data.root_id == 4
         ) {
-          // if (
-          //   parseFloat(finance_voucher_exit[0].credit_amount) !=
-          //   parseFloat(data.opening_balance)
-          // ) {
-          voucherStr += `update finance_voucher_details set ${
-            data.payment_type === "DR" ? "debit_amount" : "credit_amount"
-          }=${data.opening_balance},
+          if (parseFloat(data.opening_balance) > 0) {
+            voucherStr += `update finance_voucher_details set ${
+              data.payment_type === "DR" ? "debit_amount" : "credit_amount"
+            }=${data.opening_balance},
                     payment_type ='${
                       data.payment_type === "DR" ? "DR" : "CR"
                     }',${
-            data.payment_type === "DR" ? "credit_amount" : "debit_amount"
-          }=0, payment_date='${
-            data.payment_date
-              ? moment(data.payment_date).format("YYYY-MM-DD")
-              : moment().format("YYYY-MM-DD")
-          }', updated_by='${
-            req.userIdentity.algaeh_d_app_user_id
-          }', updated_date='${moment(new Date()).format(
-            "YYYY-MM-DD HH:mm:ss"
-          )}' 
+              data.payment_type === "DR" ? "credit_amount" : "debit_amount"
+            }=0, payment_date='${
+              data.payment_date
+                ? moment(data.payment_date).format("YYYY-MM-DD")
+                : moment().format("YYYY-MM-DD")
+            }', updated_by='${
+              req.userIdentity.algaeh_d_app_user_id
+            }', updated_date='${moment(new Date()).format(
+              "YYYY-MM-DD HH:mm:ss"
+            )}' 
             where finance_voucher_id=${
               finance_voucher_exit[0].finance_voucher_id
             };`;
-          // }
+          }
         }
       } else {
         // console.log("data", data);

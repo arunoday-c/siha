@@ -591,7 +591,7 @@ export default function Dashboard() {
             });
           }}
         >
-          Print LabDashboard
+          Export Data as PDF
         </span>
       </Menu.Item>
       <Menu.Item key="2">
@@ -615,7 +615,7 @@ export default function Dashboard() {
             });
           }}
         >
-          Send Report Through Email
+          Send as an E-mail
         </span>
       </Menu.Item>
     </Menu>
@@ -640,7 +640,7 @@ export default function Dashboard() {
             });
           }}
         >
-          Print LabDashboard
+          Export Data as PDF
         </span>
       </Menu.Item>
       <Menu.Item key="2">
@@ -663,7 +663,7 @@ export default function Dashboard() {
             });
           }}
         >
-          Send Report Through Email
+          Send as an E-mail
         </span>
       </Menu.Item>
     </Menu>
@@ -685,7 +685,7 @@ export default function Dashboard() {
             });
           }}
         >
-          Print LabDashboard
+          Export Data as PDF
         </span>
       </Menu.Item>
       <Menu.Item key="2">
@@ -703,7 +703,7 @@ export default function Dashboard() {
             });
           }}
         >
-          Send Report Through Email
+          Send as an E-mail
         </span>
       </Menu.Item>
     </Menu>
@@ -724,7 +724,7 @@ export default function Dashboard() {
             });
           }}
         >
-          Print LabDashboard
+          Export Data as PDF
         </span>
       </Menu.Item>
       <Menu.Item key="2">
@@ -743,7 +743,7 @@ export default function Dashboard() {
             // labDashBoardWithAttachment();
           }}
         >
-          Send Report Through Email
+          Send as an E-mail
         </span>
       </Menu.Item>
     </Menu>
@@ -751,20 +751,12 @@ export default function Dashboard() {
   return (
     <>
       <AlgaehModal
-        title={`Send mail`}
+        title={`Send as an E-mail`}
         visible={visible}
         destroyOnClose={true}
         // okText="Confirm"
         // onOk={() => {
         footer={[
-          <AlgaehButton
-            className="btn btn-other"
-            onClick={() => {
-              setVisible(false);
-            }}
-          >
-            Cancel
-          </AlgaehButton>,
           <AlgaehButton
             loading={loading}
             className="btn btn-primary"
@@ -796,58 +788,71 @@ export default function Dashboard() {
           >
             <AlgaehLabel
               label={{
-                forceLabel: "Send Mail with Attachment",
+                forceLabel: "Send",
                 returnText: true,
               }}
             />
           </AlgaehButton>,
+          <AlgaehButton
+            className="btn btn-default"
+            onClick={() => {
+              setVisible(false);
+            }}
+          >
+            Cancel
+          </AlgaehButton>,
+          ,
         ]}
         onCancel={() => {
           // finance_voucher_header_id = "";
           // rejectText = "";
           setVisible(false);
         }}
+        className={`row algaehNewModal dashboardEmailSend`}
       >
-        <div className="row">
-          <form>
-            <Controller
-              name="to_mail_id"
-              control={control}
-              rules={{ required: "Required" }}
-              render={(props) => (
-                <AlgaehFormGroup
-                  div={{ className: "col form-group mandatory" }}
-                  error={errors}
-                  label={{
-                    forceLabel: "Enter To mail Id",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    ...props,
-                    className: "txt-fld",
-                    name: "to_mail_id",
-                  }}
-                />
-              )}
+        <form>
+          <Controller
+            name="to_mail_id"
+            control={control}
+            rules={{ required: "Required" }}
+            render={(props) => (
+              <AlgaehFormGroup
+                div={{ className: "col form-group mandatory" }}
+                error={errors}
+                label={{
+                  forceLabel: "To Email Address",
+                  isImp: true,
+                }}
+                textBox={{
+                  ...props,
+                  className: "txt-fld",
+                  name: "to_mail_id",
+                }}
+              />
+            )}
+          />
+
+          <div className="col-12">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Message",
+              }}
             />
 
-            <div className="col-12">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Enter Body of the mail",
-                }}
-              />
-
-              <textarea
-                value={body_mail}
-                name="body_mail"
-                onChange={(e) => {
-                  setBody_mail(e.target.value);
-                }}
-              />
-            </div>
-          </form>
-        </div>
+            <textarea
+              value={body_mail}
+              name="body_mail"
+              onChange={(e) => {
+                setBody_mail(e.target.value);
+              }}
+            />
+          </div>
+          <div className="col-12">
+            <small style={{ float: "right" }}>
+              Attention! Mail will send with an attachment
+            </small>
+          </div>
+        </form>
       </AlgaehModal>
       <Spin spinning={loading}>
         <div className="dashboard lab-dash">
@@ -960,46 +965,44 @@ export default function Dashboard() {
                 <h6>
                   Order by Test Category{" "}
                   <span className="portletTopAction">
-                    <Controller
-                      control={control}
-                      name="order_category"
-                      rules={{ required: "Please Select " }}
-                      render={({ onChange, value }) => (
-                        <div className="col mandatory " tabIndex="5">
-                          <label
-                            htmlFor="order_category"
-                            className="style_Label "
-                          />
+                    <div className="row">
+                      <Controller
+                        control={control}
+                        name="order_category"
+                        rules={{ required: "Please Select " }}
+                        render={({ onChange, value }) => (
+                          <div className="mandatory" tabIndex="5">
+                            <label
+                              htmlFor="order_category"
+                              className="style_Label "
+                            />
 
-                          <DatePicker
-                            name="order_category"
-                            value={value}
-                            onChange={(date) => {
-                              if (date) {
-                                onChange(date);
-                                refetchForPatCount();
-                              } else {
+                            <DatePicker
+                              name="order_category"
+                              value={value}
+                              onChange={(date) => {
+                                if (date) {
+                                  onChange(date);
+                                  refetchForPatCount();
+                                } else {
+                                  onChange(undefined);
+                                }
+                              }}
+                              onClear={() => {
                                 onChange(undefined);
-                              }
-                            }}
-                            onClear={() => {
-                              onChange(undefined);
-                            }}
-                            picker="week"
-                            size={"small"}
-                            maxDate={new Date()}
-                          />
-                        </div>
-                      )}
-                    />
+                              }}
+                              picker="week"
+                              size={"small"}
+                              maxDate={new Date()}
+                            />
+                          </div>
+                        )}
+                      />
+                      <Dropdown overlay={menuTestCategory}>
+                        <i className="fas fa-bars dashPortletDrop" />
+                      </Dropdown>
+                    </div>
                   </span>
-                  <div className="row">
-                    <Dropdown overlay={menuTestCategory}>
-                      <button className="btn btn-default btn-circle active">
-                        <i className="fas fa-print" />
-                      </button>
-                    </Dropdown>
-                  </div>
                 </h6>
 
                 <div className="dashboardChartsCntr">
@@ -1014,46 +1017,44 @@ export default function Dashboard() {
                 <h6>
                   Send-In vs Send Out
                   <span className="portletTopAction">
-                    <Controller
-                      control={control}
-                      name="sendIn_sendOut"
-                      rules={{ required: "Please Select DOB" }}
-                      render={({ onChange, value }) => (
-                        <div className="col mandatory " tabIndex="5">
-                          <label
-                            htmlFor="sendIn_sendOut"
-                            className="style_Label "
-                          />
+                    <div className="row">
+                      <Controller
+                        control={control}
+                        name="sendIn_sendOut"
+                        rules={{ required: "Please Select DOB" }}
+                        render={({ onChange, value }) => (
+                          <div className="mandatory" tabIndex="5">
+                            <label
+                              htmlFor="sendIn_sendOut"
+                              className="style_Label "
+                            />
 
-                          <DatePicker
-                            name="sendIn_sendOut"
-                            value={value}
-                            onChange={(date) => {
-                              if (date) {
-                                onChange(date);
-                                refetchForSendInAndSendOut();
-                              } else {
+                            <DatePicker
+                              name="sendIn_sendOut"
+                              value={value}
+                              onChange={(date) => {
+                                if (date) {
+                                  onChange(date);
+                                  refetchForSendInAndSendOut();
+                                } else {
+                                  onChange(undefined);
+                                }
+                              }}
+                              onClear={() => {
                                 onChange(undefined);
-                              }
-                            }}
-                            onClear={() => {
-                              onChange(undefined);
-                            }}
-                            picker="week"
-                            size={"small"}
-                            maxDate={new Date()}
-                          />
-                        </div>
-                      )}
-                    />
+                              }}
+                              picker="week"
+                              size={"small"}
+                              maxDate={new Date()}
+                            />
+                          </div>
+                        )}
+                      />{" "}
+                      <Dropdown overlay={menuSendInSendOut}>
+                        <i className="fas fa-bars dashPortletDrop" />
+                      </Dropdown>
+                    </div>
                   </span>
-                  <div className="row">
-                    <Dropdown overlay={menuSendInSendOut}>
-                      <button className="btn btn-default btn-circle active">
-                        <i className="fas fa-print" />
-                      </button>
-                    </Dropdown>
-                  </div>
                 </h6>
                 <div className="dashboardChartsCntr">
                   <Spin spinning={sendInOutLoad}>
@@ -1071,53 +1072,51 @@ export default function Dashboard() {
                 <h6>
                   Today Top 10 Orders
                   <span className="portletTopAction">
-                    <Controller
-                      control={control}
-                      name="today_date_Top_10"
-                      rules={{ required: "Please Select DOB" }}
-                      render={({ onChange, value }) => (
-                        <AlgaehDateHandler
-                          size={"small"}
-                          div={{
-                            className: "col mandatory",
-                            tabIndex: "5",
-                          }}
-                          error={errors}
-                          label={{}}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "today_date_Top_10",
-                            value,
-                            others: {
-                              tabIndex: "4",
-                            },
-                          }}
-                          // others={{ disabled }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: (mdate) => {
-                              if (mdate) {
-                                onChange(mdate._d);
-                                top10OrderRefetch();
-                              } else {
+                    <div className="row">
+                      <Controller
+                        control={control}
+                        name="today_date_Top_10"
+                        rules={{ required: "Please Select DOB" }}
+                        render={({ onChange, value }) => (
+                          <AlgaehDateHandler
+                            size={"small"}
+                            div={{
+                              className: "mandatory",
+                              tabIndex: "5",
+                            }}
+                            error={errors}
+                            label={{}}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "today_date_Top_10",
+                              value,
+                              others: {
+                                tabIndex: "4",
+                              },
+                            }}
+                            // others={{ disabled }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: (mdate) => {
+                                if (mdate) {
+                                  onChange(mdate._d);
+                                  top10OrderRefetch();
+                                } else {
+                                  onChange(undefined);
+                                }
+                              },
+                              onClear: () => {
                                 onChange(undefined);
-                              }
-                            },
-                            onClear: () => {
-                              onChange(undefined);
-                            },
-                          }}
-                        />
-                      )}
-                    />
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      <Dropdown overlay={menuTop10}>
+                        <i className="fas fa-bars dashPortletDrop" />
+                      </Dropdown>
+                    </div>
                   </span>
-                  <div className="col">
-                    <Dropdown overlay={menuTop10}>
-                      <button className="btn btn-default btn-circle active">
-                        <i className="fas fa-print" />
-                      </button>
-                    </Dropdown>
-                  </div>
                 </h6>
                 <div className="dashboardChartsCntr">
                   <Spin spinning={false}>
@@ -1131,52 +1130,50 @@ export default function Dashboard() {
                 <h6>
                   Today's Order Status{" "}
                   <span className="portletTopAction">
-                    <Controller
-                      control={control}
-                      name="today_date_orderStatus"
-                      rules={{ required: "Please Select" }}
-                      render={({ onChange, value }) => (
-                        <AlgaehDateHandler
-                          size={"small"}
-                          div={{
-                            className: "col mandatory",
-                            tabIndex: "5",
-                          }}
-                          error={errors}
-                          label={{}}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "today_date_orderStatus",
-                            value,
-                            others: {
-                              tabIndex: "4",
-                            },
-                          }}
-                          // others={{ disabled }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: (mdate) => {
-                              if (mdate) {
-                                onChange(mdate._d);
-                                refetchForOrderStatus();
-                              } else {
+                    <div className="row">
+                      <Controller
+                        control={control}
+                        name="today_date_orderStatus"
+                        rules={{ required: "Please Select" }}
+                        render={({ onChange, value }) => (
+                          <AlgaehDateHandler
+                            size={"small"}
+                            div={{
+                              className: "mandatory",
+                              tabIndex: "5",
+                            }}
+                            error={errors}
+                            label={{}}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "today_date_orderStatus",
+                              value,
+                              others: {
+                                tabIndex: "4",
+                              },
+                            }}
+                            // others={{ disabled }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: (mdate) => {
+                                if (mdate) {
+                                  onChange(mdate._d);
+                                  refetchForOrderStatus();
+                                } else {
+                                  onChange(undefined);
+                                }
+                              },
+                              onClear: () => {
                                 onChange(undefined);
-                              }
-                            },
-                            onClear: () => {
-                              onChange(undefined);
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </span>
-                  <span className="portletTopAction">
-                    <Dropdown overlay={menuTodayOrderStatus}>
-                      <button className="btn btn-default btn-circle active">
-                        <i className="fas fa-print" />
-                      </button>
-                    </Dropdown>
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      <Dropdown overlay={menuTodayOrderStatus}>
+                        <i className="fas fa-bars dashPortletDrop" />
+                      </Dropdown>
+                    </div>
                   </span>
                 </h6>
                 <div className="portlet-body">
