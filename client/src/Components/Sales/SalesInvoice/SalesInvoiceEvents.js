@@ -274,6 +274,7 @@ const SalesOrderSearch = ($this, e) => {
           onSuccess: (response) => {
             if (response.data.success) {
               let data = response.data.records;
+
               if (data.invoice_entry_detail_item.length === 0) {
                 swalMessage({
                   title: "Item not dispatched yet",

@@ -598,6 +598,18 @@ class ResultEntryList extends Component {
                         },
                       },
                       {
+                        fieldName: "primary_id_no",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "primary_id_no" }} />
+                        ),
+                        disabled: false,
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
                         fieldName: "patient_code",
                         label: (
                           <AlgaehLabel label={{ fieldName: "patient_code" }} />

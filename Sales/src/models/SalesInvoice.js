@@ -86,7 +86,7 @@ export function getInvoiceEntryCash(req, res, next) {
       .executeQuery({
         query:
           "SELECT SIH.*,  H.hospital_name,  \
-                P.project_desc as project_name, \
+                P.project_desc as project_name,EM.full_name as sales_person_name, \
                 max(if(U.algaeh_d_app_user_id = SIH.reverted_by, E.full_name,'' )) as reverted_name, \
                 max(if(U.algaeh_d_app_user_id = SIH.created_by, E.full_name,'' )) as created_name \
                 from hims_f_sales_invoice_header SIH \
@@ -94,6 +94,7 @@ export function getInvoiceEntryCash(req, res, next) {
                 inner join hims_d_project P  on SIH.project_id = P.hims_d_project_id \
                 inner join algaeh_d_app_user U on (SIH.created_by = U.algaeh_d_app_user_id or SIH.reverted_by = U.algaeh_d_app_user_id) \
                 inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
+                inner join hims_d_employee EM on EM.hims_d_employee_id = SIH.sales_person_id  \
                 where SIH.invoice_number =? group by hims_f_sales_invoice_header_id;",
         values: [req.query.invoice_number],
         printQuery: true,
@@ -147,7 +148,7 @@ export function getDispatchForInvoice(req, res, next) {
     _mysql
       .executeQuery({
         query:
-          "SELECT SQ.*, SQ.hims_f_dispatch_note_header_id as dispatch_note_header_id, C.customer_name, \
+          "SELECT SQ.*,SO.sales_person_id, SQ.hims_f_dispatch_note_header_id as dispatch_note_header_id, C.customer_name, \
                     H.hospital_name, SO.sales_order_number, SO.hims_f_sales_order_id,SO.payment_terms,\
                     P.project_desc as project_name, SO.is_completed from hims_f_sales_dispatch_note_header SQ \
                     inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = SQ.sales_order_id \
@@ -279,14 +280,15 @@ export function addInvoiceEntry(req, res, next) {
         _mysql
           .executeQuery({
             query:
-              "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode, cust_good_rec_date,\
+              "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode,sales_person_id, cust_good_rec_date,\
                                 sales_order_id, location_id, customer_id, customer_name, payment_terms, project_id, sub_total, discount_amount, \
                                 net_total, total_tax, net_payable, retention_amt, narration,delivery_date, created_date, created_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               invoice_number,
               input.invoice_date,
               input.sales_invoice_mode,
+              input.sales_person_id,
               input.cust_good_rec_date,
               input.sales_order_id,
               input.location_id,

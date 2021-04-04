@@ -13,7 +13,7 @@ const texthandle = ($this, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getSampleCollectionDetails($this);
@@ -28,24 +28,24 @@ const texthandle = ($this, e) => {
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.frontDesk.patients
+      columns: spotlightSearch.frontDesk.patients,
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState(
         {
           patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id
+          patient_id: row.hims_d_patient_id,
         },
         () => {
           getSampleCollectionDetails($this);
         }
       );
-    }
+    },
   });
 };
 
@@ -56,7 +56,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "From Date cannot be grater than To Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   } else if (e === "to_date") {
@@ -64,7 +64,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "To Date cannot be less than From Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   }
@@ -72,7 +72,7 @@ const datehandle = ($this, ctrl, e) => {
   if (intFailure === false) {
     $this.setState(
       {
-        [e]: moment(ctrl)._d
+        [e]: moment(ctrl)._d,
       },
       () => {
         getSampleCollectionDetails($this);
@@ -81,7 +81,7 @@ const datehandle = ($this, ctrl, e) => {
   }
 };
 
-const getSampleCollectionDetails = $this => {
+const getSampleCollectionDetails = ($this) => {
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
@@ -111,12 +111,13 @@ const getSampleCollectionDetails = $this => {
     module: "laboratory",
     method: "GET",
     data: inputobj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let sample_collection = Enumerable.from(response.data.records)
           .groupBy("$.visit_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
             return {
+              primary_id_no: firstRecordSet.primary_id_no,
               patient_code: firstRecordSet.patient_code,
               full_name: firstRecordSet.full_name,
               ordered_date: firstRecordSet.ordered_date,
@@ -127,7 +128,7 @@ const getSampleCollectionDetails = $this => {
               visit_code: firstRecordSet.visit_code,
               doctor_name: firstRecordSet.doctor_name,
               status: firstRecordSet.status,
-              test_type: firstRecordSet.test_type
+              test_type: firstRecordSet.test_type,
             };
           })
           .toArray();
@@ -135,12 +136,12 @@ const getSampleCollectionDetails = $this => {
         $this.setState({ sample_collection: sample_collection });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 
   // $this.props.getSampleCollection({
@@ -178,21 +179,19 @@ const getSampleCollectionDetails = $this => {
   // });
 };
 
-const Refresh = $this => {
+const Refresh = ($this) => {
   let month = moment().format("MM");
   let year = moment().format("YYYY");
 
-  $this.setState(
-    {
-      from_date: moment("01" + month + year, "DDMMYYYY")._d,
-      to_date: new Date(),
-      patient_id: null,
-      patient_code: null,
-      proiorty: null,
-      status: null,
-      sample_collection: []
-    }
-  );
+  $this.setState({
+    from_date: moment("01" + month + year, "DDMMYYYY")._d,
+    to_date: new Date(),
+    patient_id: null,
+    patient_code: null,
+    proiorty: null,
+    status: null,
+    sample_collection: [],
+  });
 };
 
 export {
@@ -200,5 +199,5 @@ export {
   PatientSearch,
   datehandle,
   getSampleCollectionDetails,
-  Refresh
+  Refresh,
 };
