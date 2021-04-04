@@ -2645,7 +2645,7 @@ function getTrialBalanceFunc(
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount,VD.payment_date          from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
-          and date(VD.payment_date) <= date('${options.from_date}') where H.root_id=?  group by H.finance_account_head_id,VD.payment_date   ; 
+          and date(VD.payment_date) < date('${options.from_date}')  where H.root_id=?  group by H.finance_account_head_id,VD.payment_date   ; 
 
           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -2804,6 +2804,7 @@ function createHierarchyTransactionTB(
         : typeof drillDownLevel === "number"
         ? drillDownLevel
         : 999;
+
     // find the top level nodes and hash the children based on parent_acc_id
     for (let i = 0, len = arry.length; i < len; ++i) {
       if (_drillDownLevel !== 999) {
@@ -2834,7 +2835,7 @@ function createHierarchyTransactionTB(
           )
           .sumBy((s) => parseFloat(s.deb_minus_cred))
           .value();
-        debugger;
+
         const SUM_CREDIT_DEBIT = _.chain(op_child_data)
           .filter(
             (f) =>
@@ -2855,6 +2856,7 @@ function createHierarchyTransactionTB(
 
         // if (OP_BALANCE != undefined) {
         const execute = () => {
+          debugger;
           if (trans_symbol == "Dr") {
             if (
               // parseFloat(OP_BALANCE.deb_minus_cred) >
@@ -2902,6 +2904,7 @@ function createHierarchyTransactionTB(
             }
           }
         };
+        debugger;
         if (finance_account_head_id === 4 || finance_account_head_id === 5) {
           if (
             parseInt(moment(to_date, "YYYY-MM-DD").format("YYYY")) ===
@@ -2914,6 +2917,7 @@ function createHierarchyTransactionTB(
             execute();
           } else {
             op_amount = 0;
+            execute();
           }
         } else {
           execute();
@@ -2929,7 +2933,7 @@ function createHierarchyTransactionTB(
         });
         let tr_debit_amount = default_total;
         let tr_credit_amount = default_total;
-        if (TR_BALANCE != undefined) {
+        if (TR_BALANCE) {
           const filteredArray = _.filter(
             transaction_child_data,
             (f) =>

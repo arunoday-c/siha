@@ -73,7 +73,8 @@ export default function TrailBalaceReport({
           displayTemplate: (row) => {
             const opamt = String(row["cb_amount"]).trim(); //.replace(/[^0-9./]+/g, "");
 
-            if (!isNaN(parseFloat(opamt)) && row.leafnode === "Y") {
+            // if (!isNaN(parseFloat(opamt)) && row.leafNode === "Y") {
+            if (row.leafNode === "Y") {
               return (
                 <a
                   className="underLine"
@@ -134,7 +135,8 @@ export default function TrailBalaceReport({
           displayTemplate: (row) => {
             const opamt = String(row["cb_amount"]).trim();
 
-            if (!isNaN(parseFloat(opamt)) && row.leafnode === "Y") {
+            // if (!isNaN(parseFloat(opamt)) && row.leafnode === "Y") {
+            if (row.leafNode === "Y") {
               return (
                 <a
                   className="underLine"
