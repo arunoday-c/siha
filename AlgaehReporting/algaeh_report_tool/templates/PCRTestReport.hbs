@@ -94,10 +94,14 @@ Based on Laboratory results {{header.organization_name}} Confirms that the infor
             <td class="textEngCtr"  width="35%"><span>{{header.patient_ar_name}}</span></td>
             <td class="textArbRht"  width="15%"><label>الاسم الكامل</label></td>
          </tr>
+           <tr>
+            <td class="textEngLft"><label>Date of Birth</label></td>
+            <td class="textEngCtr" colspan="2"><span>{{header.date_of_birth}}</span></td>
+            <td class="textArbRht"><label>تاريخ الولادة</label></td>
+         </tr>
          <tr>
             <td class="textEngLft"><label>Nationality</label></td>
             <td class="textEngCtr" colspan="2"><span>{{header.nationality}}</span></td>
-            {{!-- <td class="textEngCtr"><span>{{header.arabic_nationality}}</span></td> --}}
             <td class="textArbRht"><label>الجنسية</label></td>
          </tr>
          <tr>
@@ -116,13 +120,15 @@ Based on Laboratory results {{header.organization_name}} Confirms that the infor
      {{#if result "Negative"}}
         <tr>
             <td class="textEngLft" bgcolor="#009688" text="white"><label  style="color: white;">Test Result</label></td>
-            <td class="textEngCtr" bgcolor="#009688" text="white" colspan="2"><span  style="color: white;">{{result}}</span></td>
+            <td class="textEngCtr" bgcolor="#009688" text="white"><span  style="color: white;">{{result}}</span></td>
+            <td class="textEngCtr" bgcolor="#009688" text="white"><span  style="color: white;"> غير مصاب</span></td>
             <td class="textArbRht" bgcolor="#009688" text="white"><label  style="color: white;">نتيجة الاختبار</label></td>
          </tr>
       {{else}}
        <tr>
             <td class="textEngLft" bgcolor="#f44336" text="white"><label style="color: white;">Test Result</label></td>
-            <td class="textEngCtr" bgcolor="#f44336" text="white" colspan="2"><span  style="color: white;">{{result}}</span></td>
+            <td class="textEngCtr" bgcolor="#f44336" text="white"><span  style="color: white;">{{result}}</span></td>
+            <td class="textEngCtr" bgcolor="#f44336" text="white"><span  style="color: white;">مصاب</span></td>
             <td class="textArbRht" bgcolor="#f44336" text="white"><label  style="color: white;">نتيجة الاختبار</label></td>
          </tr>
       {{/if}}
