@@ -123,7 +123,7 @@ const dateFormater = (value) => {
 };
 
 const LeaveSalProcess = ($this) => {
-  debugger
+  debugger;
   let year = moment($this.state.leave_start_date).format("YYYY");
   let inputObj = {
     hims_d_employee_id: $this.state.employee_id,
@@ -131,7 +131,7 @@ const LeaveSalProcess = ($this) => {
     leave_end_date: $this.state.leave_end_date,
     leave_period: $this.state.leave_period,
     year: year,
-    first_month_leave_period: $this.state.leave_salary_detail[0].leave_period
+    first_month_leave_period: $this.state.leave_salary_detail[0].leave_period,
   };
   let leave_salary_detail = $this.state.leave_salary_detail;
 
@@ -383,7 +383,7 @@ const LoadLeaveSalary = ($this) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    // inputs: "LH.hospital_id=  " + $this.state.hospital_id,
+    inputs: "emp.hospital_id=  " + $this.state.hospital_id,
     onRowSelect: (row) => {
       $this.setState(
         {
