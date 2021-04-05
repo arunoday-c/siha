@@ -325,11 +325,11 @@ export default function JournalVoucher() {
               ? "payment"
               : null;
           if (merdge !== undefined) {
-            if (Array.isArray(merdge) && merdge.length === 1) {
-              setDisableAmount(false);
-            } else {
-              setDisableAmount(true);
-            }
+            // if (Array.isArray(merdge) && merdge.length === 1) {
+            //   setDisableAmount(false);
+            // } else {
+            setDisableAmount(true);
+            // }
 
             setMerdgeRecords(merdge);
           }

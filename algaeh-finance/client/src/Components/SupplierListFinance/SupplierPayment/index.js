@@ -5,6 +5,7 @@ import {
   AlgaehMessagePop,
   AlgaehTable,
   AlgaehButton,
+  AlgaehFormGroup,
 } from "algaeh-react-components";
 import _ from "lodash";
 import { InfoBar } from "../../../Wrappers";
@@ -41,7 +42,10 @@ export default memo(function (props) {
         .then((res) => {
           if (res.data.success) {
             const { result } = res.data;
-            setData(result.result);
+            let modifiedResult = result.result.map((item) => {
+              return { ...item, modified_amount: item.balance_amount };
+            });
+            setData(modifiedResult);
             setInfo((state) => ({
               ...state,
               over_due: result.over_due,
@@ -123,6 +127,7 @@ export default memo(function (props) {
     }
   }
   function onChangeCheck(checked, row) {
+    debugger;
     row["checked"] = checked;
     const filterCheck = data.filter((f) => f.checked === true);
     if (data.length === filterCheck.length) {
@@ -130,22 +135,35 @@ export default memo(function (props) {
       setIndeterminate(false);
       setSelectedAmount(
         checked === true
-          ? parseFloat(selectAmount) + parseFloat(row.balance_amount)
-          : parseFloat(selectAmount) - parseFloat(row.balance_amount)
+          ? parseFloat(selectAmount) +
+              parseFloat(
+                row.modified_amount ? row.modified_amount : row.balance_amount
+              )
+          : parseFloat(selectAmount) -
+              parseFloat(
+                row.modified_amount ? row.modified_amount : row.balance_amount
+              )
       );
     } else {
       setCheckAll(false);
       setIndeterminate(true);
       setSelectedAmount(
         checked === true
-          ? parseFloat(selectAmount) + parseFloat(row.balance_amount)
-          : parseFloat(selectAmount) - parseFloat(row.balance_amount)
+          ? parseFloat(selectAmount) +
+              parseFloat(
+                row.modified_amount ? row.modified_amount : row.balance_amount
+              )
+          : parseFloat(selectAmount) -
+              parseFloat(
+                row.modified_amount ? row.modified_amount : row.balance_amount
+              )
       );
     }
   }
   function onClickSendSelected(isFromProcessed) {
     isFromProcessed = isFromProcessed || false;
     const filterCheck = data.filter((f) => f.checked === true);
+
     if (filterCheck.length === 0) {
       AlgaehMessagePop({
         type: "warning",
@@ -154,7 +172,9 @@ export default memo(function (props) {
       return;
     }
     const totalAmount = _.sumBy(filterCheck, (s) => {
-      return parseFloat(s.balance_amount);
+      return parseFloat(
+        s.modified_amount ? s.modified_amount : s.balance_amount
+      );
     });
     let debitNoteTotal = 0;
     let grandTotal = 0;
@@ -464,6 +484,37 @@ export default memo(function (props) {
                             label: "Last Modified Date",
                             sortable: true,
                             filterable: true,
+                          },
+                          {
+                            fieldName: "modified_amount",
+                            label: "",
+                            displayTemplate: (row) => {
+                              return row.invoice_status !== "closed" ? (
+                                <AlgaehFormGroup
+                                  textBox={{
+                                    type: "number",
+                                    value: row.modified_amount,
+                                    className: "form-control",
+                                    name: "modified_amount",
+                                    updateInternally: true,
+                                    onChange: (e) => {
+                                      if (e.target.value > row.balance_amount) {
+                                        let name = e.target.name;
+                                        row[name] = row.balance_amount;
+                                        AlgaehMessagePop({
+                                          type: "warning",
+                                          display:
+                                            "Modified Amount cannot be greater than balance amount",
+                                        });
+                                      } else {
+                                        return (row.modified_amount =
+                                          e.target.value);
+                                      }
+                                    },
+                                  }}
+                                />
+                              ) : null;
+                            },
                           },
                           // {
                           //   label: "Action",
