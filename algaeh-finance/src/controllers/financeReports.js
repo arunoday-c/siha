@@ -15,6 +15,7 @@ const {
 } = financeReports;
 import { generateExcel } from "../excels/index";
 import { generationLedger } from "../models/drillDown";
+import { trailBalanceRpt } from "../models/trailBalanceReport";
 export default () => {
   const api = Router();
 
@@ -123,7 +124,8 @@ export default () => {
   );
   api.get(
     "/getTrialBalance",
-    getTrialBalance,
+    trailBalanceRpt,
+    //getTrialBalance,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res
