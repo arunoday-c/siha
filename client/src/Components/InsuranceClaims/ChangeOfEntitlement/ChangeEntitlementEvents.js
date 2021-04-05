@@ -2,7 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { newAlgaehApi } from "../../../hooks";
 
-export const VisitSearch = (setState) => {
+export const VisitSearch = (setState, setGenerateEnable) => {
   let input = `pv.invoice_generated='N'`;
   AlgaehSearch({
     searchGrid: {
@@ -21,7 +21,9 @@ export const VisitSearch = (setState) => {
         full_name: row.full_name,
         patient_id: row.patient_id,
         visit_id: row.hims_f_patient_visit_id,
+        nationality_id: row.nationality_id,
       });
+      setGenerateEnable(false);
     },
   });
 };
@@ -65,4 +67,14 @@ export const getBillsForVisit = async (key, { visit_id }) => {
     },
   });
   return res.data?.records;
+};
+export const generateBills = async (PatientData) => {
+  // data.ScreenCode = "BL0002";
+  const result = await newAlgaehApi({
+    uri: "/changeofEntitle/addChangeOfEntitlement",
+    module: "billing",
+    data: PatientData,
+    method: "POST",
+  });
+  return result.data?.records;
 };

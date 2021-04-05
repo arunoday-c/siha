@@ -2477,6 +2477,8 @@ export default {
     const utilities = new algaehUtilities();
 
     try {
+      console.log("getBillDetails");
+      console.log("req.body", req.body);
       if (req.body.length > 0) {
         const input = req.body;
         const decimal_places = req.userIdentity.decimal_places;
@@ -3269,6 +3271,10 @@ export default {
                     created_date: new Date(),
                   },
                   {
+                    hims_f_billing_details_id:
+                      servicesDetails.hims_f_billing_details_id,
+                    hims_f_billing_header_id:
+                      servicesDetails.hims_f_billing_header_id,
                     deductable_type: policydtls.deductable_type,
                     service_type_id: records.service_type_id,
                     service_name: records.service_name,
