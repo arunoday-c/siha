@@ -6,11 +6,12 @@ import { getAmountFormart } from "../../../utils/GlobalFunctions";
 export default function TrailBalaceReport({
   style,
   data,
-  nonZero = true,
+  nonZero = "N",
   layout,
   dates,
   showArabic,
   showLedgerCode,
+  levels = "ALL",
   // createPrintObject,
 }) {
   const { asset, expense, liability, capital, income } = data;
@@ -200,6 +201,29 @@ export default function TrailBalaceReport({
         data={accounts || []}
         layout={layout}
         tableprops={{
+          conditionalPlot: (row) => {
+            if (nonZero === "Y") {
+              const { op_amount, tr_credit_amount, tr_debit_amount } = row;
+              if (
+                parseFloat(op_amount) === 0 &&
+                parseFloat(tr_credit_amount) === 0 &&
+                parseFloat(tr_debit_amount) === 0
+              ) {
+                return false;
+              } else {
+                return true;
+              }
+            }
+            if (levels !== "ALL") {
+              const { account_level } = row;
+              if (account_level <= parseInt(levels, 10)) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+            return true;
+          },
           aggregate: (field) => {
             if (field === "tr_debit_amount" || field === "tr_credit_amount") {
               const val = _.sumBy(accounts, (f) => parseFloat(f[field]));

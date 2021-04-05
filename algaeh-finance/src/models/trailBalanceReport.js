@@ -137,11 +137,17 @@ export async function trailBalanceRpt(req, res, next) {
               .value();
             let cb_amount = 0;
             if (parseInt(key, 10) === 1 || parseInt(key, 10) === 5) {
-              cb_amount =
-                parseFloat(op_amount) + tr_debit_amount - tr_credit_amount;
+              cb_amount = parseFloat(
+                parseFloat(op_amount) +
+                  parseFloat(tr_debit_amount) -
+                  parseFloat(tr_credit_amount)
+              ).toFixed(decimal_places);
             } else {
-              cb_amount =
-                parseFloat(op_amount) + tr_credit_amount - tr_debit_amount;
+              cb_amount = parseFloat(
+                parseFloat(op_amount) +
+                  parseFloat(tr_credit_amount) -
+                  parseFloat(tr_debit_amount)
+              ).toFixed(decimal_places);
             }
             const includeRecord = () => {
               child.push({
@@ -203,31 +209,33 @@ export async function trailBalanceRpt(req, res, next) {
             });
           }
         }
-        let parentNodes = [];
+
         let findChildren = function (parent) {
           if (children[parent.finance_account_head_id]) {
             let tempChild = children[parent.finance_account_head_id];
 
-            if (tempChild.length > 0) {
+            if (tempChild.length > 0 && parent) {
               parent.children = tempChild;
 
               for (let i = 0, len = parent.children.length; i < len; ++i) {
-                findChildren(parent.children[i]);
-                // For  Headers
-                if (parent.leafNode === "N") {
-                  parent.tr_debit_amount = _.sumBy(parent.children, (s) =>
-                    parseFloat(s.tr_debit_amount)
-                  );
-                  parent.tr_credit_amount = _.sumBy(parent.children, (s) =>
-                    parseFloat(s.tr_credit_amount)
-                  );
+                if (parent) {
+                  findChildren(parent.children[i]);
+                  // For  Headers
+                  if (parent.leafNode === "N") {
+                    parent.tr_debit_amount = _.sumBy(parent.children, (s) =>
+                      parseFloat(s.tr_debit_amount)
+                    );
+                    parent.tr_credit_amount = _.sumBy(parent.children, (s) =>
+                      parseFloat(s.tr_credit_amount)
+                    );
 
-                  parent.op_amount = _.sumBy(parent.children, (s) =>
-                    parseFloat(s.op_amount)
-                  ).toFixed(decimal_places);
-                  parent.cb_amount = _.sumBy(parent.children, (s) =>
-                    parseFloat(s.cb_amount)
-                  ).toFixed(decimal_places);
+                    parent.op_amount = _.sumBy(parent.children, (s) =>
+                      parseFloat(s.op_amount)
+                    ).toFixed(decimal_places);
+                    parent.cb_amount = _.sumBy(parent.children, (s) =>
+                      parseFloat(s.cb_amount)
+                    ).toFixed(decimal_places);
+                  }
                 }
               }
             }
@@ -235,6 +243,45 @@ export async function trailBalanceRpt(req, res, next) {
         };
         for (let i = 0, len = roots.length; i < len; ++i) {
           findChildren(roots[i]);
+          // let funMutation = function (parent) {
+          //   if (parent) {
+          //     if (
+          //       parseFloat(parent.tr_debit_amount) === 0 &&
+          //       parseFloat(parent.tr_credit_amount) === 0 &&
+          //       parseFloat(parent.op_amount) === 0
+          //     ) {
+          //       if (parent.children) {
+          //         parent.children = parent.children.filter(
+          //           (f) =>
+          //             parseFloat(f.tr_debit_amount) !== 0 ||
+          //             parseFloat(f.tr_credit_amount) !== 0 ||
+          //             parseFloat(f.op_amount) !== 0
+          //         );
+          //       } else {
+          //         parent = null;
+          //       }
+          //     }
+          //     // }
+          //     for (let i = 0, len = parent?.children?.length; i < len; ++i) {
+          //       funMutation(parent.children[i]);
+          //       let _parent = parent.children[i];
+          //       if (_parent) {
+          //         if (
+          //           parseFloat(_parent.tr_debit_amount) === 0 &&
+          //           parseFloat(_parent.tr_credit_amount) === 0 &&
+          //           parseFloat(_parent.op_amount) === 0
+          //         ) {
+          //           if (_parent.children) _parent.children.splice(i, 1);
+          //           else _parent = null;
+          //         }
+          //       }
+          //     }
+          //     // }
+          //   }
+          // };
+          // if (non_zero === "Y") {
+          //   funMutation(roots[i]);
+          // }
         }
 
         tree[

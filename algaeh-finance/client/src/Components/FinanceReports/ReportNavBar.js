@@ -15,7 +15,6 @@ export default function ReportNavBar({
   const [enableCashFlow, setEnableCashFlow] = useState(false);
   useEffect(() => {
     (async () => {
-      debugger;
       const tokenString = await getItem("token");
       const token = tokenDecode(tokenString);
       if (token.role_type === "SU") {
