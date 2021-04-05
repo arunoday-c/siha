@@ -18,20 +18,29 @@ export async function trailBalanceRpt(req, res, next) {
     /** for options */
     const optionRecords = await _mysql
       .executeQuery({
-        query: `SELECT next_year,current_year FROM finance_year_end where is_active=1 and record_status='A' limit 1;
-      select start_month,start_date,end_month,end_date,cr_dr_required from finance_options  limit 1 ;`,
+        query: `SELECT year_start_date,year_end_date FROM finance_year_end where is_active=1 and record_status='A' limit 1;
+      select cr_dr_required from finance_options  limit 1 ;`,
       })
       .catch((error) => {
         throw error;
       });
-    const { next_year, current_year } = _.head(optionRecords[0]);
+    const { year_start_date, year_end_date } = _.head(optionRecords[0]);
     const {
-      start_month,
-      start_date,
-      end_month,
-      end_date,
+      // start_month,
+      // start_date,
+      // end_month,
+      // end_date,
       cr_dr_required,
     } = _.head(optionRecords[1]);
+    /** date functions */
+    const validate_from_date = parseInt(
+      moment(year_start_date).format("YYYYMMDD"),
+      10
+    );
+    const validate_to_date = parseInt(
+      moment(year_end_date).format("YYYYMMDD"),
+      10
+    );
     /** get all ledgers and all transactions */
     const accountLevel = ACCOUNTS === "ALL" ? "" : ` root_id=${ACCOUNTS}`;
     const whereCondition = accountLevel === "" ? "" : `WHERE ${accountLevel}`;
@@ -91,12 +100,28 @@ export async function trailBalanceRpt(req, res, next) {
               children[item.finance_account_head_id] ||
               (children[item.finance_account_head_id] = []);
             const { finance_account_head_id, ...others } = item;
-            const openingTransaction = _.chain(openingBalance).filter(
-              (f) =>
-                f.head_id === item.finance_account_head_id &&
-                f.child_id === item.finance_account_child_id
-            );
-
+            const openingTransaction = _.chain(openingBalance).filter((f) => {
+              /** check year ending for root 4 and 5 if not make zero */
+              if (parseInt(key, 10) === 4 || parseInt(key, 10) === 5) {
+                if (
+                  validate_from_date <=
+                    parseInt(moment(f.payment_date).format("YYYYMMDD"), 10) &&
+                  validate_to_date >=
+                    parseInt(moment(f.payment_date).format("YYYYMMDD"), 10) &&
+                  f.head_id === item.finance_account_head_id &&
+                  f.child_id === item.finance_account_child_id
+                ) {
+                  return f;
+                }
+              } else {
+                if (
+                  f.head_id === item.finance_account_head_id &&
+                  f.child_id === item.finance_account_child_id
+                )
+                  return f;
+              }
+            });
+            // console.log("openingTransaction===>", openingTransaction.value());
             const SUM_CREDIT_DEBIT = openingTransaction
               .sumBy((s) => parseFloat(s.cred_minus_deb))
               .value();
@@ -123,6 +148,7 @@ export async function trailBalanceRpt(req, res, next) {
                 );
               }
             }
+            // console.log("item===>", item);
 
             const transaction = _.chain(transactions).filter(
               (f) =>
@@ -163,6 +189,7 @@ export async function trailBalanceRpt(req, res, next) {
                 ledger_code: item.child_ledger_code,
               });
             };
+            //Hide non zero
             if (non_zero === "Y") {
               if (
                 parseFloat(tr_debit_amount) !== 0 ||
@@ -243,45 +270,6 @@ export async function trailBalanceRpt(req, res, next) {
         };
         for (let i = 0, len = roots.length; i < len; ++i) {
           findChildren(roots[i]);
-          // let funMutation = function (parent) {
-          //   if (parent) {
-          //     if (
-          //       parseFloat(parent.tr_debit_amount) === 0 &&
-          //       parseFloat(parent.tr_credit_amount) === 0 &&
-          //       parseFloat(parent.op_amount) === 0
-          //     ) {
-          //       if (parent.children) {
-          //         parent.children = parent.children.filter(
-          //           (f) =>
-          //             parseFloat(f.tr_debit_amount) !== 0 ||
-          //             parseFloat(f.tr_credit_amount) !== 0 ||
-          //             parseFloat(f.op_amount) !== 0
-          //         );
-          //       } else {
-          //         parent = null;
-          //       }
-          //     }
-          //     // }
-          //     for (let i = 0, len = parent?.children?.length; i < len; ++i) {
-          //       funMutation(parent.children[i]);
-          //       let _parent = parent.children[i];
-          //       if (_parent) {
-          //         if (
-          //           parseFloat(_parent.tr_debit_amount) === 0 &&
-          //           parseFloat(_parent.tr_credit_amount) === 0 &&
-          //           parseFloat(_parent.op_amount) === 0
-          //         ) {
-          //           if (_parent.children) _parent.children.splice(i, 1);
-          //           else _parent = null;
-          //         }
-          //       }
-          //     }
-          //     // }
-          //   }
-          // };
-          // if (non_zero === "Y") {
-          //   funMutation(roots[i]);
-          // }
         }
 
         tree[
