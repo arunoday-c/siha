@@ -1632,6 +1632,26 @@ export default function Payroll({
               },
             },
           },
+
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "earning_deductions_id",
+            isImp: false,
+            label: "Miscellaneous Type",
+            dataSource: {
+              textField: "earning_deduction_description",
+              valueField: "hims_d_earning_deduction_id",
+              data: undefined,
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
           {
             className: "col-3 form-group",
             type: "dropdown",
@@ -1645,26 +1665,6 @@ export default function Payroll({
             dataSource: {
               textField: "group_description",
               valueField: "hims_d_employee_group_id",
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                });
-              },
-            },
-          },
-
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
-            name: "earning_deductions_id",
-            isImp: false,
-            label: "Miscellaneous Type",
-            dataSource: {
-              textField: "earning_deduction_description",
-              valueField: "hims_d_earning_deduction_id",
-              data: undefined,
             },
             events: {
               onClear: (reportState, currentName) => {

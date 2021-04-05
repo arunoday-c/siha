@@ -489,7 +489,7 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "loan_apply_branch",
-        searchQuery: `select hims_f_loan_application_id,loan_application_number, loan_skip_months , 
+        searchQuery: `select SQL_CALC_FOUND_ROWS hims_f_loan_application_id,loan_application_number, loan_skip_months , 
         LA.employee_id,loan_id,L.loan_code,L.loan_description,L.loan_account,L.loan_limit_type,L.loan_maximum_amount,
         LA.application_reason,loan_application_date,loan_authorized,authorized_date,authorized_by,loan_closed,loan_amount,
         approved_amount,start_month,start_year,loan_tenure,pending_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,            
@@ -503,7 +503,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "advance_apply",
         searchQuery:
-          "select  hims_f_employee_advance_id,advance_number,employee_id,advance_amount, \
+          "select SQL_CALC_FOUND_ROWS hims_f_employee_advance_id,advance_number,employee_id,advance_amount, \
           emp.employee_code, emp.full_name from hims_f_employee_advance, hims_d_employee emp \
           where hims_f_employee_advance.employee_id = emp.hims_d_employee_id and hims_f_employee_advance.hospital_id=" +
           hospitalId,
@@ -512,7 +512,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "encash_leave",
         searchQuery:
-          "select  hims_f_leave_encash_header_id,encashment_number,employee_id, encashment_date,total_amount, \
+          "select SQL_CALC_FOUND_ROWS hims_f_leave_encash_header_id,encashment_number,employee_id, encashment_date,total_amount, \
           emp.employee_code, emp.full_name from hims_f_leave_encash_header, hims_d_employee emp \
           where hims_f_leave_encash_header.employee_id = emp.hims_d_employee_id and  hims_f_leave_encash_header.hospital_id=" +
           hospitalId,
@@ -521,7 +521,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "end_of_service",
         searchQuery:
-          "select  hims_f_end_of_service_id,end_of_service_number,employee_id, transaction_date,payable_amount, \
+          "select SQL_CALC_FOUND_ROWS hims_f_end_of_service_id,end_of_service_number,employee_id, transaction_date,payable_amount, \
           emp.employee_code, emp.full_name from hims_f_end_of_service, hims_d_employee emp \
           where hims_f_end_of_service.employee_id = emp.hims_d_employee_id and  hims_f_end_of_service.hospital_id=" +
           hospitalId,
@@ -530,7 +530,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "final_settlement",
         searchQuery:
-          "select  hims_f_final_settlement_header_id,final_settlement_number,employee_id, settled_date,total_amount, \
+          "select SQL_CALC_FOUND_ROWS hims_f_final_settlement_header_id,final_settlement_number,employee_id, settled_date,total_amount, \
           emp.employee_code, emp.full_name from hims_f_final_settlement_header, hims_d_employee emp \
           where hims_f_final_settlement_header.employee_id = emp.hims_d_employee_id and  hims_f_final_settlement_header.hospital_id=" +
           hospitalId,
@@ -540,7 +540,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "leave_settlement",
         searchQuery:
-          "select  hims_f_leave_salary_header_id,leave_salary_number,employee_id, \
+          "select SQL_CALC_FOUND_ROWS hims_f_leave_salary_header_id,leave_salary_number,employee_id, \
           date(LH.leave_salary_date) as leave_salary_date, total_amount, emp.employee_code, \
           emp.full_name from hims_f_leave_salary_header LH, hims_d_employee emp \
           where LH.employee_id = emp.hims_d_employee_id ",

@@ -6,6 +6,7 @@ import {
   AlgaehButton,
   RawSecurityComponent,
   Tooltip,
+  AlgaehFormGroup,
 } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
@@ -92,7 +93,10 @@ export default memo(function (props) {
         .then((res) => {
           if (res.data.success) {
             const { result } = res.data;
-            setData(result.result);
+            let modifiedResult = result.result.map((item) => {
+              return { ...item, modified_amount: item.balance_amount };
+            });
+            setData(modifiedResult);
             setInfo({
               over_due: result.over_due,
               total_receivable: result.total_receivable,
@@ -164,7 +168,10 @@ export default memo(function (props) {
           .then((res) => {
             if (res.data.success) {
               const { result } = res.data;
-              setData(result.result);
+              let modifiedResult = result.result.map((item) => {
+                return { ...item, modified_amount: item.balance_amount };
+              });
+              setData(modifiedResult);
               setInfo({
                 over_due: result.over_due,
                 total_receivable: result.total_receivable,
@@ -195,33 +202,33 @@ export default memo(function (props) {
     }
   };
 
-  const receive = (row) => {
-    return (
-      <Button
-        disabled={row.invoice_status === "closed"}
-        type="link"
-        onClick={() => {
-          setLoading(true);
-          VerifyAuthorization(row)
-            .then(() => {
-              history.push("/JournalVoucher", {
-                data: { ...row, disabled: true },
-                type: "customer",
-              });
-            })
-            .catch((error) => {
-              setLoading(false);
-              AlgaehMessagePop({
-                type: "Error",
-                display: error,
-              });
-            });
-        }}
-      >
-        Receive Payment
-      </Button>
-    );
-  };
+  // const receive = (row) => {
+  //   return (
+  //     <Button
+  //       disabled={row.invoice_status === "closed"}
+  //       type="link"
+  //       onClick={() => {
+  //         setLoading(true);
+  //         VerifyAuthorization(row)
+  //           .then(() => {
+  //             history.push("/JournalVoucher", {
+  //               data: { ...row, disabled: true },
+  //               type: "customer",
+  //             });
+  //           })
+  //           .catch((error) => {
+  //             setLoading(false);
+  //             AlgaehMessagePop({
+  //               type: "Error",
+  //               display: error,
+  //             });
+  //           });
+  //       }}
+  //     >
+  //       Receive Payment
+  //     </Button>
+  //   );
+  // };
 
   function onChangeCheck(checked, row) {
     row["checked"] = checked;
@@ -231,16 +238,28 @@ export default memo(function (props) {
       setIndeterminate(false);
       setSelectedAmount(
         checked === true
-          ? parseFloat(selectAmount) + parseFloat(row.balance_amount)
-          : parseFloat(selectAmount) - parseFloat(row.balance_amount)
+          ? parseFloat(selectAmount) +
+              parseFloat(
+                row.modified_amount ? row.modified_amount : row.balance_amount
+              )
+          : parseFloat(selectAmount) -
+              parseFloat(
+                row.modified_amount ? row.modified_amount : row.balance_amount
+              )
       );
     } else {
       setCheckAll(false);
       setIndeterminate(true);
       setSelectedAmount(
         checked === true
-          ? parseFloat(selectAmount) + parseFloat(row.balance_amount)
-          : parseFloat(selectAmount) - parseFloat(row.balance_amount)
+          ? parseFloat(selectAmount) +
+              parseFloat(
+                row.modified_amount ? row.modified_amount : row.balance_amount
+              )
+          : parseFloat(selectAmount) -
+              parseFloat(
+                row.modified_amount ? row.modified_amount : row.balance_amount
+              )
       );
     }
   }
@@ -256,7 +275,9 @@ export default memo(function (props) {
     }
     if (filterCheck.length > 0) {
       const totalAmount = _.sumBy(filterCheck, (s) => {
-        return parseFloat(s.balance_amount);
+        return parseFloat(
+          s.modified_amount ? s.modified_amount : s.balance_amount
+        );
       });
       let creditNoteTotal = 0;
       let grandTotal = 0;
@@ -557,11 +578,31 @@ export default memo(function (props) {
                             filterable: true,
                           },
                           {
-                            label: "Action",
-                            fieldName: "act",
-                            displayTemplate: receive,
-                            sortable: false,
+                            fieldName: "modified_amount",
+                            label: "",
+                            displayTemplate: (row) => {
+                              return row.invoice_status !== "closed" ? (
+                                <AlgaehFormGroup
+                                  textBox={{
+                                    type: "number",
+                                    value: row.modified_amount,
+                                    className: "form-control",
+                                    name: "modified_amount",
+                                    updateInternally: true,
+                                    onChange: (e) => {
+                                      row["modified_amount"] = e.target.value;
+                                    },
+                                  }}
+                                />
+                              ) : null;
+                            },
                           },
+                          // {
+                          //   label: "Action",
+                          //   fieldName: "act",
+                          //   displayTemplate: receive,
+                          //   sortable: false,
+                          // },
                         ])}
                         // minHeight="80vh"
                         // rowUnique="finance_voucher_header_id"

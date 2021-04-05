@@ -72,6 +72,7 @@ export default function AddNewAccount({
         setLoadingAddtoList(true);
         getOpeningBalance(selectedNode.node.finance_account_child_id)
           .then((res) => {
+            setType(res.payment_type);
             setLoadingAddtoList(false);
             setOpeningBalance(res.opening_bal);
             setObDate(res.opening_balance_date);

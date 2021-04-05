@@ -34,7 +34,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `
           select H.*,B.*, ROUND(B.unit_cost, 3) as unit_cost, ROUND(B.quantity_transfer * B.unit_cost, 3) as net_extended_cost,
-          IM.item_code, IM.item_description, IU.uom_description, 
+          IM.item_code, IM.item_description, IU.uom_description,IMC.category_desc,
           ILF.location_description as from_location,ILT.location_description as to_location
           from hims_f_inventory_transfer_header H
           inner join hims_f_inventory_transfer_detail D on H.hims_f_inventory_transfer_header_id = D.transfer_header_id
@@ -42,7 +42,8 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = D.item_id
           inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = D.uom_transferred_id
           inner join hims_d_inventory_location ILF on ILF.hims_d_inventory_location_id = H.from_location_id
-          inner join hims_d_inventory_location ILT on ILT.hims_d_inventory_location_id = H.to_location_id 
+          inner join hims_d_inventory_location ILT on ILT.hims_d_inventory_location_id = H.to_location_id
+          inner join hims_d_inventory_tem_category IMC on IMC.hims_d_inventory_tem_category_id = IM.category_id 
           where date(transfer_date)  between date(?) and date(?) and H.hospital_id=?   ${strQuery}; `,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,

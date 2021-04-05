@@ -577,25 +577,25 @@ export default {
 
             select  ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id from 
             finance_voucher_header H inner join finance_voucher_details D  on H.finance_voucher_header_id=D.voucher_header_id where
-            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  DATE_SUB(CURDATE(),INTERVAL 31 DAY)  and
-            DATE_SUB(CURDATE(),INTERVAL 1 DAY) group by child_id  with rollup;
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  
+            DATE_ADD(CURDATE(),INTERVAL 1 DAY)  and DATE_ADD(CURDATE(),INTERVAL 31 DAY)  group by child_id  with rollup;
 
 
             select  ROUND(sum(debit_amount)-sum(H.settled_amount) , ${decimal_places}) as debit_amount ,child_id from 
             finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  DATE_SUB(CURDATE(),INTERVAL 62 DAY) and
-            DATE_SUB(CURDATE(),INTERVAL 32 DAY) group by child_id  with rollup;
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between DATE_ADD(CURDATE(),INTERVAL 32 DAY) and DATE_ADD(CURDATE(),INTERVAL 62 DAY)
+             group by child_id  with rollup;
 
 
             select ROUND( sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id 
             from finance_voucher_header H inner join finance_voucher_details D on  H.finance_voucher_header_id=D.voucher_header_id where
-            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  DATE_SUB(CURDATE(),INTERVAL 93 DAY) and 
-            DATE_SUB(CURDATE(),INTERVAL 63 DAY) group by child_id  with rollup;
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between DATE_ADD(CURDATE(),INTERVAL 63 DAY) and DATE_ADD(CURDATE(),INTERVAL 93 DAY)  
+             group by child_id  with rollup;
 
 
             select  ROUND(sum(debit_amount)-sum(H.settled_amount), ${decimal_places}) as debit_amount ,child_id 
             from finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date < DATE_SUB(CURDATE(),INTERVAL 93 DAY)
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date > DATE_ADD(CURDATE(),INTERVAL 93 DAY)
             group by child_id  with rollup;`,
 
             printQuery: true,
@@ -925,25 +925,25 @@ export default {
 
             select  ROUND(sum(credit_amount)-sum(H.settled_amount), ${decimal_places}) as credit_amount ,child_id from 
             finance_voucher_header H inner join finance_voucher_details D  on H.finance_voucher_header_id=D.voucher_header_id where
-            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  DATE_SUB(CURDATE(),INTERVAL 31 DAY)  and
-            DATE_SUB(CURDATE(),INTERVAL 1 DAY) group by child_id  with rollup;
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  DATE_ADD(CURDATE(),INTERVAL 1 DAY) and DATE_ADD(CURDATE(),INTERVAL 30 DAY)
+             group by child_id  with rollup;
 
 
             select  ROUND(sum(credit_amount)-sum(H.settled_amount) , ${decimal_places}) as credit_amount ,child_id from 
             finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  DATE_SUB(CURDATE(),INTERVAL 62 DAY) and
-            DATE_SUB(CURDATE(),INTERVAL 32 DAY) group by child_id  with rollup;
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between 
+            DATE_ADD(CURDATE(),INTERVAL 31 DAY) and DATE_ADD(CURDATE(),INTERVAL 60 DAY) group by child_id  with rollup;
 
 
             select ROUND( sum(credit_amount)-sum(H.settled_amount), ${decimal_places}) as credit_amount ,child_id 
             from finance_voucher_header H inner join finance_voucher_details D on  H.finance_voucher_header_id=D.voucher_header_id where
-            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between  DATE_SUB(CURDATE(),INTERVAL 93 DAY) and 
-            DATE_SUB(CURDATE(),INTERVAL 63 DAY) group by child_id  with rollup;
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date between DATE_ADD(CURDATE(),INTERVAL 61 DAY)  and  DATE_ADD(CURDATE(),INTERVAL 90 DAY) 
+             group by child_id  with rollup;
 
 
             select  ROUND(sum(credit_amount)-sum(H.settled_amount), ${decimal_places}) as credit_amount ,child_id 
             from finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id where
-            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date < DATE_SUB(CURDATE(),INTERVAL 93 DAY)
+            head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and H.due_date > DATE_ADD(CURDATE(),INTERVAL 90 DAY)
             group by child_id  with rollup;`,
 
             printQuery: true,
