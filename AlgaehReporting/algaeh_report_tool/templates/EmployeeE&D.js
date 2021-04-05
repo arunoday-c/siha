@@ -15,16 +15,17 @@ const executePDF = function executePDFMethod(options) {
       });
 
       if (input.hospital_id > 0) {
-        str += ` and E.hospital_id= ${input.hospital_id}`;
+        str += ` and ED.hospital_id= ${input.hospital_id}`;
       }
 
       if (input.employee_group_id > 0) {
-        str += ` and ED.employee_group_id= ${input.employee_group_id}`;
+        str += ` and E.employee_group_id= ${input.employee_group_id}`;
       }
 
       if (input.earning_deductions_id > 0) {
         str += ` and ED.earning_deductions_id= ${input.earning_deductions_id}`;
       }
+
       let is_local = "";
 
       if (input.is_local === "Y") {
@@ -35,16 +36,17 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select E.employee_code,E.full_name,ED.amount,D.earning_deduction_description, \
-            case processed when processed='Y' then 'Yes' else 'No' end processed, EG.group_description, DG.designation \
-            from hims_f_miscellaneous_earning_deduction as ED \
-            inner join hims_d_employee as E on  E.hims_d_employee_id = ED.employee_id \
-            inner join hims_d_earning_deduction as D on D.hims_d_earning_deduction_id = ED.earning_deductions_id \
-            left join hims_d_employee_group EG on E.employee_group_id = EG.hims_d_employee_group_id \
-            left join hims_d_designation DG on E.employee_designation_id=DG.hims_d_designation_id\
-                      left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
-
-            where year=? and month=? and category=? and E.employee_status='A' ${is_local}  ${str} `,
+          query: `
+          select E.employee_code,E.full_name,ED.amount,D.earning_deduction_description,
+          case processed when processed='Y' then 'Yes' else 'No' end processed,
+          EG.group_description,DG.designation,ED.year,ED.month,ED.category,E.employee_status,H.hospital_name
+          from hims_f_miscellaneous_earning_deduction as ED
+          inner join hims_d_employee as E on  E.hims_d_employee_id = ED.employee_id
+          inner join hims_d_earning_deduction as D on D.hims_d_earning_deduction_id = ED.earning_deductions_id 
+          left join hims_d_employee_group EG on E.employee_group_id = EG.hims_d_employee_group_id
+          left join hims_d_designation DG on E.employee_designation_id=DG.hims_d_designation_id 
+          left join hims_d_hospital H  on ED.hospital_id=H.hims_d_hospital_id 
+          where ED.year=? and ED.month=? and ED.category=? and E.employee_status='A' ${is_local}  ${str} order by ED.hospital_id`,
           values: [input.year, input.month, input.edType],
           printQuery: true,
         })
