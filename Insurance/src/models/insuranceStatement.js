@@ -42,7 +42,7 @@ export async function generateInsuranceStatement(req, res, next) {
         MAX(DATE(v.visit_date)) as visit_date,
         SUM(id.company_resp) as company_resp,
         SUM(id.company_tax) as company_tax_amount,
-        ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_payable))*100,0),2) as comp_tax_percent,
+        ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_resp))*100,0),2) as comp_tax_percent,
          SUM(id.company_payable) as company_payable,SUM(id.patient_payable) as patient_payable,
          MAX(ins.to_date) as to_date ,MAX(ins.from_date) as from_date
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id
