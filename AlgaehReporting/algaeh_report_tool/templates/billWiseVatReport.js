@@ -22,8 +22,8 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `
           select BH.bill_number as doc_number,V.visit_date, P.full_name, P.patient_code,  N.nationality,
-          INS.insurance_sub_name,
-          BH.net_amount as total_before_vat, (coalesce(BH.patient_payable,0)+coalesce(BH.company_payable,0)) as total_after_vat,
+          case when INS.insurance_sub_name is NULL then 'Cash' else INS.insurance_sub_name end as insurance_sub_name,
+          BH.net_total as total_before_vat, BH.net_amount as total_after_vat,
           BH.patient_tax,BH.company_tax, "Billing" as data_from 
           from hims_f_billing_header BH
           inner join hims_f_patient P on P.hims_d_patient_id = BH.patient_id
@@ -32,9 +32,9 @@ const executePDF = function executePDFMethod(options) {
           left join hims_m_patient_insurance_mapping IM on IM.patient_visit_id = BH.visit_id
           left join hims_d_insurance_sub INS on INS.hims_d_insurance_sub_id = IM.primary_sub_id
           where cancelled='N' and adjusted='N' and date(bill_date) between date(?) and date(?) and BH.hospital_id=? ${strData} ;
-          
-          select PH.pos_number as doc_number,V.visit_date, P.full_name, P.patient_code, N.nationality,INS.insurance_sub_name,
-          PH.net_total as total_before_vat, (coalesce(PH.patient_payable,0)+coalesce(PH.company_payable,0)) as total_after_vat,
+          select PH.pos_number as doc_number,V.visit_date, P.full_name, P.patient_code, N.nationality,
+          case when INS.insurance_sub_name is NULL then 'Cash' else INS.insurance_sub_name end as insurance_sub_name,
+          PH.net_total as total_before_vat, PH.net_amount as total_after_vat,
           PH.patient_tax,PH.company_tax,  "Pharmacy" as data_from 
           from hims_f_pharmacy_pos_header PH
           left join hims_f_patient P on P.hims_d_patient_id = PH.patient_id
