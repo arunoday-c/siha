@@ -46,9 +46,11 @@ class InvoiceGeneration extends Component {
       discount_amount: null,
       net_amount: null,
       patient_resp: null,
+      patient_res: null,
       patient_tax: null,
       patient_payable: null,
       company_resp: null,
+      company_res: null,
       company_tax: null,
       company_payable: null,
       sec_company_resp: null,
@@ -120,6 +122,8 @@ class InvoiceGeneration extends Component {
         gross_amount: 0,
         discount_amount: 0,
         patient_resp: 0,
+        patient_res: 0,
+        company_res: 0,
         patient_tax: 0,
         patient_payable: 0,
         company_resp: 0,
@@ -507,7 +511,6 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     orderedserviceslist: state.orderedserviceslist,
     serviceslist: state.serviceslist,
-    invoiceGen: state.invoiceGen,
     existinsurance: state.existinsurance,
   };
 }
@@ -519,7 +522,6 @@ function mapDispatchToProps(dispatch) {
       getServices: AlgaehActions,
       getMedicationList: AlgaehActions,
       initialStateOrders: AlgaehActions,
-      getInvoiceGeneration: AlgaehActions,
       getPatientInsurance: AlgaehActions,
     },
     dispatch
