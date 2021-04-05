@@ -6,7 +6,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
   // $this.ClearData(() => {
-  debugger
+  debugger;
   let input =
     $this.state.select_invoice === "CH"
       ? "pv.insured = 'N' and pv.invoice_generated='N'"
@@ -213,50 +213,116 @@ const FinalizedAndInvoice = ($this) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getInvoiceGeneration({
-    uri: "/invoiceGeneration/getInvoiceGeneration",
-    method: "GET",
-    module: "insurance",
-    // printInput: true,
-    data: { invoice_number: docNumber },
-    redux: {
-      type: "INVOICE_GEN_GET_DATA",
-      mappingName: "invoiceGen",
+  $this.setState(
+    {
+      hims_f_invoice_header_id: null,
+      invoice_number: null,
+      invoice_date: new Date(),
+      visit_code: "",
+      patient_code: "",
+      full_name: "",
+      patient_id: "",
+      visit_id: "",
+      saveEnable: true,
+      clearEnable: true,
+      generateVoice: true,
+      gross_amount: 0,
+      discount_amount: 0,
+      patient_resp: 0,
+      patient_res: 0,
+      company_res: 0,
+      patient_tax: 0,
+      patient_payable: 0,
+      company_resp: 0,
+      company_tax: 0,
+      company_payble: 0,
+      sec_company_resp: 0,
+      sec_company_tax: 0,
+      sec_company_payable: 0,
+      net_amout: 0,
+      insurance_provider_name: "---",
+      sub_insurance_provider_name: "---",
+      network_type: "---",
+      policy_number: "---",
+      card_number: "---",
+      effective_end_date: "---",
+      secondary_insurance_provider_name: "---",
+      secondary_network_type: "---",
+      secondary_policy_number: "---",
+      secondary_card_number: "---",
+      secondary_effective_end_date: "---",
+      select_invoice: "CH",
+      dataExists: false,
+      Invoice_Detail: [],
+      cash_invoice: true,
+      creidt_invoice: false,
     },
-    afterSuccess: (data) => {
-      data.generateVoice = false;
-      data.clearEnable = false;
-      if (data.insurance_provider_id !== null) {
-        data.select_invoice = "CD";
+    () => {
+      algaehApiCall({
+        uri: "/invoiceGeneration/getInvoiceGeneration",
+        method: "GET",
+        module: "insurance",
+        // printInput: true,
+        data: { invoice_number: docNumber },
+        onSuccess: (response) => {
+          if (response.data.success) {
+            let data = response.data.records;
 
-        data.creidt_invoice = true;
-        data.cash_invoice = false;
-      } else {
-        data.select_invoice = "CH";
+            data.generateVoice = false;
+            data.clearEnable = false;
+            if (data.insurance_provider_id !== null) {
+              data.select_invoice = "CD";
 
-        data.creidt_invoice = false;
-        data.cash_invoice = true;
-      }
-      data.dataExists = true;
-      if (data.insurance_provider_id !== null) {
-        $this.props.getPatientInsurance({
-          uri: "/patientRegistration/getPatientInsurance",
-          module: "frontDesk",
-          method: "GET",
-          data: {
-            patient_id: data.patient_id,
-            patient_visit_id: data.visit_id,
-          },
-          redux: {
-            type: "EXIT_INSURANCE_GET_DATA",
-            mappingName: "existinsurance",
-          },
-        });
-      }
-      $this.setState({ ...data, company_payble: data?.company_payable });
-      AlgaehLoader({ show: false });
-    },
-  });
+              data.creidt_invoice = true;
+              data.cash_invoice = false;
+            } else {
+              data.select_invoice = "CH";
+
+              data.creidt_invoice = false;
+              data.cash_invoice = true;
+            }
+            data.dataExists = true;
+            if (data.insurance_provider_id !== null) {
+              $this.props.getPatientInsurance({
+                uri: "/patientRegistration/getPatientInsurance",
+                module: "frontDesk",
+                method: "GET",
+                data: {
+                  patient_id: data.patient_id,
+                  patient_visit_id: data.visit_id,
+                },
+                redux: {
+                  type: "EXIT_INSURANCE_GET_DATA",
+                  mappingName: "existinsurance",
+                },
+              });
+            }
+            $this.setState({ ...data, company_payble: data?.company_payable });
+          }
+          AlgaehLoader({ show: false });
+        },
+        onFailure: (error) => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+      // $this.props.getInvoiceGeneration({
+      //   uri: "/invoiceGeneration/getInvoiceGeneration",
+      //   method: "GET",
+      //   module: "insurance",
+      //   // printInput: true,
+      //   data: { invoice_number: docNumber },
+      //   redux: {
+      //     type: "INVOICE_GEN_GET_DATA",
+      //     mappingName: "invoiceGen",
+      //   },
+      //   afterSuccess: (data) => {},
+      // });
+    }
+  );
 };
 
 const texthandle = ($this, e) => {

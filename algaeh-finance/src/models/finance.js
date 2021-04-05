@@ -2657,20 +2657,23 @@ export default {
       .executeQuery({
         query: `select finance_account_head_id,finance_account_child_id,is_opening_bal,
         ROUND(coalesce(debit_amount ,0),${decimal_places}) as debit_amount,  ROUND(coalesce(credit_amount,0),${decimal_places}) as credit_amount,
-      root_id,VD.payment_date from finance_account_child C inner join 
+      root_id,VD.payment_date,VD.payment_type from finance_account_child C inner join 
       finance_account_head H on H.finance_account_head_id=C.head_id and C.finance_account_child_id=?
       left join finance_voucher_details VD  on C.finance_account_child_id=VD.child_id 
       and is_opening_bal='Y' limit 1;`,
         values: [req.query.child_id],
-        printQuery: false,
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
-
         if (result.length > 0) {
           if (result[0]["root_id"] == 1 || result[0]["root_id"] == 5) {
+            const credit_amount = result[0]["credit_amount"];
+            const debit_amount = result[0]["debit_amount"];
+            const payment_type = result[0]["payment_type"];
             req.records = {
-              opening_bal: result[0]["debit_amount"],
+              opening_bal: payment_type === "CR" ? credit_amount : debit_amount,
+              payment_type: result[0]["payment_type"],
               opening_balance_date: result[0]["payment_date"],
             };
             next();
@@ -2679,8 +2682,12 @@ export default {
             result[0]["root_id"] == 3 ||
             result[0]["root_id"] == 4
           ) {
+            const credit_amount = result[0]["credit_amount"];
+            const debit_amount = result[0]["debit_amount"];
+            const payment_type = result[0]["payment_type"];
             req.records = {
-              opening_bal: result[0]["credit_amount"],
+              opening_bal: payment_type === "DR" ? debit_amount : credit_amount,
+              payment_type: result[0]["payment_type"],
               opening_balance_date: result[0]["payment_date"],
             };
             next();
