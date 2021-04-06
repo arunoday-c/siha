@@ -1,20 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useReducer, createContext, useContext } from "react";
 import "./ChangeOfEntitlement.scss";
 import moment from "moment";
 import { useQuery } from "react-query";
-import { AlgaehLabel, Spin, AlgaehDataGrid } from "algaeh-react-components";
+import {
+  AlgaehLabel,
+  Spin,
+  AlgaehDataGrid,
+  MainContext,
+  AlgaehMessagePop,
+} from "algaeh-react-components";
 import {
   VisitSearch,
   getPatientInsurance,
   getBillsForVisit,
+  generateBills,
   // getVisitWiseBillDetailS,
 } from "./ChangeEntitlementEvents";
 import { InsuranceForm } from "./InsuranceForm";
 import "./InvoiceGeneration.scss";
 
-export default function ChangeEntitlement(props) {
-  const [visit, setVisit] = useState(null);
+const reducer = (state, { type, payload }) => {
+  switch (type) {
+    case "setNewInsurance":
+      return { ...state, dropdownData: { ...state.dropdownData, ...payload } };
+    default:
+      return state;
+  }
+};
 
+export const InsuranceData = createContext(undefined);
+
+export default function ChangeEntitlement(props) {
+  const { userToken } = useContext(MainContext);
+  const { default_nationality, local_vat_applicable } = userToken;
+
+  const [visit, setVisit] = useState(null);
+  const [generateEnable, setGenerateEnable] = useState(true);
+  const [state, dispatch] = useReducer(reducer, {});
+  const dispacher = {
+    setNewInsurance(data) {
+      dispatch({ type: "setNewInsurance", payload: data });
+    },
+  };
   const {
     data: insurance,
     isLoading: insLoading,
@@ -39,6 +66,38 @@ export default function ChangeEntitlement(props) {
     clearBills();
     clearInsurance();
     setVisit(null);
+    setGenerateEnable(true);
+  };
+
+  const onSubmit = async (e) => {
+    try {
+      const insurance_data = state.dropdownData;
+
+      const inpit_data = {
+        ...visit,
+        ...insurance_data,
+        vat_applicable:
+          default_nationality == visit.nationality_id
+            ? local_vat_applicable
+            : "Y",
+        visit_bills: bills,
+      };
+      const after_generate = await generateBills(inpit_data).catch((error) => {
+        throw error;
+      });
+      setGenerateEnable(true);
+      console.log("after_generate", after_generate);
+      AlgaehMessagePop({
+        type: "success",
+        display: "Done Succesfully",
+      });
+    } catch (error) {
+      debugger;
+      AlgaehMessagePop({
+        type: "error",
+        display: error.message,
+      });
+    }
   };
 
   return (
@@ -47,7 +106,7 @@ export default function ChangeEntitlement(props) {
         <div className="row  inner-top-search">
           <div className="col-2 globalSearchCntr form-group">
             <AlgaehLabel label={{ forceLabel: "Search Visit Code" }} />
-            <h6 onClick={() => VisitSearch(setVisit)}>
+            <h6 onClick={() => VisitSearch(setVisit, setGenerateEnable)}>
               {visit?.visit_code ?? "Search Visit"}
               <i className="fas fa-search fa-lg"></i>
             </h6>
@@ -134,16 +193,21 @@ export default function ChangeEntitlement(props) {
                       <h6>
                         {insurance?.[0]?.effective_end_date
                           ? moment(insurance?.[0]?.effective_end_date).format(
-                            "DD/MM/YYYY"
-                          )
+                              "DD/MM/YYYY"
+                            )
                           : "---"}
                       </h6>
                     </div>
                   </div>
                 </div>
-              </div>{" "}
+              </div>
               <div className="col-12">
-                <InsuranceForm patientInsurance={insurance} selected_visit={visit} />
+                <InsuranceData.Provider value={{ ...state, ...dispacher }}>
+                  <InsuranceForm
+                    patientInsurance={insurance}
+                    selected_visit={visit}
+                  />
+                </InsuranceData.Provider>
               </div>
             </div>
           </div>
@@ -160,11 +224,6 @@ export default function ChangeEntitlement(props) {
                         <AlgaehLabel label={{ fieldName: "bill_number" }} />
                       ),
                     },
-                    // {
-                    //   fieldName: "bill_date",
-                    //   label: <AlgaehLabel label={{ fieldName: "bill_date" }} />,
-                    // },
-
                     {
                       fieldName: "sub_total_amount",
                       label: (
@@ -177,12 +236,19 @@ export default function ChangeEntitlement(props) {
                   data={bills}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
-              </div>{" "}
-            </div>{" "}
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="hptl-phase1-footer">
+          <button
+            className="btn btn-primary"
+            onClick={onSubmit}
+            disabled={generateEnable}
+          >
+            Generate
+          </button>
           <button
             className="btn btn-default"
             onClick={clearPage}

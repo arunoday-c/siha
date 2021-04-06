@@ -1573,11 +1573,10 @@ then round((monthly_accrual_days / 30) * (datediff(E.exit_date, '${month_start}'
                                 .then((Employee_Leave_Salary) => {
                                   // console.log("Leave Salary")
                                   InsertGratuityProvision({
+                                    user_Id: req.userIdentity,
                                     inputParam: inputParam,
                                     _mysql: _mysql,
                                     next: next,
-                                    decimal_places:
-                                      req.userIdentity.decimal_places,
                                   })
                                     .then((gratuity_provision) => {
                                       // console.log("gratuity_provision")
@@ -1678,10 +1677,10 @@ then round((monthly_accrual_days / 30) * (datediff(E.exit_date, '${month_start}'
                   // })
                   //   .then((Employee_Leave_Salary) => {
                   InsertGratuityProvision({
+                    user_Id: req.userIdentity,
                     inputParam: inputParam,
                     _mysql: _mysql,
                     next: next,
-                    decimal_places: req.userIdentity.decimal_places,
                   })
                     .then((gratuity_provision) => {
                       if (inputParam._leave_salary_acc.length > 0) {
@@ -1744,10 +1743,10 @@ then round((monthly_accrual_days / 30) * (datediff(E.exit_date, '${month_start}'
               })
               .then((salary_process) => {
                 InsertGratuityProvision({
+                  user_Id: req.userIdentity,
                   inputParam: inputParam,
                   _mysql: _mysql,
                   next: next,
-                  decimal_places: req.userIdentity.decimal_places,
                 })
                   .then((gratuity_provision) => {
                     if (inputParam._leave_salary_acc.length > 0) {
@@ -4792,9 +4791,10 @@ function InsertGratuityProvision(options) {
   return new Promise((resolve, reject) => {
     try {
       // console.log("InsertGratuityProvision")
+
       let _mysql = options._mysql;
       const inputParam = options.inputParam;
-      const decimal_places = options.decimal_places;
+      const user_Id = options.user_Id;
 
       const utilities = new algaehUtilities();
 
@@ -5091,7 +5091,7 @@ function InsertGratuityProvision(options) {
                       }
                       gratuity = utilities.decimalPoints(
                         gratuity,
-                        decimal_places
+                        user_Id.decimal_places
                       );
 
                       // console.log("_eligibleDays", _eligibleDays)
@@ -5102,7 +5102,7 @@ function InsertGratuityProvision(options) {
 
                       _computatedAmoutSum = utilities.decimalPoints(
                         _computatedAmoutSum,
-                        decimal_places
+                        user_Id.decimal_places
                       );
 
                       // if (_employee[k].hims_d_employee_id === 153) {
@@ -5127,17 +5127,17 @@ function InsertGratuityProvision(options) {
 
                       gratuity_amount = utilities.decimalPoints(
                         gratuity_amount,
-                        decimal_places
+                        user_Id.decimal_places
                       );
 
                       _computatedAmoutSum = utilities.decimalPoints(
                         _computatedAmoutSum,
-                        decimal_places
+                        user_Id.decimal_places
                       );
 
                       strQry += mysql.format(
                         "INSERT INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
-                      `month`,`gratuity_amount`, `acc_gratuity`,created_by, created_date,updated_by,updated_date) VALUE(?,?,?,?,?) \
+                      `month`,`gratuity_amount`, `acc_gratuity`,created_by, created_date,updated_by,updated_date) VALUE(?,?,?,?,?,?,?,?,?) \
                       ON DUPLICATE KEY UPDATE `gratuity_amount`=?,`acc_gratuity`=?;",
                         [
                           _employee[k].hims_d_employee_id,
@@ -5145,12 +5145,12 @@ function InsertGratuityProvision(options) {
                           inputParam.month,
                           gratuity_amount,
                           _computatedAmoutSum,
+                          user_Id.algaeh_d_app_user_id,
+                          new Date(),
+                          user_Id.algaeh_d_app_user_id,
+                          new Date(),
                           gratuity_amount,
                           _computatedAmoutSum,
-                          req.userIdentity.algaeh_d_app_user_id,
-                          new Date(),
-                          req.userIdentity.algaeh_d_app_user_id,
-                          new Date(),
                         ]
                       );
 

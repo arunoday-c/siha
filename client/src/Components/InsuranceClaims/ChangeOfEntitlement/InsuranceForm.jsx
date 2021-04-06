@@ -13,12 +13,13 @@ import { useLangFieldName } from "../../PatientRegistrationNew/patientHooks";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import InsuranceFields from "../../../Search/Insurance.json";
 import { PolicyModal } from "../../InsuranceSetup/PolicyModal";
+import { InsuranceData } from "./ChangeOfEntitlement";
 
 export function InsuranceForm({
   details = [],
   patientInsurance = [],
   data = {},
-  selected_visit = null
+  selected_visit = null,
 }) {
   const { fieldNameFn } = useLangFieldName();
   const [isInsurance, setIsInsurance] = useState(false);
@@ -27,6 +28,7 @@ export function InsuranceForm({
   const insuranceImgFront = useRef(null);
   const insuranceImgBack = useRef(null);
   const { userToken } = useContext(MainContext);
+  const { setNewInsurance } = useContext(InsuranceData);
   const { control, setValue, trigger, errors, reset, watch } = useForm({
     defaultValues: {
       primary_insurance_provider_id: "",
@@ -54,6 +56,19 @@ export function InsuranceForm({
         primary_effective_start_date: ins?.primary_effective_start_date,
         primary_effective_end_date: ins?.primary_effective_end_date,
         primary_card_number: ins?.card_number,
+        insured: "Y",
+      });
+
+      setNewInsurance({
+        primary_insurance_provider_id: ins?.insurance_provider_id,
+        primary_sub_id: ins?.sub_insurance_provider_id,
+        primary_network_id: ins?.network_id,
+        primary_network_office_id: ins?.hims_d_insurance_network_office_id,
+        primary_policy_num: ins?.policy_number,
+        primary_effective_start_date: ins?.primary_effective_start_date,
+        primary_effective_end_date: ins?.primary_effective_end_date,
+        primary_card_number: ins?.card_number,
+        insured: "Y",
       });
     }
     // eslint-disable-next-line
@@ -61,7 +76,7 @@ export function InsuranceForm({
 
   useEffect(() => {
     if (selected_visit === null) {
-      setInsuranceList([])
+      setInsuranceList([]);
       reset({
         primary_insurance_provider_id: "",
         primary_sub_id: "",
@@ -70,10 +85,10 @@ export function InsuranceForm({
         primary_policy_num: "",
         primary_effective_start_date: "",
         primary_effective_end_date: "",
-        primary_card_number: ""
+        primary_card_number: "",
       });
     }
-  }, [selected_visit])
+  }, [selected_visit]);
 
   const disabled = !isInsurance;
   const dropDownData = insuranceList?.length ? insuranceList : patientInsurance;
@@ -90,16 +105,46 @@ export function InsuranceForm({
         callback(text);
       },
       onRowSelect: (row) => {
-        row.sub_insurance_provider_name = row.insurance_sub_name
+        row.sub_insurance_provider_name = row.insurance_sub_name;
         setInsuranceList([row]);
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
         setValue("primary_sub_id", row?.sub_insurance_provider_id);
         setValue("primary_network_id", row?.network_id);
-        setValue("primary_network_office_id", row?.network_office_id);
+        setValue(
+          "primary_network_office_id",
+          row?.hims_d_insurance_network_office_id
+        );
         setValue("primary_policy_num", row?.policy_number);
         setValue("primary_effective_start_date", row?.effective_start_date);
         setValue("primary_effective_end_date", row?.effective_end_date);
+        setValue("primary_card_number", "");
+        debugger;
+        setNewInsurance({
+          insured: isInsurance === true ? "Y" : "N",
+          primary_insurance_provider_id: row?.insurance_provider_id,
+          primary_sub_id: row?.sub_insurance_provider_id,
+          primary_network_id: row?.network_id,
+          primary_network_office_id: row?.hims_d_insurance_network_office_id,
+          primary_policy_num: row?.policy_number,
+          primary_effective_start_date: row?.effective_start_date,
+          primary_effective_end_date: row?.effective_end_date,
+          primary_card_number: "",
+        });
       },
+    });
+  };
+
+  const InsuranceChage = (e) => {
+    setIsInsurance(e.target.value === "true" ? true : false);
+    reset({
+      primary_insurance_provider_id: "",
+      primary_sub_id: "",
+      primary_network_id: "",
+      primary_network_office_id: "",
+      primary_policy_num: "",
+      primary_effective_start_date: "",
+      primary_effective_end_date: "",
+      primary_card_number: "",
     });
   };
 
@@ -122,18 +167,18 @@ export function InsuranceForm({
                   <label className="radio inline">
                     <input
                       type="radio"
-                      name="insuredNo"
+                      value="false"
                       checked={!isInsurance}
-                      onChange={() => setIsInsurance(false)}
+                      onChange={InsuranceChage}
                     />
                     <span>Cash</span>
                   </label>
                   <label className="radio inline">
                     <input
                       type="radio"
-                      name="insuredYes"
+                      value="true"
                       checked={isInsurance}
-                      onChange={() => setIsInsurance(true)}
+                      onChange={InsuranceChage}
                     />
                     <span>Insurance</span>
                   </label>
@@ -144,7 +189,7 @@ export function InsuranceForm({
                   type="button"
                   className="btn btn-primary btn-rounded"
                   onClick={AddInsurance}
-                // disabled={!isInsurance}
+                  // disabled={!isInsurance}
                 >
                   <i className="fas fa-plus" />
                 </button>
@@ -329,7 +374,7 @@ export function InsuranceForm({
                   type="button"
                   className="btn btn-primary btn-rounded"
                   onClick={() => setShowPolicy(true)}
-                // disabled={!isInsurance}
+                  // disabled={!isInsurance}
                 >
                   <i className="fas fa-plus" />
                 </button>
@@ -343,7 +388,7 @@ export function InsuranceForm({
                     message: "Field is Required",
                   },
                 }}
-                render={(props) => (
+                render={({ onChange, value }) => (
                   <AlgaehFormGroup
                     div={{ className: "col-3" }}
                     label={{
@@ -354,8 +399,20 @@ export function InsuranceForm({
                     textBox={{
                       className: "txt-fld",
                       name: "primary_card_number",
-                      ...props,
+                      // ...props,
                       disabled,
+                      value: value,
+                    }}
+                    events={{
+                      onChange: (e) => {
+                        debugger;
+                        onChange(e.target.value);
+                        setNewInsurance({
+                          primary_card_number: e.target.value,
+                        });
+
+                        // setNewInsurance(...primary_card_number);
+                      },
                     }}
                   />
                 )}
@@ -458,8 +515,8 @@ export function InsuranceForm({
                   serviceParameters={{
                     uniqueID:
                       primary_card_number === undefined ||
-                        primary_card_number === null ||
-                        primary_card_number === ""
+                      primary_card_number === null ||
+                      primary_card_number === ""
                         ? null
                         : primary_card_number + "_front",
                     // (primary_card_number ||  null) + "_front",
@@ -469,8 +526,8 @@ export function InsuranceForm({
                     // },
                   }}
                   renderPrevState={primary_card_number ? undefined : true}
-                // renderPrevState={this.state.patInsuranceFrontImg}
-                // forceRefresh={this.state.forceRefresh}
+                  // renderPrevState={this.state.patInsuranceFrontImg}
+                  // forceRefresh={this.state.forceRefresh}
                 />
               </div>
 
@@ -485,8 +542,8 @@ export function InsuranceForm({
                   serviceParameters={{
                     uniqueID:
                       primary_card_number === undefined ||
-                        primary_card_number === null ||
-                        primary_card_number === ""
+                      primary_card_number === null ||
+                      primary_card_number === ""
                         ? null
                         : primary_card_number + "_back",
                     //(primary_card_number || null) + "_back",
@@ -496,8 +553,8 @@ export function InsuranceForm({
                     // },
                   }}
                   renderPrevState={primary_card_number ? undefined : true}
-                // renderPrevState={this.state.patInsuranceBackImg}
-                // forceRefresh={this.state.forceRefresh}
+                  // renderPrevState={this.state.patInsuranceBackImg}
+                  // forceRefresh={this.state.forceRefresh}
                 />
                 <div />
               </div>
