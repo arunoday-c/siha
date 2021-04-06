@@ -283,10 +283,11 @@ const SaveReceiptEnrty = ($this) => {
   }
   let Inputobj = extend({}, $this.state);
 
-  console.log("Inputobj", Inputobj);
+  // console.log("Inputobj", Inputobj);
   delete Inputobj.recepit_files;
+  delete Inputobj.receipt_docs;
 
-  console.log("Inputobj", Inputobj);
+  // console.log("Inputobj", Inputobj);
   debugger;
   AlgaehLoader({ show: true });
   algaehApiCall({
@@ -583,10 +584,11 @@ const PostReceiptEntry = ($this) => {
     .add($this.state.payment_terms, "days")
     .format("YYYY-MM-DD");
 
-  console.log("Inputobj 1", Inputobj);
+  // console.log("Inputobj 1", Inputobj);
   delete Inputobj.recepit_files;
+  delete Inputobj.receipt_docs;
 
-  console.log("Inputobj 2", Inputobj);
+  // console.log("Inputobj 2", Inputobj);
   algaehApiCall({
     uri: "/ReceiptEntry/postReceiptEntry",
     module: "procurement",
