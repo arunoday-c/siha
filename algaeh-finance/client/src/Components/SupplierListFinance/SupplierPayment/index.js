@@ -173,7 +173,7 @@ export default memo(function (props) {
     }
     const totalAmount = _.sumBy(filterCheck, (s) => {
       return parseFloat(
-        s.modified_amount ? s.modified_amount : s.balance_amount
+        s.modified_amount !== "" ? s.modified_amount : s.balance_amount
       );
     });
     let debitNoteTotal = 0;
@@ -262,11 +262,13 @@ export default memo(function (props) {
           const {
             invoice_no,
             balance_amount,
+            modified_amount,
             finance_voucher_header_id,
           } = item;
           return {
             invoice_no,
             balance_amount,
+            modified_amount,
             finance_voucher_header_id,
             voucher_type: "payment",
           };
@@ -494,21 +496,31 @@ export default memo(function (props) {
                                   textBox={{
                                     type: "number",
                                     value: row.modified_amount,
-                                    className: "form-control",
+                                    className: `form-control `,
                                     name: "modified_amount",
                                     updateInternally: true,
+
                                     onChange: (e) => {
-                                      if (e.target.value > row.balance_amount) {
-                                        let name = e.target.name;
-                                        row[name] = row.balance_amount;
-                                        AlgaehMessagePop({
-                                          type: "warning",
-                                          display:
-                                            "Modified Amount cannot be greater than balance amount",
-                                        });
-                                      } else {
-                                        return (row.modified_amount =
-                                          e.target.value);
+                                      if (e.target.value !== "") {
+                                        if (
+                                          parseFloat(e.target.value) >
+                                          parseFloat(row.balance_amount)
+                                        ) {
+                                          row["modified_amount"] =
+                                            row.balance_amount;
+                                          AlgaehMessagePop({
+                                            type: "warning",
+                                            display:
+                                              "Modified Amount cannot be greater than balance amount",
+                                          });
+
+                                          e.target.classList.add("border-red");
+                                        } else {
+                                          e.target.classList.remove(
+                                            "border-red"
+                                          );
+                                          row.modified_amount = e.target.value;
+                                        }
                                       }
                                     },
                                   }}

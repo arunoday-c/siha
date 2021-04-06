@@ -360,9 +360,15 @@ export default memo(function (props) {
             const {
               invoice_no,
               balance_amount,
+              modified_amount,
               finance_voucher_header_id,
             } = item;
-            return { invoice_no, balance_amount, finance_voucher_header_id };
+            return {
+              invoice_no,
+              balance_amount,
+              modified_amount,
+              finance_voucher_header_id,
+            };
           });
           let merdgeData = merdge;
           if (isFromProcessed === true) {
@@ -590,7 +596,27 @@ export default memo(function (props) {
                                     name: "modified_amount",
                                     updateInternally: true,
                                     onChange: (e) => {
-                                      row["modified_amount"] = e.target.value;
+                                      if (e.target.value !== "") {
+                                        if (
+                                          parseFloat(e.target.value) >
+                                          parseFloat(row.balance_amount)
+                                        ) {
+                                          row["modified_amount"] =
+                                            row.balance_amount;
+                                          AlgaehMessagePop({
+                                            type: "warning",
+                                            display:
+                                              "Modified Amount cannot be greater than balance amount",
+                                          });
+                                          e.target.classList.add("border-red");
+                                        } else {
+                                          e.target.classList.remove(
+                                            "border-red"
+                                          );
+                                          return (row.modified_amount =
+                                            e.target.value);
+                                        }
+                                      }
                                     },
                                   }}
                                 />
