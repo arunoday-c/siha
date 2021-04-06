@@ -13,14 +13,18 @@
       "mapping": "to_date"
     }
   },
-  "arabiandrillingcompany(adc)": {
+  "arabiandrillingcompany": {
     "type": "overview",
     "column_starts": 0,
+    "filename": "Arabian Drilling Company (ADC).xlsx",
     "combineservices": {
       "service_type": {
         "name": "details_of_service",
         "delimiter": ","
       }
+    },
+    "aggregations": {
+      "SUM": ["gross_amount"]
     },
     "columns": [
       { "name": "SL NO.", "mapping": "sl_no" },
@@ -30,6 +34,7 @@
       { "name": "Patient Name", "mapping": "full_name" },
       { "name": "Invoice No.", "mapping": "invoice_number" },
       { "name": "Invoice Date", "mapping": "visit_date" },
+      { "name": "Details Of Service", "mapping": "details_of_service" },
       { "name": "Gross Total", "mapping": "gross_amount" },
       { "name": "Deductable/ Co-Insurance", "mapping": "patient_payable" },
       { "name": "Total Amt.", "mapping": "company_resp" },

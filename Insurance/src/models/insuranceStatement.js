@@ -44,7 +44,7 @@ export async function generateInsuranceStatement(req, res, next) {
         SUM(id.company_tax) as company_tax_amount,
         ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_resp))*100,0),2) as comp_tax_percent,
          SUM(id.company_payable) as company_payable,SUM(id.patient_payable) as patient_payable,
-         MAX(ins.to_date) as to_date ,MAX(ins.from_date) as from_date
+         MAX(ins.to_date) as to_date ,MAX(ins.from_date) as from_date,MAX(isb.ins_template_name) as ins_template_name
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id
         on ih.hims_f_invoice_header_id  = id.invoice_header_id
         left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id
@@ -74,15 +74,19 @@ export async function generateInsuranceStatement(req, res, next) {
           next(new Error("No records founds"));
           return;
         }
+        // console.log("result===>", result[0]);
         let insurance = [];
         let slno = 1;
-        const fileName = result.length > 0 ? result[0]["file_name"] : "";
+        const ins_template_name =
+          result.length > 0 ? result[0]["ins_template_name"] : "";
+        // const fileName = result.length > 0 ? result[0]["file_name"] : "";
         const from_date = result.length > 0 ? result[0]["from_date"] : "";
         const to_date = result.length > 0 ? result[0]["to_date"] : "";
-        console.log("fileName", fileName.toLowerCase().replace(/ /g, ""));
-        const requireMetaData = rest[fileName.toLowerCase().replace(/ /g, "")];
-        console.log("requireMetaData", requireMetaData);
-        const { combineservices } = requireMetaData;
+        // console.log("ins_template_name====>", rest, ins_template_name);
+        const requireMetaData = rest[ins_template_name]; //fileName.toLowerCase().replace(/ /g, "")];
+        // console.log("requireMetaData====>", requireMetaData);
+        const { combineservices, filename, aggregations } = requireMetaData;
+        const fileName = filename;
         _.chain(result)
           .groupBy((g) => g.visit_id)
           .forEach((patients, idx) => {
@@ -128,6 +132,10 @@ export async function generateInsuranceStatement(req, res, next) {
                         }${sKey}`;
                       } else {
                         patObj[appendName] = sKey;
+                        console.log(
+                          "patObj[appendName]====>",
+                          patObj[appendName]
+                        );
                       }
                     } else {
                       patObj[sKey.toLowerCase()] = amountSum;
@@ -151,6 +159,26 @@ export async function generateInsuranceStatement(req, res, next) {
               "insurance_templates",
               filePath
             );
+
+            /**  For calculating aggregations */
+            let aggregate = undefined;
+            if (aggregations) {
+              Object.keys(aggregations).forEach((item) => {
+                switch (item) {
+                  case "SUM":
+                    if (Array.isArray(aggregations[item])) {
+                      aggregations[item].forEach((agg) => {
+                        aggregate["#" + agg] = _.sumBy(insurance, (s) =>
+                          parseFloat(s[agg])
+                        );
+                      });
+                    }
+
+                    break;
+                }
+              });
+            }
+
             const workbook = new Excel.Workbook();
 
             (async () => {
@@ -183,6 +211,14 @@ export async function generateInsuranceStatement(req, res, next) {
                       .replace("#COMPANYNAME", fileName)
                       .replace("#FDATE", currentFDate)
                       .replace("#TDATE", currentTDate);
+                    if (aggregate) {
+                      Object.keys(aggregate).forEach((itm) => {
+                        cell.value = String(cell.value).replace(
+                          itm,
+                          aggregate[itm]
+                        );
+                      });
+                    }
                   }
                 });
 
@@ -193,7 +229,7 @@ export async function generateInsuranceStatement(req, res, next) {
               const columnStart = requireMetaData["column_starts"]
                 ? requireMetaData["column_starts"]
                 : 0;
-              console.log("Last row", _lastRow);
+              // console.log("Last row", _lastRow);
               insurance.forEach((row, index) => {
                 let cols = [];
                 for (let i = 0; i < columnStart; i++) {
