@@ -461,6 +461,7 @@ export default {
                           for (let i = 0; i < merdgeRecords.length; i++) {
                             const {
                               balance_amount,
+                              modified_amount,
                               invoice_no,
                               voucher_type,
                               finance_voucher_header_id,
@@ -471,7 +472,9 @@ export default {
                               [
                                 result.insertId,
                                 invoice_no,
-                                partial_amount
+                                modified_amount
+                                  ? modified_amount
+                                  : partial_amount
                                   ? partial_amount
                                   : balance_amount,
                                 voucher_type,

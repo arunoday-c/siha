@@ -22,7 +22,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_billing_header BH on BH.hims_f_billing_header_id = BD.hims_f_billing_header_id
           inner join hims_d_employee EM on EM.hims_d_employee_id = BH.incharge_or_provider
           inner join hims_d_sub_department SD on SD.hims_d_sub_department_id = EM.sub_department_id
-          where BH.hospital_id=? and BD.cancel_yes_no <> 'Y' and date(BH.bill_date) between date(?) and date(?) ` +
+          where BH.adjusted='N' and BH.hospital_id=? and BD.cancel_yes_no <> 'Y' and date(BH.bill_date) between date(?) and date(?) ` +
             str +
             ` group by SD.hims_d_sub_department_id  order by SD.hims_d_sub_department_id ASC;`,
           values: [input.hospital_id, input.from_date, input.to_date],

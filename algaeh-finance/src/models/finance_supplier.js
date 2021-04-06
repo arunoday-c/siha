@@ -61,20 +61,25 @@ export default {
     const child_id = req.query.child_id;
     _mysql
       .executeQuery({
-        query: `select finance_voucher_header_id ,round(amount ,${decimal_places})as invoice_amount,
-        round(amount-settled_amount,${decimal_places})as balance_amount,
-        round(settled_amount,${decimal_places}) as settled_amount,
-        invoice_no ,voucher_type,H.narration,H.payment_date as invoice_date,
-        due_date, H.updated_date as last_modified,
-        case when settlement_status='S' then 'closed'
-        when settlement_status='P' and curdate()> due_date then 'over due'
-        when settlement_status='P' and settled_amount<1 then 'open'
-        when settlement_status='P' and settled_amount>0 then 'paid' end as invoice_status,
-        D.child_id,D.head_id
-        from finance_voucher_header H inner join finance_voucher_details D on
-        H.finance_voucher_header_id=D.voucher_header_id
-        and H.voucher_type='purchase' and H.invoice_no is not null
-        and  D.child_id=?;
+        query: `
+        select MAX(H.finance_voucher_header_id) as finance_voucher_header_id,round(H.amount ,${decimal_places}) as invoice_amount,
+        round(MAX(H.amount)-coalesce(sum(FSH.amount),MAX(settled_amount)),${decimal_places})as balance_amount,
+        round(coalesce(sum(FSH.amount),MAX(settled_amount)),${decimal_places}) as settled_amount,
+        coalesce(FSH.invoice_ref_no,MAX(invoice_no)) as invoice_no ,
+       MAX( H.voucher_type)as voucher_type,MAX(H.narration) as narration,
+       MAX(H.payment_date) as invoice_date,
+        MAX(due_date)as due_date, MAX(H.updated_date) as last_modified,
+        case when MAX(settlement_status)  ='S' then 'closed'
+        when MAX(settlement_status)='P' and curdate()> MAX(due_date) then 'over due'
+        when MAX(settlement_status)='P' and SUM(settled_amount)<1 then 'open'
+        when MAX(settlement_status)='P' and SUM(settled_amount)>0 then 'paid' end as invoice_status,
+        MAX(D.child_id) as child_id,MAX(D.head_id) as head_id
+        from finance_voucher_header H 
+        inner join finance_voucher_details D on
+        H.finance_voucher_header_id=D.voucher_header_id 
+        and H.voucher_type='purchase' and H.invoice_no is not null  and   D.child_id=?
+	    	left join finance_voucher_sub_header FSH on 
+        H.invoice_no = FSH.invoice_ref_no group by FSH.invoice_ref_no;
 
 
         select round(coalesce(sum(amount)-sum(settled_amount),0),${decimal_places})as over_due
@@ -100,6 +105,7 @@ export default {
 
          select count(finance_day_end_header_id) as day_end_pending from finance_day_end_header H
         inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id
+        
         where SD.child_id in(?)  and  H.posted='N';`,
         values: [child_id, child_id, child_id, child_id, child_id],
         printQuery: true,

@@ -16,18 +16,19 @@ export function Validations(state) {
     });
 
     return isError;
-  } else if (
-    state.state.significant_signs === undefined ||
-    state.state.significant_signs === null ||
-    state.state.significant_signs.length < 4
-  ) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title: "Please enter significant signs.",
-    });
-
-    return isError;
   }
+  // else if (
+  //   state.state.significant_signs === undefined ||
+  //   state.state.significant_signs === null ||
+  //   state.state.significant_signs.length < 4
+  // ) {
+  //   isError = true;
+
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Please enter significant signs.",
+  //   });
+
+  //   return isError;
+  // }
 }
