@@ -278,9 +278,16 @@ class LoanRequest extends Component {
                       display: e.message,
                     });
                   });
+              } else {
+                AlgaehLoader({ show: false });
+                AlgaehMessagePop({
+                  type: "error",
+                  display: res.data.records.message,
+                });
               }
             },
             onFailure: (err) => {
+              AlgaehLoader({ show: false });
               swalMessage({
                 title: err.message,
                 type: "error",

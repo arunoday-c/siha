@@ -364,7 +364,9 @@ class LoanRequest extends Component {
               hospital_id: this.state.hospital_id,
             },
             onSuccess: (res) => {
+              debugger;
               if (res.data.success) {
+                debugger;
                 if (this.context.socket.connected) {
                   this.context.socket.emit("/loan/applied", {
                     full_name,
@@ -372,50 +374,55 @@ class LoanRequest extends Component {
                     loan_description,
                   });
                 }
-              }
-              newAlgaehApi({
-                uri: "/loan/mailSendForLoan",
-                method: "GET",
-                module: "hrManagement",
-                data: {
-                  reporting_to_id,
-                  email_type: "LO",
-                  full_name,
-                  // employee_code,
-                  loan_code: res.data.records.EMPLOYEE_LOAN,
-                  loan_description,
-                  employee_code,
-                  application_reason: this.state.loan_description,
-                  loan_amount: this.state.loan_amount,
-                  start_month: this.state.start_month,
-                  start_year: this.state.start_year,
-                  loan_tenure: this.state.loan_tenure,
-                  installment_amount: this.state.installment_amount,
-                },
-              })
-                .then((res) => {
-                  if (res.data.success) {
-                    swalMessage({
-                      title: "Record Added Successfully",
-                      type: "success",
-                    });
-                    this.clearState([
-                      "start_year",
-                      "start_month",
-                      "employee_name",
-                      "employee_code",
-                      "employee_id",
-                      "hims_d_employee_id",
-                    ]);
-                    this.getEmployeeLoans();
-                  }
+                newAlgaehApi({
+                  uri: "/loan/mailSendForLoan",
+                  method: "GET",
+                  module: "hrManagement",
+                  data: {
+                    reporting_to_id,
+                    email_type: "LO",
+                    full_name,
+                    // employee_code,
+                    loan_code: res.data.records.EMPLOYEE_LOAN,
+                    loan_description,
+                    employee_code,
+                    application_reason: this.state.loan_description,
+                    loan_amount: this.state.loan_amount,
+                    start_month: this.state.start_month,
+                    start_year: this.state.start_year,
+                    loan_tenure: this.state.loan_tenure,
+                    installment_amount: this.state.installment_amount,
+                  },
                 })
-                .catch((e) => {
-                  AlgaehMessagePop({
-                    type: "error",
-                    display: e.message,
+                  .then((res) => {
+                    if (res.data.success) {
+                      swalMessage({
+                        title: "Record Added Successfully",
+                        type: "success",
+                      });
+                      this.clearState([
+                        "start_year",
+                        "start_month",
+                        "employee_name",
+                        "employee_code",
+                        "employee_id",
+                        "hims_d_employee_id",
+                      ]);
+                      this.getEmployeeLoans();
+                    }
+                  })
+                  .catch((e) => {
+                    AlgaehMessagePop({
+                      type: "error",
+                      display: e.message,
+                    });
                   });
+              } else {
+                AlgaehMessagePop({
+                  type: "error",
+                  display: res.data.records.message,
                 });
+              }
             },
 
             onFailure: (err) => {
