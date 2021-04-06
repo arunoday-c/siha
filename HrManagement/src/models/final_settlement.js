@@ -69,7 +69,7 @@ export default {
                   and L.hims_d_loan_id=hims_f_loan_application.loan_id; \
                   select gratuity_in_final_settle from hims_d_end_of_service_options;\
                   select hims_f_salary_id, COALESCE(net_salary,0)total_salary from hims_f_salary where employee_id=? \
-                  and salary_type ='FS'; \
+                  and salary_type ='FS' and salary_processed='Y'; \
                   SELECT hims_f_leave_encash_header_id, sum(total_amount)total_leave_amount FROM hims_f_leave_encash_header \
                   where employee_id =? and authorized='APR' group by hims_f_leave_encash_header_id; \
                   select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
@@ -85,6 +85,7 @@ export default {
                   _input.employee_id,
                   _input.employee_id,
                 ],
+                printQuery: true,
               })
               .then((result) => {
                 const _loanList = result[0];
@@ -447,7 +448,8 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query: `update hims_f_final_settlement_header set total_amount=?,total_earnings=?,
-      total_deductions=?,total_loans=?,total_salary=?,forfiet=?,remarks=?,updated_by=?,updated_date=?,
+      total_deductions=?,total_loans=?,salary_id=?,total_salary=?,end_of_service_id=?,
+      total_eos=?,leave_encashment_id=?,total_leave_encash=?,forfiet=?,remarks=?,updated_by=?,updated_date=?,
       final_settlement_status=?,posted=?,posted_date=?,posted_by=?,employee_status=?
       where hims_f_final_settlement_header_id=?;`,
           values: [
@@ -455,7 +457,12 @@ export default {
             _input.total_earnings,
             _input.total_deductions,
             _input.total_loans,
+            _input.hims_f_salary_id,
             _input.total_salary,
+            _input.end_of_service_id,
+            _input.gratuity_amount,
+            _input.hims_f_leave_encash_header_id,
+            _input.total_leave_encash_amount,
             _input.forfiet,
             _input.remarks,
             algaeh_d_app_user_id,
