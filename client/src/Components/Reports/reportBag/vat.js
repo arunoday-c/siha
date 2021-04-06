@@ -4,6 +4,7 @@ export default function Vat({
   allYears,
   MONTHS,
   algaehApiCall,
+  INS_STATUS,
 }) {
   return {
     name: "VAT Reports",
@@ -67,6 +68,19 @@ export default function Vat({
               textField: "nationality",
               valueField: "hims_d_nationality_id",
               data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "is_Insurance",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter By",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: INS_STATUS,
             },
           },
         ],

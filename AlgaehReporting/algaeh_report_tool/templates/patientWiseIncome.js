@@ -24,7 +24,7 @@ const executePDF = function executePDFMethod(options) {
             left join hims_f_bill_cancel_header BC on BH.hims_f_billing_header_id=BC.from_bill_id  
             left join hims_f_pharmacy_pos_header as PH on PH.patient_id= PT.hims_d_patient_id and PH.hospital_id=?
             left join hims_f_pharmcy_sales_return_header PC on PH.hims_f_pharmacy_pos_header_id=PC.from_pos_id  
-            where BH.hospital_id=? group by BH.patient_id) as  a order by a.net_pat_income DESC;`,
+            where BH.adjusted='N' and BH.hospital_id=? group by BH.patient_id) as  a order by a.net_pat_income DESC;`,
           values: [input.hospital_id, input.hospital_id],
           printQuery: true,
         })
