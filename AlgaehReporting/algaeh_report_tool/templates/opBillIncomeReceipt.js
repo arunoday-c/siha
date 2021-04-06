@@ -48,7 +48,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id
           inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id
           where date(bill_date)  between date(?) and date(?) and RH.pay_type='R' and
-          RH.record_status='A'    and RD.record_status='A' and cancelled='N' and adjusted='N' and BH.hospital_id= ?  ${str}) as A
+          BH.adjusted='N' and RH.record_status='A'    and RD.record_status='A' and cancelled='N' and adjusted='N' and BH.hospital_id= ?  ${str}) as A
           group by hims_f_receipt_header_id`;
 
           break;
