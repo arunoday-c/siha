@@ -17,6 +17,7 @@ import {
   FORMAT_YESNO,
   LAB_SAMPLE_COLL,
   LAB_RE_RUN,
+  INS_STATUS,
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -157,6 +158,7 @@ export default function loadActiveReports(
             allYears,
             MONTHS,
             algaehApiCall,
+            INS_STATUS,
           });
           break;
         case "misReport":

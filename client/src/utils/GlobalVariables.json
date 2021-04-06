@@ -5812,5 +5812,19 @@
       "name": "Run 3",
       "value": "3"
     }
+  ],
+  "INS_STATUS": [
+    {
+      "name": "Both",
+      "value": "B"
+    },
+    {
+      "name": "Insurance",
+      "value": "Y"
+    },
+    {
+      "name": "Cash",
+      "value": "N"
+    }
   ]
 }

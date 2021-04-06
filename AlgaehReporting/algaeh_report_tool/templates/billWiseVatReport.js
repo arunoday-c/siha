@@ -18,6 +18,13 @@ const executePDF = function executePDFMethod(options) {
         strData += ` and P.nationality_id= ${input.nationality_id}`;
       }
 
+      if (input.is_Insurance == "Y") {
+        strData += ` and V.insured='Y'`;
+      } else if (input.is_Insurance == "N") {
+        strData += ` and V.insured='N'`;
+      }
+      console.log("input=", input);
+
       options.mysql
         .executeQuery({
           query: `
