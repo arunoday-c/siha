@@ -2,13 +2,14 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
 import axios from "axios";
+import { generateAccountingEntryChangeEntitle } from "./opBilling";
 
 export async function addChangeOfEntitlement(req, res, next) {
-  const _options = req.connection == null ? {} : req.connection;
-  const _mysql = new algaehMysql(_options);
+  // const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql();
   try {
     let inputParam = { ...req.body };
-    let updateQuery = "";
+    let updateQuery = "SELECT 1=1;";
     let _billing_header_id = [];
     //   insured   hims_f_patient_visit
 
@@ -24,19 +25,24 @@ export async function addChangeOfEntitlement(req, res, next) {
             SELECT hims_f_ordered_inventory_id,services_id FROM hims_f_ordered_inventory WHERE visit_id=?; \
             SELECT hims_f_package_header_id, services_id FROM hims_f_package_header WHERE visit_id=?;\
             SELECT hims_f_patient_insurance_mapping_id FROM hims_m_patient_insurance_mapping WHERE patient_visit_id=?;\
-            SELECT hims_f_billing_details_id, hims_f_billing_header_id, services_id FROM \
-            hims_f_billing_details where hims_f_billing_header_id=?;",
+            SELECT * FROM hims_f_billing_details where cancel_yes_no='N' and hims_f_billing_header_id in (?);\
+            SELECT hims_f_billing_header_id, receipt_header_id, incharge_or_provider, bill_date, advance_amount, \
+            advance_adjust, pack_advance_adjust, pack_advance_amount, coalesce(credit_amount, 0) as credit_amount FROM \
+            hims_f_billing_header where hims_f_billing_header_id in (?);",
         values: [
           inputParam.visit_id,
           inputParam.visit_id,
           inputParam.visit_id,
           inputParam.visit_id,
           _billing_header_id,
+          _billing_header_id,
         ],
         printQuery: true,
       })
       .catch((error) => {
-        throw error;
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
       });
 
     const order_services = headerResult[0];
@@ -44,6 +50,7 @@ export async function addChangeOfEntitlement(req, res, next) {
     const order_packages = headerResult[2];
     const visit_insurance = headerResult[3];
     const visit_bills = headerResult[4];
+    const visit_bills_header = headerResult[5];
 
     // console.log("visit_bills", visit_bills);
     let inpObj = {
@@ -133,7 +140,9 @@ export async function addChangeOfEntitlement(req, res, next) {
         data: inputData,
         headers: { ...headers },
       }).catch((error) => {
-        throw error;
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
       });
     }
 
@@ -155,7 +164,9 @@ export async function addChangeOfEntitlement(req, res, next) {
         data: inputData,
         headers: { ...headers },
       }).catch((error) => {
-        throw error;
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
       });
     }
 
@@ -182,16 +193,12 @@ export async function addChangeOfEntitlement(req, res, next) {
       (f) => f.service_type_id === 14
     );
 
-    // const header_bills = _.chain(visit_bills_data)
-    //   .groupBy((g) => g.hims_f_billing_header_id)
-    //   .value();
-
     const header_bills = _.chain(visit_bills_data)
       .groupBy((g) => g.hims_f_billing_header_id)
       .map(function (detail, key) {
-        console.log("detail", detail);
+        // console.log("detail", detail);
         return {
-          hims_f_billing_header_id: detail[0].hims_f_billing_header_id,
+          from_bill_id: detail[0].hims_f_billing_header_id,
 
           sub_total_amount: _.sumBy(detail, (s) => parseFloat(s.gross_amount)),
 
@@ -222,18 +229,18 @@ export async function addChangeOfEntitlement(req, res, next) {
 
           company_payble: _.sumBy(detail, (s) => parseFloat(s.company_payble)),
           company_payable: _.sumBy(detail, (s) => parseFloat(s.company_payble)),
+          net_tax:
+            _.sumBy(detail, (s) => parseFloat(s.patient_tax)) +
+            _.sumBy(detail, (s) => parseFloat(s.company_tax)),
+          billdetails: detail,
         };
       })
       .value();
 
     console.log("header_bills", header_bills);
-    // const ord_services = await getBillDetails()
-    // .catch((error) => {
-    //   throw error;
-    // });
-    console.log("cal_order_serv:", cal_order_serv);
-    console.log("cal_order_cons:", cal_order_cons);
-    console.log("cal_order_pack:", cal_order_pack);
+    // console.log("cal_order_serv:", cal_order_serv);
+    // console.log("cal_order_cons:", cal_order_cons);
+    // console.log("cal_order_pack:", cal_order_pack);
 
     if (cal_order_serv.length > 0) {
       cal_order_serv.map((item) => {
@@ -358,85 +365,286 @@ export async function addChangeOfEntitlement(req, res, next) {
       });
     }
 
-    if (visit_bills_data.length > 0) {
-      visit_bills_data.map((item) => {
-        updateQuery += _mysql.mysqlQueryFormat(
-          "UPDATE `hims_f_billing_details` SET insurance_yesno=?, \
-        unit_cost=?, gross_amount=?, discount_amout=?, discount_percentage=?, net_amout=?, \
-        copay_percentage=?, copay_amount=?, deductable_amount=?, deductable_percentage=?, \
-        patient_tax=?, company_tax=?, total_tax=?, patient_resp=?, patient_payable=?, comapany_resp=?, \
-        company_payble=?, updated_date=?,updated_by=? \
-        where hims_f_billing_details_id=?;",
-          [
-            item.insurance_yesno,
-            item.unit_cost,
-            item.gross_amount,
-            item.discount_amout,
-            item.discount_percentage,
-            item.net_amout,
-            item.copay_percentage,
-            item.copay_amount,
-            item.deductable_amount,
-            item.deductable_percentage,
-            item.patient_tax,
-            item.company_tax,
-            item.total_tax,
-            item.patient_resp,
-            item.patient_payable,
-            item.comapany_resp,
-            item.company_payble,
-            moment().format("YYYY-MM-DD HH:mm"),
-            req.userIdentity.algaeh_d_app_user_id,
-            item.hims_f_billing_details_id,
-          ]
-        );
-      });
-    }
+    // if (visit_bills_data.length > 0) {
+    //   visit_bills_data.map((item) => {
+    //     updateQuery += _mysql.mysqlQueryFormat(
+    //       "UPDATE `hims_f_billing_details` SET insurance_yesno=?, \
+    //     unit_cost=?, gross_amount=?, discount_amout=?, discount_percentage=?, net_amout=?, \
+    //     copay_percentage=?, copay_amount=?, deductable_amount=?, deductable_percentage=?, \
+    //     patient_tax=?, company_tax=?, total_tax=?, patient_resp=?, patient_payable=?, comapany_resp=?, \
+    //     company_payble=?, updated_date=?,updated_by=? \
+    //     where hims_f_billing_details_id=?;",
+    //       [
+    //         item.insurance_yesno,
+    //         item.unit_cost,
+    //         item.gross_amount,
+    //         item.discount_amout,
+    //         item.discount_percentage,
+    //         item.net_amout,
+    //         item.copay_percentage,
+    //         item.copay_amount,
+    //         item.deductable_amount,
+    //         item.deductable_percentage,
+    //         item.patient_tax,
+    //         item.company_tax,
+    //         item.total_tax,
+    //         item.patient_resp,
+    //         item.patient_payable,
+    //         item.comapany_resp,
+    //         item.company_payble,
+    //         moment().format("YYYY-MM-DD HH:mm"),
+    //         req.userIdentity.algaeh_d_app_user_id,
+    //         item.hims_f_billing_details_id,
+    //       ]
+    //     );
+    //   });
+    // }
+
+    let collection_data = [];
 
     if (header_bills.length > 0) {
-      header_bills.map((item) => {
-        updateQuery += _mysql.mysqlQueryFormat(
-          "UPDATE `hims_f_billing_header` SET sub_total_amount=?, \
-          net_total=?, discount_amount=?, gross_total=?, copay_amount=?, deductable_amount=?, \
-          patient_res=?, company_res=?, total_tax=?, patient_tax=?, \
-          s_patient_tax=?, company_tax=?, patient_payable=?, company_payable=?, updated_date=?,updated_by=? \
-            where hims_f_billing_header_id=?;",
-          [
-            item.sub_total_amount,
-            item.net_total,
-            item.discount_amount,
-            item.gross_total,
+      for (let i = 0; i < header_bills.length; i++) {
+        const promise_execution = new Promise(async (resolve, reject) => {
+          try {
+            const header_data = visit_bills_header.find(
+              (f) => f.hims_f_billing_header_id === header_bills[i].from_bill_id
+            );
 
-            item.copay_amount,
-            item.deductable_amount,
-            item.patient_res,
-            item.company_res,
-            item.total_tax,
-            item.patient_tax,
-            item.s_patient_tax,
-            item.company_tax,
-            item.patient_payable,
-            item.company_payable,
-            moment().format("YYYY-MM-DD HH:mm"),
-            req.userIdentity.algaeh_d_app_user_id,
-            item.hims_f_billing_header_id,
-          ]
-        );
-      });
+            console.log(
+              "header_bills[i].patient_payable",
+              header_bills[i].patient_payable
+            );
+            console.log("header_data.credit_amount", header_data.credit_amount);
+            const receiveable_amount =
+              parseFloat(header_bills[i].patient_payable) -
+              parseFloat(header_data.credit_amount);
+
+            const number_gen = await _mysql
+              .generateRunningNumber({
+                user_id: req.userIdentity.algaeh_d_app_user_id,
+                numgen_codes: ["PAT_BILL", "RECEIPT"],
+                table_name: "hims_f_app_numgen",
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+
+            console.log("number_gen", number_gen);
+            const headerRcptResult = await _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, total_amount,\
+              created_by, created_date, updated_by, updated_date, shift_id,hospital_id ) \
+              VALUES (?,?,?,?,?,?,?,?,?)",
+                values: [
+                  number_gen.RECEIPT,
+                  new Date(),
+                  receiveable_amount,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  header_data.shift_id,
+                  req.userIdentity.hospital_id,
+                ],
+                printQuery: true,
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+
+            const RcptDetailsRecords = await _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_receipt_details (hims_f_receipt_header_id, pay_type, amount,\
+              created_by, created_date, updated_by, updated_date ) \
+              VALUES (?,?,?,?,?,?,?)",
+                values: [
+                  headerRcptResult.insertId,
+                  "CA",
+                  receiveable_amount,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                ],
+                printQuery: true,
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+
+            // console.log("number_gen", number_gen);
+
+            console.log("header_data", header_data);
+            const insert_bill_header = await _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_billing_header ( patient_id, visit_id, bill_number,receipt_header_id,\
+                incharge_or_provider, bill_date, advance_amount,advance_adjust, pack_advance_adjust, \
+                pack_advance_amount, discount_amount, sub_total_amount, total_tax, \
+                sheet_discount_amount, sheet_discount_percentage, net_amount, net_total,gross_total, \
+                company_res, patient_res, patient_payable, company_payable, \
+                patient_tax, s_patient_tax, company_tax, net_tax, credit_amount, receiveable_amount,\
+                balance_credit, from_bill_id, shift_id, created_by, created_date, updated_by, updated_date, copay_amount,\
+                deductable_amount,hospital_id)\
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); \
+                 update hims_f_billing_header set adjusted='Y',adjusted_by=?, adjusted_date=? where hims_f_billing_header_id=?",
+                values: [
+                  inputParam.patient_id,
+                  inputParam.visit_id,
+                  number_gen.PAT_BILL,
+                  headerRcptResult.insertId,
+                  header_data.incharge_or_provider,
+                  new Date(),
+                  header_data.advance_amount,
+                  header_data.advance_adjust,
+                  header_data.pack_advance_adjust,
+                  header_data.pack_advance_amount,
+                  header_bills[i].discount_amount,
+                  header_bills[i].sub_total_amount,
+                  header_bills[i].total_tax,
+                  header_data.sheet_discount_amount,
+                  header_data.sheet_discount_percentage,
+                  header_bills[i].patient_payable,
+                  header_bills[i].net_total,
+                  header_bills[i].gross_total,
+                  header_bills[i].company_res,
+                  header_bills[i].patient_res,
+                  header_bills[i].patient_payable,
+                  header_bills[i].company_payable,
+                  header_bills[i].patient_tax,
+                  header_bills[i].s_patient_tax,
+                  header_bills[i].company_tax,
+                  header_bills[i].net_tax,
+                  header_data.credit_amount,
+                  receiveable_amount,
+                  header_data.balance_credit,
+                  header_bills[i].from_bill_id,
+                  header_data.shift_id,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  header_bills[i].copay_amount,
+                  header_bills[i].deductable_amount,
+                  req.userIdentity.hospital_id,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  header_bills[i].from_bill_id,
+                ],
+                printQuery: true,
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+            let IncludeValues = [
+              "service_type_id",
+              "services_id",
+              "quantity",
+              "unit_cost",
+              "insurance_yesno",
+              "gross_amount",
+              "discount_amout",
+              "discount_percentage",
+              "net_amout",
+              "copay_percentage",
+              "copay_amount",
+              "deductable_amount",
+              "deductable_percentage",
+              "tax_inclusive",
+              "patient_tax",
+              "s_patient_tax",
+              "company_tax",
+              "total_tax",
+              "patient_resp",
+              "patient_payable",
+              "comapany_resp",
+              "company_payble",
+              "teeth_number",
+              "ordered_services_id",
+              "ordered_inventory_id",
+              "ordered_package_id",
+            ];
+
+            // console.log("insert_bill_header", insert_bill_header);
+            const insert_bill_detail = await _mysql
+              .executeQuery({
+                query: "INSERT INTO hims_f_billing_details(??) VALUES ? ;",
+                values: header_bills[i].billdetails,
+                includeValues: IncludeValues,
+                extraValues: {
+                  hims_f_billing_header_id: insert_bill_header[0].insertId,
+                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                  created_date: new Date(),
+                  updated_by: req.userIdentity.algaeh_d_app_user_id,
+                  updated_date: new Date(),
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true,
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+
+            header_bills[i].hims_f_billing_header_id =
+              insert_bill_header[0].insertId;
+            header_bills[i].insured = inputParam.insured;
+            header_bills[i].receipt_header_id = headerRcptResult.insertId;
+            req.connection = {
+              connection: _mysql.connection,
+              isTransactionConnection: _mysql.isTransactionConnection,
+              pool: _mysql.pool,
+            };
+            req.body = header_bills[i];
+            req.body.ScreenCode = "BL0001";
+
+            const accounting_entry = await generateAccountingEntryChangeEntitle(
+              req,
+              res,
+              next
+            );
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        });
+        collection_data.push(promise_execution);
+      }
+    } else {
+      collection_data.push(new Promise.resolve());
     }
 
     // console.log("updateQuery", updateQuery);
-
-    const update_data = await _mysql
-      .executeQuery({
-        query: updateQuery,
-        printQuery: true,
-      })
-      .catch((error) => {
-        throw error;
-      });
-    _mysql.releaseConnection();
-    next();
+    Promise.all(collection_data).then(() => {
+      _mysql
+        .executeQuery({
+          query: updateQuery,
+          printQuery: true,
+        })
+        .then((subdetail) => {
+          console.log("123456");
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            next();
+          });
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    });
   } catch (e) {
     _mysql.rollBackTransaction(() => {
       next(e);
