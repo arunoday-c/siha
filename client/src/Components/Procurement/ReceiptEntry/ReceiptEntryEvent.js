@@ -296,17 +296,7 @@ const SaveReceiptEnrty = ($this) => {
     data: Inputobj,
     onSuccess: (response) => {
       if (response.data.success === true) {
-        $this.setState({
-          grn_number: response.data.records.grn_number,
-          hims_f_procurement_grn_header_id:
-            response.data.records.hims_f_procurement_grn_header_id,
-          year: response.data.records.year,
-          period: response.data.records.period,
-          saveEnable: true,
-          postEnable: false,
-          dataExitst: true,
-          dataRevert: false,
-        });
+        getCtrlCode($this, response.data.records.grn_number);
         swalMessage({
           type: "success",
           title: "Saved successfully . .",
@@ -397,9 +387,11 @@ const getCtrlCode = ($this, docNumber) => {
           if (data.posted === "Y" || data.is_revert === "Y") {
             data.postEnable = true;
             data.dataRevert = true;
+            data.dataPosted = true;
           } else {
             data.postEnable = false;
             data.dataRevert = false;
+            data.dataPosted = false;
           }
           // data.location_name = row.loc_description;
           // data.vendor_name = row.vendor_name;
@@ -596,9 +588,7 @@ const PostReceiptEntry = ($this) => {
     method: "PUT",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        $this.setState({
-          postEnable: true,
-        });
+        getCtrlCode($this, $this.state.grn_number);
         swalMessage({
           title: "Posted successfully . .",
           type: "success",
