@@ -8,7 +8,7 @@ import {
   Spin,
   Modal,
   AlgaehFormGroup,
-  AlgaehButton,
+  AlgaehButton,AlgaehSecurityComponent
 } from "algaeh-react-components";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
@@ -215,6 +215,8 @@ export function PrepaymentAuthList() {
   //   "hospital_id",
   //   "prepayment_type_id",
   // ]);
+
+  
 
   return (
     <Spin spinning={loading}>
@@ -505,18 +507,19 @@ export function PrepaymentAuthList() {
                       displayTemplate: (row) => {
                         if (row.request_status === "P") {
                           return (
-                            <>
+                           
+            <AlgaehSecurityComponent componentCode="PREPAYMENT_AUTH">
                               <span onClick={() => onClickAuthorize(row)}>
                                 <i className="fas fa-check"></i>
                               </span>
                               {/* <span onClick={() => onClickReject(row)}>
                                 <i className="fas fa-undo-alt"></i>
                               </span> */}
-                            </>
+                            </AlgaehSecurityComponent>
                           );
                         } else if (row.request_status === "A") {
                           return (
-                            <>
+                            <AlgaehSecurityComponent componentCode="PREPAYMENT_PAY">
                               <Tooltip title="Pay">
                                 <span onClick={() => onClickPay(row)}>
                                   <i className="fas fa-check"></i>
@@ -533,7 +536,7 @@ export function PrepaymentAuthList() {
                                   <i className="fas fa-undo-alt"></i>
                                 </span>
                               </Tooltip>
-                            </>
+                              </AlgaehSecurityComponent>
                           );
                         } else {
                           return "Paid";
