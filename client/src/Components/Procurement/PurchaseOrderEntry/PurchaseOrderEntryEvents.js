@@ -94,44 +94,6 @@ const vendortexthandle = ($this, e) => {
   ) {
     ReqData = false;
   }
-  // let validate =
-  //   e.selected.vendor_code !== null &&
-  //     e.selected.contact_number !== null &&
-  //     e.selected.email_id_1 !== null &&
-  //     e.selected.address !== "" &&
-  //     e.selected.business_registration_no !== "" &&
-  //     e.selected.payment_mode !== "" &&
-  //     e.selected.country_id !== null &&
-  //     e.selected.state_id !== null
-  //     ? e.selected.payment_mode === "BT" ? e.selected.bank_account_no !== null &&
-  //       e.selected.bank_name !== "" ? true : false : true : false;
-  // if (validate) {
-  //   let details = {
-  //     [name]: value,
-  //     vendor_name: e.selected?.vendor_name ?? name,
-  //     payment_terms: e.selected?.payment_terms ?? e.payment_terms,
-  //     vendorDetails: [e.selected],
-  //     ReqData: ReqData,
-  //   };
-
-  //   $this.setState(details, () => {
-  //     console.log("this.state.vendorDetails", $this.state.vendorDetails);
-  //   });
-  // } else {
-  //   $this.setState(
-  //     {
-  //       vendorDetails: [],
-  //     },
-  //     swalMessage({
-  //       title: `Please Fill mandatory Details of vendor In vendor master for Vendor ${
-  //         e.selected?.vendor_name ?? name
-  //         }   `,
-  //       type: "error",
-  //     })
-  //   );
-
-  //   return;
-  // }
 
   algaehApiCall({
     uri: "/vendor/getVendorMaster",
@@ -143,7 +105,6 @@ const vendortexthandle = ($this, e) => {
     },
     onSuccess: (result) => {
       let records = result.data.records[0];
-      debugger;
 
       let validate =
         records.vendor_code !== null &&

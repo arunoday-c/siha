@@ -24,6 +24,7 @@ const texthandle = ($this, ctrl, e) => {
         sales_order_date: new Date(),
         reference_number: null,
         customer_id: null,
+        customerDetails:null,
         quote_validity: null,
         sales_man: null,
         payment_terms: null,
@@ -88,6 +89,7 @@ const customerTexthandle = ($this, e) => {
     $this.setState({
       [name]: value,
       payment_terms: e.selected.payment_terms,
+      customerDetails:e.selected,
     });
   } else {
     AlgaehLoader({ show: true });
@@ -101,6 +103,7 @@ const customerTexthandle = ($this, e) => {
           $this.setState({
             [name]: value,
             payment_terms: e.selected.payment_terms,
+            customerDetails:e.selected,
           });
         } else {
           $this.setState({
@@ -116,6 +119,11 @@ const customerTexthandle = ($this, e) => {
         AlgaehLoader({ show: false });
       },
     });
+
+    
+
+
+
   }
 };
 

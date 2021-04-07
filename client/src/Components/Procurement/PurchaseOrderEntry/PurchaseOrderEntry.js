@@ -728,7 +728,7 @@ class PurchaseOrderEntry extends Component {
                 ) : null}
 
                 <div className="col-3">
-                  <div className="row hoverVendor">
+                  <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{ forceLabel: "Vendor Name" }}
@@ -756,6 +756,10 @@ class PurchaseOrderEntry extends Component {
                     {this.state.vendorDetails.length > 0
                       ? this.state.vendorDetails.map((item) => {
                           return (
+                            
+                            
+                            <div className="hoverVendor">
+                              <i className="fas fa-eye"></i>
                             <div className="vendorDetCntr animated slideInDown faster">
                               <div className="row">
                                 <div className="col">
@@ -838,6 +842,7 @@ class PurchaseOrderEntry extends Component {
                                   </table>
                                 </div>
                               </div>
+                            </div>
                             </div>
                           );
                         })
