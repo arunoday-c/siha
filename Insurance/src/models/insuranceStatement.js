@@ -26,6 +26,8 @@ export async function generateInsuranceStatement(req, res, next) {
   try {
     // const {hospital_address,hospital_name,arabic_hospital_name,tax_number,business_registration_number}
     const identity = req.userIdentity;
+    const decimal_places = identity.decimal_places;
+    const currency_symbol = identity.currency_symbol;
     const { common, ...rest } = metaData;
     //MAX(ins.updated_date)as update_date,
     //inner join hims_f_insurance_statement as ins on ins.insurance_provider_id  =ih.insurance_provider_id
@@ -87,6 +89,7 @@ export async function generateInsuranceStatement(req, res, next) {
         // console.log("requireMetaData====>", requireMetaData);
         const { combineservices, filename, aggregations } = requireMetaData;
         const fileName = filename;
+         const fileName1 = result.length > 0 ? result[0]["file_name"] : "";
         _.chain(result)
           .groupBy((g) => g.visit_id)
           .forEach((patients, idx) => {
@@ -101,20 +104,20 @@ export async function generateInsuranceStatement(req, res, next) {
                   icd_description: firstRecords["icd_description"], // key === "null" ? undefined : key,
                   company_resp: _.sumBy(items, (s) =>
                     parseFloat(s.company_resp)
-                  ),
+                  ).toFixed(decimal_places),
                   company_tax_amount: _.sumBy(items, (s) =>
                     parseFloat(s.company_tax_amount)
-                  ),
+                  ).toFixed(decimal_places),
                   comp_tax_percent: _.sumBy(items, (s) =>
                     parseFloat(s.comp_tax_percent)
-                  ),
+                  ).toFixed(decimal_places),
                   company_payable: _.sumBy(items, (s) =>
                     parseFloat(s.company_payable)
-                  ),
-                  net_amount: _.sumBy(items, (s) => parseFloat(s.net_amount)),
+                  ).toFixed(decimal_places),
+                  net_amount: _.sumBy(items, (s) => parseFloat(s.net_amount)).toFixed(decimal_places),
                   gross_amount: _.sumBy(items, (s) =>
                     parseFloat(s.gross_amount)
-                  ),
+                  ).toFixed(decimal_places),
                 };
 
                 _.chain(items)
@@ -122,7 +125,7 @@ export async function generateInsuranceStatement(req, res, next) {
                   .forEach((service, sKey) => {
                     const amountSum = _.sumBy(service, (s) =>
                       parseFloat(s.company_payable)
-                    );
+                    ).toFixed(decimal_places);
 
                     if (combineservices) {
                       const appendName = combineservices?.service_type?.name;
@@ -132,10 +135,10 @@ export async function generateInsuranceStatement(req, res, next) {
                         }${sKey}`;
                       } else {
                         patObj[appendName] = sKey;
-                        console.log(
-                          "patObj[appendName]====>",
-                          patObj[appendName]
-                        );
+                        // console.log(
+                        //   "patObj[appendName]====>",
+                        //   patObj[appendName]
+                        // );
                       }
                     } else {
                       patObj[sKey.toLowerCase()] = amountSum;
@@ -163,6 +166,7 @@ export async function generateInsuranceStatement(req, res, next) {
             /**  For calculating aggregations */
             let aggregate = undefined;
             if (aggregations) {
+              aggregate ={};
               Object.keys(aggregations).forEach((item) => {
                 switch (item) {
                   case "SUM":
@@ -170,7 +174,7 @@ export async function generateInsuranceStatement(req, res, next) {
                       aggregations[item].forEach((agg) => {
                         aggregate["#" + agg] = _.sumBy(insurance, (s) =>
                           parseFloat(s[agg])
-                        );
+                        ).toFixed(decimal_places);
                       });
                     }
 
@@ -208,7 +212,7 @@ export async function generateInsuranceStatement(req, res, next) {
                   if (typeof cell.value === "string") {
                     cell.value = String(cell.value)
                       .replace("#CLINICNAME", clinincNameMapping)
-                      .replace("#COMPANYNAME", fileName)
+                      .replace("#COMPANYNAME", fileName1)
                       .replace("#FDATE", currentFDate)
                       .replace("#TDATE", currentTDate);
                     if (aggregate) {
