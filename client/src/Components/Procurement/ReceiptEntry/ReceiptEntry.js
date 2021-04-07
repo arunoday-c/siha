@@ -518,7 +518,7 @@ class ReceiptEntry extends Component {
                       onChange: textEventhandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExitst,
+                      disabled: this.state.dataPosted,
                     },
                   }}
                 />

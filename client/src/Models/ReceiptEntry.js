@@ -60,7 +60,8 @@ export default {
       project_desc: null,
       revert_visible: false,
       is_revert: "N",
-      dataRevert: true
+      dataRevert: true,
+      dataPosted: false,
     };
     return output;
   },

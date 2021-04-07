@@ -607,9 +607,10 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_f_procurement_grn_header` SET payment_terms=?, `posted`=?, `posted_date`=?, `posted_by`=? \
+            "UPDATE `hims_f_procurement_grn_header` SET inovice_number=?, payment_terms=?, `posted`=?, `posted_date`=?, `posted_by`=? \
           WHERE `hims_f_procurement_grn_header_id`=?",
           values: [
+            inputParam.inovice_number,
             inputParam.payment_terms,
             inputParam.posted,
             new Date(),
