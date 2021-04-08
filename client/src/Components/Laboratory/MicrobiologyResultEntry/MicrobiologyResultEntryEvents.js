@@ -108,6 +108,22 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, status) => {
+  if (!$this.state.bacteria_name) {
+    swalMessage({
+      title: "Please Enter Bacteria Name",
+      type: "warning",
+    });
+    document.querySelector("[name='bacteria_name']").focus();
+    return;
+  }
+  if (!$this.state.group_id) {
+    swalMessage({
+      title: "Please Enter Bacteria Group",
+      type: "warning",
+    });
+    document.querySelector("[name='group_id']").focus();
+    return;
+  }
   $this.state.status = status;
 
   $this.state.comments = $this.state.comment_list.join("<br/>");
