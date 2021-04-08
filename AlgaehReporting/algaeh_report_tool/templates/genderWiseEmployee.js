@@ -17,9 +17,10 @@ const executePDF = function executePDFMethod(options) {
       // utilities.logger().log("input: ", input);
 
       let strQuery = "";
+      let str = "";
 
       if (input.hospital_id > 0) {
-        strQuery += ` hims_d_hospital_id= ${input.hospital_id} `;
+        str += ` hims_d_hospital_id= ${input.hospital_id} `;
       }
 
       if (input.hospital_id > 0) {
@@ -47,7 +48,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          select  hospital_name FROM hims_d_hospital where  1+1 ${strQuery};
+          select  hospital_name FROM hims_d_hospital where  1+1 ${str};
           select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'

@@ -20,6 +20,8 @@
                         <th>Sl No.</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
+                        <th>Sales UOM</th> 
+                        <th>Item Category</th> 
                         <th>On-Hand</th>
                         <th>Weighted Avg. Cost</th>
                         <th>Stock Value</th>
@@ -35,7 +37,10 @@
                     </tr> --}}
                     {{#hasElement result}}
 
-
+   <tr class="numberFldTotal">
+                        <td colspan="7"></td>
+                        <td class="numberFld">{{numberFormating net_stock_value currencyOnly }}</td>
+                    </tr>
                     {{#each result}}
                     {{!-- <tr>
                         <td colspan="6" class="tableSubHdg">{{category_desc}}</td>
@@ -44,9 +49,9 @@
                     </tr> --}}
                     {{#each cateList}}
                     <tr>
-                        <td colspan="6" class="tableSubHdg">{{category_desc}}
+                        <td colspan="7" class="tableSubHdg">{{category_desc}}
                         </td>
-                        {{!-- <td class="tableSubHdg numberFld"><b>{{totalAmt}}</b></td> --}}
+                        <td class="tableSubHdg numberFld"><b>{{numberFormating total_stock_value ../../currencyOnly}}</b></td>
                     </tr>
                     {{#each docs}}
                     <tr>
@@ -54,19 +59,22 @@
                         <td>{{item_code}}</td>
                         <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
                             class="txtFld">{{item_description}}</td>
-                        <td>{{qty_hand}}</td>
+                        <td>{{uom_description}}</td> 
+                        <td>{{category_desc}}</td> 
+                        <td  class="numberFld">{{qty_hand}}</td> 
                         <td class="numberFld">{{numberFormating weighted_cost ../../../currencyOnlyWithoutSymbol}}</td>
                         <td class="numberFld">{{numberFormating stock_value ../../../currencyOnlyWithoutSymbol}}</td>
                     </tr>
                     {{/each }}
                       <tr class="numberFldTotalBottom">
-                        <td colspan="5"></td>
-                        {{!-- <td class="numberFld">{{qty_hand}}</td> --}}
-                        {{!-- <td class="numberFld">{{net_weighted_cost}}</td> --}}
+                        <td colspan="7"></td>
                         <td class="numberFld">{{numberFormating total_stock_value ../../currencyOnly}}</td>
                     </tr>
                     {{/each }}{{/each }}
-                  
+                      <tr class="numberFldTotal">
+                        <td colspan="7"></td>
+                        <td class="numberFld">{{numberFormating net_stock_value currencyOnly }}</td>
+                    </tr>
                     {{else}}
                     <tr>
                         <td colspan="6" class="noResultTextReport">No Records Found</td>
@@ -74,14 +82,7 @@
                 </tbody>
 
             </table>
-             <table class="tableTotal">
-                <tr class="bold">
-                    <td>Net Stock Value</td>
-                    <td class="numberFld">{{numberFormating net_stock_value currencyOnly }}</td>
-                   
-                </tr>
-               
-            </table>
+          
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
 
