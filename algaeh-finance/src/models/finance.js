@@ -2768,7 +2768,7 @@ export default {
           query: `select  ledger_code, child_name,root_id, 
             CASE WHEN finance_voucher_id > 0 THEN payment_date else CAST( NOW() AS Date ) END as payment_date, 
             finance_account_child_id,
-            CASE WHEN finance_voucher_id >0 THEN payment_type WHEN AH.root_id='1' THEN 'DR' else 'CR' END as payment_type,
+            CASE WHEN finance_voucher_id >0 THEN payment_type WHEN AH.root_id='1' OR AH.root_id='5' THEN 'DR' else 'CR' END as payment_type,
             CASE WHEN finance_voucher_id >0 and payment_type = 'DR' THEN debit_amount 
             WHEN finance_voucher_id >0 and payment_type = 'CR' THEN credit_amount else '0.00' END as opening_balance,                
             finance_voucher_id, is_opening_bal, 'N' as insert_into_header, AC.head_id, finance_account_child_id
