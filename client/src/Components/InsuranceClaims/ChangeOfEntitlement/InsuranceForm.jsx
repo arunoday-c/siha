@@ -136,6 +136,9 @@ export function InsuranceForm({
 
   const InsuranceChage = (e) => {
     setIsInsurance(e.target.value === "true" ? true : false);
+    setNewInsurance({
+      insured: e.target.value === "true" ? "Y" : "N",
+    });
     reset({
       primary_insurance_provider_id: "",
       primary_sub_id: "",

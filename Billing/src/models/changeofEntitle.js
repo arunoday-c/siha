@@ -52,7 +52,8 @@ export async function addChangeOfEntitlement(req, res, next) {
     const visit_bills = headerResult[4];
     const visit_bills_header = headerResult[5];
 
-    // console.log("visit_bills", visit_bills);
+    console.log("inputParam", inputParam);
+    // consol.log("inputParam", inputParam);
     let inpObj = {
       insured: inputParam.insured,
       vat_applicable: inputParam.vat_applicable,
@@ -181,7 +182,7 @@ export async function addChangeOfEntitlement(req, res, next) {
         ? []
         : recalculate_bills.data.records.billdetails;
 
-    console.log("visit_services", visit_services);
+    // console.log("visit_services", visit_services);
 
     const cal_order_serv = visit_services.filter(
       (f) => f.service_type_id === 5 || f.service_type_id === 11
