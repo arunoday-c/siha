@@ -649,19 +649,21 @@ export default {
   },
 
   generateAccountingEntryAdjustBill: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
-      const _options = req.connection == null ? {} : req.connection;
-
-      const _mysql = new algaehMysql(_options);
       // const utilities = new algaehUtilities();
+      // console.log("req.connection", req.connection);
+      // console.log("generateAccountingEntryAdjustBill");
 
       const inputParam = req.body;
 
+      // console.log("inputParam", inputParam);
       _mysql
         .executeQuery({
           query:
             "select product_type from  hims_d_organization where hims_d_organization_id=1\
-          and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+        and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
           printQuery: true,
         })
         .then((product_type) => {
@@ -669,17 +671,27 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_billing_header where hims_f_billing_header_id = ?;\
-                  select BD.* from hims_f_billing_header BH \
-                  inner join hims_f_billing_details BD ON BD.hims_f_billing_header_id = BH.hims_f_billing_header_id \
-                  where BH.hims_f_billing_header_id = ?;\
-                  select RD.* from hims_f_billing_header BH \
-                  inner join hims_f_receipt_details RD on RD.hims_f_receipt_header_id = BH.receipt_header_id \
-                  where BH.hims_f_billing_header_id=?;",
+                  "select *, company_payable as company_payble from hims_f_billing_header where hims_f_billing_header_id = ?;\
+                select BD.* from hims_f_billing_header BH \
+                inner join hims_f_billing_details BD ON BD.hims_f_billing_header_id = BH.hims_f_billing_header_id \
+                where BH.hims_f_billing_header_id = ?;\
+                select RD.* from hims_f_billing_header BH \
+                inner join hims_f_receipt_details RD on RD.hims_f_receipt_header_id = BH.receipt_header_id \
+                where BH.hims_f_billing_header_id=?;\
+                select *, company_payable as company_payble from hims_f_billing_header where hims_f_billing_header_id = ?;\
+                select BD.* from hims_f_billing_header BH \
+                inner join hims_f_billing_details BD ON BD.hims_f_billing_header_id = BH.hims_f_billing_header_id \
+                where BH.hims_f_billing_header_id = ?;\
+                select RD.* from hims_f_billing_header BH \
+                inner join hims_f_receipt_details RD on RD.hims_f_receipt_header_id = BH.receipt_header_id \
+                where BH.hims_f_billing_header_id=?;",
                 values: [
                   inputParam.from_bill_id,
                   inputParam.from_bill_id,
                   inputParam.from_bill_id,
+                  inputParam.hims_f_billing_header_id,
+                  inputParam.hims_f_billing_header_id,
+                  inputParam.hims_f_billing_header_id,
                 ],
                 printQuery: true,
               })
@@ -688,12 +700,13 @@ export default {
                 const bill_detail = bill_Result[1];
                 const receipt_details = bill_Result[2];
 
+                const new_bill_header = bill_Result[3][0];
+                const new_bill_detail = bill_Result[4];
+                const new_receipt_details = bill_Result[5];
+
                 const servicesIds = ["0"];
-                if (
-                  inputParam.billdetails &&
-                  inputParam.billdetails.length > 0
-                ) {
-                  inputParam.billdetails.forEach((item) => {
+                if (new_bill_detail && new_bill_detail.length > 0) {
+                  new_bill_detail.forEach((item) => {
                     servicesIds.push(item.services_id);
                   });
                 }
@@ -702,9 +715,9 @@ export default {
                   .executeQuery({
                     query:
                       "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
-                      account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL');\
-                      SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
-                      select cost_center_type, cost_center_required from finance_options limit 1;",
+                    account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL');\
+                    SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
+                    select cost_center_type, cost_center_required from finance_options limit 1;",
                     values: [servicesIds],
                     printQuery: true,
                   })
@@ -741,7 +754,7 @@ export default {
 
                     voucher_type = "sales";
 
-                    amount = inputParam.receiveable_amount;
+                    amount = new_bill_header.receiveable_amount;
                     narration =
                       "Bill Adjustment Done From :" + bill_header.bill_number;
 
@@ -749,7 +762,7 @@ export default {
                     // New Bill Booking
                     //Starts Here
                     serviceData.forEach((curService) => {
-                      const bill = inputParam.billdetails.filter((f) => {
+                      const bill = new_bill_detail.filter((f) => {
                         if (f.services_id == curService.hims_d_services_id)
                           return f;
                       });
@@ -770,24 +783,24 @@ export default {
                     });
 
                     //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
-                    if (inputParam.advance_adjust > 0) {
+                    if (new_bill_header.advance_adjust > 0) {
                       EntriesArray.push({
                         payment_date: new Date(),
                         head_id: OP_DEP.head_id,
                         child_id: OP_DEP.child_id,
-                        debit_amount: inputParam.advance_adjust,
+                        debit_amount: new_bill_header.advance_adjust,
                         payment_type: "DR",
                         credit_amount: 0,
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
                     //PROVIDING OP SERVICE ON CREDIT
-                    if (inputParam.credit_amount > 0) {
+                    if (new_bill_header.credit_amount > 0) {
                       EntriesArray.push({
                         payment_date: new Date(),
                         head_id: OP_REC.head_id,
                         child_id: OP_REC.child_id,
-                        debit_amount: inputParam.credit_amount,
+                        debit_amount: new_bill_header.credit_amount,
                         payment_type: "DR",
                         credit_amount: 0,
                         hospital_id: req.userIdentity.hospital_id,
@@ -795,7 +808,7 @@ export default {
                     }
 
                     //INCREASING CASH IN CAND AND BANK
-                    inputParam.receiptdetails.forEach((m) => {
+                    new_receipt_details.forEach((m) => {
                       if (m.pay_type == "CD") {
                         EntriesArray.push({
                           payment_date: new Date(),
@@ -822,13 +835,13 @@ export default {
                     //insurance company payable
                     if (
                       inputParam.insured == "Y" &&
-                      parseFloat(inputParam.company_payble) > 0
+                      parseFloat(new_bill_header.company_payble) > 0
                     ) {
                       EntriesArray.push({
                         payment_date: new Date(),
                         head_id: OP_CTRL.head_id,
                         child_id: OP_CTRL.child_id,
-                        debit_amount: inputParam.company_payble,
+                        debit_amount: new_bill_header.company_payble,
                         payment_type: "DR",
                         credit_amount: 0,
                         hospital_id: req.userIdentity.hospital_id,
@@ -837,14 +850,14 @@ export default {
 
                     //TAX part
 
-                    if (parseFloat(inputParam.total_tax) > 0) {
+                    if (parseFloat(new_bill_header.total_tax) > 0) {
                       EntriesArray.push({
                         payment_date: new Date(),
                         head_id: OUTPUT_TAX.head_id,
                         child_id: OUTPUT_TAX.child_id,
                         debit_amount: 0,
                         payment_type: "CR",
-                        credit_amount: inputParam.total_tax,
+                        credit_amount: new_bill_header.total_tax,
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -925,8 +938,10 @@ export default {
                     });
 
                     //insurance company payable
+                    // console.log("insured", inputParam.insured);
+                    // console.log("company_payble", bill_header.company_payble);
                     if (
-                      bill_header.insured == "Y" &&
+                      inputParam.insured == "Y" &&
                       parseFloat(bill_header.company_payble) > 0
                     ) {
                       EntriesArray.push({
@@ -962,23 +977,23 @@ export default {
                       Result[2][0].cost_center_type === "P"
                     ) {
                       strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
-                    inner join hims_d_project P on D.project_id=P.hims_d_project_id \
-                    inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
-                    division_id= ${req.userIdentity.hospital_id} limit 1;`;
+                  inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                  inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                  division_id= ${req.userIdentity.hospital_id} limit 1;`;
                     }
                     _mysql
                       .executeQueryWithTransaction({
                         query:
                           "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
-                  document_number,from_screen,narration,entered_by,entered_date) \
-                  VALUES (?,?,?,?,?,?,?,?,?);" +
+                document_number,from_screen,narration,entered_by,entered_date) \
+                VALUES (?,?,?,?,?,?,?,?,?);" +
                           strQuery,
                         values: [
                           new Date(),
                           amount,
                           voucher_type,
-                          inputParam.hims_f_billing_header_id,
-                          inputParam.bill_number,
+                          new_bill_header.hims_f_billing_header_id,
+                          new_bill_header.bill_number,
                           inputParam.ScreenCode,
                           narration,
                           req.userIdentity.algaeh_d_app_user_id,
@@ -1027,7 +1042,15 @@ export default {
                           })
                           .then((subResult) => {
                             // console.log("FOUR");
-                            next();
+                            if (req.connection == null) {
+                              req.records = updateOrder;
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                next();
+                              });
+                            } else {
+                              next();
+                            }
                           })
                           .catch((error) => {
                             _mysql.rollBackTransaction(() => {
@@ -1068,3 +1091,421 @@ export default {
     }
   },
 };
+
+export async function generateAccountingEntryChangeEntitle(req, res, next) {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    // const utilities = new algaehUtilities();
+    // console.log("req.connection", req.connection);
+    // console.log("generateAccountingEntryAdjustBill");
+
+    const inputParam = req.body;
+
+    // console.log("inputParam", inputParam);
+    const product_type = await _mysql
+      .executeQuery({
+        query:
+          "select product_type from  hims_d_organization where hims_d_organization_id=1\
+        and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+        printQuery: true,
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+    if (product_type.length == 1) {
+      const bill_Result = await _mysql
+        .executeQuery({
+          query:
+            "select *, company_payable as company_payble from hims_f_billing_header where hims_f_billing_header_id = ?;\
+                select BD.* from hims_f_billing_header BH \
+                inner join hims_f_billing_details BD ON BD.hims_f_billing_header_id = BH.hims_f_billing_header_id \
+                where BH.hims_f_billing_header_id = ?;\
+                select RD.* from hims_f_billing_header BH \
+                inner join hims_f_receipt_details RD on RD.hims_f_receipt_header_id = BH.receipt_header_id \
+                where BH.hims_f_billing_header_id=?;\
+                select *, company_payable as company_payble from hims_f_billing_header where hims_f_billing_header_id = ?;\
+                select BD.* from hims_f_billing_header BH \
+                inner join hims_f_billing_details BD ON BD.hims_f_billing_header_id = BH.hims_f_billing_header_id \
+                where BH.hims_f_billing_header_id = ?;\
+                select RD.* from hims_f_billing_header BH \
+                inner join hims_f_receipt_details RD on RD.hims_f_receipt_header_id = BH.receipt_header_id \
+                where BH.hims_f_billing_header_id=?;",
+          values: [
+            inputParam.from_bill_id,
+            inputParam.from_bill_id,
+            inputParam.from_bill_id,
+            inputParam.hims_f_billing_header_id,
+            inputParam.hims_f_billing_header_id,
+            inputParam.hims_f_billing_header_id,
+          ],
+          printQuery: true,
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+      const bill_header = bill_Result[0][0];
+      const bill_detail = bill_Result[1];
+      const receipt_details = bill_Result[2];
+
+      const new_bill_header = bill_Result[3][0];
+      const new_bill_detail = bill_Result[4];
+      const new_receipt_details = bill_Result[5];
+
+      console.log("new_bill_header", new_bill_header.company_payble);
+
+      const servicesIds = ["0"];
+      if (new_bill_detail && new_bill_detail.length > 0) {
+        new_bill_detail.forEach((item) => {
+          servicesIds.push(item.services_id);
+        });
+      }
+
+      const Result = await _mysql
+        .executeQuery({
+          query:
+            "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
+                    account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL');\
+                    SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
+                    select cost_center_type, cost_center_required from finance_options limit 1;",
+          values: [servicesIds],
+          printQuery: true,
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+      const controls = Result[0];
+      const serviceData = Result[1];
+      // const insurance_data = Result[3];
+
+      const OP_DEP = controls.find((f) => {
+        return f.account == "OP_DEP";
+      });
+
+      const CIH_OP = controls.find((f) => {
+        return f.account == "CIH_OP";
+      });
+      const OUTPUT_TAX = controls.find((f) => {
+        return f.account == "OUTPUT_TAX";
+      });
+      const OP_REC = controls.find((f) => {
+        return f.account == "OP_REC";
+      });
+      const CARD_SETTL = controls.find((f) => {
+        return f.account == "CARD_SETTL";
+      });
+      const OP_CTRL = controls.find((f) => {
+        return f.account == "OP_CTRL";
+      });
+
+      let voucher_type = "";
+      let narration = "";
+      let amount = 0;
+
+      const EntriesArray = [];
+
+      voucher_type = "sales";
+
+      amount = new_bill_header.receiveable_amount;
+      narration = "Bill Adjustment Done From :" + bill_header.bill_number;
+
+      //BOOKING INCOME AND TAX
+      // New Bill Booking
+      //Starts Here
+      serviceData.forEach((curService) => {
+        const bill = new_bill_detail.filter((f) => {
+          if (f.services_id == curService.hims_d_services_id) return f;
+        });
+
+        const credit_amount = _.sumBy(bill, (s) => parseFloat(s.net_amout));
+
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: curService.head_id,
+          child_id: curService.child_id,
+          debit_amount: 0,
+          payment_type: "CR",
+          credit_amount: credit_amount,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      });
+
+      //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
+      if (new_bill_header.advance_adjust > 0) {
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: OP_DEP.head_id,
+          child_id: OP_DEP.child_id,
+          debit_amount: new_bill_header.advance_adjust,
+          payment_type: "DR",
+          credit_amount: 0,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      }
+      //PROVIDING OP SERVICE ON CREDIT
+      if (new_bill_header.credit_amount > 0) {
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: OP_REC.head_id,
+          child_id: OP_REC.child_id,
+          debit_amount: new_bill_header.credit_amount,
+          payment_type: "DR",
+          credit_amount: 0,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      }
+
+      //INCREASING CASH IN CAND AND BANK
+      new_receipt_details.forEach((m) => {
+        if (m.pay_type == "CD") {
+          EntriesArray.push({
+            payment_date: new Date(),
+            head_id: CARD_SETTL.head_id,
+            child_id: CARD_SETTL.child_id,
+            debit_amount: m.amount,
+            payment_type: "DR",
+            credit_amount: 0,
+            hospital_id: req.userIdentity.hospital_id,
+          });
+        } else {
+          EntriesArray.push({
+            payment_date: new Date(),
+            head_id: CIH_OP.head_id,
+            child_id: CIH_OP.child_id,
+            debit_amount: m.amount,
+            payment_type: "DR",
+            credit_amount: 0,
+            hospital_id: req.userIdentity.hospital_id,
+          });
+        }
+      });
+
+      //insurance company payable
+      // console.log("insured", inputParam.insured);
+      // console.log("company_payble", new_bill_header.company_payble);
+      if (
+        inputParam.insured == "Y" &&
+        parseFloat(new_bill_header.company_payble) > 0
+      ) {
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: OP_CTRL.head_id,
+          child_id: OP_CTRL.child_id,
+          debit_amount: new_bill_header.company_payble,
+          payment_type: "DR",
+          credit_amount: 0,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      }
+
+      //TAX part
+
+      if (parseFloat(new_bill_header.total_tax) > 0) {
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: OUTPUT_TAX.head_id,
+          child_id: OUTPUT_TAX.child_id,
+          debit_amount: 0,
+          payment_type: "CR",
+          credit_amount: new_bill_header.total_tax,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      }
+      //Ends Here
+
+      //REVERT BOOKING INCOME AND TAX
+      //Old Bill revert
+      //Starts Here
+      serviceData.forEach((curService) => {
+        const bill = bill_detail.filter((f) => {
+          if (f.services_id == curService.hims_d_services_id) return f;
+        });
+
+        const debeit_amount = _.sumBy(bill, (s) => parseFloat(s.net_amout));
+
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: curService.head_id,
+          child_id: curService.child_id,
+          debit_amount: debeit_amount,
+          payment_type: "DR",
+          credit_amount: 0,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      });
+
+      //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
+      if (bill_header.advance_adjust > 0) {
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: OP_DEP.head_id,
+          child_id: OP_DEP.child_id,
+          debit_amount: 0,
+          payment_type: "CR",
+          credit_amount: bill_header.advance_adjust,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      }
+      //PROVIDING OP SERVICE ON CREDIT
+      if (bill_header.credit_amount > 0) {
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: OP_REC.head_id,
+          child_id: OP_REC.child_id,
+          debit_amount: 0,
+          payment_type: "CR",
+          credit_amount: bill_header.credit_amount,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      }
+
+      //INCREASING CASH IN CAND AND BANK
+      receipt_details.forEach((m) => {
+        if (m.pay_type == "CD") {
+          EntriesArray.push({
+            payment_date: new Date(),
+            head_id: CARD_SETTL.head_id,
+            child_id: CARD_SETTL.child_id,
+            debit_amount: 0,
+            payment_type: "CR",
+            credit_amount: m.amount,
+            hospital_id: req.userIdentity.hospital_id,
+          });
+        } else {
+          EntriesArray.push({
+            payment_date: new Date(),
+            head_id: CIH_OP.head_id,
+            child_id: CIH_OP.child_id,
+            debit_amount: 0,
+            payment_type: "CR",
+            credit_amount: m.amount,
+            hospital_id: req.userIdentity.hospital_id,
+          });
+        }
+      });
+
+      //insurance company payable
+      if (
+        inputParam.insured == "Y" &&
+        parseFloat(bill_header.company_payble) > 0
+      ) {
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: OP_CTRL.head_id,
+          child_id: OP_CTRL.child_id,
+          debit_amount: 0,
+          payment_type: "CR",
+          credit_amount: bill_header.company_payble,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      }
+
+      //TAX part
+
+      if (parseFloat(bill_header.total_tax) > 0) {
+        EntriesArray.push({
+          payment_date: new Date(),
+          head_id: OUTPUT_TAX.head_id,
+          child_id: OUTPUT_TAX.child_id,
+          debit_amount: bill_header.total_tax,
+          payment_type: "DR",
+          credit_amount: 0,
+          hospital_id: req.userIdentity.hospital_id,
+        });
+      }
+      //Ends Here
+
+      let strQuery = "";
+
+      if (
+        Result[2][0].cost_center_required === "Y" &&
+        Result[2][0].cost_center_type === "P"
+      ) {
+        strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                  inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                  inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                  division_id= ${req.userIdentity.hospital_id} limit 1;`;
+      }
+      const header_result = await _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                document_number,from_screen,narration,entered_by,entered_date) \
+                VALUES (?,?,?,?,?,?,?,?,?);" +
+            strQuery,
+          values: [
+            new Date(),
+            amount,
+            voucher_type,
+            new_bill_header.hims_f_billing_header_id,
+            new_bill_header.bill_number,
+            inputParam.ScreenCode,
+            narration,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+          ],
+          printQuery: true,
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+      let project_id = null;
+
+      let headerDayEnd = [];
+      if (header_result.length > 1) {
+        headerDayEnd = header_result[0];
+        project_id = header_result[1][0].project_id;
+      } else {
+        headerDayEnd = header_result;
+      }
+
+      const month = moment().format("M");
+      const year = moment().format("YYYY");
+      const IncludeValuess = [
+        "payment_date",
+        "head_id",
+        "child_id",
+        "debit_amount",
+        "payment_type",
+        "credit_amount",
+        "hospital_id",
+      ];
+
+      const subResult = await _mysql
+        .executeQueryWithTransaction({
+          query: "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+          values: EntriesArray,
+          includeValues: IncludeValuess,
+          bulkInsertOrUpdate: true,
+          extraValues: {
+            year: year,
+            month: month,
+            day_end_header_id: headerDayEnd.insertId,
+            project_id: project_id,
+            sub_department_id: req.body.sub_department_id,
+          },
+          printQuery: true,
+        })
+        .catch((error) => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+      next();
+    } else {
+      next();
+    }
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}

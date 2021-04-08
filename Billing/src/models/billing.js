@@ -2477,8 +2477,8 @@ export default {
     const utilities = new algaehUtilities();
 
     try {
-      console.log("getBillDetails");
-      console.log("req.body", req.body);
+      // console.log("getBillDetails");
+      // console.log("req.body", req.body);
       if (req.body.length > 0) {
         const input = req.body;
         const decimal_places = req.userIdentity.decimal_places;
@@ -2532,10 +2532,10 @@ export default {
                where SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
 
-            console.log(
-              "input[0].sub_department_id",
-              input[0].sub_department_id
-            );
+            // console.log(
+            //   "input[0].sub_department_id",
+            //   input[0].sub_department_id
+            // );
             if (input[0].sub_department_id != null) {
               strQuery += `select department_type from hims_d_sub_department where hims_d_sub_department_id=${input[0].sub_department_id}`;
             } else {
@@ -2700,8 +2700,8 @@ export default {
                     ? "N"
                     : servicesDetails.insured;
 
-                console.log("servicesDetails.insured", servicesDetails.insured);
-                console.log("insured", insured);
+                // console.log("servicesDetails.insured", servicesDetails.insured);
+                // console.log("insured", insured);
 
                 // let sec_insured =
                 //   servicesDetails.sec_insured == undefined
@@ -2820,10 +2820,10 @@ export default {
                     ? policydtls.cpt_code
                     : records.cpt_code;
 
-                console.log(
-                  "policydtls.company_service_price_type",
-                  policydtls.company_service_price_type
-                );
+                // console.log(
+                //   "policydtls.company_service_price_type",
+                //   policydtls.company_service_price_type
+                // );
                 if (insured == "Y" && policydtls.covered == "Y") {
                   if (FollowUp === true) {
                     ser_net_amount = 0;
@@ -2841,7 +2841,7 @@ export default {
                   }
 
                   gross_total = policydtls.gross_amt;
-                  console.log("unit_cost", unit_cost);
+                  // console.log("unit_cost", unit_cost);
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
                   // }
@@ -2965,8 +2965,8 @@ export default {
                       copay_percentage = policydtls.copay_percent;
                     }
 
-                    console.log("deductable_percentage", deductable_percentage);
-                    console.log("deductable_type", policydtls.deductable_type);
+                    // console.log("deductable_percentage", deductable_percentage);
+                    // console.log("deductable_type", policydtls.deductable_type);
                     if (policydtls.deductable_type) {
                       if (policydtls.deductable_type === "AMOUNT") {
                         deductable_amount =
@@ -2995,13 +2995,13 @@ export default {
                       decimal_places
                     );
 
-                    console.log("deductable_amount", deductable_amount);
+                    // console.log("deductable_amount", deductable_amount);
 
                     after_dect_amout =
                       parseFloat(net_amout) - parseFloat(deductable_amount);
 
-                    console.log("after_dect_amout", after_dect_amout);
-                    console.log("copay_percentage", copay_percentage);
+                    // console.log("after_dect_amout", after_dect_amout);
+                    // console.log("copay_percentage", copay_percentage);
                     copay_amount =
                       (parseFloat(after_dect_amout) *
                         parseFloat(copay_percentage)) /
@@ -3011,9 +3011,9 @@ export default {
                       decimal_places
                     );
 
-                    console.log("copay_amount", copay_amount);
+                    // console.log("copay_amount", copay_amount);
                   }
-                  console.log("net_amout", net_amout);
+                  // console.log("net_amout", net_amout);
                   // utilities
                   //   .logger()
                   //   .log("service_type_id: ", typeof patient_resp);
@@ -3806,7 +3806,8 @@ export default {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query: `select hims_f_billing_header_id, bill_number, bill_date, sub_total_amount from hims_f_billing_header where visit_id =? `,
+          query: `select hims_f_billing_header_id, bill_number, bill_date, sub_total_amount from \
+          hims_f_billing_header where adjusted = 'N' and cancelled='N' and visit_id =? `,
           values: [req.query.visit_id],
         })
         .then((result) => {

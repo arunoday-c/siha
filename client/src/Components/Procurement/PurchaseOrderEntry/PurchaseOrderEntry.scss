@@ -18,6 +18,15 @@
 }
 
 .hoverVendor {
+  position: absolute;
+  right: 15px;
+  top:0;
+  padding: 0 5px;
+  border:1px solid lighten($color-black, 80%);
+  height: 23px;
+  cursor: pointer;
+  z-index: 9;
+
   &:hover {
     .vendorDetCntr {
       display: block;
@@ -25,14 +34,13 @@
   }
   .vendorDetCntr {
     position: absolute;
-    top: 54px;
-    right: 15px;
+    top: 22px;
+    right: 0;
     z-index: 999;
     width: 700px;
     height: auto;
     background: $color-white;
     box-shadow: 0 20px 20px lighten($color-black, 60%);
-    border-radius: 0 4px 4px 4px;
     padding: 6px;
     display: none;
     table {
