@@ -20,7 +20,6 @@ export async function schedulerTask() {
   if (!schedules) {
     return;
   }
-
   const schedulers = Object.keys(schedules);
   for (let k = 0; k < schedulers.length; k++) {
     const key = schedulers[k];
@@ -37,7 +36,6 @@ export async function schedulerTask() {
       item.name,
       `${item.second} ${item.minute} ${item.hour} ${item.dayOfMonth} ${item.month} ${item.dayOfWeek}`,
       async () => {
-        console.log("Started Inside manager");
         let connection = await pool.getConnection();
         const result = await queryExecuter(
           {
@@ -46,6 +44,7 @@ export async function schedulerTask() {
           },
           connection
         );
+        connection.release();
         if (result && result.length > 0) {
           let templateRecords = await ReadAndExecuteTemplate(
             { templateFile: item.templateFile, data: result },
@@ -53,7 +52,7 @@ export async function schedulerTask() {
           );
           if (templateRecords.length > 0) {
             let mysqlQuery = `INSERT INTO Notification.notification_collection(primary_user_ids,
-              primary_message,other_message,other_user_ids,created_at,record_inactive,title,module_type) VALUES ?`;
+                  primary_message,other_message,other_user_ids,created_at,record_inactive,title,module_type) VALUES ?`;
             let updateBase = "";
             const values: any[] = [];
             for (let i = 0; i < templateRecords.length; i++) {
@@ -90,7 +89,13 @@ export async function schedulerTask() {
             await connection.query(mysqlQuery, [values]);
             await connection.query(updateBase);
             connection.release();
+          } else {
+            connection.release();
+            return;
           }
+        } else {
+          connection.release();
+          return;
         }
       }
     );
@@ -142,9 +147,9 @@ async function queryExecuter(
     if (sqlQuery) {
       const [rows] = await connection.query(sqlQuery);
       data = rows;
-      console.log("<<<data get >>>>", data);
+      connection.release();
     }
-
+    console.log("<<<<daata>>>>>", data);
     return data;
   } catch (e) {
     connection.release();
