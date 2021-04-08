@@ -171,12 +171,12 @@ export async function addChangeOfEntitlement(req, res, next) {
       });
     }
 
-    console.log("recalculate_services", recalculate_services);
+    console.log("recalculate_services", recalculate_services.data.records.billdetails);
 
     const visit_services =
       recalculate_services === null
         ? []
-        : recalculate_services.data.records.billdetail;
+        : recalculate_services.data.records.billdetails;
     const visit_bills_data =
       recalculate_bills === null
         ? []
