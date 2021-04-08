@@ -375,7 +375,7 @@ class MicrobiologyResultEntry extends Component {
                         }}
                         textBox={{
                           value: this.state.bacteria_name,
-                          className: "txt-fld",
+                          className: "form-control",
                           name: "bacteria_name",
 
                           events: {
