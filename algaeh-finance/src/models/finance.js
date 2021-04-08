@@ -2312,7 +2312,7 @@ export default {
               const data = result[1][0];
 
               if (data.root_id == 1 || data.root_id == 5) {
-                if (parseFloat(input.opening_balance) > 0) {
+                if (parseFloat(input.opening_balance) >= 0) {
                   voucherStr = `update finance_voucher_details set ${
                     input.type === "CR" ? "credit_amount" : "debit_amount"
                   }=${input.opening_balance},
@@ -2332,7 +2332,7 @@ export default {
                 data.root_id == 3 ||
                 data.root_id == 4
               ) {
-                if (parseFloat(input.opening_balance) > 0) {
+                if (parseFloat(input.opening_balance) >= 0) {
                   voucherStr = `update finance_voucher_details set ${
                     input.type === "DR" ? "debit_amount" : "credit_amount"
                   }=${input.opening_balance},
