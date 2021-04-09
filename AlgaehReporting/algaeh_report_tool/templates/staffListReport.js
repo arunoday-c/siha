@@ -20,7 +20,7 @@ const executePDF = function executePDFMethod(options) {
       let strQuery = "";
 
       if (input.hospital_id > 0) {
-        str += ` hims_d_hospital_id= ${input.hospital_id} `;
+        str += ` and hims_d_hospital_id= ${input.hospital_id} `;
       }
 
       if (input.hospital_id > 0) {
