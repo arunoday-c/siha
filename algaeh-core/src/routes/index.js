@@ -36,6 +36,7 @@ import organization from "../controller/organization";
 import pharmacy from "../Pharmacy/controller/pharmacy";
 import appointment from "../controller/appointment";
 import doctorsCommission from "../controller/doctorsCommission";
+import doctorsCommissionNew from "../controller/doctorsCommissionNew";
 import employeesetups from "../controller/employeesetups";
 import initialstock from "../Pharmacy/controller/initialstock";
 import pharmacyGlobal from "../Pharmacy/controller/pharmacyGlobal";
@@ -89,8 +90,7 @@ import myInit from "../controller/myinit";
 //function(db)
 const config = con.default;
 // const db={};
-initializedDb(db => {
-
+initializedDb((db) => {
   //internal middleware
   router.use(middleware({ config, db }));
   //api router v1
@@ -130,6 +130,7 @@ initializedDb(db => {
   router.use("/pharmacy", pharmacy({ config, db }));
   router.use("/appointment", appointment({ config, db }));
   router.use("/doctorsCommission", doctorsCommission({ config, db }));
+  router.use("/doctorsCommissionNew", doctorsCommissionNew({ config, db }));
   router.use("/employeesetups", employeesetups({ config, db }));
   router.use("/initialstock", initialstock({ config, db }));
   router.use("/pharmacyGlobal", pharmacyGlobal({ config, db }));
@@ -177,7 +178,6 @@ initializedDb(db => {
   router.use("/dentalForm", dentalForm({ config, db }));
   router.use("/opthometry", opthometry({ config, db }));
   router.use("/diagram", diagram({ config, db }));
-
 });
 
 export default router;

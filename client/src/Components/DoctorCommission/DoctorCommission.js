@@ -1,112 +1,358 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import Enumerable from "linq";
+import React, { useState } from "react";
+// import { withRouter } from "react-router-dom";
+// import { connect } from "react-redux";
+// import { bindActionCreators } from "redux";
+// import Enumerable from "linq";
 import {
-  AlagehFormGroup,
-  AlgaehDataGrid,
+  //   AlagehFormGroup,
+  //   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDateHandler,
+  //   AlagehAutoComplete,
+  //   AlgaehDateHandler,
 } from "../Wrapper/algaehWrapper";
+import {
+  // AlgaehLabel,
+  Spin,
+  AlgaehDataGrid,
+  // AlgaehDateHandler,
+  AlgaehAutoComplete,
+  // AlgaehLabel,
+  AlgaehDateHandler,
+  AlgaehFormGroup,
+  // AlgaehMessagePop,
+  // AlgaehSearch,
+  // algaehAxios,
+  AlgaehMessagePop,
+  // // DatePicker,
+  // AlgaehModal,
+  // AlgaehHijriDatePicker,
+  // // AlgaehTreeSearch,
+  // AlgaehSecurityComponent,
+
+  //   AlgaehButton,
+} from "algaeh-react-components";
+import { Controller, useForm } from "react-hook-form";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
-import {
-  changeTexts,
-  LoadBills,
-  datehandle,
-  ClearData,
-  CalculateCommission,
-  AdjustAmountCalculate,
-  dateValidate,
-} from "./DoctorCommissionEvents";
+// import {
+//   // changeTexts,
+//   // LoadBills,
+//   // datehandle,
+//   // ClearData,
+//   // CalculateCommission,
+//   // AdjustAmountCalculate,
+//   dateValidate,
+// } from "./DoctorCommissionEvents";
 import "./DoctorCommission.scss";
 import "../../styles/site.scss";
-import { AlgaehActions } from "../../actions/algaehActions";
-
+// import { AlgaehActions } from "../../actions/algaehActions";
+import { newAlgaehApi } from "../../hooks";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
-
+import { useQuery, useMutation } from "react-query";
 import { GetAmountFormart } from "../../utils/GlobalFunctions";
+// import { initial } from "lodash";
+const getProviderDetails = async () => {
+  const res = await newAlgaehApi({
+    uri: "/employee/get",
+    module: "hrManagement",
+    method: "GET",
+  });
+  return res.data?.records;
+};
+const getServiceTypes = async () => {
+  const res = await newAlgaehApi({
+    uri: "/serviceType",
+    module: "masterSettings",
+    method: "GET",
+  });
+  return res.data?.records;
+};
+const getServices = async () => {
+  const res = await newAlgaehApi({
+    uri: "/serviceType/getService",
+    module: "masterSettings",
+    method: "GET",
+  });
+  return res.data?.records;
+};
+const getLoadBills = async (key, { data }) => {
+  let inpObj = {
+    incharge_or_provider: data.doctor_id,
+    from_date: moment(data.from_date).format(Options.dateFormatYear),
+    to_date: moment(data.to_date).format(Options.dateFormatYear),
+    select_type: data.select_type,
+    service_type_id: data.select_service,
+  };
+  const res = await newAlgaehApi({
+    uri: "/doctorsCommissionNew/getDoctorsCommission",
+    method: "GET",
+    data: inpObj,
+  });
+  return res.data?.records;
+};
+const CalculateCommission = async (data) => {
+  const res = await newAlgaehApi({
+    uri: "/doctorsCommissionNew/doctorsCommissionCal",
+    method: "POST",
+    data: data,
+  });
+  return res.data?.records;
+};
 
-class DoctorCommission extends Component {
-  constructor(props) {
-    super(props);
+const AdjustAmountCalculateGet = async (data) => {
+  const res = await newAlgaehApi({
+    uri: "/doctorsCommissionNew/commissionCalculations",
+    method: "POST",
+    data: {
+      adjust_amount: data.adjust_amount,
+      gross_comission: data.gross_comission,
+    },
+  });
+  return res.data?.records;
+};
+const addDoctorsCommission = async (data) => {
+  const res = await newAlgaehApi({
+    uri: "/doctorsCommissionNew/addDoctorsCommission",
+    method: "POST",
+    data: data,
+  });
+  return res.data?.records;
+};
 
-    this.state = {
-      providers: [],
+const commissionCalculations = async (data) => {
+  const res = await newAlgaehApi({
+    uri: "/doctorsCommissionNew/commissionCalculations",
+    method: "POST",
+    data: data,
+  });
+  return res.data?.records;
+};
+const getGeneratedCommission = async (data) => {
+  const res = await newAlgaehApi({
+    uri: "/doctorsCommissionNew/getGeneratedCommission",
+    method: "GET",
+    data: { comission_code: data },
+  });
+  return res.data?.records;
+};
+// class DoctorCommission extends Component {
+// constructor(props) {
+//   super(props);
+
+//   this.state = {
+//     providers: [],
+//     select_type: "AS",
+//     doctor_id: null,
+//     from_date: null,
+//     to_date: null,
+//     select_service: null,
+//     case_type: "OP",
+//     adjust_amount: 0,
+//     billscommission: [],
+//     op_commision: 0,
+//     op_credit_comission: 0,
+//     gross_comission: 0,
+//     comission_payable: 0,
+//   };
+// }
+
+// componentDidMount() {
+//   this.props.getProviderDetails({
+//     uri: "/employee/get",
+//     module: "hrManagement",
+//     method: "GET",
+//     redux: {
+//       type: "DOCTOR_GET_DATA",
+//       mappingName: "providers",
+//     },
+//     afterSuccess: (data) => {
+//       let providers = Enumerable.from(data)
+//         .where((w) => w.isdoctor === "Y")
+//         .toArray();
+//       this.setState({ providers: providers });
+//     },
+//   });
+
+//   this.props.getServiceTypes({
+//     uri: "/serviceType",
+//     module: "masterSettings",
+//     method: "GET",
+//     redux: {
+//       type: "SERVIES_TYPES_GET_DATA",
+//       mappingName: "servicetype",
+//     },
+//   });
+
+//   this.props.getServices({
+//     uri: "/serviceType/getService",
+//     module: "masterSettings",
+//     method: "GET",
+//     redux: {
+//       type: "SERVICES_GET_DATA",
+//       mappingName: "services",
+//     },
+//   });
+
+// }
+
+// render() {
+function DoctorCommission() {
+  const [providers, setProviders] = useState([]);
+  const [billscommission, setBillscommission] = useState([]);
+  const [op_commision, setOp_commision] = useState(0.0);
+  const [op_credit_comission, setOp_credit_comission] = useState(0.0);
+  const [loadBillData, setLoadBillData] = useState(false);
+  const [gross_comission, setGross_comission] = useState(0.0);
+  const [comission_payable, setComission_payable] = useState(0.0);
+  const [adjust_amount, setAdjust_amount] = useState(null);
+  const [commission_number, setCommission_number] = useState(null);
+  const [disabled, setDisabled] = useState(false);
+  const [disableAdjust, setDisableAdjust] = useState(true);
+  const {
+    control,
+    errors,
+    reset,
+    getValues,
+    watch,
+    setValue,
+    handleSubmit,
+  } = useForm({
+    shouldFocusError: true,
+    defaultValues: {
+      select_type: "AS",
+      case_type: "OP",
+    },
+  });
+  const select_type = watch("select_type");
+
+  const { data: providers1 } = useQuery(
+    ["get-providerDetails"],
+    getProviderDetails,
+    {
+      onSuccess: (data) => {
+        let providers12 = data.filter((f) => f.isdoctor === "Y");
+        console.log("providers", providers1, providers);
+        setProviders(providers12);
+      },
+    }
+  );
+
+  const { data: servicetype } = useQuery("get-servicesType", getServiceTypes, {
+    onSuccess: (data) => {},
+  });
+  const { data: services } = useQuery("get-services", getServices, {
+    onSuccess: (data) => {},
+  });
+  const onError = (err) => {
+    AlgaehMessagePop({
+      type: "error",
+      display: err?.message,
+    });
+  };
+  const [getCommissionCalculation] = useMutation(commissionCalculations, {
+    onSuccess: (data) => {
+      setGross_comission(data.gross_comission);
+      setComission_payable(data.comission_payable);
+      setOp_commision(data.op_commision);
+      setOp_credit_comission(data.op_credit_comission);
+    },
+    onError,
+  });
+  const [AdjustAmountCalculate] = useMutation(AdjustAmountCalculateGet, {
+    onSuccess: (data) => {
+      setComission_payable(data.comission_payable);
+    },
+    onError,
+  });
+  const { isLoading: loadingBills } = useQuery(
+    ["bill-data", { data: getValues() }],
+
+    getLoadBills,
+
+    {
+      initialStale: true,
+      enabled: loadBillData,
+      onSuccess: (data) => {
+        setBillscommission(data);
+        setLoadBillData(false);
+      },
+    }
+  );
+
+  const [getCalculatedCommission] = useMutation(CalculateCommission, {
+    onSuccess: (data) => {
+      setBillscommission(data);
+      setDisableAdjust(false);
+      getCommissionCalculation(data);
+    },
+    onError,
+  });
+  const [addCommission, { isLoading: loadingAdd }] = useMutation(
+    addDoctorsCommission,
+    {
+      onSuccess: (data) => {
+        setDisabled(true);
+      },
+      onError,
+    }
+  );
+  const [getCommission] = useMutation(getGeneratedCommission, {
+    onSuccess: (data) => {
+      reset({ ...data });
+
+      setValue("doctor_id", data.provider_id);
+      setValue("select_type", data.selected_service_type);
+      setGross_comission(data.gross_comission);
+      setComission_payable(data.comission_payable);
+      setOp_commision(data.op_commision);
+      setAdjust_amount(data.adjust_amount);
+      setBillscommission(data.detailResult);
+      setOp_credit_comission(data.op_credit_comission);
+      setDisabled(true);
+    },
+    onError,
+  });
+  const submit = (data) => {
+    setLoadBillData(true);
+  };
+
+  const ClearData = () => {
+    reset({
       select_type: "AS",
       doctor_id: null,
       from_date: null,
       to_date: null,
       select_service: null,
       case_type: "OP",
-      adjust_amount: 0,
-      billscommission: [],
-      op_commision: 0,
-      op_credit_comission: 0,
-      gross_comission: 0,
-      comission_payable: 0,
-    };
-  }
-
-  componentDidMount() {
-    this.props.getProviderDetails({
-      uri: "/employee/get",
-      module: "hrManagement",
-      method: "GET",
-      redux: {
-        type: "DOCTOR_GET_DATA",
-        mappingName: "providers",
-      },
-      afterSuccess: (data) => {
-        let providers = Enumerable.from(data)
-          .where((w) => w.isdoctor === "Y")
-          .toArray();
-        this.setState({ providers: providers });
-      },
     });
-
-    this.props.getServiceTypes({
-      uri: "/serviceType",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVIES_TYPES_GET_DATA",
-        mappingName: "servicetype",
-      },
-    });
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "services",
-      },
-    });
-  }
-
-  dateFormater(value) {
+    setBillscommission([]);
+    setOp_commision(0.0);
+    setOp_credit_comission(0.0);
+    setGross_comission(0.0);
+    setComission_payable(0.0);
+    setAdjust_amount(0.0);
+    setCommission_number(null);
+    setDisabled(false);
+    setDisableAdjust(true);
+  };
+  const dateFormater = (value) => {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
     }
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <div>
+  };
+  return (
+    <>
+      <div>
+        <Spin spinning={loadingBills || loadingAdd}>
           <BreadCrumb
             title={
               <AlgaehLabel
                 label={{ forceLabel: "Doctor's Commission", align: "ltr" }}
               />
             }
-            breadStyle={this.props.breadStyle}
+            // breadStyle={this.props.breadStyle}
             //breadWidth={this.props.breadWidth}
             // pageNavPath={[
             //   {
@@ -127,16 +373,21 @@ class DoctorCommission extends Component {
             //     )
             //   }
             // ]}
+
             soptlightSearch={{
               label: (
                 <AlgaehLabel
                   label={{ forceLabel: "Commission Number", returnText: true }}
                 />
               ),
-              value: this.state.commission_number,
-              selectValue: "commission_number",
+              value: commission_number,
+              selectValue: "comission_code",
               events: {
-                onChange: null,
+                onChange: (row) => {
+                  setCommission_number(row);
+
+                  getCommission(row);
+                },
               },
               jsonFile: {
                 fileName: "spotlightSearch",
@@ -159,19 +410,54 @@ class DoctorCommission extends Component {
                 events={{
                   onChange: null,
                 }}
-                value={this.state.doctoCommGrid_date}
+                // value={this.state.doctoCommGrid_date}
               />
             }
-            selectedLang={this.state.selectedLang}
+            // selectedLang={this.state.selectedLang}
           />
 
           <div className="hptl-phase1-doctor-commission-form">
             <div
-              className="row inner-top-search"
+              className="row inner-top-search margin-bottom-15"
               style={{ marginTop: 76, paddingBottom: 10 }}
               data-validate="DoctorData"
             >
-              <AlagehAutoComplete
+              <form onSubmit={handleSubmit(submit)}>
+                <Controller
+                  name="doctor_id"
+                  control={control}
+                  rules={{ required: "Select Doctor" }}
+                  render={({ value, onChange }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col-10 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Doctor",
+                        isImp: true,
+                      }}
+                      error={errors}
+                      selector={{
+                        className: "form-control",
+                        name: "doctor_id",
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+
+                          // setValue("service_amount", _.standard_fee);
+                        },
+
+                        dataSource: {
+                          textField: "full_name",
+                          valueField: "hims_d_employee_id",
+                          data: providers,
+                        },
+                        others: {
+                          disabled: disabled,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Doctor",
@@ -189,9 +475,48 @@ class DoctorCommission extends Component {
 
                   onChange: changeTexts.bind(this, this),
                 }}
-              />
-
-              <AlgaehDateHandler
+              /> */}
+                <Controller
+                  name="from_date"
+                  control={control}
+                  rules={{
+                    required: "Please enter  from Date",
+                  }}
+                  render={({ value, onChange }) => (
+                    <AlgaehDateHandler
+                      div={{
+                        className: "col-10 form-group mandatory",
+                      }}
+                      error={errors}
+                      label={{
+                        forceLabel: "From Date",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "form-control",
+                        name: "from_date",
+                        value,
+                      }}
+                      events={{
+                        onChange: (mdate) => {
+                          if (mdate) {
+                            onChange(mdate._d);
+                            // getReceiptEntryList(getValues());
+                          } else {
+                            onChange(undefined);
+                          }
+                        },
+                        onClear: () => {
+                          onChange(undefined);
+                        },
+                        // onBlur: () => dateValidate(),
+                      }}
+                      others={{ disabled: disabled }}
+                      maxDate={new Date()}
+                    />
+                  )}
+                />
+                {/* <AlgaehDateHandler
                 div={{ className: "col" }}
                 label={{ forceLabel: "Form Date", isImp: true }}
                 textBox={{ className: "txt-fld", name: "from_date" }}
@@ -201,9 +526,51 @@ class DoctorCommission extends Component {
                   onBlur: dateValidate.bind(this, this),
                 }}
                 value={this.state.from_date}
-              />
-
-              <AlgaehDateHandler
+              /> */}
+                <Controller
+                  name="to_date"
+                  control={control}
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "Please enter  from Date",
+                    },
+                  }}
+                  render={({ value, onChange }) => (
+                    <AlgaehDateHandler
+                      div={{
+                        className: "col-10 form-group mandatory",
+                      }}
+                      error={errors}
+                      label={{
+                        forceLabel: "To Date",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "form-control",
+                        name: "to_date",
+                        value,
+                      }}
+                      events={{
+                        onChange: (mdate) => {
+                          if (mdate) {
+                            onChange(mdate._d);
+                            // getReceiptEntryList(getValues());
+                          } else {
+                            onChange(undefined);
+                          }
+                        },
+                        onClear: () => {
+                          onChange(undefined);
+                        },
+                        // onBlur: () => dateValidate(),
+                      }}
+                      others={{ disabled: disabled }}
+                      maxDate={new Date()}
+                    />
+                  )}
+                />
+                {/* <AlgaehDateHandler
                 div={{ className: "col" }}
                 label={{ fieldName: "to_date", isImp: true }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
@@ -213,9 +580,43 @@ class DoctorCommission extends Component {
                   onBlur: dateValidate.bind(this, this),
                 }}
                 value={this.state.to_date}
-              />
+              /> */}
 
-              <AlagehAutoComplete
+                <Controller
+                  name="select_type"
+                  control={control}
+                  rules={{ required: "Select bed" }}
+                  render={({ value, onChange }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col-10 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Select Type",
+                        isImp: true,
+                      }}
+                      error={errors}
+                      selector={{
+                        className: "form-control",
+                        name: "select_type",
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+
+                          // setValue("service_amount", _.standard_fee);
+                        },
+
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.SERVICE_COMMISSION,
+                        },
+                        others: {
+                          disabled: disabled,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Select Type",
@@ -233,8 +634,44 @@ class DoctorCommission extends Component {
 
                   onChange: changeTexts.bind(this, this),
                 }}
-              />
-              <AlagehAutoComplete
+              /> */}
+                <Controller
+                  name="select_service"
+                  control={control}
+                  // rules={{ required: "Select bed" }}
+                  render={({ value, onChange }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col-10 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Select Type",
+                        // isImp: true,
+                      }}
+                      // error={errors}
+                      selector={{
+                        className: "form-control",
+                        name: "select_service",
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+
+                          // setValue("service_amount", _.standard_fee);
+                        },
+
+                        dataSource: {
+                          textField: "service_type",
+                          valueField: "hims_d_service_type_id",
+                          data: servicetype,
+                        },
+                        others: {
+                          disabled:
+                            disabled || select_type === "AS" ? true : false,
+                          tabIndex: "4",
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Service Type",
@@ -253,8 +690,43 @@ class DoctorCommission extends Component {
                   },
                   onChange: changeTexts.bind(this, this),
                 }}
-              />
-              <AlagehAutoComplete
+              /> */}
+                <Controller
+                  name="case_type"
+                  control={control}
+                  // rules={{ required: "Select bed" }}
+                  render={({ value, onChange }) => (
+                    <AlgaehAutoComplete
+                      div={{ className: "col-4 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Case Type",
+                        // isImp: true,
+                      }}
+                      // error={errors}
+                      selector={{
+                        className: "form-control",
+                        name: "case_type",
+                        value,
+                        onChange: (_, selected) => {
+                          onChange(selected);
+
+                          // setValue("service_amount", _.standard_fee);
+                        },
+
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.CASE_TYPE,
+                        },
+                        others: {
+                          disabled: true,
+                          tabIndex: "4",
+                        },
+                      }}
+                    />
+                  )}
+                />
+                {/* <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Case Type",
@@ -273,18 +745,22 @@ class DoctorCommission extends Component {
                   },
                   onChange: changeTexts.bind(this, this),
                 }}
-              />
+              /> */}
 
-              <div className="col">
-                <button
-                  className="btn btn-primary"
-                  style={{ marginTop: "24px" }}
-                  onClick={LoadBills.bind(this, this)}
-                >
-                  Load Bills
-                </button>
-              </div>
+                <div className="col">
+                  <button
+                    disabled={disabled}
+                    className="btn btn-primary"
+                    type="submit"
+                    style={{ marginTop: "24px" }}
+                    // onClick={LoadBills.bind(this, this)}
+                  >
+                    Load Bills
+                  </button>
+                </div>
+              </form>
             </div>
+
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -293,7 +769,11 @@ class DoctorCommission extends Component {
                 <div className="actions">
                   <button
                     className="btn btn-primary btn-circle active"
-                    onClick={CalculateCommission.bind(this, this)}
+                    disabled={disabled}
+                    onClick={() => {
+                      getCalculatedCommission(billscommission);
+                      // CalculateCommission.bind(this, this)
+                    }}
                   >
                     <i className="fas fa-calculator" />
                   </button>
@@ -319,9 +799,7 @@ class DoctorCommission extends Component {
                             <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
                           ),
                           displayTemplate: (row) => {
-                            return (
-                              <span>{this.dateFormater(row.bill_date)}</span>
-                            );
+                            return <span>{dateFormater(row.bill_date)}</span>;
                           },
                         },
                         {
@@ -333,9 +811,9 @@ class DoctorCommission extends Component {
                           ),
                           displayTemplate: (row) => {
                             let display =
-                              this.props.servicetype === undefined
+                              servicetype === undefined
                                 ? []
-                                : this.props.servicetype.filter(
+                                : servicetype.filter(
                                     (f) =>
                                       f.hims_d_service_type_id ===
                                       row.servtype_id
@@ -357,9 +835,9 @@ class DoctorCommission extends Component {
                           ),
                           displayTemplate: (row) => {
                             let display =
-                              this.props.services === undefined
+                              services === undefined
                                 ? []
-                                : this.props.services.filter(
+                                : services.filter(
                                     (f) =>
                                       f.hims_d_services_id === row.service_id
                                   );
@@ -420,6 +898,14 @@ class DoctorCommission extends Component {
                           fieldName: "net_amount",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Net Amount" }} />
+                          ),
+                        },
+                        {
+                          fieldName: "service_cost",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Service Cost" }}
+                            />
                           ),
                         },
                         // {
@@ -489,10 +975,11 @@ class DoctorCommission extends Component {
                         },
                       ]}
                       keyId="item_id"
-                      dataSource={{
-                        data: this.state.billscommission,
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // dataSource={{
+                      data={billscommission?.length > 0 ? billscommission : []}
+                      // }}
+                      pagination={true}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         //   onDelete: deleteServices.bind(this, this),
                         onEdit: (row) => {},
@@ -511,7 +998,7 @@ class DoctorCommission extends Component {
                     forceLabel: "OP Commision",
                   }}
                 />
-                <h6>{GetAmountFormart(this.state.op_commision)}</h6>
+                <h6>{GetAmountFormart(op_commision)}</h6>
               </div>
               <div className="col">
                 <AlgaehLabel
@@ -519,7 +1006,7 @@ class DoctorCommission extends Component {
                     forceLabel: "OP Credit Comission",
                   }}
                 />
-                <h6>{GetAmountFormart(this.state.op_credit_comission)}</h6>
+                <h6>{GetAmountFormart(op_credit_comission)}</h6>
               </div>
 
               <div className="col">
@@ -528,12 +1015,63 @@ class DoctorCommission extends Component {
                     forceLabel: "Gross Comission",
                   }}
                 />
-                <h6>{GetAmountFormart(this.state.gross_comission)}</h6>
+                <h6>{GetAmountFormart(gross_comission)}</h6>
 
                 {/* adjust_amount */}
               </div>
+              {/* <Controller
+              name="adjust_amount"
+              control={control2}
+              // rules={{ required: "Required" }}
+              render={(props) => (
+                // <AlgaehFormGroup
+                <input
+                  // className="col-3 form-group mandatory"
+                  // error={errors}
+                  // label="Adjust Amount"
+                  // textBox={{
+                  type="text"
+                  // ...props,
+                  // className: "form-control",
+                  name="adjust_amount"
+                  // }}
+                  onChange={(e) =>
+                    props.onChange(
+                      e.target.value > 0
+                        ? AdjustAmountCalculate({
+                            gross_comission: gross_comission,
+                            adjust_amount: e.target.value,
+                          })
+                        : null
+                    )
+                  }
+                />
+              )}
+            /> */}
 
-              <AlagehFormGroup
+              <AlgaehFormGroup
+                div={{ className: "col-3 form-group mandatory" }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "adjust_amount",
+                  value: adjust_amount,
+                  disabled: disableAdjust,
+                  // updateInternally: true,
+                  onChange: (e) => {
+                    setAdjust_amount(e.target.value);
+                    if (e.target.value > 0) {
+                      AdjustAmountCalculate({
+                        gross_comission: gross_comission,
+                        adjust_amount: e.target.value,
+                      });
+                    }
+                  },
+                  // others: {
+
+                  // },
+                }}
+              />
+              {/* <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Adjust Amount",
@@ -551,7 +1089,7 @@ class DoctorCommission extends Component {
                     placeholder: "0.00",
                   },
                 }}
-              />
+              /> */}
 
               <div className="col">
                 <AlgaehLabel
@@ -559,7 +1097,7 @@ class DoctorCommission extends Component {
                     forceLabel: "Comission Payable",
                   }}
                 />
-                <h6>{GetAmountFormart(this.state.comission_payable)}</h6>
+                <h6>{GetAmountFormart(comission_payable)}</h6>
               </div>
             </div>
 
@@ -569,8 +1107,22 @@ class DoctorCommission extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    //   onClick={SaveDoctorCommission.bind(this, this)}
-                    disabled={this.state.saveEnable}
+                    onClick={() => {
+                      let data = getValues();
+
+                      addCommission({
+                        commissionDetails: billscommission,
+                        ...data,
+                        provider_id: data.doctor_id,
+                        selected_service_type: data.service_type,
+                        op_commision: op_commision,
+                        op_credit_comission: op_credit_comission,
+                        gross_comission: gross_comission,
+                        adjust_amount: adjust_amount,
+                        comission_payable: comission_payable,
+                      });
+                    }}
+                    disabled={disabled}
                   >
                     <AlgaehLabel
                       label={{ forceLabel: "Save", returnText: true }}
@@ -591,7 +1143,7 @@ class DoctorCommission extends Component {
                     type="button"
                     className="btn btn-other"
                     //   onClick={PostDoctorCommission.bind(this, this)}
-                    disabled={this.state.postEnable}
+                    // disabled={this.state.postEnable}
                   >
                     <AlgaehLabel
                       label={{
@@ -604,38 +1156,39 @@ class DoctorCommission extends Component {
               </div>
             </div>
           </div>
-        </div>
-      </React.Fragment>
-    );
-  }
-}
-
-function mapStateToProps(state) {
-  return {
-    providers: state.providers,
-    servicetype: state.servicetype,
-    doctorcommission: state.doctorcommission,
-    billscommission: state.billscommission,
-    services: state.services,
-    headercommission: state.headercommission,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getProviderDetails: AlgaehActions,
-      getServiceTypes: AlgaehActions,
-      getDoctorCommission: AlgaehActions,
-      getDoctorsCommission: AlgaehActions,
-      getServices: AlgaehActions,
-      CalculateCommission: AlgaehActions,
-      calculateCommission: AlgaehActions,
-    },
-    dispatch
+        </Spin>
+      </div>
+    </>
   );
 }
+// }
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(DoctorCommission)
-);
+// function mapStateToProps(state) {
+//   return {
+//     providers: state.providers,
+//     servicetype: state.servicetype,
+//     doctorcommission: state.doctorcommission,
+//     billscommission: state.billscommission,
+//     services: state.services,
+//     headercommission: state.headercommission,
+//   };
+// }
+
+// function mapDispatchToProps(dispatch) {
+//   return bindActionCreators(
+//     {
+//       getProviderDetails: AlgaehActions,
+//       getServiceTypes: AlgaehActions,
+//       getDoctorCommission: AlgaehActions,
+//       getDoctorsCommission: AlgaehActions,
+//       getServices: AlgaehActions,
+//       CalculateCommission: AlgaehActions,
+//       calculateCommission: AlgaehActions,
+//     },
+//     dispatch
+//   );
+// }
+export default DoctorCommission;
+// export default withRouter(
+//   connect(mapStateToProps, mapDispatchToProps)(DoctorCommission)
+// );
