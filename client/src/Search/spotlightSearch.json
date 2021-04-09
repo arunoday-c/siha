@@ -146,7 +146,7 @@
         "label": "Comission Number"
       },
       {
-        "fieldName": "provider_code",
+        "fieldName": "employee_code",
         "label": "Provider Code"
       },
       {
