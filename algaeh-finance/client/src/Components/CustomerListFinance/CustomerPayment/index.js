@@ -29,6 +29,7 @@ export default memo(function (props) {
   const [selectAmount, setSelectedAmount] = useState(0);
   const [childName, setChildName] = useState("");
   const [revert_option, setRevertOption] = useState([]);
+  const [selectedBalanceAmount, setSelectedBalanceAmount] = useState(0);
   const [info, setInfo] = useState({
     over_due: "0.00",
     total_receivable: "0.00",
@@ -247,6 +248,11 @@ export default memo(function (props) {
                 row.modified_amount ? row.modified_amount : row.balance_amount
               )
       );
+      selectedBalanceAmount(
+        checked === true
+          ? parseFloat(selectedBalanceAmount) + parseFloat(row.balance_amount)
+          : parseFloat(selectedBalanceAmount) - parseFloat(row.balance_amount)
+      );
     } else {
       setCheckAll(false);
       setIndeterminate(true);
@@ -260,6 +266,11 @@ export default memo(function (props) {
               parseFloat(
                 row.modified_amount ? row.modified_amount : row.balance_amount
               )
+      );
+      setSelectedBalanceAmount(
+        checked === true
+          ? parseFloat(selectedBalanceAmount) + parseFloat(row.balance_amount)
+          : parseFloat(selectedBalanceAmount) - parseFloat(row.balance_amount)
       );
     }
   }
@@ -608,13 +619,31 @@ export default memo(function (props) {
                                             display:
                                               "Modified Amount cannot be greater than balance amount",
                                           });
+                                          let filtered = _.chain(data)
+                                            .filter((item) => {
+                                              return item.checked;
+                                            })
+                                            .sumBy((s) =>
+                                              parseFloat(s.modified_amount)
+                                            )
+                                            .value();
+                                          setSelectedAmount(filtered);
                                           e.target.classList.add("border-red");
                                         } else {
                                           e.target.classList.remove(
                                             "border-red"
                                           );
-                                          return (row.modified_amount =
-                                            e.target.value);
+                                          row.modified_amount = e.target.value;
+                                          let filtered = _.chain(data)
+                                            .filter((item) => {
+                                              return item.checked;
+                                            })
+                                            .sumBy((s) =>
+                                              parseFloat(s.modified_amount)
+                                            )
+                                            .value();
+
+                                          setSelectedAmount(filtered);
                                         }
                                       }
                                     },
@@ -649,6 +678,16 @@ export default memo(function (props) {
           <div className="row">
             <div className="col-12" style={{ textAlign: "right" }}>
               <div className="row">
+                <div className="col">
+                  <label className="style_Label ">
+                    Total Selected Balance Amount
+                  </label>
+                  <h6>
+                    {getAmountFormart(selectedBalanceAmount, {
+                      appendSymbol: false,
+                    })}
+                  </h6>
+                </div>
                 <div className="col">
                   <label className="style_Label ">
                     Selected Invoice Amount

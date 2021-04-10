@@ -33,6 +33,7 @@ export default memo(function (props) {
   const [selectAmount, setSelectedAmount] = useState(0);
   const [showDebitNote, setShowDebitNote] = useState(false);
   const [debitNode, setDebitNode] = useState([]);
+  const [selectedBalanceAmount, setSelectedBalanceAmount] = useState(0);
   useEffect(() => {
     if (location.state) {
       setLoading(true);
@@ -127,7 +128,6 @@ export default memo(function (props) {
     }
   }
   function onChangeCheck(checked, row) {
-    debugger;
     row["checked"] = checked;
     const filterCheck = data.filter((f) => f.checked === true);
     if (data.length === filterCheck.length) {
@@ -144,6 +144,11 @@ export default memo(function (props) {
                 row.modified_amount ? row.modified_amount : row.balance_amount
               )
       );
+      selectedBalanceAmount(
+        checked === true
+          ? parseFloat(selectedBalanceAmount) + parseFloat(row.balance_amount)
+          : parseFloat(selectedBalanceAmount) - parseFloat(row.balance_amount)
+      );
     } else {
       setCheckAll(false);
       setIndeterminate(true);
@@ -157,6 +162,11 @@ export default memo(function (props) {
               parseFloat(
                 row.modified_amount ? row.modified_amount : row.balance_amount
               )
+      );
+      setSelectedBalanceAmount(
+        checked === true
+          ? parseFloat(selectedBalanceAmount) + parseFloat(row.balance_amount)
+          : parseFloat(selectedBalanceAmount) - parseFloat(row.balance_amount)
       );
     }
   }
@@ -514,12 +524,32 @@ export default memo(function (props) {
                                               "Modified Amount cannot be greater than balance amount",
                                           });
 
+                                          let filtered = _.chain(data)
+                                            .filter((item) => {
+                                              return item.checked;
+                                            })
+                                            .sumBy((s) =>
+                                              parseFloat(s.modified_amount)
+                                            )
+                                            .value();
+                                          setSelectedAmount(filtered);
                                           e.target.classList.add("border-red");
                                         } else {
                                           e.target.classList.remove(
                                             "border-red"
                                           );
+
                                           row.modified_amount = e.target.value;
+                                          let filtered = _.chain(data)
+                                            .filter((item) => {
+                                              return item.checked;
+                                            })
+                                            .sumBy((s) =>
+                                              parseFloat(s.modified_amount)
+                                            )
+                                            .value();
+
+                                          setSelectedAmount(filtered);
                                         }
                                       }
                                     },
@@ -553,6 +583,16 @@ export default memo(function (props) {
           <div className="row">
             <div className="col-12" style={{ textAlign: "right" }}>
               <div className="row">
+                <div className="col">
+                  <label className="style_Label ">
+                    Total Selected Balance Amount
+                  </label>
+                  <h6>
+                    {getAmountFormart(selectedBalanceAmount, {
+                      appendSymbol: false,
+                    })}
+                  </h6>
+                </div>
                 <div className="col">
                   <label className="style_Label ">
                     Selected Invoice Amount
