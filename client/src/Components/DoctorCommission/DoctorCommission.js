@@ -416,22 +416,22 @@ function DoctorCommission() {
             // selectedLang={this.state.selectedLang}
           />
 
-          <div className="hptl-phase1-doctor-commission-form">
+          <div className="hptl-phase1-doctor-commission-form"> <form onSubmit={handleSubmit(submit)}>
             <div
               className="row inner-top-search margin-bottom-15"
               style={{ marginTop: 76, paddingBottom: 10 }}
               data-validate="DoctorData"
             >
-              <form onSubmit={handleSubmit(submit)}>
+             
                 <Controller
                   name="doctor_id"
                   control={control}
-                  rules={{ required: "Select Doctor" }}
+                  rules={{ required: "Select a Doctor" }}
                   render={({ value, onChange }) => (
                     <AlgaehAutoComplete
-                      div={{ className: "col-10 form-group mandatory" }}
+                      div={{ className: "col form-group mandatory" }}
                       label={{
-                        forceLabel: "Doctor",
+                        forceLabel: "Select a Doctor",
                         isImp: true,
                       }}
                       error={errors}
@@ -485,7 +485,7 @@ function DoctorCommission() {
                   render={({ value, onChange }) => (
                     <AlgaehDateHandler
                       div={{
-                        className: "col-10 form-group mandatory",
+                        className: "col form-group mandatory",
                       }}
                       error={errors}
                       label={{
@@ -539,7 +539,7 @@ function DoctorCommission() {
                   render={({ value, onChange }) => (
                     <AlgaehDateHandler
                       div={{
-                        className: "col-10 form-group mandatory",
+                        className: "col form-group mandatory",
                       }}
                       error={errors}
                       label={{
@@ -588,7 +588,7 @@ function DoctorCommission() {
                   rules={{ required: "Select bed" }}
                   render={({ value, onChange }) => (
                     <AlgaehAutoComplete
-                      div={{ className: "col-10 form-group mandatory" }}
+                      div={{ className: "col form-group mandatory" }}
                       label={{
                         forceLabel: "Select Type",
                         isImp: true,
@@ -641,7 +641,7 @@ function DoctorCommission() {
                   // rules={{ required: "Select bed" }}
                   render={({ value, onChange }) => (
                     <AlgaehAutoComplete
-                      div={{ className: "col-10 form-group mandatory" }}
+                      div={{ className: "col form-group mandatory" }}
                       label={{
                         forceLabel: "Select Type",
                         // isImp: true,
@@ -697,7 +697,7 @@ function DoctorCommission() {
                   // rules={{ required: "Select bed" }}
                   render={({ value, onChange }) => (
                     <AlgaehAutoComplete
-                      div={{ className: "col-4 form-group mandatory" }}
+                      div={{ className: "col form-group mandatory" }}
                       label={{
                         forceLabel: "Case Type",
                         // isImp: true,
@@ -758,8 +758,8 @@ function DoctorCommission() {
                     Load Bills
                   </button>
                 </div>
-              </form>
-            </div>
+             
+            </div> </form>
 
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
@@ -781,9 +781,8 @@ function DoctorCommission() {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12" id="Doc_Com_grid_cntr">
+                  <div className="col-lg-12" id="doc_comission_grid_cntr">
                     <AlgaehDataGrid
-                      id="doctoCommGrid"
                       columns={[
                         {
                           fieldName: "bill_number",

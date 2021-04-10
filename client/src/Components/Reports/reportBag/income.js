@@ -808,6 +808,35 @@ export default function Income({
         ],
       },
       {
+        subitem: "Income by Item Category Sales",
+        reportName: "salesItemCatCus",
+        // reportQuery: "subDepartmentIncome",
+        requireIframe: true,
+        componentCode: "RPT_INC_CUST_CAT_SALES",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+        ],
+      },
+      {
         subitem: "GP - Income by Sales",
         reportName: "gpSalesWiseIncome",
         // reportQuery: "subDepartmentIncome",

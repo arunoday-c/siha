@@ -21,7 +21,7 @@ const executePDF = function executePDFMethod(options) {
       let strQuery = "";
 
       if (input.hospital_id > 0) {
-        str += ` hims_d_hospital_id= ${input.hospital_id} `;
+        str += ` and hims_d_hospital_id= ${input.hospital_id} `;
       }
 
       if (input.hospital_id > 0) {
@@ -78,6 +78,14 @@ const executePDF = function executePDFMethod(options) {
           strQuery += ` and E.date_of_joining  between date('${start_date}') and date('${end_date}')`;
 
           return_input = `  Between ${start_date} and  ${end_date}`;
+          break;
+      }
+
+      switch (input.employee_type) {
+        case "PB":
+        case "PE":
+        case "CO":
+          strQuery += ` and E.employee_type='${input.employee_type}'`;
           break;
       }
 

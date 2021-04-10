@@ -20,7 +20,7 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
 
       if (input.hospital_id > 0) {
-        str += ` hims_d_hospital_id= ${input.hospital_id} `;
+        str += ` and hims_d_hospital_id= ${input.hospital_id} `;
       }
 
       if (input.hospital_id > 0) {
@@ -42,6 +42,14 @@ const executePDF = function executePDFMethod(options) {
         case "FEMALE":
         case "OTHER":
           strQuery += ` and E.sex='${input.sex}'`;
+          break;
+      }
+
+      switch (input.employee_type) {
+        case "PB":
+        case "PE":
+        case "CO":
+          strQuery += ` and E.employee_type='${input.employee_type}'`;
           break;
       }
 
