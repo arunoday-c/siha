@@ -26,6 +26,22 @@
 
 
                 </tbody>
+                <footer>
+                  
+                    <tr>
+                       <td></td>
+                       
+                       <td></td>
+                       <td>Total</td>
+
+                          {{#each footer}}
+                    
+                               <td class="numberFld">{{numberFormating this ../currency}}</td>
+                            
+                      
+                          {{/each}}
+                    </tr>
+                </footer>
             </table>
 
         </section>

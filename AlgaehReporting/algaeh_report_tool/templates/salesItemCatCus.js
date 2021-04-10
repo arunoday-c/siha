@@ -13,7 +13,11 @@ const executePDF = function executePDFMethod(options) {
       });
 
       let crypto_data = { ...options.args.crypto, addSymbol: false };
-
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
       delete crypto_data.currency_symbol;
       crypto_data.currency_symbol = "";
       options.mysql
@@ -51,6 +55,7 @@ const executePDF = function executePDFMethod(options) {
           _.chain(results)
             .groupBy((g) => g.item_category_id)
             .forEach((details, key) => {
+              debugger;
               const desc = _.head(details);
               let innerObject = {
                 category_desc: desc.category_desc,
@@ -90,11 +95,28 @@ const executePDF = function executePDFMethod(options) {
               });
             })
             .value();
-
           columns.push("Total");
+
+          debugger;
+          let footer = [];
+          for (let i = 0; i < columns.length; i++) {
+            footer.push(
+              _.sumBy(report, (s) =>
+                parseFloat(s[columns[i]].replace(/,/g, ""))
+              )
+            );
+          }
+
           resolve({
             columns,
+            footer,
             details: report,
+            currency: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {
