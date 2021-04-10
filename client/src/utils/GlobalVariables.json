@@ -2801,6 +2801,14 @@
   ],
   "RECEIPT_TYPE": [
     {
+      "name": "Advance",
+      "value": "AD"
+    },
+    {
+      "name": "Refund",
+      "value": "RF"
+    },
+    {
       "name": "OP Billing",
       "value": "OP"
     },
@@ -2809,16 +2817,21 @@
       "value": "POS"
     },
     {
-      "name": "Advance",
-      "value": "AD"
-    },
-    {
       "name": "OP Credit",
       "value": "OPC"
     },
     {
       "name": "POS Credit",
       "value": "POSC"
+    },
+    {
+      "name": "OP Bill Cancellation",
+      "value": "OPBC"
+    }
+    ,
+    {
+      "name": "POS Bill Cancellation",
+      "value": "POSBC"
     }
   ],
   "LOCAL_TYPE": [

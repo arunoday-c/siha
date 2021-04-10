@@ -464,6 +464,10 @@ export default function Income({
             initialLoad: true,
             isImp: true,
             label: "Receipt Type",
+            sort:"off",
+            others: {
+              sort: "off",
+            },
 
             dataSource: {
               textField: "name",
@@ -477,6 +481,10 @@ export default function Income({
                     ? "opBillReceipt"
                     : currentValue.value === "AD"
                     ? "advanceReceipt"
+                    : currentValue.value === "RF"
+                    ? "refundReceipt"
+                    : currentValue.value === "OPBC"
+                    ? "opBillCancelReceipt"
                     : currentValue.value === "OPC"
                     ? "opCreditReceipt"
                     : "";
