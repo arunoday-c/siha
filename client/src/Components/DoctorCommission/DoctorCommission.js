@@ -396,22 +396,37 @@ function DoctorCommission() {
               searchName: "DoctorCommission",
             }}
             userArea={
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Commision Date",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "bread_registration_date",
-                }}
-                disabled={true}
-                events={{
-                  onChange: null,
-                }}
-                // value={this.state.doctoCommGrid_date}
-              />
+
+
+              <div className="row">
+              <div className="col-3">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Comission Date",
+                  }}
+                />
+                <h6>
+                  {/* {this.state.comission_code
+                    ? moment(this.state.comission_code).format("DD-MM-YYYY")
+                    : "DD/MM/YYYY"} */}
+                    Date Here
+                </h6>
+              </div>
+
+              {/* {this.state.comission_code !== null ? ( */}
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Created By",
+                    }}
+                  />
+                  <h6>Name Here</h6>
+                </div>
+              {/* ) : null} */}
+            </div>
+
+
+
             }
             // selectedLang={this.state.selectedLang}
           />

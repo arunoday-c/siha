@@ -40,7 +40,7 @@ let getDoctorsCommission = (req, res, next) => {
               unit_cost,gross_amount as extended_cost,discount_amout as discount_amount,net_amout as net_amount,BD.patient_payable as patient_share,company_payble as company_share,sec_company_paybale
               from hims_f_billing_header BH
               inner join hims_f_billing_details BD on BD.hims_f_billing_header_id=BH.hims_f_billing_header_id
-              left join hims_d_services  S on  BD.services_id=S.hims_d_services_id where BD.commission_given='N' and BD.cancel_yes_no='N' and BH.cancelled='N' and BH.record_status='A' and BD.record_status='A' and              
+              left join hims_d_services  S on  BD.services_id=S.hims_d_services_id where BD.commission_given='N' and BD.cancel_yes_no='N' and BH.adjusted='N' and BH.record_status='A' and BD.record_status='A' and              
              ${service_type_id} BD.hims_f_billing_header_id in (?)`,
               values: [bill_header_id_all],
               printQuery: true,
