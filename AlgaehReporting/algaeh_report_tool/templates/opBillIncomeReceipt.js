@@ -52,6 +52,38 @@ const executePDF = function executePDFMethod(options) {
           group by hims_f_receipt_header_id`;
 
           break;
+          case "OPBC":
+          if (input.sub_department_id > 0) {
+            str += ` and V.sub_department_id= ${input.sub_department_id}`;
+          }
+          if (input.provider_id > 0) {
+            str += ` and V.doctor_id= ${input.provider_id}`;
+          }
+
+          qry = `
+          
+          select A.receipt_number , A.bill_number,date_format(receipt_date,'%d-%m-%Y') as receipt_date ,patient_code,full_name ,sub_department_code,
+sub_department_name,employee_code,doctor_name,sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
+from (select hims_f_bill_cancel_header_id,BCH.patient_id,BCH.visit_id ,
+RH.hims_f_receipt_header_id, RH.receipt_number, BCH.bill_cancel_number as bill_number,
+date(RH.receipt_date)as receipt_date ,RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,
+case RD.pay_type when 'CA' then RD.amount else '0.00' end as cash,
+case RD.pay_type when 'CD' then RD.amount else '0.00' end as card,
+case RD.pay_type when 'CH' then RD.amount else '0.00' end as cheque,
+P.patient_code,P.full_name ,V.hims_f_patient_visit_id,SD.sub_department_code,SD.sub_department_name,
+E.employee_code,E.full_name as doctor_name 
+from  hims_f_bill_cancel_header BCH
+inner join hims_f_receipt_header RH on BCH.receipt_header_id=RH.hims_f_receipt_header_id
+inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id
+inner join hims_f_patient P on BCH.patient_id=P.hims_d_patient_id
+inner join hims_f_patient_visit V on BCH.visit_id=V.hims_f_patient_visit_id
+inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id
+inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id
+where date(BCH.bill_cancel_date)  between date(?) and date(?) and RH.pay_type='P' 
+and RH.record_status='A' and RD.record_status='A' and BCH.hospital_id= ?   ${str}) as A
+group by hims_f_receipt_header_id;`;
+
+          break;
 
         case "AD":
           qry = ` select pay_type,amount,patient_code,full_name ,date_format(receipt_date,'%d-%m-%Y') as receipt_date,receipt_number,
@@ -70,6 +102,25 @@ const executePDF = function executePDFMethod(options) {
           group by hims_f_receipt_header_id`;
 
           break;
+
+          case "RF":
+            qry = ` select pay_type,amount,patient_code,full_name ,date_format(receipt_date,'%d-%m-%Y') as receipt_date,receipt_number,
+            sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
+            from   (select PA.hims_f_patient_id,PA.hims_f_receipt_header_id,PA.transaction_type,
+            RH.receipt_number,  receipt_date, RD.pay_type,RD.amount,P.patient_code,P.full_name ,
+            case RD.pay_type when 'CA' then RD.amount else '0.00' end as cash,
+            case RD.pay_type when 'CD' then RD.amount else '0.00' end as card,
+            case RD.pay_type when 'CH' then RD.amount else '0.00' end as cheque
+            from hims_f_patient_advance PA
+            inner join hims_f_receipt_header RH on PA.hims_f_receipt_header_id=RH.hims_f_receipt_header_id
+            inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id
+            inner join hims_f_patient P on PA.hims_f_patient_id=P.hims_d_patient_id
+            where PA.transaction_type='RF' and date(receipt_date) between date(?) and date(?)
+            and PA.hospital_id=? and RH.record_status='A'  and RD.record_status='A')  as A
+            group by hims_f_receipt_header_id`;
+  
+            break;
+  
 
         case "POS":
           qry = `select receipt_header_id,pay_type,amount,patient_code,full_name ,date_format(receipt_date,'%d-%m-%Y') as receipt_date,receipt_number,pos_number as bill_number,
