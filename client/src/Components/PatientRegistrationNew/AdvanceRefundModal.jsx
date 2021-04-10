@@ -90,6 +90,8 @@ export function AdvanceModal({
     inputData.advance_amount = inputs?.card_amount + inputs?.cash_amount;
     inputData.hims_f_patient_id = patient?.hims_d_patient_id;
     inputData.shift_id = inputs.shift_id;
+    inputData.bill_date = new Date();
+
     const receiptdetails = [];
     if (inputs?.cash_amount > 0) {
       receiptdetails.push({
