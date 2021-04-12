@@ -298,22 +298,25 @@ function DoctorCommission() {
       onError,
     }
   );
-  const [getCommission] = useMutation(getGeneratedCommission, {
-    onSuccess: (data) => {
-      reset({ ...data });
+  const [getCommission, { data: commissionData }] = useMutation(
+    getGeneratedCommission,
+    {
+      onSuccess: (data) => {
+        reset({ ...data });
 
-      setValue("doctor_id", data.provider_id);
-      setValue("select_type", data.selected_service_type);
-      setGross_comission(data.gross_comission);
-      setComission_payable(data.comission_payable);
-      setOp_commision(data.op_commision);
-      setAdjust_amount(data.adjust_amount);
-      setBillscommission(data.detailResult);
-      setOp_credit_comission(data.op_credit_comission);
-      setDisabled(true);
-    },
-    onError,
-  });
+        setValue("doctor_id", data.provider_id);
+        setValue("select_type", data.selected_service_type);
+        setGross_comission(data.gross_comission);
+        setComission_payable(data.comission_payable);
+        setOp_commision(data.op_commision);
+        setAdjust_amount(data.adjust_amount);
+        setBillscommission(data.detailResult);
+        setOp_credit_comission(data.op_credit_comission);
+        setDisabled(true);
+      },
+      onError,
+    }
+  );
   const submit = (data) => {
     setLoadBillData(true);
   };
@@ -396,48 +399,49 @@ function DoctorCommission() {
               searchName: "DoctorCommission",
             }}
             userArea={
-
-
               <div className="row">
-              <div className="col-3">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Comission Date",
-                  }}
-                />
-                <h6>
-                  {/* {this.state.comission_code
-                    ? moment(this.state.comission_code).format("DD-MM-YYYY")
-                    : "DD/MM/YYYY"} */}
-                    Date Here
-                </h6>
-              </div>
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Comission Date",
+                    }}
+                  />
+                  <h6>
+                    {commissionData?.created_date
+                      ? moment(commissionData?.created_date).format(
+                          "DD-MM-YYYY"
+                        )
+                      : "DD/MM/YYYY"}
+                  </h6>
+                </div>
 
-              {/* {this.state.comission_code !== null ? ( */}
+                {/* {this.state.comission_code !== null ? ( */}
                 <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Created By",
                     }}
                   />
-                  <h6>Name Here</h6>
+                  <h6>
+                    {commissionData?.full_name
+                      ? commissionData?.full_name
+                      : "-----"}
+                  </h6>
                 </div>
-              {/* ) : null} */}
-            </div>
-
-
-
+                {/* ) : null} */}
+              </div>
             }
             // selectedLang={this.state.selectedLang}
           />
 
-          <div className="hptl-phase1-doctor-commission-form"> <form onSubmit={handleSubmit(submit)}>
-            <div
-              className="row inner-top-search margin-bottom-15"
-              style={{ marginTop: 76, paddingBottom: 10 }}
-              data-validate="DoctorData"
-            >
-             
+          <div className="hptl-phase1-doctor-commission-form">
+            {" "}
+            <form onSubmit={handleSubmit(submit)}>
+              <div
+                className="row inner-top-search margin-bottom-15"
+                style={{ marginTop: 76, paddingBottom: 10 }}
+                data-validate="DoctorData"
+              >
                 <Controller
                   name="doctor_id"
                   control={control}
@@ -773,9 +777,8 @@ function DoctorCommission() {
                     Load Bills
                   </button>
                 </div>
-             
-            </div> </form>
-
+              </div>{" "}
+            </form>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -1004,7 +1007,6 @@ function DoctorCommission() {
                 </div>
               </div>
             </div>
-
             <div className="row">
               <div className="col">
                 <AlgaehLabel
@@ -1114,7 +1116,6 @@ function DoctorCommission() {
                 <h6>{GetAmountFormart(comission_payable)}</h6>
               </div>
             </div>
-
             <div className="hptl-phase1-footer">
               <div className="row">
                 <div className="col-lg-12">
