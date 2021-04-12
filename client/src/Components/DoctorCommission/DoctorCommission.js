@@ -425,7 +425,7 @@ function DoctorCommission() {
                   <h6>
                     {commissionData?.full_name
                       ? commissionData?.full_name
-                      : "-----"}
+                      : "-------"}
                   </h6>
                 </div>
                 {/* ) : null} */}

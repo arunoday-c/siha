@@ -378,7 +378,8 @@ const getGeneratedCommission = (req, res, next) => {
 
     _mysql
       .executeQuery({
-        query: `select *  from hims_f_doctor_comission_header  where comission_code=?`,
+        query: `select CH.*,E.full_name,E.arabic_name from hims_f_doctor_comission_header CH left join hims_d_employee E on 
+      CH.created_by =   E.hims_d_employee_id  where CH.comission_code=?`,
         values: [input.comission_code],
         printQuery: true,
       })
