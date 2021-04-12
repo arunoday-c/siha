@@ -1,0 +1,81 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table> --}}
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item</th>
+                        <th>Dispatch Qty</th>
+                        <th>Cost Price(1 Qty)</th>
+                        <th>Total Cost Price</th>
+                        <th>Sales Price</th>
+                        <th>Gross Profit</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
+                    {{#hasElement result}}
+
+
+                    {{#each result}}
+                    <tr>
+                        <td colspan="6" class="tableSubHdg">{{project_desc}}</td>
+                        <td class="tableSubHdg numberFld"><b>{{project_total}}</b></td>
+
+
+                    </tr>
+
+                    {{#each cost_center}}
+                    <tr>
+                        <td colspan="4" class="tableSubHdg2">{{hospital_name}}</td>
+                        <td colspan="1" class="tableSubHdg2 numberFld">{{cost_price}}</td>
+                        <td colspan="1" class="tableSubHdg2 numberFld">{{net_extended_cost}}</td>
+                        <td class="tableSubHdg2 numberFld"><b>{{gross_profit}}</b></td>
+                    </tr>
+                    {{#each branch_data}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td class="txtFld">{{item_description}}</td>
+                        <td class="numberFld">{{dispatch_quantity}}</td>
+                        <td class="numberFld">{{waited_avg_cost}}</td>
+                        <td class="numberFld">{{cost_price}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td>
+                        <td class="numberFld">{{gross_profit}}</td>
+                    </tr>
+                    {{/each }}{{/each }}{{/each }}
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="6"></td>
+                        <td class="numberFld">{{net_total}}</td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="6" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>
