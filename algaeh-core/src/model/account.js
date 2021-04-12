@@ -3,6 +3,7 @@ import httpStatus from "../utils/httpStatus";
 const keyPath = require("algaeh-keys/keys");
 import algaehMysql from "algaeh-mysql";
 import algaehMail from "algaeh-utilities/mail-send";
+import newAxios from "algaeh-utilities/axios";
 import { pinSet, pinDelete, pinGet } from "algaeh-utilities/checksecurity";
 import moment from "moment";
 let getUserNamePassWord = (base64String) => {
@@ -277,24 +278,36 @@ const resetPassword = (req, res, next) => {
             return;
           }
           const pin = Math.floor(Math.random() * 90000) + 10000;
-          new algaehMail()
-            .to(work_email)
-            .subject("Password reset PIN")
-            .templateHbs("userPasswodReset.hbs", {
-              pin,
-              full_name,
-            })
-            .send()
-            .then((result) => {
-              const user = username.toLowerCase();
-              pinSet(user, pin);
-              console.log("Email sent : ", result);
-              next();
-            })
-            .catch((error) => {
-              console.error("Email error", error);
-              next(new Error(error));
+          try {
+            newAxios(req, {
+              url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+            }).then((res) => {
+              const options = res.data;
+
+              new algaehMail(options.data[0])
+                .to(work_email)
+                .subject("Password reset PIN")
+                .templateHbs("userPasswodReset.hbs", {
+                  pin,
+                  full_name,
+                })
+                .send()
+                .then((result) => {
+                  const user = username.toLowerCase();
+                  pinSet(user, pin);
+                  console.log("Email sent : ", result);
+                  next();
+                })
+                .catch((error) => {
+                  console.error("Email error", error);
+                  next(new Error(error));
+                });
             });
+          } catch (e) {
+            _mysql.releaseConnection();
+            next(e);
+          }
+          new algaehMail();
         } else {
           next(new Error("No record found for this userid"));
         }
