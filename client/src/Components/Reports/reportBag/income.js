@@ -464,7 +464,7 @@ export default function Income({
             initialLoad: true,
             isImp: true,
             label: "Receipt Type",
-            sort:"off",
+            sort: "off",
             others: {
               sort: "off",
             },
@@ -821,6 +821,35 @@ export default function Income({
         // reportQuery: "subDepartmentIncome",
         requireIframe: true,
         componentCode: "RPT_INC_CUST_CAT_SALES",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Income by Cost Center",
+        reportName: "invIncomeByCostCenter",
+        // reportQuery: "subDepartmentIncome",
+        requireIframe: true,
+        componentCode: "RPT_INC_COST_CENTER",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
