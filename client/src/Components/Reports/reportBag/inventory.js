@@ -1559,6 +1559,35 @@ export default function Inventory({
           },
         ],
       },
+      {
+        subitem: "Location Wise Consumption",
+        reportName: "invLocationConsump",
+        // reportQuery: "subDepartmentIncome",
+        requireIframe: true,
+        componentCode: "RPT_INV_LOC_CONSUMP",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+        ],
+      },
     ],
   };
 }
