@@ -479,6 +479,7 @@ export default function JournalVoucher() {
         });
         return;
       }
+
       const _source = fromBank.split("-");
       const _child_id = _source[1];
       const _head_id = _source[0];
@@ -492,6 +493,33 @@ export default function JournalVoucher() {
         narration: "Expense Voucher",
         slno: journerList.length + 1,
       });
+    }
+    if (voucherType === "purchase" || voucherType === "sales") {
+      debugger;
+      if (invoiceNo === undefined || !invoiceNo) {
+        setLoading(false);
+        AlgaehMessagePop({
+          type: "info",
+          display: "Please enter  Invoice No.",
+        });
+        return;
+      }
+    }
+    if (
+      voucherType === "payment" ||
+      voucherType === "receipt" ||
+      voucherType === "credit_note" ||
+      voucherType === "debit_note"
+    ) {
+      debugger;
+      if (selInvoice === "" || selInvoice === undefined || !selInvoice) {
+        setLoading(false);
+        AlgaehMessagePop({
+          type: "info",
+          display: "Please select Invoice No.",
+        });
+        return;
+      }
     }
 
     if (_journerList.length >= 2) {
@@ -610,11 +638,12 @@ export default function JournalVoucher() {
   };
 
   const clearState = () => {
-    setJournerList([]);
+    // setJournerList([]);
     setNarration("");
     setVoucherType("");
     setAccounts([]);
     setPayment(basePayment);
+    setJournerList(baseJournalList);
     setHospitalID(null);
     setCostCenter(null);
     setClearLoading(false);
@@ -622,6 +651,8 @@ export default function JournalVoucher() {
     setSavedEnable(false);
     setPrintLoad(false);
     setPrintEnable(true);
+    setInvoiceNo("");
+    setSelInvoice("");
     setTotalCredit(0);
     setTotalDebit(0);
   };
