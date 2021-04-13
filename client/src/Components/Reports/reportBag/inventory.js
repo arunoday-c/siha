@@ -1588,6 +1588,35 @@ export default function Inventory({
           },
         ],
       },
+      {
+        subitem: "Purchase By Item Category",
+        reportName: "invPurchItemCatVen",
+        // reportQuery: "subDepartmentIncome",
+        requireIframe: true,
+        componentCode: "RPT_INV_PUR_ITM_CAT",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+        ],
+      },
     ],
   };
 }
