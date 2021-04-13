@@ -166,6 +166,7 @@ class DayEndProcess extends Component {
         // }
 
         if (this.props.location.state) {
+          // debugger;
           algaehApiCall({
             uri: "/finance/getDayEndData",
             data: {
@@ -188,6 +189,7 @@ class DayEndProcess extends Component {
   getDayEndProcess() {
     try {
       // let inputObj = { posted: this.state.posted };
+      // debugger;
       let inputObj = {
         posted: this.state.posted,
         revert_trans: this.state.revert_trans,
@@ -211,8 +213,10 @@ class DayEndProcess extends Component {
         method: "GET",
         module: "finance",
         onSuccess: (response) => {
+          // debugger;
+          const result_data = response.data.result;
           this.setState({
-            dayEnd: response.data.result,
+            dayEnd: result_data.length > 0 ? result_data : [{}],
             revert_visible: false,
           });
           return this.props.history?.push(
@@ -237,19 +241,21 @@ class DayEndProcess extends Component {
       //   });
       //   return;
       // }
-      algaehApiCall({
-        uri: "/finance/postDayEndData",
-        data: { finance_day_end_header_id: finance_day_end_header_id },
-        method: "POST",
-        module: "finance",
-        onSuccess: (response) => {
-          swalMessage({ type: "success", title: "Successfully Posted" });
-          this.getDayEndProcess();
-        },
-        onCatch: (error) => {
-          swalMessage({ title: error, type: "error" });
-        },
-      });
+      if (finance_day_end_header_id !== undefined) {
+        algaehApiCall({
+          uri: "/finance/postDayEndData",
+          data: { finance_day_end_header_id: finance_day_end_header_id },
+          method: "POST",
+          module: "finance",
+          onSuccess: (response) => {
+            swalMessage({ type: "success", title: "Successfully Posted" });
+            this.getDayEndProcess();
+          },
+          onCatch: (error) => {
+            swalMessage({ title: error, type: "error" });
+          },
+        });
+      }
     } catch (e) {
       console.error(e);
     }
@@ -347,143 +353,101 @@ class DayEndProcess extends Component {
   }
   DrillDownScree(row) {
     persistStateOnBack(this.state, true);
-    debugger;
-    if (
-      row.from_screen === "FD0002" ||
-      row.from_screen === "BL0001" ||
-      row.from_screen === "BL0002"
-    ) {
-      // Billing
-      this.props.history.push(`/OPBilling?bill_code=${row.document_number}`);
-    } else if (row.from_screen === "BL0003") {
-      // Billing
-      this.props.history.push(
-        `/OPBillCancellation?bill_cancel_number=${row.document_number}`
-      );
-    } else if (row.from_screen === "INV0009" || row.from_screen === "INV0006") {
-      // Inventory Transfer
-      this.props.history.push(
-        `/InvTransferEntry?transfer_number=${row.document_number}`
-      );
-    } else if (row.from_screen === "INV0007") {
-      // Inventory Consumorion
-      this.props.history.push(
-        `/InvConsumptionEntry?consumption_number=${row.document_number}`
-      );
-    } else if (row.from_screen === "SAL005") {
-      // Sales Invoice
-      this.props.history.push(
-        `/SalesInvoice?invoice_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
-      );
-    } else if (row.from_screen === "SAL008") {
-      //Sales Return
-      this.props.history.push(
-        `/SalesReturnEntry?sales_return_number=${row.document_number}`
-      );
-    } else if (row.from_screen === "PR0003") {
-      // Delivery Note
-      this.props.history.push(
-        `/DeliveryNoteEntry?delivery_note_number=${row.document_number}`
-      );
-    } else if (row.from_screen === "PR0004") {
-      //Receipt Entry
-      this.props.history.push(
-        `/ReceiptEntry?grn_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
-      );
-    } else if (row.from_screen === "PR0006") {
-      //Purchase Return
-      this.props.history.push(
-        `/PurchaseReturnEntry?purchase_return_number=${row.document_number}`
-      );
-    } else if (row.from_screen === "PH0002") {
-      //Point of Sales
-      this.props.history.push(`/PointOfSale?pos_number=${row.document_number}`);
-    } else if (row.from_screen === "PH0003") {
-      //Point of Sales Return
-      this.props.history.push(
-        `/SalesReturn?sales_return_number=${row.document_number}`
-      );
+    // debugger;
+    if (row.from_screen !== undefined) {
+      if (
+        row.from_screen === "FD0002" ||
+        row.from_screen === "BL0001" ||
+        row.from_screen === "BL0002"
+      ) {
+        // Billing
+        this.props.history.push(`/OPBilling?bill_code=${row.document_number}`);
+      } else if (row.from_screen === "BL0003") {
+        // Billing
+        this.props.history.push(
+          `/OPBillCancellation?bill_cancel_number=${row.document_number}`
+        );
+      } else if (
+        row.from_screen === "INV0009" ||
+        row.from_screen === "INV0006"
+      ) {
+        // Inventory Transfer
+        this.props.history.push(
+          `/InvTransferEntry?transfer_number=${row.document_number}`
+        );
+      } else if (row.from_screen === "INV0007") {
+        // Inventory Consumorion
+        this.props.history.push(
+          `/InvConsumptionEntry?consumption_number=${row.document_number}`
+        );
+      } else if (row.from_screen === "SAL005") {
+        // Sales Invoice
+        this.props.history.push(
+          `/SalesInvoice?invoice_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
+        );
+      } else if (row.from_screen === "SAL008") {
+        //Sales Return
+        this.props.history.push(
+          `/SalesReturnEntry?sales_return_number=${row.document_number}`
+        );
+      } else if (row.from_screen === "PR0003") {
+        // Delivery Note
+        this.props.history.push(
+          `/DeliveryNoteEntry?delivery_note_number=${row.document_number}`
+        );
+      } else if (row.from_screen === "PR0004") {
+        //Receipt Entry
+        this.props.history.push(
+          `/ReceiptEntry?grn_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
+        );
+      } else if (row.from_screen === "PR0006") {
+        //Purchase Return
+        this.props.history.push(
+          `/PurchaseReturnEntry?purchase_return_number=${row.document_number}`
+        );
+      } else if (row.from_screen === "PH0002") {
+        //Point of Sales
+        this.props.history.push(
+          `/PointOfSale?pos_number=${row.document_number}`
+        );
+      } else if (row.from_screen === "PH0003") {
+        //Point of Sales Return
+        this.props.history.push(
+          `/SalesReturn?sales_return_number=${row.document_number}`
+        );
+      }
     }
-
-    // persistStateOnBack(this.state, () => {
-    //   if (
-    //     row.from_screen === "FD0002" ||
-    //     row.from_screen === "BL0001" ||
-    //     row.from_screen === "BL0002"
-    //   ) {
-    //     // Billing
-    //     this.props.history.push(`/OPBilling?bill_code=${row.document_number}`);
-    //   } else if (row.from_screen === "BL0003") {
-    //     // Billing
-    //     this.props.history.push(
-    //       `/OPBillCancellation?bill_cancel_number=${row.document_number}`
-    //     );
-    //   } else if (row.from_screen === "INV0009") {
-    //     // Inventory Transfer
-    //     this.props.history.push(
-    //       `/InvTransferEntry?transfer_number=${row.document_number}`
-    //     );
-    //   } else if (row.from_screen === "INV0007") {
-    //     // Inventory Consumorion
-    //     this.props.history.push(
-    //       `/InvConsumptionEntry?consumption_number=${row.document_number}`
-    //     );
-    //   } else if (row.from_screen === "SAL005") {
-    //     // Sales Invoice
-    //     this.props.history.push(
-    //       `/SalesInvoice?invoice_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
-    //     );
-    //   } else if (row.from_screen === "SAL008") {
-    //     //Sales Return
-    //     this.props.history.push(
-    //       `/SalesReturnEntry?sales_return_number=${row.document_number}`
-    //     );
-    //   } else if (row.from_screen === "PR0003") {
-    //     // Delivery Note
-    //     this.props.history.push(
-    //       `/DeliveryNoteEntry?delivery_note_number=${row.document_number}`
-    //     );
-    //   } else if (row.from_screen === "PR0004") {
-    //     //Receipt Entry
-    //     this.props.history.push(
-    //       `/ReceiptEntry?grn_number=${row.document_number}&finance_day_end_header_id=${row.finance_day_end_header_id}`
-    //     );
-    //   } else if (row.from_screen === "PR0006") {
-    //     //Purchase Return
-    //     this.props.history.push(
-    //       `/PurchaseReturnEntry?purchase_return_number=${row.document_number}`
-    //     );
-    //   }
-    // });
   }
   onOpenPreviewPopUP(row, that) {
     try {
-      algaehApiCall({
-        uri: "/finance/previewDayEndEntries",
-        data: {
-          day_end_header_id: row.finance_day_end_header_id,
-          revert_trans: this.state.revert_trans,
-        },
-        method: "GET",
-        module: "finance",
-        onSuccess: (response) => {
-          const { result, success, message } = response.data;
-          if (success === true) {
-            that.setState({
-              popUpRecords: result,
-              openPopup: true,
-              finance_day_end_header_id: row.finance_day_end_header_id,
-              narration: row.narration,
-            });
-          } else {
-            that.setState({ popUpRecords: {}, openPopup: false });
-            swalMessage({ title: message, type: "error" });
-          }
-        },
-        onCatch: (error) => {
-          swalMessage({ title: error, type: "error" });
-        },
-      });
+      if (row.finance_day_end_header_id !== undefined) {
+        algaehApiCall({
+          uri: "/finance/previewDayEndEntries",
+          data: {
+            day_end_header_id: row.finance_day_end_header_id,
+            revert_trans: this.state.revert_trans,
+          },
+          method: "GET",
+          module: "finance",
+          onSuccess: (response) => {
+            const { result, success, message } = response.data;
+            if (success === true) {
+              that.setState({
+                popUpRecords: result,
+                openPopup: true,
+                finance_day_end_header_id: row.finance_day_end_header_id,
+                narration: row.narration,
+              });
+            } else {
+              that.setState({ popUpRecords: {}, openPopup: false });
+              swalMessage({ title: message, type: "error" });
+            }
+          },
+          onCatch: (error) => {
+            swalMessage({ title: error, type: "error" });
+          },
+        });
+      }
     } catch (e) {
       swalMessage({ title: e, type: "error" });
       console.error(e);
@@ -547,7 +511,7 @@ class DayEndProcess extends Component {
 
   ClearData() {
     this.setState({
-      dayEnd: [],
+      dayEnd: [{}],
       from_date: undefined,
       to_date: undefined,
       openPopup: false,
