@@ -35,6 +35,7 @@ import Vat from "./reportBag/vat";
 import Clinical from "./reportBag/clinical";
 import Laboratory from "./reportBag/laboratory";
 import misReport from "./reportBag/misReport";
+import Sales from "./reportBag/sales";
 import spotlightSearch from "../../Search/spotlightSearch.json";
 let allYears = getYears();
 
@@ -160,6 +161,9 @@ export default function loadActiveReports(
             algaehApiCall,
             INS_STATUS,
           });
+          break;
+        case "sales":
+          result = Sales({});
           break;
         case "misReport":
           result = misReport({
