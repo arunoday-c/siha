@@ -27,11 +27,13 @@ const executePDF = function executePDFMethod(options) {
             ROUND(SUM(dispatch_quantity),0) dispatch_quantity, 
             ROUND(MAX(waited_avg_cost) * SUM(dispatch_quantity),2) cost_price,
             ROUND(SUM(net_extended_cost) - (MAX(waited_avg_cost) * SUM(dispatch_quantity)),2) gross_profit,
-            MAX(item_description) item_description from hims_f_sales_invoice_header IH 
+            MAX(item_description) item_description, MAX(category_desc) category_desc 
+            from hims_f_sales_invoice_header IH 
             inner join hims_f_sales_invoice_detail ID on ID.sales_invoice_header_id =  IH.hims_f_sales_invoice_header_id             
             inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = ID.dispatch_note_header_id 
             inner join hims_f_sales_dispatch_note_batches DB on DB.sales_dispatch_note_detail_id =  DD.hims_f_sales_dispatch_note_detail_id 
             inner join hims_d_inventory_item_master IT on IT.hims_d_inventory_item_master_id =  DB.item_id 
+            inner join hims_d_inventory_tem_category TC on TC.hims_d_inventory_tem_category_id =  DB.item_category_id 
             inner join hims_d_project P on P.hims_d_project_id =  IH.project_id 
             inner join hims_d_hospital H on H.hims_d_hospital_id =  IH.hospital_id 
             where is_cancelled='N' and  date(IH.invoice_date) between date(?) and date(?)  
@@ -45,7 +47,7 @@ const executePDF = function executePDFMethod(options) {
           const grpcostCenter = _.chain(res)
             .groupBy((g) => g.project_id)
             .map((cost_center) => {
-              console.log("cost_center", cost_center);
+              //   console.log("cost_center", cost_center);
               const { project_desc } = cost_center[0];
 
               const _branches = _.chain(cost_center)
@@ -74,7 +76,7 @@ const executePDF = function executePDFMethod(options) {
                 })
                 .value();
 
-              console.log("_branches", _branches);
+              //   console.log("_branches", _branches);
               return {
                 project_desc,
                 cost_center: _branches,
@@ -89,7 +91,7 @@ const executePDF = function executePDFMethod(options) {
             })
             .value();
 
-          console.log("grpcostCenter", grpcostCenter[0].cost_center);
+          //   console.log("grpcostCenter", grpcostCenter[0].cost_center);
           const net_total = options.currencyFormat(
             _.sumBy(grpcostCenter, (s) => parseFloat(s.projectTotal)),
             options.args.crypto
