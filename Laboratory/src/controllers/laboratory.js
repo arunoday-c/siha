@@ -9,6 +9,8 @@ const {
   updateLabOrderServices,
   getTestAnalytes,
   updateLabSampleStatus,
+  updateLabOrderServiceStatus,
+  updateLabOrderServiceMultiple,
   updateLabResultEntry,
   updateMicroResultEntry,
   getMicroResult,
@@ -176,6 +178,26 @@ export default () => {
       records: req.records,
     });
   });
+  api.put(
+    "/updateLabOrderServiceStatus",
+    updateLabOrderServiceStatus,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.put(
+    "/updateLabOrderServiceMultiple",
+    updateLabOrderServiceMultiple,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.put("/reloadAnalytesMaster", reloadAnalytesMaster, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

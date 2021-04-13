@@ -10,15 +10,18 @@ import {
   CollectSample,
   printBarcode,
   onchangegridcol,
+  updateLabOrderServiceStatus,
+  updateLabOrderServiceMultiple,
 } from "./SampleCollectionEvent";
 import {
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlgaehModalPopUp,
   AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
+import { AlgaehDataGrid } from "algaeh-react-components";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { MainContext } from "algaeh-react-components";
+import { AlgaehAutoComplete, MainContext } from "algaeh-react-components";
 import variableJson from "../../../utils/GlobalVariables.json";
 
 class SampleCollectionPatient extends PureComponent {
@@ -228,12 +231,51 @@ class SampleCollectionPatient extends PureComponent {
                                     </span>
                                   );
                                 },
+                                editorTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {row.collected !== "Y" ? (
+                                        <i
+                                          style={{
+                                            pointerEvents:
+                                              row.billed === "N" ? "none" : "",
+                                            opacity:
+                                              row.billed === "N" ? "0.1" : "",
+                                          }}
+                                          className="fas fa-check"
+                                          onClick={CollectSample.bind(
+                                            this,
+                                            this,
+                                            context,
+                                            row
+                                          )}
+                                        />
+                                      ) : (
+                                        <i
+                                          style={{
+                                            pointerEvents:
+                                              row.billed === "N" ? "none" : "",
+                                            opacity:
+                                              row.billed === "N" ? "0.1" : "",
+                                          }}
+                                          className="fas fa-barcode"
+                                          onClick={printBarcode.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        />
+                                      )}
+                                    </span>
+                                  );
+                                },
                                 others: {
                                   maxWidth: 100,
                                   resizable: false,
                                   style: { textAlign: "center" },
                                 },
                               },
+
                               {
                                 fieldName: "billed",
                                 label: (
@@ -242,6 +284,11 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: (row) => {
+                                  return row.billed === "N"
+                                    ? "Not Billed"
+                                    : "Billed";
+                                },
+                                editorTemplate: (row) => {
                                   return row.billed === "N"
                                     ? "Not Billed"
                                     : "Billed";
@@ -267,6 +314,15 @@ class SampleCollectionPatient extends PureComponent {
                                     </span>
                                   );
                                 },
+                                editorTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {row.test_type === "S"
+                                        ? "Stat"
+                                        : "Routine"}
+                                    </span>
+                                  );
+                                },
                                 disabled: true,
                                 others: {
                                   resizable: false,
@@ -280,6 +336,9 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "investigation_code" }}
                                   />
                                 ),
+                                editorTemplate: (row) => {
+                                  return row.service_code;
+                                },
                                 others: {
                                   resizable: false,
                                   style: { textAlign: "center" },
@@ -292,6 +351,9 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "investigation_name" }}
                                   />
                                 ),
+                                editorTemplate: (row) => {
+                                  return row.service_name;
+                                },
                                 others: {
                                   minWidth: 250,
                                   resizable: false,
@@ -306,6 +368,43 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: (row) => {
+                                  let display =
+                                    this.props.labspecimen === undefined
+                                      ? []
+                                      : this.props.labspecimen.filter(
+                                          (f) =>
+                                            f.hims_d_lab_specimen_id ===
+                                            row.sample_id
+                                        );
+                                  return row.collected === "Y" ||
+                                    row.billed === "N" ? (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].SpeDescription
+                                        : ""}
+                                    </span>
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
+                                      selector={{
+                                        name: "sample_id",
+                                        className: "select-fld",
+                                        value: row.sample_id,
+                                        dataSource: {
+                                          textField: "SpeDescription",
+                                          valueField: "hims_d_lab_specimen_id",
+                                          data: this.props.labspecimen,
+                                        },
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }}
+                                    />
+                                  );
+                                },
+                                editorTemplate: (row) => {
                                   let display =
                                     this.props.labspecimen === undefined
                                       ? []
@@ -392,6 +491,43 @@ class SampleCollectionPatient extends PureComponent {
                                     />
                                   );
                                 },
+                                editorTemplate: (row) => {
+                                  let display =
+                                    this.props.labcontainer === undefined
+                                      ? []
+                                      : this.props.labcontainer.filter(
+                                          (f) =>
+                                            f.hims_d_lab_container_id ===
+                                            row.container_id
+                                        );
+                                  return row.collected === "Y" ||
+                                    row.billed === "N" ? (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].ConDescription
+                                        : ""}
+                                    </span>
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
+                                      selector={{
+                                        name: "container_id",
+                                        className: "select-fld",
+                                        value: row.container_id,
+                                        dataSource: {
+                                          textField: "ConDescription",
+                                          valueField: "hims_d_lab_container_id",
+                                          data: this.props.labcontainer,
+                                        },
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }}
+                                    />
+                                  );
+                                },
                                 others: {
                                   maxWidth: 200,
                                   resizable: false,
@@ -406,6 +542,39 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: (row) => {
+                                  return row.collected === "Y" ||
+                                    row.billed === "N" ? (
+                                    row.send_out_test === "Y" ? (
+                                      <span className="badge badge-success">
+                                        Yes
+                                      </span>
+                                    ) : (
+                                      <span className="badge badge-danger">
+                                        No
+                                      </span>
+                                    )
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
+                                      selector={{
+                                        name: "send_out_test",
+                                        className: "select-fld",
+                                        value: row.send_out_test,
+                                        dataSource: {
+                                          textField: "name",
+                                          valueField: "value",
+                                          data: variableJson.FORMAT_YESNO,
+                                        },
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        ),
+                                      }}
+                                    />
+                                  );
+                                },
+                                editorTemplate: (row) => {
                                   return row.collected === "Y" ||
                                     row.billed === "N" ? (
                                     row.send_out_test === "Y" ? (
@@ -462,11 +631,88 @@ class SampleCollectionPatient extends PureComponent {
                                     </span>
                                   );
                                 },
+                                editorTemplate: (row) => {
+                                  return row.collected === "Y" ? (
+                                    <span className="badge badge-success">
+                                      Yes
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-danger">
+                                      No
+                                    </span>
+                                  );
+                                },
+                              },
+                              {
+                                fieldName: "status",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "Status" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return row.status === "O"
+                                    ? "ordered"
+                                    : row.status === "CL"
+                                    ? "Collected"
+                                    : row.status === "CN"
+                                    ? "Test Canceled"
+                                    : row.status === "CF"
+                                    ? "Result Confirmed"
+                                    : "Result Validated";
+                                },
+                                editorTemplate: (row) => {
+                                  return (
+                                    <AlgaehAutoComplete
+                                      // error={errors2}
+                                      div={{ className: "col " }}
+                                      selector={{
+                                        className: "select-fld",
+                                        name: "status",
+                                        value: row.status,
+                                        onChange: (e, value) => {
+                                          row.status = value;
+                                        },
+                                        // others: { defaultValue: row.bed_id },
+                                        dataSource: {
+                                          textField: "name",
+                                          valueField: "value",
+                                          data: [
+                                            {
+                                              name: "Ordered",
+                                              value: "O",
+                                            },
+                                            {
+                                              name: "Collected",
+                                              value: "CL",
+                                            },
+                                            {
+                                              name: "Canceled",
+                                              value: "CN",
+                                            },
+                                            {
+                                              name: "Result Confirmed",
+                                              value: "CF",
+                                            },
+                                          ],
+                                        },
+                                        updateInternally: true,
+                                        // others: {
+                                        //   disabled:
+                                        //     current.request_status === "APR" &&
+                                        //     current.work_status === "COM",
+                                        //   tabIndex: "4",
+                                        // },
+                                      }}
+                                    />
+                                  );
+                                },
                                 // others: {
                                 //   resizable: false,
                                 //   style: { textAlign: "center" }
                                 // }
                               },
+
                               {
                                 fieldName: "collected_by",
                                 label: (
@@ -475,6 +721,24 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: (row) => {
+                                  let display =
+                                    this.props.userdrtails === undefined
+                                      ? []
+                                      : this.props.userdrtails.filter(
+                                          (f) =>
+                                            f.algaeh_d_app_user_id ===
+                                            row.collected_by
+                                        );
+
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].username
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: (row) => {
                                   let display =
                                     this.props.userdrtails === undefined
                                       ? []
@@ -515,6 +779,17 @@ class SampleCollectionPatient extends PureComponent {
                                     </span>
                                   );
                                 },
+                                editorTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {moment(row.collected_date).isValid()
+                                        ? moment(row.collected_date).format(
+                                            "DD-MM-YYYY hh:mm"
+                                          )
+                                        : "------"}
+                                    </span>
+                                  );
+                                },
                                 others: {
                                   resizable: false,
                                   style: { textAlign: "center" },
@@ -538,6 +813,17 @@ class SampleCollectionPatient extends PureComponent {
                                     </span>
                                   );
                                 },
+                                editorTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {moment(row.barcode_gen).isValid()
+                                        ? moment(row.barcode_gen).format(
+                                            "DD-MM-YYYY hh:mm"
+                                          )
+                                        : "------"}
+                                    </span>
+                                  );
+                                },
                                 others: {
                                   resizable: false,
                                   style: { textAlign: "center" },
@@ -550,6 +836,9 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ forceLabel: "Rejection Remarks" }}
                                   />
                                 ),
+                                editorTemplate: (row) => {
+                                  return row.remarks;
+                                },
                                 others: {
                                   maxWidth: 200,
                                   resizable: false,
@@ -558,12 +847,19 @@ class SampleCollectionPatient extends PureComponent {
                               },
                             ]}
                             keyId="service_code"
-                            dataSource={{
-                              data: this.state.test_details,
+                            // dataSource={{
+                            data={this.state.test_details}
+                            // }}
+                            events={{
+                              onSave: updateLabOrderServiceStatus.bind(
+                                this,
+                                this
+                              ),
                             }}
                             noDataText="No sample for collection"
-                            // isEditable={true}
-                            paging={{ page: 0, rowsPerPage: 10 }}
+                            isEditable={"editOnly"}
+                            // paging={{ page: 0, rowsPerPage: 10 }}
+                            pagination={true}
                           />
                         </div>
                       </div>
@@ -574,6 +870,15 @@ class SampleCollectionPatient extends PureComponent {
                     <div className="col-lg-12">
                       <div className="row">
                         <div className="col-lg-12">
+                          <button
+                            className="btn btn-default"
+                            onClick={updateLabOrderServiceMultiple.bind(
+                              this,
+                              this
+                            )}
+                          >
+                            <AlgaehLabel label={{ fieldName: "btnCancel" }} />
+                          </button>
                           <button
                             className="btn btn-default"
                             onClick={(e) => {

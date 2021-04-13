@@ -3,6 +3,8 @@ import Options from "../../../Options.json";
 import moment from "moment";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import sockets from "../../../sockets";
+import swal from "sweetalert2";
+// import swal from "sweetalert2";
 
 const CollectSample = ($this, context, row) => {
   if (row.container_id === null || row.container_id === undefined) {
@@ -84,7 +86,66 @@ const CollectSample = ($this, context, row) => {
     },
   });
 };
-
+const updateLabOrderServiceStatus = ($this, row) => {
+  if (row.collected === "N") {
+    algaehApiCall({
+      uri: "/laboratory/updateLabOrderServiceStatus",
+      module: "laboratory",
+      data: { hims_f_lab_order_id: row.hims_f_lab_order_id },
+      method: "PUT",
+      onSuccess: (response) => {
+        if (response.data.success === true) {
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success",
+          });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.response.data.message || error.message,
+          type: "error",
+        });
+      },
+    });
+  } else {
+    return;
+  }
+};
+const updateLabOrderServiceMultiple = ($this) => {
+  swal({
+    title: `Are You sure you Want to cancel All the services?`,
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willDelete) => {
+    if (willDelete.value) {
+      algaehApiCall({
+        uri: "/laboratory/updateLabOrderServiceMultiple",
+        module: "laboratory",
+        data: { labOrderArray: $this.state.test_details },
+        method: "PUT",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            swalMessage({
+              title: "Record Updated Successfully",
+              type: "success",
+            });
+          }
+        },
+        onFailure: (error) => {
+          swalMessage({
+            title: error.response.data.message || error.message,
+            type: "error",
+          });
+        },
+      });
+    }
+  });
+};
 const printBarcode = ($this, row) => {
   if (row.lab_id_number !== null) {
     algaehApiCall({
@@ -244,4 +305,11 @@ const onchangegridcol = ($this, row, e) => {
   }
 };
 
-export { CollectSample, printBarcode, dateFormater, onchangegridcol };
+export {
+  CollectSample,
+  printBarcode,
+  updateLabOrderServiceStatus,
+  updateLabOrderServiceMultiple,
+  dateFormater,
+  onchangegridcol,
+};

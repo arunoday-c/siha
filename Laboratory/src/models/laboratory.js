@@ -917,6 +917,72 @@ export default {
       });
     }
   },
+  updateLabOrderServiceStatus: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      // cancelled
+      _mysql
+        .executeQuery({
+          query: `update hims_f_lab_order set status='O', updated_by=?,updated_date=? where hims_f_lab_order_id=?;`,
+          values: [
+            req["userIdentity"].algaeh_d_app_user_id,
+            new Date(),
+            inputParam.hims_f_lab_order_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          req.records = result;
+          _mysql.releaseConnection();
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+
+      next(e);
+    }
+  },
+
+  updateLabOrderServiceMultiple: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let qry = "";
+      let updateLabOrder = req.body.labOrderArray;
+      updateLabOrder.map((item) => {
+        qry += mysql.format(
+          `update hims_f_lab_order set status='O', cancelled='Y',updated_by=?,updated_date=? where hims_f_lab_order_id=?;`,
+          [
+            req["userIdentity"].algaeh_d_app_user_id,
+            new Date(),
+            item.hims_f_lab_order_id,
+          ]
+        );
+      });
+      _mysql
+        .executeQuery({
+          query: qry,
+          bulkInsertOrUpdate: true,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+      _mysql.releaseConnection();
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 
   updateLabOrderServices: (req, res, next) => {
     const _mysql = new algaehMysql();
