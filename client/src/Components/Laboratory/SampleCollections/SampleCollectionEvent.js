@@ -114,7 +114,7 @@ const updateLabOrderServiceStatus = ($this, row) => {
 };
 const updateLabOrderServiceMultiple = ($this) => {
   swal({
-    title: `Are You sure you Want to cancel All the services?`,
+    title: `Are you sure to change all specimen not collected?`,
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",
