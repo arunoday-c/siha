@@ -404,7 +404,7 @@ class EmployeeMasterIndex extends Component {
                         );
                       },
                       others: {
-                        maxWidth: 65,
+                        maxWidth: 50,
                         resizable: false,
                         filterable: false,
                         style: { textAlign: "center" },
@@ -484,7 +484,7 @@ class EmployeeMasterIndex extends Component {
                         <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
                       ),
                       others: {
-                        maxWidth: 100,
+                        minWidth: 130,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -508,9 +508,9 @@ class EmployeeMasterIndex extends Component {
                         <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                       ),
                       others: {
-                        // minWidth: 200,
+                        minWidth: 250,
                         resizable: false,
-                        style: { textAlign: "center" },
+                        style: { textAlign: "left" },
                       },
                       filterable: true,
                     },
@@ -522,9 +522,9 @@ class EmployeeMasterIndex extends Component {
                         />
                       ),
                       others: {
-                        // minWidth: 200,
+                        minWidth: 250,
                         resizable: false,
-                        style: { textAlign: "center" },
+                        style: { textAlign: "right" },
                       },
                       filterable: true,
                     },
@@ -532,7 +532,7 @@ class EmployeeMasterIndex extends Component {
                       fieldName: "sex",
                       label: <AlgaehLabel label={{ forceLabel: "gender" }} />,
                       others: {
-                        maxWidth: 80,
+                        minWidth: 80,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -547,7 +547,7 @@ class EmployeeMasterIndex extends Component {
                       ),
 
                       others: {
-                        maxWidth: 200,
+                        minWidth: 200,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -560,7 +560,7 @@ class EmployeeMasterIndex extends Component {
                       ),
 
                       others: {
-                        maxWidth: 150,
+                        minWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -571,7 +571,7 @@ class EmployeeMasterIndex extends Component {
                       label: <AlgaehLabel label={{ forceLabel: "Religion" }} />,
 
                       others: {
-                        maxWidth: 150,
+                        minWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -585,7 +585,7 @@ class EmployeeMasterIndex extends Component {
                       ),
 
                       others: {
-                        maxWidth: 150,
+                        minWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -598,7 +598,7 @@ class EmployeeMasterIndex extends Component {
                       ),
 
                       others: {
-                        maxWidth: 150,
+                        minWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -611,7 +611,7 @@ class EmployeeMasterIndex extends Component {
                       ),
 
                       others: {
-                        maxWidth: 150,
+                        minWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" },
                       },
@@ -623,9 +623,9 @@ class EmployeeMasterIndex extends Component {
                         <AlgaehLabel label={{ forceLabel: "Updated By" }} />
                       ),
                       others: {
-                        maxWidth: 150,
+                        minWidth: 250,
                         resizable: false,
-                        style: { textAlign: "center" },
+                        style: { textAlign: "left" },
                       },
                       filterable: true,
                     },
