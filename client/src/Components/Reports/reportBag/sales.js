@@ -214,7 +214,36 @@ export default function sales({
         subitem: "Sales - Item Dispatch Detail",
         reportName: "SalesTransferReport",
         requireIframe: true,
-        componentCode: "RPT_SAL_TRAN",
+        componentCode: "RPT_SAL_ITM_DTL",
+        reportParameters: [
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Sales - Service Detail",
+        reportName: "SalesServiceDetail",
+        requireIframe: true,
+        componentCode: "RPT_SAL_SER_DTL",
         reportParameters: [
           {
             className: "col-3 mandatory  form-group",
