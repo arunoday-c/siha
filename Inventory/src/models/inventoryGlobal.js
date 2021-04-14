@@ -476,9 +476,9 @@ export default {
         strGroup = " group by inventory_location_id";
       }
       if (req.query.zeroStock === "Y") {
-        zeroQuantity = "and qtyhand<= 0";
+        zeroQuantity = " having sum(IL.qtyhand) <= 0";
       } else {
-        zeroQuantity = "and qtyhand > 0";
+        zeroQuantity = " having sum(IL.qtyhand) > 0";
       }
 
       _mysql
@@ -497,9 +497,9 @@ export default {
             strOrder +
             " left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id \
             where  item_status ='A' " +
-            zeroQuantity +
             strAppend +
             strGroup +
+            zeroQuantity +
             " order by date(expirydt)",
           values: intValues,
           printQuery: true,
