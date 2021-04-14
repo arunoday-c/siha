@@ -640,9 +640,9 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `finance_account_head` (account_code,group_code,account_name, arabic_account_name, account_parent,\
-                   group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path,root_id\
-                ,created_date, created_by, updated_date, updated_by)\
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                   group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path,root_id, account_type, \
+                   created_date, created_by, updated_date, updated_by)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 account_code,
                 input.ledger_code,
@@ -656,6 +656,7 @@ export default {
                 parent_acc_id,
                 hierarchy_path,
                 root_id,
+                input.account_type,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
@@ -2611,10 +2612,11 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "update finance_account_head set account_name=?,updated_by=?,updated_date=?,arabic_account_name=?,group_code=? \
+                "update finance_account_head set account_name=?,account_type=?, updated_by=?,updated_date=?,arabic_account_name=?,group_code=? \
                  where finance_account_head_id=? ;", //and created_from='U'
               values: [
                 input.account_name,
+                input.account_type,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 input.arabic_account_name,
@@ -3410,11 +3412,11 @@ export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
           concat(account_name,' / ',coalesce(group_code,concat('sys-',account_code)),
           case when arabic_account_name is null then ''  else  concat(' / ',arabic_account_name)end ) as group_full_name,
           concat(child_name,' / ',ledger_code,case when arabic_child_name is null then '' 
-          else  concat(' / ',arabic_child_name)end ) as child_full_name
+          else  concat(' / ',arabic_child_name)end ) as child_full_name, account_type
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id
            where root_id=? order by account_level,sort_order;           
-           select C.head_id,finance_account_child_id as child_id,child_name,C.arabic_child_name,root_id
+           select C.head_id,finance_account_child_id as child_id,child_name,C.arabic_child_name,root_id,account_type
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, 
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
@@ -3427,7 +3429,7 @@ export function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
           where root_id=?;
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
-          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, account_type
           from finance_account_head H              
           left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A' 
           where H.root_id=?

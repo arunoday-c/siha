@@ -1,7 +1,7 @@
 export const country_list = [
   { name: "Australia", value: "au" },
   { name: "Canada", value: "ca" },
-  { name: "USA", value: "usa" }
+  { name: "USA", value: "usa" },
 ];
 
 export const account_role = [
@@ -9,29 +9,42 @@ export const account_role = [
   { name: "Shared asset account", value: "sharedAsset" },
   { name: "Savings account", value: "savingAsset" },
   { name: "Credit card", value: "ccAsset" },
-  { name: "Cash wallet", value: "cashWalletAsset" }
+  { name: "Cash wallet", value: "cashWalletAsset" },
 ];
 
 export const liabilityType = [
   { name: "Debt", value: "1" },
   { name: "Loan", value: "2" },
-  { name: "Mortgage", value: "3" }
+  { name: "Mortgage", value: "3" },
 ];
 export const interestperiodType = [
   { name: "Daily", value: "daily" },
   { name: "Monthly", value: "monthly" },
-  { name: "Yearly", value: "yearly" }
+  { name: "Yearly", value: "yearly" },
 ];
 
 export const AccountType = [
   { name: "Group", value: "G" },
-  { name: "Child", value: "C" }
+  { name: "Child", value: "C" },
+];
+
+export const Account_Type = [
+  { name: "None", value: "N" },
+  { name: "Cash", value: "C" },
+  { name: "Profit & Loss", value: "PL" },
+  { name: "Bank", value: "B" },
+  { name: "Account Receivable", value: "AR" },
+  { name: "Current Assets", value: "CA" },
+  { name: "Non Current Assets", value: "NCA" },
+  { name: "Cash and Cash Equivalent", value: "CACE" },
+  { name: "Current Liabilities", value: "CL" },
+  { name: "Non Current Liabilities", value: "NCL" },
 ];
 
 export const PaymentStatus = [
   { name: "Pending", value: "P" },
   { name: "Authorized", value: "A" },
-  { name: "Paid", value: "PD" }
+  { name: "Paid", value: "PD" },
 ];
 
 export const currency_list = [
@@ -204,5 +217,5 @@ export const currency_list = [
   { value: "YER", name: "Yemeni Rial" },
   { value: "ZAR", name: "South African Rand" },
   { value: "ZMW", name: "Zambian Kwacha" },
-  { value: "ZWL", name: "Zimbabwean Dollar" }
+  { value: "ZWL", name: "Zimbabwean Dollar" },
 ];
