@@ -41,11 +41,13 @@ const executePDF = function executePDFMethod(options) {
               ''' THEN SUM(qtyhand) END `', location_description, '`'))\
               INTO @sql\
               FROM hims_d_item_master IM\
+              left join hims_d_item_category IC on IM.category_id= IC.hims_d_item_category_id	\
               left join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
               left join hims_d_pharmacy_location ILO on ILO.hims_d_pharmacy_location_id=IL.pharmacy_location_id; \
-              SET @sql = CONCAT('SELECT MAX(item_description) as item_description,item_code, IL.pharmacy_location_id, sum(IL.qtyhand) as  qtyhand, \
+              SET @sql = CONCAT('SELECT MAX(item_description) as item_description,IC.category_desc,item_code, IL.pharmacy_location_id, sum(IL.qtyhand) as  qtyhand, \
               hims_d_item_master_id,IL.batchno, ', @sql, ' \
               FROM hims_d_item_master IM \
+              left join hims_d_item_category IC on IM.category_id= IC.hims_d_item_category_id	\
               left join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
               left join hims_d_pharmacy_location ILO on ILO.hims_d_pharmacy_location_id=IL.pharmacy_location_id \
               where IL.hospital_id='?'  " +

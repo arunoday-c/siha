@@ -35,11 +35,12 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `select H.hims_f_pharmacy_consumption_header_id,H.consumption_number, date(H.consumption_date)as consumption_date,
-          H.doctor_id,E.full_name,E.employee_code, D.quantity,D.unit_cost,D.extended_cost,IM.item_code,IM.item_description,PHR.location_description
+          H.doctor_id,E.full_name,IC.category_desc,IC.category_desc,E.employee_code, D.quantity,D.unit_cost,D.extended_cost,IM.item_code,IM.item_description,PHR.location_description
           from hims_f_pharmacy_consumption_header H inner join hims_f_pharmacy_consumption_detail D on
           H.hims_f_pharmacy_consumption_header_id=D.pharmacy_consumption_header_id
           inner join  hims_d_employee E on E.hims_d_employee_id=H.doctor_id
           inner join hims_d_item_master IM on  D.item_id=IM.hims_d_item_master_id
+          left join hims_d_item_category IC on IM.category_id= IC.hims_d_item_category_id
           inner join hims_d_pharmacy_location PHR on H.location_id = PHR.hims_d_pharmacy_location_id
           where H.hospital_id=?  and  date(H.consumption_date) between date(?) and date(?)  ${str};`,
           values: [input.hospital_id, input.from_date, input.to_date],

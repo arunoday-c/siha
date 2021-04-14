@@ -24,9 +24,10 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query:
-            "SELECT PTH.batchno, PTH.expiry_date, sum(PTH.transaction_qty) as transaction_qty, IM.item_code, IM.item_description, \
+            "SELECT PTH.batchno, PTH.expiry_date, sum(PTH.transaction_qty) as transaction_qty, IM.item_code,IC.category_desc,IM.category_id, IM.item_description, \
             IU.uom_description, PTH.transaction_total FROM hims_f_inventory_trans_history PTH \
             inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id = PTH.item_code_id \
+            left join hims_d_inventory_tem_category IC on IM.category_id= IC.hims_d_inventory_tem_category_id\
             inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = PTH.transaction_uom \
             where  operation='-' and date(PTH.transaction_date)  between date(?) and date(?) and from_location_id=? and hospital_id=?  " +
             str +

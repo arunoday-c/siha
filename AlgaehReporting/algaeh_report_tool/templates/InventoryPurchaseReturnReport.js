@@ -24,10 +24,11 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select H.*,D.*, V.vendor_name, IM.item_code, IM.item_description, IU.uom_description
+          query: `select H.*,D.*, V.vendor_name,IC.category_desc,IM.item_code, IM.item_description, IU.uom_description
           from hims_f_procurement_po_return_header H
           inner join hims_f_procurement_po_return_detail D on D.po_return_header_id= H.hims_f_procurement_return_po_header_id
           inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = D.inv_item_id
+          left join hims_d_inventory_tem_category IC on IM.category_id= IC.hims_d_inventory_tem_category_id 
           inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = D.inventory_uom_id
           inner join hims_d_vendor V on V.hims_d_vendor_id = H.vendor_id
           where po_return_from = 'INV' and date(return_date)  between date(?) and date(?) and hospital_id=? ${strQuery}; `,

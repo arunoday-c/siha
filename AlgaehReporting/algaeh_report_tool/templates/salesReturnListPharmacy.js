@@ -16,7 +16,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `
           select SRH.hims_f_pharmcy_sales_return_header_id,SRH.sales_return_number,SRH.sales_return_date,SRH.net_amount, EM.full_name as cashier_name,
-          PD.item_id,ITM.item_code,ITM.item_description, PD.expiry_date,PD.return_quantity,PD.quantity,PD.batchno,PD.insurance_yesno,
+          PD.item_id,ITM.item_code,ITM.item_description,IC.category_desc, PD.expiry_date,PD.return_quantity,PD.quantity,PD.batchno,PD.insurance_yesno,
           PD.patient_responsibility as PD_patient_responsibility,PD.patient_tax as PD_patient_tax,PD.patient_payable as PD_patient_payable,
           PD.company_responsibility as PD_company_responsibility,PD.company_tax as PD_company_tax,PD.company_payable as PD_company_payable,
           PD.net_extended_cost as PD_net_extended_cost, (COALESCE(PD.patient_payable,0) + COALESCE(PD.company_payable,0)) as PD_net_payable
@@ -24,6 +24,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_pharmcy_sales_return_header SRH on PD.sales_return_header_id = SRH.hims_f_pharmcy_sales_return_header_id
           left join hims_f_patient P on SRH.patient_id = P.hims_d_patient_id
           inner join hims_d_item_master ITM on ITM.hims_d_item_master_id = PD.item_id
+          left join hims_d_item_category IC on IM.category_id= IC.hims_d_item_category_id
           inner join algaeh_d_app_user USR on USR.algaeh_d_app_user_id = SRH.created_by
           inner join hims_d_employee EM on EM.hims_d_employee_id = USR.employee_id
           where SRH.record_status='A' and SRH.location_id=? and SRH.hospital_id=? 

@@ -27,12 +27,13 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `
           select H.*,B.*, ROUND(B.unit_cost, 3) as unit_cost, ROUND(B.quantity_transfer * B.unit_cost, 3) as net_extended_cost,
-          IM.item_code, IM.item_description, IU.uom_description,
+          IM.item_code, IM.item_description, IU.uom_description,IC.category_desc,
           PLF.location_description as from_location,PLT.location_description as to_location
           from hims_f_pharmacy_transfer_header H 
           inner join hims_f_pharmacy_transfer_detail D on D.transfer_header_id = H.hims_f_pharmacy_transfer_header_id
           inner join hims_f_pharmacy_transfer_batches B on B.transfer_detail_id = D.hims_f_pharmacy_transfer_detail_id
           inner join hims_d_item_master IM on IM.hims_d_item_master_id = D.item_id 
+          left join hims_d_item_category IC on IM.category_id= IC.hims_d_item_category_id	
           inner join hims_d_pharmacy_uom IU on IU.hims_d_pharmacy_uom_id = D.uom_transferred_id 
           inner join hims_d_pharmacy_location PLF on PLF.hims_d_pharmacy_location_id = H.from_location_id
           inner join hims_d_pharmacy_location PLT on PLT.hims_d_pharmacy_location_id = H.to_location_id 

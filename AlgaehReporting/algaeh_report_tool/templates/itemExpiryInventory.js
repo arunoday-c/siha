@@ -40,10 +40,11 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select hims_m_inventory_item_location_id,IL.item_id,IL.expirydt,IL.inventory_location_id,IL.qtyhand,
+          query: `select hims_m_inventory_item_location_id,IC.category_desc,IL.item_id,IL.expirydt,IL.inventory_location_id,IL.qtyhand,
 				PL.location_description as inventory_location,IM.item_description,IM.item_code,IL.batchno
 				from hims_m_inventory_item_location IL inner join  hims_d_inventory_item_master IM on IL.item_id=IM.hims_d_inventory_item_master_id
-				inner join hims_d_inventory_location PL on IL.inventory_location_id=PL.hims_d_inventory_location_id
+				left join hims_d_inventory_tem_category IC on IM.category_id= IC.hims_d_inventory_tem_category_id  
+        inner join hims_d_inventory_location PL on IL.inventory_location_id=PL.hims_d_inventory_location_id
 				where  IL.qtyhand > 0 and IL.record_status='A' and PL.hospital_id=? ${str}  order by date(expirydt) ASC;;`,
           values: [input.hospital_id],
           printQuery: true,

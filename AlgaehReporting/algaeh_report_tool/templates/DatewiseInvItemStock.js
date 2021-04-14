@@ -40,12 +40,13 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          select hims_f_inventory_trans_history_id, hims_d_inventory_item_master_id, 
+          select hims_f_inventory_trans_history_id, hims_d_inventory_item_master_id, IC.category_desc,
           max(item_code) as item_code, max(item_description) as item_description,           
           if (avgcost is null, 0, SUM(avgcost * IL.qtyhand))as avgcost,
           sum(IL.qtyhand) as quantity, max(item_code_id) as item_code_id, 
           max(transaction_qty) as transaction_qty, operation, max(waited_avg_cost) as waited_avg_cost  
           from hims_d_inventory_item_master IM
+          left join hims_d_inventory_tem_category IC on IM.category_id = IC.hims_d_inventory_tem_category_id
           left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id = IL.item_id
           left join hims_f_inventory_trans_history TH on TH.item_code_id = IM.hims_d_inventory_item_master_id and 
           date(TH.transaction_date)>date(?) and TH.from_location_id= IL.inventory_location_id and TH.hospital_id= IL.hospital_id

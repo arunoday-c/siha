@@ -19,6 +19,7 @@
                 <thead>
                    <tr>
                         <th>Sl No.</th>
+                        <th>category</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
                         <th>UOM</th>
@@ -34,6 +35,7 @@
 
                     {{#each result}}
                      <tr>
+                         <td></td>
                         <td colspan="4" class="tableSubHdg">{{transfer_number}} - {{transfer_date}}
                         </td>
                         <td  colspan="3" class="tableSubHdg numberFld">{{from_location}} > {{to_location}}</td>
@@ -41,6 +43,7 @@
                     {{#each transfer_items}}
                     <tr>
                         <td>{{inc @index}}</td>
+                        <td>{{category_desc}}</td>
                         <td>{{item_code}}</th>
                         <td class="txtFld">{{item_description}}</th>
                         <td>{{uom_description}}</td>
@@ -53,6 +56,7 @@
                     {{/each }}
                          <tr class="tableSubHdg2">
                         <td colspan="6"></td>
+                        <td></td>
                         <td class="numberFld"><b>{{sum_total_net_extended_cost}}</b></td>
                     </tr>
                     {{/each }}

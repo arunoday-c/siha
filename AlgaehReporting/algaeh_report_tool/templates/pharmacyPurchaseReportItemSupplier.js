@@ -37,7 +37,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          SELECT PHR.item_code,PHR.item_description,POH.delivery_note_number,
+          SELECT PHR.item_code,IC.category_desc, PHR.item_description,POH.delivery_note_number,
           POH.dn_date,POH.dn_from,POH.pharmcy_location_id,
           POH.location_type,VN.vendor_code,ITL.vendor_batchno,VN.vendor_name,POH.vendor_id,
           POH.purchase_order_id,POH.sub_total,POH.detail_discount,POH.net_total,
@@ -49,6 +49,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_procurement_dn_header POH on POH.hims_f_procurement_dn_header_id = POD.hims_f_procurement_dn_header_id
           inner join hims_d_vendor VN on VN.hims_d_vendor_id = POH.vendor_id
           inner join hims_d_item_master PHR on PHR.hims_d_item_master_id = POD.phar_item_id
+          left join hims_d_item_category IC on PHR.category_id= IC.hims_d_item_category_id	
           left join hims_m_item_location ITL on ITL.item_id = POD.inv_item_id
           left join hims_f_procurement_po_header PO on PO.hims_f_procurement_po_header_id = POD.purchase_order_header_id
           where POH.cancelled = 'N' ${str} order by PO.po_date DESC;
