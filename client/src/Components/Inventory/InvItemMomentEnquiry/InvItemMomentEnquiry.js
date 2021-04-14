@@ -20,6 +20,7 @@ import {
   dateValidate,
   DrillDownScree,
   generateReports,
+  itemchangeText,
 } from "./InvItemMomentEnquiryEvents";
 import "./InvItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
@@ -30,6 +31,8 @@ import {
   Tooltip,
 } from "algaeh-react-components";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 class InvItemMomentEnquiry extends Component {
   constructor(props) {
@@ -43,6 +46,7 @@ class InvItemMomentEnquiry extends Component {
       to_date: null,
       vendor_batchno: null,
       transaction_type: null,
+      item_description: "",
     };
   }
 
@@ -141,7 +145,43 @@ class InvItemMomentEnquiry extends Component {
                     maxDate={new Date()}
                     value={this.state.to_date}
                   />
-                  <AlagehAutoComplete
+
+                  <AlgaehAutoSearch
+                    div={{ className: "col-3 AlgaehAutoSearch" }}
+                    label={{ forceLabel: "Item Name" }}
+                    title="Search Items"
+                    id="item_id_search"
+                    template={(result) => {
+                      return (
+                        <section className="resultSecStyles">
+                          <div className="row">
+                            <div className="col-8">
+                              <h4 className="title">
+                                {result.item_description}
+                              </h4>
+                              <small>{result.item_code}</small>
+                            </div>
+                          </div>
+                        </section>
+                      );
+                    }}
+                    name="item_code_id"
+                    columns={spotlightSearch.Items.Invitemmaster}
+                    displayField="item_description"
+                    value={this.state.item_description}
+                    searchName="invopeningstock"
+                    onClick={itemchangeText.bind(this, this)}
+                    onClear={() => {
+                      this.setState({
+                        item_code_id: null,
+                        item_description: "",
+                      });
+                    }}
+                    ref={(attReg) => {
+                      this.attReg = attReg;
+                    }}
+                  />
+                  {/* <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{ forceLabel: "Item Name" }}
                     selector={{
@@ -160,7 +200,7 @@ class InvItemMomentEnquiry extends Component {
                         });
                       },
                     }}
-                  />
+                  /> */}
 
                   <AlagehFormGroup
                     div={{ className: "col" }}

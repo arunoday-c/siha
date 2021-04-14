@@ -178,11 +178,8 @@ class SampleCollectionPatient extends PureComponent {
                     </div>
 
                     <div className="row grid-details">
-                      <div className="col-lg-12">
-                        <div
-                          id="sampleCollectionGrid_Cntr"
-                          className="margin-bottom-15"
-                        >
+                      <div className="col-lg-12" id="sampleCollectionGrid_Cntr">
+                        <div className="margin-bottom-15">
                           <AlgaehDataGrid
                             id="update_order_grid"
                             columns={[
@@ -847,9 +844,7 @@ class SampleCollectionPatient extends PureComponent {
                               },
                             ]}
                             keyId="service_code"
-                            // dataSource={{
                             data={this.state.test_details}
-                            // }}
                             events={{
                               onSave: updateLabOrderServiceStatus.bind(
                                 this,
@@ -858,13 +853,15 @@ class SampleCollectionPatient extends PureComponent {
                             }}
                             noDataText="No sample for collection"
                             isEditable={"editOnly"}
-                            // paging={{ page: 0, rowsPerPage: 10 }}
+                            pageOptions={{ rows: 20, page: 1 }}
+                            isFilterable={true}
                             pagination={true}
                           />
                         </div>
                       </div>
                     </div>
                   </div>
+                  {/* PAT-21-14323 */}
 
                   <div className=" popupFooter">
                     <div className="col-lg-12">
@@ -872,20 +869,24 @@ class SampleCollectionPatient extends PureComponent {
                         <div className="col-lg-12">
                           <button
                             className="btn btn-default"
-                            onClick={updateLabOrderServiceMultiple.bind(
-                              this,
-                              this
-                            )}
-                          >
-                            <AlgaehLabel label={{ fieldName: "btnCancel" }} />
-                          </button>
-                          <button
-                            className="btn btn-default"
                             onClick={(e) => {
                               this.onClose(e);
                             }}
                           >
                             <AlgaehLabel label={{ fieldName: "btnclose" }} />
+                          </button>
+                          <button
+                            className="btn btn-other"
+                            onClick={updateLabOrderServiceMultiple.bind(
+                              this,
+                              this
+                            )}
+                          >
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Mark as not collected",
+                              }}
+                            />
                           </button>
                         </div>
                       </div>

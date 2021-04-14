@@ -6314,7 +6314,7 @@ export default {
                     query: `select  hims_f_daily_time_sheet_id,E.employee_code,E.full_name, employee_id,attendance_date,
                   status,worked_hours,T.project_id, P.project_desc, H.hospital_name, P.abbreviation from hims_d_employee E
                 inner join hims_f_daily_time_sheet  T on E.hims_d_employee_id=T.employee_id 
-                inner join hims_d_project P on P.hims_d_project_id=T.project_id 
+                left join hims_d_project P on P.hims_d_project_id=T.project_id 
                 inner join hims_d_hospital H on H.hims_d_hospital_id=T.hospital_id 
                  and T.attendance_date between date(?) and date(?)  ${deptStr}
                 where E.hospital_id=? and E.suspend_salary <>'Y' and

@@ -115,6 +115,12 @@ const executePDF = function executePDFMethod(options) {
               symbol_position,
               currency_symbol,
             },
+            currencyWithoutCurr: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {

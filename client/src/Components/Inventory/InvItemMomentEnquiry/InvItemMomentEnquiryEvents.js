@@ -244,6 +244,16 @@ const DrillDownScree = (row, $this) => {
   }
 };
 
+const itemchangeText = ($this, e, ctrl) => {
+  let name = ctrl;
+  let value = e.hims_d_inventory_item_master_id;
+
+  $this.setState({
+    [name]: value,
+    item_description: e.item_description,
+  });
+};
+
 export {
   changeTexts,
   dateFormater,
@@ -252,4 +262,5 @@ export {
   dateValidate,
   DrillDownScree,
   generateReports,
+  itemchangeText,
 };
