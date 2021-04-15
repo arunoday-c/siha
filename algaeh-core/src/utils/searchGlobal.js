@@ -8,7 +8,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "patients",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, arabic_name,  contact_number, employee_id, age, date_of_birth, gender, email, title_id  from hims_f_patient \
+          "select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, arabic_name, tel_code, contact_number, employee_id, age, date_of_birth, gender, email, title_id  from hims_f_patient \
          where record_status='A' ",
       },
       {

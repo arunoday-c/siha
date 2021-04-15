@@ -2639,17 +2639,21 @@ export function updateAppointmentToCheckedIn(req, res, next) {
     appointment_status_id,
     patient_id,
     patient_code,
+    tel_code,
+    contact_number,
   } = req.body;
   try {
     _mysql
       .executeQuery({
         query: `update hims_f_patient_appointment set appointment_status_id=?,
-    patient_id=?,patient_code=?
+    patient_id=?,patient_code=?,tel_code=?,contact_number=?
     where hims_f_patient_appointment_id =?`,
         values: [
           appointment_status_id,
           patient_id,
           patient_code,
+          tel_code,
+          contact_number,
           application_id,
         ],
       })

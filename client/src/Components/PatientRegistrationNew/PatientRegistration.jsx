@@ -271,7 +271,7 @@ export function PatientRegistration() {
     reset,
     setError,
     clearErrors,
-    // getValues,
+    getValues,
     formState,
   } = useForm({
     reValidateMode: "onChange",
@@ -324,11 +324,14 @@ export function PatientRegistration() {
       setOpenPopup(true);
 
       if (!!appointment_id && !!status_id) {
+        const patData = getValues();
         updateAppointmentStatus({
           application_id: appointment_id,
           appointment_status_id: status_id,
           patient_id: data?.hims_d_patient_id,
           patient_code: data?.patient_code,
+          tel_code: patData.tel_code,
+          contact_number: patData.contact_number,
         }).then(() => {
           AlgaehMessagePop({
             display: "Patient Updated Successfully",
@@ -359,11 +362,15 @@ export function PatientRegistration() {
       setDisable(true);
       setOpenPopup(true);
       if (!!appointment_id && !!status_id) {
+        const patData = getValues();
+
         updateAppointmentStatus({
           application_id: appointment_id,
           appointment_status_id: status_id,
           patient_id: data?.hims_d_patient_id,
           patient_code: data?.patient_code,
+          tel_code: patData.tel_code,
+          contact_number: patData.contact_number,
         }).then(() => {
           AlgaehMessagePop({
             display: "Patient Updated Successfully",

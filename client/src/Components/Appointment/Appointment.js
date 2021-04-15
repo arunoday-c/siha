@@ -68,6 +68,8 @@ class Appointment extends PureComponent {
     this.rejectNotes = undefined;
   }
   static contextType = MainContext;
+  // const location = useLocation();
+  // const history = useHistory();
   componentDidMount() {
     (async () => {
       const records = await persistStageOnGet();
@@ -105,6 +107,22 @@ class Appointment extends PureComponent {
         });
       }
     })();
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("sub_department_id")) {
+      let send_data = {
+        sub_dept_id: queryParams.get("sub_department_id"),
+        schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
+        provider_id: queryParams.get("provider_id"),
+      };
+      this.setState(
+        {
+          sub_department_id: send_data.sub_dept_id,
+        },
+        () => {
+          this.getAppointmentScheduleFunc(send_data);
+        }
+      );
+    }
   }
 
   PatientRecallDataFill() {
@@ -187,7 +205,7 @@ class Appointment extends PureComponent {
   cancelAppt(row) {
     let _date = moment(row.appointment_date).format("YYYYMMDD");
     let _time = moment(row.appointment_from_time, "HH:mm:ss").format("HHmm");
-    debugger;
+
     if (
       _date < moment(new Date()).format("YYYYMMDD") ||
       (_date === moment(new Date()).format("YYYYMMDD") &&
@@ -269,6 +287,7 @@ class Appointment extends PureComponent {
           date_of_birth: row.date_of_birth,
           gender: row.gender,
           contact_number: row.contact_number,
+          tel_code: row.tel_code,
           email: row.email,
           arabic_name: row.arabic_name,
           title_id: row.title_id,
@@ -331,87 +350,96 @@ class Appointment extends PureComponent {
       querySelector: "data-validate='addApptDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        SetBulkState({
-          state: this,
-          callback: () => {
-            let from_time = this.state.apptFromTime;
-            let duration_minutes = this.state.apptSlot * this.state.no_of_slots;
-            let to_time = moment(from_time, "hh:mm a")
-              .add(duration_minutes, "minutes")
-              .format("HH:mm:ss");
+        if (this.state.tel_code) {
+          SetBulkState({
+            state: this,
+            callback: () => {
+              let from_time = this.state.apptFromTime;
+              let duration_minutes =
+                this.state.apptSlot * this.state.no_of_slots;
+              let to_time = moment(from_time, "hh:mm a")
+                .add(duration_minutes, "minutes")
+                .format("HH:mm:ss");
 
-            let appt_date =
-              this.state.activeDateHeader !== undefined
-                ? this.state.activeDateHeader
-                : new Date();
+              let appt_date =
+                this.state.activeDateHeader !== undefined
+                  ? this.state.activeDateHeader
+                  : new Date();
 
-            const send_data = {
-              patient_id: this.state.patient_id,
-              patient_code: this.state.patient_code,
-              provider_id: this.state.apptProvider,
-              sub_department_id: this.state.apptSubDept,
-              appointment_date: moment(appt_date).format("YYYY-MM-DD"),
-              appointment_from_time: moment(
-                this.state.apptFromTime,
-                "hh:mm a"
-              ).format("HH:mm:ss"),
-              appointment_to_time: to_time,
-              appointment_status_id: this.state.appointment_status_id,
-              patient_name: this.state.patient_name,
-              arabic_name: this.state.arabic_name,
-              date_of_birth: this.state.date_of_birth,
-              age: this.state.age,
-              contact_number: this.state.contact_number,
-              tel_code: this.state.tel_code,
-              email: this.state.email,
-              send_to_provider: "N",
-              gender: this.state.gender,
-              appointment_remarks: this.state.appointment_remarks,
-              number_of_slot: this.state.no_of_slots,
-              confirmed: "N",
-              cancelled: "N",
-              is_stand_by: this.state.is_stand_by,
-              title_id: this.state.title_id,
-            };
-            algaehApiCall({
-              uri: "/appointment/addPatientAppointment",
-              module: "frontDesk",
-              method: "POST",
-              data: send_data,
-              onSuccess: (response) => {
-                if (response.data.success) {
-                  if (this.appSock.connected) {
-                    this.appSock.emit("appointment_created", send_data);
-                  }
-                  if (
-                    send_data.appointment_status_id === this.state.checkInId
-                  ) {
-                    this.handleCheckIn(send_data);
+              const send_data = {
+                patient_id: this.state.patient_id,
+                patient_code: this.state.patient_code,
+                provider_id: this.state.apptProvider,
+                sub_department_id: this.state.apptSubDept,
+                appointment_date: moment(appt_date).format("YYYY-MM-DD"),
+                appointment_from_time: moment(
+                  this.state.apptFromTime,
+                  "hh:mm a"
+                ).format("HH:mm:ss"),
+                appointment_to_time: to_time,
+                appointment_status_id: this.state.appointment_status_id,
+                patient_name: this.state.patient_name,
+                arabic_name: this.state.arabic_name,
+                date_of_birth: this.state.date_of_birth,
+                age: this.state.age,
+                contact_number: this.state.contact_number,
+                tel_code: this.state.tel_code,
+                email: this.state.email,
+                send_to_provider: "N",
+                gender: this.state.gender,
+                appointment_remarks: this.state.appointment_remarks,
+                number_of_slot: this.state.no_of_slots,
+                confirmed: "N",
+                cancelled: "N",
+                is_stand_by: this.state.is_stand_by,
+                title_id: this.state.title_id,
+              };
+              algaehApiCall({
+                uri: "/appointment/addPatientAppointment",
+                module: "frontDesk",
+                method: "POST",
+                data: send_data,
+                onSuccess: (response) => {
+                  if (response.data.success) {
+                    if (this.appSock.connected) {
+                      this.appSock.emit("appointment_created", send_data);
+                    }
+                    if (
+                      send_data.appointment_status_id === this.state.checkInId
+                    ) {
+                      this.handleCheckIn(send_data);
+                    } else {
+                      this.clearSaveState();
+                      swalMessage({
+                        title: "Appointment Created Successfully",
+                        type: "success",
+                      });
+                      this.setState({ showApt: false });
+                      this.getAppointmentSchedule();
+                    }
                   } else {
-                    this.clearSaveState();
                     swalMessage({
-                      title: "Appointment Created Successfully",
-                      type: "success",
+                      title: response.data.records.message,
+                      type: "warning",
                     });
-                    this.setState({ showApt: false });
-                    this.getAppointmentSchedule();
                   }
-                } else {
+                },
+                onFailure: (error) => {
                   swalMessage({
-                    title: response.data.records.message,
-                    type: "warning",
+                    title: error.message,
+                    type: "error",
                   });
-                }
-              },
-              onFailure: (error) => {
-                swalMessage({
-                  title: error.message,
-                  type: "error",
-                });
-              },
-            });
-          },
-        });
+                },
+              });
+            },
+          });
+        } else {
+          swalMessage({
+            title: "Please select Tel Code",
+            type: "warning",
+          });
+          return;
+        }
       },
     });
   }
@@ -433,6 +461,25 @@ class Appointment extends PureComponent {
                 this.PatientRecallDataFill();
               } else {
                 this.restoreOldState();
+              }
+              const queryParams = new URLSearchParams(
+                this.props.location.search
+              );
+              if (queryParams.get("provider_id")) {
+                const wholeDept = this.state.departments.filter((f) => {
+                  return f.value === parseFloat(this.state.sub_department_id);
+                });
+
+                const dept = wholeDept[0].children;
+                let _department = {};
+                if (dept.length > 0) {
+                  _department = { department_id: dept[0]["department_id"] };
+                }
+                this.setState({
+                  doctors: dept,
+                  ..._department,
+                  provider_id: queryParams.get("provider_id"),
+                });
               }
             }
           );
@@ -529,7 +576,59 @@ class Appointment extends PureComponent {
       },
     });
   }
+  getAppointmentScheduleFunc(send_data) {
+    algaehApiCall({
+      uri: "/appointment/getDoctorScheduleDateWise",
+      module: "frontDesk",
+      method: "GET",
+      data: { ...send_data },
+      onSuccess: (response) => {
+        algaehLoader({ show: false });
+        if (response.data.success && response.data.records.length > 0) {
+          const dataArray = Array.isArray(response.data.records)
+            ? response.data.records
+            : [];
+          const slot = dataArray.length > 0 ? dataArray[0].slot : null;
+          const width = 318 * dataArray;
 
+          // console.log("dataArray", dataArray);
+          this.setState({ slot, width, appointmentSchedule: dataArray });
+          // this.setState(
+          //   { appointmentSchedule: response.data.records },
+          //   () => {
+          //
+          //     this.setState({
+          //       slot:
+          //         this.state.appointmentSchedule !== undefined
+          //           ? this.state.appointmentSchedule[0].slot
+          //           : null,
+          //       width:
+          //         response.data.records !== undefined
+          //           ? 318 * response.data.records.length
+          //           : 0,
+          //     });
+          //   }
+          // );
+        } else {
+          this.setState({
+            appointmentSchedule: [],
+          });
+
+          swalMessage({
+            title: "No Schedule Available",
+            type: "warning",
+          });
+        }
+      },
+      onCatch: (error) => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
   getAppointmentSchedule(e) {
     if (e !== undefined) e.preventDefault();
 
@@ -557,58 +656,8 @@ class Appointment extends PureComponent {
             doctors: this.state.doctors,
           })
         );
-
+        this.getAppointmentScheduleFunc(send_data);
         algaehLoader({ show: true });
-        algaehApiCall({
-          uri: "/appointment/getDoctorScheduleDateWise",
-          module: "frontDesk",
-          method: "GET",
-          data: send_data,
-          onSuccess: (response) => {
-            algaehLoader({ show: false });
-            if (response.data.success && response.data.records.length > 0) {
-              const dataArray = Array.isArray(response.data.records)
-                ? response.data.records
-                : [];
-              const slot = dataArray.length > 0 ? dataArray[0].slot : null;
-              const width = 318 * dataArray;
-              // console.log("dataArray", dataArray);
-              this.setState({ slot, width, appointmentSchedule: dataArray });
-              // this.setState(
-              //   { appointmentSchedule: response.data.records },
-              //   () => {
-              //
-              //     this.setState({
-              //       slot:
-              //         this.state.appointmentSchedule !== undefined
-              //           ? this.state.appointmentSchedule[0].slot
-              //           : null,
-              //       width:
-              //         response.data.records !== undefined
-              //           ? 318 * response.data.records.length
-              //           : 0,
-              //     });
-              //   }
-              // );
-            } else {
-              this.setState({
-                appointmentSchedule: [],
-              });
-
-              swalMessage({
-                title: "No Schedule Available",
-                type: "warning",
-              });
-            }
-          },
-          onCatch: (error) => {
-            algaehLoader({ show: false });
-            swalMessage({
-              title: error.message,
-              type: "error",
-            });
-          },
-        });
       },
       onFailure: (error) => {
         swalMessage({
@@ -2073,7 +2122,12 @@ class Appointment extends PureComponent {
           patientSearch={() => this.patientSearch()}
           validateAge={(e) => this.validateAge(e)}
           deptDropDownHandler={(value) => this.deptDropDownHandler(value)}
-          getAppointmentSchedule={() => this.getAppointmentSchedule()}
+          getAppointmentSchedule={() => {
+            this.getAppointmentSchedule();
+            this.props.history.push(
+              `/Appointment?sub_department_id=${this.state.sub_department_id}&provider_id=${this.state.provider_id}`
+            );
+          }}
           addPatientAppointment={(e) => this.addPatientAppointment(e)}
           monthChangeHandler={(e) => this.monthChangeHandler(e)}
           generateHorizontalDateBlocks={() =>
