@@ -924,11 +924,15 @@ export default {
       // cancelled
       _mysql
         .executeQuery({
-          query: `update hims_f_lab_order set status='O', updated_by=?,updated_date=? where hims_f_lab_order_id=?;`,
+          query: `update hims_f_lab_order set status='O', updated_by=?,updated_date=? where hims_f_lab_order_id=?;
+          update hims_f_lab_sample set status='N',collected='N', updated_by=?,updated_date=? where hims_d_lab_sample_id=?;`,
           values: [
             req["userIdentity"].algaeh_d_app_user_id,
             new Date(),
             inputParam.hims_f_lab_order_id,
+            req["userIdentity"].algaeh_d_app_user_id,
+            new Date(),
+            inputParam.hims_d_lab_sample_id,
           ],
           printQuery: true,
         })
@@ -955,11 +959,15 @@ export default {
       let updateLabOrder = req.body.labOrderArray;
       updateLabOrder.map((item) => {
         qry += mysql.format(
-          `update hims_f_lab_order set status='O',updated_by=?,updated_date=? where hims_f_lab_order_id=?;`,
+          `update hims_f_lab_order set status='O',updated_by=?,updated_date=? where hims_f_lab_order_id=?;
+          update hims_f_lab_sample set status='N',collected='N', updated_by=?,updated_date=? where hims_d_lab_sample_id=?;`,
           [
             req["userIdentity"].algaeh_d_app_user_id,
             new Date(),
             item.hims_f_lab_order_id,
+            req["userIdentity"].algaeh_d_app_user_id,
+            new Date(),
+            item.hims_d_lab_sample_id,
           ]
         );
       });

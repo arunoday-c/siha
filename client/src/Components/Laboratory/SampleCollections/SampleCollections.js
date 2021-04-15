@@ -21,7 +21,12 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehDataGrid } from "algaeh-react-components";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { AlgaehAutoComplete, MainContext } from "algaeh-react-components";
+import {
+  AlgaehAutoComplete,
+  MainContext,
+  AlgaehSecurityComponent,
+  RawSecurityComponent,
+} from "algaeh-react-components";
 import variableJson from "../../../utils/GlobalVariables.json";
 
 class SampleCollectionPatient extends PureComponent {
@@ -31,6 +36,7 @@ class SampleCollectionPatient extends PureComponent {
       collected: true,
       hospital_id: null,
       send_out_test: "N",
+      editableGrid: false,
     };
   }
 
@@ -98,6 +104,17 @@ class SampleCollectionPatient extends PureComponent {
         },
       });
     }
+    RawSecurityComponent({ componentCode: "SPEC_COLL_STATUS_CHANGE" }).then(
+      (result) => {
+        if (result === "hide") {
+          this.setState({ editableGrid: false });
+        } else {
+          this.setState({
+            editableGrid: "editOnly",
+          });
+        }
+      }
+    );
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
@@ -852,7 +869,7 @@ class SampleCollectionPatient extends PureComponent {
                               ),
                             }}
                             noDataText="No sample for collection"
-                            isEditable={"editOnly"}
+                            isEditable={this.state.editableGrid}
                             pageOptions={{ rows: 20, page: 1 }}
                             isFilterable={true}
                             pagination={true}
@@ -875,19 +892,21 @@ class SampleCollectionPatient extends PureComponent {
                           >
                             <AlgaehLabel label={{ fieldName: "btnclose" }} />
                           </button>
-                          <button
-                            className="btn btn-other"
-                            onClick={updateLabOrderServiceMultiple.bind(
-                              this,
-                              this
-                            )}
-                          >
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Mark as not collected",
-                              }}
-                            />
-                          </button>
+                          <AlgaehSecurityComponent componentCode="SPEC_COLL_STATUS_CHANGE">
+                            <button
+                              className="btn btn-other"
+                              onClick={updateLabOrderServiceMultiple.bind(
+                                this,
+                                this
+                              )}
+                            >
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Mark as not collected",
+                                }}
+                              />
+                            </button>
+                          </AlgaehSecurityComponent>
                         </div>
                       </div>
                     </div>

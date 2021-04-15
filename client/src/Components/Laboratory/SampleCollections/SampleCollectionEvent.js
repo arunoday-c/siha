@@ -87,30 +87,33 @@ const CollectSample = ($this, context, row) => {
   });
 };
 const updateLabOrderServiceStatus = ($this, row) => {
-  if (row.collected === "N") {
-    algaehApiCall({
-      uri: "/laboratory/updateLabOrderServiceStatus",
-      module: "laboratory",
-      data: { hims_f_lab_order_id: row.hims_f_lab_order_id },
-      method: "PUT",
-      onSuccess: (response) => {
-        if (response.data.success === true) {
-          swalMessage({
-            title: "Record Updated Successfully",
-            type: "success",
-          });
-        }
-      },
-      onFailure: (error) => {
+  // if (row.status === "N") {
+  algaehApiCall({
+    uri: "/laboratory/updateLabOrderServiceStatus",
+    module: "laboratory",
+    data: {
+      hims_f_lab_order_id: row.hims_f_lab_order_id,
+      hims_d_lab_sample_id: row.hims_d_lab_sample_id,
+    },
+    method: "PUT",
+    onSuccess: (response) => {
+      if (response.data.success === true) {
         swalMessage({
-          title: error.response.data.message || error.message,
-          type: "error",
+          title: "Record Updated Successfully",
+          type: "success",
         });
-      },
-    });
-  } else {
-    return;
-  }
+      }
+    },
+    onFailure: (error) => {
+      swalMessage({
+        title: error.response.data.message || error.message,
+        type: "error",
+      });
+    },
+  });
+  // } else {
+  //   return;
+  // }
 };
 const updateLabOrderServiceMultiple = ($this) => {
   swal({
