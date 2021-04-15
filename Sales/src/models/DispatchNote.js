@@ -8,22 +8,35 @@ export function getDispatchNote(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     // console.log("req.query.dispatch_note_number", req.query.dispatch_note_number)
+    let strQty = "";
+    if (req.query.dispatch_note_number != null) {
+      strQty += ` dispatch_note_number= '${req.query.dispatch_note_number}'`;
+    }
+
+    if (req.query.transaction_id != null) {
+      strQty += ` hims_f_dispatch_note_header_id= '${req.query.transaction_id}'`;
+    }
     _mysql
       .executeQuery({
-        query: `SELECT DH.*, E.full_name from  hims_f_sales_dispatch_note_header DH \
-          inner join algaeh_d_app_user U on DH.created_by = U.algaeh_d_app_user_id \
-          inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
-          where dispatch_note_number=? ;
-          select D.*,IM.item_description, IU.uom_description from  hims_f_sales_dispatch_note_header H inner join \
-          hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id = D.dispatch_note_header_id \
-          inner join hims_d_inventory_item_master IM on D.item_id=IM.hims_d_inventory_item_master_id \
-          inner join hims_d_inventory_uom IU on D.uom_id=IU.hims_d_inventory_uom_id where dispatch_note_number=? ;
-          select S.*, IU.uom_description, IM.item_description from  hims_f_sales_dispatch_note_header H \
-          inner join  hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id=D.dispatch_note_header_id \
-          inner join hims_f_sales_dispatch_note_batches S on D.hims_f_sales_dispatch_note_detail_id=S.sales_dispatch_note_detail_id \
-          inner join hims_d_inventory_uom IU on S.uom_id=IU.hims_d_inventory_uom_id \
-          inner join hims_d_inventory_item_master IM on S.item_id=IM.hims_d_inventory_item_master_id \          
-          where dispatch_note_number=?;`,
+        query: `SELECT DH.*, E.full_name, SO.sales_order_number, C.customer_name, P.project_desc as project_name, H.hospital_name 
+          from  hims_f_sales_dispatch_note_header DH 
+          inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = DH.sales_order_id
+          inner join hims_d_customer C on C.hims_d_customer_id = DH.customer_id
+          inner join hims_d_project P on P.hims_d_project_id = DH.project_id
+          inner join hims_d_hospital H on H.hims_d_hospital_id = DH.hospital_id
+          inner join algaeh_d_app_user U on DH.created_by = U.algaeh_d_app_user_id 
+          inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id 
+          where ${strQty} ;
+          select D.*,IM.item_description, IU.uom_description from  hims_f_sales_dispatch_note_header H inner join 
+          hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id = D.dispatch_note_header_id 
+          inner join hims_d_inventory_item_master IM on D.item_id=IM.hims_d_inventory_item_master_id 
+          inner join hims_d_inventory_uom IU on D.uom_id=IU.hims_d_inventory_uom_id where ${strQty} ;
+          select S.*, IU.uom_description, IM.item_description from  hims_f_sales_dispatch_note_header H 
+          inner join  hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id=D.dispatch_note_header_id 
+          inner join hims_f_sales_dispatch_note_batches S on D.hims_f_sales_dispatch_note_detail_id=S.sales_dispatch_note_detail_id 
+          inner join hims_d_inventory_uom IU on S.uom_id=IU.hims_d_inventory_uom_id 
+          inner join hims_d_inventory_item_master IM on S.item_id=IM.hims_d_inventory_item_master_id
+          where ${strQty};`,
         values: [
           req.query.dispatch_note_number,
           req.query.dispatch_note_number,

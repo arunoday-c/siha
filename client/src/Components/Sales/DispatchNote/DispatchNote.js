@@ -21,6 +21,7 @@ import {
   generateDispatchReport,
   AdjustDisptachEntry,
   AdjustDispatch,
+  getDrilDownData,
   // CancelDispatchNote
 } from "./DispatchNoteEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -137,6 +138,11 @@ class DispatchNote extends Component {
         mappingName: "locations",
       },
     });
+
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("transaction_id")) {
+      getDrilDownData(this, queryParams.get("transaction_id"));
+    }
   }
 
   render() {
