@@ -298,6 +298,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   //   : "")
                 }
                 onClick={() => {
+                  debugger;
                   if (Object.keys(editorRecord).length > 0) {
                     setEditorRecord({});
                   } else {
@@ -549,6 +550,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                 : "G"
               : ""
           }
+          accountTyp={editorRecord.node ? editorRecord.node.account_type : ""}
           isNewAccount={isNewAccount}
           openingBal={editorRecord.node ? editorRecord.node.subtitle : ""}
         />

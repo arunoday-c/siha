@@ -8,7 +8,7 @@ import { Checkbox, Spin } from "antd";
 import "./addnewaccount.scss";
 import { AlgaehFormGroup, AlgaehDropDown } from "../../../Wrappers";
 // import ButtonType from "../../../Wrappers/algaehButton";
-import { AccountType } from "../../../utils/GlobalVariables";
+import { AccountType, Account_Type } from "../../../utils/GlobalVariables";
 import { AddNewAccountDetails } from "./AddNewAccEvent";
 import { newAlgaehApi } from "../../../hooks";
 // import { swalMessage } from "../../../utils/algaehApiCall";
@@ -20,6 +20,7 @@ export default function AddNewAccount({
   okText,
   accountCode,
   accountName,
+  accountTyp,
   arabicName,
   accountType,
   openingBal,
@@ -27,12 +28,14 @@ export default function AddNewAccount({
   isNewAccount,
   ledgerCode,
 }) {
+  debugger;
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   // const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
   const [arabic_account_name, setArabicAccountName] = useState("");
   const [ledger_code, setLedgerCode] = useState("");
   const [account_type, setAccountType] = useState("G");
+  const [account_typ, setAccount_Type] = useState("N");
   const [opening_balance, setOpeningBalance] = useState(0);
   const [enableOP, setEnableOP] = useState(true);
   const [insertInVoucherHeader, setinsertInvoiceHeader] = useState(false);
@@ -67,6 +70,7 @@ export default function AddNewAccount({
       setAccountName(accountName);
       setLedgerCode(ledgerCode);
       setArabicAccountName(arabicName);
+      setAccount_Type(accountTyp);
       // eslint-disable-next-line eqeqeq
       if (accountType !== "G") {
         setLoadingAddtoList(true);
@@ -174,6 +178,7 @@ export default function AddNewAccount({
           opening_bal: opening_balance,
           ledger_code: ledger_code,
           obDate: account_type === "G" ? undefined : obDate,
+          account_type: account_typ,
         },
         (errorMessage) => {
           // setAccountCode("");
@@ -317,6 +322,30 @@ export default function AddNewAccount({
                 //     : false,
               }}
             />
+            {account_type === "G" ? (
+              <AlgaehDropDown
+                div={{
+                  className: "col-12 form-group mandatory",
+                }}
+                label={{
+                  forceLabel: "Select Account Type",
+                  isImp: true,
+                }}
+                selector={{
+                  className: "form-control",
+                  value: account_typ,
+                  name: "account_typ",
+                  onChange: (e) => {
+                    setAccount_Type(e.target.value);
+                  },
+                }}
+                dataSource={{
+                  textField: "name",
+                  valueField: "value",
+                  data: Account_Type,
+                }}
+              />
+            ) : null}
 
             <AlgaehFormGroup
               div={{
