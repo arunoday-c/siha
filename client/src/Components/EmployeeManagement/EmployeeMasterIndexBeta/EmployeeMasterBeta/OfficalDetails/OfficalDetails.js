@@ -861,7 +861,7 @@ export default function OfficialDetails({ EmpMasterIOputs }) {
                 name="reporting_to_id"
                 render={({ value, onChange, onBlur }) => (
                   <AlgaehAutoComplete
-                    div={{ className: "col-3 mandatory form-group" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Reporting to",
                       isImp: false,
