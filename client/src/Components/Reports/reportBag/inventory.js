@@ -949,7 +949,7 @@ export default function Inventory({
         subitem: "Purchase report by item or supplier",
         reportName: "inventoryPurchaseReportItemSupplier",
         requireIframe: true,
-        // componentCode: "RPT_INV_PUR",
+        componentCode: "INV_PUR_ITM_SUP_RPT",
         reportParameters: [
           {
             className: "col-3 form-group",
@@ -1330,6 +1330,7 @@ export default function Inventory({
       {
         subitem: "Stock Cost Report",
         reportName: "stockReport",
+        componentCode: "RPT_STK_CST",
         requireIframe: true,
         reportParameters: [
           {

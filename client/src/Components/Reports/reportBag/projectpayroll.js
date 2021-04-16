@@ -13,10 +13,6 @@ export default function ProjectPayroll({
     submenu: [
       {
         subitem: "Project wise Payroll",
-        //template_name: "ProjectPayroll/projectWisePayroll",
-        // reportQuery: "projectWisePayroll",
-        //  reportUri: "/projectjobcosting/getProjectWiseJobCost",
-        // module: "hrManagement",
         reportName: "projectWisePayroll",
         requireIframe: true,
         pageSize: "A3",
@@ -514,7 +510,7 @@ export default function ProjectPayroll({
         reportName: "projectAllocationReport",
         requireIframe: true,
         pageSize: "A4",
-        componentCode: "RPT_PRO_DES",
+        componentCode: "RPT_PRO_ALLO",
         pageOrentation: "portrait",
         reportParameters: [
           {
@@ -652,7 +648,7 @@ export default function ProjectPayroll({
         reportName: "projectRosterReport",
         requireIframe: true,
         pageSize: "A3",
-        // componentCode: "RPT_PRO_RSTR",
+        componentCode: "RPT_PRO_RSTR",
         pageOrentation: "landscape",
         reportParameters: [
           {

@@ -16,9 +16,9 @@ export default function Payroll({
       {
         subitem: "Attendance Reports",
         reportName: "attendanceReports",
+        componentCode: "RPT_PAY_ATT",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_PAY_ATT",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -158,9 +158,9 @@ export default function Payroll({
       {
         subitem: "Leave Reports",
         reportName: "leaveReportPayroll",
+        componentCode: "RPT_PAY_LEAV",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_PAY_LEAV",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
@@ -323,9 +323,9 @@ export default function Payroll({
       {
         subitem: "Leave Accrual",
         reportName: "leaveAccuralPayroll",
+        componentCode: "RPT_PAY_LEA_ACC",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_PAY_LEA_ACC",
         pageOrentation: "landscape", //"portrait",
         input: "sub_department_id=?",
         reportParameters: [
@@ -431,10 +431,10 @@ export default function Payroll({
       {
         subitem: "Gratuity Provision",
         reportName: "gratuityProvisionStatementPayroll",
+        componentCode: "RPT_PAY_GRA",
         input: "sub_department_id=?",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_PAY_GRA",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -669,9 +669,9 @@ export default function Payroll({
       {
         subitem: "Employee Loan Report",
         reportName: "EmployeeLoanReport",
+        componentCode: "RPT_PAY_EMP_LOA",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_PAY_EMP_LOA",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
@@ -811,9 +811,9 @@ export default function Payroll({
       {
         subitem: "Salary Statement",
         reportName: "salaryStatementPayroll",
+        componentCode: "RPT_PAY_SAL_STM",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_PAY_SAL_STM",
         pageOrentation: "landscape",
         reportParameters: [
           {
