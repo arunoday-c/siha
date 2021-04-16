@@ -67,7 +67,8 @@
     "shortid": "^2.2.16",
     "written-number": "^0.9.1",
     "xlsx": "^0.14.2",
-    "xlsx-template": "^0.5.0"
+    "xlsx-template": "^0.5.0",
+    "xtypejs": "^0.7.1"
   },
   "keywords": [],
   "author": "",

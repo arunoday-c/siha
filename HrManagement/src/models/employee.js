@@ -5,6 +5,8 @@ import moment from "moment";
 import extend from "extend";
 import mysql from "mysql";
 import Excel from "exceljs/modern.browser";
+import newAxios from "algaeh-utilities/axios";
+import algaehMail from "algaeh-utilities/mail-send";
 
 export default {
   addMisEarnDedcToEmployee: (req, res, next) => {
@@ -886,6 +888,86 @@ export default {
       _mysql.releaseConnection();
       next(e);
     });
+  },
+  HRDashBoardWithAttachment: (req, res, next) => {
+    // const _mysql = new algaehMysql();
+    const { hospital_address, hospital_name } = req.userIdentity;
+    const {
+      reportName,
+      MailName,
+      paramName1,
+      paramValue1,
+      paramName2,
+      paramValue2,
+      paramName3,
+      paramValue3,
+      to_mail_id,
+      body_mail,
+    } = req.query;
+
+    const mail_body = body_mail ? body_mail : "";
+    try {
+      const reportInput = [
+        {
+          report: {
+            reportName: reportName,
+            reportParams: [
+              {
+                name: paramName1,
+                value: paramValue1,
+              },
+              {
+                name: paramName2 ? paramName2 : "",
+                value: paramValue2 ? paramValue2 : "",
+              },
+              {
+                name: paramName3 ? paramName3 : "",
+                value: paramValue3 ? paramValue3 : "",
+              },
+            ],
+            outputFileType: "PDF",
+          },
+        },
+      ];
+
+      newAxios(req, {
+        url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+      }).then((res) => {
+        const options = res.data;
+        const mailSender = new algaehMail(options.data[0])
+          .to(to_mail_id)
+          .subject(MailName)
+          .templateHbs("HRDashBoardEmail.hbs", {
+            hospital_address,
+            hospital_name,
+            mail_body,
+          });
+
+        // if (send_attachment === "true") {
+        mailSender.attachReportsAndSend(req, reportInput, (error, records) => {
+          if (error) {
+            next(error);
+            return;
+          }
+
+          next();
+        });
+        // } else {
+        //   mailSender
+        //     .send()
+        //     .then(() => {
+        //       // console.log("Mail Sent");
+        //       next();
+        //     })
+        //     .catch((error) => {
+        //       next(error);
+        //     });
+        // }
+      });
+    } catch (e) {
+      // _mysql.releaseConnection();
+      next(e);
+    }
   },
   getEmployeeCurrentMonth: (req, res, next) => {
     const _mysql = new algaehMysql();

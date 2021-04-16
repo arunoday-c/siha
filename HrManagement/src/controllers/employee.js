@@ -64,6 +64,7 @@ const {
   getEmployeePayrollDetails,
   getEmployeeRulesDetails,
   getEmployeeSubDeptName,
+  HRDashBoardWithAttachment,
 } = empModels;
 
 export default () => {
@@ -578,6 +579,16 @@ export default () => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
         records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/HRDashBoardWithAttachment",
+    HRDashBoardWithAttachment,
+    (req, res) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: "Message Sent Successfully",
       });
     }
   );

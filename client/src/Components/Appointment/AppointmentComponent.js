@@ -7,7 +7,6 @@ import {
   AlgaehDateHandler,
   AlgaehModalPopUp,
 } from "../Wrapper/algaehWrapper";
-
 import AlgaehAutoSearch from "../Wrapper/autoSearch";
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import GlobalVariables from "../../utils/GlobalVariables";
@@ -558,6 +557,7 @@ function AppointmentComponent(props) {
                               onChange={props.dropDownCountry}
                               virtual={true}
                               // disabled={disabled}
+                              disabled={props.state.fromSearch || false}
                               showSearch
                               filterOption={(input, option) => {
                                 return (

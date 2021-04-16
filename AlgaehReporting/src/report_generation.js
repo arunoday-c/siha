@@ -7,6 +7,7 @@ import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import shortid from "shortid";
+import xtype from "xtypejs";
 // import "babel-polyfill";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
@@ -840,6 +841,7 @@ export default {
                         : _inputParam,
                       // args: _inputParam,
                       loadash: _,
+                      xtype: xtype,
                       moment: moment,
                       mainData: data[1],
                       result: result,
@@ -1412,7 +1414,6 @@ export default {
                             const itemRow = worksheet.getRow(rowID);
                             let skipOnMerdge = null;
 
-                            debugger;
                             $(this)
                               .find("td")
                               .map(function (cellIndex, td) {

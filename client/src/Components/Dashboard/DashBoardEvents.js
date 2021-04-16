@@ -118,7 +118,7 @@ export default function DashBoardEvents() {
       });
     },
     getDocumentExpiryCurrentMonth: ($this) => {
-      // debugger;
+      //
       // var date = new Date(),
       //   y = date.getFullYear(),
       //   m = date.getMonth();
@@ -136,7 +136,7 @@ export default function DashBoardEvents() {
         },
         method: "GET",
         onSuccess: (response) => {
-          // debugger;
+          //
           if (response.data.success) {
             $this.setState({
               documentExpiryData: response.data.records,
@@ -198,18 +198,18 @@ export default function DashBoardEvents() {
         onSuccess: (response) => {
           if (response.data.success) {
             let no_of_employees = response.data.records.length;
-
-            let no_of_emp_join = _.filter(response.data.records, function (
-              item
-            ) {
-              return _.every([
-                _.inRange(
-                  moment(item.date_of_joining).format("YYYYMMDD"),
-                  moment(firstDay).format("YYYYMMDD"),
-                  moment(lastDay).format("YYYYMMDD")
-                ),
-              ]);
-            });
+            let no_of_emp_join = _.filter(
+              response.data.records,
+              function (item) {
+                return _.every([
+                  _.inRange(
+                    moment(item.date_of_joining).format("YYYYMMDD"),
+                    moment(firstDay).format("YYYYMMDD"),
+                    moment(lastDay).format("YYYYMMDD")
+                  ),
+                ]);
+              }
+            );
             // date_of_joining
             let total_company_salary = _.sumBy(response.data.records, (s) =>
               s.cost_to_company !== null ? parseFloat(s.cost_to_company) : 0
@@ -306,6 +306,7 @@ export default function DashBoardEvents() {
             }
             $this.setState({
               projectEmployee: { labels, datasets },
+              projectEmployeeData: records,
             });
           }
         },
@@ -350,6 +351,7 @@ export default function DashBoardEvents() {
 
             $this.setState({
               Dept_Employee: Dept_Employee,
+              Dept_Employee_data: no_of_employees,
             });
           }
         },
@@ -392,6 +394,7 @@ export default function DashBoardEvents() {
 
             $this.setState({
               Desig_Employee: Desig_Employee,
+              Desig_Employee_data: no_of_employees,
             });
           }
         },
