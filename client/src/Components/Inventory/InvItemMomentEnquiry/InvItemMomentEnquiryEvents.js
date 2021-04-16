@@ -241,6 +241,10 @@ const DrillDownScree = (row, $this) => {
     $this.props.history.push(
       `/InvStockAdjustment?transaction_id=${row.transaction_id}`
     );
+  } else if (row.transaction_type === "SDN") {
+    $this.props.history.push(
+      `/DispatchNote?transaction_id=${row.transaction_id}`
+    );
   }
 };
 

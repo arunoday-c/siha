@@ -5,9 +5,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
-import {
-  AlgaehLabel
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import swal from "sweetalert2";
 
 const texthandle = ($this, ctrl, e) => {
@@ -122,8 +120,8 @@ const ClearData = ($this, e) => {
     adjustEnable: true,
     deleteItem_data: [],
     delete_dispatch_items: [],
-    invoice_generated: 'N',
-    adjust_reason: null
+    invoice_generated: "N",
+    adjust_reason: null,
   });
 };
 
@@ -151,9 +149,9 @@ const SaveDispatchNote = ($this) => {
       InputObj.inventory_stock_detail[i].expiry_date =
         InputObj.inventory_stock_detail[i].expiry_date !== null
           ? moment(
-            InputObj.inventory_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD")
+              InputObj.inventory_stock_detail[i].expiry_date,
+              "YYYY-MM-DD"
+            ).format("YYYY-MM-DD")
           : null;
     }
     delete InputObj.item_details;
@@ -203,7 +201,7 @@ const SaveDispatchNote = ($this) => {
             saveEnable: true,
             dataExists: true,
             cannotEdit: true,
-            adjustEnable: true
+            adjustEnable: true,
           });
           swalMessage({
             title: "Dispatch successfully . .",
@@ -221,7 +219,7 @@ const SaveDispatchNote = ($this) => {
       },
     });
   } else {
-    $this.setState({ dispatch_adjust: true })
+    $this.setState({ dispatch_adjust: true });
     // debugger
     // InputObj.transaction_type = "SDN";
     // InputObj.transaction_date = moment(
@@ -318,13 +316,6 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.dataExitst = true;
           data.adjustEnable = false;
           data.calcelEnable = data.invoice_generated === "Y" ? true : false;
-
-          data.sales_order_number = row.sales_order_number;
-          data.customer_name = row.customer_name;
-          data.project_name = row.project_desc;
-          data.hospital_name = row.hospital_name;
-          data.location_type = row.location_type;
-
           $this.setState(data);
         }
         AlgaehLoader({ show: false });
@@ -394,9 +385,9 @@ const CancelDispatchNote = ($this) => {
     InputObj.inventory_stock_detail[i].expiry_date =
       InputObj.inventory_stock_detail[i].expiry_date !== null
         ? moment(
-          InputObj.inventory_stock_detail[i].expiry_date,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD")
+            InputObj.inventory_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD")
         : null;
   }
 
@@ -439,34 +430,34 @@ const CancelDispatchNote = ($this) => {
   });
 };
 
-const AdjustDisptachEntry = $this => {
+const AdjustDisptachEntry = ($this) => {
   $this.setState({
     adjustEnable: true,
-    deleteItem_data: [{
-      fieldName: "actions",
-      label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-      displayTemplate: (row) => {
-        return (
-          <span
-            onClick={deleteDispatchItems.bind($this, $this, row)}
-          >
-            <i className="fas fa-trash-alt" />
-          </span>
-        );
+    deleteItem_data: [
+      {
+        fieldName: "actions",
+        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+        displayTemplate: (row) => {
+          return (
+            <span onClick={deleteDispatchItems.bind($this, $this, row)}>
+              <i className="fas fa-trash-alt" />
+            </span>
+          );
+        },
       },
-    },],
-    delete_dispatch_items: []
+    ],
+    delete_dispatch_items: [],
   });
 };
 
 const deleteDispatchItems = ($this, row) => {
-  debugger
+  debugger;
   let _inventory_stock_detail = $this.state.inventory_stock_detail;
   let _delete_dispatch_items = $this.state.delete_dispatch_items;
 
   const _index = _inventory_stock_detail.indexOf(row);
   _inventory_stock_detail.splice(_index, 1);
-  _delete_dispatch_items.push(row)
+  _delete_dispatch_items.push(row);
   const sub_total = _.sumBy(_inventory_stock_detail, (s) =>
     parseFloat(s.extended_cost)
   );
@@ -495,12 +486,13 @@ const deleteDispatchItems = ($this, row) => {
     net_total: net_total,
     total_tax: total_tax,
     net_payable: net_payable,
-  })
-}
+  });
+};
 
 const AdjustDispatch = ($this) => {
   swal({
-    title: "If you adjust sales order also will adjust, Are you sure you want to Adjust ?",
+    title:
+      "If you adjust sales order also will adjust, Are you sure you want to Adjust ?",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",
@@ -513,14 +505,14 @@ const AdjustDispatch = ($this) => {
       AlgaehLoader({ show: true });
 
       InputObj.transaction_type = "SDN";
-      InputObj.transaction_date = moment(
-        new Date(),
+      InputObj.transaction_date = moment(new Date(), "YYYY-MM-DD").format(
         "YYYY-MM-DD"
-      ).format("YYYY-MM-DD");
+      );
 
       for (let i = 0; i < InputObj.delete_dispatch_items.length; i++) {
         InputObj.delete_dispatch_items[i].location_id = InputObj.location_id;
-        InputObj.delete_dispatch_items[i].location_type = InputObj.location_type;
+        InputObj.delete_dispatch_items[i].location_type =
+          InputObj.location_type;
         InputObj.delete_dispatch_items[i].operation = "+";
 
         InputObj.delete_dispatch_items[i].quantity =
@@ -532,9 +524,9 @@ const AdjustDispatch = ($this) => {
         InputObj.delete_dispatch_items[i].expiry_date =
           InputObj.delete_dispatch_items[i].expiry_date !== null
             ? moment(
-              InputObj.delete_dispatch_items[i].expiry_date,
-              "YYYY-MM-DD"
-            ).format("YYYY-MM-DD")
+                InputObj.delete_dispatch_items[i].expiry_date,
+                "YYYY-MM-DD"
+              ).format("YYYY-MM-DD")
             : null;
       }
 
@@ -558,7 +550,7 @@ const AdjustDispatch = ($this) => {
               cannotEdit: true,
               adjustEnable: true,
               dispatch_adjust: false,
-              deleteItem_data: []
+              deleteItem_data: [],
             });
             swalMessage({
               title: "Adjusted successfully . .",
@@ -577,7 +569,54 @@ const AdjustDispatch = ($this) => {
       });
     }
   });
-}
+};
+const getDrilDownData = ($this, transaction_id) => {
+  AlgaehLoader({ show: true });
+
+  $this.setState($this.baseState, () => {
+    algaehApiCall({
+      uri: "/DispatchNote/getDispatchNote",
+      module: "sales",
+      method: "GET",
+      data: { transaction_id: transaction_id },
+      onSuccess: (response) => {
+        if (response.data.success === true) {
+          let inventory_stock_detail = [];
+          let data = response.data.records[0];
+          for (let i = 0; i < data.stock_detail.length; i++) {
+            if (inventory_stock_detail.length === 0) {
+              inventory_stock_detail =
+                data.stock_detail[i].inventory_stock_detail;
+            } else {
+              inventory_stock_detail = inventory_stock_detail.concat(
+                data.stock_detail[i].inventory_stock_detail
+              );
+            }
+          }
+          data.inventory_stock_detail = inventory_stock_detail;
+
+          data.saveEnable = true;
+          data.dataExists = true;
+
+          data.cannotEdit = true;
+          data.dataExitst = true;
+          data.adjustEnable = false;
+          data.calcelEnable = data.invoice_generated === "Y" ? true : false;
+          $this.setState(data);
+        }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: (error) => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  });
+};
+
 export {
   texthandle,
   SalesOrderSearch,
@@ -587,5 +626,6 @@ export {
   generateDispatchReport,
   CancelDispatchNote,
   AdjustDisptachEntry,
-  AdjustDispatch
+  AdjustDispatch,
+  getDrilDownData,
 };
