@@ -89,7 +89,7 @@ export default function Vat({
       {
         subitem: "Detail VAT Report",
         reportName: "detailVatReport",
-        componentCode: "RPT_VAT_BILL_DTL",
+        componentCode: "RPT_VAT_DLY_VAT",
         requireIframe: true,
         // pageSize: "A4",
         // pageOrentation: "landscape", //"portrait",
@@ -152,7 +152,7 @@ export default function Vat({
       {
         subitem: "Monthly VAT Report",
         reportName: "monthVatReport",
-        componentCode: "RPT_VAT_MON",
+        componentCode: "RPT_VAT_MON_VAT",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "portrait", //"landscape",
@@ -209,7 +209,7 @@ export default function Vat({
       {
         subitem: "Company wise VAT Report",
         reportName: "companyVATReport",
-        componentCode: "RPT_VAT_COMP",
+        componentCode: "RPT_VAT_COMP_VAT",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -288,7 +288,7 @@ export default function Vat({
       {
         subitem: "Patient Wise VAT Report",
         reportName: "patientwiseReport",
-        componentCode: "RPT_VAT_PAT",
+        componentCode: "RPT_PAT_VAT",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
