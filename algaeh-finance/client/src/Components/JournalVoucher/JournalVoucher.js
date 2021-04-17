@@ -495,7 +495,6 @@ export default function JournalVoucher() {
       });
     }
     if (voucherType === "purchase" || voucherType === "sales") {
-      debugger;
       if (invoiceNo === undefined || !invoiceNo) {
         setLoading(false);
         AlgaehMessagePop({
@@ -511,7 +510,6 @@ export default function JournalVoucher() {
       voucherType === "credit_note" ||
       voucherType === "debit_note"
     ) {
-      debugger;
       if (selInvoice === "" || selInvoice === undefined || !selInvoice) {
         setLoading(false);
         AlgaehMessagePop({
@@ -549,6 +547,8 @@ export default function JournalVoucher() {
           f.amount === "" ||
           f.sourceName === undefined ||
           f.sourceName === "" ||
+          f.narration === "" ||
+          f.narration === undefined ||
           checkCostcenterMandatory(f.cost_center_id, (result) => {
             f.cost_center_id = result;
           })
@@ -556,7 +556,7 @@ export default function JournalVoucher() {
       if (check !== undefined) {
         AlgaehMessagePop({
           type: "info",
-          display: `Please select proper amount / account ${
+          display: `Please select proper amount / account/ narration ${
             finOptions.cost_center_required === "Y" ? "/ cost center" : ""
           }`, //"Please select an Account and enter proper amount",
         });
@@ -1242,7 +1242,7 @@ export default function JournalVoucher() {
             }}
             label={{
               fieldName: "narration",
-              isImp: false,
+              isImp: true,
             }}
             multiline={true}
             no_of_lines={6}
