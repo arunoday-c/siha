@@ -858,9 +858,9 @@ export default function Hr({
       {
         subitem: "Employee - Designation Wise",
         reportName: "designationWiseEmployee",
+        componentCode: "RPT_HR_EMP_DESG",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_HR_EMP_DESG",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -1000,9 +1000,9 @@ export default function Hr({
       {
         subitem: "Employee - Status Wise",
         reportName: "statusWiseEmployee",
+        componentCode: "RPT_HR_EMP_STAT",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_HR_EMP_STAT",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -1096,9 +1096,9 @@ export default function Hr({
       {
         subitem: "Employee - New Joinee Month Wise",
         reportName: "newJoiningEmployee",
+        componentCode: "RPT_HR_WMP_NEW",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_HR_WMP_NEW",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -1265,6 +1265,7 @@ export default function Hr({
       {
         subitem: "Identification Expiry Report",
         reportName: "idExpiryEmployee",
+        componentCode: "RPT_HR_ID_EXP",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",

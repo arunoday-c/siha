@@ -3,8 +3,9 @@ export default function Appointment({ hospital_id }) {
     name: "Appointment",
     submenu: [
       {
-        subitem: "Doctor and Status wise report",
+        subitem: "Doctor and status wise report",
         reportName: "doctor_Status_wise_appointment",
+        componentCode: "RPT_APP_DOC_STATUS",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",

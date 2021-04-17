@@ -14,10 +14,10 @@ export default function Pharmacy({
       {
         subitem: "Items Stock Report",
         reportName: "itemsStockPharmacy",
+        componentCode: "RPT_PHR_ITM_STK",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "portrait", //"landscape",
-        componentCode: "RPT_PHR_ITM_STK",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
@@ -97,6 +97,7 @@ export default function Pharmacy({
       {
         subitem: "Consumption List",
         reportName: "consumptionListPharmacy",
+        componentCode: "RPT_PHR_CONS_LST",
         requireIframe: true,
         reportParameters: [
           {
@@ -265,10 +266,10 @@ export default function Pharmacy({
       {
         subitem: "Items Consumption Report",
         reportName: "itemsConsumptionPharmacy",
+        componentCode: "RPT_PHR_ITM_CONS",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "portrait", //"landscape",
-        componentCode: "RPT_PHR_ITM_CONS",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
@@ -397,6 +398,7 @@ export default function Pharmacy({
       {
         subitem: "List of Receipts",
         reportName: "salesReceiptListPharmacy",
+        componentCode: "RPT_PHR_LST_RCP",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -540,6 +542,7 @@ export default function Pharmacy({
       {
         subitem: "List of Sales Invoice",
         reportName: "salesInvoiceListPharmacy",
+        componentCode: "RPT_PHR_LST_SAL",
         // template_name: "salesInvoiceListPharmacy",
         requireIframe: true,
         reportParameters: [
@@ -605,6 +608,7 @@ export default function Pharmacy({
       {
         subitem: "List of Sales Return",
         reportName: "salesReturnListPharmacy",
+        componentCode: "RPT_PHR_SAL_RTN",
         // template_name: "salesReturnListPharmacy",
         requireIframe: true,
         reportParameters: [
@@ -671,6 +675,7 @@ export default function Pharmacy({
         subitem: "Daily Collection - Consolidated",
         //template_name: "dailyCollectionPharmacy",
         reportName: "dailyCollectionPharmacy",
+        componentCode: "RPT_PHR_DLY_COL_CONS",
         requireIframe: true,
         reportParameters: [
           {
@@ -735,6 +740,7 @@ export default function Pharmacy({
       {
         subitem: "Item Expiry Report",
         reportName: "itemExpiryPharmacy",
+        componentCode: "RPT_PHR_ITM_EXP",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -977,6 +983,7 @@ export default function Pharmacy({
       {
         subitem: "Items Stock Register - Category wise",
         reportName: "itemStockEnquiryCategoryWisePharmacy",
+        componentCode: "RPT_PHR_ITM_STK_CAT",
         requireIframe: true,
         reportParameters: [
           {
@@ -1125,6 +1132,7 @@ export default function Pharmacy({
       {
         subitem: "Items Stock Register - Date wise",
         reportName: "itemStockEnquiryDateWisePharmacy",
+        componentCode: "RPT_PHR_ITM_STK_DT",
         requireIframe: true,
         reportParameters: [
           {
@@ -1259,7 +1267,8 @@ export default function Pharmacy({
       },
       {
         subitem: "GP Statement - Bill Wise",
-        template_name: "gpBillwisePharmacy",
+        reportName: "gpBillwisePharmacy",
+        componentCode: "RPT_PHR_GP_STM",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -1355,7 +1364,10 @@ export default function Pharmacy({
       {
         subitem: "GP Statement - Date Wise",
         reportName: "gpDatewisePharmacy",
+        componentCode: "RPT_PHR_GP_STM_DT",
         requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
             className: "col-3 form-group",
@@ -1437,6 +1449,7 @@ export default function Pharmacy({
       {
         subitem: "Purchase Report",
         reportName: "pharmacyPurchaseReport",
+        componentCode: "RPT_PHR_PUR",
         requireIframe: true,
         reportParameters: [
           {
@@ -1517,7 +1530,7 @@ export default function Pharmacy({
       },
 
       {
-        subitem: "Purchase Receipt Report",
+        subitem: "Pharmacy - Purchase Receipt Report",
         reportName: "pharmacyReceiptReport",
         componentCode: "RPT_PHR_REE",
         requireIframe: true,
@@ -1627,6 +1640,7 @@ export default function Pharmacy({
       {
         subitem: "Purchase Return Report",
         reportName: "pharmacyPurchaseReturnReport",
+        componentCode: "RPT_PHR_PUR_RTN",
         requireIframe: true,
         reportParameters: [
           {
@@ -1708,10 +1722,10 @@ export default function Pharmacy({
       {
         subitem: "Purchase report by item or supplier",
         reportName: "pharmacyPurchaseReportItemSupplier",
+        componentCode: "RPT_PHR_PUR_ITM_SUP",
         requireIframe: true,
-        // pageSize: "A3",
-        // componentCode: "RPT_HR_EMP_DEP",
-        // pageOrentation: "landscape",
+        pageSize: "A3",
+        pageOrentation: "landscape",
         reportParameters: [
           {
             className: "col-3 form-group",
@@ -1866,6 +1880,7 @@ export default function Pharmacy({
       {
         subitem: "Transfer Report",
         reportName: "PharmacyTransferReport",
+        componentCode: "RPT_PHR_TRAN",
         requireIframe: true,
         reportParameters: [
           {

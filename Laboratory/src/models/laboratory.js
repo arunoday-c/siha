@@ -1007,7 +1007,7 @@ export default {
             FROM hims_d_lab_container WHERE hims_d_lab_container_id=?; \
             SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?; \
             insert into hims_f_lab_sample (`order_id`,`sample_id`, \
-            `container_id`,`collected`,`status`, `collected_by`, `collected_date`, `barcode_gen`, hospital_id,) values (?,?,?,?,?,?,?,?,?); \
+            `container_id`,`collected`,`status`, `collected_by`, `collected_date`, `barcode_gen`, hospital_id) values (?,?,?,?,?,?,?,?,?); \
             INSERT IGNORE INTO `hims_m_lab_specimen` (test_id, specimen_id, container_id, container_code, created_by, created_date, \
               updated_by, updated_date) VALUE(?,?,?,?,?,?,?,?);",
             [

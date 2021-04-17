@@ -675,8 +675,8 @@ export default function Income({
       {
         subitem: "Daily Transaction",
         reportName: "DailyTransaction",
-        directEcel: true,
         componentCode: "RPT_INC_DLY_TRAN",
+        directEcel: true,
         hideButtons: ["preview", "downloadpdf"],
         requireIframe: true,
         reportParameters: [

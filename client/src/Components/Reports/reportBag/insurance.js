@@ -8,7 +8,7 @@ export default function Insurance({ hospital_id }) {
         reportName: "allClaimStatementInsurance",
         // reportQuery: "subDepartmentIncome",
         requireIframe: true,
-        // componentCode: "RPT_INC_SALES",
+        componentCode: "RPT_INS_ALL_CLM",
 
         // subitem: "All Claim Statement",
         // template_name: "allClaimStatementInsurance",

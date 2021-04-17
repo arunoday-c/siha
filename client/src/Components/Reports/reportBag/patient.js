@@ -16,8 +16,9 @@ export default function Patient({
     submenu: [
       {
         subitem: "Patient Outstanding",
-        template_name: "PatientReports/PatOutstandingSum",
-        reportQuery: "patOutstandingSum",
+        reportName: "patOutstandingSum",
+        componentCode: "RPT_PAT_OUTS",
+        requireIframe: true,
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
@@ -46,9 +47,9 @@ export default function Patient({
       {
         subitem: "Patient - Age Wise",
         reportName: "ageWisePatient",
+        componentCode: "RPT_PAT_AGE",
         requireIframe: true,
         pageSize: "A4",
-        componentCode: "RPT_HR_EMP_AGE",
         pageOrentation: "portrait",
         reportParameters: [
           {
