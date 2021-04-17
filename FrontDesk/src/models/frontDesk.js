@@ -744,11 +744,13 @@ export function getDoctorAndDepartment(req, res, next) {
               arabic_sub_department_name,
               sub_department_id,
               department_type,
+              full_name,
             } = detail[0];
             return {
               label: sub_department_name,
               arlabel: arabic_sub_department_name,
               value: sub_department_id,
+              doctor_name: full_name,
               children: detail.map((item) => {
                 return {
                   department_id: department_id,

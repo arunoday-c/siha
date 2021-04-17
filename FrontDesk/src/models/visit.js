@@ -52,7 +52,6 @@ export default {
     }
   },
 
-
   updateExpiryDate: (req, res, next) => {
     const _mysql = new algaehMysql();
 
@@ -61,8 +60,12 @@ export default {
 
       _mysql
         .executeQuery({
-          query: "UPDATE `hims_f_patient_visit` SET visit_expiery_date=? WHERE hims_f_patient_visit_id=?;",
-          values: [inputParam.visit_expiery_date, inputParam.hims_f_patient_visit_id],
+          query:
+            "UPDATE `hims_f_patient_visit` SET visit_expiery_date=? WHERE hims_f_patient_visit_id=?;",
+          values: [
+            inputParam.visit_expiery_date,
+            inputParam.hims_f_patient_visit_id,
+          ],
           printQuery: true,
         })
         .then((visit_update) => {
@@ -74,7 +77,6 @@ export default {
           _mysql.releaseConnection();
           next(e);
         });
-
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
@@ -145,6 +147,7 @@ export default {
         let months = moment(toDate).diff(fromDate, "months");
         fromDate.add(months, "months");
         let days = moment(toDate).diff(fromDate, "days");
+        req.body.age_in_years = years;
         inputParam.age_in_years = years;
         inputParam.age_in_months = months;
         inputParam.age_in_days = days;
@@ -226,7 +229,7 @@ export default {
                   query:
                     "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
                       , `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
-                      ) VALUES ( ?, ?, ?, ?, ?, ?);",
+                      ) VALUES ( ?, ?, ?, ?, ?, ?); SELECT full_name from hims_d_employee where hims_d_employee_id=?;",
                   values: [
                     patient_visit_id,
                     inputParam.patient_message,
@@ -234,10 +237,12 @@ export default {
                     inputParam.message_active_till,
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
+                    inputParam.doctor_id,
                   ],
                   printQuery: true,
                 })
                 .then((resultData) => {
+                  req.body.doctor_name = resultData[1][0].full_name;
                   if (req.connection == null) {
                     _mysql.commitTransaction(() => {
                       _mysql.visitresult();
@@ -281,7 +286,7 @@ export default {
           expectedResult.shift();
           let expResult = expectedResult[0];
 
-          console.log("1", inputParam.existing_plan)
+          console.log("1", inputParam.existing_plan);
           if (inputParam.existing_plan === "Y") {
             inputParam.visit_expiery_date = moment(
               expResult[0]["visit_expiery_date"]
@@ -290,7 +295,7 @@ export default {
             req.body.episode_id = inputParam.episode_id;
             internalInsertPatientVisitData();
           } else {
-            console.log("2", expResult[0])
+            console.log("2", expResult[0]);
             //fetching expiry date and episode id for existing patient
             if (
               expResult[0].visit_expiery_date != null &&
@@ -301,7 +306,7 @@ export default {
               ).format("YYYY-MM-DD");
               currentPatientEpisodeNo = expResult[0]["episode_id"];
             }
-            console.log("2", existingExparyDate)
+            console.log("2", existingExparyDate);
             let currentEpisodeNo = null;
             if (
               existingExparyDate == null ||
@@ -434,8 +439,8 @@ export default {
             input.payment_type
               ? input.payment_type
               : input.insured === "Y"
-                ? "I"
-                : "S",
+              ? "I"
+              : "S",
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -467,6 +472,7 @@ export default {
               // } else {
               //   next();
               // }
+              console.log("input.age_in_years", input.age_in_years);
               let result = {
                 patient_code: input.patient_code,
                 receipt_number: input.receipt_number,
@@ -475,7 +481,12 @@ export default {
                 hims_d_patient_id: input.patient_id,
                 hims_f_billing_header_id: input.hims_f_billing_header_id,
                 full_name: req.full_name,
-                arabic_name: req.pat_arabic_name,
+                age: input.age_in_years,
+                visit_code: input.visit_code,
+                ins_doctor_id: input.doctor_id,
+                hospital_id: req.userIdentity.hospital_id,
+                visit_date: new Date(),
+                doctor_name: input.doctor_name,
               };
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();

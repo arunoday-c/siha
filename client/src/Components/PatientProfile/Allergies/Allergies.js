@@ -26,7 +26,7 @@ import Enumerable from "linq";
 import Options from "../../../Options.json";
 import { Select, Divider, Input } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-
+import axios from "axios";
 const { Option } = Select;
 // let index = 0;
 
@@ -36,6 +36,7 @@ class Allergies extends Component {
     this.state = {
       openAllergyModal: false,
       allergy_value: "F",
+      allergy_type: "Food",
       allAllergies: [],
       patientAllergies: [],
       allSpecificAllergies: [],
@@ -191,6 +192,23 @@ class Allergies extends Component {
       },
       onSuccess: (response) => {
         if (response.data.success) {
+          const data = {
+            patient_identity: this.props.primary_id_no,
+            allergy_type: this.state.allergy_type,
+            allergy_name: this.state.allergy_name,
+            allergy_status: "ACTIVE",
+            update_type: "HOSPITAL",
+          };
+          axios
+            .post("http://localhost:4402/api/v1/info/patientAllergy", data)
+            .then(function (response) {
+              //handle success
+              console.log(response);
+            })
+            .catch(function (response) {
+              //handle error
+              console.log(response);
+            });
           getPatientAllergies(this);
           this.resetAllergies();
           swalMessage({
@@ -273,6 +291,36 @@ class Allergies extends Component {
           data: data,
           method: "PUT",
           onSuccess: (response) => {
+            const data = {
+              patient_identity: this.props.primary_id_no,
+              allergy_type:
+                row.allergy_type === "F"
+                  ? "Food"
+                  : data.allergy_type === "A"
+                  ? "Airborne "
+                  : data.allergy_type === "AI"
+                  ? "Animal and Insect"
+                  : data.allergy_type === "C"
+                  ? "Chemical and Others"
+                  : data.allergy_type === "N"
+                  ? "NKA"
+                  : data.allergy_type === "D"
+                  ? "Drug "
+                  : null,
+              allergy_name: row.allergy_name,
+              allergy_status: "INACTIVE",
+              update_type: "HOSPITAL",
+            };
+            axios
+              .post("http://localhost:4402/api/v1/info/patientAllergy", data)
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              });
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
@@ -288,6 +336,7 @@ class Allergies extends Component {
   }
 
   allergyDropdownHandler(value) {
+    debugger;
     let _filter_allergies = {};
     if (value.name === "allergy_value") {
       _filter_allergies = {
@@ -297,12 +346,17 @@ class Allergies extends Component {
         ),
       };
     }
-    this.setState({ [value.name]: value.value, ..._filter_allergies });
+    this.setState({
+      [value.name]: value.value,
+      allergy_type: value.selected.name,
+      ..._filter_allergies,
+    });
   }
   dropDownHandle(value) {
     this.setState({ [value.name]: value.value });
   }
   texthandle(e) {
+    debugger;
     this.setState({
       [e.target.name]: e.target.value,
     });
@@ -324,9 +378,10 @@ class Allergies extends Component {
       return moment(date).format(Options.dateFormat);
     }
   };
-  selectAllergy = (selected) => {
+  selectAllergy = (selected, selected_data) => {
     this.setState({
       hims_d_allergy_id: selected,
+      allergy_name: selected_data.children,
     });
   };
   render() {

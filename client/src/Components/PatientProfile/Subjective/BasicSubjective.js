@@ -839,6 +839,8 @@ class BasicSubjective extends Component {
                   </li>
                   <Vitals
                     openVital={this.state.openVital}
+                    primary_id_no={this.props.pat_profile.primary_id_no}
+                    visit_code={this.props.pat_profile.visit_code}
                     onClose={this.closeVitals.bind(this)}
                   />
                   <li>
@@ -852,6 +854,8 @@ class BasicSubjective extends Component {
                   </li>
                   <Allergies
                     openAllergyModal={this.state.openAlergy}
+                    primary_id_no={this.props.pat_profile.primary_id_no}
+                    visit_code={this.props.pat_profile.visit_code}
                     onClose={this.showAllergies.bind(this)}
                   />
                   <li>

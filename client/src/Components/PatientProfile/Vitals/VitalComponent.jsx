@@ -12,6 +12,8 @@ import moment from "moment";
 import config from "../../../utils/config.json";
 // import _ from "lodash";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import axios from "axios";
+import { MainContext } from "algaeh-react-components";
 
 class VitalComponent extends Component {
   constructor(props) {
@@ -22,6 +24,7 @@ class VitalComponent extends Component {
   //       this.setState({ openVitalModal: true });
   //     });
   //   }
+  static contextType = MainContext;
   addPatientVitals(e) {
     e.preventDefault();
 
@@ -31,6 +34,13 @@ class VitalComponent extends Component {
         let bodyArray = [];
         const _elements = document.querySelectorAll("[vitalid]");
         let resetElements = {};
+        const userToken = this.context.userToken;
+        let portal_data = {
+          patient_identity: this.props.primary_id_no,
+          visit_code: this.props.visit_code,
+          visit_date: this.props.state.recorded_date,
+          hospital_id: userToken.hospital_id,
+        };
         for (let i = 0; i < _elements.length; i++) {
           const inputElement = _elements[i].querySelector("input");
           const elementName = inputElement.getAttribute("name");
@@ -54,8 +64,33 @@ class VitalComponent extends Component {
                   : null,
               formula_value: _elements[i].getAttribute("formula_value"),
             });
+            debugger;
+
+            if (elementName === "heart rate") {
+              portal_data = {
+                ...portal_data,
+                heart_rate: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
+            } else if (elementName === "respiratory rate") {
+              portal_data = {
+                ...portal_data,
+                respiratory_rate: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
+            } else {
+              portal_data = {
+                ...portal_data,
+                [elementName]: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
+            }
           }
         }
+        debugger;
 
         algaehApiCall({
           uri: "/doctorsWorkBench/addPatientVitals",
@@ -72,7 +107,19 @@ class VitalComponent extends Component {
               //       recorded_time: moment().format(config.formators.time),
               //     },
               //     () => {
-
+              axios
+                .post(
+                  "http://localhost:4402/api/v1/info/patientVitals",
+                  portal_data
+                )
+                .then(function (response) {
+                  //handle success
+                  console.log(response);
+                })
+                .catch(function (response) {
+                  //handle error
+                  console.log(response);
+                });
               swalMessage({
                 title: "Vitals recorded successfully . .",
                 type: "success",

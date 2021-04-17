@@ -1597,7 +1597,7 @@ let getPatientProfile = (req, res, next) => {
           P.secondary_contact_number,P.email,P.emergency_contact_name,P.emergency_contact_number,\
           P.relationship_with_patient,P.blood_group,P.marital_status,P.address1 AS patient_address,\
           P.address2 AS emergency_address,P.postal_code,N.nationality,PV.age_in_years, PV.age_in_months, \
-          PV.age_in_days,PV.sub_department_id,PE.payment_type,PE.created_date AS Encounter_Date \
+          PV.age_in_days,PV.sub_department_id,PE.payment_type,PE.created_date AS Encounter_Date, PV.visit_code \
           FROM ((hims_f_patient P INNER JOIN hims_f_patient_encounter PE ON P.hims_d_patient_id = PE.patient_id)\
           INNER JOIN hims_d_nationality N ON N.hims_d_nationality_id = P.nationality_id) \
           INNER JOIN hims_f_patient_visit PV ON PV.hims_f_patient_visit_id = PE.visit_id \

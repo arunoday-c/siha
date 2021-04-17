@@ -316,6 +316,8 @@ class Vitals extends Component {
                             // setState={this.setState}
                             texthandle={(e) => this.texthandle(e)}
                             handleClose={(e) => this.handleClose(e)}
+                            primary_id_no={this.props.primary_id_no}
+                            visit_code={this.props.visit_code}
                             // editDateHandler={(selectedDate) => this.editDateHandler(selectedDate)}
                             // editDateValidate={this.editDateValidate}
                             current_patient={current_patient}
