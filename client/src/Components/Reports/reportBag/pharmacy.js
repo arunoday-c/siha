@@ -97,7 +97,7 @@ export default function Pharmacy({
       {
         subitem: "Consumption List",
         reportName: "consumptionListPharmacy",
-        componentCode: "RPT_PHR_ITM_STK",
+        componentCode: "RPT_PHR_CONS_LST",
         requireIframe: true,
         reportParameters: [
           {
@@ -398,7 +398,7 @@ export default function Pharmacy({
       {
         subitem: "List of Receipts",
         reportName: "salesReceiptListPharmacy",
-        componentCode: "RPT_PHR_SAL_RCT",
+        componentCode: "RPT_PHR_LST_RCP",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -542,7 +542,7 @@ export default function Pharmacy({
       {
         subitem: "List of Sales Invoice",
         reportName: "salesInvoiceListPharmacy",
-        componentCode: "RPT_PHR_SAL_INVO",
+        componentCode: "RPT_PHR_LST_SAL",
         // template_name: "salesInvoiceListPharmacy",
         requireIframe: true,
         reportParameters: [
@@ -608,7 +608,7 @@ export default function Pharmacy({
       {
         subitem: "List of Sales Return",
         reportName: "salesReturnListPharmacy",
-        componentCode: "RPT_PHR_SAL_RTN_INVO",
+        componentCode: "RPT_PHR_SAL_RTN",
         // template_name: "salesReturnListPharmacy",
         requireIframe: true,
         reportParameters: [
@@ -1132,7 +1132,7 @@ export default function Pharmacy({
       {
         subitem: "Items Stock Register - Date wise",
         reportName: "itemStockEnquiryDateWisePharmacy",
-        componentCode: "RPT_PHR_ITM_STK_DATE",
+        componentCode: "RPT_PHR_ITM_STK_DT",
         requireIframe: true,
         reportParameters: [
           {
@@ -1268,7 +1268,7 @@ export default function Pharmacy({
       {
         subitem: "GP Statement - Bill Wise",
         reportName: "gpBillwisePharmacy",
-        componentCode: "RPT_PHR_GP_BIL",
+        componentCode: "RPT_PHR_GP_STM",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -1364,7 +1364,7 @@ export default function Pharmacy({
       {
         subitem: "GP Statement - Date Wise",
         reportName: "gpDatewisePharmacy",
-        componentCode: "RPT_PHR_GP_DATE",
+        componentCode: "RPT_PHR_GP_STM_DT",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -1530,7 +1530,7 @@ export default function Pharmacy({
       },
 
       {
-        subitem: "Purchase Receipt Report",
+        subitem: "Pharmacy - Purchase Receipt Report",
         reportName: "pharmacyReceiptReport",
         componentCode: "RPT_PHR_REE",
         requireIframe: true,
