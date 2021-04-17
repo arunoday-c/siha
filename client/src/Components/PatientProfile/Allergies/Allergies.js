@@ -27,6 +27,8 @@ import Options from "../../../Options.json";
 import { Select, Divider, Input } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { MainContext } from "algaeh-react-components";
+
 const { Option } = Select;
 // let index = 0;
 
@@ -48,7 +50,10 @@ class Allergies extends Component {
     this.baseState = this.state;
   }
 
+  static contextType = MainContext;
+
   componentDidMount() {
+    const userToken = this.context.userToken;
     // if (
     //   this.props.patient_allergies === undefined ||
     //   this.props.patient_allergies.length === 0
@@ -82,6 +87,7 @@ class Allergies extends Component {
     this.setState({
       patientAllergies: _allergies,
       allPatientAllergies: this.props.patient_allergies,
+      portal_exists: userToken.portal_exists,
     });
     // }
   }
@@ -199,16 +205,19 @@ class Allergies extends Component {
             allergy_status: "ACTIVE",
             update_type: "HOSPITAL",
           };
-          axios
-            .post("http://localhost:4402/api/v1/info/patientAllergy", data)
-            .then(function (response) {
-              //handle success
-              console.log(response);
-            })
-            .catch(function (response) {
-              //handle error
-              console.log(response);
-            });
+
+          if (this.state.portal_exists === "Y") {
+            axios
+              .post("http://localhost:4402/api/v1/info/patientAllergy", data)
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              });
+          }
           getPatientAllergies(this);
           this.resetAllergies();
           swalMessage({
@@ -311,16 +320,18 @@ class Allergies extends Component {
               allergy_status: "INACTIVE",
               update_type: "HOSPITAL",
             };
-            axios
-              .post("http://localhost:4402/api/v1/info/patientAllergy", data)
-              .then(function (response) {
-                //handle success
-                console.log(response);
-              })
-              .catch(function (response) {
-                //handle error
-                console.log(response);
-              });
+            if (this.state.portal_exists === "Y") {
+              axios
+                .post("http://localhost:4402/api/v1/info/patientAllergy", data)
+                .then(function (response) {
+                  //handle success
+                  console.log(response);
+                })
+                .catch(function (response) {
+                  //handle error
+                  console.log(response);
+                });
+            }
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",

@@ -123,7 +123,7 @@ let authUser = (req, res, next) => {
      WHERE P.password=md5(?) AND U.username=? AND U.record_status='A'   AND U.user_status='A' \
      AND P.record_status='A' AND G.record_status='A' AND R.record_status='A' and UEM.record_status='A' and E.employee_status <>'I'and UEM.hospital_id=?;\
      SELECT ORG.product_type, ORG.business_registration_number,ORG.tax_number,ORG.other_lang,ORG.other_lang_short,hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
-   H.default_currency, H.default_slot, H.default_patient_type, H.standard_from_time, H.standard_to_time, H.hospital_name, \
+   H.default_currency, H.default_slot, H.default_patient_type, H.standard_from_time, H.standard_to_time, H.hospital_name,portal_exists, \
    H.arabic_hospital_name, H.hospital_address, H.city_id, organization_id, H.effective_start_date, H.effective_end_date, \
    hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,ORG.organization_name,ORG.organization_code,ORG.country_id as org_country_id,\
    decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,unique_id_for_appointmt, requied_emp_id, mrn_num_sep_cop_client, \

@@ -64,7 +64,6 @@ class VitalComponent extends Component {
                   : null,
               formula_value: _elements[i].getAttribute("formula_value"),
             });
-            debugger;
 
             if (elementName === "heart rate") {
               portal_data = {
@@ -90,7 +89,6 @@ class VitalComponent extends Component {
             }
           }
         }
-        debugger;
 
         algaehApiCall({
           uri: "/doctorsWorkBench/addPatientVitals",
@@ -98,35 +96,27 @@ class VitalComponent extends Component {
           data: bodyArray,
           onSuccess: (response) => {
             if (response.data.success) {
-              //   this.props.setstates(
-              //     {
-              //       ...resetElements,
-              //       temperature_from: "",
-              //       bp_position: "",
-              //       recorded_date: new Date(),
-              //       recorded_time: moment().format(config.formators.time),
-              //     },
-              //     () => {
-              axios
-                .post(
-                  "http://localhost:4402/api/v1/info/patientVitals",
-                  portal_data
-                )
-                .then(function (response) {
-                  //handle success
-                  console.log(response);
-                })
-                .catch(function (response) {
-                  //handle error
-                  console.log(response);
-                });
+              const userToken = this.context.userToken;
+              if (userToken.portal_exists === "Y") {
+                axios
+                  .post(
+                    "http://localhost:4402/api/v1/info/patientVitals",
+                    portal_data
+                  )
+                  .then(function (response) {
+                    //handle success
+                    console.log(response);
+                  })
+                  .catch(function (response) {
+                    //handle error
+                    console.log(response);
+                  });
+              }
               swalMessage({
                 title: "Vitals recorded successfully . .",
                 type: "success",
               });
               this.props.resetVitalComponent();
-              // }
-              //   );
             }
           },
         });

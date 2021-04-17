@@ -628,7 +628,9 @@ export function PatientRegistration() {
         receiptdetails,
       }).then(async (data) => {
         await uploadAfterSubmit({ ...data, ...input });
-        insertPatientPortal({ ...data, ...input });
+        if (userToken?.portal_exists === "Y") {
+          insertPatientPortal({ ...data, ...input });
+        }
         if (sockets.connected) {
           sockets.emit("patient_checked", {
             ...data,
@@ -697,10 +699,10 @@ export function PatientRegistration() {
         receiptdetails,
       }).then(async (data) => {
         // console.log("In update", data);
-
-        debugger;
         await uploadAfterSubmit({ ...data, ...input });
-        insertPatientPortal({ ...data, ...input });
+        if (userToken?.portal_exists === "Y") {
+          insertPatientPortal({ ...data, ...input });
+        }
         if (sockets.connected) {
           sockets.emit("patient_checked", {
             ...data,
