@@ -48,6 +48,7 @@ import {
   AlgaehModal,
   // AlgaehButton,
 } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components";
 class OrderMedication extends Component {
   constructor(props) {
     super(props);
@@ -106,8 +107,11 @@ class OrderMedication extends Component {
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
-    this.getPatientInsurance();
+    const userToken = this.context.userToken;
+
+    this.getPatientInsurance(userToken);
   }
   onGenericItemSelectedHandler(item) {
     this.setState({
@@ -140,7 +144,7 @@ class OrderMedication extends Component {
     itemhandle(this, item);
   }
 
-  getPatientInsurance() {
+  getPatientInsurance(userToken) {
     this.props.getPatientInsurance({
       uri: "/patientRegistration/getPatientInsurance",
       module: "frontDesk",
@@ -165,6 +169,13 @@ class OrderMedication extends Component {
               data.secondary_insurance_provider_id,
             secondary_network_id: data.secondary_network_id,
             secondary_network_office_id: data.secondary_network_office_id,
+            portal_exists: userToken.portal_exists,
+            hospital_id: userToken.hospital_id,
+          });
+        } else {
+          this.setState({
+            portal_exists: userToken.portal_exists,
+            hospital_id: userToken.hospital_id,
           });
         }
       },

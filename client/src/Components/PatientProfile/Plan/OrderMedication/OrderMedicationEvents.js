@@ -11,6 +11,7 @@ import _ from "lodash";
 //   PRESCRIPTION_FREQ_ROUTE,
 // } from "../../../../utils/GlobalVariables.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import axios from "axios";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
@@ -128,6 +129,151 @@ const SaveMedication = ($this, context, e) => {
       chronicMedicationsItems: chronicMedications,
       isFavMedicationsItems: isFavMedications,
     };
+    debugger;
+    let portal_data = {};
+    if ($this.state.portal_exists === "Y") {
+      portal_data = $this.state.medicationitems.map((m) => {
+        return {
+          patient_identity: $this.props.primary_id_no,
+          visit_code: $this.props.visit_code,
+          visit_date: $this.props.Encounter_Date,
+          generic_name: m.generic_name,
+          item_name: m.item_description,
+          no_of_days: m.no_of_days,
+          dosage: m.dosage,
+          frequency:
+            m.frequency === "0"
+              ? "1-0-1"
+              : m.frequency === "1"
+              ? "1-0-0"
+              : m.frequency === "2"
+              ? "0-0-1"
+              : m.frequency === "3"
+              ? "0-1-0"
+              : m.frequency === "4"
+              ? "1-1-0"
+              : m.frequency === "5"
+              ? "0-1-1"
+              : m.frequency === "6"
+              ? "1-1-1"
+              : m.frequency === "7"
+              ? "Once only"
+              : m.frequency === "8"
+              ? "Once daily (q24h)"
+              : m.frequency === "9"
+              ? "Twice daily (Bid)"
+              : m.frequency === "10"
+              ? "Three times daily (tid)"
+              : m.frequency === "11"
+              ? "Five times daily"
+              : m.frequency === "12"
+              ? "Every two hours (q2h)"
+              : m.frequency === "13"
+              ? "Every three hours (q3h)"
+              : m.frequency === "14"
+              ? "Every four hours (q4h)"
+              : m.frequency === "15"
+              ? "Every six hours (q6h)"
+              : m.frequency === "16"
+              ? "Every eight hours (q8h)"
+              : m.frequency === "17"
+              ? "Every twelve hours (q12h)"
+              : m.frequency === "18"
+              ? "Four times daily (qid)"
+              : m.frequency === "19"
+              ? "Other (As per need)"
+              : null,
+          frequency_type:
+            m.frequency_type === "PD"
+              ? "Per Day"
+              : m.frequency_type === "PH"
+              ? "Per Hour"
+              : m.frequency_type === "PW"
+              ? "Per Week"
+              : m.frequency_type === "PM"
+              ? "Per Month"
+              : m.frequency_type === "AD"
+              ? "Alternate Day"
+              : m.frequency_type === "2W"
+              ? "Every 2 weeks"
+              : m.frequency_type === "2M"
+              ? "Every 2 months"
+              : m.frequency_type === "3M"
+              ? "Every 3 months"
+              : m.frequency_type === "4M"
+              ? "Every 4 months"
+              : m.frequency_type === "6M"
+              ? "Every 6 months"
+              : null,
+          frequency_time:
+            m.frequency_time === "BM"
+              ? "Before Meals"
+              : m.frequency_time === "AM"
+              ? "After Meals"
+              : m.frequency_time === "WF"
+              ? "With Food"
+              : m.frequency_time === "EM"
+              ? "Early Morning"
+              : m.frequency_time === "BB"
+              ? "Before Bed Time"
+              : m.frequency_time === "AB"
+              ? "At Bed Time"
+              : m.frequency_time === "NN"
+              ? "None"
+              : null,
+          frequency_route:
+            m.frequency_route === "BL"
+              ? "Buccal"
+              : m.frequency_route === "EL"
+              ? "Enteral"
+              : m.frequency_route === "IL"
+              ? "Inhalation"
+              : m.frequency_route === "IF"
+              ? "Infusion"
+              : m.frequency_route === "IM"
+              ? "Intramuscular Inj"
+              : m.frequency_route === "IT"
+              ? "Intrathecal Inj"
+              : m.frequency_route === "IV"
+              ? "Intravenous Inj"
+              : m.frequency_route === "NL"
+              ? "Nasal"
+              : m.frequency_route === "OP"
+              ? "Ophthalmic"
+              : m.frequency_route === "OR"
+              ? "Oral"
+              : m.frequency_route === "OE"
+              ? "Otic (ear)"
+              : m.frequency_route === "RL"
+              ? "Rectal"
+              : m.frequency_route === "ST"
+              ? "Subcutaneous"
+              : m.frequency_route === "SL"
+              ? "Sublingual"
+              : m.frequency_route === "TL"
+              ? "Topical"
+              : m.frequency_route === "TD"
+              ? "Transdermal"
+              : m.frequency_route === "VL"
+              ? "Vaginal"
+              : m.frequency_route === "IN"
+              ? "Intravitreal"
+              : m.frequency_route === "VR"
+              ? "Various"
+              : m.frequency_route === "IP"
+              ? "Intraperitoneal"
+              : m.frequency_route === "ID"
+              ? "Intradermal"
+              : m.frequency_route === "INV"
+              ? "Intravesical"
+              : m.frequency_route === "EP"
+              ? "Epilesional"
+              : null,
+          med_units: m.med_units,
+          hospital_id: $this.state.hospital_id,
+        };
+      });
+    }
 
     AlgaehLoader({ show: true });
     algaehApiCall({
@@ -140,6 +286,23 @@ const SaveMedication = ($this, context, e) => {
             title: "Ordered Successfully.",
             type: "success",
           });
+          debugger;
+          if ($this.state.portal_exists === "Y") {
+            portal_data = JSON.stringify(portal_data);
+            axios
+              .post(
+                "http://localhost:4402/api/v1/info/patientMedication",
+                portal_data
+              )
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              });
+          }
           if (Window.global["orderMedicationState"] !== null)
             removeGlobal("orderMedicationState");
           context.updateState({

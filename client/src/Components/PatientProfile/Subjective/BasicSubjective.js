@@ -897,6 +897,9 @@ class BasicSubjective extends Component {
                     openMedication={this.state.openMedication}
                     onClose={this.showMedication.bind(this)}
                     vat_applicable={this.props.vat_applicable}
+                    primary_id_no={this.props.pat_profile.primary_id_no}
+                    visit_code={this.props.pat_profile.visit_code}
+                    Encounter_Date={this.props.pat_profile.Encounter_Date}
                   />
 
                   <li>
