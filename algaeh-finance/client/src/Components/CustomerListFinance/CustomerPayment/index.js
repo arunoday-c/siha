@@ -487,30 +487,13 @@ export default memo(function (props) {
                       <AlgaehTable
                         columns={revert_option.concat([
                           {
-                            fieldName: "checked",
-                            indeterminate: indeterminate.toString(),
-                            // label: (
-                            //   <Checkbox
-                            //     indeterminate={indeterminate}
-                            //     checked={checkAll}
-                            //     onChange={onChangeCheckAll}
-                            //   />
-                            // ),
-                            label: "Select",
+                            fieldName: "view",
+                            label: "View",
                             sortable: false,
                             filterable: false,
                             displayTemplate: (row) => {
                               return (
                                 <spam>
-                                  <Checkbox
-                                    disabled={row.invoice_status === "closed"}
-                                    defaultChecked={row["checked"]}
-                                    onChange={(e) => {
-                                      const { checked } = e.target;
-                                      onChangeCheck(checked, row);
-                                    }}
-                                  />
-
                                   {row.is_opening_bal === "N" ? (
                                     <Tooltip title="DrillDown">
                                       <i
@@ -535,6 +518,32 @@ export default memo(function (props) {
                                     </Tooltip>
                                   ) : null}
                                 </spam>
+                              );
+                            },
+                          },
+                          {
+                            fieldName: "checked",
+                            indeterminate: indeterminate.toString(),
+                            // label: (
+                            //   <Checkbox
+                            //     indeterminate={indeterminate}
+                            //     checked={checkAll}
+                            //     onChange={onChangeCheckAll}
+                            //   />
+                            // ),
+                            label: "Select",
+                            sortable: false,
+                            filterable: false,
+                            displayTemplate: (row) => {
+                              return (
+                                <Checkbox
+                                  disabled={row.invoice_status === "closed"}
+                                  defaultChecked={row["checked"]}
+                                  onChange={(e) => {
+                                    const { checked } = e.target;
+                                    onChangeCheck(checked, row);
+                                  }}
+                                />
                               );
                             },
                           },

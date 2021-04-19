@@ -399,23 +399,13 @@ export default memo(function (props) {
                       <AlgaehTable
                         columns={[
                           {
-                            fieldName: "checked",
-                            indeterminate: indeterminate.toString(),
-                            label: "Select",
+                            fieldName: "view",
+                            label: "view",
                             sortable: false,
                             filterable: false,
                             displayTemplate: (row) => {
                               return (
-                                <spam>
-                                  <Checkbox
-                                    disabled={row.invoice_status === "closed"}
-                                    defaultChecked={row["checked"]}
-                                    onChange={(e) => {
-                                      const { checked } = e.target;
-                                      onChangeCheck(checked, row);
-                                    }}
-                                  />
-
+                                <span>
                                   {row.is_opening_bal === "N" ? (
                                     <Tooltip title="DrillDown">
                                       <i
@@ -429,7 +419,26 @@ export default memo(function (props) {
                                       ></i>
                                     </Tooltip>
                                   ) : null}
-                                </spam>
+                                </span>
+                              );
+                            },
+                          },
+                          {
+                            fieldName: "checked",
+                            indeterminate: indeterminate.toString(),
+                            label: "Select",
+                            sortable: false,
+                            filterable: false,
+                            displayTemplate: (row) => {
+                              return (
+                                <Checkbox
+                                  disabled={row.invoice_status === "closed"}
+                                  defaultChecked={row["checked"]}
+                                  onChange={(e) => {
+                                    const { checked } = e.target;
+                                    onChangeCheck(checked, row);
+                                  }}
+                                />
                               );
                             },
                           },
