@@ -26,6 +26,7 @@ class AdmissionSetup extends Component {
   }
 
   render() {
+    console.log("check");
     return (
       <div className="AdmissionSetupScreen">
         <AlgaehTabs
