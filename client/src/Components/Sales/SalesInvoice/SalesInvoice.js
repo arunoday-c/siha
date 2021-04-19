@@ -350,9 +350,7 @@ class SalesInvoice extends Component {
                   />
                   <h6>
                     {this.state.is_cancelled === "Y" ? (
-                      <span className="badge badge-danger">
-                        Cancelled
-                      </span>
+                      <span className="badge badge-danger">Cancelled</span>
                     ) : this.state.is_revert === "Y" ? (
                       <span className="badge badge-danger">Reverted</span>
                     ) : this.state.is_posted === "N" ? (
@@ -466,6 +464,98 @@ class SalesInvoice extends Component {
                           ? this.state.customer_name
                           : "------"}
                       </h6>
+                      {this.state.customer_name ? (
+                        <div className="hoverCustomer">
+                          <i className="fas fa-eye"></i>
+                          <div className="customerDetCntr animated slideInDown faster">
+                            <div className="row">
+                              <div className="col">
+                                <table>
+                                  <tbody>
+                                    <tr>
+                                      <td colSpan="2" className="hdr">
+                                        <span>Customer Details:-</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Customer Code:</td>
+                                      <td>{this.state.customer_code}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Customer Name:</td>
+                                      <td>{this.state.customer_name}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>BUSINESS REG. NO.</td>
+                                      <td>
+                                        {this.state.business_registration_no}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td colSpan="2" className="hdr">
+                                        <span>Contact Details:-</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>CONTACT NUMBER</td>
+                                      <td>{this.state.contact_number}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Email Address Primary</td>
+                                      <td>{this.state.email_id_1}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Email Address Secondary</td>
+                                      <td>
+                                        {this.state.email_id_2
+                                          ? this.state.email_id_2
+                                          : "---"}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Address</td>
+                                      <td>{this.state.address}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div className="col">
+                                <table>
+                                  <tbody>
+                                    <tr>
+                                      <td colSpan="2" className="hdr">
+                                        <span>Payment Information:-</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>PAYMENT TERMS IN DAYS</td>
+                                      <td>{this.state.payment_terms}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>PAYMENT MODE</td>
+                                      <td>{this.state.payment_mode}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>VAT NUMBER</td>
+                                      <td>{this.state.vat_number}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>BANK NAME</td>
+                                      <td>{this.state.bank_name}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>ACCOUNT NUMBER</td>
+                                      <td>{this.state.bank_account_no}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
 
                     <div className="col">
