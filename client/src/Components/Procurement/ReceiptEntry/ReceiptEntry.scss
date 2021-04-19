@@ -13,12 +13,11 @@
   }
 }
 
-.disableFinder{
-	opacity: 0.4;
-	pointer-events: none;
-  }
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}
 
-  
 .receiptEntryAttachment {
   margin: 0;
   padding: 0;
@@ -34,12 +33,12 @@
     border-bottom: 1px solid lighten($color-black, 70%) !important;
     b {
       display: inline-block;
-      width:calc(100% - 73px);
+      width: calc(100% - 73px);
       padding: 3px 5px;
     }
     span {
       display: inline-block;
-      width:73px;
+      width: 73px;
       text-align: right;
       i {
         padding: 10px;
@@ -62,6 +61,69 @@
     p {
       line-height: 137px;
       padding: 0 10px;
+    }
+  }
+}
+
+.hoverVendor {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  padding: 0 5px;
+  border: 1px solid lighten($color-black, 80%);
+  height: 23px;
+  cursor: pointer;
+  z-index: 9;
+
+  &:hover {
+    .vendorDetCntr {
+      display: block;
+    }
+  }
+  .vendorDetCntr {
+    position: absolute;
+    top: 22px;
+    right: 0;
+    z-index: 999;
+    width: 700px;
+    height: auto;
+    background: $color-white;
+    box-shadow: 0 20px 20px lighten($color-black, 60%);
+    padding: 6px;
+    display: none;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      tbody {
+        margin: 0;
+        padding: 0;
+        tr {
+          &:nth-child(even) {
+            background: lighten($color-black, 95%);
+          }
+
+          td {
+            border: 1px solid #ccc;
+            padding: 3px 10px;
+            margin: 0;
+            text-align: left;
+            span {
+              font-weight: bold;
+            }
+            &:last-child {
+              font-weight: bolder;
+              color: $color-black;
+            }
+
+            &.hdr {
+              background: lighten($color-black, 90%);
+            }
+            &.imgSection {
+              padding: 0;
+            }
+          }
+        }
+      }
     }
   }
 }

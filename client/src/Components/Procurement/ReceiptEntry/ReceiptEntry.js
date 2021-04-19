@@ -42,6 +42,7 @@ class ReceiptEntry extends Component {
     super(props);
     this.state = {
       po_services_req: "N",
+      vendorDetails: [],
     };
     getPOOptions(this, this);
   }
@@ -179,7 +180,7 @@ class ReceiptEntry extends Component {
       if (res.data.success) {
         this.setState((state) => {
           const receipt_docs = state.receipt_docs.filter(
-            (item) => item._id !== doc._id
+            (item) => this.state._id !== doc._id
           );
           return { receipt_docs };
         });
@@ -404,7 +405,105 @@ class ReceiptEntry extends Component {
                   <h6>
                     {this.state.vendor_name ? this.state.vendor_name : "------"}
                   </h6>
+                  {this.state.vendor_name ? (
+                    <div className="hoverVendor">
+                      <i className="fas fa-eye"></i>
+                      <div className="vendorDetCntr animated slideInDown faster">
+                        <div className="row">
+                          <div className="col">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td colSpan="2" className="hdr">
+                                    <span>Vendor Details:-</span>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>Vendor Code:</td>
+                                  <td>{this.state.vendor_code}</td>
+                                </tr>
+                                <tr>
+                                  <td>Vendor Name:</td>
+                                  <td>{this.state.vendor_name}</td>
+                                </tr>
+                                <tr>
+                                  <td>BUSINESS REG. NO.</td>
+                                  <td>{this.state.business_registration_no}</td>
+                                </tr>
+                                <tr>
+                                  <td colSpan="2" className="hdr">
+                                    <span>Contact Details:-</span>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>CONTACT NUMBER</td>
+                                  <td>{this.state.contact_number}</td>
+                                </tr>
+                                <tr>
+                                  <td>Email Address Primary</td>
+                                  <td>{this.state.email_id_1}</td>
+                                </tr>
+                                <tr>
+                                  <td>Email Address Secondary</td>
+                                  <td>
+                                    {this.state.email_id_2
+                                      ? this.state.email_id_2
+                                      : "---"}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>Address</td>
+                                  <td>{this.state.address}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div className="col">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td colSpan="2" className="hdr">
+                                    <span>Payment Information:-</span>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>PAYMENT TERMS IN DAYS</td>
+                                  <td>{this.state.payment_terms}</td>
+                                </tr>
+                                <tr>
+                                  <td>PAYMENT MODE</td>
+                                  <td>{this.state.payment_mode}</td>
+                                </tr>
+                                <tr>
+                                  <td>VAT NUMBER</td>
+                                  <td>{this.state.vat_number}</td>
+                                </tr>
+                                <tr>
+                                  <td>BANK NAME</td>
+                                  <td>{this.state.bank_name}</td>
+                                </tr>
+                                <tr>
+                                  <td>ACCOUNT NUMBER</td>
+                                  <td>{this.state.bank_account_no}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
+
+                {/* {this.state.vendor_name.length > 0
+                  ? this.state.vendorDetails.map((item) => {
+                      return (
+                       
+                      );
+                    })
+                  : null} */}
 
                 {/*<AlagehAutoComplete
                   div={{ className: "col-2" }}
