@@ -2114,14 +2114,10 @@ export default {
               break;
 
             case "contra":
-              if (result[0].show_bank_cash === "Y") {
-                selectStr = ` ,  case  account_type  when 'B' then null when 'C' then null else parent_acc_id end as parent_acc_id `;
-                whereStr = " where 1+1";
-              } else {
-                selectStr = ` ,  case  account_type  when 'B' then null when 'C' then null else parent_acc_id end as parent_acc_id `;
-                whereStr = ` where account_type  in ('B','C') `;
-              }
+              selectStr = ` ,  case  account_type  when 'B' then null when 'C' then null else parent_acc_id end as parent_acc_id `;
+              whereStr = ` where account_type  in ('B','C') `;
               break;
+
             case "sales":
               selectStr = " ,parent_acc_id ";
               // whereStr = ` where account_type  not in ('B','C') `;
@@ -2129,14 +2125,10 @@ export default {
               break;
 
             case "CIH":
-              if (result[0].show_bank_cash === "Y") {
-                selectStr = ` ,  case  account_type   when 'C' then null else parent_acc_id end as parent_acc_id `;
-                whereStr = " where 1+1";
-              } else {
-                selectStr = ` ,  case  account_type   when 'C' then null else parent_acc_id end as parent_acc_id `;
-                whereStr = ` where account_type  ='C' `;
-              }
+              selectStr = ` ,  case  account_type   when 'C' then null else parent_acc_id end as parent_acc_id `;
+              whereStr = ` where account_type  ='C' `;
               break;
+
             default:
               selectStr = " ,parent_acc_id ";
           }
