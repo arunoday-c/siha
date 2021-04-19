@@ -42,7 +42,6 @@ class ReceiptEntry extends Component {
     super(props);
     this.state = {
       po_services_req: "N",
-      vendorDetails: [],
     };
     getPOOptions(this, this);
   }
@@ -496,87 +495,6 @@ class ReceiptEntry extends Component {
                     ""
                   )}
                 </div>
-
-                {/* {this.state.vendor_name.length > 0
-                  ? this.state.vendorDetails.map((item) => {
-                      return (
-                       
-                      );
-                    })
-                  : null} */}
-
-                {/*<AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Receipt For" }}
-                  selector={{
-                    name: "grn_for",
-                    className: "select-fld",
-                    value: this.state.grn_for,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.PO_FROM
-                    },
-                    others: {
-                      disabled:
-                        this.state.poSelected === true
-                          ? this.state.poSelected
-                          : this.state.dataExitst
-                    },
-                    onChange: poforhandle.bind(this, this),
-                    onClear: texthandle.bind(this, this)
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Location" }}
-                  selector={{
-                    name:
-                      this.state.grn_for === "PHR"
-                        ? "pharmcy_location_id"
-                        : "inventory_location_id",
-                    className: "select-fld",
-                    value:
-                      this.state.grn_for === "PHR"
-                        ? this.state.pharmcy_location_id
-                        : this.state.inventory_location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField:
-                        this.state.grn_for === "PHR"
-                          ? "hims_d_pharmacy_location_id"
-                          : "hims_d_inventory_location_id",
-                      data: _mainStore
-                    },
-                    others: {
-                      disabled:
-                        this.state.poSelected === true
-                          ? this.state.poSelected
-                          : this.state.dataExitst
-                    },
-                    onChange: loctexthandle.bind(this, this),
-                    onClear: texthandle.bind(this, this)
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Vendor" }}
-                  selector={{
-                    name: "vendor_id",
-                    className: "select-fld",
-                    value: this.state.vendor_id,
-                    dataSource: {
-                      textField: "vendor_name",
-                      valueField: "hims_d_vendor_id",
-                      data: this.props.receiptvendors
-                    },
-                    others: {
-                      disabled: true
-                    },
-                    onChange: vendortexthandle.bind(this, this),
-                    onClear: vendortexthandle.bind(this, this)
-                  }}
-                />*/}
 
                 <AlagehFormGroup
                   div={{ className: "col-2  form-group" }}
