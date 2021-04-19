@@ -24,7 +24,7 @@ function OptionsComponent({
     allow_negative_balance,
     grni_required,
     cr_dr_required,
-    show_cash_cash,
+    show_bank_cash,
   } = options;
   return (
     <div className="FinanceOptions">
@@ -319,9 +319,9 @@ function OptionsComponent({
                         type="radio"
                         value="Y"
                         onChange={handleChange}
-                        name="show_cash_cash"
+                        name="show_bank_cash"
                         checked={
-                          show_cash_cash === "Y" || show_cash_cash === undefined
+                          show_bank_cash === "Y" || show_bank_cash === undefined
                             ? true
                             : false
                         }
@@ -334,8 +334,8 @@ function OptionsComponent({
                         type="radio"
                         value="N"
                         onChange={handleChange}
-                        name="show_cash_cash"
-                        checked={show_cash_cash === "N"}
+                        name="show_bank_cash"
+                        checked={show_bank_cash === "N"}
                       />
                       <span>No</span>
                     </label>
