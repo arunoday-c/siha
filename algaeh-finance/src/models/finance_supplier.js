@@ -73,7 +73,7 @@ export default {
         when MAX(settlement_status)='P' and curdate()> MAX(due_date) then 'over due'
         when MAX(settlement_status)='P' and SUM(settled_amount)<1 then 'open'
         when MAX(settlement_status)='P' and SUM(settled_amount)>0 then 'paid' end as invoice_status,
-        MAX(D.child_id) as child_id,MAX(D.head_id) as head_id
+        MAX(D.child_id) as child_id,MAX(D.head_id) as head_id, D.is_opening_bal, H.voucher_no
         from finance_voucher_header H 
         inner join finance_voucher_details D on
         H.finance_voucher_header_id=D.voucher_header_id 

@@ -501,14 +501,40 @@ export default memo(function (props) {
                             filterable: false,
                             displayTemplate: (row) => {
                               return (
-                                <Checkbox
-                                  disabled={row.invoice_status === "closed"}
-                                  defaultChecked={row["checked"]}
-                                  onChange={(e) => {
-                                    const { checked } = e.target;
-                                    onChangeCheck(checked, row);
-                                  }}
-                                />
+                                <spam>
+                                  <Checkbox
+                                    disabled={row.invoice_status === "closed"}
+                                    defaultChecked={row["checked"]}
+                                    onChange={(e) => {
+                                      const { checked } = e.target;
+                                      onChangeCheck(checked, row);
+                                    }}
+                                  />
+
+                                  {row.is_opening_bal === "N" ? (
+                                    <Tooltip title="DrillDown">
+                                      <i
+                                        className="fa fa-exchange-alt"
+                                        style={{
+                                          pointerEvents:
+                                            row.day_end_header_id > 0
+                                              ? ""
+                                              : "none",
+                                          opacity:
+                                            row.day_end_header_id > 0
+                                              ? ""
+                                              : "0.1",
+                                        }}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          history.push(
+                                            `/SalesInvoice?invoice_number=${row.voucher_no}`
+                                          );
+                                        }}
+                                      ></i>
+                                    </Tooltip>
+                                  ) : null}
+                                </spam>
                               );
                             },
                           },
