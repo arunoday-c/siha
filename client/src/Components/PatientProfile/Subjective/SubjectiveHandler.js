@@ -164,7 +164,7 @@ export default function SubjectiveHandler() {
       });
     },
 
-    addChiefComplainToPatient: ($this) => {
+    addChiefComplainToPatient: ($this, forceSave) => {
       const { current_patient, episode_id } = Window.global;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
@@ -194,6 +194,12 @@ export default function SubjectiveHandler() {
         onSuccess: (response) => {
           if (response.data.success) {
             getPatientChiefComplaints($this);
+            if (forceSave === "forceSave") {
+              swalMessage({
+                title: "Chief Complaint Saved Successful",
+                type: "success",
+              });
+            }
           }
         },
       });
@@ -215,7 +221,7 @@ export default function SubjectiveHandler() {
       }
     },
 
-    updatePatientChiefComplaints: ($this) => {
+    updatePatientChiefComplaints: ($this, forceSave) => {
       const { current_patient, episode_id } = Window.global;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
@@ -243,6 +249,12 @@ export default function SubjectiveHandler() {
         data: { chief_complaints: patChiefComp },
         onSuccess: (response) => {
           if (response.data.success) {
+            if (forceSave === "forceSave") {
+              swalMessage({
+                title: "Chief Complaint Update Successful",
+                type: "success",
+              });
+            }
             getPatientChiefComplaints($this);
           }
         },

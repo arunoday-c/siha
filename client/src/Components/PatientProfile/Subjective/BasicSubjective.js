@@ -1016,6 +1016,34 @@ class BasicSubjective extends Component {
                                   )}
                                   /{this.chiefComplaintMaxLength}
                                 </small>
+                                <button
+                                  className="btn btn-primary float-left"
+                                  onClick={() => {
+                                    const err = Validations(this);
+                                    if (!err) {
+                                      if (
+                                        this.state
+                                          .hims_f_episode_chief_complaint_id ===
+                                        null
+                                      ) {
+                                        SubjectiveHandler().addChiefComplainToPatient(
+                                          this,
+                                          "forceSave"
+                                        );
+                                      } else {
+                                        SubjectiveHandler().updatePatientChiefComplaints(
+                                          this,
+                                          "forceSave"
+                                        );
+                                      }
+                                    }
+                                  }}
+                                >
+                                  {this.state
+                                    .hims_f_episode_chief_complaint_id === null
+                                    ? "Save"
+                                    : "Update"}{" "}
+                                </button>
                               </div>
                             </div>
                           </div>
