@@ -1114,7 +1114,13 @@ class ResultEntry extends Component {
                       type="button"
                       className="btn btn-primary"
                       onClick={onvalidate.bind(this, this)}
-                      disabled={this.state.status === "V" ? true : false}
+                      disabled={
+                        this.state.status === "V" ||
+                        this.state.entered_by_name === "" ||
+                        this.state.confirm_by_name === ""
+                          ? true
+                          : false
+                      }
                     >
                       Validate All
                     </button>
@@ -1126,7 +1132,8 @@ class ResultEntry extends Component {
                       className="btn btn-primary"
                       onClick={onconfirm.bind(this, this)}
                       disabled={
-                        this.state.status === "C"
+                        this.state.status === "C" ||
+                        this.state.entered_by_name === ""
                           ? true
                           : this.state.status === "V"
                           ? true
