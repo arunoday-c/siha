@@ -23,6 +23,7 @@ const texthandle = ($this, e) => {
         value,
         "days"
       )._d;
+
       _notice = {
         reliving_date: res_date,
         exit_date: res_date,
@@ -30,6 +31,11 @@ const texthandle = ($this, e) => {
         [name]: value,
       };
       $this.setState(_notice);
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
+
+        ..._notice,
+      });
       break;
     case "sub_department_id":
       $this.setState({
@@ -91,6 +97,7 @@ const accomodationProvided = ($this, e) => {
 
 const datehandle = ($this, ctrl, e) => {
   let _notice = {};
+
   if (e === "date_of_resignation") {
     if ($this.state.notice_period !== null) {
       _notice = {
@@ -98,6 +105,7 @@ const datehandle = ($this, ctrl, e) => {
           parseFloat($this.state.notice_period),
           "days"
         )._d,
+        notice_period: $this.state.notice_period,
         exit_date: moment(ctrl).add(
           parseFloat($this.state.notice_period),
           "days"

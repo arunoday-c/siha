@@ -19,6 +19,7 @@ export default {
       probation_date: null,
       date_of_joining: null,
       date_of_resignation: null,
+      notice_period: null,
       category_id: null,
       speciality_id: null,
       employee_id: null,

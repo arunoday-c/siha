@@ -33,6 +33,7 @@ class OfficalDetails extends Component {
       date_of_releaving_label: "Date of leaving",
       accomodation_provided: false,
       reliving_date: undefined,
+      notice_period: null,
       // employee_status: null,
       inactive_date: undefined,
       eos_id: undefined,
@@ -789,7 +790,6 @@ class OfficalDetails extends Component {
                         forceLabel: "Notice Period",
                         isImp: false,
                       }}
-                      date_of_resignation
                       textBox={{
                         value: this.state.notice_period,
                         className: "txt-fld",
