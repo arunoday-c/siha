@@ -196,7 +196,9 @@ export default function SubjectiveHandler() {
             getPatientChiefComplaints($this);
             if (forceSave === "forceSave") {
               swalMessage({
-                title: "Chief Complaint Saved Successful",
+                // title: "Saved Successfully",
+                html:
+                  "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
                 type: "success",
               });
             }
@@ -251,7 +253,9 @@ export default function SubjectiveHandler() {
           if (response.data.success) {
             if (forceSave === "forceSave") {
               swalMessage({
-                title: "Chief Complaint Update Successful",
+                // title: "Updated Successfully",
+                html:
+                  "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Updated Successfully</b>",
                 type: "success",
               });
             }
