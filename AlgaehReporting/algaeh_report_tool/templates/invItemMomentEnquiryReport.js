@@ -37,7 +37,8 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query:
-            `SELECT TH.* , IU.uom_description,IM.item_description,IL.location_description, IM.waited_avg_cost 
+            `SELECT TH.* , CASE WHEN TH.operation='+' THEN ROUND(TH.transaction_qty,0) ELSE concat(TH.operation, ROUND(TH.transaction_qty,0)) END as trans_qty,  
+            IU.uom_description,IM.item_description,IL.location_description, IM.waited_avg_cost 
             from hims_f_inventory_trans_history TH 
             left join hims_d_inventory_item_master IM on TH.item_code_id=IM.hims_d_inventory_item_master_id
             left join hims_d_inventory_location IL on TH.from_location_id = IL.hims_d_inventory_location_id

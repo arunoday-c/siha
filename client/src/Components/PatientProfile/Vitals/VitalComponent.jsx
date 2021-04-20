@@ -65,6 +65,7 @@ class VitalComponent extends Component {
               formula_value: _elements[i].getAttribute("formula_value"),
             });
 
+            debugger;
             if (elementName === "heart rate") {
               portal_data = {
                 ...portal_data,
@@ -76,6 +77,27 @@ class VitalComponent extends Component {
               portal_data = {
                 ...portal_data,
                 respiratory_rate: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
+            } else if (elementName === "o2 sat") {
+              portal_data = {
+                ...portal_data,
+                o2_sat: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
+            } else if (elementName === "bp systolic") {
+              portal_data = {
+                ...portal_data,
+                bp_systolic: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
+            } else if (elementName === "bp diastolic") {
+              portal_data = {
+                ...portal_data,
+                bp_diastolic: _elements[i].children[0].value
                   ? _elements[i].children[0].value
                   : 0.0,
               };
