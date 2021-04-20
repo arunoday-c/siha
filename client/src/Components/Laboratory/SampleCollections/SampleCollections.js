@@ -177,7 +177,7 @@ class SampleCollectionPatient extends PureComponent {
                         <h6>
                           {this.state.doctor_name
                             ? this.state.doctor_name
-                            : "Ordered By"}
+                            : "------"}
                         </h6>
                       </div>
                       <div className="col-lg-3">
