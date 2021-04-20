@@ -610,19 +610,11 @@ class ItemMomentEnquiry extends Component {
                             {display !== null && display.length !== 0
                               ? display[0].item_description
                               : ""}
-                            {display !== null && display.length !== 0 ? (
-                              <i
-                                className={
-                                  row.operation === "+"
-                                    ? "fas fa-arrow-up green"
-                                    : row.operation === "-"
-                                    ? "fas fa-arrow-down red"
-                                    : ""
-                                }
-                              />
+                            {/* {display !== null && display.length !== 0 ? (
+                             
                             ) : (
                               ""
-                            )}
+                            )} */}
                           </span>
                         );
                       },
@@ -686,7 +678,20 @@ class ItemMomentEnquiry extends Component {
                       fieldName: "transaction_qty",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
                       displayTemplate: (row) => {
-                        return parseFloat(row.transaction_qty);
+                        return (
+                          <span>
+                            {parseFloat(row.transaction_qty)}
+                            <i
+                              className={
+                                row.operation === "+"
+                                  ? "fas fa-arrow-up green"
+                                  : row.operation === "-"
+                                  ? "fas fa-arrow-down red"
+                                  : ""
+                              }
+                            />
+                          </span>
+                        );
                       },
                       others: {
                         filterable: false,
