@@ -2132,50 +2132,64 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `hims_f_patient_appointment` (patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
-              appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,tel_code,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
-              created_date, created_by, updated_date, updated_by,hospital_id)\
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-              values: [
-                input.patient_id,
-                input.title_id,
-                input.patient_code,
-                input.provider_id,
-                input.sub_department_id,
-                input.number_of_slot,
-                input.appointment_date,
-                input.appointment_from_time,
-                input.appointment_to_time,
-                input.appointment_status_id,
-                input.patient_name,
-                input.arabic_name,
-                input.date_of_birth,
-                input.age,
-                input.contact_number,
-                input.tel_code,
-                input.email,
-                input.send_to_provider,
-                input.gender,
-                input.appointment_remarks,
-                input.is_stand_by,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                req.userIdentity.hospital_id,
-              ],
+                "UPDATE  hims_f_patient set tel_code=? where hims_d_patient_id=? ",
+              values: [input.tel_code, input.patient_id],
               printQuery: true,
             })
             .then((result) => {
-              _mysql.releaseConnection();
-              req.records = result;
-              req.employee_code = slotResult[2][0]["employee_code"];
-              req.sub_department_code = slotResult[2][0]["sub_department_code"];
-              if (input.is_stand_by === "N") {
-                sendPatientAppointment(req, res);
-              }
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO `hims_f_patient_appointment` (patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
+              appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,tel_code,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
+              created_date, created_by, updated_date, updated_by,hospital_id)\
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                  values: [
+                    input.patient_id,
+                    input.title_id,
+                    input.patient_code,
+                    input.provider_id,
+                    input.sub_department_id,
+                    input.number_of_slot,
+                    input.appointment_date,
+                    input.appointment_from_time,
+                    input.appointment_to_time,
+                    input.appointment_status_id,
+                    input.patient_name,
+                    input.arabic_name,
+                    input.date_of_birth,
+                    input.age,
+                    input.contact_number,
+                    input.tel_code,
+                    input.email,
+                    input.send_to_provider,
+                    input.gender,
+                    input.appointment_remarks,
+                    input.is_stand_by,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    req.userIdentity.hospital_id,
+                  ],
+                  printQuery: true,
+                })
+                .then((result) => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  req.employee_code = slotResult[2][0]["employee_code"];
+                  req.sub_department_code =
+                    slotResult[2][0]["sub_department_code"];
+                  if (input.is_stand_by === "N") {
+                    sendPatientAppointment(req, res);
+                  }
 
-              next();
+                  next();
+                })
+                .catch((e) => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
             })
             .catch((e) => {
               _mysql.releaseConnection();

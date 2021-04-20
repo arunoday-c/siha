@@ -557,7 +557,7 @@ function AppointmentComponent(props) {
                               onChange={props.dropDownCountry}
                               virtual={true}
                               // disabled={disabled}
-                              disabled={props.state.fromSearch || false}
+                              // disabled={props.state.fromSearch || false}
                               showSearch
                               filterOption={(input, option) => {
                                 return (
