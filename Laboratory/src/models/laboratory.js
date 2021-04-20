@@ -66,10 +66,10 @@ export default {
             max(if(CL.algaeh_d_app_user_id=LO.entered_by, EM.full_name,'' )) as entered_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.confirmed_by, EM.full_name,'')) as confirm_by_name, \
             max(if(CL.algaeh_d_app_user_id=LO.validated_by, EM.full_name,'')) as validate_by_name, \
-            entered_date,confirmed_date,validated_date  from hims_f_lab_order LO \
+            LO.entered_date,LO.confirmed_date,LO.validated_date  from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
-            inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
+            left join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
             inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
             left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \
             left join hims_d_title as T on T.his_d_title_id = E.title_id \
