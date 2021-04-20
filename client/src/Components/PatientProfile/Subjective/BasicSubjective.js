@@ -1007,43 +1007,6 @@ class BasicSubjective extends Component {
                                   onChange={this.textAreaEvent.bind(this)}
                                   maxLength={this.chiefComplaintMaxLength}
                                 />
-
-                                <small className="float-right">
-                                  Max Char.
-                                  {maxCharactersLeft(
-                                    this.chiefComplaintMaxLength,
-                                    this.state.chief_complaint
-                                  )}
-                                  /{this.chiefComplaintMaxLength}
-                                </small>
-                                <button
-                                  className="btn btn-primary float-left"
-                                  onClick={() => {
-                                    const err = Validations(this);
-                                    if (!err) {
-                                      if (
-                                        this.state
-                                          .hims_f_episode_chief_complaint_id ===
-                                        null
-                                      ) {
-                                        SubjectiveHandler().addChiefComplainToPatient(
-                                          this,
-                                          "forceSave"
-                                        );
-                                      } else {
-                                        SubjectiveHandler().updatePatientChiefComplaints(
-                                          this,
-                                          "forceSave"
-                                        );
-                                      }
-                                    }
-                                  }}
-                                >
-                                  {this.state
-                                    .hims_f_episode_chief_complaint_id === null
-                                    ? "Save"
-                                    : "Update"}{" "}
-                                </button>
                               </div>
                             </div>
                           </div>
@@ -1146,6 +1109,44 @@ class BasicSubjective extends Component {
                               )}
                             </div>
                           </div>
+                          <div className="col-12" style={{ marginTop: 10 }}>
+                            <small className="float-left">
+                              Max Char.
+                              {maxCharactersLeft(
+                                this.chiefComplaintMaxLength,
+                                this.state.chief_complaint
+                              )}
+                              /{this.chiefComplaintMaxLength}
+                            </small>
+                            <button
+                              className="btn btn-default float-right"
+                              onClick={() => {
+                                const err = Validations(this);
+                                if (!err) {
+                                  if (
+                                    this.state
+                                      .hims_f_episode_chief_complaint_id ===
+                                    null
+                                  ) {
+                                    SubjectiveHandler().addChiefComplainToPatient(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  } else {
+                                    SubjectiveHandler().updatePatientChiefComplaints(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  }
+                                }
+                              }}
+                            >
+                              {this.state.hims_f_episode_chief_complaint_id ===
+                              null
+                                ? "Save"
+                                : "Update"}{" "}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1171,7 +1172,9 @@ class BasicSubjective extends Component {
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.significantSignsLength}
                             />
-                            <small className="float-right">
+                          </div>
+                          <div className="col-12">
+                            <small className="float-left">
                               Max Char.
                               {maxCharactersLeft(
                                 this.significantSignsLength,
@@ -1179,6 +1182,35 @@ class BasicSubjective extends Component {
                               )}
                               /{this.significantSignsLength}
                             </small>
+                            <button
+                              className="btn btn-default float-right"
+                              style={{ marginTop: 5 }}
+                              onClick={() => {
+                                const err = Validations(this);
+                                if (!err) {
+                                  if (
+                                    this.state
+                                      .hims_f_episode_chief_complaint_id ===
+                                    null
+                                  ) {
+                                    SubjectiveHandler().addChiefComplainToPatient(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  } else {
+                                    SubjectiveHandler().updatePatientChiefComplaints(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  }
+                                }
+                              }}
+                            >
+                              {this.state.hims_f_episode_chief_complaint_id ===
+                              null
+                                ? "Save"
+                                : "Update"}{" "}
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -1206,7 +1238,10 @@ class BasicSubjective extends Component {
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.otherConditionMaxLength}
                             />
-                            <small className="float-right">
+                          </div>{" "}
+                          <div className="col-12">
+                            {" "}
+                            <small className="float-left">
                               Max Char.
                               {maxCharactersLeft(
                                 this.otherConditionMaxLength,
@@ -1214,6 +1249,35 @@ class BasicSubjective extends Component {
                               )}
                               / {this.otherConditionMaxLength}
                             </small>
+                            <button
+                              className="btn btn-default float-right"
+                              style={{ marginTop: 5 }}
+                              onClick={() => {
+                                const err = Validations(this);
+                                if (!err) {
+                                  if (
+                                    this.state
+                                      .hims_f_episode_chief_complaint_id ===
+                                    null
+                                  ) {
+                                    SubjectiveHandler().addChiefComplainToPatient(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  } else {
+                                    SubjectiveHandler().updatePatientChiefComplaints(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  }
+                                }
+                              }}
+                            >
+                              {this.state.hims_f_episode_chief_complaint_id ===
+                              null
+                                ? "Save"
+                                : "Update"}{" "}
+                            </button>
                           </div>
                         </div>
                       </div>
