@@ -43,6 +43,7 @@ import {
   RawSecurityComponent,
 } from "algaeh-react-components";
 import sockets from "../../sockets";
+import axios from "axios";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -91,6 +92,7 @@ class OPBilling extends Component {
     IOputs.default_pay_type = userToken.default_pay_type;
     IOputs.userToken = this.context.userToken;
     IOputs.service_dis_percentage = userToken.service_dis_percentage;
+    IOputs.portal_exists = userToken.portal_exists;
 
     this.setState({ ...this.state, ...IOputs });
   }
@@ -418,6 +420,23 @@ class OPBilling extends Component {
           Inputobj.insurance_yesno = $this.state.insured;
           Inputobj.ScreenCode = "BL0001";
 
+          debugger;
+          let portal_data = {};
+          if (this.state.portal_exists === "Y") {
+            portal_data = Inputobj.billdetails.map((m) => {
+              return {
+                service_id: m.services_id,
+                service_name: m.service_name,
+                service_category: m.service_type,
+                visit_code: this.state.visit_code,
+                patient_identity: this.state.primary_id_no,
+                pay_type: m.insurance_yesno === "Y" ? "INSURANCE" : "CASH",
+                service_amount: m.patient_resp,
+                service_vat: m.patient_tax,
+                hospital_id: this.state.hospital_id,
+              };
+            });
+          }
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
@@ -434,6 +453,22 @@ class OPBilling extends Component {
                     response.data.records.hims_f_billing_header_id,
                   saveEnable: true,
                 });
+
+                if (this.state.portal_exists === "Y") {
+                  axios
+                    .post(
+                      "http://localhost:4402/api/v1/info/patientService",
+                      portal_data
+                    )
+                    .then(function (response) {
+                      //handle success
+                      console.log(response);
+                    })
+                    .catch(function (response) {
+                      //handle error
+                      console.log(response);
+                    });
+                }
 
                 this.setState({
                   addNewService: true,

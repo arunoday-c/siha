@@ -11,7 +11,7 @@ export function getInvoiceEntry(req, res, next) {
     _mysql
       .executeQuery({
         query:
-          "SELECT SIH.*, C.customer_name, H.hospital_name, SO.sales_order_number, \
+          "SELECT SIH.*, C.customer_name,C.*, H.hospital_name, SO.sales_order_number, \
                 P.project_desc as project_name, SO.revert_reason, \
                 max(if(U.algaeh_d_app_user_id = SIH.reverted_by, E.full_name,'' )) as reverted_name, \
                 max(if(U.algaeh_d_app_user_id = SIH.created_by, E.full_name,'' )) as created_name,SO.sales_person_id \

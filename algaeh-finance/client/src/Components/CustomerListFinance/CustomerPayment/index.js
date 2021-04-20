@@ -487,6 +487,41 @@ export default memo(function (props) {
                       <AlgaehTable
                         columns={revert_option.concat([
                           {
+                            fieldName: "view",
+                            label: "View",
+                            sortable: false,
+                            filterable: false,
+                            displayTemplate: (row) => {
+                              return (
+                                <spam>
+                                  {row.is_opening_bal === "N" ? (
+                                    <Tooltip title="DrillDown">
+                                      <i
+                                        className="fa fa-exchange-alt"
+                                        style={{
+                                          pointerEvents:
+                                            row.day_end_header_id > 0
+                                              ? ""
+                                              : "none",
+                                          opacity:
+                                            row.day_end_header_id > 0
+                                              ? ""
+                                              : "0.1",
+                                        }}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          history.push(
+                                            `/SalesInvoice?invoice_number=${row.voucher_no}`
+                                          );
+                                        }}
+                                      ></i>
+                                    </Tooltip>
+                                  ) : null}
+                                </spam>
+                              );
+                            },
+                          },
+                          {
                             fieldName: "checked",
                             indeterminate: indeterminate.toString(),
                             // label: (

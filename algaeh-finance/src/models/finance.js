@@ -2088,93 +2088,103 @@ export default {
           next(e);
         });
     } else {
-      // let strQry = "";
-
-      // switch (input.voucher_type) {
-      //   case "journal":
-      //     strQry = ` where account_type  not  in ('B','C') `;
-      //     break;
-
-      //   case "contra":
-      //     strQry = ` where account_type   in ('B','C') `;
-      //     break;
-      //   case "sales":
-      //     strQry = ` where account_type  not  in ('B','C') `;
-      //     break;
-      // }
-
-      let selectStr = "";
-      let whereStr = "";
-      let unionStr = "";
-
-      switch (input.voucher_type) {
-        case "journal":
-          selectStr = " ,parent_acc_id ";
-          whereStr = ` where account_type  not in ('B','C') `;
-          unionStr = ` where account_type  not in ('B','C') `;
-          break;
-
-        case "contra":
-          selectStr = ` ,  case  account_type  when 'B' then null when 'C' then null else parent_acc_id end as parent_acc_id `;
-          whereStr = ` where account_type  in ('B','C') `;
-          break;
-        case "sales":
-          selectStr = " ,parent_acc_id ";
-          // whereStr = ` where account_type  not in ('B','C') `;
-          // unionStr = ` where account_type  not in ('B','C') `;
-          break;
-
-        case "CIH":
-          selectStr = ` ,  case  account_type   when 'C' then null else parent_acc_id end as parent_acc_id `;
-          whereStr = ` where account_type  ='C' `;
-          break;
-        default:
-          selectStr = " ,parent_acc_id ";
-      }
-
-      // query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
-      // C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-      // ,account_level,H.sort_order,CM.head_id,H.created_from as created_status,H.root_id
-      // FROM finance_account_head H left join
-      // finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-      // left join finance_account_child C on CM.child_id=C.finance_account_child_id ${strQry};`,
       _mysql
         .executeQuery({
-          // query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
-          // H.created_from as created_status ,sort_order,parent_acc_id,root_id,
-          // finance_account_child_id,child_name,head_id,C.created_from as child_created_from
-          // from finance_account_head H left join
-          // finance_account_child C on C.head_id=H.finance_account_head_id
-          // ${strQry} order by account_level,sort_order;     `,
-
-          query: ` with recursive cte as (
-            select finance_account_head_id,account_code,account_name,account_parent,account_level,
-            H.created_from as created_status ,sort_order ,C.arabic_child_name ${selectStr}
-            ,root_id,
-            finance_account_child_id,if (ledger_code is null,child_name, 
-              concat(child_name,' (',ledger_code,')'))as child_name,head_id,C.created_from as child_created_from
-            from finance_account_head H left join
-            finance_account_child C on C.head_id=H.finance_account_head_id and  finance_account_child_id <> 1 ${whereStr}
-           
-            union                  
-            select H.finance_account_head_id,H.account_code,H.account_name,H.account_parent,H.account_level,
-            H.created_from as created_status ,H.sort_order,C.arabic_child_name,H.parent_acc_id,H.root_id,
-            C.finance_account_child_id,
-            if (C.ledger_code is null,C.child_name, concat(C.child_name,' (',C.ledger_code,')'))as child_name,
-            C.head_id,C.created_from as child_created_from            from finance_account_head H left join
-            finance_account_child C on C.head_id=H.finance_account_head_id
-            inner join cte on H.parent_acc_id = cte.finance_account_head_id   ${unionStr}
-            )
-            select * from cte order by account_level,sort_order;`,
+          query: `select * from finance_options`,
 
           printQuery: true,
           values: [],
         })
         .then((result) => {
-          _mysql.releaseConnection();
-          const outputArray = createHierarchyForDropdown(result);
-          req.records = outputArray;
-          next();
+          let selectStr = "";
+          let whereStr = "";
+          let unionStr = "";
+
+          switch (input.voucher_type) {
+            case "journal":
+              if (result[0].show_bank_cash === "Y") {
+                selectStr = " ,parent_acc_id ";
+                whereStr = " where 1+1";
+                unionStr = "where 1+1";
+              } else {
+                selectStr = " ,parent_acc_id ";
+                whereStr = ` where account_type  not in ('B','C') `;
+                unionStr = ` where account_type  not in ('B','C') `;
+              }
+              break;
+
+            case "contra":
+              selectStr = ` ,  case  account_type  when 'B' then null when 'C' then null else parent_acc_id end as parent_acc_id `;
+              whereStr = ` where account_type  in ('B','C') `;
+              break;
+
+            case "sales":
+              selectStr = " ,parent_acc_id ";
+              // whereStr = ` where account_type  not in ('B','C') `;
+              // unionStr = ` where account_type  not in ('B','C') `;
+              break;
+
+            case "CIH":
+              selectStr = ` ,  case  account_type   when 'C' then null else parent_acc_id end as parent_acc_id `;
+              whereStr = ` where account_type  ='C' `;
+              break;
+
+            default:
+              selectStr = " ,parent_acc_id ";
+          }
+
+          // query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
+          // C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
+          // ,account_level,H.sort_order,CM.head_id,H.created_from as created_status,H.root_id
+          // FROM finance_account_head H left join
+          // finance_head_m_child CM on H.finance_account_head_id=CM.head_id
+          // left join finance_account_child C on CM.child_id=C.finance_account_child_id ${strQry};`,
+
+          _mysql
+            .executeQuery({
+              // query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+              // H.created_from as created_status ,sort_order,parent_acc_id,root_id,
+              // finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+              // from finance_account_head H left join
+              // finance_account_child C on C.head_id=H.finance_account_head_id
+              // ${strQry} order by account_level,sort_order;     `,
+
+              query: ` with recursive cte as (
+              select finance_account_head_id,account_code,account_name,account_parent,account_level,
+              H.created_from as created_status ,sort_order ,C.arabic_child_name ${selectStr}
+              ,root_id,
+              finance_account_child_id,if (ledger_code is null,child_name, 
+                concat(child_name,' (',ledger_code,')'))as child_name,head_id,C.created_from as child_created_from
+              from finance_account_head H left join
+              finance_account_child C on C.head_id=H.finance_account_head_id and  finance_account_child_id <> 1 ${whereStr}
+             
+              union                  
+              select H.finance_account_head_id,H.account_code,H.account_name,H.account_parent,H.account_level,
+              H.created_from as created_status ,H.sort_order,C.arabic_child_name,H.parent_acc_id,H.root_id,
+              C.finance_account_child_id,
+              if (C.ledger_code is null,C.child_name, concat(C.child_name,' (',C.ledger_code,')'))as child_name,
+              C.head_id,C.created_from as child_created_from            from finance_account_head H left join
+              finance_account_child C on C.head_id=H.finance_account_head_id
+              inner join cte on H.parent_acc_id = cte.finance_account_head_id   ${unionStr}
+              )
+              select * from cte order by account_level,sort_order;`,
+
+              printQuery: true,
+              values: [],
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              const outputArray = createHierarchyForDropdown(result);
+              req.records = outputArray;
+
+              next();
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+
+          // next();
         })
         .catch((e) => {
           _mysql.releaseConnection();

@@ -6,6 +6,7 @@ import {
   AlgaehTable,
   AlgaehButton,
   AlgaehFormGroup,
+  Tooltip,
 } from "algaeh-react-components";
 import _ from "lodash";
 import { InfoBar } from "../../../Wrappers";
@@ -42,6 +43,7 @@ export default memo(function (props) {
       getInvoicesForSupplier(finance_account_child_id)
         .then((res) => {
           if (res.data.success) {
+            debugger;
             const { result } = res.data;
             let modifiedResult = result.result.map((item) => {
               return { ...item, modified_amount: item.balance_amount };
@@ -396,6 +398,31 @@ export default memo(function (props) {
                     >
                       <AlgaehTable
                         columns={[
+                          {
+                            fieldName: "view",
+                            label: "view",
+                            sortable: false,
+                            filterable: false,
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  {row.is_opening_bal === "N" ? (
+                                    <Tooltip title="DrillDown">
+                                      <i
+                                        className="fa fa-exchange-alt"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          history.push(
+                                            `/ReceiptEntry?grn_number=${row.voucher_no}`
+                                          );
+                                        }}
+                                      ></i>
+                                    </Tooltip>
+                                  ) : null}
+                                </span>
+                              );
+                            },
+                          },
                           {
                             fieldName: "checked",
                             indeterminate: indeterminate.toString(),

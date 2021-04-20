@@ -16,7 +16,7 @@ export default {
               GH.`sheet_level_discount_amount`, GH.`net_total`, GH.`total_tax`, GH.`net_payable`,\
               GH.`additional_cost`, GH.`reciept_total`, GH.`created_by`, GH.`created_date`, \
               GH.`updated_by`, GH.`updated_date`, GH.`posted`, GH.`posted_by`, GH.`posted_date`, \
-              GH.`inovice_number`, GH.`invoice_date`, GH.`invoice_posted`, GH.is_revert, PH.purchase_number, V.vendor_name, \
+              GH.`inovice_number`, GH.`invoice_date`, GH.`invoice_posted`, GH.is_revert, PH.purchase_number, V.vendor_name,V.*, \
               H.hospital_name, P.project_desc, CASE GH.grn_for WHEN 'INV' then IL.location_description \
               else PL.location_description end as location_name, PH.revert_reason,\
               max(if(U.algaeh_d_app_user_id = GH.reverted_by, E.full_name,'' )) as reverted_name, \

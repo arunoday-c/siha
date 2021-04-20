@@ -1377,7 +1377,9 @@ export default {
           max(if(CL.algaeh_d_app_user_id=LB.entered_by, EM.full_name,'' )) as entered_by_name,
           max(if(CL.algaeh_d_app_user_id=LB.confirmed_by, EM.full_name,'')) as confirm_by_name,
           max(if(CL.algaeh_d_app_user_id=LB.validated_by, EM.full_name,'')) as validate_by_name,
-          LO.*, LO.text_value as val_text_value, LA.description,max(if(LM.formula is not null,LM.formula,null)) as formula,
+          LB.entered_by,LB.confirmed_by,LB.validated_by,
+          LO.*,
+          LO.text_value as val_text_value, LA.description,max(if(LM.formula is not null,LM.formula,null)) as formula,
           max(if(LM.display_formula is not null,LM.display_formula,null)) as display_formula,
           max(if(LM.decimals is not null,LM.decimals,null)) as decimals  from hims_f_ord_analytes LO
           inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = LO.analyte_id

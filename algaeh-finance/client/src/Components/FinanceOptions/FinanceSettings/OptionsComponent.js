@@ -24,6 +24,7 @@ function OptionsComponent({
     allow_negative_balance,
     grni_required,
     cr_dr_required,
+    show_bank_cash,
   } = options;
   return (
     <div className="FinanceOptions">
@@ -281,7 +282,7 @@ function OptionsComponent({
                   }}
                 />
                 <div className="col-2">
-                  <label>Required CR || DR in report ?</label>
+                  <label>Show Cr and Dr in Report</label>
                   <div className="customRadio">
                     <label className="radio inline">
                       <input
@@ -305,6 +306,36 @@ function OptionsComponent({
                         onChange={handleChange}
                         name="cr_dr_required"
                         checked={cr_dr_required === "N"}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="col-2">
+                  <label>Show Bank and Cash Account</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        onChange={handleChange}
+                        name="show_bank_cash"
+                        checked={
+                          show_bank_cash === "Y" || show_bank_cash === undefined
+                            ? true
+                            : false
+                        }
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        onChange={handleChange}
+                        name="show_bank_cash"
+                        checked={show_bank_cash === "N"}
                       />
                       <span>No</span>
                     </label>

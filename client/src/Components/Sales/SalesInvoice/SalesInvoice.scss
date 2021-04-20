@@ -1,3 +1,5 @@
+@import "../../../styles/algaehCssVariables.scss";
+
 #SaleInvoiceGrid {
   .ReactTable {
     max-height: 40vh !important;
@@ -21,4 +23,67 @@
 .invoiceRevertModal {
   min-width: 500px !important;
   max-width: 500px !important;
+}
+
+.hoverCustomer {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  padding: 0 5px;
+  border: 1px solid lighten($color-black, 80%);
+  height: 23px;
+  cursor: pointer;
+  z-index: 9;
+
+  &:hover {
+    .customerDetCntr {
+      display: block;
+    }
+  }
+  .customerDetCntr {
+    position: absolute;
+    top: 22px;
+    right: 0;
+    z-index: 999;
+    width: 700px;
+    height: auto;
+    background: $color-white;
+    box-shadow: 0 20px 20px lighten($color-black, 60%);
+    padding: 6px;
+    display: none;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      tbody {
+        margin: 0;
+        padding: 0;
+        tr {
+          &:nth-child(even) {
+            background: lighten($color-black, 95%);
+          }
+
+          td {
+            border: 1px solid #ccc;
+            padding: 3px 10px;
+            margin: 0;
+            text-align: left;
+            span {
+              font-weight: bold;
+            }
+            &:last-child {
+              font-weight: bolder;
+              color: $color-black;
+            }
+
+            &.hdr {
+              background: lighten($color-black, 90%);
+            }
+            &.imgSection {
+              padding: 0;
+            }
+          }
+        }
+      }
+    }
+  }
 }
