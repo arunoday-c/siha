@@ -145,7 +145,10 @@ const Validations = ($this) => {
     });
 
     return isError;
-  } else if (parseFloat($this.state.pack_advance_percentage) > 0 && parseFloat($this.state.pack_balance_amount) < 0) {
+  } else if (
+    parseFloat($this.state.pack_advance_percentage) > 0 &&
+    parseFloat($this.state.pack_balance_amount) < 0
+  ) {
     isError = true;
     swalMessage({
       type: "warning",
@@ -345,7 +348,6 @@ const selectVisit = ($this) => {
               type: "warning",
             });
           }
-
         } else {
           AlgaehLoader({ show: false });
 
@@ -417,7 +419,7 @@ const ClosePackage = ($this, e) => {
     },
     () => {
       if (e === false) {
-        return
+        return;
       } else {
         getPatientDetails($this, $this.state.patient_code);
       }
@@ -440,10 +442,11 @@ const getPatientDetails = ($this, patient_code) => {
       if (response.data.success) {
         let data = response.data.records;
 
+        debugger;
         if (
           $this.context.userToken.local_vat_applicable === "N" &&
           $this.context.userToken.default_nationality ===
-          data.patientRegistration.nationality_id
+            data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         } else {
@@ -485,8 +488,8 @@ const getPatientDetails = ($this, patient_code) => {
         data.patientRegistration.secondary_effective_end_date = null;
         data.patientRegistration.visit_id =
           last_visitDetails.hims_f_patient_visit_id;
-        data.patientRegistration.incharge_or_provider =
-          last_visitDetails.doctor_id;
+        data.patientRegistration.visit_code = last_visitDetails.visit_code;
+        data.patientRegistration.visit_date = last_visitDetails.visit_date;
 
         data.patientRegistration.sub_department_id =
           last_visitDetails.sub_department_id;
@@ -523,12 +526,12 @@ const getPatientDetails = ($this, patient_code) => {
             mappingName: "PatientPackageList",
           },
           afterSuccess: (data) => {
-            debugger
+            debugger;
             if (data.length !== 0 || data.length === undefined) {
               $this.setState({
                 pack_balance_amount: data[0].balance_amount,
                 pack_advance_amount: data[0].pack_advance_amount,
-                pack_advance_percentage: data[0].advance_percentage
+                pack_advance_percentage: data[0].advance_percentage,
               });
             }
           },
@@ -600,12 +603,12 @@ const ClosePackageUtilize = ($this) => {
           mappingName: "PatientPackageList",
         },
         afterSuccess: (data) => {
-          debugger
+          debugger;
           if (data.length !== 0 || data.length === undefined) {
             $this.setState({
               pack_balance_amount: data[0].balance_amount,
               pack_advance_amount: data[0].pack_advance_amount,
-              pack_advance_percentage: data[0].advance_percentage
+              pack_advance_percentage: data[0].advance_percentage,
             });
           }
         },
