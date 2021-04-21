@@ -12,6 +12,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import { Validations } from "./Validation";
+import axios from "axios";
 
 export default function SubjectiveHandler() {
   return {
@@ -299,6 +300,12 @@ export default function SubjectiveHandler() {
         cancelButtonText: "Cancel",
       }).then((willDelete) => {
         if (willDelete.value) {
+          let portal_data = {
+            primary_id_no: $this.props.pat_profile.primary_id_no,
+            visit_code: $this.props.pat_profile.visit_code,
+            item_name: medicine.item_description,
+          };
+          debugger;
           algaehApiCall({
             uri: "/orderMedication/deletePatientPrescription",
             data: {
@@ -322,6 +329,23 @@ export default function SubjectiveHandler() {
                         response.data.records.all_mediction;
                       data["active_medication"] =
                         response.data.records.active_medication;
+
+                      if ($this.state.portal_exists === "Y") {
+                        portal_data = JSON.stringify(portal_data);
+                        axios
+                          .post(
+                            "http://localhost:4402/api/v1/info/deletePatientMedication",
+                            portal_data
+                          )
+                          .then(function (response) {
+                            //handle success
+                            console.log(response);
+                          })
+                          .catch(function (response) {
+                            //handle error
+                            console.log(response);
+                          });
+                      }
                     }
                     context.updateState({
                       updateChronic: true,

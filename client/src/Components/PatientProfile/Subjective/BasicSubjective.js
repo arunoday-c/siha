@@ -46,6 +46,7 @@ import { Dimmer, Loader } from "semantic-ui-react";
 import { PatientAttachments } from "../../PatientRegistrationNew/PatientAttachment";
 import { printPrescription } from "../PatientProfileHandlers";
 import { AlgaehModal } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components";
 // import { Button } from "antd";
 
 class BasicSubjective extends Component {
@@ -713,7 +714,13 @@ class BasicSubjective extends Component {
       return;
     }
   }
+
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      portal_exists: userToken.portal_exists,
+    });
     this.getPatientMedications();
     if (this.isMale) {
       this.complaintType = Enumerable.from(GlobalVariables.COMPLAINT_TYPE)

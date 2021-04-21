@@ -497,6 +497,8 @@ const getPatientDetails = ($this, patient_code) => {
         data.patientRegistration.insured = last_visitDetails.insured;
         data.patientRegistration.insurance_yesno = last_visitDetails.insured;
         data.patientRegistration.sec_insured = last_visitDetails.sec_insured;
+        data.patientRegistration.incharge_or_provider =
+          last_visitDetails.doctor_id;
 
         if (last_visitDetails.insured === "Y") {
           data.patientRegistration.mode_of_pay = "Insurance";
