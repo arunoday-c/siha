@@ -29,8 +29,8 @@ import {
 } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
-import { RawSecurityComponent } from "algaeh-react-components";
-
+import { RawSecurityComponent, MainContext } from "algaeh-react-components";
+import axios from "axios";
 class OPBillCancellation extends Component {
   constructor(props) {
     super(props);
@@ -54,8 +54,12 @@ class OPBillCancellation extends Component {
     };
   }
 
+  static contextType = MainContext;
   UNSAFE_componentWillMount() {
     let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
+    const userToken = this.context.userToken;
+    IOputs.portal_exists = userToken.portal_exists;
+
     this.setState({ ...this.state, ...IOputs });
   }
 
@@ -192,6 +196,18 @@ class OPBillCancellation extends Component {
         Inputobj.pay_type = "P";
         Inputobj.ScreenCode = "BL0003";
         AlgaehLoader({ show: true });
+        debugger;
+        let _services_id = [];
+        Inputobj.billdetails.map((o) => {
+          _services_id.push(o.services_id);
+          return null;
+        });
+        const portal_data = {
+          service_id: _services_id,
+          visit_code: this.state.visit_code,
+          patient_identity: this.state.primary_id_no,
+        };
+        debugger;
         algaehApiCall({
           uri: "/opBillCancellation/addOpBillCancellation",
           module: "billing",
@@ -201,6 +217,22 @@ class OPBillCancellation extends Component {
             AlgaehLoader({ show: false });
 
             if (response.data.success) {
+              if (this.state.portal_exists === "Y") {
+                axios
+                  .post(
+                    "http://localhost:4402/api/v1/info/deletePatientService",
+                    portal_data
+                  )
+                  .then(function (response) {
+                    //handle success
+                    console.log(response);
+                  })
+                  .catch(function (response) {
+                    //handle error
+                    console.log(response);
+                  });
+              }
+
               $this.setState({
                 bill_cancel_number: response.data.records.bill_number,
                 receipt_number: response.data.records.receipt_number,
