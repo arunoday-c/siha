@@ -1013,7 +1013,15 @@ class BasicSubjective extends Component {
                                   name="chief_complaint"
                                   onChange={this.textAreaEvent.bind(this)}
                                   maxLength={this.chiefComplaintMaxLength}
-                                />
+                                />{" "}
+                                <small className="float-left">
+                                  Max Char.
+                                  {maxCharactersLeft(
+                                    this.chiefComplaintMaxLength,
+                                    this.state.chief_complaint
+                                  )}
+                                  /{this.chiefComplaintMaxLength}
+                                </small>
                               </div>
                             </div>
                           </div>
@@ -1116,50 +1124,42 @@ class BasicSubjective extends Component {
                               )}
                             </div>
                           </div>
-                          <div className="col-12" style={{ marginTop: 10 }}>
-                            <small className="float-left">
-                              Max Char.
-                              {maxCharactersLeft(
-                                this.chiefComplaintMaxLength,
-                                this.state.chief_complaint
-                              )}
-                              /{this.chiefComplaintMaxLength}
-                            </small>
-                            <button
-                              className="btn btn-default float-right"
-                              onClick={() => {
-                                const err = Validations(this);
-                                if (!err) {
-                                  if (
-                                    this.state
-                                      .hims_f_episode_chief_complaint_id ===
-                                    null
-                                  ) {
-                                    SubjectiveHandler().addChiefComplainToPatient(
-                                      this,
-                                      "forceSave"
-                                    );
-                                  } else {
-                                    SubjectiveHandler().updatePatientChiefComplaints(
-                                      this,
-                                      "forceSave"
-                                    );
-                                  }
-                                }
-                              }}
-                            >
-                              {this.state.hims_f_episode_chief_complaint_id ===
-                              null
-                                ? "Save"
-                                : "Update"}{" "}
-                            </button>
-                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="col-12">
-                    <div className="portlet portlet-bordered margin-bottom-15 mandatoryBox">
+                    <div className="row">
+                      <div className="col-12">
+                        <button
+                          className="btn btn-default float-right"
+                          onClick={() => {
+                            const err = Validations(this);
+                            if (!err) {
+                              if (
+                                this.state.hims_f_episode_chief_complaint_id ===
+                                null
+                              ) {
+                                SubjectiveHandler().addChiefComplainToPatient(
+                                  this,
+                                  "forceSave"
+                                );
+                              } else {
+                                SubjectiveHandler().updatePatientChiefComplaints(
+                                  this,
+                                  "forceSave"
+                                );
+                              }
+                            }
+                          }}
+                        >
+                          {this.state.hims_f_episode_chief_complaint_id === null
+                            ? "Save All"
+                            : "Update All"}{" "}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="portlet portlet-bordered  margin-top-15 margin-bottom-15 mandatoryBox">
                       <div className="portlet-title">
                         <div className="caption">
                           <h3 className="caption-subject">Significant Signs</h3>
@@ -1189,7 +1189,7 @@ class BasicSubjective extends Component {
                               )}
                               /{this.significantSignsLength}
                             </small>
-                            <button
+                            {/* <button
                               className="btn btn-default float-right"
                               style={{ marginTop: 5 }}
                               onClick={() => {
@@ -1217,7 +1217,7 @@ class BasicSubjective extends Component {
                               null
                                 ? "Save"
                                 : "Update"}{" "}
-                            </button>
+                            </button> */}
                           </div>
                         </div>
                       </div>
@@ -1256,7 +1256,7 @@ class BasicSubjective extends Component {
                               )}
                               / {this.otherConditionMaxLength}
                             </small>
-                            <button
+                            {/* <button
                               className="btn btn-default float-right"
                               style={{ marginTop: 5 }}
                               onClick={() => {
@@ -1284,7 +1284,7 @@ class BasicSubjective extends Component {
                               null
                                 ? "Save"
                                 : "Update"}{" "}
-                            </button>
+                            </button> */}
                           </div>
                         </div>
                       </div>
