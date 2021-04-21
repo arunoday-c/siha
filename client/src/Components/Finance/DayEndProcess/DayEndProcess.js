@@ -216,7 +216,7 @@ class DayEndProcess extends Component {
           // debugger;
           const result_data = response.data.result;
           this.setState({
-            dayEnd: result_data.length > 0 ? result_data : [{}],
+            dayEnd: result_data, //.length > 0 ? result_data : [{}],
             revert_visible: false,
           });
           return this.props.history?.push(
