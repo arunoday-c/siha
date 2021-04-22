@@ -351,7 +351,12 @@ export default {
 
     try {
       const _inputParam = JSON.parse(input.report);
-      const { others, multiMerdgeReport, qrCodeReport } = _inputParam;
+      const {
+        others,
+        multiMerdgeReport,
+        qrCodeReport,
+        reportToPortal,
+      } = _inputParam;
       let usehbs = "";
       let singleHeaderFooter = false;
       if (others) {
@@ -429,7 +434,6 @@ export default {
                   _value.push(null);
                 }
               }
-
               let queryObject = {
                 query: _data.report_query,
                 values: _value,
@@ -760,7 +764,7 @@ export default {
                                       },
                                     }
                                   );
-                                  console.log("axiosRes11====>", axiosRes);
+
                                   fs.unlink(_rOut);
                                   for (
                                     let f = 0;
@@ -812,7 +816,36 @@ export default {
                                       console.error(error.message);
                                     });
                                 }
-
+                                if (reportToPortal === "true") {
+                                  const rptParameters =
+                                    _inputParam.reportParams;
+                                  const portal_patient_identity = rptParameters.find(
+                                    (f) => f.name === "patient_identity"
+                                  ).value;
+                                  const portal_service_id = rptParameters.find(
+                                    (f) => f.name === "service_id"
+                                  ).value;
+                                  const portal_visit_code = rptParameters.find(
+                                    (f) => f.name === "visit_code"
+                                  ).value;
+                                  await axios
+                                    .post(
+                                      "http://localhost:4402/api/v1/report/upload",
+                                      {
+                                        fileCompletePath: rptPath,
+                                        details: {
+                                          patient_identity: portal_patient_identity,
+                                          service_id: portal_service_id,
+                                          visit_code: portal_visit_code,
+                                          hospital_id:
+                                            req.userIdentity["hospital_id"],
+                                        },
+                                      }
+                                    )
+                                    .catch((error) => {
+                                      console.error(error.message);
+                                    });
+                                }
                                 fs.unlink(_reportOutput[0]);
                               });
                               _fs.pipe(res);

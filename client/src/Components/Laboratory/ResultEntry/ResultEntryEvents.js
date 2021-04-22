@@ -15,6 +15,10 @@ const texthandle = ($this, e) => {
 
 export function generateLabResultReport(data) {
   return new Promise((resolve, reject) => {
+    let portalParams = {};
+    if (data.portal_exists === "Y") {
+      portalParams["reportToPortal"] = "true";
+    }
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -26,6 +30,7 @@ export function generateLabResultReport(data) {
       data: {
         report: {
           // reportName: "hematologyTestReport",
+          ...portalParams,
           reportName:
             data?.isPCR === "Y" ? "pcrTestReport" : "hematologyTestReport",
           reportParams: [
@@ -38,16 +43,32 @@ export function generateLabResultReport(data) {
               name: "hims_f_lab_order_id",
               value: data.hims_f_lab_order_id,
             },
+            {
+              name: "visit_code",
+              value: data.visit_code,
+            },
+            {
+              name: "patient_identity",
+              value: data.primary_id_no,
+            },
+            {
+              name: "service_id",
+              value: data.service_id,
+            },
           ],
           qrCodeReport: true,
           outputFileType: "PDF",
         },
       },
       onSuccess: (res) => {
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
-        window.open(origin);
-        resolve();
+        if (data.hidePrinting === true) {
+          resolve();
+        } else {
+          const urlBlob = URL.createObjectURL(res.data);
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
+          window.open(origin);
+          resolve();
+        }
       },
       onCatch: (err) => {
         reject(err);
@@ -124,6 +145,9 @@ const UpdateLabOrder = ($this, value, status) => {
             AlgaehLoader({ show: false });
           }
         );
+        if ($this.state.portal_exists === "Y") {
+          generateLabResultReport({ ...$this.state, hidePrinting: true });
+        }
       }
     },
     onFailure: (error) => {
