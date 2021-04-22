@@ -44,6 +44,7 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
+          console.log("result", result);
           const outputArray = [];
           if (result.length > 0) {
             const total_loan = _.chain(result)
@@ -55,6 +56,14 @@ const executePDF = function executePDFMethod(options) {
               .value();
 
             // employees.forEach((employe) => {
+
+            const earListMonth = _.chain(result)
+              .groupBy((g) => g.month)
+              .map((item) => {
+                return item;
+              })
+              .value();
+
             const emp_earnings = [];
             result.forEach((m) => {
               const exist = emp_earnings.find((val) => {
@@ -63,6 +72,7 @@ const executePDF = function executePDFMethod(options) {
 
               if (!exist) {
                 emp_earnings.push({
+                  month_name: moment(m.month, "MM").format("MMMM"),
                   earning_id: m.earning_id,
                   earning_description: m.earning_description,
                   earning_amount: m.earning_amount,
@@ -70,24 +80,52 @@ const executePDF = function executePDFMethod(options) {
               }
             });
 
+            // All month earnings if required
+            // const emp_earnings = [];
+            // earListMonth.map((item) => {
+            //   return {
+            //     earEachMonth: _.chain(item)
+            //       .groupBy((g) => g.earning_id)
+            //       .map((earList, index) => {
+            //         emp_earnings.push({
+            //           month_name: moment(earList[0].month, "MM").format("MMMM"),
+            //           earning_id: earList[0].earning_id,
+            //           earning_description: earList[0].earning_description,
+            //           earning_amount: earList[0].earning_amount,
+            //         });
+            //         return earList[0];
+            //       })
+
+            //       .value(),
+            //   };
+            // });
+
+            const emp_deductions = [];
+            earListMonth.map((item) => {
+              return {
+                earEachMonth: _.chain(item)
+                  .groupBy((g) => g.deduction_id)
+                  .map((earList, index) => {
+                    if (earList[0].deduction_id) {
+                      emp_deductions.push({
+                        month_name: moment(earList[0].month, "MM").format(
+                          "MMMM"
+                        ),
+                        deduction_id: earList[0].deduction_id,
+                        deduction_description: earList[0].deduction_description,
+                        deduction_amount: earList[0].deduction_amount,
+                      });
+                      // return earList[0];
+                    }
+                  })
+
+                  .value(),
+              };
+            });
+
             const total_earnings = _.sumBy(emp_earnings, (s) =>
               s.earning_amount != null ? parseFloat(s.earning_amount) : 0
             );
-
-            const emp_deductions = [];
-            result.forEach((m) => {
-              const exist = emp_deductions.find((val) => {
-                return val.deduction_id == m.deduction_id;
-              });
-
-              if (!exist) {
-                emp_deductions.push({
-                  deduction_id: m.deduction_id,
-                  deduction_description: m.deduction_description,
-                  deduction_amount: m.deduction_amount,
-                });
-              }
-            });
 
             const total_deductions = _.sumBy(emp_deductions, (s) =>
               s.deduction_amount != null ? parseFloat(s.deduction_amount) : 0
@@ -95,6 +133,7 @@ const executePDF = function executePDFMethod(options) {
 
             const emp_ded_length = emp_deductions.length;
             const emp_ear_length = emp_earnings.length;
+
             if (emp_ded_length > emp_ear_length) {
               const blankIndexs = emp_ded_length - emp_ear_length;
               for (let d = 0; d < blankIndexs; d++) {
@@ -170,6 +209,7 @@ const executePDF = function executePDFMethod(options) {
               total_paid_days: result[0].total_paid_days,
               pending_unpaid_leave: result[0].pending_unpaid_leave,
               loan_due_amount: result[0].loan_due_amount,
+
               // final_loan_amount: total_loan,
               final_loan_amount: options.currencyFormat(
                 total_loan,

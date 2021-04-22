@@ -31,20 +31,22 @@
             <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
                 <thead>
                     <tr>
-                        <th style="width: 60%">Earnings</th>
+                        <th>Month</th>
+                        <th style="width: 50%">Earnings</th>
                         <th style="width: 40%">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each emp_earnings}}
                     <tr>
-                        <td style="height: 25px;" valign="top">{{earning_description}}</td>
+                        <td style="height: 25px;"  valign="top">{{month_name}}</td>
+                        <td style="height: 25px;" valign="top" class="txtFld">{{earning_description}}</td>
                         <td style="height: 25px;" valign="top" class="numberFld">{{earning_amount}}</td>
                     </tr>
                     {{/each}}
 
                     <tr class="footerTotalDown">
-                        <td>Total Earnings</td>
+                        <td colspan="2"  class="numberFld">Total Earnings</td>
                         <td class="numberFld">{{total_earnings}}</td>
                     </tr>
                 </tbody>
@@ -52,22 +54,25 @@
             <table class="tableForData" cell-padding="0" style="width:49.8%;margin-left:0.2%;float:right;">
                 <thead>
                     <tr>
-                        <th style="width: 60%">Deductions</th>
+                         <th>Month</th>
+                        <th style="width: 50%">Deductions</th>
                         <th style="width: 40%">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {{!-- <tr> <td style="height: 25px;"valign="top">{{month_name}}</td></tr> --}}
 
                     {{#each emp_deductions}}
-                    <tr>
-                        <td style="height: 25px;">{{deduction_description}}</td>
+                    
+                    <tr> <td style="height: 25px;"valign="top">{{month_name}}</td>
+                        <td style="height: 25px;" class="txtFld">{{deduction_description}}</td>
                         <td style="height: 25px;" class="numberFld">{{deduction_amount}}</td>
                     </tr>
                     {{/each}}
 
 
                     <tr class="footerTotalDown">
-                        <td>Total Deductions</td>
+                        <td colspan="2"  class="numberFld">Total Deductions</td>
                         <td class="numberFld">{{total_deductions}}</td>
                     </tr>
 
@@ -89,6 +94,14 @@
             </table> --}}
             <table class="tableForData">
                 <tr class="footerTotalUp">
+                    <td class="numberFld">Normal Salary Paid Days</td>
+                    <td class="numberFld" width="29.5%" colspan="3">{{total_paid_days}} Days</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Net Normal Salary <small style="display: block;font-style:italic">(Excluding Loan Due)</small></td>
+                    <td class="numberFld" colspan="3"><b>{{finalNetSalary}}</b></td>
+                </tr>
+                <tr class="footerTotalUp">
                     <td class="numberFld">Leave Period</td>
                     <td class="numberFld" width="29.5%" colspan="3">{{leave_start_date}} to {{leave_end_date}}</td>
                 </tr>
@@ -99,14 +112,6 @@
                 <tr class="footerTotalUp">
                     <td class="numberFld">Net Leave Salary </td>
                     <td class="numberFld" width="29.5%" colspan="3"><b>{{leave_amount}}</b></td>
-                </tr>
-                <tr class="footerTotalUp">
-                    <td class="numberFld">Normal Salary Paid Days</td>
-                    <td class="numberFld" width="29.5%" colspan="3">{{total_paid_days}} Days</td>
-                </tr>
-                <tr class="footerTotalUp">
-                    <td class="numberFld">Net Normal Salary <small style="display: block;font-style:italic">(Excluding Loan Due)</small></td>
-                    <td class="numberFld" colspan="3"><b>{{finalNetSalary}}</b></td>
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Airfare Amt</td>
