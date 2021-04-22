@@ -7,25 +7,26 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 const PatientSearch = ($this, context, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.frontDesk.patients
+      columns: spotlightSearch.frontDesk.patients,
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState({ patient_code: row.patient_code });
 
       if (context !== null) {
         context.updateState({ patient_code: row.patient_code });
       }
-    }
+    },
   });
 };
 
 const selectVisit = ($this, context, e) => {
   //   let $this = this;
+  debugger;
   AlgaehLoader({ show: true });
   let mode_of_pay = "Self";
   let applydiscount = false;
@@ -42,7 +43,7 @@ const selectVisit = ($this, context, e) => {
       insurance_yesno: e.selected.insured,
       sec_insured: e.selected.sec_insured,
       mode_of_pay: mode_of_pay,
-      sub_department_id: e.selected.sub_department_id
+      sub_department_id: e.selected.sub_department_id,
     },
     () => {
       if ($this.state.insured === "Y") {
@@ -52,12 +53,12 @@ const selectVisit = ($this, context, e) => {
           method: "GET",
           data: {
             patient_id: $this.state.hims_d_patient_id,
-            patient_visit_id: $this.state.visit_id
+            patient_visit_id: $this.state.visit_id,
           },
           redux: {
             type: "EXIT_INSURANCE_GET_DATA",
-            mappingName: "existinsurance"
-          }
+            mappingName: "existinsurance",
+          },
         });
       }
 
@@ -73,18 +74,18 @@ const selectVisit = ($this, context, e) => {
           mappingName: "PatientPackageList",
         },
         afterSuccess: (data) => {
-          debugger
+          debugger;
           if (data.length !== 0 || data.length === undefined) {
             $this.setState({
               pack_balance_amount: data[0].balance_amount,
               pack_advance_amount: data[0].pack_advance_amount,
-              pack_advance_percentage: data[0].advance_percentage
+              pack_advance_percentage: data[0].advance_percentage,
             });
             if (context !== null) {
               context.updateState({
                 pack_balance_amount: data[0].balance_amount,
                 pack_advance_amount: data[0].pack_advance_amount,
-                pack_advance_percentage: data[0].advance_percentage
+                pack_advance_percentage: data[0].advance_percentage,
               });
             }
           }
@@ -95,9 +96,9 @@ const selectVisit = ($this, context, e) => {
         uri: "/orderAndPreApproval/load_orders_for_bill",
         method: "GET",
         data: {
-          visit_id: $this.state.visit_id
+          visit_id: $this.state.visit_id,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             // AlgaehLoader({ show: false });
 
@@ -105,7 +106,7 @@ const selectVisit = ($this, context, e) => {
 
             if (data.length > 0) {
               let pre_approval_Required = Enumerable.from(data)
-                .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
+                .where((w) => w.pre_approval === "Y" && w.apprv_status === "NR")
                 .toArray();
               for (let i = 0; i < data.length; i++) {
                 data[i].ordered_date = data[i].created_date;
@@ -120,13 +121,13 @@ const selectVisit = ($this, context, e) => {
                 if (pre_approval_Required.length > 0) {
                   swalMessage({
                     title: "Some of the service is Pre-Approval required.",
-                    type: "warning"
+                    type: "warning",
                   });
                 }
 
                 if (context !== null) {
                   context.updateState({
-                    billdetails: data
+                    billdetails: data,
                   });
                 }
 
@@ -135,7 +136,7 @@ const selectVisit = ($this, context, e) => {
                   module: "billing",
                   method: "POST",
                   data: { billdetails: data },
-                  onSuccess: response => {
+                  onSuccess: (response) => {
                     if (response.data.success) {
                       response.data.records.patient_payable_h =
                         response.data.records.patient_payable ||
@@ -146,8 +147,9 @@ const selectVisit = ($this, context, e) => {
                       response.data.records.applydiscount = applydiscount;
 
                       if ($this.state.default_pay_type === "CD") {
-                        response.data.records.card_amount = response.data.records.receiveable_amount
-                        response.data.records.cash_amount = 0
+                        response.data.records.card_amount =
+                          response.data.records.receiveable_amount;
+                        response.data.records.cash_amount = 0;
                       }
                       if (context !== null) {
                         context.updateState({ ...response.data.records });
@@ -155,19 +157,19 @@ const selectVisit = ($this, context, e) => {
                     }
                     AlgaehLoader({ show: false });
                   },
-                  onFailure: error => {
+                  onFailure: (error) => {
                     AlgaehLoader({ show: false });
                     swalMessage({
                       title: error.message,
-                      type: "error"
+                      type: "error",
                     });
-                  }
+                  },
                 });
               } else {
                 swalMessage({
                   title:
                     "All service is Pre-Approval required, Please wait for Approval.",
-                  type: "warning"
+                  type: "warning",
                 });
               }
             } else {
@@ -207,19 +209,19 @@ const selectVisit = ($this, context, e) => {
                   total_amount: null,
                   total_tax: null,
                   unbalanced_amount: null,
-                  billDetails: true
+                  billDetails: true,
                 });
               }
             }
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   );
@@ -232,7 +234,9 @@ const selectVisit = ($this, context, e) => {
       sec_insured: e.selected.sec_insured,
       mode_of_pay: mode_of_pay,
       addNewService: false,
-      sub_department_id: e.selected.sub_department_id
+      sub_department_id: e.selected.sub_department_id,
+      visit_code: e.selected.visit_code,
+      visit_date: e.selected.visit_date,
     });
   }
 };

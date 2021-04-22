@@ -46,6 +46,7 @@ class SampleCollectionPatient extends PureComponent {
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
+      portal_exists: userToken.portal_exists,
     });
     if (
       this.props.deptanddoctors === undefined ||

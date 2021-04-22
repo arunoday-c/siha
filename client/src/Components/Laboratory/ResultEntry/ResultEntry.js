@@ -38,6 +38,7 @@ import {
   // AlgaehSecurityElement,
   AlgaehSecurityComponent,
   AlgaehButton,
+  MainContext,
 } from "algaeh-react-components";
 
 class ResultEntry extends Component {
@@ -106,8 +107,11 @@ class ResultEntry extends Component {
     }
   }
 
+  static contextType = MainContext;
   UNSAFE_componentWillReceiveProps(newProps) {
+    const userToken = this.context.userToken;
     if (newProps.selectedPatient !== undefined && newProps.open === true) {
+      newProps.selectedPatient.portal_exists = userToken.portal_exists;
       this.setState({ ...newProps.selectedPatient }, () => {
         getAnalytes(this);
       });
