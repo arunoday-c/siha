@@ -93,6 +93,7 @@ class CommonSetup extends Component {
             />
           ),
           children: <PromotionMaster />,
+          componentCode: "COMM_PROM_MSTR",
         }
       );
     }

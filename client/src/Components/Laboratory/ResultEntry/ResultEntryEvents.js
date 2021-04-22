@@ -3,6 +3,7 @@ import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
+import axios from "axios";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -100,7 +101,7 @@ const UpdateLabOrder = ($this, value, status) => {
           : [];
     }
   }
-  // debugger
+  debugger;
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     module: "laboratory",
@@ -113,7 +114,52 @@ const UpdateLabOrder = ($this, value, status) => {
             type: "success",
             title: "Re-Run Started, Investigation is in Progress . .",
           });
+          if ($this.state.portal_exists === "Y") {
+            const portal_data = {
+              service_id: $this.state.service_id,
+              visit_code: $this.state.visit_code,
+              patient_identity: $this.state.primary_id_no,
+              service_status: "SAMPLE COLLECTED'",
+            };
+            axios
+              .post(
+                "http://localhost:4402/api/v1/info/deletePatientService",
+                portal_data
+              )
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              });
+          }
         } else {
+          if (status === "CF" || status === "V") {
+            if ($this.state.portal_exists === "Y") {
+              const portal_data = {
+                service_id: $this.state.service_id,
+                visit_code: $this.state.visit_code,
+                patient_identity: $this.state.primary_id_no,
+                service_status:
+                  status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
+              };
+              axios
+                .post(
+                  "http://localhost:4402/api/v1/info/deletePatientService",
+                  portal_data
+                )
+                .then(function (response) {
+                  //handle success
+                  console.log(response);
+                })
+                .catch(function (response) {
+                  //handle error
+                  console.log(response);
+                });
+            }
+          }
           swalMessage({
             type: "success",
             title: "Done successfully . .",

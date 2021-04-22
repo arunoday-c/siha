@@ -79,6 +79,24 @@ export default function Inventory({
             },
           },
           {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "category_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Category",
+
+            link: {
+              uri: "/inventory/getItemCategory",
+              module: "inventory",
+            },
+            dataSource: {
+              textField: "category_desc",
+              valueField: "hims_d_inventory_tem_category_id",
+              data: [],
+            },
+          },
+          {
             className: "col-3 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",

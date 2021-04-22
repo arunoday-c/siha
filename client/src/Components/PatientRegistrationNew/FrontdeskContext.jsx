@@ -61,6 +61,7 @@ const baseState = {
   disabled: false,
   savedPatient: null,
   from_package: false,
+  identity_type: null,
 };
 
 export const FrontdeskContext = createContext(baseState);
@@ -76,6 +77,7 @@ const TYPES = {
   setSavedPatient: "setSavedPatient",
   setFromPackage: "setFromPackage",
   clearState: "clearState",
+  setIdentityType: "setIdentityType",
 };
 
 function reducer(state, { type, payload }) {
@@ -128,6 +130,8 @@ function reducer(state, { type, payload }) {
       return { ...state, from_package: payload };
     case TYPES.setPackageDetail:
       return { ...state, package_details: payload };
+    case TYPES.setIdentityType:
+      return { ...state, identity_type: payload };
     case TYPES.clearState:
       return { ...baseState };
     default:
@@ -171,6 +175,9 @@ export const FProvider = ({ children }) => {
     },
     setPackageDetail(e) {
       dispatch({ type: TYPES.setPackageDetail, payload: e });
+    },
+    setIdentityType(e) {
+      dispatch({ type: TYPES.setIdentityType, payload: e });
     },
     setDisable() {
       dispatch({ type: TYPES.setDisable, payload: true });

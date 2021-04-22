@@ -610,6 +610,7 @@ function portalinserUpdateVisitData($this) {
   const portal_data = {
     patient_identity: $this.props.pat_profile.primary_id_no,
     visit_code: $this.props.pat_profile.visit_code,
+    visit_date: $this.props.pat_profile.Encounter_Date,
     chief_compliant: $this.state.chief_complaint,
     significant_signs: $this.state.significant_signs,
     other_signs: $this.state.other_signs,

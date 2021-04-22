@@ -206,6 +206,7 @@ class OPBillCancellation extends Component {
           service_id: _services_id,
           visit_code: this.state.visit_code,
           patient_identity: this.state.primary_id_no,
+          delete_data: true,
         };
         debugger;
         algaehApiCall({
