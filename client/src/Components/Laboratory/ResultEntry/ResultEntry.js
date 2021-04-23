@@ -38,6 +38,7 @@ import {
   // AlgaehSecurityElement,
   AlgaehSecurityComponent,
   AlgaehButton,
+  MainContext,
 } from "algaeh-react-components";
 
 class ResultEntry extends Component {
@@ -58,9 +59,10 @@ class ResultEntry extends Component {
       edit_range: false,
       records_test_formula: [],
       loading: false,
+      portal_exists: "N",
     };
   }
-
+  static contextType = MainContext;
   componentDidMount() {
     if (
       this.props.labiologyusers === undefined ||
@@ -104,10 +106,15 @@ class ResultEntry extends Component {
         },
       });
     }
+    const { portal_exists } = this.context.userToken;
+    this.setState({ portal_exists });
   }
 
+  static contextType = MainContext;
   UNSAFE_componentWillReceiveProps(newProps) {
+    const userToken = this.context.userToken;
     if (newProps.selectedPatient !== undefined && newProps.open === true) {
+      newProps.selectedPatient.portal_exists = userToken.portal_exists;
       this.setState({ ...newProps.selectedPatient }, () => {
         getAnalytes(this);
       });
@@ -197,6 +204,7 @@ class ResultEntry extends Component {
     }
   }
   onClickPrintHandle() {
+    debugger;
     this.setState({ loading: true });
     generateLabResultReport(this.state)
       .then(() => {

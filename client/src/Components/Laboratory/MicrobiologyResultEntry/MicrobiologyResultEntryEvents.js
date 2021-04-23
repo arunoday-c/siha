@@ -64,6 +64,11 @@ const texthandle = ($this, e) => {
 };
 
 export function generateLabResultReport(data) {
+  let portalParams = {};
+  if (data.portal_exists === "Y") {
+    portalParams["reportToPortal"] = "true";
+  }
+
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -75,6 +80,7 @@ export function generateLabResultReport(data) {
     data: {
       report: {
         reportName: "microbioTestReport",
+        ...portalParams,
         reportParams: [
           { name: "hims_d_patient_id", value: data.patient_id },
           {
@@ -85,24 +91,28 @@ export function generateLabResultReport(data) {
             name: "hims_f_lab_order_id",
             value: data.hims_f_lab_order_id,
           },
+          {
+            name: "visit_code",
+            value: data.visit_code,
+          },
+          {
+            name: "patient_identity",
+            value: data.primary_id_no,
+          },
+          {
+            name: "service_id",
+            value: data.service_id,
+          },
         ],
         outputFileType: "PDF",
       },
     },
     onSuccess: (res) => {
-      // const url = URL.createObjectURL(res.data);
-      // let myWindow = window.open(
-      //   "{{ product.metafields.google.custom_label_0 }}",
-      //   "_blank"
-      // );
-
-      // myWindow.document.write(
-      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
-      // );
-      const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
-      window.open(origin);
-      // window.document.title = "Lab Test Report";
+      if (data.hidePrinting === undefined) {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
+        window.open(origin);
+      }
     },
   });
 }
@@ -148,6 +158,9 @@ const UpdateLabOrder = ($this, status) => {
           validated_by:
             response.data.records.validated_by || $this.state.validated_by,
         });
+        if ($this.state.portal_exists === "Y") {
+          generateLabResultReport({ ...$this.state, hidePrinting: true });
+        }
       }
     },
     onFailure: (error) => {

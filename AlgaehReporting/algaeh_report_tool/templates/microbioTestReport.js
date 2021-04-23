@@ -60,8 +60,6 @@ const executePDF = function executePDFMethod(options) {
             header: header,
             result: result,
           });
-          console.log("header---", header);
-          console.log("result---", result);
         })
         .catch((e) => {
           options.mysql.releaseConnection();

@@ -32,6 +32,7 @@ import AlgaehReport from "../../Wrapper/printReports";
 import {
   AlgaehDataGrid,
   AlgaehSecurityComponent,
+  MainContext,
 } from "algaeh-react-components";
 class MicrobiologyResultEntry extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class MicrobiologyResultEntry extends Component {
       comment_list: [],
       selcted_comments: "",
       contaminated_culture: "N",
+      portal_exists: "N",
     };
   }
 
@@ -79,7 +81,7 @@ class MicrobiologyResultEntry extends Component {
       },
     });
   }
-
+  static contextType = MainContext;
   componentDidMount() {
     if (
       this.props.labiologyusers === undefined ||
@@ -118,6 +120,8 @@ class MicrobiologyResultEntry extends Component {
         mappingName: "microGroups",
       },
     });
+    const { portal_exists } = this.context.userToken;
+    this.setState({ portal_exists });
   }
   UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.selectedPatient !== undefined && newProps.open === true) {

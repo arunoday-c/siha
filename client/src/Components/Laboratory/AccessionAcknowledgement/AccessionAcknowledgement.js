@@ -21,6 +21,7 @@ import {
   AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import Enumerable from "linq";
+import { MainContext } from "algaeh-react-components";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -75,7 +76,13 @@ class AccessionAcknowledgement extends Component {
     });
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      portal_exists: userToken.portal_exists,
+    });
     getSampleCollectionDetails(this, this);
     this.socket.on("reload_specimen_acknowledge", (billData) => {
       const { bill_date } = billData;

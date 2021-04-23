@@ -188,7 +188,10 @@ let nationalityMaster = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT `hims_d_nationality_id`, `identity_document_id`, TRIM(nationality) as nationality ,`arabic_nationality` FROM `hims_d_nationality` WHERE `record_status`='A' " +
+          "SELECT `hims_d_nationality_id`, `identity_document_id`, TRIM(nationality) as nationality ,\
+          `arabic_nationality`, ID.identity_document_name FROM `hims_d_nationality` N \
+           LEFT JOIN hims_d_identity_document ID ON ID.hims_d_identity_document_id = N.identity_document_id \
+           WHERE N.`record_status`='A' " +
           _stringData,
         values: inputValues,
       })

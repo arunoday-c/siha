@@ -256,6 +256,8 @@ export function PatientRegistration() {
     setPackageDetail,
     from_package,
     package_details,
+    identity_type,
+    setIdentityType,
   } = useContext(FrontdeskContext);
   // console.log(cardData, "cardData");
   const [currentCountry] = countries?.filter(
@@ -300,6 +302,8 @@ export function PatientRegistration() {
       onSuccess: (data) => {
         if (data?.patientRegistration) {
           let patientRegistration = data?.patientRegistration;
+
+          setIdentityType(patientRegistration.identity_type);
           reset({
             ...patientRegistration,
             // consultation: "Y",
@@ -547,13 +551,13 @@ export function PatientRegistration() {
     //   data: { application_id: appointment_id },
     // });
     // return result?.data?.records;
-    debugger;
 
     data.patient_identity = data.primary_id_no;
+    data.identity_type = identity_type;
     data.patient_name = data.full_name;
     data.patient_dob = data.date_of_birth;
     data.patient_gender = data.gender;
-    data.identity_type = data.primary_id_no;
+    // data.identity_type = data.primary_id_no;
     data.mobile_no = data.contact_number;
     data.email_id = data.email;
     data.hospital_id = data.hospital_id;
