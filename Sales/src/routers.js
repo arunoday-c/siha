@@ -6,6 +6,7 @@ import SalesInvoice from "./controller/SalesInvoice";
 import SalesSettings from "./controller/SalesSettings";
 import SalesReturnEntry from "./controller/SalesReturnEntry";
 import ContractManagement from "./controller/ContractManagement";
+import SalesDashboard from "./controller/SalesDashboard";
 
 const router = express();
 export default function Routing() {
@@ -16,5 +17,6 @@ export default function Routing() {
   router.use("/SalesSettings", SalesSettings());
   router.use("/SalesReturnEntry", SalesReturnEntry());
   router.use("/ContractManagement", ContractManagement());
+  router.use("/SalesDashboard", SalesDashboard());
   return router;
 }
