@@ -184,7 +184,40 @@ class StockEnquiry extends Component {
                     this.attReg = attReg;
                   }}
                 />
-                <div
+
+                <div className="col">
+                  <label>Show Re-order Items</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="reorder_qty"
+                        value={this.state.reorder_qty}
+                        checked={this.state.reorder_qty === "Y" ? true : false}
+                        onChange={checkBoxEvent.bind(this, this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="col">
+                  <label>Show Zero Qty Item</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="zeroStock"
+                        value={this.state.zeroStock}
+                        checked={this.state.zeroStock === "Y" ? true : false}
+                        onChange={checkBoxEvent.bind(this, this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* <div
                   className="col customCheckbox"
                   style={{ marginTop: 23, border: "none" }}
                 >
@@ -225,7 +258,7 @@ class StockEnquiry extends Component {
                       />
                     </span>
                   </label>
-                </div>
+                </div> */}
 
                 {/* <div className="col-1">
                   {" "}
@@ -508,7 +541,7 @@ class StockEnquiry extends Component {
                       );
                     },
                     disabled: true,
-                    others: { Width: 140 },
+                    others: { Width: 140, style: { textAlign: "right" } },
                   },
                 ]}
                 keyId="item_id"
