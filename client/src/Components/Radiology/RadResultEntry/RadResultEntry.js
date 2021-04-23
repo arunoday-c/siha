@@ -10,22 +10,22 @@ import {
   AlagehAutoComplete,
   AlgaehDateHandler,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import {
   FORMAT_RAD_STATUS,
-  RAD_REPORT_TYPE
+  RAD_REPORT_TYPE,
 } from "../../../utils/GlobalVariables.json";
 import {
   texthandle,
   templatehandle,
   rtehandle,
-  handleExamStatus
+  handleExamStatus,
 } from "./RadResultEntryEvents";
-
+import { MainContext } from "algaeh-react-components";
 class RadResultEntry extends Component {
   constructor(props) {
     super(props);
@@ -36,10 +36,11 @@ class RadResultEntry extends Component {
       exam_start_date_time: null,
       exam_end_date_time: null,
       changesDone: false,
-      comments: ""
+      comments: "",
+      portal_exists: "N",
     };
   }
-
+  static contextType = MainContext;
   componentDidMount() {
     if (
       this.props.radiologyusers === undefined ||
@@ -50,9 +51,11 @@ class RadResultEntry extends Component {
         method: "GET",
         redux: {
           type: "RAD_EMP_GET_DATA",
-          mappingName: "radiologyusers"
-        }
+          mappingName: "radiologyusers",
+        },
       });
+      const { portal_exists } = this.context.userToken;
+      this.setState({ portal_exists });
     }
   }
   UNSAFE_componentWillReceiveProps(newProps) {
@@ -70,13 +73,13 @@ class RadResultEntry extends Component {
       this.setState({ ...this.state, ...newProps.radschlist[0] });
     }
   }
-  onClose = e => {
+  onClose = (e) => {
     this.props.getRadiologyTestList({
       redux: {
         type: "RAD_LIST_GET_DATA",
         mappingName: "radschlist",
-        data: []
-      }
+        data: [],
+      },
     });
     this.setState(
       {
@@ -86,7 +89,7 @@ class RadResultEntry extends Component {
         exam_start_date_time: null,
         exam_end_date_time: null,
         changesDone: false,
-        comments: ""
+        comments: "",
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -105,11 +108,11 @@ class RadResultEntry extends Component {
     let value = e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
-  completeDeactived = message => (
+  completeDeactived = (message) => (
     <div className="col-lg-6">
       <button className="btn btn-primary" disabled={true}>
         {message}
@@ -183,7 +186,7 @@ class RadResultEntry extends Component {
       <div className="RadResultEntry">
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Result Entry"
           openPopup={this.props.open}
@@ -236,7 +239,7 @@ class RadResultEntry extends Component {
                       label={{ forceLabel: "Start Date" }}
                       textBox={{ className: "txt-fld" }}
                       events={{
-                        onChange: null
+                        onChange: null,
                       }}
                       disabled={true}
                       value={this.state.exam_start_date_time}
@@ -246,15 +249,15 @@ class RadResultEntry extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "Start Time",
-                          align: ""
+                          align: "",
                         }}
                       />
                       <br />
                       <time>
                         {this.state.exam_start_date_time !== null
                           ? moment(this.state.exam_start_date_time).format(
-                            Options.timeFormat
-                          )
+                              Options.timeFormat
+                            )
                           : "00:00:00"}
                       </time>
                     </div>
@@ -265,7 +268,7 @@ class RadResultEntry extends Component {
                       label={{ forceLabel: "End Date" }}
                       textBox={{ className: "txt-fld" }}
                       events={{
-                        onChange: null
+                        onChange: null,
                       }}
                       disabled={true}
                       value={this.state.exam_end_date_time}
@@ -275,15 +278,15 @@ class RadResultEntry extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "End Time    ",
-                          align: ""
+                          align: "",
                         }}
                       />
                       <br />
                       <time>
                         {this.state.exam_end_date_time !== null
                           ? moment(this.state.exam_end_date_time).format(
-                            Options.timeFormat
-                          )
+                              Options.timeFormat
+                            )
                           : "00:00:00"}
                       </time>
                     </div>
@@ -293,7 +296,7 @@ class RadResultEntry extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12" }}
                       label={{
-                        forceLabel: "Technician"
+                        forceLabel: "Technician",
                       }}
                       selector={{
                         name: "technician_id",
@@ -302,12 +305,12 @@ class RadResultEntry extends Component {
                         dataSource: {
                           textField: "username",
                           valueField: "algaeh_d_app_user_id",
-                          data: this.props.radiologyusers
+                          data: this.props.radiologyusers,
                         },
                         // onChange: examhandle.bind(this, this),
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       }}
                     />
                   </div>
@@ -315,7 +318,7 @@ class RadResultEntry extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12" }}
                       label={{
-                        forceLabel: "Test Status"
+                        forceLabel: "Test Status",
                       }}
                       selector={{
                         name: "status",
@@ -324,12 +327,12 @@ class RadResultEntry extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: FORMAT_RAD_STATUS
+                          data: FORMAT_RAD_STATUS,
                         },
                         onChange: texthandle.bind(this, this),
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       }}
                     />
                   </div>
@@ -338,7 +341,7 @@ class RadResultEntry extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-6" }}
                       label={{
-                        forceLabel: "Attended By"
+                        forceLabel: "Attended By",
                       }}
                       selector={{
                         name: "attended_by",
@@ -347,18 +350,18 @@ class RadResultEntry extends Component {
                         dataSource: {
                           textField: "username",
                           valueField: "algaeh_d_app_user_id",
-                          data: this.props.radiologyusers
+                          data: this.props.radiologyusers,
                         },
                         onChange: texthandle.bind(this, this),
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-lg-6" }}
                       label={{
-                        forceLabel: "Validate By"
+                        forceLabel: "Validate By",
                       }}
                       selector={{
                         name: "validate_by",
@@ -367,18 +370,18 @@ class RadResultEntry extends Component {
                         dataSource: {
                           textField: "username",
                           valueField: "algaeh_d_app_user_id",
-                          data: this.props.radiologyusers
+                          data: this.props.radiologyusers,
                         },
                         onChange: texthandle.bind(this, this),
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-12" }}
                       label={{
-                        forceLabel: "Report Type"
+                        forceLabel: "Report Type",
                       }}
                       selector={{
                         name: "report_type",
@@ -387,16 +390,16 @@ class RadResultEntry extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: RAD_REPORT_TYPE
+                          data: RAD_REPORT_TYPE,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
 
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Comments"
+                          forceLabel: "Comments",
                         }}
                       />
 
@@ -419,7 +422,7 @@ class RadResultEntry extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-4" }}
                       label={{
-                        forceLabel: "Select Template"
+                        forceLabel: "Select Template",
                       }}
                       selector={{
                         name: "template_id",
@@ -428,9 +431,9 @@ class RadResultEntry extends Component {
                         dataSource: {
                           textField: "template_name",
                           valueField: "hims_d_rad_template_detail_id",
-                          data: this.state.Templatelist
+                          data: this.state.Templatelist,
                         },
-                        onChange: templatehandle.bind(this, this)
+                        onChange: templatehandle.bind(this, this),
                       }}
                     />
                   </div>
@@ -455,9 +458,9 @@ class RadResultEntry extends Component {
                               { indent: "+1" },
                               "image",
                               { color: [] },
-                              { background: [] }
-                            ]
-                          ]
+                              { background: [] },
+                            ],
+                          ],
                         }}
                       />
                     </div>
@@ -500,7 +503,7 @@ class RadResultEntry extends Component {
                   <button
                     type="button"
                     className="btn btn-default"
-                    onClick={e => {
+                    onClick={(e) => {
                       this.onClose(e);
                     }}
                   >
@@ -519,7 +522,7 @@ class RadResultEntry extends Component {
 function mapStateToProps(state) {
   return {
     radschlist: state.radschlist,
-    radiologyusers: state.radiologyusers
+    radiologyusers: state.radiologyusers,
   };
 }
 
@@ -527,15 +530,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getRadiologyTestList: AlgaehActions,
-      getUserDetails: AlgaehActions
+      getUserDetails: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RadResultEntry)
+  connect(mapStateToProps, mapDispatchToProps)(RadResultEntry)
 );
