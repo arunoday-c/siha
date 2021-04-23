@@ -1389,6 +1389,7 @@ export function PatientRegistration() {
               setUpdateModal(false);
             }}
             patient_code={patient_code || savedPatient?.patient_code}
+            identity_type={identity_type}
             show={showUpdateModal}
           />
           <PatientAttachments

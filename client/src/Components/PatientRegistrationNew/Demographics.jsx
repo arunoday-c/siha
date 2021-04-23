@@ -1030,10 +1030,12 @@ export function Demographics({
                                 },
                                 value,
                                 onChange: (_, selected) => {
+                                  debugger;
                                   const identity_type =
                                     _.identity_document_name;
                                   onChange(selected);
                                   setIdentityType(identity_type);
+                                  setValue("identity_type", identity_type);
                                 },
                                 onClear: () => {
                                   onChange("");
