@@ -48,7 +48,7 @@ import { printPrescription } from "../PatientProfileHandlers";
 import { AlgaehModal, MainContext } from "algaeh-react-components";
 import axios from "axios";
 // import { Button } from "antd";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
@@ -834,13 +834,8 @@ class BasicSubjective extends Component {
             item_name: this.state.item_description,
           };
 
-          debugger;
-
           axios
-            .post(
-              "http://localhost:4402/api/v1/info/deletePatientMedication",
-              portal_data
-            )
+            .post(`${PORTAL_HOST}/info/deletePatientMedication`, portal_data)
             .then(function (response) {
               //handle success
               console.log(response);

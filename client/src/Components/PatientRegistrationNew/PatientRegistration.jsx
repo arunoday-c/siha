@@ -210,6 +210,7 @@ export function PatientRegistration() {
     default_visit_type,
     countries = [],
   } = useContext(MainContext);
+  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   const [openPopup, setOpenPopup] = useState(false);
   const [attachmentVisible, setAttachmentVisible] = useState(false);
   const [priceModalVisible, setPriceModalVisible] = useState(false);
@@ -553,12 +554,12 @@ export function PatientRegistration() {
     // return result?.data?.records;
 
     data.patient_identity = data.primary_id_no;
-    data.identity_type = identity_type;
+    data.identity_type = identity_type ?? "NATIONALITY ID";
     data.patient_name = data.full_name;
     data.patient_dob = data.date_of_birth;
     data.patient_gender = data.gender;
     // data.identity_type = data.primary_id_no;
-    data.mobile_no = data.contact_number;
+    data.mobile_no = `${data.tel_code}${data.contact_number}`;
     data.email_id = data.email;
     data.hospital_id = data.hospital_id;
     data.age = data.age;
@@ -567,7 +568,7 @@ export function PatientRegistration() {
     data.visit_date = data.visit_date;
     try {
       axios
-        .post("http://localhost:4402/api/v1/info/patientRegistration", data)
+        .post(`${PORTAL_HOST}/info/patientRegistration`, data)
         .then(function (response) {
           //handle success
           console.log(response);

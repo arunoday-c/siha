@@ -44,7 +44,7 @@ import {
 } from "algaeh-react-components";
 import sockets from "../../sockets";
 import axios from "axios";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class OPBilling extends Component {
   constructor(props) {
     super(props);
@@ -456,10 +456,7 @@ class OPBilling extends Component {
 
                 if (this.state.portal_exists === "Y") {
                   axios
-                    .post(
-                      "http://localhost:4402/api/v1/info/patientService",
-                      portal_data
-                    )
+                    .post(`${PORTAL_HOST}/info/patientService`, portal_data)
                     .then(function (response) {
                       //handle success
                       console.log(response);

@@ -6,7 +6,7 @@ import sockets from "../../../sockets";
 import swal from "sweetalert2";
 import axios from "axios";
 // import swal from "sweetalert2";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 const CollectSample = ($this, context, row) => {
   if (row.container_id === null || row.container_id === undefined) {
     swalMessage({
@@ -37,7 +37,7 @@ const CollectSample = ($this, context, row) => {
     container_code: row.container_code,
     lab_id_number: row.lab_id_number,
   };
-  debugger;
+
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/laboratory/updateLabOrderServices",
@@ -55,10 +55,7 @@ const CollectSample = ($this, context, row) => {
             service_status: "SAMPLE COLLECTED",
           };
           axios
-            .post(
-              "http://localhost:4402/api/v1/info/deletePatientService",
-              portal_data
-            )
+            .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
             .then(function (response) {
               //handle success
               console.log(response);

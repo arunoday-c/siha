@@ -7,7 +7,7 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import sockets from "../../../sockets";
 import axios from "axios";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -169,7 +169,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
                   };
                   axios
                     .post(
-                      "http://localhost:4402/api/v1/info/deletePatientService",
+                      `${PORTAL_HOST}info/deletePatientService`,
                       portal_data
                     )
                     .then(function (response) {

@@ -13,7 +13,7 @@ const texthandle = ($this, e) => {
     [name]: value,
   });
 };
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 export function generateLabResultReport(data) {
   return new Promise((resolve, reject) => {
     let portalParams = {};
@@ -101,7 +101,7 @@ const UpdateLabOrder = ($this, value, status) => {
           : [];
     }
   }
-  debugger;
+
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     module: "laboratory",
@@ -122,10 +122,7 @@ const UpdateLabOrder = ($this, value, status) => {
               service_status: "SAMPLE COLLECTED'",
             };
             axios
-              .post(
-                "http://localhost:4402/api/v1/info/deletePatientService",
-                portal_data
-              )
+              .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
               .then(function (response) {
                 //handle success
                 console.log(response);
@@ -146,10 +143,7 @@ const UpdateLabOrder = ($this, value, status) => {
                   status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
               };
               axios
-                .post(
-                  "http://localhost:4402/api/v1/info/deletePatientService",
-                  portal_data
-                )
+                .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
                 .then(function (response) {
                   //handle success
                   console.log(response);

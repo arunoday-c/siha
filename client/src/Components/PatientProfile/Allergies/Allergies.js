@@ -31,7 +31,7 @@ import { MainContext } from "algaeh-react-components";
 
 const { Option } = Select;
 // let index = 0;
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class Allergies extends Component {
   constructor(props) {
     super(props);
@@ -208,7 +208,7 @@ class Allergies extends Component {
 
           if (this.state.portal_exists === "Y") {
             axios
-              .post("http://localhost:4402/api/v1/info/patientAllergy", data)
+              .post(`${PORTAL_HOST}/info/patientAllergy`, data)
               .then(function (response) {
                 //handle success
                 console.log(response);
@@ -322,7 +322,7 @@ class Allergies extends Component {
             };
             if (this.state.portal_exists === "Y") {
               axios
-                .post("http://localhost:4402/api/v1/info/patientAllergy", data)
+                .post(`${PORTAL_HOST}/info/patientAllergy`, data)
                 .then(function (response) {
                   //handle success
                   console.log(response);

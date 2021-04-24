@@ -31,6 +31,7 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import { RawSecurityComponent, MainContext } from "algaeh-react-components";
 import axios from "axios";
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class OPBillCancellation extends Component {
   constructor(props) {
     super(props);
@@ -220,10 +221,7 @@ class OPBillCancellation extends Component {
             if (response.data.success) {
               if (this.state.portal_exists === "Y") {
                 axios
-                  .post(
-                    "http://localhost:4402/api/v1/info/deletePatientService",
-                    portal_data
-                  )
+                  .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
                   .then(function (response) {
                     //handle success
                     console.log(response);

@@ -13,7 +13,7 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import { Validations } from "./Validation";
 import axios from "axios";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 export default function SubjectiveHandler() {
   return {
     dataLevelUpdate: ($this, e) => {
@@ -617,7 +617,7 @@ function portalinserUpdateVisitData($this) {
     hospital_id: $this.state.hospital_id,
   };
   axios
-    .post("http://localhost:4402/api/v1/info/patientVisitDetails", portal_data)
+    .post(`${PORTAL_HOST}/info/patientVisitDetails`, portal_data)
     .then(function (response) {
       //handle success
       console.log(response);
@@ -630,10 +630,7 @@ function portalinserUpdateVisitData($this) {
 
 function portalinserUpdateVisitDiagnosis($this, portal_data) {
   axios
-    .post(
-      "http://localhost:4402/api/v1/info/patientVisitDiagnosis",
-      portal_data
-    )
+    .post(`${PORTAL_HOST}/info/patientVisitDiagnosis`, portal_data)
     .then(function (response) {
       //handle success
       console.log(response);
@@ -646,10 +643,7 @@ function portalinserUpdateVisitDiagnosis($this, portal_data) {
 
 function portalDeleteUpdateVisitDiagnosis($this, portal_data) {
   axios
-    .post(
-      "http://localhost:4402/api/v1/info/deletePatientMedication",
-      portal_data
-    )
+    .post(`${PORTAL_HOST}/info/deletePatientMedication`, portal_data)
     .then(function (response) {
       //handle success
       console.log(response);
