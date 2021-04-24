@@ -110,10 +110,6 @@ const UpdateLabOrder = ($this, value, status) => {
     onSuccess: (response) => {
       if (response.data.success === true) {
         if (status === "N") {
-          swalMessage({
-            type: "success",
-            title: "Re-Run Started, Investigation is in Progress . .",
-          });
           if ($this.state.portal_exists === "Y") {
             const portal_data = {
               service_id: $this.state.service_id,
@@ -132,6 +128,10 @@ const UpdateLabOrder = ($this, value, status) => {
                 console.log(response);
               });
           }
+          swalMessage({
+            type: "success",
+            title: "Re-Run Started, Investigation is in Progress . .",
+          });
         } else {
           if (status === "CF" || status === "V") {
             if ($this.state.portal_exists === "Y") {
