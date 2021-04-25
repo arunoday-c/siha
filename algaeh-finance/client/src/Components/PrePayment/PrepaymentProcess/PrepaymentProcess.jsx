@@ -12,6 +12,7 @@ import {
   AlgaehMessagePop,
   DatePicker,
   Spin,
+
   //   AlgaehButton,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks/";
@@ -20,6 +21,7 @@ import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { swalMessage } from "../../../utils/algaehApiCall";
+import { getAccountHeads } from "../../../utils/accountHelpers";
 const { confirm } = Modal;
 export function PrepaymentProcess() {
   const { prePaymentTypes } = useContext(PrePaymentContext);
@@ -30,6 +32,7 @@ export function PrepaymentProcess() {
   const [loading, setLoading] = useState(true);
   const [costCenter, setCostCenter] = useState([]);
   const [proBalPrePay, setProBalPrePay] = useState(false);
+  const [accounts, setAccounts] = useState([]);
 
   const { control, errors, handleSubmit, getValues } = useForm({
     shouldFocusError: true,
@@ -44,7 +47,9 @@ export function PrepaymentProcess() {
     Promise.all([
       loadListToProcess(getValues()),
       getCostCentersForVoucher(),
-    ]).then(() => {
+      getAccountHeads(),
+    ]).then(([p, cost, accounts]) => {
+      setAccounts(accounts);
       setLoading(false);
     });
   }, []); // eslint-disable-line
@@ -52,10 +57,20 @@ export function PrepaymentProcess() {
   const addToList = (row) => {
     setProcessList((state) => {
       const idx = state.findIndex(
-        (item) => item === row.finance_f_prepayment_detail_id
+        (item) =>
+          item !== undefined &&
+          item.finance_f_prepayment_detail_id ===
+            row.finance_f_prepayment_detail_id
       );
       if (idx === -1) {
-        return [...state, row.finance_f_prepayment_detail_id];
+        return [
+          ...state,
+          {
+            finance_f_prepayment_detail_id: row.finance_f_prepayment_detail_id,
+            expense_head_id: row.expense_head_id,
+            expense_child_id: row.expense_child_id,
+          },
+        ];
       } else {
         delete state[idx];
         return [...state];
@@ -89,13 +104,16 @@ export function PrepaymentProcess() {
         return item.processed === "N";
       })
       .forEach((item) => {
-        pending_payments.push(item.finance_f_prepayment_detail_id);
+        pending_payments.push({
+          finance_f_prepayment_detail_id: item.finance_f_prepayment_detail_id,
+          expense_head_id: item.expense_head_id,
+          expense_child_id: item.expense_child_id,
+        });
       });
 
     setProcessList(pending_payments);
 
     onProcess(pending_payments);
-    return;
   };
 
   // }
@@ -150,7 +168,13 @@ export function PrepaymentProcess() {
         .filter((item) => {
           return item.processed === "N";
         })
-        .map((i) => i.finance_f_prepayment_detail_id)
+        .map((i) => {
+          return {
+            finance_f_prepayment_detail_id: i.finance_f_prepayment_detail_id,
+            expense_head_id: i.expense_head_id,
+            expense_child_id: i.expense_child_id,
+          };
+        })
     );
   };
   const checkBoxCheck = (e) => {
@@ -204,8 +228,11 @@ export function PrepaymentProcess() {
     setLoading(true);
 
     if (data.length === undefined) {
-      data = processList;
+      data = processList.filter((item) => {
+        return item !== undefined;
+      });
     }
+
     try {
       const res = await newAlgaehApi({
         uri: "/prepayment/processPrepayments",
@@ -240,7 +267,15 @@ export function PrepaymentProcess() {
         },
       });
       if (res.data.success) {
-        setCurrent(res.data.result);
+        const result = res.data.result.map((item) => {
+          return {
+            ...item,
+            expense_head_id: row.expense_head_id,
+            expense_child_id: row.expense_child_id,
+          };
+        });
+
+        setCurrent(result);
 
         setVisible(true);
       }
@@ -555,7 +590,9 @@ export function PrepaymentProcess() {
                           <Checkbox
                             checked={processList.find(
                               (item) =>
-                                item === row.finance_f_prepayment_detail_id
+                                item !== undefined &&
+                                item.finance_f_prepayment_detail_id ===
+                                  row.finance_f_prepayment_detail_id
                             )}
                             onChange={() => addToList(row)}
                           ></Checkbox>
@@ -598,6 +635,53 @@ export function PrepaymentProcess() {
                       fieldName: "cost_center",
                       label: "Cost Center",
                       others: { minWidth: 250 },
+                    },
+                    {
+                      fieldName: "expense_head_id",
+                      label: "Prepayment Debit GL",
+                      sortable: true,
+                      displayTemplate: (row) => {
+                        if (row.expense_head_id) {
+                          return (
+                            <AlgaehTreeSearch
+                              div={{ className: "white" }}
+                              tree={{
+                                treeDefaultExpandAll: true,
+                                name: "expense_head_id",
+                                data: accounts,
+                                value: `${row.expense_head_id}-${row.expense_child_id}`,
+                                textField: "label",
+                                disabled: row.processed === "N" ? false : true,
+                                onChange: (value, label) => {
+                                  if (value !== undefined) {
+                                    const source = value.split("-");
+                                    row.expense_head_id = source[0];
+                                    row.expense_child_id = source[1];
+                                  } else {
+                                    row.expense_head_id = "";
+                                    row.expense_child_id = "";
+                                  }
+                                },
+
+                                valueField: (node) => {
+                                  if (node["leafnode"] === "Y") {
+                                    return (
+                                      node["head_id"] +
+                                      "-" +
+                                      node["finance_account_child_id"]
+                                    );
+                                  } else {
+                                    return node["finance_account_head_id"];
+                                  }
+                                },
+                              }}
+                            />
+                          );
+                        } else {
+                          return null;
+                        }
+                      },
+                      // others: { show: showAccountsCol },
                     },
                     {
                       fieldName: "employee_code",

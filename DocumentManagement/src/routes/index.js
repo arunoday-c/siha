@@ -32,6 +32,11 @@ import {
 import { uploadInvItemImg, deleteInvItemImg } from "../files/invItemMaster";
 // import { uploadFile, getUploadedFile } from "../files";
 import {
+  uploadDocumentCommon,
+  deleteCommonFile,
+  getUploadedCommonFile,
+} from "../files/docUploadingCommon";
+import {
   getAllNotifications,
   deleteNotification,
   seenNotification,
@@ -48,6 +53,9 @@ initializedDb((db) => {
   router.post("/uploadInvItemImg", uploadInvItemImg);
 
   router.delete("/deleteInvItemImg", deleteInvItemImg);
+  router.post("/uploadDocumentCommon", uploadDocumentCommon);
+  router.get("/getUploadedCommonFile", getUploadedCommonFile);
+  router.delete("/deleteCommonFile", deleteCommonFile);
   router.get("/getUploadedSubFile", getUploadedSubFile);
   router.delete("/deleteContractDoc", deleteContractDoc);
   router.delete("/deleteSubDeptImage", deleteSubDeptImage);

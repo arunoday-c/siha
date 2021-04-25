@@ -419,6 +419,19 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "hims_d_employee_id desc",
       },
       {
+        searchName: "employee_prepayment",
+        searchQuery: `select SQL_CALC_FOUND_ROWS E.*,PD.project_id,P.project_desc,B.hospital_name, SD.sub_department_name,D.hims_d_department_id,
+          D.department_name, DS.designation from  hims_d_employee E 
+          left join   hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id
+          left join hims_d_department D on SD.department_id = D.hims_d_department_id
+          left join hims_d_designation DS  on  E.employee_designation_id = DS.hims_d_designation_id 
+          inner join hims_d_hospital B on B.hims_d_hospital_id = E.hospital_id
+          left join hims_m_division_project PD on PD.division_id = E.hospital_id
+          left join hims_d_project P on PD.project_id =P.hims_d_project_id
+          WHERE E.employee_status <> 'I'  `,
+        orderBy: "hims_d_employee_id desc",
+      },
+      {
         searchName: "exit_employees",
         searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
                      S.sub_department_name,E.sub_department_id,D.designation

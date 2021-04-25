@@ -9,12 +9,31 @@ import {
   AlgaehMessagePop,
   Spin,
 } from "algaeh-react-components";
+import { AlgaehAutoSearch } from "../../../Wrappers";
 import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks";
 import { Upload, Modal } from "antd";
-
+const baseState = {
+  full_name: "",
+  employee_id: null,
+  identity_no: null,
+  employee_code: "",
+  sub_department_id: null,
+  hospital_name: "",
+  hospital_id: null,
+  sub_department_name: "",
+  designation: "",
+  cost_center_id: null,
+};
+const baseState2 = {
+  expense_child_id: null,
+  expense_head_id: null,
+  prepayment_child_id: null,
+  prepayment_head_id: null,
+};
 const { Dragger } = Upload;
 const { confirm } = Modal;
 export function PrepaymentRequest() {
@@ -25,8 +44,10 @@ export function PrepaymentRequest() {
   const [visible, setVisible] = useState(false);
   const [disableEdit, setDisableEdit] = useState(false);
   const [payReqID, setPayReqID] = useState({});
-  const [employees_req, setEmployeeReq] = useState("N");
-  const [identity_no, setEmployeeIDNum] = useState(null);
+  const [prePaymentAccounts, setPrePaymentAccounts] = useState(baseState2);
+  // const [employees_req, setEmployeeReq] = useState("N");
+  // const [identity_no, setEmployeeIDNum] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(baseState);
 
   const { branchAndCenters, prePaymentTypes, employees } = useContext(
     PrePaymentContext
@@ -90,6 +111,8 @@ export function PrepaymentRequest() {
       });
       if (res.data.success) {
         setPayReqID({});
+        setSelectedEmployee(baseState);
+        setPrePaymentAccounts(baseState2);
         getRequest().then(() => {
           AlgaehMessagePop({
             type: "success",
@@ -109,34 +132,68 @@ export function PrepaymentRequest() {
   // };
   const saveDocument = (files = [], contract_no, contract_id) => {
     const formData = new FormData();
-    formData.append("contract_no", contract_no);
-    formData.append("contract_id", contract_id);
+    formData.append("doc_number", contract_no);
+    formData.append("nameOfTheFolder", "PrepaymentDocuments");
     files.forEach((file, index) => {
       formData.append(`file_${index}`, file, file.name);
+      formData.append("fileName", file.name);
     });
 
-    if (files?.length) {
-      return newAlgaehApi({
-        uri: "/saveContractDoc",
-        data: formData,
-        extraHeaders: { "Content-Type": "multipart/form-data" },
-        method: "POST",
-        module: "documentManagement",
-      });
-    } else {
-      return new Promise((resolve) => {
-        resolve(1);
-      });
-    }
+    newAlgaehApi({
+      uri: "/uploadDocumentCommon",
+      data: formData,
+      extraHeaders: { "Content-Type": "multipart/form-data" },
+      method: "POST",
+      module: "documentManagement",
+    })
+      .then((res) => {
+        // addDiagramFromMaster(contract_id, res.data.records);
+        AlgaehMessagePop({
+          type: "success",
+          display: "Request Added successfully",
+        });
+        // return;
+        // getDocuments(contract_no);
+      })
+      .catch((e) =>
+        AlgaehMessagePop({
+          type: "error",
+          display: e.message,
+        })
+      );
   };
-
+  // const addDiagramFromMaster = (prepaymentReq_id, unique_id) => {
+  //   newAlgaehApi({
+  //     uri: "/prepayment/addUniqueIdToDoc",
+  //     method: "POST",
+  //     data: {
+  //       finance_f_prepayment_request_id: prepaymentReq_id,
+  //       pre_payment_doc_unique_id: unique_id,
+  //     },
+  //     module: "finance",
+  //   })
+  //     .then((response) => {
+  //       if (response.data.success) {
+  //         AlgaehMessagePop({
+  //           type: "success",
+  //           display: "Request updated successfully",
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       AlgaehMessagePop({
+  //         type: "error",
+  //         display: e.message,
+  //       });
+  //     });
+  // };
   const getDocuments = (contract_no) => {
     newAlgaehApi({
-      uri: "/getContractDoc",
+      uri: "/getUploadedCommonFile",
       module: "documentManagement",
       method: "GET",
       data: {
-        contract_no,
+        doc_number: contract_no,
       },
     })
       .then((res) => {
@@ -145,6 +202,7 @@ export function PrepaymentRequest() {
 
           setPrePayment_docs(data);
           setPayment_reqDoc([]);
+
           // return setPrePayment_docs(data), setPayment_reqDoc([]);
         }
       })
@@ -157,6 +215,7 @@ export function PrepaymentRequest() {
   };
   const openPrepayDocModal = (data) => {
     setVisible(true);
+
     getDocuments(data.request_code);
   };
   const addRequest = async (data) => {
@@ -166,6 +225,8 @@ export function PrepaymentRequest() {
         method: "POST",
         data: {
           ...data,
+          ...selectedEmployee,
+          ...prePaymentAccounts,
           start_date: moment(data.start_date).format("YYYY-MM-DD"),
           end_date: moment(data.end_date).format("YYYY-MM-DD"),
         },
@@ -173,20 +234,27 @@ export function PrepaymentRequest() {
       });
       if (res.data.success) {
         const result = res.data.result;
-        saveDocument(payment_reqDoc, result.request_code, result.insertId)
-          .then(() => getRequest())
-          .then(() => {
-            AlgaehMessagePop({
-              type: "success",
-              display: "Request Added successfully",
+        if (payment_reqDoc.length > 0) {
+          saveDocument(payment_reqDoc, result.request_code, result.insertId)
+            .then(() => getRequest())
+            .then(() => {
+              AlgaehMessagePop({
+                type: "success",
+                display: "Request Added successfully",
+              });
+            })
+            .catch((e) => {
+              AlgaehMessagePop({
+                type: "warning",
+                display: e.message,
+              });
             });
-          })
-          .catch((e) => {
-            AlgaehMessagePop({
-              type: "warning",
-              display: e.message,
-            });
+        } else {
+          AlgaehMessagePop({
+            type: "success",
+            display: "Request Added successfully",
           });
+        }
       }
     } catch (e) {
       AlgaehMessagePop({
@@ -195,34 +263,21 @@ export function PrepaymentRequest() {
       });
     }
   };
-  // const changeDate = (row, records) => {
-  //   return (
-  //     <AlgaehDateHandler
-  //       label={{}}
-  //       textBox={{
-  //         className: "form-control",
-  //         // name: "start_date",
-  //         updateInternally: true,
+  const searchSelect = (data) => {
+    setSelectedEmployee({
+      employee_id: data.hims_d_employee_id,
+      sub_department_id: data.sub_department_id,
+      full_name: data.full_name,
+      hospital_name: data.hospital_name,
+      hospital_id: data.hospital_id,
+      designation: data.designation,
+      sub_department_name: data.sub_department_name,
+      identity_no: data.identity_no,
+      employee_code: data.employee_code,
+      cost_center_id: data.project_id,
+    });
+  };
 
-  //         value: row,
-  //       }}
-  //       events={{
-  //         onChange: (e) => {
-  //           records["start_date"] = e._d;
-  //           records["end_date"] = moment(e._d).add(
-  //             records["prepayment_duration"] - 1,
-  //             "months"
-  //           )._d;
-  //           console.log("records[]", records["end_date"]);
-  //         },
-  //         // onClear: () => {
-  //         //   onChange(undefined);
-  //         //   setValue("end_date", undefined);
-  //         // },
-  //       }}
-  //     />
-  //   );
-  // };
   const statusForEditor = (row) => {
     return (
       <span>
@@ -246,8 +301,8 @@ export function PrepaymentRequest() {
   };
   const resetForm = () => {
     reset({
-      hospital_id: "",
-      cost_center_id: "",
+      // hospital_id: "",
+      // cost_center_id: "",
       prepayment_type_id: "",
       // employee_id: null,
       prepayment_amount: null,
@@ -259,15 +314,16 @@ export function PrepaymentRequest() {
     setPayment_reqDoc([]);
     setPrePayment_docs([]);
     setPayReqID({});
-    setEmployeeIDNum(null);
+    // setEmployeeIDNum(null);
     setDisableEdit(false);
-    setEmployeeReq("N");
+    // setEmployeeReq("N");
   };
   const editRow = (data) => {
-    setValue("hospital_id", data.hims_d_hospital_id);
-    setValue("cost_center_id", data.cost_center_id);
+    setSelectedEmployee({ ...data, full_name: data.employee_name });
+    // setValue("hospital_id", data.hims_d_hospital_id);
+    // setValue("cost_center_id", data.cost_center_id);
     setValue("prepayment_type_id", data.prepayment_type_id);
-    setValue("employee_id", data.employee_id);
+    // setValue("employee_id", data.employee_id);
     setValue("prepayment_amount", data.prepayment_amount);
     setValue("prepayment_remarks", data.prepayment_remarks);
     setValue("start_date", moment(data.start_date).format("YYYY-MM-DD"));
@@ -280,7 +336,7 @@ export function PrepaymentRequest() {
         )
       ).format("YYYY-MM-DD")
     );
-    setValue("prepayment_remarks", data.prepayment_remarks);
+    // setValue("prepayment_remarks", data.prepayment_remarks);
     setDisableEdit(true);
     setPayReqID(data);
 
@@ -309,8 +365,7 @@ export function PrepaymentRequest() {
   //   // row.update();
   // };
 
-  const { hospital_id: ihospital, prepayment_type_id, employee_id } = watch([
-    "hospital_id",
+  const { prepayment_type_id, employee_id } = watch([
     "prepayment_type_id",
     "employee_id",
   ]);
@@ -319,14 +374,46 @@ export function PrepaymentRequest() {
     return item.employee_id == employee_id;
   });
   // console.log("identity_no", identity_no);
-  const downloadDoc = (doc) => {
-    const link = document.createElement("a");
-    link.download = doc.filename;
-    link.href = `data:${doc.filetype};base64,${doc.document}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // const downloadDoc = (doc) => {
+  //
+  //   // newAlgaehApi({
+  //   //   uri: "/getUploadedCommonFile",
+  //   //   module: "documentManagement",
+  //   //   method: "GET",
+  //   //   data: {
+  //   //     doc_number: payReqID.request_code,
+  //   //   },
+  //   //   extraHeaders: {
+  //   //     Accept: "blob",
+  //   //   },
+  //   //   others: {
+  //   //     responseType: "blob",
+  //   //   },
+  //   // })
+  //   //   .then((res) => {
+  //   //     if (res.data.success) {
+  //   //       let { data } = res.data;
+  //
+  //   const urlBlob = URL.createObjectURL(doc);
+  //   // if (isPreview) {
+  //   //   window.open(urlBlob);
+  //   // } else {
+  //   const link = document.createElement("a");
+  //   link.download = doc.filename;
+  //   link.href = urlBlob;
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  //   // }
+  //   // })
+  //   // .catch((error) => {
+  //   //   console.log(error);
+  //   //   setLoading(false);
+  //   // });
+
+  //   // }
+  //   setLoading(false);
+  // };
 
   const deleteDoc = (doc) => {
     confirm({
@@ -347,20 +434,24 @@ export function PrepaymentRequest() {
 
   const onDelete = (doc) => {
     newAlgaehApi({
-      uri: "/deleteContractDoc",
+      uri: "/deleteCommonFile",
       method: "DELETE",
       module: "documentManagement",
-      data: { id: doc._id },
+      data: {
+        id: doc._id,
+        doc_number: payReqID.request_code,
+        docUploadedFolder: "PrepaymentDocuments",
+      },
     }).then((res) => {
       if (res.data.success) {
         const prePaymentDoc = prepayment_docs.filter(
           (item) => item._id !== doc._id
         );
-
         return setPrePayment_docs(prePaymentDoc);
       }
     });
   };
+
   return (
     <Spin spinning={loading}>
       <div style={{ paddingTop: 15 }}>
@@ -379,8 +470,96 @@ export function PrepaymentRequest() {
                     {" "}
                     <div className="col-12">
                       <div className="row">
-                        {" "}
-                        <Controller
+                        <AlgaehAutoSearch
+                          div={{
+                            className: "col-12 form-group AlgaehAutoSearch",
+                          }}
+                          label={{
+                            forceLabel: "Select Employee",
+                            isImp: true,
+                          }}
+                          title="Search Employees"
+                          id="item_id_search"
+                          template={(result) => {
+                            return (
+                              <section className="resultSecStyles">
+                                <div className="row">
+                                  <div className="col-8">
+                                    <h4 className="title">
+                                      {result.full_name}
+                                    </h4>
+                                    <small>
+                                      Emp Code: {result.employee_code}
+                                    </small>
+                                    <small>Id No: {result.identity_no}</small>
+                                  </div>
+                                  <div className="col-4" />
+                                </div>
+                              </section>
+                            );
+                          }}
+                          name="hims_d_employee_id"
+                          columns={spotlightSearch.Employee_details.employee}
+                          displayField="full_name"
+                          value={selectedEmployee.full_name}
+                          searchName="employee_prepayment"
+                          // extraParameters={{
+                          //   hospital_id: this.state.hospital_id,
+                          // }}
+                          // others={{
+                          //   disabled:
+                          //     this.state.algaeh_d_app_user_id === null
+                          //       ? false
+                          //       : true,
+                          // }}
+                          onClick={searchSelect}
+                          onClear={() => {
+                            setSelectedEmployee(baseState);
+                          }}
+                        />
+                        <div className="col-4">
+                          <label className="style_Label ">Employee ID</label>
+                          <h6>
+                            {selectedEmployee.identity_no
+                              ? selectedEmployee.identity_no
+                              : "-----"}
+                          </h6>
+                        </div>
+                        <div className="col-4">
+                          <label className="style_Label ">Employee Code</label>
+                          <h6>
+                            {selectedEmployee.employee_code
+                              ? selectedEmployee.employee_code
+                              : "-----"}
+                          </h6>
+                        </div>
+                        {/* <div className="col-4">
+                          <label className="style_Label ">Hospital Name</label>
+                          <h6>
+                            {selectedEmployee.hospital_name
+                              ? selectedEmployee.hospital_name
+                              : "-----"}
+                          </h6>
+                        </div>
+                        <div className="col-4">
+                          <label className="style_Label ">
+                            Employee Designation
+                          </label>
+                          <h6>
+                            {selectedEmployee.designation
+                              ? selectedEmployee.designation
+                              : "-----"}
+                          </h6>
+                        </div>
+                        <div className="col-4">
+                          <label className="style_Label ">Sub Dept Name</label>
+                          <h6>
+                            {selectedEmployee.sub_department_name
+                              ? selectedEmployee.sub_department_name
+                              : "-----"}
+                          </h6>
+                        </div> */}
+                        {/* <Controller
                           control={control}
                           name="hospital_id"
                           rules={{ required: "Please select a branch" }}
@@ -399,7 +578,7 @@ export function PrepaymentRequest() {
                                 onChange: (_, selected) => {
                                   onChange(selected);
                                   setValue("employee_id", "");
-                                  setEmployeeIDNum("");
+                                  // setEmployeeIDNum("");
                                   setValue("cost_center_id", "");
                                 },
                                 name: "hospital_id",
@@ -454,7 +633,7 @@ export function PrepaymentRequest() {
                         />
                         {errors.cost_center_id && (
                           <span>{errors.cost_center_id.message}</span>
-                        )}
+                        )} */}
                         <Controller
                           control={control}
                           name="prepayment_type_id"
@@ -472,10 +651,11 @@ export function PrepaymentRequest() {
                                 },
                                 value,
                                 onChange: (_, selected) => {
+                                  setPrePaymentAccounts({ ..._ });
                                   onChange(selected);
                                   setValue("start_date", undefined);
                                   setValue("end_date", undefined);
-                                  setEmployeeReq(_.employees_req);
+                                  // setEmployeeReq(_.employees_req);
                                 },
                                 onClear: () => {
                                   onChange("");
@@ -495,7 +675,7 @@ export function PrepaymentRequest() {
                         {errors.prepayment_type_id && (
                           <span>{errors.prepayment_type_id.message}</span>
                         )}
-                        {employees_req === "Y" ? (
+                        {/* {employees_req === "Y" ? (
                           <Controller
                             name="employee_id"
                             control={control}
@@ -534,13 +714,13 @@ export function PrepaymentRequest() {
                               />
                             )}
                           />
-                        ) : null}
-                        {employees_req === "Y" ? (
+                        ) : null} */}
+                        {/* {employees_req === "Y" ? (
                           <div className="col-4">
                             <label className="style_Label ">Employee ID</label>
                             <h6>{identity_no ? identity_no : "-----"}</h6>
                           </div>
-                        ) : null}
+                        ) : null} */}
                         <Controller
                           control={control}
                           // rules={{ required: "Prepayment Remarks" }}
@@ -703,21 +883,38 @@ export function PrepaymentRequest() {
                         <div className="col-12">
                           <ul className="prepaymentachmentList">
                             {prepayment_docs.length && disableEdit ? (
-                              prepayment_docs.map((doc) => (
-                                <li>
-                                  <b> {doc.filename} </b>
-                                  <span>
-                                    <i
-                                      className="fas fa-download"
-                                      onClick={() => downloadDoc(doc)}
-                                    ></i>
-                                    <i
-                                      className="fas fa-trash"
-                                      onClick={() => deleteDoc(doc)}
-                                    ></i>
-                                  </span>
-                                </li>
-                              ))
+                              prepayment_docs.map((doc) => {
+                                return (
+                                  <li>
+                                    <b> {doc.filename} </b>
+                                    <span>
+                                      <a
+                                        href={`${window.location.protocol}//${
+                                          window.location.hostname
+                                        }${
+                                          window.location.port === ""
+                                            ? "/docserver"
+                                            : `:3006`
+                                        }/UPLOAD/PrepaymentDocuments/${payReqID.request_code.trim()}/${doc._id.trim()}__ALGAEH__${
+                                          doc.filename
+                                        }`}
+                                        download
+                                        target="_blank"
+                                      >
+                                        <i
+                                          className="fas fa-download"
+                                          // onClick={() => downloadDoc(doc)}
+                                        ></i>
+                                      </a>
+
+                                      <i
+                                        className="fas fa-trash"
+                                        onClick={() => deleteDoc(doc)}
+                                      ></i>
+                                    </span>
+                                  </li>
+                                );
+                              })
                             ) : (
                               <div className="col-12 noAttachment" key={1}>
                                 <p>No Attachments Available</p>
@@ -735,6 +932,8 @@ export function PrepaymentRequest() {
                             type="button"
                             onClick={() => {
                               resetForm();
+                              setSelectedEmployee(baseState);
+                              setPrePaymentAccounts(baseState2);
                             }}
                           >
                             Clear
@@ -812,7 +1011,7 @@ export function PrepaymentRequest() {
                                             <span>
                                               <i
                                                 className="fas fa-download"
-                                                onClick={() => downloadDoc(doc)}
+                                                // onClick={() => downloadDoc(doc)}
                                               ></i>
                                             </span>
                                           </li>

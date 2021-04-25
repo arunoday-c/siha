@@ -39,7 +39,7 @@ app.use(
     const isType = mime.contentType(path.extname(req.originalUrl));
 
     console.log("UPLOAD======", isType);
-    if (isType.includes("image")) {
+    if (isType.includes("image") || isType.includes("pdf")) {
       next();
     } else {
       res.write("No access to content");

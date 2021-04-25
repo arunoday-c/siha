@@ -1,0 +1,26 @@
+{
+  "Employee_details": {
+    "employee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      },
+      {
+        "fieldName": "identity_no",
+        "label": "Identity No."
+      },
+      {
+        "fieldName": "sub_department_name",
+        "label": "Sub Department"
+      },
+      {
+        "fieldName": "designation",
+        "label": "Designation"
+      }
+    ]
+  }
+}

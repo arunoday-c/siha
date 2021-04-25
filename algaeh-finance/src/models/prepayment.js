@@ -89,7 +89,7 @@ export const updatePrepaymentTypes = (req, res, next) => {
     prepayment_gl,
     expense_gl,
     finance_d_prepayment_type_id,
-    employees_req
+    employees_req,
   } = input;
 
   let prepayment_head_id,
@@ -187,9 +187,13 @@ export const addPrepaymentRequest = (req, res, next) => {
           _mysql
             .executeQuery({
               query:
-                "insert into finance_f_prepayment_request (prepayment_type_id,request_code,employee_id,prepayment_amount,start_date,\
-          end_date,hospital_id,project_id,sub_department_id,prepayment_remarks,created_by,created_date)  values(?,?,?,?,?,?,?,?,?,?,?,?);  ",
+                "insert into finance_f_prepayment_request (expense_child_id,expense_head_id,prepayment_child_id,prepayment_head_id,prepayment_type_id,request_code,employee_id,prepayment_amount,start_date,\
+          end_date,hospital_id,project_id,sub_department_id,prepayment_remarks,created_by,created_date)  values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);  ",
               values: [
+                input.expense_child_id,
+                input.expense_head_id,
+                input.prepayment_child_id,
+                input.prepayment_head_id,
                 input.prepayment_type_id,
                 numgen[voucher_type],
                 input.employee_id,
@@ -203,7 +207,7 @@ export const addPrepaymentRequest = (req, res, next) => {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
               ],
-              printQuery: true
+              printQuery: true,
             })
             .then((result) => {
               _mysql.commitTransaction(() => {
@@ -258,7 +262,39 @@ export const updatePrepaymentRequest = (req, res, next) => {
       next(e);
     });
 };
+export const addUniqueIdToDoc = (req, res, next) => {
+  const _mysql = new algaehMysql();
+  try {
+    let input = { ...req.body };
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `finance_f_prepayment_request` SET `prepayment_doc_unique_id` = ?, \
+          `update_date`=?, `updated_by`=? \
+              WHERE `finance_f_prepayment_request_id`=? ;",
+        values: [
+          input.prepayment_doc_unique_id,
 
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.finance_f_prepayment_request_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 //created by:Nowshad
 //To update Prepayment Amortize amount to respective cost center
 export const updatePrepaymentDetail = (req, res, next) => {
@@ -427,7 +463,7 @@ export const getPrepaymentRequestToAuthorize = (req, res, next) => {
       }
       _mysql
         .executeQuery({
-          query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,request_status,\
+          query: `select finance_f_prepayment_request_id,PR.expense_head_id,PR.expense_child_id,PR.prepayment_head_id,PR.prepayment_child_id, prepayment_type_id,prepayment_desc,request_code,request_status,\
         employee_id,employee_code ,E.full_name as employee_name ,E.identity_no,ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
         hims_d_hospital_id,hospital_name ${selectStr}
         from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT \
@@ -513,12 +549,14 @@ export const payPrepaymentRequest = (req, res, next) => {
     finance_f_prepayment_request_id,
     reverted_amt,
     revert_reason,
+    prepayment_head_id,
+    prepayment_child_id,
   } = req.body;
 
   if (auth_status == "PD") {
     _mysql
       .executeQueryWithTransaction({
-        query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_head_id,prepayment_child_id,
+        query: `select finance_f_prepayment_request_id, prepayment_type_id,P.prepayment_head_id,P.prepayment_child_id,
           P.prepayment_duration , prepayment_amount, start_date, end_date,
           coalesce(prepayment_amount/P.prepayment_duration,0) as amount,request_code,
           project_id,sub_department_id,hospital_id
@@ -566,8 +604,8 @@ export const payPrepaymentRequest = (req, res, next) => {
 
           EntriesArray.push({
             payment_date: new Date(),
-            head_id: data.prepayment_head_id,
-            child_id: data.prepayment_child_id,
+            head_id: prepayment_head_id,
+            child_id: prepayment_child_id,
             debit_amount: data.prepayment_amount,
             payment_type: "DR",
             credit_amount: 0,
@@ -651,8 +689,12 @@ export const payPrepaymentRequest = (req, res, next) => {
                       _mysql
                         .executeQueryWithTransaction({
                           query:
-                            "update finance_f_prepayment_request set request_status='PD' where finance_f_prepayment_request_id=?;",
-                          values: [finance_f_prepayment_request_id],
+                            "update finance_f_prepayment_request set request_status='PD', prepayment_head_id=?,prepayment_child_id=? where finance_f_prepayment_request_id=?;",
+                          values: [
+                            prepayment_head_id,
+                            prepayment_child_id,
+                            finance_f_prepayment_request_id,
+                          ],
 
                           printQuery: false,
                         })
@@ -748,7 +790,7 @@ export const loadPrepaymentsToProcess = (req, res, next) => {
         }
         _mysql
           .executeQuery({
-            query: `select finance_f_prepayment_request_id,finance_f_prepayment_detail_id, prepayment_type_id,prepayment_desc,request_code,
+            query: `select finance_f_prepayment_request_id,finance_f_prepayment_detail_id,prepayment_type_id,prepayment_desc,PR.expense_child_id,PR.expense_head_id,request_code,
       employee_id,employee_code ,E.full_name as employee_name ,E.identity_no, ROUND( amount,${decimal_places}) as  amount,
       ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, hims_d_hospital_id,hospital_name,
       left(date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') ,8)as pay_month,PR.start_date, PR.end_date, D.processed ${selectStr}
@@ -785,8 +827,11 @@ export const processPrepayments = (req, res, next) => {
   const _mysql = new algaehMysql();
 
   const { detail_ids } = req.body;
-  console.log("req.body", req.body)
-  console.log("detail_ids", detail_ids)
+  console.log("req.body", req.body);
+  console.log("detail_ids", detail_ids);
+  let detail_id_array = detail_ids.map(
+    (item) => item.finance_f_prepayment_detail_id
+  );
 
   if (detail_ids.length > 0) {
     _mysql
@@ -809,14 +854,14 @@ export const processPrepayments = (req, res, next) => {
         }
         _mysql
           .executeQueryWithTransaction({
-            query: `  select  PR.finance_f_prepayment_request_id,sum(D.amount) as amount, PT.prepayment_head_id,PT.prepayment_child_id ,
+            query: `  select  PR.finance_f_prepayment_request_id,sum(D.amount) as amount, PR.prepayment_head_id,PR.prepayment_child_id ,
             PR.project_id,PR.sub_department_id,PR.hospital_id
             from  finance_f_prepayment_detail D   inner join finance_f_prepayment_request PR on 
             D.prepayment_request_id=PR.finance_f_prepayment_request_id
             inner join finance_d_prepayment_type PT  on PR.prepayment_type_id = PT.finance_d_prepayment_type_id
             where  D.finance_f_prepayment_detail_id in (?) and D.processed='N' and PR.request_status='PD' 
             group by PT.finance_d_prepayment_type_id ${CR_groupByStr}; 
-            select  D.finance_f_prepayment_detail_id,sum(D.amount) as amount, PT.expense_head_id,PT.expense_child_id ,
+            select  D.finance_f_prepayment_detail_id,sum(D.amount) as amount, PR.expense_head_id,PR.expense_child_id ,
             D.project_id,D.sub_department_id,D.hospital_id
             from  finance_f_prepayment_detail D   inner join finance_f_prepayment_request PR on 
             D.prepayment_request_id=PR.finance_f_prepayment_request_id
@@ -827,7 +872,7 @@ export const processPrepayments = (req, res, next) => {
             from  finance_f_prepayment_detail D   inner join finance_f_prepayment_request PR on  
             D.prepayment_request_id=PR.finance_f_prepayment_request_id
             where D.finance_f_prepayment_detail_id in (?) and D.processed='N' and PR.request_status='PD' ; `,
-            values: [detail_ids, detail_ids, detail_ids],
+            values: [detail_id_array, detail_id_array, detail_id_array],
             printQuery: true,
           })
           .then((result) => {
@@ -863,17 +908,19 @@ export const processPrepayments = (req, res, next) => {
                   }
 
                   for (let i = 0, len = debit_side.length; i < len; i++) {
-                    EntriesArray.push({
-                      payment_date: new Date(),
-                      head_id: debit_side[i].expense_head_id,
-                      child_id: debit_side[i].expense_child_id,
-                      debit_amount: debit_side[i].amount,
-                      payment_type: "DR",
-                      credit_amount: 0,
-                      hospital_id: debit_side[i].hospital_id,
-                      project_id: debit_side[i].project_id,
-                      sub_department_id: debit_side[i].sub_department_id,
-                    });
+                    for (let j = 0, leng = detail_ids.length; j < leng; j++) {
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: detail_ids[j].expense_head_id,
+                        child_id: detail_ids[j].expense_child_id,
+                        debit_amount: debit_side[i].amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: debit_side[i].hospital_id,
+                        project_id: debit_side[i].project_id,
+                        sub_department_id: debit_side[i].sub_department_id,
+                      });
+                    }
                   }
 
                   let narration = ` Adjustment for PrePaid Expenses of amount :${transction_amount} `;
@@ -935,7 +982,7 @@ export const processPrepayments = (req, res, next) => {
                               values: [
                                 req.userIdentity.algaeh_d_app_user_id,
                                 new Date(),
-                                detail_ids,
+                                detail_id_array,
                               ],
 
                               printQuery: true,

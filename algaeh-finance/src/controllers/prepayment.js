@@ -14,7 +14,8 @@ import {
   updatePrepaymentCostCenter,
   payPrepaymentRequest,
   updatePrepaymentRequest,
-  updatePrepaymentDetail
+  updatePrepaymentDetail,
+  addUniqueIdToDoc,
 } from "../models/prepayment";
 import utlities from "algaeh-utilities";
 
@@ -53,6 +54,15 @@ export default () => {
       .end();
   });
 
+  api.put("/addUniqueIdToDoc", addUniqueIdToDoc, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
   api.delete(
     "/deletePrepaymentTypes",
     deletePrepaymentTypes,
@@ -77,25 +87,33 @@ export default () => {
       .end();
   });
 
-  api.put("/updatePrepaymentRequest", updatePrepaymentRequest, (req, res, next) => {
-    res
-      .status(utlities.AlgaehUtilities().httpStatus().ok)
-      .json({
-        success: true,
-        result: req.records,
-      })
-      .end();
-  });
+  api.put(
+    "/updatePrepaymentRequest",
+    updatePrepaymentRequest,
+    (req, res, next) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
+    }
+  );
 
-  api.put("/updatePrepaymentDetail", updatePrepaymentDetail, (req, res, next) => {
-    res
-      .status(utlities.AlgaehUtilities().httpStatus().ok)
-      .json({
-        success: true,
-        result: req.records,
-      })
-      .end();
-  });
+  api.put(
+    "/updatePrepaymentDetail",
+    updatePrepaymentDetail,
+    (req, res, next) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
+    }
+  );
 
   api.get("/getPrepaymentRequests", getPrepaymentRequests, (req, res, next) => {
     res
@@ -135,19 +153,15 @@ export default () => {
     }
   );
 
-  api.put(
-    "/payPrepaymentRequest",
-    payPrepaymentRequest,
-    (req, res, next) => {
-      res
-        .status(utlities.AlgaehUtilities().httpStatus().ok)
-        .json({
-          success: true,
-          result: req.records,
-        })
-        .end();
-    }
-  );
+  api.put("/payPrepaymentRequest", payPrepaymentRequest, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
 
   api.get(
     "/loadPrepaymentsToProcess",

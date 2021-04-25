@@ -8,12 +8,16 @@ import {
   Spin,
   Modal,
   AlgaehFormGroup,
-  AlgaehButton,AlgaehSecurityComponent
+  AlgaehButton,
+  AlgaehSecurityComponent,
+  RawSecurityComponent,
+  AlgaehTreeSearch,
 } from "algaeh-react-components";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks/";
 import { PaymentStatus } from "../../../utils/GlobalVariables";
+import { getAccountHeads } from "../../../utils/accountHelpers";
 import {
   //Button,
   Tooltip,
@@ -27,6 +31,8 @@ export function PrepaymentAuthList() {
   const [visible, setVisible] = useState(false);
   const [revertData, setrevertData] = useState({});
   const [revert_reason, setRevertReson] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+  const [showAccountsCol, setShowAccountsCol] = useState(false);
   const {
     //branchAndCenters,
     prePaymentTypes,
@@ -43,9 +49,18 @@ export function PrepaymentAuthList() {
 
   useEffect(() => {
     getRequestForAuth({}).then(() => setLoading(false));
+    getAccountHeads().then((accounts) => {
+      setAccounts(accounts);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  RawSecurityComponent({ componentCode: "PREPAYMENT_PAY" }).then((result) => {
+    if (result === "show") {
+      setShowAccountsCol(true);
+    } else {
+      setShowAccountsCol(false);
+    }
+  });
   const getRequestForAuth = async (data) => {
     try {
       const res = await newAlgaehApi({
@@ -86,7 +101,7 @@ export function PrepaymentAuthList() {
     }
   };
 
-  const PayOrRejectReq = async (decision, id, reverted_amt) => {
+  const PayOrRejectReq = async (decision, id, reverted_amt, row) => {
     try {
       const res = await newAlgaehApi({
         uri: "/prepayment/payPrepaymentRequest",
@@ -97,6 +112,10 @@ export function PrepaymentAuthList() {
           finance_f_prepayment_request_id: id,
           reverted_amt: reverted_amt,
           revert_reason: revert_reason,
+          prepayment_head_id: row.prepayment_head_id,
+          prepayment_child_id: row.prepayment_child_id,
+          // expense_head_id: row.expense_head_id,
+          // expense_child_id: row.expense_child_id,
         },
       });
       if (res.data.success) {
@@ -149,7 +168,8 @@ export function PrepaymentAuthList() {
           await PayOrRejectReq(
             "PD",
             row.finance_f_prepayment_request_id,
-            row.prepayment_amount
+            row.prepayment_amount,
+            row
           );
         } catch (e) {
           AlgaehMessagePop({
@@ -215,8 +235,6 @@ export function PrepaymentAuthList() {
   //   "hospital_id",
   //   "prepayment_type_id",
   // ]);
-
-  
 
   return (
     <Spin spinning={loading}>
@@ -507,8 +525,7 @@ export function PrepaymentAuthList() {
                       displayTemplate: (row) => {
                         if (row.request_status === "P") {
                           return (
-                           
-            <AlgaehSecurityComponent componentCode="PREPAYMENT_AUTH">
+                            <AlgaehSecurityComponent componentCode="PREPAYMENT_AUTH">
                               <span onClick={() => onClickAuthorize(row)}>
                                 <i className="fas fa-check"></i>
                               </span>
@@ -536,7 +553,7 @@ export function PrepaymentAuthList() {
                                   <i className="fas fa-undo-alt"></i>
                                 </span>
                               </Tooltip>
-                              </AlgaehSecurityComponent>
+                            </AlgaehSecurityComponent>
                           );
                         } else {
                           return "Paid";
@@ -558,6 +575,55 @@ export function PrepaymentAuthList() {
                       label: "Cost Center",
                       sortable: true,
                     },
+                    {
+                      fieldName: "prepayment_head_id",
+                      label: "Prepayment Credit GL",
+                      sortable: true,
+                      displayTemplate: (row) => {
+                        if (row.prepayment_head_id) {
+                          return (
+                            <AlgaehTreeSearch
+                              div={{ className: "white" }}
+                              tree={{
+                                updateInternally: true,
+                                treeDefaultExpandAll: true,
+                                name: "prepayment_head_id",
+                                data: accounts,
+                                value: `${row.prepayment_head_id}-${row.prepayment_child_id}`,
+                                textField: "label",
+                                disabled:
+                                  row.request_status === "P" ? true : false,
+                                onChange: (value, label) => {
+                                  if (value !== undefined) {
+                                    const source = value.split("-");
+                                    row.prepayment_head_id = source[0];
+                                    row.prepayment_child_id = source[1];
+                                  } else {
+                                    row.prepayment_head_id = "";
+                                    row.prepayment_child_id = "";
+                                  }
+                                },
+                                valueField: (node) => {
+                                  if (node["leafnode"] === "Y") {
+                                    return (
+                                      node["head_id"] +
+                                      "-" +
+                                      node["finance_account_child_id"]
+                                    );
+                                  } else {
+                                    return node["finance_account_head_id"];
+                                  }
+                                },
+                              }}
+                            />
+                          );
+                        } else {
+                          return null;
+                        }
+                      },
+                      others: { show: showAccountsCol },
+                    },
+
                     {
                       fieldName: "employee_code",
                       label: "Employee Code",

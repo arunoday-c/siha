@@ -4,3 +4,4 @@ export { default as AlgaehDropDown } from "./AlgaehDropdown";
 export { default as AlgaehLabel } from "./AlgaehLabel";
 export { default as AlgaehModalPopUp } from "./AlgaehModalPopUp";
 export { default as InfoBar } from "./InfoBar";
+export { default as AlgaehAutoSearch } from "./AlgaehAutoSearch";
