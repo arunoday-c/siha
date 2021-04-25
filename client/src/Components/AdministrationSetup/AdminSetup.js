@@ -87,7 +87,7 @@ class AdminSetup extends Component {
                 />
               ),
               children: <EnableAudit />,
-              // componentCode: "AD_AUD_LOG"
+              componentCode: "AD_ENA_AUD_LOG",
             },
             {
               title: (

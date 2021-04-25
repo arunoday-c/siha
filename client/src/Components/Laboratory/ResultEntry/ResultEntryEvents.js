@@ -3,6 +3,7 @@ import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
+import axios from "axios";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -12,9 +13,13 @@ const texthandle = ($this, e) => {
     [name]: value,
   });
 };
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 export function generateLabResultReport(data) {
   return new Promise((resolve, reject) => {
+    let portalParams = {};
+    if (data.portal_exists === "Y") {
+      portalParams["reportToPortal"] = "true";
+    }
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -26,6 +31,7 @@ export function generateLabResultReport(data) {
       data: {
         report: {
           // reportName: "hematologyTestReport",
+          ...portalParams,
           reportName:
             data?.isPCR === "Y" ? "pcrTestReport" : "hematologyTestReport",
           reportParams: [
@@ -38,16 +44,32 @@ export function generateLabResultReport(data) {
               name: "hims_f_lab_order_id",
               value: data.hims_f_lab_order_id,
             },
+            {
+              name: "visit_code",
+              value: data.visit_code,
+            },
+            {
+              name: "patient_identity",
+              value: data.primary_id_no,
+            },
+            {
+              name: "service_id",
+              value: data.service_id,
+            },
           ],
           qrCodeReport: true,
           outputFileType: "PDF",
         },
       },
       onSuccess: (res) => {
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
-        window.open(origin);
-        resolve();
+        if (data.hidePrinting === true) {
+          resolve();
+        } else {
+          const urlBlob = URL.createObjectURL(res.data);
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
+          window.open(origin);
+          resolve();
+        }
       },
       onCatch: (err) => {
         reject(err);
@@ -79,7 +101,7 @@ const UpdateLabOrder = ($this, value, status) => {
           : [];
     }
   }
-  // debugger
+
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     module: "laboratory",
@@ -88,11 +110,50 @@ const UpdateLabOrder = ($this, value, status) => {
     onSuccess: (response) => {
       if (response.data.success === true) {
         if (status === "N") {
+          if ($this.state.portal_exists === "Y") {
+            const portal_data = {
+              service_id: $this.state.service_id,
+              visit_code: $this.state.visit_code,
+              patient_identity: $this.state.primary_id_no,
+              service_status: "SAMPLE COLLECTED'",
+            };
+            axios
+              .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              });
+          }
           swalMessage({
             type: "success",
             title: "Re-Run Started, Investigation is in Progress . .",
           });
         } else {
+          if (status === "CF" || status === "V") {
+            if ($this.state.portal_exists === "Y") {
+              const portal_data = {
+                service_id: $this.state.service_id,
+                visit_code: $this.state.visit_code,
+                patient_identity: $this.state.primary_id_no,
+                service_status:
+                  status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
+              };
+              axios
+                .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+                .then(function (response) {
+                  //handle success
+                  console.log(response);
+                })
+                .catch(function (response) {
+                  //handle error
+                  console.log(response);
+                });
+            }
+          }
           swalMessage({
             type: "success",
             title: "Done successfully . .",
@@ -124,6 +185,9 @@ const UpdateLabOrder = ($this, value, status) => {
             AlgaehLoader({ show: false });
           }
         );
+        if ($this.state.portal_exists === "Y") {
+          generateLabResultReport({ ...$this.state, hidePrinting: true });
+        }
       }
     },
     onFailure: (error) => {

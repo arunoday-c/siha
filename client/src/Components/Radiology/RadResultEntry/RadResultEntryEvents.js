@@ -1,13 +1,13 @@
 import moment from "moment";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-
+import axios from "axios";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -17,13 +17,57 @@ const templatehandle = ($this, e) => {
 
   $this.setState({
     [name]: value,
-    result_html: e.selected.template_html
+    result_html: e.selected.template_html,
   });
 };
 
 const rtehandle = ($this, result_html) => {
   $this.setState({ result_html });
 };
+
+/** Here Report to call for   */
+function generateReport(row) {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "radiologyReport",
+        reportToPortal: "true",
+        reportParams: [
+          {
+            name: "hims_f_rad_order_id",
+            value: row.hims_f_rad_order_id,
+          },
+          {
+            name: "visit_code",
+            value: row.visit_code,
+          },
+          {
+            name: "patient_identity",
+            value: row.primary_id_no,
+          },
+          {
+            name: "service_id",
+            value: row.service_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    // onSuccess: (res) => {
+    //   const urlBlob = URL.createObjectURL(res.data);
+    //   const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Radiology Report`;
+    //   window.open(origin);
+    //   // window.document.title = "Radiology Report";
+    // },
+  });
+}
 
 const handleExamStatus = ($this, value) => {
   let append_message = "";
@@ -52,8 +96,8 @@ const handleExamStatus = ($this, value) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willProceed => {
+    cancelButtonText: "No",
+  }).then((willProceed) => {
     if (willProceed.value) {
       if (typeof functionToCall === "function") {
         functionToCall($this);
@@ -62,54 +106,54 @@ const handleExamStatus = ($this, value) => {
   });
 };
 
-const startTest = $this => {
+const startTest = ($this) => {
   $this.setState(
     {
       exam_status: "ST",
       exam_start_date_time: moment(new Date())._d,
       report_type: "PR",
       status: "UP",
-      changesDone: true
+      changesDone: true,
     },
     () => UpdateRadOrder($this, "start")
   );
 };
 
-const cancelTest = $this => {
+const cancelTest = ($this) => {
   $this.setState(
     {
       exam_status: "CN",
       status: "CN",
       report_type: "PR",
-      changesDone: true
+      changesDone: true,
     },
     () => UpdateRadOrder($this, "cancel")
   );
 };
 
-const completeTest = $this => {
+const completeTest = ($this) => {
   $this.setState(
     {
       exam_status: "CO",
       exam_end_date_time: moment(new Date())._d,
       status: "RC",
-      changesDone: true
+      changesDone: true,
     },
     () => UpdateRadOrder($this, "complete")
   );
 };
 
-const validateTest = $this => {
+const validateTest = ($this) => {
   if ($this.state.result_html === null) {
     swalMessage({
       title: "Please select the template for result.",
-      type: "warning"
+      type: "warning",
     });
     return;
   } else {
     $this.setState(
       {
-        status: "RA"
+        status: "RA",
       },
       () => UpdateRadOrder($this, "validate")
     );
@@ -120,7 +164,7 @@ const UpdateRadOrder = ($this, value) => {
   if ($this.state.template_id === null && value === "validate") {
     swalMessage({
       title: "Please Select Template",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let inputobj = {};
@@ -144,18 +188,18 @@ const UpdateRadOrder = ($this, value) => {
       exam_status: $this.state.exam_status,
       report_type: $this.state.report_type,
       result_html: $this.state.result_html,
-      comments: $this.state.comments
+      comments: $this.state.comments,
     };
     algaehApiCall({
       uri: "/radiology/updateRadOrderedServices",
       module: "radiology",
       data: inputobj,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
           $this.props.getRadiologyTestList({
             uri: "/radiology/getRadOrderedServices",
@@ -164,23 +208,49 @@ const UpdateRadOrder = ($this, value) => {
             data: inputobj,
             redux: {
               type: "RAD_LIST_GET_DATA",
-              mappingName: "radschlist"
+              mappingName: "radschlist",
             },
-            afterSuccess: data => {
+            afterSuccess: (data) => {
               $this.setState({
-                isOpen: !$this.state.isOpen
+                isOpen: !$this.state.isOpen,
                 // status: "RA"
               });
-            }
+            },
           });
+
+          debugger;
+          if (value === "validate") {
+            if ($this.state.portal_exists === "Y") {
+              const portal_data = {
+                service_id: $this.state.service_id,
+                visit_code: $this.state.visit_code,
+                patient_identity: $this.state.primary_id_no,
+                service_status: "RESULT VALIDATED",
+              };
+              axios
+                .post(
+                  "http://localhost:4402/api/v1/info/deletePatientService",
+                  portal_data
+                )
+                .then(function (response) {
+                  //handle success
+                  console.log(response);
+                })
+                .catch(function (response) {
+                  //handle error
+                  console.log(response);
+                });
+              generateReport($this.state);
+            }
+          }
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 };

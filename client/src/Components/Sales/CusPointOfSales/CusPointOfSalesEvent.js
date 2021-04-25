@@ -104,6 +104,15 @@ const Validations = ($this) => {
     });
 
     return isError;
+  } else if ($this.state.sales_person_id === null) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Select Sales Person.",
+    });
+
+    return isError;
   }
 };
 const SaveCashSalesInvoice = ($this) => {

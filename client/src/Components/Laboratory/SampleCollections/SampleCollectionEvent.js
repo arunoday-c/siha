@@ -4,8 +4,9 @@ import moment from "moment";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import sockets from "../../../sockets";
 import swal from "sweetalert2";
+import axios from "axios";
 // import swal from "sweetalert2";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 const CollectSample = ($this, context, row) => {
   if (row.container_id === null || row.container_id === undefined) {
     swalMessage({
@@ -46,6 +47,25 @@ const CollectSample = ($this, context, row) => {
     onSuccess: (response) => {
       if (response.data.success === true) {
         let test_details = $this.state.test_details;
+        if ($this.state.portal_exists === "Y") {
+          const portal_data = {
+            service_id: row.service_id,
+            visit_code: row.visit_code,
+            patient_identity: row.primary_id_no,
+            service_status: "SAMPLE COLLECTED",
+          };
+          axios
+            .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+            .then(function (response) {
+              //handle success
+              console.log(response);
+            })
+            .catch(function (response) {
+              //handle error
+              console.log(response);
+            });
+        }
+
         for (let i = 0; i < test_details.length; i++) {
           if (
             test_details[i].hims_d_lab_sample_id === row.hims_d_lab_sample_id

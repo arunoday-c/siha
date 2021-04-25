@@ -45,9 +45,10 @@ import moment from "moment";
 import { Dimmer, Loader } from "semantic-ui-react";
 import { PatientAttachments } from "../../PatientRegistrationNew/PatientAttachment";
 import { printPrescription } from "../PatientProfileHandlers";
-import { AlgaehModal } from "algaeh-react-components";
+import { AlgaehModal, MainContext } from "algaeh-react-components";
+import axios from "axios";
 // import { Button } from "antd";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
@@ -695,6 +696,154 @@ class BasicSubjective extends Component {
             title: "Prescription Updated Successful ...",
             type: "success",
           });
+          const portal_data = {
+            patient_identity: this.props.pat_profile.primary_id_no,
+            visit_code: this.props.pat_profile.visit_code,
+            no_of_days: this.state.no_of_days,
+            dosage: this.state.dosage,
+            frequency:
+              this.state.frequency === "0"
+                ? "1-0-1"
+                : this.state.frequency === "1"
+                ? "1-0-0"
+                : this.state.frequency === "2"
+                ? "0-0-1"
+                : this.state.frequency === "3"
+                ? "0-1-0"
+                : this.state.frequency === "4"
+                ? "1-1-0"
+                : this.state.frequency === "5"
+                ? "0-1-1"
+                : this.state.frequency === "6"
+                ? "1-1-1"
+                : this.state.frequency === "7"
+                ? "Once only"
+                : this.state.frequency === "8"
+                ? "Once daily (q24h)"
+                : this.state.frequency === "9"
+                ? "Twice daily (Bid)"
+                : this.state.frequency === "10"
+                ? "Three times daily (tid)"
+                : this.state.frequency === "11"
+                ? "Five times daily"
+                : this.state.frequency === "12"
+                ? "Every two hours (q2h)"
+                : this.state.frequency === "13"
+                ? "Every three hours (q3h)"
+                : this.state.frequency === "14"
+                ? "Every four hours (q4h)"
+                : this.state.frequency === "15"
+                ? "Every six hours (q6h)"
+                : this.state.frequency === "16"
+                ? "Every eight hours (q8h)"
+                : this.state.frequency === "17"
+                ? "Every twelve hours (q12h)"
+                : this.state.frequency === "18"
+                ? "Four times daily (qid)"
+                : this.state.frequency === "19"
+                ? "Other (As per need)"
+                : null,
+            frequency_type:
+              this.state.frequency_type === "PD"
+                ? "Per Day"
+                : this.state.frequency_type === "PH"
+                ? "Per Hour"
+                : this.state.frequency_type === "PW"
+                ? "Per Week"
+                : this.state.frequency_type === "PM"
+                ? "Per Month"
+                : this.state.frequency_type === "AD"
+                ? "Alternate Day"
+                : this.state.frequency_type === "2W"
+                ? "Every 2 weeks"
+                : this.state.frequency_type === "2M"
+                ? "Every 2 months"
+                : this.state.frequency_type === "3M"
+                ? "Every 3 months"
+                : this.state.frequency_type === "4M"
+                ? "Every 4 months"
+                : this.state.frequency_type === "6M"
+                ? "Every 6 months"
+                : null,
+            frequency_time:
+              this.state.frequency_time === "BM"
+                ? "Before Meals"
+                : this.state.frequency_time === "AM"
+                ? "After Meals"
+                : this.state.frequency_time === "WF"
+                ? "With Food"
+                : this.state.frequency_time === "EM"
+                ? "Early Morning"
+                : this.state.frequency_time === "BB"
+                ? "Before Bed Time"
+                : this.state.frequency_time === "AB"
+                ? "At Bed Time"
+                : this.state.frequency_time === "NN"
+                ? "None"
+                : null,
+            frequency_route:
+              this.state.frequency_route === "BL"
+                ? "Buccal"
+                : this.state.frequency_route === "EL"
+                ? "Enteral"
+                : this.state.frequency_route === "IL"
+                ? "Inhalation"
+                : this.state.frequency_route === "IF"
+                ? "Infusion"
+                : this.state.frequency_route === "IM"
+                ? "Intramuscular Inj"
+                : this.state.frequency_route === "IT"
+                ? "Intrathecal Inj"
+                : this.state.frequency_route === "IV"
+                ? "Intravenous Inj"
+                : this.state.frequency_route === "NL"
+                ? "Nasal"
+                : this.state.frequency_route === "OP"
+                ? "Ophthalmic"
+                : this.state.frequency_route === "OR"
+                ? "Oral"
+                : this.state.frequency_route === "OE"
+                ? "Otic (ear)"
+                : this.state.frequency_route === "RL"
+                ? "Rectal"
+                : this.state.frequency_route === "ST"
+                ? "Subcutaneous"
+                : this.state.frequency_route === "SL"
+                ? "Sublingual"
+                : this.state.frequency_route === "TL"
+                ? "Topical"
+                : this.state.frequency_route === "TD"
+                ? "Transdermal"
+                : this.state.frequency_route === "VL"
+                ? "Vaginal"
+                : this.state.frequency_route === "IN"
+                ? "Intravitreal"
+                : this.state.frequency_route === "VR"
+                ? "Various"
+                : this.state.frequency_route === "IP"
+                ? "Intraperitoneal"
+                : this.state.frequency_route === "ID"
+                ? "Intradermal"
+                : this.state.frequency_route === "INV"
+                ? "Intravesical"
+                : this.state.frequency_route === "EP"
+                ? "Epilesional"
+                : null,
+            med_units: this.state.med_units,
+            instructions: this.state.instructions,
+            item_name: this.state.item_description,
+          };
+
+          axios
+            .post(`${PORTAL_HOST}/info/deletePatientMedication`, portal_data)
+            .then(function (response) {
+              //handle success
+              console.log(response);
+            })
+            .catch(function (response) {
+              //handle error
+              console.log(response);
+            });
           this.setState({ editPrescriptionModal: false });
           this.getPatientMedications();
         },
@@ -713,7 +862,14 @@ class BasicSubjective extends Component {
       return;
     }
   }
+
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      portal_exists: userToken.portal_exists,
+      hospital_id: userToken.hospital_id,
+    });
     this.getPatientMedications();
     if (this.isMale) {
       this.complaintType = Enumerable.from(GlobalVariables.COMPLAINT_TYPE)
@@ -1006,9 +1162,8 @@ class BasicSubjective extends Component {
                                   name="chief_complaint"
                                   onChange={this.textAreaEvent.bind(this)}
                                   maxLength={this.chiefComplaintMaxLength}
-                                />
-
-                                <small className="float-right">
+                                />{" "}
+                                <small className="float-left">
                                   Max Char.
                                   {maxCharactersLeft(
                                     this.chiefComplaintMaxLength,
@@ -1016,34 +1171,6 @@ class BasicSubjective extends Component {
                                   )}
                                   /{this.chiefComplaintMaxLength}
                                 </small>
-                                <button
-                                  className="btn btn-primary float-left"
-                                  onClick={() => {
-                                    const err = Validations(this);
-                                    if (!err) {
-                                      if (
-                                        this.state
-                                          .hims_f_episode_chief_complaint_id ===
-                                        null
-                                      ) {
-                                        SubjectiveHandler().addChiefComplainToPatient(
-                                          this,
-                                          "forceSave"
-                                        );
-                                      } else {
-                                        SubjectiveHandler().updatePatientChiefComplaints(
-                                          this,
-                                          "forceSave"
-                                        );
-                                      }
-                                    }
-                                  }}
-                                >
-                                  {this.state
-                                    .hims_f_episode_chief_complaint_id === null
-                                    ? "Save"
-                                    : "Update"}{" "}
-                                </button>
                               </div>
                             </div>
                           </div>
@@ -1151,7 +1278,37 @@ class BasicSubjective extends Component {
                     </div>
                   </div>
                   <div className="col-12">
-                    <div className="portlet portlet-bordered margin-bottom-15 mandatoryBox">
+                    <div className="row">
+                      <div className="col-12">
+                        <button
+                          className="btn btn-default float-right"
+                          onClick={() => {
+                            const err = Validations(this);
+                            if (!err) {
+                              if (
+                                this.state.hims_f_episode_chief_complaint_id ===
+                                null
+                              ) {
+                                SubjectiveHandler().addChiefComplainToPatient(
+                                  this,
+                                  "forceSave"
+                                );
+                              } else {
+                                SubjectiveHandler().updatePatientChiefComplaints(
+                                  this,
+                                  "forceSave"
+                                );
+                              }
+                            }
+                          }}
+                        >
+                          {this.state.hims_f_episode_chief_complaint_id === null
+                            ? "Save All"
+                            : "Update All"}{" "}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="portlet portlet-bordered  margin-top-15 margin-bottom-15 mandatoryBox">
                       <div className="portlet-title">
                         <div className="caption">
                           <h3 className="caption-subject">Significant Signs</h3>
@@ -1171,7 +1328,9 @@ class BasicSubjective extends Component {
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.significantSignsLength}
                             />
-                            <small className="float-right">
+                          </div>
+                          <div className="col-12">
+                            <small className="float-left">
                               Max Char.
                               {maxCharactersLeft(
                                 this.significantSignsLength,
@@ -1179,6 +1338,35 @@ class BasicSubjective extends Component {
                               )}
                               /{this.significantSignsLength}
                             </small>
+                            {/* <button
+                              className="btn btn-default float-right"
+                              style={{ marginTop: 5 }}
+                              onClick={() => {
+                                const err = Validations(this);
+                                if (!err) {
+                                  if (
+                                    this.state
+                                      .hims_f_episode_chief_complaint_id ===
+                                    null
+                                  ) {
+                                    SubjectiveHandler().addChiefComplainToPatient(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  } else {
+                                    SubjectiveHandler().updatePatientChiefComplaints(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  }
+                                }
+                              }}
+                            >
+                              {this.state.hims_f_episode_chief_complaint_id ===
+                              null
+                                ? "Save"
+                                : "Update"}{" "}
+                            </button> */}
                           </div>
                         </div>
                       </div>
@@ -1206,7 +1394,10 @@ class BasicSubjective extends Component {
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.otherConditionMaxLength}
                             />
-                            <small className="float-right">
+                          </div>{" "}
+                          <div className="col-12">
+                            {" "}
+                            <small className="float-left">
                               Max Char.
                               {maxCharactersLeft(
                                 this.otherConditionMaxLength,
@@ -1214,6 +1405,35 @@ class BasicSubjective extends Component {
                               )}
                               / {this.otherConditionMaxLength}
                             </small>
+                            {/* <button
+                              className="btn btn-default float-right"
+                              style={{ marginTop: 5 }}
+                              onClick={() => {
+                                const err = Validations(this);
+                                if (!err) {
+                                  if (
+                                    this.state
+                                      .hims_f_episode_chief_complaint_id ===
+                                    null
+                                  ) {
+                                    SubjectiveHandler().addChiefComplainToPatient(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  } else {
+                                    SubjectiveHandler().updatePatientChiefComplaints(
+                                      this,
+                                      "forceSave"
+                                    );
+                                  }
+                                }
+                              }}
+                            >
+                              {this.state.hims_f_episode_chief_complaint_id ===
+                              null
+                                ? "Save"
+                                : "Update"}{" "}
+                            </button> */}
                           </div>
                         </div>
                       </div>

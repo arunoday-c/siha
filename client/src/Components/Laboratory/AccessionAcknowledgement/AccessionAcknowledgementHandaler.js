@@ -6,7 +6,8 @@ import Options from "../../../Options.json";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import sockets from "../../../sockets";
-
+import axios from "axios";
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -151,6 +152,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
             status: AccRej,
           };
 
+          debugger;
           algaehApiCall({
             uri: "/laboratory/updateLabSampleStatus",
             module: "laboratory",
@@ -158,7 +160,30 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
             method: "PUT",
             onSuccess: (response) => {
               if (response.data.success === true) {
+                if ($this.state.portal_exists === "Y" && AccRej === "R") {
+                  const portal_data = {
+                    service_id: row.service_id,
+                    visit_code: row.visit_code,
+                    patient_identity: row.primary_id_no,
+                    service_status: "ORDERED",
+                  };
+                  axios
+                    .post(
+                      `${PORTAL_HOST}info/deletePatientService`,
+                      portal_data
+                    )
+                    .then(function (response) {
+                      //handle success
+                      console.log(response);
+                    })
+                    .catch(function (response) {
+                      //handle error
+                      console.log(response);
+                    });
+                }
+
                 getSampleCollectionDetails($this);
+
                 $this.setState({
                   remarks: "",
                   reject_popup: false,

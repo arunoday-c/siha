@@ -49,7 +49,6 @@ class CusPointOfSales extends Component {
     this.state = {
       cost_projects: [],
       customer_id: null,
-      employee_name: null,
     };
   }
 

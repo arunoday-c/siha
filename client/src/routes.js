@@ -36,6 +36,9 @@ const HrDashboard = React.lazy(() =>
 const FinDashboard = React.lazy(() =>
   retry(() => import("./Components/Dashboard/fin-dashboard"))
 );
+const SalesDashboard = React.lazy(() =>
+  retry(() => import("./Components/Dashboard/sales-dashboard"))
+);
 // const CommonDashboard = React.lazy(() =>
 //   retry(() => import("./Components/Dashboard/Dashboard"))
 // );
@@ -683,6 +686,11 @@ const privateRoutes = [
     path: "/FinDashboard",
     isExactPath: true,
     component: <FinDashboard />,
+  },
+  {
+    path: "/SalesDashboard",
+    isExactPath: true,
+    component: <SalesDashboard />,
   },
   {
     path: "/AlgaehModules",

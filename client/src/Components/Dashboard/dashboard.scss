@@ -397,6 +397,65 @@
     }
   }
 }
+
+.sales-dash {
+  .portletTopAction {
+    width: 142px;
+    float: right;
+  }
+
+  .doc-section {
+    margin-top: 15px;
+    text-align: center;
+    h5 {
+      margin-bottom: 0px;
+    }
+    small {
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+    // .docImg {
+    //   margin-bottom: 10px;
+    //   border: 1px solid #ccc;
+    //   width: 110px;
+    //   height: 110px;
+    //   border-radius: 4px;
+    // }
+  }
+  .pat-info-section {
+    padding: 15px 0 0;
+    .col-6 {
+      padding: 0 30px 15px;
+      h5 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      small {
+        margin: 0;
+        padding: 0;
+        text-transform: uppercase;
+      }
+    }
+  }
+  .dashboardGrd {
+    width: 100%;
+    min-height: 250px !important;
+    max-height: 250px !important;
+    overflow: auto;
+  }
+
+  #ResultViewForDocGrid {
+    margin-bottom: 10px;
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 280px !important;
+        min-height: 280px !important;
+        overflow: auto;
+      }
+    }
+  }
+}
 .front-dash {
   .portletTopAction {
     width: 142px;

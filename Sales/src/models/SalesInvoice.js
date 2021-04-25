@@ -7,7 +7,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 export function getInvoiceEntry(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    console.log("getInvoiceEntry: ");
+    // console.log("getInvoiceEntry: ");
     _mysql
       .executeQuery({
         query:
@@ -81,7 +81,7 @@ export function getInvoiceEntry(req, res, next) {
 export function getInvoiceEntryCash(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    console.log("getInvoiceEntry: ");
+    // console.log("getInvoiceEntry: ");
     _mysql
       .executeQuery({
         query:
@@ -210,7 +210,7 @@ export function getDispatchItemDetails(req, res, next) {
 export function getSalesOrderServiceInvoice(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    console.log("getSalesOrderServiceInvoice: ");
+    // console.log("getSalesOrderServiceInvoice: ");
 
     _mysql
       .executeQuery({
@@ -480,7 +480,7 @@ export function addInvoiceEntry(req, res, next) {
 }
 
 export function postSalesInvoice(req, res, next) {
-  console.log("postSalesInvoice");
+  // console.log("postSalesInvoice");
   const _mysql = new algaehMysql();
 
   try {
@@ -523,7 +523,7 @@ export function postSalesInvoice(req, res, next) {
 }
 
 export function saveDeliveryDate(req, res, next) {
-  console.log("saveDeliveryDate");
+  // console.log("saveDeliveryDate");
   const _mysql = new algaehMysql();
 
   try {
@@ -785,7 +785,7 @@ export function CancelSalesInvoice(req, res, next) {
 export function generateAccountingEntry(req, res, next) {
   const _options = req.connection == null ? {} : req.connection;
   const _mysql = new algaehMysql(_options);
-  console.log("generateAccountingEntry");
+  // console.log("generateAccountingEntry");
   try {
     let inputParam = req.body;
     const decimal_places = req.userIdentity.decimal_places;
@@ -823,37 +823,42 @@ export function generateAccountingEntry(req, res, next) {
 
               let strQuery = "";
               let sales_done = "";
+              // console.log("sales_invoice_mode", inputParam.sales_invoice_mode);
+              // console.log(
+              //   "hims_f_sales_invoice_header_id",
+              //   inputParam.hims_f_sales_invoice_header_id
+              // );
               if (inputParam.sales_invoice_mode === "I") {
                 strQuery = mysql.format(
-                  "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
-                                    GH.net_payable, IL.hospital_id ,IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
-                                    DB.dispatch_quantity , DB.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, \
-                                    S.child_id as income_child_id, C.customer_name, IU.conversion_factor, GH.hospital_id as c_hospital_id,\
-                                    GH.project_id, D.hims_d_sub_department_id from hims_f_sales_invoice_header GH \
-                                    inner join hims_f_sales_invoice_detail GD on GH.hims_f_sales_invoice_header_id = GD.sales_invoice_header_id \
-                                    inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = GD.dispatch_note_header_id \
-                                    inner join hims_f_sales_dispatch_note_batches DB on DD.hims_f_sales_dispatch_note_detail_id = DB.sales_dispatch_note_detail_id \
-                                    inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = GH.location_id\
-                                    inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
-                                    inner join hims_d_inventory_item_master ITM on ITM.hims_d_inventory_item_master_id = DB.item_id\
-                                    inner join hims_d_services S on S.hims_d_services_id = ITM.service_id\
-                                    inner join hims_m_inventory_item_uom IU on IU.item_master_id = DB.item_id and IU.uom_id = DB.uom_id\
-                                    left join hims_d_sub_department D on D.inventory_location_id = GH.location_id\
-                                    where hims_f_sales_invoice_header_id=?;",
+                  "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.invoice_date, GH.net_total, GH.total_tax, \
+                    GH.net_payable, IL.hospital_id ,IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
+                    DB.dispatch_quantity , DB.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, \
+                    S.child_id as income_child_id, C.customer_name, IU.conversion_factor, GH.hospital_id as c_hospital_id,\
+                    GH.project_id, D.hims_d_sub_department_id from hims_f_sales_invoice_header GH \
+                    inner join hims_f_sales_invoice_detail GD on GH.hims_f_sales_invoice_header_id = GD.sales_invoice_header_id \
+                    inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = GD.dispatch_note_header_id \
+                    inner join hims_f_sales_dispatch_note_batches DB on DD.hims_f_sales_dispatch_note_detail_id = DB.sales_dispatch_note_detail_id \
+                    inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = GH.location_id\
+                    inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
+                    inner join hims_d_inventory_item_master ITM on ITM.hims_d_inventory_item_master_id = DB.item_id\
+                    inner join hims_d_services S on S.hims_d_services_id = ITM.service_id\
+                    inner join hims_m_inventory_item_uom IU on IU.item_master_id = DB.item_id and IU.uom_id = DB.uom_id and IU.record_status='A'\
+                    left join hims_d_sub_department D on D.inventory_location_id = GH.location_id\
+                    where hims_f_sales_invoice_header_id=?;",
                   [inputParam.hims_f_sales_invoice_header_id]
                 );
                 sales_done = "Item";
               } else {
                 strQuery = mysql.format(
-                  "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
-                                    GH.net_payable, GS.net_extended_cost, C.head_id as customer_head_id, C.child_id as customer_child_id, \
-                                    S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name, GH.hospital_id as c_hospital_id,\
-                                    D.hims_d_sub_department_id from hims_f_sales_invoice_header GH \
-                                    inner join hims_f_sales_invoice_services GS on GH.hims_f_sales_invoice_header_id = GS.sales_invoice_header_id \
-                                    inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
-                                    inner join hims_d_services S on S.hims_d_services_id = GS.services_id\
-                                    left join hims_d_sub_department D on D.hims_d_sub_department_id = S.sub_department_id\
-                                    where hims_f_sales_invoice_header_id=?;",
+                  "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.invoice_date, GH.net_total, GH.total_tax, \
+                    GH.net_payable, GS.net_extended_cost, C.head_id as customer_head_id, C.child_id as customer_child_id, \
+                    S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name, GH.hospital_id as c_hospital_id,\
+                    D.hims_d_sub_department_id from hims_f_sales_invoice_header GH \
+                    inner join hims_f_sales_invoice_services GS on GH.hims_f_sales_invoice_header_id = GS.sales_invoice_header_id \
+                    inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
+                    inner join hims_d_services S on S.hims_d_services_id = GS.services_id\
+                    left join hims_d_sub_department D on D.hims_d_sub_department_id = S.sub_department_id\
+                    where hims_f_sales_invoice_header_id=?;",
                   [inputParam.hims_f_sales_invoice_header_id]
                 );
                 sales_done = "Service";
@@ -871,7 +876,7 @@ export function generateAccountingEntry(req, res, next) {
                                         voucher_type, document_id, document_number, from_screen, \
                                         narration, invoice_no, due_date, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
                       values: [
-                        new Date(),
+                        headerResult[0].invoice_date,
                         headerResult[0].net_payable,
                         "sales",
                         headerResult[0].hims_f_sales_invoice_header_id,
@@ -919,6 +924,8 @@ export function generateAccountingEntry(req, res, next) {
                         project_id: headerResult[0].project_id,
                       });
 
+                      // console.log("Customer ===> ", insertSubDetail);
+
                       //OUT PUT Tax Entry
                       if (parseFloat(headerResult[0].total_tax) > 0) {
                         insertSubDetail.push({
@@ -939,20 +946,47 @@ export function generateAccountingEntry(req, res, next) {
 
                       for (let i = 0; i < headerResult.length; i++) {
                         //Income Entry
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: headerResult[i].income_head_id,
-                          child_id: headerResult[i].income_child_id,
-                          debit_amount: 0,
-                          payment_type: "CR",
-                          credit_amount: headerResult[i].net_extended_cost,
-                          hospital_id: req.userIdentity.hospital_id,
-                          sub_department_id:
-                            headerResult[i].hims_d_sub_department_id === null
-                              ? sub_department_id
-                              : headerResult[i].hims_d_sub_department_id,
-                          project_id: headerResult[i].project_id,
-                        });
+                        const find_income_account = insertSubDetail.find(
+                          (f) => f.child_id === headerResult[i].income_child_id
+                        );
+                        // console.log(
+                        //   "headerResult[i].net_extended_cost",
+                        //   headerResult[i].net_extended_cost
+                        // );
+                        if (find_income_account) {
+                          const income_index = insertSubDetail.indexOf(
+                            find_income_account
+                          );
+                          insertSubDetail[
+                            income_index
+                          ].credit_amount = utilities.decimalPoints(
+                            parseFloat(
+                              insertSubDetail[income_index].credit_amount
+                            ) + parseFloat(headerResult[i].net_extended_cost),
+                            decimal_places
+                          );
+
+                          // console.log(
+                          //   "credit_amount",
+                          //   insertSubDetail[income_index].credit_amount
+                          // );
+                        } else {
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: headerResult[i].income_head_id,
+                            child_id: headerResult[i].income_child_id,
+                            debit_amount: 0,
+                            payment_type: "CR",
+                            credit_amount: headerResult[i].net_extended_cost,
+                            hospital_id: req.userIdentity.hospital_id,
+                            sub_department_id:
+                              headerResult[i].hims_d_sub_department_id === null
+                                ? sub_department_id
+                                : headerResult[i].hims_d_sub_department_id,
+                            project_id: headerResult[i].project_id,
+                          });
+                        }
+                        // console.log("Income ====> ", insertSubDetail);
 
                         if (inputParam.sales_invoice_mode === "I") {
                           let waited_avg_cost = utilities.decimalPoints(
@@ -961,41 +995,81 @@ export function generateAccountingEntry(req, res, next) {
                               parseFloat(headerResult[i].waited_avg_cost),
                             decimal_places
                           );
+                          // console.log("waited_avg_cost", waited_avg_cost);
                           //COGS Entry
-                          insertSubDetail.push({
-                            payment_date: new Date(),
-                            head_id: cogs_acc_data.head_id,
-                            child_id: cogs_acc_data.child_id,
-                            debit_amount: waited_avg_cost,
-                            payment_type: "DR",
-                            credit_amount: 0,
-                            hospital_id: req.userIdentity.hospital_id,
-                            sub_department_id:
-                              headerResult[i].hims_d_sub_department_id === null
-                                ? sub_department_id
-                                : headerResult[i].hims_d_sub_department_id,
-                            project_id: headerResult[i].project_id,
-                          });
+                          const find_cogs_account = insertSubDetail.find(
+                            (f) => f.child_id === cogs_acc_data.child_id
+                          );
+                          // console.log("find_cogs_account", find_cogs_account);
+                          if (find_cogs_account) {
+                            const cogs_index = insertSubDetail.indexOf(
+                              find_cogs_account
+                            );
+                            insertSubDetail[
+                              cogs_index
+                            ].debit_amount = utilities.decimalPoints(
+                              parseFloat(
+                                insertSubDetail[cogs_index].debit_amount
+                              ) + parseFloat(waited_avg_cost),
+                              decimal_places
+                            );
+                          } else {
+                            insertSubDetail.push({
+                              payment_date: new Date(),
+                              head_id: cogs_acc_data.head_id,
+                              child_id: cogs_acc_data.child_id,
+                              debit_amount: waited_avg_cost,
+                              payment_type: "DR",
+                              credit_amount: 0,
+                              hospital_id: req.userIdentity.hospital_id,
+                              sub_department_id:
+                                headerResult[i].hims_d_sub_department_id ===
+                                null
+                                  ? sub_department_id
+                                  : headerResult[i].hims_d_sub_department_id,
+                              project_id: headerResult[i].project_id,
+                            });
+                          }
 
                           //Location Wise
-                          insertSubDetail.push({
-                            payment_date: new Date(),
-                            head_id: headerResult[i].inv_head_id,
-                            child_id: headerResult[i].inv_child_id,
-                            debit_amount: 0,
-                            payment_type: "CR",
-                            credit_amount: waited_avg_cost,
-                            hospital_id: headerResult[i].hospital_id,
-                            sub_department_id:
-                              headerResult[i].hims_d_sub_department_id === null
-                                ? sub_department_id
-                                : headerResult[i].hims_d_sub_department_id,
-                            project_id: headerResult[i].project_id,
-                          });
+                          const find_loc_account = insertSubDetail.find(
+                            (f) => f.child_id === headerResult[i].inv_child_id
+                          );
+                          // console.log("find_loc_account", find_loc_account);
+                          if (find_loc_account) {
+                            const loc_index = insertSubDetail.indexOf(
+                              find_loc_account
+                            );
+                            insertSubDetail[
+                              loc_index
+                            ].credit_amount = utilities.decimalPoints(
+                              parseFloat(
+                                insertSubDetail[loc_index].credit_amount
+                              ) + parseFloat(waited_avg_cost),
+                              decimal_places
+                            );
+                          } else {
+                            insertSubDetail.push({
+                              payment_date: new Date(),
+                              head_id: headerResult[i].inv_head_id,
+                              child_id: headerResult[i].inv_child_id,
+                              debit_amount: 0,
+                              payment_type: "CR",
+                              credit_amount: waited_avg_cost,
+                              hospital_id: headerResult[i].hospital_id,
+                              sub_department_id:
+                                headerResult[i].hims_d_sub_department_id ===
+                                null
+                                  ? sub_department_id
+                                  : headerResult[i].hims_d_sub_department_id,
+                              project_id: headerResult[i].project_id,
+                            });
+                          }
                         }
                       }
 
-                      console.log("insertSubDetail", insertSubDetail);
+                      // console.log("insertSubDetail", insertSubDetail);
+                      // consol.log("insertSubDetail", insertSubDetail);
                       _mysql
                         .executeQuery({
                           query:
@@ -1098,7 +1172,7 @@ function updateSalesOrder(options) {
       let _mysql = options._mysql;
       let req = options.req;
       let strQuery = "";
-      console.log("input.is_completed", input.is_completed);
+      // console.log("input.is_completed", input.is_completed);
       if (input.sales_invoice_mode === "I") {
         let dispatch_note_header_id = _.map(
           input.invoice_entry_detail_item,

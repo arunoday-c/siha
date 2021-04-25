@@ -573,7 +573,7 @@ export default {
           ? req.body.billdetails
           : req.records.ResultOfFetchOrderIds;
 
-      console.log("Services", Services);
+      // console.log("Services", Services);
       const labServices = Services.filter(
         (f) =>
           f.service_type_id ==
@@ -594,7 +594,7 @@ export default {
         };
       });
 
-      console.log("labServices", labServices);
+      // console.log("labServices", labServices);
       // conseol.log("labServices", labServices);
 
       if (labServices.length > 0) {
@@ -2212,6 +2212,12 @@ export default {
         })
         .ToArray();
 
+      const ord_lab_services = req.body.billdetails.filter(
+        (f) =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Lab
+      );
+
       if (OrderServices.length > 0) {
         let qry = "";
 
@@ -2234,8 +2240,12 @@ export default {
             printQuery: true,
           })
           .then((result) => {
-            // console.log("req.records.LAB_Package", req.body.LAB_Package);
-            if (req.body.LAB_Package === true) {
+            // console.log("ord_lab_services", ord_lab_services.length);
+            // console.log("OrderServices", OrderServices.length);
+            if (
+              req.body.LAB_Package === true ||
+              ord_lab_services.length !== OrderServices.length
+            ) {
               req.records = { LAB: true };
             } else {
               req.records = { LAB: false };

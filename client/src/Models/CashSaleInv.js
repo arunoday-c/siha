@@ -37,6 +37,8 @@ export default {
       decimal_place: 0,
       itemAdd: false,
       invoice_generated: "Y",
+      employee_name: null,
+      sales_person_id: null,
     };
     return output;
   },

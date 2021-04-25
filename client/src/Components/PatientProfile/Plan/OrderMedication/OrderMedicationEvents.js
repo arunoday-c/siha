@@ -12,7 +12,7 @@ import _ from "lodash";
 // } from "../../../../utils/GlobalVariables.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import axios from "axios";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 //Text Handaler Change
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -270,6 +270,7 @@ const SaveMedication = ($this, context, e) => {
               ? "Epilesional"
               : null,
           med_units: m.med_units,
+          instructions: m.instructions,
           hospital_id: $this.state.hospital_id,
         };
       });
@@ -286,14 +287,10 @@ const SaveMedication = ($this, context, e) => {
             title: "Ordered Successfully.",
             type: "success",
           });
-          debugger;
           if ($this.state.portal_exists === "Y") {
-            portal_data = JSON.stringify(portal_data);
+            // portal_data = JSON.stringify(portal_data);
             axios
-              .post(
-                "http://localhost:4402/api/v1/info/patientMedication",
-                portal_data
-              )
+              .post(`${PORTAL_HOST}/info/patientMedication`, portal_data)
               .then(function (response) {
                 //handle success
                 console.log(response);

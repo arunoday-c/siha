@@ -14,7 +14,7 @@ import config from "../../../utils/config.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import axios from "axios";
 import { MainContext } from "algaeh-react-components";
-
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 class VitalComponent extends Component {
   constructor(props) {
     super(props);
@@ -79,6 +79,27 @@ class VitalComponent extends Component {
                   ? _elements[i].children[0].value
                   : 0.0,
               };
+            } else if (elementName === "o2 sat") {
+              portal_data = {
+                ...portal_data,
+                o2_sat: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
+            } else if (elementName === "bp systolic") {
+              portal_data = {
+                ...portal_data,
+                bp_systolic: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
+            } else if (elementName === "bp diastolic") {
+              portal_data = {
+                ...portal_data,
+                bp_diastolic: _elements[i].children[0].value
+                  ? _elements[i].children[0].value
+                  : 0.0,
+              };
             } else {
               portal_data = {
                 ...portal_data,
@@ -99,10 +120,7 @@ class VitalComponent extends Component {
               const userToken = this.context.userToken;
               if (userToken.portal_exists === "Y") {
                 axios
-                  .post(
-                    "http://localhost:4402/api/v1/info/patientVitals",
-                    portal_data
-                  )
+                  .post(`${PORTAL_HOST}/info/patientVitals`, portal_data)
                   .then(function (response) {
                     //handle success
                     console.log(response);

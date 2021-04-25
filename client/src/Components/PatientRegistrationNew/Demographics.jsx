@@ -71,7 +71,7 @@ export function Demographics({
 }) {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
-  const { savedPatient } = useContext(FrontdeskContext);
+  const { savedPatient, setIdentityType } = useContext(FrontdeskContext);
   const disabled = !inModal && (!!patient_code || !!savedPatient?.patient_code);
   const {
     country_id: country,
@@ -135,8 +135,10 @@ export function Demographics({
       if (!patient_code) {
         if (res[0]?.identity_document_id) {
           setValue("primary_identity_id", res[0]?.identity_document_id);
+          setIdentityType(res[0]?.identity_type);
         } else {
           setValue("primary_identity_id", "");
+          setIdentityType("");
         }
       }
     }
@@ -1028,7 +1030,12 @@ export function Demographics({
                                 },
                                 value,
                                 onChange: (_, selected) => {
+                                  debugger;
+                                  const identity_type =
+                                    _.identity_document_name;
                                   onChange(selected);
+                                  setIdentityType(identity_type);
+                                  setValue("identity_type", identity_type);
                                 },
                                 onClear: () => {
                                   onChange("");
