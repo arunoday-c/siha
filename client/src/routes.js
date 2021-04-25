@@ -152,6 +152,9 @@ const ItemSetup = React.lazy(() =>
 const FrontDesk = React.lazy(() =>
   retry(() => import("./Components/FrontDesk/FrontDesk"))
 );
+const FrontDeskBeta = React.lazy(() =>
+  retry(() => import("./Components/FrontDesk/FrontDeskBeta"))
+);
 const ResultEntryList = React.lazy(() =>
   retry(() => import("./Components/Laboratory/ResultEntryList/ResultEntryList"))
 );
@@ -778,6 +781,11 @@ const privateRoutes = [
     path: "/Appointment",
     isExactPath: true,
     component: <FrontDesk screen="Appointment" />,
+  },
+  {
+    path: "/AppointmentBeta",
+    isExactPath: true,
+    component: <FrontDeskBeta screen="Appointment" />,
   },
   {
     path: "/UpdatePatientDetails",
@@ -1418,11 +1426,6 @@ const privateRoutes = [
     path: "/QuotationCompare",
     isExactPath: true,
     component: <QuotationCompare />,
-  },
-  {
-    path: "/DoctorCommission",
-    isExactPath: true,
-    component: <DoctorCommission />,
   },
   {
     path: "/DoctorCommission",
