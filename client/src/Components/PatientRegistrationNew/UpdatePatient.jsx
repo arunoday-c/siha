@@ -33,6 +33,7 @@ export function UpdatePatient({
   identity_type,
   component = false,
 }) {
+  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
   const { userToken, userLanguage } = useContext(MainContext);
   const [patientCode, setPatientCode] = useState(null);
 
@@ -126,10 +127,7 @@ export function UpdatePatient({
         };
         try {
           axios
-            .post(
-              "http://localhost:4402/api/v1/info/updatepatientRegistration",
-              portal_data
-            )
+            .post(`${PORTAL_HOST}/info/updatepatientRegistration`, portal_data)
             .then(function (response) {
               //handle success
               console.log(response);

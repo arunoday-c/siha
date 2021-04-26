@@ -197,7 +197,8 @@ export function PrepaymentAuthList() {
         PayOrRejectReq(
           "P",
           revertData.finance_f_prepayment_request_id,
-          revertData.prepayment_amount
+          revertData.prepayment_amount,
+          revertData
         );
       } catch (e) {
         AlgaehMessagePop({
