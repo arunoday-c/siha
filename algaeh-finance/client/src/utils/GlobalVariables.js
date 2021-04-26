@@ -44,6 +44,7 @@ export const Account_Type = [
 export const PaymentStatus = [
   { name: "Pending", value: "P" },
   { name: "Authorized", value: "A" },
+  { name: "Reverted", value: "R" },
   { name: "Paid", value: "PD" },
 ];
 

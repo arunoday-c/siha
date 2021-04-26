@@ -5,7 +5,7 @@ export const getPrepaymentTypes = (req, res, next) => {
   const _mysql = new algaehMysql();
   _mysql
     .executeQuery({
-      query: `select * from finance_d_prepayment_type where record_status='A'`,
+      query: `select PT.*, case when PT.pre_type = 'P' then 'Prepayment' else 'Expense' end as pre_type_name from finance_d_prepayment_type PT where record_status='A'`,
     })
     .then((res) => {
       _mysql.releaseConnection();
@@ -21,6 +21,7 @@ export const getPrepaymentTypes = (req, res, next) => {
 export const createPrepaymentTypes = (req, res, next) => {
   const input = req.body;
   const {
+    pre_type,
     prepayment_desc,
     prepayment_duration,
     prepayment_gl,
@@ -50,6 +51,7 @@ export const createPrepaymentTypes = (req, res, next) => {
   _mysql
     .executeQuery({
       query: `insert into finance_d_prepayment_type (
+        pre_type,
         prepayment_desc,
         prepayment_duration,
         prepayment_head_id,
@@ -57,9 +59,10 @@ export const createPrepaymentTypes = (req, res, next) => {
         expense_head_id ,
         expense_child_id,
         employees_req
-        ) value(?,?,?,?,?,?,?)`,
+        ) value(?,?,?,?,?,?,?,?)`,
       printQuery: false,
       values: [
+        pre_type,
         prepayment_desc,
         prepayment_duration,
         prepayment_head_id || null,
@@ -376,13 +379,13 @@ export const getPrepaymentRequests = (req, res, next) => {
       _mysql
         .executeQuery({
           query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_remarks,prepayment_desc,prepayment_duration,request_code,request_status,\
-    employee_id,employee_code ,E.full_name as employee_name ,E.identity_no , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
+    employee_id,employee_code ,E.full_name as employee_name ,E.identity_no , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,PR.revert_reason,\
     hims_d_hospital_id,hospital_name ${selectStr}
     from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT \
     on PR.prepayment_type_id=PT.finance_d_prepayment_type_id\
     left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id
-    left join hims_d_hospital H on PR.hospital_id=H.hims_d_hospital_id${joinStr}
-        ${whereStr};`,
+    left join hims_d_hospital H on PR.hospital_id=H.hims_d_hospital_id ${joinStr}
+        ${whereStr} order by PR.created_date desc;`,
           printQuery: false,
         })
         .then((result) => {
@@ -736,12 +739,18 @@ export const payPrepaymentRequest = (req, res, next) => {
         _mysql.releaseConnection();
         next(e);
       });
-  } else if (auth_status == "P") {
+  } else if (auth_status == "R") {
     _mysql
       .executeQuery({
         query:
-          "update finance_f_prepayment_request set request_status='P', revert_reason=?, reverted_amt=? where finance_f_prepayment_request_id=?;",
-        values: [revert_reason, reverted_amt, finance_f_prepayment_request_id],
+          "update finance_f_prepayment_request set request_status='R', revert_reason=?, reverted_amt=?, reverted_by=?, reverted_date=? where finance_f_prepayment_request_id=?;",
+        values: [
+          revert_reason,
+          reverted_amt,
+          req.userIdentity.user_id,
+          new Date(),
+          finance_f_prepayment_request_id,
+        ],
       })
       .then((result) => {
         _mysql.releaseConnection();

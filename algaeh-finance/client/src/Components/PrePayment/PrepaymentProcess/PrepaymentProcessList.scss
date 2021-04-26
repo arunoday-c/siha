@@ -1,14 +1,23 @@
 .preProcessModal {
   min-width: 90% !important;
-  .PrepaymentAmontGrid {
-    min-height: 55vh !important;
-    max-height: 65vh !important;
-    overflow: auto;
-    margin-bottom: 20px;
+
+  #PrepaymentAmontGrid {
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 55vh;
+        max-height: 55vh;
+        overflow: auto;
+      }
+    }
   }
 }
-.PrepaymentProcessListGrid {
-  min-height: 55vh !important;
-  max-height: 65vh !important;
-  overflow: auto;
+
+#PrepaymentProcessListGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
+    }
+  }
 }

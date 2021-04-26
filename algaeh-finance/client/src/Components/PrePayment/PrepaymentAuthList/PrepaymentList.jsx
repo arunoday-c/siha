@@ -12,6 +12,7 @@ import {
   AlgaehSecurityComponent,
   RawSecurityComponent,
   AlgaehTreeSearch,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
@@ -30,7 +31,7 @@ export function PrepaymentAuthList() {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const [revertData, setrevertData] = useState({});
-  const [revert_reason, setRevertReson] = useState(null);
+  const [revert_reason, setRevertReson] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [showAccountsCol, setShowAccountsCol] = useState(false);
   const {
@@ -187,15 +188,17 @@ export function PrepaymentAuthList() {
   };
 
   const onClickRevertModel = () => {
+    debugger;
     if (revert_reason === null || revert_reason === "") {
       AlgaehMessagePop({
-        type: "error",
+        type: "warning",
         display: "Reason is Mandatory.",
       });
+      return;
     } else {
       try {
         PayOrRejectReq(
-          "P",
+          "R",
           revertData.finance_f_prepayment_request_id,
           revertData.prepayment_amount,
           revertData
@@ -211,49 +214,6 @@ export function PrepaymentAuthList() {
 
   return (
     <Spin spinning={loading}>
-      <Modal
-        title="Prepayment Revert"
-        visible={visible}
-        width={300}
-        footer={null}
-        onCancel={() => setVisible(false)}
-        className={`row algaehNewModal preRevertModal`}
-      >
-        <AlgaehFormGroup
-          div={{
-            className: "col-12 form-group mandatory margin-top-15",
-          }}
-          label={{
-            forceLabel: "Reason",
-            isImp: true,
-          }}
-          textBox={{
-            type: "text",
-            value: revert_reason,
-            className: "form-control",
-            id: "name",
-            onChange: (e) => {
-              setRevertReson(e.target.value);
-            },
-            autoComplete: false,
-          }}
-        />
-
-        <div className="popupFooter">
-          <div className="col-lg-12">
-            <div className="row">
-              <div className="col-lg-12">
-                <AlgaehButton
-                  className="btn btn-primary"
-                  onClick={onClickRevertModel}
-                >
-                  Revert
-                </AlgaehButton>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
       <div>
         <form onSubmit={handleSubmit(getRequestForAuth)}>
           <div className="row inner-top-search">
@@ -345,14 +305,14 @@ export function PrepaymentAuthList() {
                 </div>
                 <div className="actions"></div>
               </div>
-              <div className="portlet-body">
+              <div className="portlet-body" id="PrepaymentAuthListGrid">
                 <AlgaehDataGrid
-                  className="PrepaymentAuthListGrid"
                   columns={[
                     {
                       fieldName: "request_status",
-                      label: "Actions",
-                      sortable: true,
+
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      sortable: false,
                       displayTemplate: (row) => {
                         if (row.request_status === "P") {
                           return (
@@ -360,9 +320,6 @@ export function PrepaymentAuthList() {
                               <span onClick={() => onClickAuthorize(row)}>
                                 <i className="fas fa-check"></i>
                               </span>
-                              {/* <span onClick={() => onClickReject(row)}>
-                                <i className="fas fa-undo-alt"></i>
-                              </span> */}
                             </AlgaehSecurityComponent>
                           );
                         } else if (row.request_status === "A") {
@@ -373,17 +330,20 @@ export function PrepaymentAuthList() {
                                   <i className="fas fa-check"></i>
                                 </span>
                               </Tooltip>
-                              {/* <span onClick={() => onClickPay(row)}>
-                                <i className="fas fa-check"></i>
-                              </span> */}
-                              {/* <span onClick={() => onClickRevert(row)}>
-                                <i className="fas fa-undo-alt"></i>
-                              </span> */}
+
                               <Tooltip title="Revert back">
                                 <span onClick={() => onClickRevert(row)}>
                                   <i className="fas fa-undo-alt"></i>
                                 </span>
                               </Tooltip>
+                            </AlgaehSecurityComponent>
+                          );
+                        } else if (row.request_status === "R") {
+                          return (
+                            <AlgaehSecurityComponent componentCode="PREPAYMENT_AUTH">
+                              <span onClick={() => onClickAuthorize(row)}>
+                                <i className="fas fa-check"></i>
+                              </span>
                             </AlgaehSecurityComponent>
                           );
                         } else {
@@ -393,26 +353,71 @@ export function PrepaymentAuthList() {
                     },
                     {
                       fieldName: "request_code",
-                      label: "Request Code",
-                      sortable: true,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Request Code" }} />
+                      ),
+                      sortable: false,
                       others: {
-                        width: 120,
+                        minWidth: 130,
+                      },
+                    },
+
+                    {
+                      fieldName: "employee_code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
+                      ),
+                      sortable: false,
+                      others: {
+                        minWidth: 130,
+                      },
+                    },
+                    {
+                      fieldName: "identity_no",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Identity No." }} />
+                      ),
+                      sortable: false,
+                      others: {
+                        minWidth: 120,
+                      },
+                    },
+
+                    {
+                      fieldName: "employee_name",
+                      label: <AlgaehLabel label={{ forceLabel: "Name" }} />,
+                      sortable: false,
+                      others: {
+                        minWidth: 250,
+                        style: { textAlign: "left" },
                       },
                     },
                     {
                       fieldName: "hospital_name",
-                      label: "Hospital",
-                      sortable: true,
+                      label: <AlgaehLabel label={{ forceLabel: "Branch" }} />,
+                      sortable: false,
+                      others: {
+                        minWidth: 180,
+                      },
                     },
                     {
                       fieldName: "cost_center",
-                      label: "Cost Center",
-                      sortable: true,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Cost Center" }} />
+                      ),
+                      sortable: false,
+                      others: {
+                        minWidth: 180,
+                      },
                     },
                     {
                       fieldName: "prepayment_head_id",
-                      label: "Prepayment Credit GL",
-                      sortable: true,
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Credit GL Account" }}
+                        />
+                      ),
+                      sortable: false,
                       displayTemplate: (row) => {
                         if (row.prepayment_head_id) {
                           return (
@@ -455,38 +460,34 @@ export function PrepaymentAuthList() {
                           return null;
                         }
                       },
-                      others: { show: showAccountsCol },
+                      others: { show: showAccountsCol, minWidth: 180 },
                     },
 
                     {
-                      fieldName: "employee_code",
-                      label: "Employee Code",
-                      sortable: true,
-                    },
-                    {
-                      fieldName: "employee_name",
-                      label: "Employee Name",
-                      sortable: true,
-                    },
-                    {
-                      fieldName: "identity_no",
-                      label: "ID No.",
-                      sortable: true,
-                    },
-                    {
                       fieldName: "prepayment_amount",
-                      label: "Prepayment Amt.",
-                      sortable: true,
+                      label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                      sortable: false,
+                      others: {
+                        minWidth: 100,
+                      },
                     },
                     {
                       fieldName: "start_date",
-                      label: "Prepayment Start date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Start Date" }} />
+                      ),
                       sortable: true,
+                      others: {
+                        minWidth: 100,
+                      },
                     },
                     {
                       fieldName: "end_date",
-                      label: "Prepayment End date",
+                      label: <AlgaehLabel label={{ forceLabel: "End Date" }} />,
                       sortable: true,
+                      others: {
+                        minWidth: 100,
+                      },
                     },
                   ]}
                   loading={false}
@@ -502,6 +503,49 @@ export function PrepaymentAuthList() {
           </div>
         </div>
       </div>
+      <Modal
+        title="Prepayment Revert"
+        visible={visible}
+        width={300}
+        footer={null}
+        onCancel={() => setVisible(false)}
+        className={`row algaehNewModal preRevertModal`}
+      >
+        <AlgaehFormGroup
+          div={{
+            className: "col-12 form-group mandatory margin-top-15",
+          }}
+          label={{
+            forceLabel: "Reason",
+            isImp: true,
+          }}
+          textBox={{
+            type: "text",
+            value: revert_reason,
+            className: "form-control",
+            id: "name",
+            onChange: (e) => {
+              setRevertReson(e.target.value);
+            },
+            autoComplete: false,
+          }}
+        />
+
+        <div className="popupFooter">
+          <div className="col-lg-12">
+            <div className="row">
+              <div className="col-lg-12">
+                <AlgaehButton
+                  className="btn btn-primary"
+                  onClick={onClickRevertModel}
+                >
+                  Revert
+                </AlgaehButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </Spin>
   );
 }

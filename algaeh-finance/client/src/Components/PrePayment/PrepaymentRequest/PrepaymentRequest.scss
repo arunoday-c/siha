@@ -136,3 +136,12 @@
     }
   }
 }
+#PreRequestGrid_Cntr {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
+    }
+  }
+}
