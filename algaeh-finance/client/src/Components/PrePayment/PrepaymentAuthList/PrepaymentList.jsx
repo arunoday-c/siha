@@ -208,46 +208,19 @@ export function PrepaymentAuthList() {
     }
   };
 
-  //   const onClickReject = (row) => {
-  //     confirm({
-  //       okText: "Reject",
-  //       okType: "danger",
-  //       icons: "",
-  //       title: "Prepayment Request Authorization",
-  //       content: `This request is made for
-  // Prepayment Type: ${row.prepayment_desc}`,
-
-  //       maskClosable: true,
-  //       onOk: async () => {
-  //         try {
-  //           await authorizeOrRejectReq("R", row.finance_f_prepayment_request_id);
-  //         } catch (e) {
-  //           AlgaehMessagePop({
-  //             type: "error",
-  //             display: e.message,
-  //           });
-  //         }
-  //       },
-  //     });
-  //   };
-
-  // const { hospital_id: ihospital, prepayment_type_id } = watch([
-  //   "hospital_id",
-  //   "prepayment_type_id",
-  // ]);
-
   return (
     <Spin spinning={loading}>
       <Modal
         title="Prepayment Revert"
         visible={visible}
-        width={1080}
+        width={300}
         footer={null}
         onCancel={() => setVisible(false)}
+        className={`row algaehNewModal preRevertModal`}
       >
         <AlgaehFormGroup
           div={{
-            className: "col-12 form-group  mandatory",
+            className: "col-12 form-group mandatory margin-top-15",
           }}
           label={{
             forceLabel: "Reason",
@@ -265,84 +238,24 @@ export function PrepaymentAuthList() {
           }}
         />
 
-        <AlgaehButton className="btn btn-primary" onClick={onClickRevertModel}>
-          Process
-        </AlgaehButton>
+        <div className="popupFooter">
+          <div className="col-lg-12">
+            <div className="row">
+              <div className="col-lg-12">
+                <AlgaehButton
+                  className="btn btn-primary"
+                  onClick={onClickRevertModel}
+                >
+                  Revert
+                </AlgaehButton>
+              </div>
+            </div>
+          </div>
+        </div>
       </Modal>
       <div>
         <form onSubmit={handleSubmit(getRequestForAuth)}>
           <div className="row inner-top-search">
-            {/* <Controller
-              control={control}
-              name="hospital_id"
-              render={({ onBlur, onChange, value }) => (
-                <AlgaehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{
-                    fieldName: "branch",
-                    isImp: false,
-                  }}
-                  selector={{
-                    value,
-                    onChange: (_, selected) => {
-                      onChange(selected);
-                      setValue("employee_id", "");
-                      setValue("cost_center_id", "");
-                    },
-                    onClear: (_, selected) => {
-                      onChange(selected);
-                      setValue("employee_id", "");
-                      setValue("cost_center_id", "");
-                    },
-                    name: "hospital_id",
-                    dataSource: {
-                      data: branchAndCenters,
-                      valueField: "hims_d_hospital_id",
-                      textField: "hospital_name",
-                    },
-                  }}
-                />
-              )}
-            />
-            {errors.hospital_id && <span>{errors.hospital_id.message}</span>}
-            <Controller
-              control={control}
-              name="cost_center_id"
-              render={({ onBlur, onChange, value }) => (
-                <AlgaehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{
-                    forceLabel: "Cost Center",
-                    isImp: false,
-                  }}
-                  selector={{
-                    others: {
-                      disabled: !ihospital,
-                    },
-                    value,
-                    onChange: (_, selected) => {
-                      onChange(selected);
-                    },
-                    onBlur: (_, selected) => {
-                      onBlur(selected);
-                    },
-                    name: "cost_center_id",
-                    dataSource: {
-                      data: ihospital
-                        ? branchAndCenters.filter(
-                            (item) => item.hims_d_hospital_id == ihospital
-                          )[0].cost_centers
-                        : [],
-                      valueField: "cost_center_id",
-                      textField: "cost_center",
-                    },
-                  }}
-                />
-              )}
-            /> 
-            {errors.cost_center_id && (
-              <span>{errors.cost_center_id.message}</span>
-            )}*/}
             <Controller
               control={control}
               name="request_status"
@@ -411,94 +324,11 @@ export function PrepaymentAuthList() {
               <span>{errors.prepayment_type_id.message}</span>
             )}
 
-            {/* <Controller
-              name="start_date"
-              control={control}
-              render={({ value, onChange }) => (
-                <AlgaehDateHandler
-                  div={{
-                    className: "col-2 algaeh-date-fld",
-                  }}
-                  label={{
-                    forceLabel: "Start Date",
-                    isImp: false,
-                  }}
-                  textBox={{
-                    className: "form-control",
-                    value,
-                  }}
-                  events={{
-                    onChange: (mdate) => {
-                      if (mdate) {
-                        onChange(mdate._d);
-                        if (prepayment_type_id) {
-                          const prepayItem = prePaymentTypes.filter(
-                            (item) =>
-                              item.finance_d_prepayment_type_id ==
-                              prepayment_type_id
-                          );
-                          setValue(
-                            "end_date",
-                            moment(mdate).add(
-                              prepayItem[0].prepayment_duration,
-                              "months"
-                            )._d
-                          );
-                        }
-                      } else {
-                        onChange(undefined);
-                        setValue("end_date", undefined);
-                      }
-                    },
-                    onClear: () => {
-                      onChange(undefined);
-                      setValue("end_date", undefined);
-                    },
-                  }}
-                  // others={{ disabled: !prepayment_type_id }}
-                  // maxDate={moment().add(1, "days")}
-                />
-              )}
-            />
-            {errors.start_date && <span>{errors.start_date.message}</span>}
-            <Controller
-              name="end_date"
-              control={control}
-              render={({ onChange, value }) => (
-                <AlgaehDateHandler
-                  div={{
-                    className: "col-2 algaeh-date-fld form-group",
-                  }}
-                  label={{
-                    forceLabel: "End Date",
-                    isImp: false,
-                  }}
-                  textBox={{
-                    value: value,
-                    className: "form-control",
-                  }}
-                  events={{
-                    onChange: (mdate) => {
-                      if (mdate) {
-                        onChange(mdate._d);
-                      } else {
-                        onChange(undefined);
-                      }
-                    },
-                    onClear: () => {
-                      onChange(undefined);
-                    },
-                  }}
-                  // others={{ disabled: true }}
-                  // maxDate={moment().add(1, "days")}
-                />
-              )}
-            /> */}
             <div className="col">
               <button
                 type="submit"
                 className="btn btn-primary bttn-sm"
-                style={{ marginTop: 20 }}
+                style={{ marginTop: 19 }}
               >
                 Filter
               </button>
@@ -562,8 +392,11 @@ export function PrepaymentAuthList() {
                     },
                     {
                       fieldName: "request_code",
-                      label: "Request Codel",
+                      label: "Request Code",
                       sortable: true,
+                      others: {
+                        width: 120,
+                      },
                     },
                     {
                       fieldName: "hospital_name",
