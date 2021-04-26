@@ -895,9 +895,9 @@ export function PrepaymentRequest() {
                                           window.location.port === ""
                                             ? "/docserver"
                                             : `:3006`
-                                        }/UPLOAD/PrepaymentDocuments/${payReqID.request_code.trim()}/${doc._id.trim()}__ALGAEH__${
-                                          doc.filename
-                                        }`}
+                                        }/UPLOAD/PrepaymentDocuments/${
+                                          payReqID.request_code
+                                        }/${doc._id}__ALGAEH__${doc.filename}`}
                                         download
                                         target="_blank"
                                       >
