@@ -44,6 +44,7 @@ export function PrepaymentRequest() {
   const [visible, setVisible] = useState(false);
   const [disableEdit, setDisableEdit] = useState(false);
   const [payReqID, setPayReqID] = useState({});
+  const [req_code, setReq_code] = useState("");
   const [prePaymentAccounts, setPrePaymentAccounts] = useState(baseState2);
   // const [employees_req, setEmployeeReq] = useState("N");
   // const [identity_no, setEmployeeIDNum] = useState(null);
@@ -215,7 +216,7 @@ export function PrepaymentRequest() {
   };
   const openPrepayDocModal = (data) => {
     setVisible(true);
-
+    setReq_code(data.request_code);
     getDocuments(data.request_code);
   };
   const addRequest = async (data) => {
@@ -996,7 +997,10 @@ export function PrepaymentRequest() {
                               // title="Request Details"
                               visible={visible}
                               footer={null}
-                              onCancel={() => setVisible(false)}
+                              onCancel={() => {
+                                setVisible(false);
+                                setReq_code("");
+                              }}
                               className=""
                               className={`algaehNewModal preAttachmentModal`}
                             >
@@ -1009,10 +1013,24 @@ export function PrepaymentRequest() {
                                           <li>
                                             <b> {doc.filename} </b>
                                             <span>
-                                              <i
-                                                className="fas fa-download"
-                                                // onClick={() => downloadDoc(doc)}
-                                              ></i>
+                                              <a
+                                                href={`${
+                                                  window.location.protocol
+                                                }//${window.location.hostname}${
+                                                  window.location.port === ""
+                                                    ? "/docserver"
+                                                    : `:3006`
+                                                }/UPLOAD/PrepaymentDocuments/${req_code}/${
+                                                  doc._id
+                                                }__ALGAEH__${doc.filename}`}
+                                                download
+                                                target="_blank"
+                                              >
+                                                <i
+                                                  className="fas fa-download"
+                                                  // onClick={() => downloadDoc(doc)}
+                                                ></i>
+                                              </a>
                                             </span>
                                           </li>
                                         ))
