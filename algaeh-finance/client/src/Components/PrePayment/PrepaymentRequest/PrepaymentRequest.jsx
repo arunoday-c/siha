@@ -17,7 +17,7 @@ import { Controller, useForm } from "react-hook-form";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks";
-import { Upload } from "antd";
+import { Upload, confirm } from "antd";
 const baseState = {
   full_name: "",
   employee_id: null,
