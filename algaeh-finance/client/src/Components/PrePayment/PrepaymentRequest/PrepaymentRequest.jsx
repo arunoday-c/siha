@@ -8,6 +8,8 @@ import {
   AlgaehDataGrid,
   AlgaehMessagePop,
   Spin,
+  AlgaehLabel,
+  AlgaehModal,
 } from "algaeh-react-components";
 import { AlgaehAutoSearch } from "../../../Wrappers";
 import moment from "moment";
@@ -15,7 +17,7 @@ import { Controller, useForm } from "react-hook-form";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks";
-import { Upload, Modal } from "antd";
+import { Upload } from "antd";
 const baseState = {
   full_name: "",
   employee_id: null,
@@ -35,7 +37,6 @@ const baseState2 = {
   prepayment_head_id: null,
 };
 const { Dragger } = Upload;
-const { confirm } = Modal;
 export function PrepaymentRequest() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -235,6 +236,13 @@ export function PrepaymentRequest() {
       });
       if (res.data.success) {
         const result = res.data.result;
+        reset({
+          prepayment_type_id: "",
+          prepayment_amount: null,
+          start_date: "",
+          end_date: "",
+          prepayment_remarks: "",
+        });
         if (payment_reqDoc.length > 0) {
           saveDocument(payment_reqDoc, result.request_code, result.insertId)
             .then(() => getRequest())
@@ -251,6 +259,7 @@ export function PrepaymentRequest() {
               });
             });
         } else {
+          getRequest();
           AlgaehMessagePop({
             type: "success",
             display: "Request Added successfully",
@@ -287,13 +296,13 @@ export function PrepaymentRequest() {
         ) : row.request_status === "A" ? (
           <span className="badge badge-success">Approved</span>
         ) : row.request_status === "R" ? (
-          <span className="badge badge-danger">Rejected</span>
+          <span className="badge badge-warning">Reverted</span>
         ) : row.request_status === "PD" ? (
-          <span className="badge badge-danger">Paid</span>
+          <span className="badge badge-success">Paid</span>
         ) : row.request_status === "CN" ? (
           <span className="badge badge-danger">Cancelled</span>
         ) : row.request_status === "PR" ? (
-          <span className="badge badge-danger">Processed</span>
+          <span className="badge badge-default">Processed</span>
         ) : (
           "------"
         )}
@@ -518,7 +527,7 @@ export function PrepaymentRequest() {
                             setSelectedEmployee(baseState);
                           }}
                         />
-                        <div className="col-4">
+                        <div className="col-6">
                           <label className="style_Label ">Employee ID</label>
                           <h6>
                             {selectedEmployee.identity_no
@@ -526,7 +535,7 @@ export function PrepaymentRequest() {
                               : "-----"}
                           </h6>
                         </div>
-                        <div className="col-4">
+                        <div className="col-6">
                           <label className="style_Label ">Employee Code</label>
                           <h6>
                             {selectedEmployee.employee_code
@@ -851,7 +860,7 @@ export function PrepaymentRequest() {
                       <div className="row">
                         <div className="col-3 draggerCntr">
                           <Dragger
-                            accept=".doc,.docx,application/msword,.pdf"
+                            accept=".png,.jpg,.pdf,.doc,.docx,application/msword"
                             name="payment_reqDoc"
                             onRemove={(file) => {
                               setPayment_reqDoc((state) => {
@@ -965,11 +974,10 @@ export function PrepaymentRequest() {
               </div>
               <div className="portlet-body" id="PreRequestGrid_Cntr">
                 <AlgaehDataGrid
-                  className="PreRequestGrid"
                   columns={[
                     {
-                      fieldName: "ACTION",
-                      label: "Action",
+                      fieldName: "",
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
                       displayTemplate: (row) => {
                         return row.request_status === "P" ||
                           row.request_status === "R" ? (
@@ -986,67 +994,14 @@ export function PrepaymentRequest() {
                     },
                     {
                       // fieldName: "",
-                      label: "Attachment",
-                      sortable: true,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Attachment" }} />
+                      ),
+                      sortable: false,
                       displayTemplate: (row) => {
                         // <span>{row.english_name}</span>
                         return (
                           <div>
-                            <Modal
-                              title="Document List"
-                              // title="Request Details"
-                              visible={visible}
-                              footer={null}
-                              onCancel={() => {
-                                setVisible(false);
-                                setReq_code("");
-                              }}
-                              className=""
-                              className={`algaehNewModal preAttachmentModal`}
-                            >
-                              <div className="col-12 popupInner margin-top-15">
-                                <div className="row">
-                                  <div className="col">
-                                    <ul className="preAttachmentList">
-                                      {prepayment_docs.length ? (
-                                        prepayment_docs.map((doc) => (
-                                          <li>
-                                            <b> {doc.filename} </b>
-                                            <span>
-                                              <a
-                                                href={`${
-                                                  window.location.protocol
-                                                }//${window.location.hostname}${
-                                                  window.location.port === ""
-                                                    ? "/docserver"
-                                                    : `:3006`
-                                                }/UPLOAD/PrepaymentDocuments/${req_code}/${
-                                                  doc._id
-                                                }__ALGAEH__${doc.filename}`}
-                                                download
-                                                target="_blank"
-                                              >
-                                                <i
-                                                  className="fas fa-download"
-                                                  // onClick={() => downloadDoc(doc)}
-                                                ></i>
-                                              </a>
-                                            </span>
-                                          </li>
-                                        ))
-                                      ) : (
-                                        <div
-                                          className="col-12 noAttachment"
-                                          key={1}
-                                        >
-                                          <p>No Attachments Available</p>
-                                        </div>
-                                      )}
-                                    </ul>
-                                  </div>
-                                </div>
-                              </div>
-                            </Modal>
                             <span
                               onClick={() => {
                                 openPrepayDocModal(row);
@@ -1057,12 +1012,12 @@ export function PrepaymentRequest() {
                           </div>
                         );
                       },
-                      others: { minWidth: 40 },
+                      // others: { minWidth: 40 },
                     },
 
                     {
                       fieldName: "request_status",
-                      label: "Status",
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       sortable: true,
                       displayTemplate: (row) => {
                         return statusForEditor(row);
@@ -1072,89 +1027,80 @@ export function PrepaymentRequest() {
                       // },
                     },
                     {
-                      fieldName: "hospital_name",
-                      label: "Hospital Name",
-                      sortable: true,
-                      // editorTemplate: (row) => {
-                      //   return row.hospital_name;
-                      // },
-                    },
-                    {
-                      fieldName: "cost_center",
-                      label: "Cost Center",
-                      sortable: true,
-                      // editorTemplate: (row) => {
-                      //   return row.cost_center;
-                      // },
-                    },
-                    {
                       fieldName: "employee_code",
-                      label: "Employee Code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
+                      ),
                       sortable: true,
                       // editorTemplate: (row) => {
                       //   return row.employee_code;
                       // },
                     },
                     {
-                      fieldName: "employee_name",
-                      label: "Employee Name",
-                      sortable: true,
-                      // editorTemplate: (row) => {
-                      //   return row.employee_name;
-                      // },
-                    },
-                    {
                       fieldName: "identity_no",
-                      label: "ID No.",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Identity No." }} />
+                      ),
                       sortable: true,
                       // editorTemplate: (row) => {
                       //   return row.identity_no;
                       // },
                     },
                     {
-                      fieldName: "prepayment_desc",
-                      label: "Prepayment Type",
+                      fieldName: "employee_name",
                       sortable: true,
+                      label: <AlgaehLabel label={{ forceLabel: "Name" }} />,
+                      others: {
+                        minWidth: 250,
+                        style: { textAlign: "left" },
+                      },
+                    },
+                    // {
+                    //   fieldName: "hospital_name",
+                    //   label: <AlgaehLabel label={{ forceLabel: "Branch" }} />,
+                    //   sortable: false,
+                    //   // editorTemplate: (row) => {
+                    //   //   return row.hospital_name;
+                    //   // },
+                    // },
+                    // {
+                    //   fieldName: "cost_center",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Cost Center" }} />
+                    //   ),
+                    //   sortable: false,
+                    //   // editorTemplate: (row) => {
+                    //   //   return row.cost_center;
+                    //   // },
+                    // },
+                    {
+                      fieldName: "prepayment_desc",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Prepayment Type" }}
+                        />
+                      ),
+                      sortable: false,
                       // editorTemplate: (row) => {
                       //   return row.prepayment_desc;
                       // },
                     },
                     {
                       fieldName: "prepayment_amount",
-                      label: "Prepayment Amt.",
-                      sortable: true,
+                      label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
+                      sortable: false,
                     },
                     {
                       fieldName: "start_date",
-                      label: "Prepayment Start date",
-                      sortable: true,
-                      // editorTemplate: (row) => {
-                      //   return (
-                      //     <AlgaehDateHandler
-                      //       label={{}}
-                      //       textBox={{
-                      //         className: "form-control",
-                      //         name: "end_date",
-                      //         updateInternally: true,
-                      //       }}
-                      //       events={{
-                      //         onChange: (e) => {
-                      //           changeGridDates(row, e);
-                      //         },
-                      //         // onClear: () => {
-                      //         //   onChange(undefined);
-                      //         //   setValue("end_date", undefined);
-                      //         // },
-                      //       }}
-                      //       others={{ defaultValue: moment(row.start_date) }}
-                      //     />
-                      //   );
-                      // },
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Start Date" }} />
+                      ),
+                      sortable: false,
                     },
                     {
                       fieldName: "end_date",
-                      label: "Prepayment End date",
-                      sortable: true,
+                      label: <AlgaehLabel label={{ forceLabel: "End Date" }} />,
+                      sortable: false,
 
                       // editorTemplate: (row) => {
                       //   return null;
@@ -1162,34 +1108,28 @@ export function PrepaymentRequest() {
                     },
                     {
                       fieldName: "prepayment_remarks",
-                      label: "Remarks",
-                      sortable: true,
-                      // displayTemplate: (row) => {
-                      //   return row.
-                      // }
-
-                      // editorTemplate: (row) => {
-                      //   return null;
-                      // },
+                      label: <AlgaehLabel label={{ forceLabel: "Remarks" }} />,
+                      sortable: false,
                     },
-                    // editorTemplate: (row) => {
-                    //   return null;
-                    // },
-                  ]}
-                  // isEditable={"editOnly"}
-                  loading={false}
-                  // height="70vh"
-                  data={requests}
-                  pagination={true}
-                  events={
                     {
-                      // onSave: updatePrePayReq,
-                      // onEdit:
-                      // onEditShow: (row) => {
-                      //   return row.request_status === "A";
-                      // },
-                    }
-                  }
+                      fieldName: "revert_reason",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Reverted Reason" }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        if (row.request_status === "R") {
+                          return <span>{row.revert_reason}</span>;
+                        }
+                      },
+                      sortable: false,
+                    },
+                  ]}
+                  loading={false}
+                  data={requests ?? []}
+                  pagination={true}
+                  events={{}}
                   others={{}}
                 />
               </div>
@@ -1197,6 +1137,56 @@ export function PrepaymentRequest() {
           </div>
         </div>
       </div>
+      <AlgaehModal
+        title="Document List"
+        // title="Request Details"
+        visible={visible}
+        footer={null}
+        onCancel={() => {
+          setVisible(false);
+          setReq_code("");
+        }}
+        className=""
+        className={`algaehNewModal preAttachmentModal`}
+      >
+        <div className="col-12 popupInner margin-top-15">
+          <div className="row">
+            <div className="col">
+              <ul className="preAttachmentList">
+                {prepayment_docs.length ? (
+                  prepayment_docs.map((doc) => (
+                    <li>
+                      <b> {doc.filename} </b>
+                      <span>
+                        <a
+                          href={`${window.location.protocol}//${
+                            window.location.hostname
+                          }${
+                            window.location.port === "" ? "/docserver" : `:3006`
+                          }/UPLOAD/PrepaymentDocuments/${req_code}/${
+                            doc._id
+                          }__ALGAEH__${doc.filename}`}
+                          download
+                          target="_blank"
+                        >
+                          <i
+                            className="fas fa-download"
+                            // onClick={() => downloadDoc(doc)}
+                          ></i>
+                        </a>
+                      </span>
+                    </li>
+                  ))
+                ) : (
+                  <div className="col-12 noAttachment" key={1}>
+                    <p>No Attachments Available</p>
+                  </div>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </AlgaehModal>
     </Spin>
   );
 }

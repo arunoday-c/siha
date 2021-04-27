@@ -1,5 +1,9 @@
-.PrepaymentMasterListGrid {
-  min-height: 55vh !important;
-  max-height: 65vh !important;
-  overflow: auto;
+#PrepaymentMasterListGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
+    }
+  }
 }

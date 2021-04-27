@@ -5,12 +5,14 @@ import { newAlgaehApi } from "../../../hooks/";
 import { useForm, Controller } from "react-hook-form";
 import {
   AlgaehFormGroup,
-  AlgaehTable,
+  AlgaehDataGrid,
   AlgaehMessagePop,
   AlgaehTreeSearch,
   Spin,
+  AlgaehAutoComplete,
   // Button,
   Modal,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import { PrePaymentContext } from "../Prepayment";
 
@@ -23,15 +25,26 @@ export function PrepaymentMaster() {
   const [loading, setLoading] = useState(true);
   const [types, setTypes] = useState([]);
 
-  const { control, errors, handleSubmit, reset, setValue, register } = useForm({
+  const {
+    control,
+    errors,
+    handleSubmit,
+    reset,
+    setValue,
+    register,
+    watch,
+  } = useForm({
     defaultValues: {
+      pre_type: "P",
       prepayment_desc: "",
       prepayment_duration: "",
       prepayment_gl: "",
       expense_gl: "",
-      employees_req: false,
+      // employees_req: true,
     },
   });
+
+  const { pre_type } = watch(["pre_type"]);
 
   useEffect(() => {
     Promise.all([getPreType(), getAccountHeads()])
@@ -59,12 +72,13 @@ export function PrepaymentMaster() {
   };
 
   const addPreType = (e) => {
-    let employees_req = e.employee_req ? "Y" : "N";
+    // let employees_req = e.employees_req ? "Y" : "N";
+
     newAlgaehApi({
       uri: "/prepayment/createPrepaymentTypes",
       method: "POST",
       module: "finance",
-      data: { ...e, employees_req },
+      data: { ...e, employees_req: "Y" },
     })
       .then((res) => {
         if (res.data.success) {
@@ -82,7 +96,8 @@ export function PrepaymentMaster() {
       module: "finance",
       data: {
         ...e,
-        employees_req: e.employee_req ? "Y" : "N",
+        // employees_req: e.employees_req ? "Y" : "N",
+        employees_req: "Y",
         finance_d_prepayment_type_id: current.finance_d_prepayment_type_id,
       },
     })
@@ -151,13 +166,51 @@ export function PrepaymentMaster() {
       <form onSubmit={handleSubmit(onSubmit)} onError={onSubmit}>
         <div className="row inner-top-search">
           <Controller
+            control={control}
+            name="pre_type"
+            rules={{ required: "Please select a type" }}
+            render={({ value, onChange }) => (
+              <AlgaehAutoComplete
+                div={{ className: "col form-group mandatory" }}
+                label={{
+                  forceLabel: "Type",
+                  isImp: true,
+                }}
+                selector={{
+                  value,
+                  onChange: (_, selected) => {
+                    onChange(selected);
+                    if (selected === "E") {
+                      setValue("prepayment_duration", 1);
+                    } else {
+                      setValue("prepayment_duration", "");
+                    }
+                  },
+                  onClear: () => {
+                    onChange("");
+                  },
+                  name: "pre_type",
+                  dataSource: {
+                    data: [
+                      { name: "Prepayment", value: "P" },
+                      { name: "Expense", value: "E" },
+                    ],
+                    textField: "name",
+                    valueField: "value",
+                  },
+                }}
+              />
+            )}
+          />
+          {errors.pre_type && <span>{errors.pre_type.message}</span>}
+          <Controller
             name="prepayment_desc"
             control={control}
             rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehFormGroup
                 div={{
-                  className: "col form-group algaeh-text-fld",
+                  className: "col form-group algaeh-text-fld mandatory",
                 }}
                 // error={errors}
                 label={{
@@ -182,7 +235,7 @@ export function PrepaymentMaster() {
             render={(props) => (
               <AlgaehFormGroup
                 div={{
-                  className: "col form-group algaeh-text-fld",
+                  className: "col form-group algaeh-text-fld mandatory",
                 }}
                 error={errors}
                 label={{
@@ -194,6 +247,7 @@ export function PrepaymentMaster() {
                   type: "text",
                   className: "form-control",
                   ...props,
+                  disabled: pre_type === "E",
                 }}
               />
             )}
@@ -205,7 +259,7 @@ export function PrepaymentMaster() {
             rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehTreeSearch
-                div={{ className: "col-3 form-group" }}
+                div={{ className: "col form-group mandatory" }}
                 label={{
                   forceLabel: "Prepayment GL",
                   isImp: true,
@@ -237,7 +291,7 @@ export function PrepaymentMaster() {
             rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehTreeSearch
-                div={{ className: "col-3 form-group" }}
+                div={{ className: "col form-group mandatory" }}
                 label={{
                   forceLabel: "Expense GL",
                   isImp: true,
@@ -284,22 +338,20 @@ export function PrepaymentMaster() {
               />
             )}
           /> */}
-
+          {/* 
           <div className="col">
             <label>Employee Requiried</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
                 <input
                   type="checkbox"
-                  // value="yes"
-
-                  name="employee_req"
+                  name="employees_req"
                   ref={register({ required: false })}
                 />
                 <span>Yes</span>
               </label>
             </div>
-          </div>
+          </div> */}
 
           <div className="col">
             <button
@@ -323,13 +375,12 @@ export function PrepaymentMaster() {
                 <div className="actions"></div>
               </div>
 
-              <div className="portlet-body">
-                <AlgaehTable
-                  className="PrepaymentMasterListGrid"
+              <div className="portlet-body" id="PrepaymentMasterListGrid">
+                <AlgaehDataGrid
                   columns={[
                     {
                       fieldName: "",
-                      label: "Actions",
+                      label: <AlgaehLabel label={{ fieldName: "action" }} />,
                       displayTemplate: (row) => {
                         return (
                           <>
@@ -347,22 +398,50 @@ export function PrepaymentMaster() {
                       },
                     },
                     {
+                      fieldName: "pre_type_name",
+                      label: <AlgaehLabel label={{ forceLabel: "Type" }} />,
+                      sortable: false,
+                      others: {
+                        minWidth: 180,
+                      },
+                      filterable: true,
+                    },
+                    {
                       fieldName: "prepayment_desc",
-                      label: "Prepayment Desc.",
-                      sortable: true,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Description" }} />
+                      ),
+                      sortable: false,
+                      others: {
+                        minWidth: 180,
+                      },
                       filterable: true,
                     },
                     {
                       fieldName: "prepayment_duration",
-                      label: "Duration (Months)",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Duration (month)" }}
+                        />
+                      ),
                       align: "center",
-                      sortable: true,
+                      sortable: false,
+                      others: {
+                        minWidth: 100,
+                      },
                       filterable: true,
                     },
                     {
                       fieldName: "prepayment_head_id",
-                      label: "Prepayment Credit GL",
-                      sortable: true,
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Prepayment Credit GL" }}
+                        />
+                      ),
+                      sortable: false,
+                      others: {
+                        minWidth: 180,
+                      },
                       displayTemplate: (row) => {
                         if (row.prepayment_head_id) {
                           return (
@@ -396,8 +475,16 @@ export function PrepaymentMaster() {
                     },
                     {
                       fieldName: "expense_head_id",
-                      label: "Prepayment Debit GL",
-                      sortable: true,
+
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Prepayment Debit GL" }}
+                        />
+                      ),
+                      sortable: false,
+                      others: {
+                        minWidth: 180,
+                      },
                       displayTemplate: (row) => {
                         if (row.expense_head_id) {
                           return (
@@ -429,19 +516,26 @@ export function PrepaymentMaster() {
                         }
                       },
                     },
-                    {
-                      fieldName: "employees_req",
-                      label: "Employee Required",
-                      sortable: true,
-                      filterable: true,
-                      displayTemplate: (row) => {
-                        return row.employees_req === "Y" ? "YES" : "NO";
-                      },
-                    },
+                    // {
+                    //   fieldName: "employees_req",
+                    //   // label: "Employee Required",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "Employee Required" }}
+                    //     />
+                    //   ),
+                    //   sortable: false,
+                    //   others: {
+                    //     minWidth: 100,
+                    //   },
+                    //   filterable: true,
+                    //   displayTemplate: (row) => {
+                    //     return row.employees_req === "Y" ? "YES" : "NO";
+                    //   },
+                    // },
                   ]}
                   isFilterable={true}
                   // isEditable="onlyDelete"
-                  height="34vh"
                   data={types}
                 />
               </div>

@@ -12,7 +12,7 @@ import {
   AlgaehMessagePop,
   DatePicker,
   Spin,
-
+  AlgaehLabel,
   //   AlgaehButton,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks/";
@@ -359,7 +359,7 @@ export function PrepaymentProcess() {
         onCancel={() => setVisible(false)}
         className={`algaehNewModal preProcessModal`}
       >
-        <div className="col-12 popupInner margin-top-15">
+        <div className="col-12 popupInner margin-top-15 margin-bottom-15">
           <div className="row">
             <div className="col">
               <label className="style_Label ">Total Prepayment</label>
@@ -395,110 +395,119 @@ export function PrepaymentProcess() {
               </button>
             </div>
           </div>
-          <AlgaehDataGrid
-            className="PrepaymentAmontGrid"
-            columns={[
-              {
-                fieldName: "cost_center_id",
-                label: "Cost Center",
+          <div className="row">
+            <div className="col-12 margin-bottom-15" id="PrepaymentAmontGrid">
+              <AlgaehDataGrid
+                columns={[
+                  {
+                    fieldName: "cost_center_id",
 
-                displayTemplate: (row) => {
-                  return <span>{row.cost_center}</span>;
-                },
-                editorTemplate: (row) => {
-                  const valueRow =
-                    row.hospital_id !== undefined &&
-                    row.hospital_id !== "" &&
-                    row.cost_center_id !== undefined &&
-                    row.cost_center_id !== ""
-                      ? `${row.hospital_id}-${row.cost_center_id}`
-                      : "";
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Cost Center" }} />
+                    ),
 
-                  return row.processed === "Y" ? (
-                    row.cost_center
-                  ) : (
-                    <AlgaehTreeSearch
-                      div={{ className: "col-12" }}
-                      tree={{
-                        treeDefaultExpandAll: true,
-                        updateInternally: true,
-                        data: costCenter,
-                        disableHeader: true,
-                        textField: "hospital_name",
-                        valueField: "hims_d_hospital_id",
-                        children: {
-                          node: "cost_centers",
-                          textField: "cost_center",
-                          valueField: (node) => {
-                            const { hims_d_hospital_id, cost_center_id } = node;
-                            if (cost_center_id === undefined) {
-                              return hims_d_hospital_id;
-                            } else {
-                              return `${hims_d_hospital_id}-${cost_center_id}`;
-                            }
-                          },
-                        },
+                    displayTemplate: (row) => {
+                      return <span>{row.cost_center}</span>;
+                    },
+                    editorTemplate: (row) => {
+                      const valueRow =
+                        row.hospital_id !== undefined &&
+                        row.hospital_id !== "" &&
+                        row.cost_center_id !== undefined &&
+                        row.cost_center_id !== ""
+                          ? `${row.hospital_id}-${row.cost_center_id}`
+                          : "";
 
-                        value: valueRow,
-                        onChange: (value) => {
-                          if (value !== undefined) {
-                            const detl = value.split("-");
-                            row.hospital_id = detl[0];
-                            row.cost_center_id = detl[1];
-                          } else {
-                            row.hospital_id = undefined;
-                            row.cost_center_id = undefined;
-                          }
-                        },
-                      }}
-                    />
-                  );
-                },
-              },
+                      return row.processed === "Y" ? (
+                        row.cost_center
+                      ) : (
+                        <AlgaehTreeSearch
+                          div={{ className: "col-12" }}
+                          tree={{
+                            treeDefaultExpandAll: true,
+                            updateInternally: true,
+                            data: costCenter,
+                            disableHeader: true,
+                            textField: "hospital_name",
+                            valueField: "hims_d_hospital_id",
+                            children: {
+                              node: "cost_centers",
+                              textField: "cost_center",
+                              valueField: (node) => {
+                                const {
+                                  hims_d_hospital_id,
+                                  cost_center_id,
+                                } = node;
+                                if (cost_center_id === undefined) {
+                                  return hims_d_hospital_id;
+                                } else {
+                                  return `${hims_d_hospital_id}-${cost_center_id}`;
+                                }
+                              },
+                            },
 
-              {
-                fieldName: "amount",
-                label: "Amount",
+                            value: valueRow,
+                            onChange: (value) => {
+                              if (value !== undefined) {
+                                const detl = value.split("-");
+                                row.hospital_id = detl[0];
+                                row.cost_center_id = detl[1];
+                              } else {
+                                row.hospital_id = undefined;
+                                row.cost_center_id = undefined;
+                              }
+                            },
+                          }}
+                        />
+                      );
+                    },
+                  },
 
-                editorTemplate: (row) => {
-                  return row.amount;
-                },
-              },
-              {
-                fieldName: "processed",
-                label: "Processed",
-                displayTemplate: (row) => {
-                  return row.processed === "N" ? "No" : "Yes";
-                },
+                  {
+                    fieldName: "amount",
+                    label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
 
-                editorTemplate: (row) => {
-                  return row.processed === "N" ? "No" : "Yes";
-                },
-              },
-              {
-                fieldName: "pay_month",
-                label: "Pay Month",
+                    editorTemplate: (row) => {
+                      return row.amount;
+                    },
+                  },
+                  {
+                    fieldName: "processed",
+                    label: <AlgaehLabel label={{ forceLabel: "Processed" }} />,
+                    displayTemplate: (row) => {
+                      return row.processed === "N" ? "No" : "Yes";
+                    },
 
-                editorTemplate: (row) => {
-                  return row.pay_month;
-                },
-              },
-            ]}
-            loading={false}
-            isEditable={"editOnly"}
-            events={{
-              // onDone: () => {},
-              onSave: updateProcessList,
-              // onSaveShow: (row) => {
-              //   return row.processed === "N" ? true : false;
-              // },
-              onEditShow: (row) => {
-                return !row.processed === "N";
-              },
-            }}
-            // height="34vh"
-            data={current}
-          />
+                    editorTemplate: (row) => {
+                      return row.processed === "N" ? "No" : "Yes";
+                    },
+                  },
+                  {
+                    fieldName: "pay_month",
+                    label: <AlgaehLabel label={{ forceLabel: "Pay Month" }} />,
+
+                    editorTemplate: (row) => {
+                      return row.pay_month;
+                    },
+                  },
+                ]}
+                loading={false}
+                isEditable={"editOnly"}
+                events={{
+                  // onDone: () => {},
+                  onSave: updateProcessList,
+                  // onSaveShow: (row) => {
+                  //   return row.processed === "N" ? true : false;
+                  // },
+                  onEditShow: (row) => {
+                    return !row.processed === "N";
+                  },
+                }}
+                // height="34vh"
+                data={current}
+              />
+            </div>
+          </div>
         </div>
       </Modal>
       <div>
@@ -578,13 +587,12 @@ export function PrepaymentProcess() {
                 </div>
                 <div className="actions"></div>
               </div>
-              <div className="portlet-body">
+              <div className="portlet-body" id="PrepaymentProcessListGrid">
                 <AlgaehDataGrid
-                  className="PrepaymentProcessListGrid"
                   columns={[
                     {
                       fieldName: "finance_f_prepayment_detail_id",
-                      label: "Select",
+                      label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                       displayTemplate: (row) => {
                         return row.processed === "N" ? (
                           <Checkbox
@@ -602,7 +610,7 @@ export function PrepaymentProcess() {
                     },
                     {
                       fieldName: "",
-                      label: "Action",
+                      label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
                       displayTemplate: (row) => {
                         return (
                           <span
@@ -617,28 +625,54 @@ export function PrepaymentProcess() {
                       others: { minWidth: 40 },
                     },
                     {
-                      fieldName: "prepayment_desc",
-                      label: "Prepayment Type",
+                      fieldName: "request_code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Request Code" }} />
+                      ),
                       others: { minWidth: 100 },
                     },
                     {
-                      fieldName: "request_code",
-                      label: "Request Code",
+                      fieldName: "employee_code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
+                      ),
+                      others: { minWidth: 100 },
+                    },
+                    {
+                      fieldName: "identity_no",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Identity No." }} />
+                      ),
+                    },
+                    {
+                      fieldName: "employee_name",
+                      label: <AlgaehLabel label={{ forceLabel: "Name" }} />,
+                      others: { minWidth: 200 },
+                    },
+                    {
+                      fieldName: "prepayment_desc",
+                      label: <AlgaehLabel label={{ forceLabel: "Type" }} />,
                       others: { minWidth: 100 },
                     },
                     {
                       fieldName: "hospital_name",
-                      label: "Hospital Name",
+                      label: <AlgaehLabel label={{ forceLabel: "Branch" }} />,
                       others: { minWidth: 200 },
                     },
                     {
                       fieldName: "cost_center",
-                      label: "Cost Center",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Cost Center" }} />
+                      ),
                       others: { minWidth: 250 },
                     },
                     {
                       fieldName: "expense_head_id",
-                      label: "Prepayment Debit GL",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Debit GL Account" }}
+                        />
+                      ),
                       sortable: true,
                       displayTemplate: (row) => {
                         if (row.expense_head_id) {
@@ -684,38 +718,34 @@ export function PrepaymentProcess() {
                       // others: { show: showAccountsCol },
                     },
                     {
-                      fieldName: "employee_code",
-                      label: "Employee Code",
-                      others: { minWidth: 100 },
-                    },
-                    {
-                      fieldName: "employee_name",
-                      label: "Employee Name",
-                      others: { minWidth: 200 },
-                    },
-                    {
-                      fieldName: "identity_no",
-                      label: "ID No.",
-                    },
-                    {
                       fieldName: "prepayment_amount",
-                      label: "Prepayment Amt.",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Prepayment Amt." }}
+                        />
+                      ),
                     },
                     {
                       fieldName: "",
-                      label: "Amortized Amt.",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Amortized Amt." }} />
+                      ),
                     },
                     {
                       fieldName: "",
-                      label: "Balance Amt.",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Balance Amt." }} />
+                      ),
                     },
                     {
                       fieldName: "start_date",
-                      label: "Start date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Start Date" }} />
+                      ),
                     },
                     {
                       fieldName: "end_date",
-                      label: "End date",
+                      label: <AlgaehLabel label={{ forceLabel: "End Date" }} />,
                     },
                   ]}
                   loading={false}

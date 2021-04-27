@@ -1,5 +1,14 @@
-.PrepaymentAuthListGrid {
-  min-height: 55vh !important;
-  max-height: 65vh !important;
-  overflow: auto;
+.preRevertModal {
+  min-width: 40% !important;
+  top: 38% !important;
+}
+
+#PrepaymentAuthListGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
+    }
+  }
 }

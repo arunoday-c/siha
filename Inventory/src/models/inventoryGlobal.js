@@ -478,7 +478,7 @@ export default {
       if (req.query.zeroStock === "Y") {
         zeroQuantity = " having sum(IL.qtyhand) <= 0";
       } else {
-        zeroQuantity = " having sum(IL.qtyhand) > 0";
+        zeroQuantity = " having sum(IL.qtyhand) >= 0";
       }
 
       _mysql
