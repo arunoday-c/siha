@@ -118,7 +118,7 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, status) => {
-  if (!$this.state.bacteria_name) {
+  if (!$this.state.bacteria_name && $this.state.radioGrowth === true) {
     swalMessage({
       title: "Please Enter Bacteria Name",
       type: "warning",
