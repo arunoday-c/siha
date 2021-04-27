@@ -17,8 +17,10 @@ export default function purchase(socket) {
                   algaeh_m_role_user_mappings RU ON MR.role_id = RU.role_id
                      INNER JOIN
                   algaeh_d_app_user AU ON AU.algaeh_d_app_user_id = RU.user_id
+                  INNER JOIN algaeh_d_app_module as M on M.algaeh_d_module_id =  MR.module_id
+INNER JOIN algaeh_d_app_screens as S on S.algaeh_app_screens_id = SR.screen_id
               WHERE
-              module_code = 'PROC' AND SR.screen_code = 'PR0002'
+              module_code = 'PROC' AND S.screen_code = 'PR0002'
                       AND MR.role_id NOT IN (SELECT 
                           MR.role_id
                       FROM
@@ -65,8 +67,10 @@ export default function purchase(socket) {
                   algaeh_m_role_user_mappings RU ON MR.role_id = RU.role_id
                      INNER JOIN
                   algaeh_d_app_user AU ON AU.algaeh_d_app_user_id = RU.user_id
+                  INNER JOIN algaeh_d_app_module as M on M.algaeh_d_module_id =  MR.module_id
+INNER JOIN algaeh_d_app_screens as S on S.algaeh_app_screens_id = SR.screen_id
               WHERE
-              module_code = 'PROC' AND SR.screen_code = 'PR0002'
+              module_code = 'PROC' AND S.screen_code = 'PR0002'
                       AND MR.role_id NOT IN (SELECT 
                           MR.role_id
                       FROM
