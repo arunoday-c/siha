@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, memo } from "react";
 import { useHistory } from "react-router-dom";
 import algaehLoader from "../Wrapper/fullPageLoader";
 // import {
@@ -20,9 +20,9 @@ import isEmpty from "lodash/isEmpty";
 import moment from "moment";
 import swal from "sweetalert2";
 import StandBySlot from "./StandBySlot";
-import { AppointmentContext } from "./AppointmentContext";
+// import { AppointmentContext } from "./AppointmentContext";
 import { setGlobal, AlgaehValidation } from "../../utils/GlobalFunctions";
-export default function EachSlot({
+export default memo(function EachSlot({
   setState,
   data,
   // handleCheckIn,
@@ -36,9 +36,12 @@ export default function EachSlot({
   // getAppointmentSchedule,
 }) {
   const history = useHistory();
-  const { setEditState, editState, clearState } = useContext(
-    AppointmentContext
-  );
+  // const { setstate, state, clearState } = useContext(
+  //   AppointmentContext
+  // );
+  // useEffect(() => {
+  //   console.log(state);
+  // }, [state]);
   const getAppointmentSchedule = (e) => {
     if (e !== undefined) e.preventDefault();
 
@@ -195,111 +198,126 @@ export default function EachSlot({
 
   const updatePatientAppointment = (data) => {
     if (data !== null) {
-      setState({
-        edit_appointment_status_id: data.hims_d_appointment_status_id,
-      });
-    }
-    AlgaehValidation({
-      querySelector: "data-validate='editApptDiv'",
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        swal({
-          title: "Are you Sure you want to Update Appointment?",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Yes",
-          confirmButtonColor: "#44b8bd",
-          cancelButtonColor: "#d33",
-          cancelButtonText: "No",
-        }).then((willUpdate) => {
-          debugger;
-          let new_to_time = moment(state.edit_appt_time, "HH:mm:ss").add(
-            editState.edit_no_of_slots * state.slot,
-            "minutes"
-          );
-
-          if (willUpdate.value) {
-            if (
-              editState.edit_appointment_status_id === state.checkInId &&
-              moment(editState.edit_appt_date).format("YYYYMMDD") !==
-                moment(new Date()).format("YYYYMMDD")
-            ) {
-              swalMessage({
-                title:
-                  "Only Patients with Today's appointments can be Checked In",
+      setState(
+        {
+          edit_appointment_status_id: data.hims_d_appointment_status_id,
+        },
+        (parentState) => {
+          AlgaehValidation({
+            querySelector: "data-validate='editApptDiv'",
+            alertTypeIcon: "warning",
+            onSuccess: () => {
+              swal({
+                title: "Are you Sure you want to Update Appointment?",
                 type: "warning",
-              });
-            } else {
-              let edit_details = {
-                hims_f_patient_appointment_id: editState.edit_appointment_id,
-                record_status: "A",
-                appointment_status_id: editState.edit_appointment_status_id,
-                patient_id: editState.edit_patient_id,
-                provider_id: editState.edit_provider_id,
-                sub_department_id: editState.edit_sub_dep_id,
-                appointment_date: editState.edit_appt_date,
-                appointment_from_time: editState.edit_appt_time,
-                appointment_to_time: moment(new_to_time).format("HH:mm:ss"),
-                patient_name: editState.edit_patient_name,
-                arabic_name: editState.edit_arabic_name,
-                date_of_birth: editState.edit_date_of_birth,
-                age: editState.edit_age,
-                contact_number: editState.edit_contact_number,
-                tel_code: state.tel_code,
-                email: editState.edit_email,
-                send_to_provider: null,
-                gender: editState.edit_gender,
-                confirmed: "N",
-                confirmed_by: null,
-                comfirmed_date: null,
-                cancelled: "N",
-                cancelled_by: null,
-                cancelled_date: null,
-                cancel_reason: null,
-                appointment_remarks: editState.edit_appointment_remarks,
-                is_stand_by: editState.edit_is_stand_by,
-                number_of_slot: editState.edit_no_of_slots,
-                title_id: editState.edit_title_id,
-              };
-              if (edit_details.appointment_status_id === state.checkInId) {
-                handleCheckIn(edit_details);
-              } else if (
-                edit_details.appointment_status_id === state.cancelledId
-              ) {
-                cancelAppt(edit_details);
-              } else {
-                algaehApiCall({
-                  uri: "/appointment/updatePatientAppointment",
-                  module: "frontDesk",
-                  method: "PUT",
-                  data: edit_details,
-                  onSuccess: (response) => {
-                    if (response.data.success) {
-                      clearSaveState();
-                      swalMessage({
-                        title: "Appointment Updated Successfully",
-                        type: "success",
-                      });
-                      setState({
-                        openPatEdit: false,
-                      });
-                      clearState();
-                      getAppointmentSchedule();
-                    }
-                  },
-                  onFailure: (error) => {
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                confirmButtonColor: "#44b8bd",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "No",
+              }).then((willUpdate) => {
+                let new_to_time = moment(
+                  parentState.edit_appt_time,
+                  "HH:mm:ss"
+                ).add(
+                  parentState.edit_no_of_slots * parentState.slot,
+                  "minutes"
+                );
+
+                if (willUpdate.value) {
+                  if (
+                    parentState.edit_appointment_status_id ===
+                      parentState.checkInId &&
+                    moment(parentState.edit_appt_date).format("YYYYMMDD") !==
+                      moment(new Date()).format("YYYYMMDD")
+                  ) {
                     swalMessage({
-                      title: error.message,
-                      type: "error",
+                      title:
+                        "Only Patients with Today's appointments can be Checked In",
+                      type: "warning",
                     });
-                  },
-                });
-              }
-            }
-          }
-        });
-      },
-    });
+                  } else {
+                    let edit_details = {
+                      hims_f_patient_appointment_id:
+                        parentState.edit_appointment_id,
+                      record_status: "A",
+                      appointment_status_id:
+                        parentState.edit_appointment_status_id,
+                      patient_id: parentState.edit_patient_id,
+                      provider_id: parentState.edit_provider_id,
+                      sub_department_id: parentState.edit_sub_dep_id,
+                      appointment_date: parentState.edit_appt_date,
+                      appointment_from_time: parentState.edit_appt_time,
+                      appointment_to_time: moment(new_to_time).format(
+                        "HH:mm:ss"
+                      ),
+                      patient_name: parentState.edit_patient_name,
+                      arabic_name: parentState.edit_arabic_name,
+                      date_of_birth: parentState.edit_date_of_birth,
+                      age: parentState.edit_age,
+                      contact_number: parentState.edit_contact_number,
+                      tel_code: parentState.tel_code,
+                      email: parentState.edit_email,
+                      send_to_provider: null,
+                      gender: parentState.edit_gender,
+                      confirmed: "N",
+                      confirmed_by: null,
+                      comfirmed_date: null,
+                      cancelled: "N",
+                      cancelled_by: null,
+                      cancelled_date: null,
+                      cancel_reason: null,
+                      appointment_remarks: parentState.edit_appointment_remarks,
+                      is_stand_by: parentState.edit_is_stand_by,
+                      number_of_slot: parentState.edit_no_of_slots,
+                      title_id: parentState.edit_title_id,
+                    };
+                    if (
+                      edit_details.appointment_status_id ===
+                      parentState.checkInId
+                    ) {
+                      handleCheckIn(edit_details);
+                    } else if (
+                      edit_details.appointment_status_id ===
+                      parentState.cancelledId
+                    ) {
+                      cancelAppt(edit_details);
+                    } else {
+                      algaehApiCall({
+                        uri: "/appointment/updatePatientAppointment",
+                        module: "frontDesk",
+                        method: "PUT",
+                        data: edit_details,
+                        onSuccess: (response) => {
+                          if (response.data.success) {
+                            clearSaveState();
+                            swalMessage({
+                              title: "Appointment Updated Successfully",
+                              type: "success",
+                            });
+                            setState({
+                              openPatEdit: false,
+                            });
+                            clearSaveState();
+                            getAppointmentSchedule();
+                          }
+                        },
+                        onFailure: (error) => {
+                          swalMessage({
+                            title: error.message,
+                            type: "error",
+                          });
+                        },
+                      });
+                    }
+                  }
+                }
+              });
+            },
+          });
+        }
+      );
+    }
   };
   const generateTimeslotsForDoctor = (data) => {
     // Takes Appointment Schedule as input and returns an Array with time and "break"
@@ -352,11 +370,11 @@ export default function EachSlot({
   const getTimeSlotsForDropDown = (id) => {
     let schedule;
     let data;
-    let apptDate = editState.edit_appt_date;
+    let apptDate = state.edit_appt_date;
     let send_data = {
       sub_dept_id: state.sub_department_id,
-      schedule_date: moment(editState.edit_appt_date).format("YYYY-MM-DD"),
-      provider_id: editState.edit_provider_id,
+      schedule_date: moment(state.edit_appt_date).format("YYYY-MM-DD"),
+      provider_id: state.edit_provider_id,
     };
     algaehApiCall({
       uri: "/appointment/getDoctorScheduleDateWise",
@@ -367,7 +385,7 @@ export default function EachSlot({
         if (response.data.success && response.data.records.length > 0) {
           schedule = response.data.records;
           data = schedule.filter(
-            (doc) => doc.provider_id === editState.edit_provider_id
+            (doc) => doc.provider_id === state.edit_provider_id
           );
           const options = { hour12: true, hour: "2-digit", minute: "2-digit" };
           const result = generateTimeslotsForDoctor(data[0]);
@@ -394,14 +412,14 @@ export default function EachSlot({
               }
             }
           });
-          return setEditState({ timeSlots: timeSlots, schAvailable: true });
-          //  setState({ timeSlots, schAvailable: true });
+          //  setstate({ timeSlots: timeSlots, schAvailable: true });
+          return setState({ timeSlots, schAvailable: true });
         } else {
           swalMessage({
             title: "There is no schedule Available for the doctor",
             type: "error",
           });
-          return setEditState({ timeSlots: [], schAvailable: true });
+          return setState({ timeSlots: [], schAvailable: true });
         }
       },
       onFailure: (response) => {
@@ -409,7 +427,7 @@ export default function EachSlot({
           title: "There is no schedule Available for the doctor",
           type: "error",
         });
-        return setEditState({ timeSlots: [], schAvailable: false });
+        return setState({ timeSlots: [], schAvailable: false });
       },
     });
   };
@@ -483,7 +501,7 @@ export default function EachSlot({
         title: "Cannot create schedule for past time",
         type: "error",
       });
-    } else if (editState.edit_appointment_status_id === state.checkInId) {
+    } else if (state.edit_appointment_status_id === state.checkInId) {
       swalMessage({
         title: "Cannot change schedule for CheckedIn Patients",
         type: "error",
@@ -493,16 +511,10 @@ export default function EachSlot({
       let slot = ev.currentTarget.children[1].getAttribute("slot");
 
       let new_to_time = moment(new_from_time, "HH:mm a").add(
-        editState.edit_no_of_slots * slot,
+        state.edit_no_of_slots * slot,
         "minutes"
       );
-      setEditState({
-        edit_appt_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
-        edit_from_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
-        edit_to_time: moment(new_to_time).format("HH:mm:ss"),
-        edit_provider_id: prov_id,
-        edit_appointment_status_id: state.RescheduleId,
-      });
+
       setState(
         {
           edit_appt_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
@@ -511,7 +523,7 @@ export default function EachSlot({
           edit_provider_id: prov_id,
           edit_appointment_status_id: state.RescheduleId,
         },
-        () => {
+        (parentState) => {
           swal({
             title: "Are you sure you want to Re-Schedule the appointment?",
             type: "warning",
@@ -521,30 +533,29 @@ export default function EachSlot({
             cancelButtonColor: "#d33",
             cancelButtonText: "No",
           }).then((willUpdate) => {
-            debugger;
             if (willUpdate.value) {
               let edit_details = {
-                hims_f_patient_appointment_id: editState.edit_appointment_id,
+                hims_f_patient_appointment_id: parentState.edit_appointment_id,
                 record_status: "A",
-                appointment_status_id: state.RescheduleId,
-                patient_id: editState.edit_patient_id,
+                appointment_status_id: parentState.RescheduleId,
+                patient_id: parentState.edit_patient_id,
                 provider_id: prov_id,
-                sub_department_id: editState.edit_sub_dep_id,
-                appointment_date: editState.edit_appointment_date,
+                sub_department_id: parentState.edit_sub_dep_id,
+                appointment_date: parentState.edit_appointment_date,
                 appointment_from_time: moment(new_from_time, "HH:mm a").format(
                   "HH:mm:ss"
                 ),
                 appointment_to_time: moment(new_to_time).format("HH:mm:ss"),
-                patient_name: editState.edit_patient_name,
-                arabic_name: editState.edit_arabic_name,
-                date_of_birth: editState.edit_date_of_birth,
-                age: editState.edit_age,
-                title_id: editState.edit_title_id,
-                contact_number: editState.edit_contact_number,
-                tel_code: state.tel_code,
-                email: editState.edit_email,
+                patient_name: parentState.edit_patient_name,
+                arabic_name: parentState.edit_arabic_name,
+                date_of_birth: parentState.edit_date_of_birth,
+                age: parentState.edit_age,
+                title_id: parentState.edit_title_id,
+                contact_number: parentState.edit_contact_number,
+                tel_code: parentState.tel_code,
+                email: parentState.edit_email,
                 send_to_provider: null,
-                gender: editState.edit_gender,
+                gender: parentState.edit_gender,
                 confirmed: "Y",
                 confirmed_by: null,
                 comfirmed_date: null,
@@ -552,9 +563,9 @@ export default function EachSlot({
                 cancelled_by: null,
                 cancelled_date: null,
                 cancel_reason: null,
-                appointment_remarks: editState.edit_appointment_remarks,
+                appointment_remarks: parentState.edit_appointment_remarks,
                 is_stand_by: "N",
-                number_of_slot: editState.edit_no_of_slots,
+                number_of_slot: parentState.edit_no_of_slots,
               };
 
               algaehApiCall({
@@ -572,7 +583,7 @@ export default function EachSlot({
                     setState({
                       openPatEdit: false,
                     });
-                    clearState();
+                    clearSaveState();
                     getAppointmentSchedule();
                   }
                 },
@@ -597,7 +608,6 @@ export default function EachSlot({
   };
 
   const drag = (ev) => {
-    debugger;
     let pat = JSON.parse(ev.currentTarget.getAttribute("appt-pat"));
 
     let appt_date = pat.appointment_date;
@@ -624,9 +634,6 @@ export default function EachSlot({
     } else {
       setState({
         patToEdit: pat,
-      });
-
-      setEditState({
         edit_appointment_status_id: pat.appointment_status_id,
         edit_appt_date: pat.appointment_date,
         edit_contact_number: pat.contact_number,
@@ -725,7 +732,6 @@ export default function EachSlot({
     );
   }
   const handlePatient = (patient, data, e) => {
-    debugger;
     persistStateOnBack(state, true);
     if (data.hims_d_appointment_status_id === state.checkInId) {
       handleCheckIn(patient, data);
@@ -906,37 +912,11 @@ export default function EachSlot({
         edit_title_id: patient.title_id,
       });
 
-      debugger;
-      setEditState({
-        edit_appointment_status_id: data.hims_d_appointment_status_id,
-        edit_appt_date: patient.appointment_date,
-        edit_appt_time: patient.appointment_from_time,
-        edit_contact_number: patient.contact_number,
-        edit_tel_code: patient.tel_code,
-        edit_patient_name: patient.patient_name,
-        edit_arabic_name: patient.arabic_name,
-        edit_date_of_birth: patient.date_of_birth,
-        edit_age: patient.age,
-        edit_gender: patient.gender,
-        edit_email: patient.email,
-        edit_appointment_remarks: patient.appointment_remarks,
-        edit_appointment_id: patient.hims_f_patient_appointment_id,
-        edit_provider_id: patient.provider_id,
-        edit_patient_id: patient.patient_id,
-        edit_from_time: patient.appointment_from_time,
-        edit_sub_dep_id: patient.sub_department_id,
-        edit_appointment_date: patient.appointment_date,
-        patient_code: patient.patient_code,
-        edit_no_of_slots: patient.number_of_slot,
-        edit_is_stand_by: openPatEdit ? "N" : patient.is_stand_by,
-        edit_title_id: patient.title_id,
-      });
       if (
         data !== null &&
         data.hims_d_appointment_status_id !== state.RescheduleId
       ) {
-        debugger;
-        console.log("editState", editState);
+        console.log("state", state);
         updatePatientAppointment(data);
 
         // openModal(data);
@@ -984,8 +964,32 @@ export default function EachSlot({
       setState({ rejectVisible: true, rowData: row });
     }
   };
+  const checkCurrentTime = (data) => {
+    const currentDate = moment().format("YYYYMMDD");
+    const selectedDate = moment(state.activeDateHeader).format("YYYYMMDD");
+    if (parseInt(selectedDate, 10) > parseInt(currentDate, 10)) {
+      return <td></td>;
+    }
+    if (data.mark_as_break === true) {
+      return <td></td>;
+    }
+    const inactiveTime = isInactiveTimeSlot(data.time);
+    if (inactiveTime === false) {
+      return (
+        <td activetime="true">
+          <span className="schedulePosition">
+            <i className="fas fa-caret-left"></i>
+          </span>
+        </td>
+      );
+    } else {
+      return <td></td>;
+    }
+  };
   return (
-    <div>
+    // <div>
+    <React.Fragment key={data.counter}>
+      <tr>{checkCurrentTime(data)}</tr>
       <tr className={brk_bg_color} style={{ cursor: "pointer" }}>
         <td
           className="tg-baqh" //highlight-Drop
@@ -1110,12 +1114,12 @@ export default function EachSlot({
             }}
             generateReport={() => generateReport}
             cancelAppt={(item) => {
-              debugger;
               cancelAppt(item);
             }}
           />
         ) : null}
       </tr>
-    </div>
+      {/* </div> */}
+    </React.Fragment>
   );
-}
+});

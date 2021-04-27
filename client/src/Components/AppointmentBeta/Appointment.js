@@ -1803,181 +1803,179 @@ class Appointment extends PureComponent {
     //     ? "#fbfbfb"
     //     : "#ffffff";
     return (
-      <React.Fragment key={data.counter}>
-        <tr>{this.checkCurrentTime(data)}</tr>
-        <EachSlot
-          setState={(obje, func) => {
-            debugger;
-            this.setState({ ...obje }, func);
-          }}
-          data={data}
-          // handleCheckIn={(patient, data) => this.handleCheckIn(patient, data)}
-          // updatePatientAppointment={(data) =>
-          //   this.updatePatientAppointment(data)
-          // }
-          state={this.state}
-          // isInactiveTimeSlot={(time, date) =>
-          //   this.isInactiveTimeSlot(time, date)
-          // }
-          clearSaveState={() => {
-            this.clearSaveState();
-          }}
-          // getAppointmentSchedule={() => {
-          //   this.getAppointmentSchedule();
-          //   this.props.history.push(
-          //     `/AppointmentBeta?sub_department_id=${this.state.sub_department_id}&provider_id=${this.state.provider_id}`
-          //   );
-          // }}
-          // getTimeSlotsForDropDown={(id) => this.getTimeSlotsForDropDown(id)}
-          // cancelAppt={(item) => this.cancelAppt(item)}
-          // plotPatients={(data) => this.plotPatients(data)}
-        />
-        {/* <tr className={brk_bg_color} style={{ cursor: "pointer" }}>
-          <td
-            className="tg-baqh" //highlight-Drop
-            {...colspan}
-            onDrop={this.drop.bind(this)}
-            onDragOver={this.allowDrop.bind(this)}
-            onDragEnter={this.enterDrag.bind(this)}
-            onDragLeave={this.leaveDrag.bind(this)}
-          >
-            {data.mark_as_break === false ? (
-              <span className="dynSlot">
-                {this.context.userLanguage === "ar" ? data.time_ar : data.time}
-              </span>
-            ) : null}
+      //  <tr className={brk_bg_color} style={{ cursor: "pointer" }}>
+      //     <td
+      //       className="tg-baqh" //highlight-Drop
+      //       {...colspan}
+      //       onDrop={this.drop.bind(this)}
+      //       onDragOver={this.allowDrop.bind(this)}
+      //       onDragEnter={this.enterDrag.bind(this)}
+      //       onDragLeave={this.leaveDrag.bind(this)}
+      //     >
+      //       {data.mark_as_break === false ? (
+      //         <span className="dynSlot">
+      //           {this.context.userLanguage === "ar" ? data.time_ar : data.time}
+      //         </span>
+      //       ) : null}
 
-            {data.mark_as_break === false ? (
-              <React.Fragment>
-                {this.plotAddIcon(patient, data)}
+      //       {data.mark_as_break === false ? (
+      //         <React.Fragment>
+      //           {this.plotAddIcon(patient, data)}
 
-                {patient != null &&
-                patient.is_stand_by === "N" &&
-                patient.cancelled === "N" ? (
-                  patient.appointment_status_id === this.state.noShowId ? (
-                    <div
-                      className="dynPatient"
-                      style={{ background: bg_color }}
-                      draggable={false}
-                    >
-                      <span>
-                        {this.context?.userLanguage === "ar"
-                          ? patient.arabic_name
-                          : patient.patient_name}{" "}
-                        <br />
-                        {patient.tel_code}
-                        &nbsp; {patient.contact_number}
-                      </span>
-                    </div>
-                  ) : (
-                    <div
-                      appt-pat={JSON.stringify(patient)}
-                      className="dynPatient"
-                      style={{ background: bg_color }}
-                      draggable={true}
-                      onDragStart={this.drag.bind(this)}
-                    >
-                      <span
-                      // onClick={this.openEditModal.bind(this, patient, null)}
-                      >
-                        {this.context?.userLanguage === "ar"
-                          ? patient.arabic_name
-                          : patient.patient_name}
-                        <br />
-                        {patient.tel_code}
-                        &nbsp;
-                        {patient.contact_number}
-                      </span>
+      //           {patient != null &&
+      //           patient.is_stand_by === "N" &&
+      //           patient.cancelled === "N" ? (
+      //             patient.appointment_status_id === this.state.noShowId ? (
+      //               <div
+      //                 className="dynPatient"
+      //                 style={{ background: bg_color }}
+      //                 draggable={false}
+      //               >
+      //                 <span>
+      //                   {this.context?.userLanguage === "ar"
+      //                     ? patient.arabic_name
+      //                     : patient.patient_name}{" "}
+      //                   <br />
+      //                   {patient.tel_code}
+      //                   &nbsp; {patient.contact_number}
+      //                 </span>
+      //               </div>
+      //             ) : (
+      //               <div
+      //                 appt-pat={JSON.stringify(patient)}
+      //                 className="dynPatient"
+      //                 style={{ background: bg_color }}
+      //                 draggable={true}
+      //                 onDragStart={this.drag.bind(this)}
+      //               >
+      //                 <span
+      //                 // onClick={this.openEditModal.bind(this, patient, null)}
+      //                 >
+      //                   {this.context?.userLanguage === "ar"
+      //                     ? patient.arabic_name
+      //                     : patient.patient_name}
+      //                   <br />
+      //                   {patient.tel_code}
+      //                   &nbsp;
+      //                   {patient.contact_number}
+      //                 </span>
 
-                      <i
-                        className="fas fa-times"
-                        onClick={this.cancelAppt.bind(this, patient)}
-                      />
-                      <div className="appStatusListCntr">
-                        <i className="fas fa-clock" />
-                        <ul className="appStatusList">
-                          {status !== undefined
-                            ? status.map((data, index) => {
-                                return (
-                                  <li
-                                    key={index}
-                                    onClick={this.handlePatient.bind(
-                                      this,
-                                      patient,
-                                      data
-                                    )}
-                                  >
-                                    <span
-                                      style={{
-                                        backgroundColor: data.color_code,
-                                      }}
-                                    >
-                                      {this.context?.userLanguage === "ar"
-                                        ? data.description_ar
-                                        : data.statusDesc}
-                                    </span>
-                                  </li>
-                                );
-                              })
-                            : null}
-                          <li
-                            onClick={generateReport.bind(
-                              this,
-                              patient,
-                              "appointmentSlip",
-                              "Appointment Slip"
-                            )}
-                          >
-                            <span>Print App. Slip</span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  )
-                ) : null}
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <span>
-                  <AlgaehLabel label={{ fieldName: "break_time" }} />{" "}
-                </span>
-              </React.Fragment>
-            )}
-          </td>
+      //                 <i
+      //                   className="fas fa-times"
+      //                   onClick={this.cancelAppt.bind(this, patient)}
+      //                 />
+      //                 <div className="appStatusListCntr">
+      //                   <i className="fas fa-clock" />
+      //                   <ul className="appStatusList">
+      //                     {status !== undefined
+      //                       ? status.map((data, index) => {
+      //                           return (
+      //                             <li
+      //                               key={index}
+      //                               onClick={this.handlePatient.bind(
+      //                                 this,
+      //                                 patient,
+      //                                 data
+      //                               )}
+      //                             >
+      //                               <span
+      //                                 style={{
+      //                                   backgroundColor: data.color_code,
+      //                                 }}
+      //                               >
+      //                                 {this.context?.userLanguage === "ar"
+      //                                   ? data.description_ar
+      //                                   : data.statusDesc}
+      //                               </span>
+      //                             </li>
+      //                           );
+      //                         })
+      //                       : null}
+      //                     <li
+      //                       onClick={generateReport.bind(
+      //                         this,
+      //                         patient,
+      //                         "appointmentSlip",
+      //                         "Appointment Slip"
+      //                       )}
+      //                     >
+      //                       <span>Print App. Slip</span>
+      //                     </li>
+      //                   </ul>
+      //                 </div>
+      //               </div>
+      //             )
+      //           ) : null}
+      //         </React.Fragment>
+      //       ) : (
+      //         <React.Fragment>
+      //           <span>
+      //             <AlgaehLabel label={{ fieldName: "break_time" }} />{" "}
+      //           </span>
+      //         </React.Fragment>
+      //       )}
+      //     </td>
 
-          {data.mark_as_break === false ? (
-            <td className="tg-baqh">
-              <span className="dynSlot">{data.time}</span>
-              {this.plotStandByAddIcon(patient, data)}
-              {this.renderStandByMultiple(_standByPatients)}
-            </td>
-          ) : null}
-        </tr> */}
-      </React.Fragment>
+      //     {data.mark_as_break === false ? (
+      //       <td className="tg-baqh">
+      //         <span className="dynSlot">{data.time}</span>
+      //         {this.plotStandByAddIcon(patient, data)}
+      //         {this.renderStandByMultiple(_standByPatients)}
+      //       </td>
+      //     ) : null}
+      //   </tr>
+      // </React.Fragment>
+
+      <EachSlot
+        setState={(obje, func) => {
+          this.setState({ ...obje }, () => {
+            if (typeof func === "function") func(this.state);
+          });
+        }}
+        data={data}
+        // handleCheckIn={(patient, data) => this.handleCheckIn(patient, data)}
+        // updatePatientAppointment={(data) =>
+        //   this.updatePatientAppointment(data)
+        // }
+        state={this.state}
+        isInactiveTimeSlot={(time, date) => this.isInactiveTimeSlot(time, date)}
+        clearSaveState={() => {
+          this.clearSaveState();
+        }}
+        // getAppointmentSchedule={() => {
+        //   this.getAppointmentSchedule();
+        //   this.props.history.push(
+        //     `/AppointmentBeta?sub_department_id=${this.state.sub_department_id}&provider_id=${this.state.provider_id}`
+        //   );
+        // }}
+        // getTimeSlotsForDropDown={(id) => this.getTimeSlotsForDropDown(id)}
+        // cancelAppt={(item) => this.cancelAppt(item)}
+        // plotPatients={(data) => this.plotPatients(data)}
+      />
     );
   }
-  checkCurrentTime(data) {
-    const currentDate = moment().format("YYYYMMDD");
-    const selectedDate = moment(this.state.activeDateHeader).format("YYYYMMDD");
-    if (parseInt(selectedDate, 10) > parseInt(currentDate, 10)) {
-      return <td></td>;
-    }
-    if (data.mark_as_break === true) {
-      return <td></td>;
-    }
-    const inactiveTime = this.isInactiveTimeSlot(data.time);
-    if (inactiveTime === false) {
-      return (
-        <td activetime="true">
-          <span className="schedulePosition">
-            <i className="fas fa-caret-left"></i>
-          </span>
-        </td>
-      );
-    } else {
-      return <td></td>;
-    }
-  }
+  // checkCurrentTime(data) {
+  //   const currentDate = moment().format("YYYYMMDD");
+  //   const selectedDate = moment(this.state.activeDateHeader).format("YYYYMMDD");
+  //   if (parseInt(selectedDate, 10) > parseInt(currentDate, 10)) {
+  //     return <td></td>;
+  //   }
+  //   if (data.mark_as_break === true) {
+  //     return <td></td>;
+  //   }
+  //   const inactiveTime = this.isInactiveTimeSlot(data.time);
+  //   if (inactiveTime === false) {
+  //     return (
+  //       <td activetime="true">
+  //         <span className="schedulePosition">
+  //           <i className="fas fa-caret-left"></i>
+  //         </span>
+  //       </td>
+  //     );
+  //   } else {
+  //     return <td></td>;
+  //   }
+  // }
   setstates(name, value) {
     this.setState({
       [name]: value,

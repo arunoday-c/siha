@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, memo } from "react";
 import "./appointment.scss";
 import moment from "moment";
 import Enumerable from "linq";
 // import { AppointmentContext } from "./AppointmentContext";
 // import { generateReport } from "./AppointmentHelper";
 import { MainContext } from "algaeh-react-components";
-export default function StandBySlot({
+export default memo(function StandBySlot({
   _patientList,
   state,
   data,
@@ -77,7 +77,6 @@ export default function StandBySlot({
                       <i
                         className="fas fa-check"
                         onClick={(e) => {
-                          debugger;
                           handlePatient(
                             item,
                             {
@@ -192,7 +191,6 @@ export default function StandBySlot({
                           <li
                             key={index}
                             onClick={(e) => {
-                              debugger;
                               handlePatient(_firstPatient, data, e);
                             }}
                           >
@@ -232,12 +230,12 @@ export default function StandBySlot({
     }
   };
   return (
-    <div>
+    <>
       <td className="tg-baqh">
         <span className="dynSlot">{data.time}</span>
         {plotStandByAddIcon(patient, data)}
         {renderStandByMultiple(_standByPatients)}
       </td>
-    </div>
+    </>
   );
-}
+});
