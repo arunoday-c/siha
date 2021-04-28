@@ -18,16 +18,16 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                    <tr>
                         <th>Sl No.</th>
-                          <th>category</th>
-                        <th>Item Code</th>
-                        <th>Item Name</th>
-                        <th>UOM</th>
-                        <th>Requested Qty</th>
-                        <th>Unit Price</th>
+                        <th>Category</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Cost</th>
+                        <th>Tax Percentage</th>
+                        <th>Tax Amount</th>
                         <th>Total Cost</th>
-                    </tr>
+                        {{!-- <th>From Location</th>
+                        <th>To Location</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -35,35 +35,36 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="4" class="tableSubHdg">{{purchase_number}} / {{po_date}}</td>
-                         <td colspan="4" class="tableSubHdg numberFld">
-                          {{vendor_name}}
-                           {{!-- | <span><b>{{net_total}}</b></span> --}}
-                        </td>
-                       
-
+                        <td colspan="4" class="tableSubHdg txtFld">{{grn_number}} - {{grn_date}}</td>
+                        <td colspan="4" class="tableSubHdg numberFld">{{vendor_name}}</td>
+                      
                     </tr>
-                    {{#each poitems}}
+                    {{#each transfer_items}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{category_desc}}</td>
+                        <td>{{category_desc}}</th>
                         <td>{{item_code}}</th>
                         <td class="txtFld">{{item_description}}</th>
-                        <td>{{uom_description}}</td>
-                        <td class="numberFld">{{authorize_quantity}}</td>
-                        <td class="numberFld">{{numberFormating unit_cost ../../currencyOnly}}</td>
                         <td class="numberFld">{{numberFormating net_extended_cost ../../currencyOnly}}</td>
+                        <td class="numberFld">{{tax_percentage}}</td>
+                        <td class="numberFld">{{numberFormating tax_amount ../../currencyOnly}}</td>
+                        <td class="numberFld">{{numberFormating total_amount ../../currencyOnly}}</td>
+                        {{!-- <td class="">{{from_location}}</td>
+                        <td class="">{{to_location}}</td> --}}
                     </tr>
-                    {{/each }} <tr class="tableSubHdg2">
-                        <td colspan="7"></td>
-                        <td class="numberFld"><b>{{net_total}}</b></td>
-                    </tr>{{/each }}
-                   
+                    {{/each }}
+                    <tr class="tableSubHdg2">
+                        <td colspan="4"></td>
+                        <td class="numberFld"><b>{{sum_total_net_extended_cost}}</b></td>
+                        <td class="numberFld"><b></b></td>
+                        <td class="numberFld"><b>{{sum_tax_amount}}</b></td>
+                        <td class="numberFld"><b>{{sum_total_amount}}</b></td>
+                    </tr>
+                    {{/each }}
                     {{else}}
                     <tr>
                         <td colspan="8" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
-
                 </tbody>
 
             </table>
