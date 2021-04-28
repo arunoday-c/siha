@@ -22,6 +22,7 @@ export default memo(function () {
     certificate_name: "",
     certificate_template: "",
     certificate_status: "A",
+    custom_header_req: "N",
   });
   const [buttonType, setButtonType] = useState("Add To List");
   const [loading, setLoading] = useState(false);
@@ -71,7 +72,6 @@ export default memo(function () {
     setMasterInput(row);
     joditEditor.current.value = row.certificate_template;
 
-    debugger;
     const selected_cert = certificate_type.find(
       (f) => f.hims_d_certificate_type_id === row.certificate_type_id
     );
@@ -88,6 +88,16 @@ export default memo(function () {
       });
     setColumns(columns);
     setButtonType("Update List");
+  }
+
+  function checkHandaler(e) {
+    const { checked } = e.target;
+    setMasterInput((result) => {
+      return {
+        ...result,
+        custom_header_req: checked === true ? "Y" : "N",
+      };
+    });
   }
 
   function onMasterInputHnadler(e) {
@@ -266,8 +276,12 @@ export default memo(function () {
                   <label className="checkbox inline">
                     <input
                       type="checkbox"
-                      value="yes"
-                      name="certificate_custom_header"
+                      value="Y"
+                      name="custom_header_req"
+                      checked={
+                        masterInput.custom_header_req === "Y" ? true : false
+                      }
+                      onChange={checkHandaler}
                     />
                     <span>Yes</span>
                   </label>
