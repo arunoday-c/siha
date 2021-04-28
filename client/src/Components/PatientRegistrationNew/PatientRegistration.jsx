@@ -565,7 +565,7 @@ export function PatientRegistration() {
     data.age = data.age;
     data.doctor_id = data.ins_doctor_id;
     data.visit_code = data.visit_code;
-    data.visit_date = data.visit_date;
+    data.visit_date = moment(data.visit_date).format("YYYY-MM-DD hh:mm:ss");
     try {
       axios
         .post(`${PORTAL_HOST}/info/patientRegistration`, data)

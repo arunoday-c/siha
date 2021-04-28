@@ -12,6 +12,8 @@ import {
   AlgaehLabel,
   Spin,
 } from "algaeh-react-components";
+
+import { swalMessage } from "../../utils/algaehApiCall.js";
 import { newAlgaehApi } from "../../hooks";
 import { getPatient } from "./PatientRegistration";
 import axios from "axios";
@@ -23,6 +25,7 @@ const updatePatient = async (data) => {
     module: "frontDesk",
     data,
   });
+  console.log("res.data", res.data);
   return res.data?.records;
 };
 
@@ -105,6 +108,15 @@ export function UpdatePatient({
         onClose(true);
       }
     },
+    onError: (err) => {
+      debugger;
+      if (err.message?.includes("hims_f_patient.primary_id_no_UNIQUE")) {
+        swalMessage({
+          title: "Duplicate primary id number, Please provide a new ID number",
+          type: "error",
+        });
+      }
+    },
   });
 
   const onSubmit = (e) => {
@@ -112,6 +124,10 @@ export function UpdatePatient({
       ...e,
       hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
     }).then(async (data) => {
+      if (data === undefined) {
+        return;
+      }
+      debugger;
       const images = [];
 
       if (userToken?.portal_exists === "Y") {
@@ -122,7 +138,7 @@ export function UpdatePatient({
           patient_name: e.full_name,
           patient_dob: e.date_of_birth,
           patient_gender: e.gender,
-          mobile_no: e.contact_number,
+          mobile_no: `${e.tel_code}${e.contact_number}`,
           email_id: e.email,
         };
         try {
