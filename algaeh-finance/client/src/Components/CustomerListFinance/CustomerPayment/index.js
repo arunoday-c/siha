@@ -713,7 +713,7 @@ export default memo(function (props) {
           <div className="row">
             <div className="col-12" style={{ textAlign: "right" }}>
               <div className="row">
-                <div className="col">
+                <div className="col-3">
                   <label className="style_Label ">
                     Total Selected Balance Amount
                   </label>
@@ -723,7 +723,7 @@ export default memo(function (props) {
                     })}
                   </h6>
                 </div>
-                <div className="col">
+                <div className="col-3">
                   <label className="style_Label ">
                     Selected Invoice Amount
                   </label>
