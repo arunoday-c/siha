@@ -43,7 +43,10 @@ export async function trailBalanceRpt(req, res, next) {
     );
     /** get all ledgers and all transactions */
     const accountLevel = ACCOUNTS === "ALL" ? "" : ` root_id=${ACCOUNTS}`;
-    const whereCondition = accountLevel === "" ? "" : `WHERE ${accountLevel}`;
+    const whereCondition =
+      accountLevel === ""
+        ? "WHERE VD.child_id <> 1 and VD.head_id <>3"
+        : `WHERE ${accountLevel} and VD.child_id <> 1 and VD.head_id <>3`;
     const result = await _mysql
       .executeQuery({
         query: `select finance_account_head_id,account_code, account_name,
@@ -51,7 +54,9 @@ export async function trailBalanceRpt(req, res, next) {
          finance_account_child_id, child_name,head_id,
          coalesce(H.arabic_account_name,'') as arabic_account_name, coalesce(C.arabic_child_name,'') as arabic_child_name,
          H.group_code as header_ledger_code,C.ledger_code as child_ledger_code
-         from finance_account_head H left join finance_account_child C on C.head_id=H.finance_account_head_id ${whereCondition};
+         from finance_account_head H left join finance_account_child C on C.head_id=H.finance_account_head_id and finance_account_child_id <>1 ${
+           accountLevel !== "" ? `WHERE ${accountLevel} ` : ""
+         };
          -- transaction query
          select C.head_id,finance_account_child_id as child_id
          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -61,7 +66,8 @@ export async function trailBalanceRpt(req, res, next) {
          VD.payment_date,VD.is_opening_bal
          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A' and VD.child_id <> 1
-         and date(VD.payment_date) between date(?) and date(?) ${whereCondition}  group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
+         and date(VD.payment_date) between date(?) and date(?) ${whereCondition}    
+          group by C.finance_account_child_id,VD.payment_date,VD.is_opening_bal;
          -- Opening balance query
          select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -271,7 +277,6 @@ export async function trailBalanceRpt(req, res, next) {
         for (let i = 0, len = roots.length; i < len; ++i) {
           findChildren(roots[i]);
         }
-
         tree[
           parseInt(key, 10) === 1
             ? "asset"
