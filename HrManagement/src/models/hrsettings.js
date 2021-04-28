@@ -109,8 +109,8 @@ export default {
 
       if (req.query.sub_department_id) {
         strQuery = `select hims_d_designation_id,designation_code, designation,D.created_date from hims_d_employee E \
-inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id \
-where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designation_id`;
+        inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id \
+        where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designation_id`;
       }
       _mysql
         .executeQuery({
@@ -625,7 +625,8 @@ where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designa
 
       _mysql
         .executeQuery({
-          query: "select * from hims_d_agency WHERE `record_status`='A' order by hims_d_agency_id desc",
+          query:
+            "select * from hims_d_agency WHERE `record_status`='A' order by hims_d_agency_id desc",
           printQuery: true,
         })
         .then((result) => {
@@ -689,6 +690,121 @@ where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designa
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_agency_id,
           ],
+        })
+        .then((update_loan) => {
+          _mysql.releaseConnection();
+          req.records = update_loan;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getCertificateType: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * FROM hims_d_certificate_type order by hims_d_certificate_type_id desc",
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getCertificateMaster: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * FROM hims_d_certificate_master order by hims_d_certificate_master_id desc",
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  addCertificateMaster: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO hims_d_certificate_master(certificate_name, certificate_type_id, certificate_template,\
+            created_date, created_by, updated_date, updated_by) \
+            values(?, ?, ?, ?, ?, ?, ?);",
+          values: [
+            input.certificate_name,
+            input.certificate_type_id,
+            input.certificate_template,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  updateCertificateMaster: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_certificate_master SET certificate_name = ?,\
+            certificate_type_id = ?, certificate_status = ?, certificate_template=?, updated_date = ?, updated_by = ? \
+            WHERE hims_d_certificate_master_id = ?",
+          values: [
+            input.certificate_name,
+            input.certificate_type_id,
+            input.certificate_status,
+            input.certificate_template,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_certificate_master_id,
+          ],
+          printQuery: true,
         })
         .then((update_loan) => {
           _mysql.releaseConnection();

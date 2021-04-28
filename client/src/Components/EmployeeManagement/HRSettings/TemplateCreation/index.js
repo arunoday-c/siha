@@ -1,38 +1,64 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useRef, useState, useEffect } from "react";
 
 import "./certificateMaster.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
-import { AlgaehMessagePop, AlgaehButton } from "algaeh-react-components";
+import { Spin, AlgaehMessagePop, AlgaehButton } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
-import Editor from "./editor";
+// import Editor from "./editor";
+import JoditEditor from "jodit-react";
+
 export default memo(function () {
-  const [kpi_types, setKpiTypes] = useState([]);
+  const [certificates, setCertificates] = useState([]);
+  const [certificate_type, setCertificateType] = useState([]);
+  const [xcolumns, setColumns] = useState([]);
 
   const [masterInput, setMasterInput] = useState({
-    kpi_type: "",
-    kpi_name: "",
-    kpi_parameters: "",
-    kpi_query: "",
-    kpi_status: "A",
+    hims_d_certificate_master_id: "",
+    certificate_type_id: "",
+    certificate_name: "",
+    certificate_template: "",
+    certificate_status: "A",
   });
   const [buttonType, setButtonType] = useState("Add To List");
   const [loading, setLoading] = useState(false);
+  const joditEditor = useRef(undefined);
   useEffect(() => {
-    getKPI();
+    getCertificateMaster();
+    getCertificateTypes();
   }, []);
-  function getKPI() {
+
+  function getCertificateMaster() {
     newAlgaehApi({
-      uri: "/Document/getKPI",
+      uri: "/hrsettings/getCertificateMaster",
       method: "GET",
-      module: "documentManagement",
+      module: "hrManagement",
     })
       .then((response) => {
         const { data } = response;
-        setKpiTypes(data["result"]);
+        setCertificates(data["records"]);
+      })
+      .catch((error) => {
+        AlgaehMessagePop({
+          display: error.message,
+          type: "error",
+        });
+      });
+  }
+
+  function getCertificateTypes() {
+    newAlgaehApi({
+      uri: "/hrsettings/getCertificateType",
+      method: "GET",
+      module: "hrManagement",
+    })
+      .then((response) => {
+        const { data } = response;
+        setCertificateType(data["records"]);
       })
       .catch((error) => {
         AlgaehMessagePop({
@@ -44,66 +70,198 @@ export default memo(function () {
 
   function onEditHandler(row) {
     setMasterInput(row);
+    joditEditor.current.value = row.certificate_template;
+
+    debugger;
+    const selected_cert = certificate_type.find(
+      (f) => f.hims_d_certificate_type_id === row.certificate_type_id
+    );
+    const qry = selected_cert.sql_query.toLowerCase().split("from")[0];
+    const columns = qry
+      .split("select")[1]
+      .split(",")
+      .map((column) => {
+        let col = column.trim();
+        if (column.includes(" as ") === true) {
+          col = column.split(" as ")[1].trim();
+        }
+        return col;
+      });
+    setColumns(columns);
     setButtonType("Update List");
   }
+
   function onMasterInputHnadler(e) {
     const { name, value } = e.target;
     setMasterInput((result) => {
       return { ...result, [name]: value };
     });
   }
-  function onAddOrUpdate() {
-    const { kpi_type, kpi_name, kpi_parameters, kpi_query } = masterInput;
-    setLoading(true);
 
-    newAlgaehApi({
-      uri: "/Document/saveKPI",
-      method: "POST",
-      module: "documentManagement",
-      data: {
-        kpi_type:
-          buttonType === "Update List"
-            ? kpi_type
-            : kpi_name.toLowerCase().replace(/ /g, "_"),
-        kpi_query: kpi_query,
-        kpi_status: "A",
-        kpi_name: kpi_name,
-        kpi_parameters: Array.isArray(kpi_parameters)
-          ? kpi_parameters
-          : kpi_parameters.split(","),
-      },
-    })
-      .then((response) => {
-        setLoading(false);
-        getKPI();
-        setButtonType("Add To List");
-        AlgaehMessagePop({
-          display: "Successfully inserted",
-          type: "success",
-        });
-      })
-      .catch((error) => {
-        setLoading(false);
-        AlgaehMessagePop({
-          display: error,
-          type: "error",
-        });
+  function onDropdownChangeHandler(e) {
+    const { name, value, selected } = e;
+    const sql_query = selected.sql_query;
+    setMasterInput((result) => {
+      return { ...result, [name]: value };
+    });
+    const qry = sql_query.toLowerCase().split("from")[0];
+    const columns = qry
+      .split("select")[1]
+      .split(",")
+      .map((column) => {
+        let col = column.trim();
+        if (column.includes(" as ") === true) {
+          col = column.split(" as ")[1].trim();
+        }
+        return col;
       });
+    setColumns(columns);
   }
+
+  function onAddOrUpdate() {
+    if (masterInput.certificate_name === "") {
+      AlgaehMessagePop({
+        display: "Certificate Name cannot be blank.",
+        type: "error",
+      });
+    } else if (masterInput.certificate_type_id === "") {
+      AlgaehMessagePop({
+        display: "Select Certificate Type.",
+        type: "error",
+      });
+    } else if (joditEditor.current.value === "") {
+      AlgaehMessagePop({
+        display: "Define template.",
+        type: "error",
+      });
+    } else {
+      setLoading(true);
+      masterInput.certificate_template = joditEditor.current.value;
+      if (masterInput.hims_d_certificate_master_id === "") {
+        newAlgaehApi({
+          uri: "/hrsettings/addCertificateMaster",
+          module: "hrManagement",
+          method: "POST",
+          data: masterInput,
+        })
+          .then((res) => {
+            if (res.data.success) {
+              onClearHandler();
+              getCertificateMaster();
+              joditEditor.current.value = "";
+              AlgaehMessagePop({
+                display: "Record Added Successfully",
+                type: "success",
+              });
+            }
+            setLoading(false);
+          })
+          .catch((err) => {
+            setLoading(false);
+            AlgaehMessagePop({
+              display: err.message,
+              type: "error",
+            });
+          });
+      } else {
+        newAlgaehApi({
+          uri: "/hrsettings/updateCertificateMaster",
+          module: "hrManagement",
+          method: "PUT",
+          data: masterInput,
+        })
+          .then((res) => {
+            if (res.data.success) {
+              onClearHandler();
+              getCertificateMaster();
+              joditEditor.current.value = "";
+              AlgaehMessagePop({
+                display: "Record Updated Successfully",
+                type: "success",
+              });
+            }
+            setLoading(false);
+          })
+          .catch((err) => {
+            setLoading(false);
+            AlgaehMessagePop({
+              display: err.message,
+              type: "error",
+            });
+          });
+      }
+    }
+  }
+
   function onClearHandler() {
     setMasterInput({
-      kpi_type: "",
-      kpi_name: "",
-      kpi_parameters: "",
-      kpi_query: "",
-      kpi_status: "A",
+      hims_d_certificate_master_id: "",
+      certificate_type_id: "",
+      certificate_name: "",
+      certificate_template: "",
+      certificate_status: "A",
+      sql_query: "",
     });
+    joditEditor.current.value = "";
+    setColumns([]);
     setButtonType("Add To List");
   }
 
   return (
     <div className="row">
-      <div className="col-5">
+      <div className="col-4">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+          <div className="col-12">
+            <AlgaehDataGrid
+              id="certificateMasterList"
+              columns={[
+                {
+                  fieldName: "eidtable",
+                  label: (
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Action",
+                      }}
+                    />
+                  ),
+                  displayTemplate: (row) => {
+                    return (
+                      <button
+                        onClick={() => {
+                          onEditHandler(row);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    );
+                  },
+                  others: {
+                    maxWidth: 100,
+                    filterable: false,
+                  },
+                },
+                {
+                  fieldName: "certificate_name",
+                  label: (
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Certificate Name",
+                      }}
+                    />
+                  ),
+                },
+              ]}
+              keyId="_id"
+              dataSource={{
+                data: certificates,
+              }}
+              filter={true}
+              paging={{ page: 0, rowsPerPage: 50 }}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="col-8">
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
@@ -120,14 +278,42 @@ export default memo(function () {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "kpi_name",
-                  value: masterInput.kpi_name,
+                  name: "certificate_name",
+                  value: masterInput.certificate_name,
                   events: {
                     onChange: onMasterInputHnadler,
                   },
                 }}
               />
-              <AlagehFormGroup
+
+              <AlagehAutoComplete
+                div={{ className: "col-3 form-group mandatory" }}
+                label={{
+                  forceLabel: "Certificate Type",
+                  isImp: true,
+                }}
+                selector={{
+                  name: "certificate_type_id",
+                  className: "select-fld",
+                  value: masterInput.certificate_type_id,
+                  dataSource: {
+                    textField: "type_name",
+                    valueField: "hims_d_certificate_type_id",
+                    data: certificate_type,
+                  },
+                  onChange: onDropdownChangeHandler,
+                  onClear: () => {
+                    setMasterInput((result) => {
+                      return {
+                        ...result,
+                        certificate_type_id: "",
+                        sql_query: "",
+                      };
+                    });
+                  },
+                }}
+              />
+              {/* <AlagehFormGroup
                 div={{ className: "col-6 form-group mandatory" }}
                 label={{
                   forceLabel: "Parameters",
@@ -141,8 +327,8 @@ export default memo(function () {
                     onChange: onMasterInputHnadler,
                   },
                 }}
-              />
-              <div className="col-9 form-group mandatory">
+              /> */}
+              {/* <div className="col-9 form-group mandatory">
                 <label className="style_Label ">
                   Query<span className="imp">&nbsp;*</span>
                 </label>
@@ -158,6 +344,166 @@ export default memo(function () {
                     onChange={onMasterInputHnadler}
                   />
                 </div>
+              </div> */}
+              {/* <Editor data={certificates} /> */}
+              <div className="col-12">
+                <Spin
+                  tip="Please wait document is publishing"
+                  spinning={loading}
+                >
+                  <JoditEditor
+                    ref={joditEditor}
+                    config={{
+                      readonly: loading,
+                      enableDragAndDropFileToEditor: true,
+                      uploader: {
+                        imagesExtensions: ["jpg", "png", "jpeg", "gif"],
+                        insertImageAsBase64URI: true,
+                      },
+                      toolbarButtonSize: "small",
+                      inline: false,
+                      toolbar: true,
+                      toolbarInline: true,
+                      popup: {
+                        selection: [
+                          "bold",
+                          "underline",
+                          "italic",
+                          "font",
+                          "fontsize",
+                          "brush",
+                          "cut",
+                          "copy",
+                          "paste",
+                          "copyformat",
+                        ],
+                      },
+                      events: {
+                        getIcon: function (name, control, clearName) {
+                          if (clearName === "checkbox") {
+                            return "<i class='fa fa-square'/>";
+                          } else if (clearName === "publish") {
+                            return "<i class='fa fa-upload'/>";
+                          } else if (clearName === "label") {
+                            return "<i class='fa fa-tag'/>";
+                          }
+                        },
+                        afterInsertNode: function (e) {
+                          switch (e.nodeName) {
+                            case "TABLE":
+                              e.addEventListener("dblclick", (event) => {
+                                const tbl = event.currentTarget;
+                                const field = tbl.getAttribute(
+                                  "data-table-field"
+                                );
+                                const prot = prompt(
+                                  "Change array field name:",
+                                  field
+                                );
+                                tbl.setAttribute("data-table-field", prot);
+                              });
+                              break;
+                            default:
+                              break;
+                          }
+                        },
+                      },
+                      extraButtons: [
+                        {
+                          exec: function (editor) {
+                            const value = prompt("Enter checkbox field name");
+                            const check = document.createElement("input");
+                            check.type = "checkbox";
+                            check.setAttribute("data-checkbox-field", value);
+                            check.title = value;
+                            editor.selection.insertNode(check);
+                          },
+                          name: "checkbox",
+                          tooltip: "Add dynamic checkbox",
+                          icon: "square",
+                        },
+                        {
+                          name: "label",
+                          tooltip: "Label",
+                          icon: "label",
+                          popup: function (editor) {
+                            const select = document.createElement("select");
+                            let option = document.createElement("option");
+                            option.innerHTML = "---Select field---";
+                            select.options.add(option);
+                            for (let i = 0; i < xcolumns.length; i++) {
+                              option = document.createElement("option");
+                              option.value = xcolumns[i];
+                              option.innerHTML = xcolumns[i];
+                              select.options.add(option);
+                            }
+
+                            select.addEventListener("change", (e) => {
+                              const value = e.target.value;
+                              const text =
+                                e.target.options[e.target.selectedIndex].text;
+                              const lable = document.createElement("span");
+                              lable.setAttribute("data-label-field", value);
+                              lable.innerHTML = `{{${text}}}`;
+                              lable.title = `${value}`;
+                              editor.selection.insertNode(lable);
+                            });
+                            return select;
+                          },
+                        },
+                      ],
+                      controls: [
+                        {
+                          label: {
+                            exec: function (editor) {
+                              const lable = document.createElement("lable");
+                              lable.setAttribute("data-label-field", "");
+                              lable.innerText = "{{fieldName}}";
+                              editor.selection.insertNode(lable);
+                            },
+                          },
+                        },
+                      ],
+                      buttons: [
+                        "selectall",
+                        "undo",
+                        "redo",
+                        "cut",
+                        "copy",
+                        "paste",
+                        "copyformat",
+                        "|",
+                        "bold",
+                        "strikethrough",
+                        "underline",
+                        "italic",
+                        "eraser",
+                        "|",
+                        "superscript",
+                        "subscript",
+                        "|",
+                        "ul",
+                        "ol",
+                        "|",
+                        "outdent",
+                        "indent",
+                        "align",
+                        "|",
+                        "font",
+                        "fontsize",
+                        "brush",
+                        "paragraph",
+                        "|",
+                        "image",
+                        "table",
+                        "|",
+                        "hr",
+                        "source",
+                        "fullsize",
+                      ],
+                    }}
+                  />
+                </Spin>
               </div>
               <div className="col">
                 <AlgaehButton
@@ -178,69 +524,7 @@ export default memo(function () {
                   Clear
                 </AlgaehButton>
               </div>
-
-              <div className="col-12">
-                <AlgaehDataGrid
-                  id="certificateMasterList"
-                  columns={[
-                    {
-                      fieldName: "eidtable",
-                      label: (
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Action",
-                          }}
-                        />
-                      ),
-                      displayTemplate: (row) => {
-                        return (
-                          <button
-                            onClick={() => {
-                              onEditHandler(row);
-                            }}
-                          >
-                            Edit
-                          </button>
-                        );
-                      },
-                      others: {
-                        maxWidth: 100,
-                        filterable: false,
-                      },
-                    },
-                    {
-                      fieldName: "kpi_name",
-                      label: (
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Certificate Name",
-                          }}
-                        />
-                      ),
-                    },
-                  ]}
-                  keyId="_id"
-                  dataSource={{
-                    data: kpi_types,
-                  }}
-                  filter={true}
-                  paging={{ page: 0, rowsPerPage: 50 }}
-                />
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="col-7">
-        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Template Preview</h3>
-            </div>
-          </div>
-          <div className="portlet-body">
-            <Editor data={kpi_types} />
           </div>
         </div>
       </div>

@@ -49,13 +49,11 @@ export default memo(function (props = { data: [] }) {
     setColumns(columns);
     getTemplateMaster(_id);
   }
-
   function onClearAutoComplete() {
     setId("");
     setColumns([]);
   }
   function getTemplateMaster(kpid) {
-    debugger;
     newAlgaehApi({
       uri: "/Document/getDocumentMasterById",
       method: "GET",
