@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-
+import moment from "moment";
 // import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
@@ -104,7 +104,7 @@ select MAX(H.finance_voucher_header_id) as finance_voucher_header_id,round(H.amo
         H.finance_voucher_header_id=D.voucher_header_id
         and H.voucher_type='purchase' and H.invoice_no is not null  and   D.child_id=?
 	    	left join finance_voucher_sub_header FSH on
-        H.invoice_no = FSH.invoice_ref_no order by  H.payment_date desc;
+        H.invoice_no = FSH.invoice_ref_no;
 
 
         select round(coalesce(sum(amount)-sum(settled_amount),0),${decimal_places})as over_due
@@ -137,9 +137,33 @@ select MAX(H.finance_voucher_header_id) as finance_voucher_header_id,round(H.amo
       })
       .then((result) => {
         _mysql.releaseConnection();
-
+        const rptResult = _.chain(result[0])
+          .groupBy((g) => g.invoice_no)
+          .map((item, key) => {
+            const header = _.head(item);
+            const settled_amount = _.sumBy(item, (s) =>
+              parseFloat(s.settled_amount)
+            );
+            const balance_amount =
+              parseFloat(header.invoice_amount ?? 0) - settled_amount;
+            return {
+              ...header,
+              settled_amount,
+              balance_amount,
+              last_modified: moment(
+                new Date(
+                  Math.max.apply(
+                    null,
+                    item.map((d) => new Date(d.last_modified))
+                  )
+                )
+              ).format("DD-MM-YYYY HH:mm:ss"),
+            };
+          })
+          .orderBy((o) => o.invoice_date, "desc")
+          .value();
         req.records = {
-          result: result[0],
+          result: rptResult, //result[0] ,
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
           past_payments: result[3][0]["past_payments"],
