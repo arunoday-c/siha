@@ -188,7 +188,6 @@ export function PrepaymentAuthList() {
   };
 
   const onClickRevertModel = () => {
-    debugger;
     if (revert_reason === null || revert_reason === "") {
       AlgaehMessagePop({
         type: "warning",
