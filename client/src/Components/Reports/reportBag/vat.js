@@ -348,6 +348,114 @@ export default function Vat({
           },
         ],
       },
+      {
+        subitem: "Sales Tax Report - Summary",
+        reportName: "SalesTaxSummaryReport",
+        componentCode: "RPT_OUT_VAT",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: false,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Sales Tax Report - Detail",
+        reportName: "SalesTaxDetailReport",
+        componentCode: "RPT_OUT_VAT",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: false,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "text",
+            name: "vat",
+            initialLoad: false,
+            isImp: true,
+            label: "Enter Vat Percentage",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: undefined,
+            },
+          },
+        ],
+      },
     ],
   };
 }
