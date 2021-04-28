@@ -17,7 +17,7 @@ import { Controller, useForm } from "react-hook-form";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks";
-import { Upload, confirm } from "antd";
+import { Upload, Popconfirm } from "antd";
 const baseState = {
   full_name: "",
   employee_id: null,
@@ -102,12 +102,7 @@ export function PrepaymentRequest() {
             payReqID.finance_f_prepayment_request_id,
           start_date: data.start_date,
           // prepayment_remarks: data.prepayment_remarks,
-          end_date: moment(
-            moment(data.start_date, "YYYY-MM-DD").add(
-              data.prepayment_duration - 1,
-              "months"
-            )
-          ).format("YYYY-MM-DD"),
+          end_date: moment(data.end_date).format("YYYY-MM-DD"),
         },
         module: "finance",
       });
@@ -426,7 +421,7 @@ export function PrepaymentRequest() {
   // };
 
   const deleteDoc = (doc) => {
-    confirm({
+    Popconfirm({
       title: `Are you sure you want to delete this file?`,
       content: `${doc.filename}`,
       icon: "",
