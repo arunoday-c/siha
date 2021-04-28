@@ -1,5 +1,4 @@
 import React, { memo, useRef, useState, useEffect } from "react";
-
 import "./certificateMaster.scss";
 import {
   AlgaehDataGrid,
@@ -209,69 +208,17 @@ export default memo(function () {
 
   return (
     <div className="row">
-      <div className="col-4">
-        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
-          <div className="col-12">
-            <AlgaehDataGrid
-              id="certificateMasterList"
-              columns={[
-                {
-                  fieldName: "eidtable",
-                  label: (
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Action",
-                      }}
-                    />
-                  ),
-                  displayTemplate: (row) => {
-                    return (
-                      <button
-                        onClick={() => {
-                          onEditHandler(row);
-                        }}
-                      >
-                        Edit
-                      </button>
-                    );
-                  },
-                  others: {
-                    maxWidth: 100,
-                    filterable: false,
-                  },
-                },
-                {
-                  fieldName: "certificate_name",
-                  label: (
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Certificate Name",
-                      }}
-                    />
-                  ),
-                },
-              ]}
-              keyId="_id"
-              dataSource={{
-                data: certificates,
-              }}
-              filter={true}
-              paging={{ page: 0, rowsPerPage: 50 }}
-            />
-          </div>
-        </div>
-      </div>
       <div className="col-8">
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
-              <h3 className="caption-subject">Certificate List</h3>
+              <h3 className="caption-subject">Certificate Creator</h3>
             </div>
           </div>
           <div className="portlet-body">
             <div className="row">
               <AlagehFormGroup
-                div={{ className: "col-6 form-group mandatory" }}
+                div={{ className: "col form-group mandatory" }}
                 label={{
                   forceLabel: "Certificate Name",
                   isImp: true,
@@ -313,40 +260,54 @@ export default memo(function () {
                   },
                 }}
               />
-              {/* <AlagehFormGroup
-                div={{ className: "col-6 form-group mandatory" }}
-                label={{
-                  forceLabel: "Parameters",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "kpi_parameters",
-                  value: masterInput.kpi_parameters,
-                  events: {
-                    onChange: onMasterInputHnadler,
-                  },
-                }}
-              /> */}
-              {/* <div className="col-9 form-group mandatory">
-                <label className="style_Label ">
-                  Query<span className="imp">&nbsp;*</span>
-                </label>
-                <div
-                  algaeh_required="true"
-                  row="5"
-                  className="ui input txt-fld"
-                >
-                  <textarea
-                    rows="2"
-                    name="kpi_query"
-                    value={masterInput.kpi_query}
-                    onChange={onMasterInputHnadler}
-                  />
+              <div className="col-3">
+                <label>Custom Header Required</label>
+                <div className="customCheckbox">
+                  <label className="checkbox inline">
+                    <input
+                      type="checkbox"
+                      value="yes"
+                      name="certificate_custom_header"
+                    />
+                    <span>Yes</span>
+                  </label>
                 </div>
-              </div> */}
+              </div>
+              {/* <AlagehFormGroup
+              div={{ className: "col-6 form-group mandatory" }}
+              label={{
+                forceLabel: "Parameters",
+                isImp: true,
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "kpi_parameters",
+                value: masterInput.kpi_parameters,
+                events: {
+                  onChange: onMasterInputHnadler,
+                },
+              }}
+            /> */}
+              {/* <div className="col-9 form-group mandatory">
+              <label className="style_Label ">
+                Query<span className="imp">&nbsp;*</span>
+              </label>
+              <div
+                algaeh_required="true"
+                row="5"
+                className="ui input txt-fld"
+              >
+                <textarea
+                  rows="2"
+                  name="kpi_query"
+                  value={masterInput.kpi_query}
+                  onChange={onMasterInputHnadler}
+                />
+              </div>
+            </div> */}
               {/* <Editor data={certificates} /> */}
-              <div className="col-12">
+              <div className="col-12 certificateEditor">
+                <h6>Design Template</h6>
                 <Spin
                   tip="Please wait document is publishing"
                   spinning={loading}
@@ -505,24 +466,85 @@ export default memo(function () {
                   />
                 </Spin>
               </div>
-              <div className="col">
+              <div
+                className="col-12"
+                style={{ textAlign: "right", marginTop: 10 }}
+              >
                 <AlgaehButton
-                  style={{ marginTop: 42 }}
-                  className="btn btn-primary"
-                  onClick={onAddOrUpdate}
-                  loading={loading}
-                >
-                  {buttonType}
-                </AlgaehButton>
-                <br />
-                <AlgaehButton
-                  style={{ marginTop: 4 }}
                   className="btn btn"
                   onClick={onClearHandler}
                   loading={loading}
                 >
                   Clear
+                </AlgaehButton>{" "}
+                <AlgaehButton
+                  className="btn btn-primary"
+                  style={{ marginLeft: 5 }}
+                  onClick={onAddOrUpdate}
+                  loading={loading}
+                >
+                  {buttonType}
                 </AlgaehButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col-4">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Certificate Lists</h3>
+            </div>
+          </div>
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-12" id="certificateMasterList">
+                <AlgaehDataGrid
+                  columns={[
+                    {
+                      fieldName: "eidtable",
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Action",
+                          }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <button
+                            onClick={() => {
+                              onEditHandler(row);
+                            }}
+                          >
+                            Edit
+                          </button>
+                        );
+                      },
+                      others: {
+                        maxWidth: 100,
+                        filterable: false,
+                      },
+                    },
+                    {
+                      fieldName: "certificate_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Certificate Name",
+                          }}
+                        />
+                      ),
+                    },
+                  ]}
+                  keyId="_id"
+                  dataSource={{
+                    data: certificates,
+                  }}
+                  filter={true}
+                  paging={{ page: 0, rowsPerPage: 50 }}
+                />
               </div>
             </div>
           </div>
