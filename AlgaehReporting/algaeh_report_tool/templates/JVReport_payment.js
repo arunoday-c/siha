@@ -32,7 +32,7 @@ const executePDF = function executePDFMethod(options) {
           from finance_voucher_sub_header FSH
           inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)
           left join finance_voucher_sub_header FSHH on FSHH.finance_voucher_header_id<? and FSHH.invoice_ref_no in ( FSH.invoice_ref_no)
-          where FSH.finance_voucher_header_id=? and FH.voucher_type='purchase';   
+          where FSH.finance_voucher_header_id=? and FH.voucher_type='purchase' group by FSH.invoice_ref_no;
           select FH.voucher_type,FH.amount as opening_amount,FSH.amount, FSH.amount, 
           (FH.amount - FSH.amount) as closing_amount, FSH.invoice_ref_no from finance_voucher_sub_header FSH
           inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)           
