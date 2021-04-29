@@ -759,12 +759,13 @@ export default {
         .executeQuery({
           query:
             "INSERT INTO hims_d_certificate_master(certificate_name, certificate_type_id, certificate_template,\
-            created_date, created_by, updated_date, updated_by) \
-            values(?, ?, ?, ?, ?, ?, ?);",
+              custom_header_req, created_date, created_by, updated_date, updated_by) \
+            values(?, ?, ?, ?, ?, ?, ?, ?);",
           values: [
             input.certificate_name,
             input.certificate_type_id,
             input.certificate_template,
+            input.custom_header_req,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -793,13 +794,14 @@ export default {
         .executeQuery({
           query:
             "UPDATE hims_d_certificate_master SET certificate_name = ?,\
-            certificate_type_id = ?, certificate_status = ?, certificate_template=?, updated_date = ?, updated_by = ? \
+            certificate_type_id = ?, certificate_status = ?, certificate_template=?, custom_header_req=?, updated_date = ?, updated_by = ? \
             WHERE hims_d_certificate_master_id = ?",
           values: [
             input.certificate_name,
             input.certificate_type_id,
             input.certificate_status,
             input.certificate_template,
+            input.custom_header_req,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_certificate_master_id,

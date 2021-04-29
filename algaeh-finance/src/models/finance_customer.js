@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-
+import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
@@ -135,9 +135,33 @@ export default {
         _mysql.releaseConnection();
 
         // req.records = result;
-
+        const rptResult = _.chain(result[0])
+          .groupBy((g) => g.invoice_no)
+          .map((item, key) => {
+            const header = _.head(item);
+            const settled_amount = _.sumBy(item, (s) =>
+              parseFloat(s.settled_amount)
+            );
+            const balance_amount =
+              parseFloat(header.invoice_amount ?? 0) - settled_amount;
+            return {
+              ...header,
+              settled_amount,
+              balance_amount,
+              last_modified: moment(
+                new Date(
+                  Math.max.apply(
+                    null,
+                    item.map((d) => new Date(d.last_modified))
+                  )
+                )
+              ).format("DD-MM-YYYY HH:mm:ss"),
+            };
+          })
+          .orderBy((o) => o.invoice_date, "desc")
+          .value();
         req.records = {
-          result: result[0],
+          result: rptResult, //result[0],
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
           past_payments: result[3][0]["past_payments"],
