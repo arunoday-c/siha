@@ -4,7 +4,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlgaehDataGrid,
+  // AlgaehDataGrid,
   AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../../Wrapper/algaehFileUpload";
@@ -21,6 +21,12 @@ import {
   AlgaehValidation,
   getYearswithMinMax,
 } from "../../../../utils/GlobalFunctions";
+import { newAlgaehApi } from "../../../../hooks";
+import {
+  AlgaehDataGrid,
+  AlgaehMessagePop,
+  AlgaehAutoComplete,
+} from "algaeh-react-components";
 import BasicDetails from "./BasicEmpDetails";
 
 class SelfPersonalDetails extends Component {
@@ -34,6 +40,8 @@ class SelfPersonalDetails extends Component {
       employee_expc: [],
       employee_edu: [],
       family_details: [],
+      kpi_types: [],
+      kpi_type: null,
       month: moment().format("M"),
       year: this.currentYear,
     };
@@ -49,6 +57,26 @@ class SelfPersonalDetails extends Component {
     }
   }
 
+  getKPI() {
+    newAlgaehApi({
+      uri: "/Document/getKPI",
+      method: "GET",
+      module: "documentManagement",
+    })
+      .then((response) => {
+        const { data } = response;
+
+        let dataKpi = data.result.map((item) => item !== null && item);
+
+        this.setState({ kpi_types: dataKpi });
+      })
+      .catch((error) => {
+        AlgaehMessagePop({
+          display: error.message,
+          type: "error",
+        });
+      });
+  }
   dateDiff(startdate, enddate) {
     var startdateMoment = moment(startdate);
     var enddateMoment = moment(enddate);
@@ -81,6 +109,8 @@ class SelfPersonalDetails extends Component {
     this.getIdTypes();
     this.getEmployeeWorkExp();
     this.getEmployeeEducation();
+    this.getKPI();
+    this.getRequestCertificate();
     let data = this.props.empData !== null ? this.props.empData : {};
     this.setState(data);
   }
@@ -228,7 +258,27 @@ class SelfPersonalDetails extends Component {
       },
     });
   }
-
+  requestCertificate(data) {
+    algaehApiCall({
+      uri: "/employee/requestCertificate",
+      module: "hrManagement",
+      method: "post",
+      data: {
+        employee_id: this.state.hims_d_employee_id,
+        certificate_id: 1,
+      },
+      onSuccess: (res) => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record Added successfully",
+            type: "success",
+          });
+          this.getRequestCertificate();
+        }
+      },
+      onFailure: (err) => {},
+    });
+  }
   updateEmployeeEdu(data) {
     algaehApiCall({
       uri: "/employee/updateEmployeeEducation",
@@ -391,7 +441,24 @@ class SelfPersonalDetails extends Component {
       onFailure: (err) => {},
     });
   }
-
+  getRequestCertificate() {
+    algaehApiCall({
+      uri: "/employee/getRequestCertificate",
+      module: "hrManagement",
+      data: {
+        employee_id: this.state.hims_d_employee_id,
+      },
+      method: "GET",
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState({
+            employee_cert_req: res.data.records,
+          });
+        }
+      },
+      onFailure: (err) => {},
+    });
+  }
   getEmployeeWorkExp() {
     algaehApiCall({
       uri: "/employee/getEmployeeWorkExperience",
@@ -1344,17 +1411,18 @@ class SelfPersonalDetails extends Component {
                         },
                       ]}
                       keyId="hims_d_employee_dependents_id"
-                      dataSource={{
-                        data: this.state.family_details,
-                      }}
+                      // dataSource={{
+                      data={this.state.family_details ?? []}
+                      // }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      pagination={true}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteEmployeeDependentDetails.bind(
                           this
                         ),
-                        onDone: this.editDependentDetails.bind(this),
+                        onSave: this.editDependentDetails.bind(this),
                       }}
                     />
                   </div>
@@ -1740,15 +1808,16 @@ class SelfPersonalDetails extends Component {
                         },
                       ]}
                       keyId="hims_d_employee_identification_id"
-                      dataSource={{
-                        data: this.state.id_details,
-                      }}
+                      // dataSource={{
+                      data={this.state.id_details}
+                      // }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
+                      pagination={true}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteIdDetails.bind(this),
-                        onDone: this.updateIdDetails.bind(this),
+                        onSave: this.updateIdDetails.bind(this),
                       }}
                     />
                   </div>
@@ -2101,15 +2170,16 @@ class SelfPersonalDetails extends Component {
                         },
                       ]}
                       keyId="hims_d_employee_experience_id"
-                      dataSource={{
-                        data: this.state.employee_expc,
-                      }}
+                      // dataSource={{
+                      data={this.state.employee_expc}
+                      // }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
+                      pagination={true}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteEmpWrkExp.bind(this),
-                        onDone: this.updateEmployeeWorkExperience.bind(this),
+                        onSave: this.updateEmployeeWorkExperience.bind(this),
                       }}
                     />
                   </div>
@@ -2407,15 +2477,16 @@ class SelfPersonalDetails extends Component {
                         },
                       ]}
                       keyId="hims_d_employee_education_id"
-                      dataSource={{
-                        data: this.state.employee_edu,
-                      }}
+                      // dataSource={{
+                      data={this.state.employee_edu}
+                      // }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
+                      pagination={true}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteEmployeeEdu.bind(this),
-                        onDone: this.updateEmployeeEdu.bind(this),
+                        onSave: this.updateEmployeeEdu.bind(this),
                       }}
                     />
                   </div>
@@ -2570,15 +2641,35 @@ class SelfPersonalDetails extends Component {
               </div>
             </div> */}
 
-            {/* <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Request / Download Forms</h3>
                 </div>
               </div>
               <div className="portlet-body">
+                <AlgaehAutoComplete
+                  div={{ className: "col-12 form-group mandatory" }}
+                  label={{ forceLabel: "Select a Certificate", isImp: true }}
+                  selector={{
+                    name: "kpi_type",
+                    dataSource: {
+                      data: this.state.kpi_types,
+                      valueField: "_id",
+                      textField: "kpi_name",
+                    },
+                    value: this.state.kpi_type,
+                    onChange: (_, selected) => {},
+                    // onClear: onClearAutoComplete,
+                  }}
+                />
+                <button
+                  className="btn btn-primary"
+                  onClick={this.requestCertificate.bind(this)}
+                >
+                  Request Certificate
+                </button>
                 <div className="row">
-                  {" "}
                   <div className="col-12">
                     <AlgaehDataGrid
                       id="employeeFormTemplate"
@@ -2592,16 +2683,16 @@ class SelfPersonalDetails extends Component {
                           ),
                           others: {
                             style: {
-                              textAlign: "left"
-                            }
-                          }
+                              textAlign: "left",
+                            },
+                          },
                         },
                         {
                           fieldName: "url",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Download" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <a href={row.url} download target="_blank">
                                 Download
@@ -2609,31 +2700,23 @@ class SelfPersonalDetails extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 100
-                          }
-                        }
+                            maxWidth: 100,
+                          },
+                        },
                       ]}
                       keyId=""
-                      dataSource={{
-                        data: [
-                          {
-                            formName: "Business Trip Request Form",
-                            url: "https://google.com"
-                          },
-                          {
-                            formName: "Salary Certificate of Employee",
-                            url: "https://google.com"
-                          }
-                        ]
-                      }}
+                      // dataSource={{
+                      data={this.state.employee_cert_req ?? []}
+                      // }}
+                      pagination={true}
                       isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
                       events={{}}
                     />
                   </div>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

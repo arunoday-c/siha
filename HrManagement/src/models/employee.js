@@ -1294,6 +1294,101 @@ export default {
     });
   },
 
+  getRequestCertificate: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // return new Promise((resolve, reject) => {
+    try {
+      let input = req.query;
+
+      let strQuery = "";
+      if (input.employee_id > 0) {
+        strQuery += `where employee_id = ${input.employee_id};`;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `select C.*,E.full_name,E.hospital_id from hims_f_certificate_list C inner join hims_d_employee E on E.hims_d_employee_id= C.employee_id ${strQuery}`,
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+          // resolve(result);
+        })
+        .catch((e) => {
+          next(e);
+          // reject(e);
+        });
+    } catch (e) {
+      // reject(e);
+      next(e);
+    }
+    // }).catch((e) => {
+    //   _mysql.releaseConnection();
+    //   next(e);
+    // });
+  },
+
+  requestCertificate: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+
+      _mysql
+        .executeQuery({
+          query: `insert into hims_f_certificate_list (employee_id, certificate_id, cer_req_date)
+              VALUE(?,?,?)`,
+          values: [input.employee_id, input.certificate_id, new Date()],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+          // resolve(result);
+        })
+        .catch((e) => {
+          next(e);
+          // reject(e);
+        });
+    } catch (e) {
+      // reject(e);
+      next(e);
+    }
+  },
+  updateCertificate: (req, res, next) => {
+    try {
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "update hims_f_certificate_list set status=?,issued_by=?,valid_till=? where hims_f_certificate_list=?",
+          values: [
+            input.status,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.hims_f_certificate_list,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+          resolve(result);
+        })
+        .catch((e) => {
+          next(e);
+          reject(e);
+        });
+    } catch (e) {
+      reject(e);
+      next(e);
+    }
+  },
   updateEmployeeEducation: (req, res, next) => {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {

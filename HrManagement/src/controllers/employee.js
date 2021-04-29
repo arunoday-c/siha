@@ -65,6 +65,9 @@ const {
   getEmployeeRulesDetails,
   getEmployeeSubDeptName,
   HRDashBoardWithAttachment,
+  getRequestCertificate,
+  requestCertificate,
+  updateCertificate,
 } = empModels;
 
 export default () => {
@@ -106,6 +109,12 @@ export default () => {
     });
   });
 
+  api.get("/getRequestCertificate", getRequestCertificate, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.get(
     "/getEmployeePayrollDetails",
     getEmployeePayrollDetails,
@@ -201,6 +210,19 @@ export default () => {
   );
 
   api.post("/addEmployeeMaster", addEmployeeMaster, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.post("/requestCertificate", requestCertificate, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+
+  api.put("/updateCertificate", updateCertificate, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

@@ -99,26 +99,31 @@ export default (db) => {
         .then((result) => {
           const records = result.map((row) => {
             const { kpi_query, _id, kpi_type, kpi_name, kpi_parameters } = row;
-            const qry = kpi_query.toLowerCase().split("from")[0];
-            const columns = qry
-              .split("select")[1]
-              .split(",")
-              .map((column) => {
-                let col = column.trim();
-                if (column.includes(" as ") === true) {
-                  col = column.split(" as ")[1].trim();
-                }
-                return col;
-              });
-            return {
-              _id,
-              kpi_type,
-              kpi_name,
-              columns,
-              kpi_parameters,
-              kpi_query,
-            };
+            if (kpi_query) {
+              const qry = kpi_query.toLowerCase().split("from")[0];
+              const columns = qry
+                .split("select")[1]
+                .split(",")
+                .map((column) => {
+                  let col = column.trim();
+                  if (column.includes(" as ") === true) {
+                    col = column.split(" as ")[1].trim();
+                  }
+                  return col;
+                });
+
+              return {
+                _id,
+                kpi_type,
+                kpi_name,
+                columns,
+                kpi_parameters,
+                kpi_query,
+              };
+            }
           });
+
+          console.log(records);
           res.status(200).json({ success: true, result: records });
         })
         .catch((error) => {
