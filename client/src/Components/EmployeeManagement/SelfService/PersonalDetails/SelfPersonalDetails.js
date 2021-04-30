@@ -1428,402 +1428,7 @@ class SelfPersonalDetails extends Component {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className="col-5">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              {/* <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Payroll Information</h3>
-                </div>
-              </div> */}
-              <div className="portlet-body">
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-2 " }}
-                    label={{
-                      fieldName: "year",
-                      isImp: false,
-                    }}
-                    selector={{
-                      name: "year",
-                      className: "select-fld",
-                      value: this.state.year,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: this.yearList,
-                      },
-                      onChange: this.dropDownHandle.bind(this),
-                    }}
-                  />{" "}
-                  <AlagehAutoComplete
-                    div={{ className: "col-3 paddingLeft" }}
-                    label={{
-                      fieldName: "select_month",
-                      isImp: false,
-                    }}
-                    selector={{
-                      name: "month",
-                      sort: "off",
-                      className: "select-fld",
-                      value: this.state.month,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.MONTHS,
-                      },
-                      onChange: this.dropDownHandle.bind(this),
-                    }}
-                  />{" "}
-                  <div className="col paddingLeft">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      style={{ marginTop: 20 }}
-                      onClick={this.generateSalarySlipESS.bind(this)}
-                    >
-                      Print Payslip
-                    </button>
-                  </div>
-                </div>
-                {/* <hr></hr>
-                <div className="row">
-                  <div className="col-8">
-                    <Doughnut
-                      data={PieData}
-                      height={160}
-                      //options={AdmissionsReadmissionDataOptions}
-                    />
-                  </div>{" "}
-                  <div className="col-4 salaryBreakup">
-                    <div className="row">
-                      <div className="col-12">
-                        <p>Earnings</p>
-                        <h4>0.00</h4>
-                      </div>
-                      <div className="col-12">
-                        {" "}
-                        <p>Deductions</p>
-                        <h4>0.00</h4>
-                      </div>
-                      <div className="col-12">
-                        {" "}
-                        <p>Total Net Salary</p>
-                        <h3>0.00</h3>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
-              </div>
-            </div>
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div
-                  className="caption"
-                  ref={(c) => {
-                    this.identificationDetails = c;
-                  }}
-                >
-                  <h3 className="caption-subject">Identification Details</h3>
-                </div>
-                <div className="actions">
-                  <button
-                    className="btn btn-other btn-circle"
-                    onClick={this.showEditCntr.bind(
-                      this,
-                      "IdDetails",
-                      empDetails
-                    )}
-                  >
-                    <i
-                      className={
-                        this.state.addIdDetails ? "fas fa-times" : "fas fa-plus"
-                      }
-                    />
-                  </button>
-                </div>
-              </div>
-
-              {this.state.addIdDetails ? (
-                <div
-                  className={
-                    "col-12 editFloatCntr animated  " +
-                    (this.state.addIdDetails ? "slideInUp" : "slideOutDown") +
-                    " faster"
-                  }
-                  data-validate="emp-idnfn-div"
-                >
-                  <h5>Add ID Details</h5>
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col-2" }}
-                      label={{
-                        forceLabel: "Id Type",
-                        isImp: true,
-                      }}
-                      selector={{
-                        name: "identity_documents_id",
-                        className: "select-fld",
-                        value: this.state.identity_documents_id,
-                        dataSource: {
-                          textField: "identity_document_name",
-                          valueField: "hims_d_identity_document_id",
-                          data: this.state.idTypes,
-                        },
-                        onChange: this.dropDownHandle.bind(this),
-                        others: {
-                          tabIndex: "1",
-                        },
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-2" }}
-                      label={{
-                        forceLabel: "Id Number",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        value: this.state.identity_number,
-                        className: "txt-fld",
-                        name: "identity_number",
-
-                        events: {
-                          onChange: this.changeTexts.bind(this),
-                        },
-                        others: {
-                          tabIndex: "2",
-                          placeholder: "",
-                          type: "text",
-                        },
-                      }}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col-3" }}
-                      label={{
-                        forceLabel: "Issue Date",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "issue_date",
-                        others: {
-                          tabIndex: "3",
-                        },
-                      }}
-                      events={{
-                        onChange: (selDate) => {
-                          this.setState({
-                            issue_date: moment(selDate).format("YYYY-MM-DD"),
-                          });
-                        },
-                      }}
-                      value={this.state.issue_date}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col-3" }}
-                      label={{
-                        forceLabel: "Expiry Date",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "valid_upto",
-                        others: {
-                          tabIndex: "4",
-                        },
-                      }}
-                      events={{
-                        onChange: (selDate) => {
-                          this.setState({
-                            valid_upto: moment(selDate).format("YYYY-MM-DD"),
-                          });
-                        },
-                      }}
-                      value={this.state.valid_upto}
-                    />
-                  </div>
-                  <div className="row">
-                    <div className="col">
-                      <button
-                        onClick={this.addEmployeeIdentification.bind(this, "S")}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={this.addEmployeeIdentification.bind(
-                          this,
-                          "SC"
-                        )}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Save and Close
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={this.showEditCntr.bind(this, "IdDetails")}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-
-              <div className="portlet-body">
-                <div className="row">
-                  <div
-                    className="col-12"
-                    id="selfService_IdentificationTable_Cntr"
-                  >
-                    <AlgaehDataGrid
-                      id="identification_grid"
-                      columns={[
-                        {
-                          fieldName: "identity_document_name",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "ID Type" }} />
-                          ),
-                          editorTemplate: (row) => {
-                            return (
-                              <AlagehAutoComplete
-                                selector={{
-                                  name: "identity_documents_id",
-                                  className: "select-fld",
-                                  value: row.identity_documents_id,
-                                  dataSource: {
-                                    textField: "identity_document_name",
-                                    valueField: "hims_d_identity_document_id",
-                                    data: this.state.idTypes,
-                                  },
-                                  others: {
-                                    errormessage: "Field cannot be blank",
-                                    required: true,
-                                  },
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  ),
-                                }}
-                              />
-                            );
-                          },
-                        },
-                        {
-                          fieldName: "identity_number",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "ID No." }} />
-                          ),
-                          editorTemplate: (row) => {
-                            return (
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "identity_number",
-                                  value: row.identity_number,
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    ),
-                                  },
-                                  others: {
-                                    errormessage: "Field cannot be blank",
-                                    required: true,
-                                  },
-                                }}
-                              />
-                            );
-                          },
-                        },
-                        {
-                          fieldName: "issue_date",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
-                          ),
-                          editorTemplate: (row) => {
-                            return (
-                              <AlgaehDateHandler
-                                textBox={{
-                                  className: "txt-fld hidden",
-                                  name: "issue_date",
-                                }}
-                                events={{
-                                  onChange: (selDate) => {
-                                    row["issue_date"] = dateFomater(selDate);
-                                    row.update();
-                                  },
-                                }}
-                                value={row.issue_date}
-                              />
-                            );
-                          },
-                          displayTemplate: (row) => {
-                            return (
-                              <span>
-                                {row.issue_date !== null
-                                  ? row.issue_date
-                                  : "------"}
-                              </span>
-                            );
-                          },
-                        },
-                        {
-                          fieldName: "valid_upto",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Valid Upto" }} />
-                          ),
-                          editorTemplate: (row) => {
-                            return (
-                              <AlgaehDateHandler
-                                textBox={{
-                                  className: "txt-fld hidden",
-                                  name: "issue_date",
-                                }}
-                                events={{
-                                  onChange: (selDate) => {
-                                    row["valid_upto"] = dateFomater(selDate);
-                                    row.update();
-                                  },
-                                }}
-                                value={row.valid_upto}
-                              />
-                            );
-                          },
-                          displayTemplate: (row) => {
-                            return (
-                              <span>
-                                {row.valid_upto !== null
-                                  ? row.valid_upto
-                                  : "------"}
-                              </span>
-                            );
-                          },
-                        },
-                      ]}
-                      keyId="hims_d_employee_identification_id"
-                      // dataSource={{
-                      data={this.state.id_details}
-                      // }}
-                      isEditable={true}
-                      // paging={{ page: 0, rowsPerPage: 10 }}
-                      pagination={true}
-                      events={{
-                        onEdit: () => {},
-                        onDelete: this.deleteIdDetails.bind(this),
-                        onSave: this.updateIdDetails.bind(this),
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            </div>{" "}
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div
@@ -2186,6 +1791,486 @@ class SelfPersonalDetails extends Component {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="col-5">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              {/* <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Payroll Information</h3>
+                </div>
+              </div> */}
+              <div className="portlet-body">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 " }}
+                    label={{
+                      fieldName: "year",
+                      isImp: false,
+                    }}
+                    selector={{
+                      name: "year",
+                      className: "select-fld",
+                      value: this.state.year,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: this.yearList,
+                      },
+                      onChange: this.dropDownHandle.bind(this),
+                    }}
+                  />{" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 paddingLeft" }}
+                    label={{
+                      fieldName: "select_month",
+                      isImp: false,
+                    }}
+                    selector={{
+                      name: "month",
+                      sort: "off",
+                      className: "select-fld",
+                      value: this.state.month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MONTHS,
+                      },
+                      onChange: this.dropDownHandle.bind(this),
+                    }}
+                  />{" "}
+                  <div className="col paddingLeft">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginTop: 20 }}
+                      onClick={this.generateSalarySlipESS.bind(this)}
+                    >
+                      Print Payslip
+                    </button>
+                  </div>
+                </div>
+                {/* <hr></hr>
+                <div className="row">
+                  <div className="col-8">
+                    <Doughnut
+                      data={PieData}
+                      height={160}
+                      //options={AdmissionsReadmissionDataOptions}
+                    />
+                  </div>{" "}
+                  <div className="col-4 salaryBreakup">
+                    <div className="row">
+                      <div className="col-12">
+                        <p>Earnings</p>
+                        <h4>0.00</h4>
+                      </div>
+                      <div className="col-12">
+                        {" "}
+                        <p>Deductions</p>
+                        <h4>0.00</h4>
+                      </div>
+                      <div className="col-12">
+                        {" "}
+                        <p>Total Net Salary</p>
+                        <h3>0.00</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div> */}
+              </div>
+            </div>
+
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">
+                    Request Certificate / Download Forms
+                  </h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <AlgaehAutoComplete
+                    div={{ className: "col-8 form-group mandatory" }}
+                    label={{ forceLabel: "Select a Certificate", isImp: true }}
+                    selector={{
+                      name: "kpi_type",
+                      dataSource: {
+                        data: this.state.kpi_types,
+                        valueField: "_id",
+                        textField: "kpi_name",
+                      },
+                      value: this.state.kpi_type,
+                      onChange: (_, selected) => {},
+                      // onClear: onClearAutoComplete,
+                    }}
+                  />
+                  <button
+                    style={{ marginTop: 21 }}
+                    className="btn btn-default"
+                    onClick={this.requestCertificate.bind(this)}
+                  >
+                    Request
+                  </button>
+                </div>
+                <div className="row">
+                  <div
+                    className="col-12"
+                    id="selfService_CertificateTable_Cntr"
+                  >
+                    <AlgaehDataGrid
+                      id="employeeFormTemplate"
+                      columns={[
+                        {
+                          fieldName: "formName",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Certificate Type" }}
+                            />
+                          ),
+                          others: {
+                            style: {
+                              textAlign: "left",
+                            },
+                          },
+                        },
+                        {
+                          fieldName: "url",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Download" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <a href={row.url} download target="_blank">
+                                Download
+                              </a>
+                            );
+                          },
+                          others: {
+                            maxWidth: 100,
+                          },
+                        },
+                      ]}
+                      keyId=""
+                      // dataSource={{
+                      data={this.state.employee_cert_req ?? []}
+                      // }}
+                      pagination={true}
+                      isEditable={false}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{}}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div
+                  className="caption"
+                  ref={(c) => {
+                    this.identificationDetails = c;
+                  }}
+                >
+                  <h3 className="caption-subject">Identification Details</h3>
+                </div>
+                <div className="actions">
+                  <button
+                    className="btn btn-other btn-circle"
+                    onClick={this.showEditCntr.bind(
+                      this,
+                      "IdDetails",
+                      empDetails
+                    )}
+                  >
+                    <i
+                      className={
+                        this.state.addIdDetails ? "fas fa-times" : "fas fa-plus"
+                      }
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {this.state.addIdDetails ? (
+                <div
+                  className={
+                    "col-12 editFloatCntr animated  " +
+                    (this.state.addIdDetails ? "slideInUp" : "slideOutDown") +
+                    " faster"
+                  }
+                  data-validate="emp-idnfn-div"
+                >
+                  <h5>Add ID Details</h5>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Id Type",
+                        isImp: true,
+                      }}
+                      selector={{
+                        name: "identity_documents_id",
+                        className: "select-fld",
+                        value: this.state.identity_documents_id,
+                        dataSource: {
+                          textField: "identity_document_name",
+                          valueField: "hims_d_identity_document_id",
+                          data: this.state.idTypes,
+                        },
+                        onChange: this.dropDownHandle.bind(this),
+                        others: {
+                          tabIndex: "1",
+                        },
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Id Number",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        value: this.state.identity_number,
+                        className: "txt-fld",
+                        name: "identity_number",
+
+                        events: {
+                          onChange: this.changeTexts.bind(this),
+                        },
+                        others: {
+                          tabIndex: "2",
+                          placeholder: "",
+                          type: "text",
+                        },
+                      }}
+                    />
+                    <AlgaehDateHandler
+                      div={{ className: "col-3" }}
+                      label={{
+                        forceLabel: "Issue Date",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "issue_date",
+                        others: {
+                          tabIndex: "3",
+                        },
+                      }}
+                      events={{
+                        onChange: (selDate) => {
+                          this.setState({
+                            issue_date: moment(selDate).format("YYYY-MM-DD"),
+                          });
+                        },
+                      }}
+                      value={this.state.issue_date}
+                    />
+                    <AlgaehDateHandler
+                      div={{ className: "col-3" }}
+                      label={{
+                        forceLabel: "Expiry Date",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "valid_upto",
+                        others: {
+                          tabIndex: "4",
+                        },
+                      }}
+                      events={{
+                        onChange: (selDate) => {
+                          this.setState({
+                            valid_upto: moment(selDate).format("YYYY-MM-DD"),
+                          });
+                        },
+                      }}
+                      value={this.state.valid_upto}
+                    />
+                  </div>
+                  <div className="row">
+                    <div className="col">
+                      <button
+                        onClick={this.addEmployeeIdentification.bind(this, "S")}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={this.addEmployeeIdentification.bind(
+                          this,
+                          "SC"
+                        )}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Save and Close
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={this.showEditCntr.bind(this, "IdDetails")}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              <div className="portlet-body">
+                <div className="row">
+                  <div
+                    className="col-12"
+                    id="selfService_IdentificationTable_Cntr"
+                  >
+                    <AlgaehDataGrid
+                      columns={[
+                        {
+                          fieldName: "identity_document_name",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "ID Type" }} />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "identity_documents_id",
+                                  className: "select-fld",
+                                  value: row.identity_documents_id,
+                                  dataSource: {
+                                    textField: "identity_document_name",
+                                    valueField: "hims_d_identity_document_id",
+                                    data: this.state.idTypes,
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true,
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
+                                }}
+                              />
+                            );
+                          },
+                        },
+                        {
+                          fieldName: "identity_number",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "ID No." }} />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "identity_number",
+                                  value: row.identity_number,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    ),
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true,
+                                  },
+                                }}
+                              />
+                            );
+                          },
+                        },
+                        {
+                          fieldName: "issue_date",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlgaehDateHandler
+                                textBox={{
+                                  className: "txt-fld hidden",
+                                  name: "issue_date",
+                                }}
+                                events={{
+                                  onChange: (selDate) => {
+                                    row["issue_date"] = dateFomater(selDate);
+                                    row.update();
+                                  },
+                                }}
+                                value={row.issue_date}
+                              />
+                            );
+                          },
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.issue_date !== null
+                                  ? row.issue_date
+                                  : "------"}
+                              </span>
+                            );
+                          },
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Valid Upto" }} />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlgaehDateHandler
+                                textBox={{
+                                  className: "txt-fld hidden",
+                                  name: "issue_date",
+                                }}
+                                events={{
+                                  onChange: (selDate) => {
+                                    row["valid_upto"] = dateFomater(selDate);
+                                    row.update();
+                                  },
+                                }}
+                                value={row.valid_upto}
+                              />
+                            );
+                          },
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.valid_upto !== null
+                                  ? row.valid_upto
+                                  : "------"}
+                              </span>
+                            );
+                          },
+                        },
+                      ]}
+                      keyId="hims_d_employee_identification_id"
+                      // dataSource={{
+                      data={this.state.id_details}
+                      // }}
+                      isEditable={true}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
+                      pagination={true}
+                      events={{
+                        onEdit: () => {},
+                        onDelete: this.deleteIdDetails.bind(this),
+                        onSave: this.updateIdDetails.bind(this),
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div
@@ -2640,83 +2725,6 @@ class SelfPersonalDetails extends Component {
                 </div>
               </div>
             </div> */}
-
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Request / Download Forms</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <AlgaehAutoComplete
-                  div={{ className: "col-12 form-group mandatory" }}
-                  label={{ forceLabel: "Select a Certificate", isImp: true }}
-                  selector={{
-                    name: "kpi_type",
-                    dataSource: {
-                      data: this.state.kpi_types,
-                      valueField: "_id",
-                      textField: "kpi_name",
-                    },
-                    value: this.state.kpi_type,
-                    onChange: (_, selected) => {},
-                    // onClear: onClearAutoComplete,
-                  }}
-                />
-                <button
-                  className="btn btn-primary"
-                  onClick={this.requestCertificate.bind(this)}
-                >
-                  Request Certificate
-                </button>
-                <div className="row">
-                  <div className="col-12">
-                    <AlgaehDataGrid
-                      id="employeeFormTemplate"
-                      columns={[
-                        {
-                          fieldName: "formName",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Form Template" }}
-                            />
-                          ),
-                          others: {
-                            style: {
-                              textAlign: "left",
-                            },
-                          },
-                        },
-                        {
-                          fieldName: "url",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Download" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return (
-                              <a href={row.url} download target="_blank">
-                                Download
-                              </a>
-                            );
-                          },
-                          others: {
-                            maxWidth: 100,
-                          },
-                        },
-                      ]}
-                      keyId=""
-                      // dataSource={{
-                      data={this.state.employee_cert_req ?? []}
-                      // }}
-                      pagination={true}
-                      isEditable={false}
-                      // paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{}}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

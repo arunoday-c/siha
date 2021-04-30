@@ -228,4 +228,22 @@
   .selfServiceSection {
     margin-top: 120px;
   }
+  #selfService_FamilyTable_Cntr,
+  #selfService_IdentificationTable_Cntr,
+  #selfService_WorkExpTable_Cntr,
+  #selfService_EducationTable_Cntr,
+  #selfService_CertificateTable_Cntr {
+    .newStickyGrid {
+      .table-scroll {
+        min-height: 31vh;
+        max-height: 31vh;
+        overflow: auto;
+      }
+    }
+  }
+  .paginationCntr {
+    .pageLeft {
+      display: none;
+    }
+  }
 }
