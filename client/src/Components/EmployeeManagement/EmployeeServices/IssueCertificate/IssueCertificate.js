@@ -14,7 +14,7 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 // import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // import { MainContext } from "algaeh-react-components";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import { AlgaehButton } from "algaeh-react-components";
+// import { AlgaehButton } from "algaeh-react-components";
 import {
   AlgaehDataGrid,
   MainContext,
@@ -32,6 +32,8 @@ export default function IssueCertificate() {
     employee_name: "",
     hims_d_employee_id: null,
   });
+  const [certificate_data, setCertificateData] = useState({});
+
   const baseValue = {
     hospital_id: null,
     certificate_type: "",
@@ -91,9 +93,9 @@ export default function IssueCertificate() {
     debugger;
     const result = await Promise.all([
       newAlgaehApi({
-        uri: "/Document/getKPI",
+        uri: "/hrsettings/getCertificateMaster",
         method: "GET",
-        module: "documentManagement",
+        module: "hrManagement",
       }),
       newAlgaehApi({
         uri: "/organization/getOrganizationByUser",
@@ -101,6 +103,7 @@ export default function IssueCertificate() {
       }),
     ]);
 
+    debugger;
     return {
       certificate_types: result[0]?.data?.records,
       organizations: result[1]?.data.records,
@@ -116,7 +119,61 @@ export default function IssueCertificate() {
   }
   const generateCertificate = () => {
     debugger;
-    return;
+    newAlgaehApi({
+      uri: "/getDocsReports",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        kpi_parameter:
+          " where hims_d_employee_id = " + employee_data.hims_d_employee_id,
+        hims_d_certificate_master_id:
+          certificate_data.hims_d_certificate_master_id,
+      },
+    })
+      .then((res) => {
+        // const files = res.data;
+        // const formData = new FormData();
+        // formData.append("nameOfTheFolder", "EmployeeCertificate");
+        // files.forEach((file, index) => {
+        //   formData.append(`file_${index}`, file, file.name);
+        // });
+        // formData.append("fileName", "EmployeeCertificate");
+
+        // newAlgaehApi({
+        //   uri: "/uploadDocumentCommon",
+        //   data: formData,
+        //   extraHeaders: { "Content-Type": "multipart/form-data" },
+        //   method: "POST",
+        //   module: "documentManagement",
+        // })
+        //   .then((res) => {
+        //     // addDiagramFromMaster(contract_id, res.data.records);
+        //     AlgaehMessagePop({
+        //       type: "success",
+        //       display: "Request Added successfully",
+        //     });
+        //     // return;
+        //     // getDocuments(contract_no);
+        //   })
+        //   .catch((e) =>
+        //     AlgaehMessagePop({
+        //       type: "error",
+        //       display: e.message,
+        //     })
+        //   );
+        console.log(res.data.result, "add result");
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+        window.open(origin);
+      })
+      .catch((e) => {
+        console.log(e, "add result");
+      });
+    // return;
     refetch();
     // this.setState({ loading: true }, () => {
     // newAlgaehApi({
@@ -161,10 +218,8 @@ export default function IssueCertificate() {
   };
 
   const onSubmit = (data) => {
-    generateCertificate({
-      ...data,
-      employee_id: employee_data.hims_d_employee_id,
-    });
+    debugger;
+    generateCertificate();
   };
   const clearState = () => {
     reset();
@@ -216,7 +271,7 @@ export default function IssueCertificate() {
                     rules={{ required: "Select Branch" }}
                     render={({ value, onChange }) => (
                       <AlgaehAutoComplete
-                        div={{ className: "col-4 form-group mandatory" }}
+                        div={{ className: "col-12 form-group mandatory" }}
                         label={{
                           forceLabel: "Select Branch",
                           isImp: true,
@@ -276,9 +331,9 @@ export default function IssueCertificate() {
                     rules={{ required: "Select Certificate Type" }}
                     render={({ value, onChange }) => (
                       <AlgaehAutoComplete
-                        div={{ className: "col-4 form-group mandatory" }}
+                        div={{ className: "col-12 form-group mandatory" }}
                         label={{
-                          forceLabel: "Select Certificate Type",
+                          forceLabel: "Select Certificate",
                           isImp: true,
                         }}
                         error={errors}
@@ -287,22 +342,16 @@ export default function IssueCertificate() {
                           name: "certificate_type",
                           value,
                           onChange: (_, selected) => {
+                            debugger;
                             onChange(selected);
-
-                            // setValue("service_amount", _.standard_fee);
+                            setCertificateData(_);
                           },
 
                           dataSource: {
-                            valueField: "_id",
-                            textField: "kpi_name",
+                            valueField: "hims_d_certificate_master_id",
+                            textField: "certificate_name",
                             data: certificate_types,
                           },
-                          // others: {
-                          //   disabled:
-                          //     current.request_status === "APR" &&
-                          //     current.work_status === "COM",
-                          //   tabIndex: "4",
-                          // },
                         }}
                       />
                     )}
@@ -349,14 +398,14 @@ export default function IssueCertificate() {
                     >
                       Clear
                     </button>
-                    <AlgaehButton
+                    <button
                       type="submit"
                       loading={loading}
                       className="btn btn-primary"
                       // disabled={disabled}
                     >
                       Generate Certificate
-                    </AlgaehButton>
+                    </button>
                   </div>
                 </div>
               </form>

@@ -1,4 +1,14 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
+<style>
+    span.vitalsBox{
+        display: block;
+        width: 81px;
+        float: left;
+        text-align: left;
+        border: 1px dashed rgb(218, 218, 218);
+        padding: 5px;
+    }
+</style>
 
 <body>
     <div class="print-body">
@@ -66,13 +76,11 @@
 
     <section>
         <h3>VITALS DETAILS:-</h3>
-        <table class="tableForLabel" cell-padding="1" cell-padding="1">
-            <tr>
+      
                 {{#each vital_details }}
-                    <td  class="txtFld"><small><b>{{vitals_name}}</b></small><p style="margin: 3px 0 0; font-size:13px"><b>{{vital_value}}</b></p><small>{{formula_value}}</small></td>
+                    <span class="vitalsBox"><small><b>{{vitals_name}}</b></small><p style="margin: 3px 0 0; font-size:13px"><b>{{vital_value}}</b></p><small>{{formula_value}}</small></span>
                 {{/each }}
-            </tr>
-        </table>
+       
     </section>
     <section>
         <h3>Diagnosis:-</h3>
@@ -147,7 +155,7 @@
                 </tbody>
             </table>
     </section>
-     <section   style="width:45%;float:left">
+     <section>
         <h3>Lab Order:-</h3>
        <table class="tableForData" cell-padding="0">
                 <thead>
@@ -166,7 +174,7 @@
                 </tbody>
             </table>
     </section>
-     <section   style="width:45%;float:right">
+     <section >
         <h3>Radiology Order:-</h3>
        <table class="tableForData" cell-padding="0">
                 <thead>
@@ -185,7 +193,7 @@
                 </tbody>
             </table>
     </section>
-     <section   style="width:45%;float:left">
+     <section   >
         <h3>Package Order:-</h3>
        <table class="tableForData" cell-padding="0">
                 <thead>
@@ -204,7 +212,7 @@
                 </tbody>
             </table>
     </section>
-     <section   style="width:45%;float:right">
+     <section   >
         <h3>Consumable Order:-</h3>
        <table class="tableForData" cell-padding="0">
                 <thead>

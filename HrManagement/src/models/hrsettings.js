@@ -752,34 +752,41 @@ export default {
 
   addCertificateMaster: (req, res, next) => {
     try {
-      const _mysql = new algaehMysql();
-      let input = { ...req.body };
+      let buffer = "";
+      req.on("data", (chunk) => {
+        buffer += chunk.toString();
+      });
 
-      _mysql
-        .executeQuery({
-          query:
-            "INSERT INTO hims_d_certificate_master(certificate_name, certificate_type_id, certificate_template,\
+      req.on("end", () => {
+        let input = JSON.parse(buffer);
+        const _mysql = new algaehMysql();
+
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO hims_d_certificate_master(certificate_name, certificate_type_id, certificate_template,\
               custom_header_req, created_date, created_by, updated_date, updated_by) \
             values(?, ?, ?, ?, ?, ?, ?, ?);",
-          values: [
-            input.certificate_name,
-            input.certificate_type_id,
-            input.certificate_template,
-            input.custom_header_req,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-          ],
-        })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch((e) => {
-          next(e);
-        });
+            values: [
+              input.certificate_name,
+              input.certificate_type_id,
+              input.certificate_template,
+              input.custom_header_req,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+            ],
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch((e) => {
+            next(e);
+          });
+      });
     } catch (e) {
       next(e);
     }
@@ -787,30 +794,61 @@ export default {
 
   updateCertificateMaster: (req, res, next) => {
     try {
+      let buffer = "";
+      req.on("data", (chunk) => {
+        buffer += chunk.toString();
+      });
+
+      req.on("end", () => {
+        const _mysql = new algaehMysql();
+        let input = JSON.parse(buffer);
+
+        _mysql
+          .executeQuery({
+            query:
+              "UPDATE hims_d_certificate_master SET certificate_name = ?,\
+            certificate_type_id = ?, certificate_status = ?, certificate_template=?, custom_header_req=?, updated_date = ?, updated_by = ? \
+            WHERE hims_d_certificate_master_id = ?",
+            values: [
+              input.certificate_name,
+              input.certificate_type_id,
+              input.certificate_status,
+              input.certificate_template,
+              input.custom_header_req,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              input.hims_d_certificate_master_id,
+            ],
+            printQuery: true,
+          })
+          .then((update_loan) => {
+            _mysql.releaseConnection();
+            req.records = update_loan;
+            next();
+          })
+          .catch((e) => {
+            next(e);
+          });
+      });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getCertificateandType: (req, res, next) => {
+    try {
       const _mysql = new algaehMysql();
-      let input = { ...req.body };
 
       _mysql
         .executeQuery({
           query:
-            "UPDATE hims_d_certificate_master SET certificate_name = ?,\
-            certificate_type_id = ?, certificate_status = ?, certificate_template=?, custom_header_req=?, updated_date = ?, updated_by = ? \
-            WHERE hims_d_certificate_master_id = ?",
-          values: [
-            input.certificate_name,
-            input.certificate_type_id,
-            input.certificate_status,
-            input.certificate_template,
-            input.custom_header_req,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_certificate_master_id,
-          ],
+            "SELECT * FROM hims_d_certificate_master CM \
+            INNER JOIN hims_d_certificate_type CT ON CT.hims_d_certificate_type_id = CM.certificate_type_id order by hims_d_certificate_master_id desc",
           printQuery: true,
         })
-        .then((update_loan) => {
+        .then((result) => {
           _mysql.releaseConnection();
-          req.records = update_loan;
+          req.records = result;
           next();
         })
         .catch((e) => {

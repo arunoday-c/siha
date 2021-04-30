@@ -27,6 +27,7 @@ const {
   addCertificateMaster,
   updateCertificateMaster,
   getCertificateType,
+  getCertificateandType,
 } = hrsettings;
 
 export default () => {
@@ -182,6 +183,13 @@ export default () => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records,
+    });
+  });
+
+  api.get("/getCertificateandType", getCertificateandType, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
     });
   });
 
