@@ -296,7 +296,7 @@ class PatientProfile extends Component {
   openUCAFReport(data, e) {
     const {
       chief_complaint,
-      significant_signs,
+      // significant_signs,
       vitals_mandatory,
       current_patient,
       visit_id,
@@ -319,12 +319,14 @@ class PatientProfile extends Component {
         title: "Please enter chief complaint.",
         type: "warning",
       });
-    } else if (significant_signs === null || significant_signs.length < 4) {
-      swalMessage({
-        title: "Please enter significant signs.",
-        type: "warning",
-      });
-    } else if (
+    }
+    // else if (significant_signs === null || significant_signs.length < 4) {
+    //   swalMessage({
+    //     title: "Please enter significant signs.",
+    //     type: "warning",
+    //   });
+    // }
+    else if (
       _Vitals.length === 0 &&
       // Window.global["vitals_mandatory"] === "Y"
       vitals_mandatory === "Y"
@@ -361,7 +363,7 @@ class PatientProfile extends Component {
   openDCAFReport(data, e) {
     const {
       chief_complaint,
-      significant_signs,
+      // significant_signs,
       vitals_mandatory,
       current_patient,
       visit_id,
@@ -388,12 +390,14 @@ class PatientProfile extends Component {
         title: "Please enter chief complaint.",
         type: "warning",
       });
-    } else if (significant_signs === null || significant_signs.length < 4) {
-      swalMessage({
-        title: "Please enter significant signs.",
-        type: "warning",
-      });
-    } else if (
+    }
+    // else if (significant_signs === null || significant_signs.length < 4) {
+    //   swalMessage({
+    //     title: "Please enter significant signs.",
+    //     type: "warning",
+    //   });
+    // }
+    else if (
       _Vitals.length === 0 &&
       // Window.global["vitals_mandatory"] === "Y"
       vitals_mandatory === "Y"
@@ -430,7 +434,7 @@ class PatientProfile extends Component {
   openOCAFReport(data, e) {
     const {
       chief_complaint,
-      significant_signs,
+      // significant_signs,
       vitals_mandatory,
       current_patient,
       visit_id,
@@ -457,12 +461,14 @@ class PatientProfile extends Component {
         title: "Please enter chief complaint.",
         type: "warning",
       });
-    } else if (significant_signs === null || significant_signs.length < 4) {
-      swalMessage({
-        title: "Please enter significant signs.",
-        type: "warning",
-      });
-    } else if (
+    }
+    //  else if (significant_signs === null || significant_signs.length < 4) {
+    //   swalMessage({
+    //     title: "Please enter significant signs.",
+    //     type: "warning",
+    //   });
+    // }
+    else if (
       _Vitals.length === 0 &&
       // Window.global["vitals_mandatory"] === "Y"
       vitals_mandatory === "Y"

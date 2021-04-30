@@ -297,9 +297,29 @@ const selectVisit = ($this) => {
               });
             }
 
+            let orderSer = $this.state.billdetails;
+            let serverData = data;
+            function removeDuplicate(a, b) {
+              for (var i = 0, len = a.length; i < len; i++) {
+                for (var j = 0, len2 = b.length; j < len2; j++) {
+                  if (a[i].ordered_package_id === b[j].ordered_package_id) {
+                    b.splice(j, 1);
+                    len2 = b.length;
+                  }
+                }
+              }
+            }
+            let filteredPackage;
+            if ($this.state.billdetails.length > 0) {
+              removeDuplicate(orderSer, serverData);
+              filteredPackage = [...orderSer, ...serverData];
+            } else {
+              filteredPackage = data;
+            }
+
             $this.setState(
               {
-                billdetails: data,
+                billdetails: [...filteredPackage],
                 addNewService: false,
               },
               () => {
@@ -307,7 +327,9 @@ const selectVisit = ($this) => {
                   uri: "/billing/billingCalculations",
                   module: "billing",
                   method: "POST",
-                  data: { billdetails: data },
+                  data: {
+                    billdetails: [...filteredPackage],
+                  },
                   onSuccess: (response) => {
                     if (response.data.success) {
                       response.data.records.patient_payable_h =
@@ -442,7 +464,6 @@ const getPatientDetails = ($this, patient_code) => {
       if (response.data.success) {
         let data = response.data.records;
 
-        debugger;
         if (
           $this.context.userToken.local_vat_applicable === "N" &&
           $this.context.userToken.default_nationality ===
@@ -516,6 +537,7 @@ const getPatientDetails = ($this, patient_code) => {
         } else {
           data.patientRegistration.due_amount = 0;
         }
+
         $this.props.getPatientPackage({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
@@ -528,7 +550,6 @@ const getPatientDetails = ($this, patient_code) => {
             mappingName: "PatientPackageList",
           },
           afterSuccess: (data) => {
-            debugger;
             if (data.length !== 0 || data.length === undefined) {
               $this.setState({
                 pack_balance_amount: data[0].balance_amount,
@@ -605,7 +626,6 @@ const ClosePackageUtilize = ($this) => {
           mappingName: "PatientPackageList",
         },
         afterSuccess: (data) => {
-          debugger;
           if (data.length !== 0 || data.length === undefined) {
             $this.setState({
               pack_balance_amount: data[0].balance_amount,

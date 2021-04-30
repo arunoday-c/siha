@@ -35,14 +35,14 @@ import moment from "moment";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
 
-import { setGlobal, removeGlobal } from "../../../../utils/GlobalFunctions";
+import { setGlobal } from "../../../../utils/GlobalFunctions";
 class PastMedication extends Component {
   constructor(props) {
     super(props);
     let storedState = {};
     if (Window.global["orderMedicationState"] !== null) {
       storedState = Window.global["orderMedicationState"];
-      removeGlobal("orderMedicationState");
+      // removeGlobal("orderMedicationState");
     }
     const {
       current_patient,
@@ -62,7 +62,7 @@ class PastMedication extends Component {
       vat_applicable: this.props.vat_applicable,
       instructions: "",
       itemlist: [],
-      medicationitems: [],
+      pastMedicationitems: [],
       start_date: moment(new Date())._d,
       saveMedicationEnable: true,
       uom_id: null,
@@ -242,7 +242,7 @@ class PastMedication extends Component {
   //       this.setState(
   //         {
   //           saveMedicationEnable: true,
-  //           medicationitems: [],
+  //           pastMedicationitems: [],
   //         },
   //         this.clearInputState
   //       );
@@ -539,7 +539,7 @@ class PastMedication extends Component {
                     ]}
                     keyId="item_id"
                     dataSource={{
-                      data: this.state.medicationitems,
+                      data: this.state.pastMedicationitems,
                     }}
                     // actions={{
                     //   allowEdit: false,

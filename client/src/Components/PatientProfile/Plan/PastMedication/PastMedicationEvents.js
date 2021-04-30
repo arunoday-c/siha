@@ -264,7 +264,7 @@ const getPastMedication = ($this, patient_id) => {
     onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
-          medicationitems: response.data.records,
+          pastMedicationitems: response.data.records,
         });
       }
     },

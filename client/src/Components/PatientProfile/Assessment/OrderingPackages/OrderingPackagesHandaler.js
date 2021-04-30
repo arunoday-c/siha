@@ -11,10 +11,9 @@ const texthandle = ($this, ctrl, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
-
 
 const serviceHandeler = ($this, e) => {
   // let date = new Date().setDate(
@@ -26,16 +25,14 @@ const serviceHandeler = ($this, e) => {
       $this.setState({ service_name: "" });
       swalMessage({
         title: "No rights to order Multi Visit Package",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
   }
   let expiry_date =
     e.package_visit_type === "M"
-      ? moment()
-        .add(parseInt(e.expiry_days, 10), "days")
-        .format("YYYY-MM-DD")
+      ? moment().add(parseInt(e.expiry_days, 10), "days").format("YYYY-MM-DD")
       : moment(new Date()).format("YYYY-MM-DD");
   $this.setState({
     s_service: e.hims_d_services_id,
@@ -48,7 +45,7 @@ const serviceHandeler = ($this, e) => {
     package_id: e.hims_d_package_header_id,
     expiry_date: expiry_date,
     actual_amount: e.total_service_amount,
-    package_code: e.package_code
+    package_code: e.package_code,
   });
 };
 
@@ -59,29 +56,28 @@ const getPackageDetail = ($this, package_id) => {
       module: "masterSettings",
       method: "GET",
       data: { hims_d_package_header_id: package_id },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           resolve(response.data.records);
         } else {
           reject(response);
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
         reject(error);
-      }
+      },
     });
   });
 };
 
 //Process and gets selectd service data with all calculation
-const ProcessService = $this => {
+const ProcessService = ($this) => {
   // orderedList
 
-  debugger
   if ($this.state.s_service_type !== null && $this.state.s_service !== null) {
     algaehApiCall({
       uri: "/billing/checkServiceExists",
@@ -90,34 +86,38 @@ const ProcessService = $this => {
       data: {
         services_id: $this.state.s_service,
         visit_id: $this.state.visit_id,
-        service_type_id: $this.state.s_service_type
+        service_type_id: $this.state.s_service_type,
       },
       onSuccess: (response) => {
         if (response.data.success) {
           if (response.data.records.exists === true) {
             swalMessage({
               title: "Selected Package already ordered to the selected Visit.",
-              type: "warning"
+              type: "warning",
             });
           } else {
             let SelectedService = Enumerable.from($this.props.pakageList)
               .where(
-                w =>
+                (w) =>
                   w.service_type_id === $this.state.s_service_type &&
                   w.services_id === $this.state.s_service
               )
               .toArray();
 
-            let PreSelectedService = Enumerable.from($this.state.orderpackagedata)
+            let PreSelectedService = Enumerable.from(
+              $this.state.orderpackagedata
+            )
               .where(
-                w =>
+                (w) =>
                   w.service_type_id === $this.state.s_service_type &&
                   w.services_id === $this.state.s_service
               )
               .toArray();
 
-            if (SelectedService.length === 0 && PreSelectedService.length === 0) {
-
+            if (
+              SelectedService.length === 0 &&
+              PreSelectedService.length === 0
+            ) {
               let preserviceInput = $this.state.preserviceInput || [];
               let serviceInput = [
                 {
@@ -125,7 +125,8 @@ const ProcessService = $this => {
                   vat_applicable: $this.props.vat_applicable,
                   hims_d_services_id: $this.state.s_service,
                   service_type_id: $this.state.s_service_type,
-                  primary_insurance_provider_id: $this.state.insurance_provider_id,
+                  primary_insurance_provider_id:
+                    $this.state.insurance_provider_id,
                   primary_network_office_id:
                     $this.state.hims_d_insurance_network_office_id,
                   primary_network_id: $this.state.network_id,
@@ -133,7 +134,8 @@ const ProcessService = $this => {
                   secondary_insurance_provider_id:
                     $this.state.secondary_insurance_provider_id,
                   secondary_network_id: $this.state.secondary_network_id,
-                  secondary_network_office_id: $this.state.secondary_network_office_id,
+                  secondary_network_office_id:
+                    $this.state.secondary_network_office_id,
                   approval_amt: $this.state.approval_amt,
                   approval_limit_yesno: $this.state.approval_limit_yesno,
                   preapp_limit_amount: $this.state.preapp_limit_amount,
@@ -141,8 +143,8 @@ const ProcessService = $this => {
                   package_visit_type: $this.state.package_visit_type,
                   package_type: $this.state.package_type,
                   expiry_date: $this.state.expiry_date,
-                  actual_amount: $this.state.actual_amount
-                }
+                  actual_amount: $this.state.actual_amount,
+                },
               ];
 
               algaehApiCall({
@@ -150,7 +152,7 @@ const ProcessService = $this => {
                 module: "billing",
                 method: "POST",
                 data: serviceInput,
-                onSuccess: response => {
+                onSuccess: (response) => {
                   if (response.data.success) {
                     let data = response.data.records;
                     if (
@@ -166,8 +168,8 @@ const ProcessService = $this => {
                         confirmButtonText: "Yes!",
                         confirmButtonColor: "#",
                         cancelButtonColor: "#d33",
-                        cancelButtonText: "No"
-                      }).then(willProceed => {
+                        cancelButtonText: "No",
+                      }).then((willProceed) => {
                         if (willProceed.value) {
                           preserviceInput.push(serviceInput[0]);
                           for (let k = 0; k < preserviceInput.length; k++) {
@@ -183,7 +185,7 @@ const ProcessService = $this => {
                             module: "billing",
                             method: "POST",
                             data: preserviceInput,
-                            onSuccess: response => {
+                            onSuccess: (response) => {
                               if (response.data.success) {
                                 let Service_data = response.data.records;
 
@@ -196,7 +198,7 @@ const ProcessService = $this => {
                                     $this,
                                     Service_data.billdetails[i].package_id
                                   )
-                                    .then(result => {
+                                    .then((result) => {
                                       Service_data.billdetails[i].visit_id =
                                         $this.state.visit_id;
                                       Service_data.billdetails[i].patient_id =
@@ -208,11 +210,15 @@ const ProcessService = $this => {
                                         i
                                       ].insurance_provider_id =
                                         $this.state.insurance_provider_id;
-                                      Service_data.billdetails[i].insurance_sub_id =
+                                      Service_data.billdetails[
+                                        i
+                                      ].insurance_sub_id =
                                         $this.state.sub_insurance_provider_id;
                                       Service_data.billdetails[i].network_id =
                                         $this.state.network_id;
-                                      Service_data.billdetails[i].policy_number =
+                                      Service_data.billdetails[
+                                        i
+                                      ].policy_number =
                                         $this.state.policy_number;
                                       Service_data.billdetails[
                                         i
@@ -222,9 +228,11 @@ const ProcessService = $this => {
                                         $this.state.sec_insured;
 
                                       Service_data.billdetails[i].icd_code =
-                                        Service_data.billdetails[i].icd_code === ""
+                                        Service_data.billdetails[i].icd_code ===
+                                        ""
                                           ? null
-                                          : Service_data.billdetails[i].icd_code;
+                                          : Service_data.billdetails[i]
+                                              .icd_code;
                                       // Service_data.billdetails[i].icd_code ===
                                       //   Service_data.billdetails[0].icd_code;
                                       // Approval Table
@@ -234,7 +242,9 @@ const ProcessService = $this => {
                                       ].insurance_network_office_id =
                                         $this.state.hims_d_insurance_network_office_id;
 
-                                      Service_data.billdetails[i].requested_quantity =
+                                      Service_data.billdetails[
+                                        i
+                                      ].requested_quantity =
                                         Service_data.billdetails[i].quantity;
                                       Service_data.billdetails[i].test_type =
                                         $this.state.test_type;
@@ -247,19 +257,27 @@ const ProcessService = $this => {
                                         $this.state.visit_id;
                                       Service_data.billdetails[i].patient_id =
                                         $this.state.patient_id;
-                                      Service_data.billdetails[i].incharge_or_provider =
+                                      Service_data.billdetails[
+                                        i
+                                      ].incharge_or_provider =
                                         $this.state.provider_id;
                                       Service_data.billdetails[i].ordered_by =
                                         $this.state.provider_id;
                                       Service_data.billdetails[i].billed = "N";
 
-                                      Service_data.billdetails[i].advance_amount = 0;
-                                      Service_data.billdetails[i].balance_amount = 0;
-                                      Service_data.billdetails[i].utilize_amount = 0;
+                                      Service_data.billdetails[
+                                        i
+                                      ].advance_amount = 0;
+                                      Service_data.billdetails[
+                                        i
+                                      ].balance_amount = 0;
+                                      Service_data.billdetails[
+                                        i
+                                      ].utilize_amount = 0;
                                       Service_data.billdetails[i].package_code =
                                         $this.state.package_code;
                                     })
-                                    .catch(error => {
+                                    .catch((error) => {
                                       console.error(error);
                                     });
                                 }
@@ -274,22 +292,26 @@ const ProcessService = $this => {
                                   s_service: null,
                                   test_type: "R",
                                   service_name: "",
-                                  expiry_date: null
+                                  expiry_date: null,
                                 });
 
                                 algaehApiCall({
                                   uri: "/billing/billingCalculations",
                                   module: "billing",
                                   method: "POST",
-                                  data: { billdetails: Service_data.billdetails },
-                                  onSuccess: response => {
+                                  data: {
+                                    billdetails: Service_data.billdetails,
+                                  },
+                                  onSuccess: (response) => {
                                     if (response.data.success) {
                                       $this.setState({
                                         sub_total_amount:
-                                          response.data.records.sub_total_amount,
+                                          response.data.records
+                                            .sub_total_amount,
                                         discount_amount:
                                           response.data.records.discount_amount,
-                                        net_total: response.data.records.net_total,
+                                        net_total:
+                                          response.data.records.net_total,
                                         patient_payable:
                                           response.data.records.patient_payable,
                                         company_payble:
@@ -297,25 +319,26 @@ const ProcessService = $this => {
                                         copay_amount:
                                           response.data.records.copay_amount,
                                         sec_copay_amount:
-                                          response.data.records.sec_copay_amount
+                                          response.data.records
+                                            .sec_copay_amount,
                                       });
                                     }
                                   },
-                                  onFailure: error => {
+                                  onFailure: (error) => {
                                     swalMessage({
                                       title: error.message,
-                                      type: "error"
+                                      type: "error",
                                     });
-                                  }
+                                  },
                                 });
                               }
                             },
-                            onFailure: error => {
+                            onFailure: (error) => {
                               swalMessage({
                                 title: error.message,
-                                type: "error"
+                                type: "error",
                               });
-                            }
+                            },
                           });
                         }
                       });
@@ -330,7 +353,8 @@ const ProcessService = $this => {
                       data.billdetails[0].insurance_sub_id =
                         $this.state.sub_insurance_provider_id;
                       data.billdetails[0].network_id = $this.state.network_id;
-                      data.billdetails[0].policy_number = $this.state.policy_number;
+                      data.billdetails[0].policy_number =
+                        $this.state.policy_number;
                       data.billdetails[0].insurance_service_name =
                         $this.state.insurance_service_name;
                       // data.billdetails[0].icd_code = "1";
@@ -358,7 +382,7 @@ const ProcessService = $this => {
                       ) {
                         swalMessage({
                           title: "Selected Service is Pre-Approval required.",
-                          type: "warning"
+                          type: "warning",
                         });
                       } else if (
                         data.billdetails[0].insurance_yesno === "Y" &&
@@ -377,9 +401,10 @@ const ProcessService = $this => {
                       data.billdetails[0].advance_amount = 0;
                       data.billdetails[0].balance_amount = 0;
                       data.billdetails[0].utilize_amount = 0;
-                      data.billdetails[0].package_code = $this.state.package_code;
+                      data.billdetails[0].package_code =
+                        $this.state.package_code;
                       getPackageDetail($this, data.billdetails[0].package_id)
-                        .then(result => {
+                        .then((result) => {
                           data.billdetails[0].package_detail = result;
                           if (data.billdetails.length !== 0) {
                             existingservices.splice(0, 0, data.billdetails[0]);
@@ -399,7 +424,7 @@ const ProcessService = $this => {
                             s_service: null,
                             test_type: "R",
                             service_name: "",
-                            expiry_date: null
+                            expiry_date: null,
                           });
 
                           algaehApiCall({
@@ -407,7 +432,7 @@ const ProcessService = $this => {
                             module: "billing",
                             method: "POST",
                             data: { billdetails: existingservices },
-                            onSuccess: response => {
+                            onSuccess: (response) => {
                               if (response.data.success) {
                                 $this.setState({
                                   sub_total_amount:
@@ -417,39 +442,40 @@ const ProcessService = $this => {
                                   net_total: response.data.records.net_total,
                                   patient_payable:
                                     response.data.records.patient_payable,
-                                  company_payble: response.data.records.company_payble,
-                                  copay_amount: response.data.records.copay_amount,
+                                  company_payble:
+                                    response.data.records.company_payble,
+                                  copay_amount:
+                                    response.data.records.copay_amount,
                                   sec_copay_amount:
-                                    response.data.records.sec_copay_amount
+                                    response.data.records.sec_copay_amount,
                                 });
                               }
                             },
-                            onFailure: error => {
+                            onFailure: (error) => {
                               swalMessage({
                                 title: error.message,
-                                type: "error"
+                                type: "error",
                               });
-                            }
+                            },
                           });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           console.error(error);
                         });
                     }
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   swalMessage({
                     title: error.message,
-                    type: "error"
+                    type: "error",
                   });
-                }
+                },
               });
-
             } else {
               swalMessage({
                 title: "Selected Service already ordered.",
-                type: "warning"
+                type: "warning",
               });
             }
           }
@@ -466,7 +492,7 @@ const ProcessService = $this => {
   } else {
     swalMessage({
       title: "Please select service and service type.",
-      type: "warning"
+      type: "warning",
     });
   }
 };
@@ -478,7 +504,7 @@ const deleteServices = ($this, row, rowId) => {
 
   const get_selected_row = _.find(
     preserviceInput,
-    f => f.hims_d_services_id === row["services_id"]
+    (f) => f.hims_d_services_id === row["services_id"]
   );
 
   const _index = preserviceInput.indexOf(get_selected_row);
@@ -494,7 +520,7 @@ const deleteServices = ($this, row, rowId) => {
       sec_company_paybale: null,
       sub_total_amount: null,
       discount_amount: null,
-      net_total: null
+      net_total: null,
     });
   }
 
@@ -512,7 +538,7 @@ const deleteServices = ($this, row, rowId) => {
         module: "billing",
         method: "POST",
         data: preserviceInput,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
 
@@ -521,7 +547,7 @@ const deleteServices = ($this, row, rowId) => {
               module: "billing",
               method: "POST",
               data: { billdetails: data.billdetails },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   $this.setState({
                     orderpackagedata: data.billdetails,
@@ -535,32 +561,32 @@ const deleteServices = ($this, row, rowId) => {
                     patient_payable: response.data.records.patient_payable,
                     company_payble: response.data.records.company_payble,
                     copay_amount: response.data.records.copay_amount,
-                    sec_copay_amount: response.data.records.sec_copay_amount
+                    sec_copay_amount: response.data.records.sec_copay_amount,
                   });
                 }
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
       $this.setState({
         orderpackagedata: orderpackagedata,
         preserviceInput: preserviceInput,
         approval_amt: app_amt,
-        saved: saved
+        saved: saved,
       });
     }
   } else {
@@ -568,7 +594,7 @@ const deleteServices = ($this, row, rowId) => {
       orderpackagedata: orderpackagedata,
       preserviceInput: preserviceInput,
       approval_amt: app_amt,
-      saved: saved
+      saved: saved,
     });
   }
 };
@@ -578,7 +604,7 @@ const SaveOrdersServices = ($this, e) => {
     uri: "/orderAndPreApproval/addPackage",
     data: $this.state.orderpackagedata,
     method: "POST",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
           s_service_type: null,
@@ -613,22 +639,22 @@ const SaveOrdersServices = ($this, e) => {
           sec_company_paybale: null,
           sub_total_amount: null,
           discount_amount: null,
-          net_total: null
+          net_total: null,
         });
         $this.props.onClose && $this.props.onClose(e);
 
         swalMessage({
           title: "Ordered Successfully.",
-          type: "success"
+          type: "success",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -648,13 +674,13 @@ const calculateAmount = ($this, row, e) => {
   if (parseFloat(discount_percentage) > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
     discount_percentage = 0;
   } else if (discount_amout > parseFloat(row.unit_cost)) {
     swalMessage({
       title: "Discount Amount cannot be greater than Unit Cost.",
-      type: "warning"
+      type: "warning",
     });
     discount_amout = 0;
   }
@@ -678,8 +704,8 @@ const calculateAmount = ($this, row, e) => {
       secondary_network_office_id: $this.state.secondary_network_office_id,
       approval_amt: $this.state.approval_amt,
       approval_limit_yesno: $this.state.approval_limit_yesno,
-      preapp_limit_amount: $this.state.preapp_limit_amount
-    }
+      preapp_limit_amount: $this.state.preapp_limit_amount,
+    },
   ];
 
   algaehApiCall({
@@ -687,7 +713,7 @@ const calculateAmount = ($this, row, e) => {
     module: "billing",
     method: "POST",
     data: inputParam,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         extend(row, data.billdetails[0]);
@@ -697,7 +723,7 @@ const calculateAmount = ($this, row, e) => {
           module: "billing",
           method: "POST",
           data: { billdetails: orderpackagedata },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               let header_data = response.data.records;
               $this.setState({
@@ -710,25 +736,25 @@ const calculateAmount = ($this, row, e) => {
                 copay_amount: header_data.copay_amount,
                 sec_copay_amount: header_data.sec_copay_amount,
                 deductable_amount: header_data.deductable_amount,
-                sec_deductable_amount: header_data.sec_deductable_amount
+                sec_deductable_amount: header_data.sec_deductable_amount,
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -740,9 +766,9 @@ const updateBillDetail = ($this, e) => {
     data: { billdetails: $this.state.orderpackagedata },
     redux: {
       type: "BILL_HEADER_GEN_GET_DATA",
-      mappingName: "genbill"
+      mappingName: "genbill",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       $this.setState({
         sub_total_amount: data.sub_total_amount,
         discount_amount: data.discount_amount,
@@ -754,9 +780,9 @@ const updateBillDetail = ($this, e) => {
         deductable_amount: data.deductable_amount,
         sec_deductable_amount: data.sec_deductable_amount,
         addNewService: !$this.state.addNewService,
-        saved: !$this.state.saved
+        saved: !$this.state.saved,
       });
-    }
+    },
   });
 };
 
@@ -778,7 +804,7 @@ const EditGrid = ($this, cancelRow) => {
   $this.setState({
     saved: !$this.state.saved,
     addNewService: !$this.state.addNewService,
-    orderpackagedata: _orderpackagedata
+    orderpackagedata: _orderpackagedata,
   });
 };
 
@@ -791,7 +817,7 @@ const makeZeroIngrid = ($this, row, e) => {
 
     orderpackagedata[_index] = row;
     $this.setState({
-      orderpackagedata: orderpackagedata
+      orderpackagedata: orderpackagedata,
     });
   }
 };
@@ -799,7 +825,7 @@ const makeZeroIngrid = ($this, row, e) => {
 const ClosePackageMaster = ($this, e) => {
   if (e === false) {
     $this.setState({
-      isOpen: !$this.state.isOpen
+      isOpen: !$this.state.isOpen,
     });
   } else {
     $this.setState(
@@ -807,7 +833,7 @@ const ClosePackageMaster = ($this, e) => {
         isOpen: !$this.state.isOpen,
         s_service: e.package_service_id,
         s_service_type: 14,
-        package_code: e.package_code
+        package_code: e.package_code,
       },
       () => {
         ProcessService($this, e);
@@ -818,7 +844,7 @@ const ClosePackageMaster = ($this, e) => {
 
 const ShowPackageMaster = ($this, e) => {
   $this.setState({
-    isOpen: !$this.state.isOpen
+    isOpen: !$this.state.isOpen,
   });
 };
 export {
@@ -833,5 +859,5 @@ export {
   EditGrid,
   makeZeroIngrid,
   ClosePackageMaster,
-  ShowPackageMaster
+  ShowPackageMaster,
 };
