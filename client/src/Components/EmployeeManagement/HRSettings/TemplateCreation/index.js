@@ -145,13 +145,22 @@ export default memo(function () {
       });
     } else {
       setLoading(true);
-      masterInput.certificate_template = joditEditor.current.value;
+      masterInput.certificate_template =
+        `<style>
+      table,tr,td{border-style:solid;border-width:1px;border-collapse: collapse;padding:5px;}
+      </style>` + joditEditor.current.value;
+      const settings = { header: undefined, footer: undefined };
       if (masterInput.hims_d_certificate_master_id === "") {
         newAlgaehApi({
           uri: "/hrsettings/addCertificateMaster",
+          skipParse: true,
+          data: Buffer.from(JSON.stringify(masterInput), "utf8"),
           module: "hrManagement",
           method: "POST",
-          data: masterInput,
+          header: {
+            "content-type": "application/octet-stream",
+            ...settings,
+          },
         })
           .then((res) => {
             if (res.data.success) {
@@ -175,9 +184,14 @@ export default memo(function () {
       } else {
         newAlgaehApi({
           uri: "/hrsettings/updateCertificateMaster",
+          skipParse: true,
+          data: Buffer.from(JSON.stringify(masterInput), "utf8"),
           module: "hrManagement",
           method: "PUT",
-          data: masterInput,
+          header: {
+            "content-type": "application/octet-stream",
+            ...settings,
+          },
         })
           .then((res) => {
             if (res.data.success) {
@@ -427,18 +441,18 @@ export default memo(function () {
                           },
                         },
                       ],
-                      controls: [
-                        {
-                          label: {
-                            exec: function (editor) {
-                              const lable = document.createElement("lable");
-                              lable.setAttribute("data-label-field", "");
-                              lable.innerText = "{{fieldName}}";
-                              editor.selection.insertNode(lable);
-                            },
-                          },
-                        },
-                      ],
+                      // controls: [
+                      //   {
+                      //     label: {
+                      //       exec: function (editor) {
+                      //         const lable = document.createElement("lable");
+                      //         lable.setAttribute("data-label-field", "");
+                      //         lable.innerText = "{{fieldName}}";
+                      //         editor.selection.insertNode(lable);
+                      //       },
+                      //     },
+                      //   },
+                      // ],
                       buttons: [
                         "selectall",
                         "undo",
@@ -475,6 +489,7 @@ export default memo(function () {
                         "hr",
                         "source",
                         "fullsize",
+                        "preview",
                       ],
                     }}
                   />
