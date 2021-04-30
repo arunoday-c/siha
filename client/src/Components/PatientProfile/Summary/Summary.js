@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import "./summary.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
-import { getPatientHistory } from "../PatientProfileHandlers";
+import { getPatientHistory, getPatientVitals } from "../PatientProfileHandlers";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import moment from "moment";
 import _ from "lodash";
@@ -24,6 +24,13 @@ class Summary extends Component {
       this.props.patient_history.length === 0
     ) {
       getPatientHistory(this);
+    }
+
+    if (
+      this.props.patient_vitals === undefined ||
+      this.props.patient_vitals.length === 0
+    ) {
+      getPatientVitals(this);
     }
 
     this.getPatientMedication();
@@ -136,11 +143,11 @@ class Summary extends Component {
       this.props.patient_diet.length > 0
         ? this.props.patient_diet
         : [];
-
+    const patVitalList = this.props.patient_vitals.map((item) => item.list);
     const _pat_vitals =
       this.props.patient_vitals !== undefined &&
       this.props.patient_vitals.length > 0
-        ? _.chain(this.props.patient_vitals)
+        ? _.chain(patVitalList)
             .uniqBy((u) => u.vital_id)
             .orderBy((o) => o.sequence_order)
             .value()
@@ -195,16 +202,18 @@ class Summary extends Component {
               <div className="col-md-12 col-lg-12">
                 <div className="row text-center">
                   {_pat_vitals.length > 0 ? (
-                    _pat_vitals.map((row, index) => (
-                      <div key={index} className="col vitals-sec">
-                        <div className="counter">
-                          <h4 className="timer count-title count-number">
-                            {row.vital_value}
-                          </h4>
-                          <p className="count-text ">{row.vitals_name}</p>
+                    _pat_vitals.map((row) =>
+                      row.map((item, index) => (
+                        <div key={index} className="col vitals-sec">
+                          <div className="counter">
+                            <h4 className="timer count-title count-number">
+                              {item.vital_value}
+                            </h4>
+                            <p className="count-text ">{item.vitals_name}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      ))
+                    )
                   ) : (
                     <span className="col">Not Recorded</span>
                   )}

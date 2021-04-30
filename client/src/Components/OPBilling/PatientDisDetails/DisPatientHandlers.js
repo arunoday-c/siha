@@ -26,7 +26,7 @@ const PatientSearch = ($this, context, e) => {
 
 const selectVisit = ($this, context, e) => {
   //   let $this = this;
-  debugger;
+
   AlgaehLoader({ show: true });
   let mode_of_pay = "Self";
   let applydiscount = false;

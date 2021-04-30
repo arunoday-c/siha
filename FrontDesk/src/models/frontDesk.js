@@ -731,9 +731,9 @@ export function getDoctorAndDepartment(req, res, next) {
         inner join hims_m_user_employee as UE on UE.employee_id = E.hims_d_employee_id and  D.department_type='CLINICAL' 
         inner join hims_d_services as S on S.hims_d_services_id = E.services_id 
         where E.employee_status='A'  and SD.sub_department_status='A' and SD.record_status='A' and E.record_status ='A' 
-        and UE.hospital_id=? and services_id is not null;`,
+        and UE.hospital_id=? and UE.login_user='Y' and services_id is not null;`,
         values: [hims_d_hospital_id],
-        // printQuery: true,
+        printQuery: true,
       })
       .then((result) => {
         const docDept = _.chain(result)

@@ -360,6 +360,18 @@ class BasicSubjective extends Component {
     }
   }
   showMedication() {
+    const _diagnosis =
+      this.props.patient_diagnosis !== undefined
+        ? this.props.patient_diagnosis
+        : [];
+    const _finalDiagnosis = _diagnosis.filter((f) => f.final_daignosis === "Y");
+
+    if (_finalDiagnosis.length <= 0) {
+      swalMessage({
+        title: "Please Add Patient Diagnosis First",
+        type: "warning",
+      });
+    }
     const err = Validations(this);
     if (!err) {
       if (this.state.hims_f_episode_chief_complaint_id === null) {

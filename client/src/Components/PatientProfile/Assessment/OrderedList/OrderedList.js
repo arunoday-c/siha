@@ -148,13 +148,13 @@ class OrderedList extends PureComponent {
       });
       return;
     }
-    if (this.props.significant_signs === true) {
-      swalMessage({
-        type: "warning",
-        title: "Please enter significant signs.",
-      });
-      return;
-    }
+    // if (this.props.significant_signs === true) {
+    //   swalMessage({
+    //     type: "warning",
+    //     title: "Please enter significant signs.",
+    //   });
+    //   return;
+    // }
     const { visit_id } = Window.global;
     algaehApiCall({
       uri: "/patientRegistration/getVisitServiceAmount",

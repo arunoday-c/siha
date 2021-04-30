@@ -191,6 +191,7 @@ class ResultEntry extends Component {
         test_comments_id: null,
         comment_list: [],
         edit_range: false,
+        selcted_comments: "",
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -204,7 +205,6 @@ class ResultEntry extends Component {
     }
   }
   onClickPrintHandle() {
-    debugger;
     this.setState({ loading: true });
     generateLabResultReport(this.state)
       .then(() => {
@@ -1156,7 +1156,12 @@ class ResultEntry extends Component {
                       type="button"
                       className="btn btn-primary"
                       onClick={resultEntryUpdate.bind(this, this)}
-                      disabled={this.state.status === "V" ? true : false}
+                      disabled={
+                        this.state.status === "V" ||
+                        this.state.test_analytes.length <= 0
+                          ? true
+                          : false
+                      }
                     >
                       Save
                     </button>

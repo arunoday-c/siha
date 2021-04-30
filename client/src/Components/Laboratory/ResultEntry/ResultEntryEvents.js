@@ -87,7 +87,7 @@ const UpdateLabOrder = ($this, value, status) => {
     value[0].critical_status = "Y";
   }
   AlgaehLoader({ show: true });
-  // debugger;
+  //
 
   for (let k = 0; k < value.length; k++) {
     if (value[k].analyte_type === "T" && $this.state.edit_range) {
@@ -227,7 +227,7 @@ const onvalidate = ($this) => {
     //   test_analytes[k].isre_run = false;
     // }
     test_analytes[k].status = "V";
-    test_analytes[k].validate = "Y";
+    // test_analytes[k].validate = "Y";
     test_analytes[k].isre_run = false;
     test_analytes[k].comments = $this.state.comments;
   }
