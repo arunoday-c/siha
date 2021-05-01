@@ -8,7 +8,6 @@ import fs from "fs-extra";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import hbs from "handlebars";
-
 export function getKPIDetails(req, res, next) {
   const { kpi_parameter, hims_d_certificate_master_id } = req.query;
   try {
@@ -86,7 +85,7 @@ export function generateReport(req, res, next) {
     });
     (async () => {
       const htmlString = $.html();
-      console.log("htmlString", typeof htmlString);
+      // console.log("htmlString", typeof htmlString);
       const kpitype = kpi_type.replace(" ", "_");
       const _path = path.join(
         process.cwd(),
@@ -132,6 +131,19 @@ export function generateReport(req, res, next) {
 
       fs.exists(_path, async (exists) => {
         if (exists) {
+          const extension = path.extname(_path);
+          // const form = new FormData();
+          // form.append("doc_number", req.query.certification_number);
+          // form.append("nameOfTheFolder", kpi_type);
+          // form.append(
+          //   "file_0",
+          //   fs.createReadStream(_path),
+          //   `${req.query.certification_number}${extension}`
+          // );
+          // form.append(
+          //   "fileName",
+          //   `${req.query.certification_number}${extension}`
+          // );
           // const http = require("http");
           // const formidable = require("formidable");
 
@@ -149,27 +161,43 @@ export function generateReport(req, res, next) {
           // );
           // console.log("formData", formData);
 
-          // const headers = req.headers;
-          // await axios
-          //   .post("http://localhost:3006/api/v1/uploadDocumentCommon", {
-          //     data: formData,
-          //     headers: { ...headers, "Content-Type": "multipart/form-data" },
-          //   })
-          //   .catch((e) => {
-          //     console.log("e", e);
-          //   });
+          const headers = req.headers;
+          // console.log("headers===>", headers);
+          await axios
+            .get("http://localhost:3006/api/v1/uploadFromFilePath", {
+              params: {
+                selectedFilePath: _path,
+                doc_number: req.query.certification_number,
+                nameOfTheFolder: kpi_type,
+                fileExtension: extension,
+                fileName: `${req.query.certification_number}${extension}`,
+              },
+              headers: {
+                "x-api-key": headers["x-api-key"],
+                "x-client-ip": headers["x-client-ip"],
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((r) => {
+              console.log("r=====>", r);
+              res.status(200).json({ success: true, message: "Success" });
+            })
+            .catch((e) => {
+              console.log("e======>", e);
+            });
           // console.log("1111");
-          res.writeHead(200, {
-            "content-type": "application/pdf",
-            "content-disposition": "attachment;filename=" + kpitype,
-          });
 
-          const _fs = fs.createReadStream(_path);
+          // res.writeHead(200, {
+          //   "content-type": "application/pdf",
+          //   "content-disposition": "attachment;filename=" + kpitype,
+          // });
 
-          _fs.on("end", () => {
-            fs.unlink(_path);
-          });
-          _fs.pipe(res);
+          // const _fs = fs.createReadStream(_path);
+
+          // _fs.on("end", () => {
+          //   fs.unlink(_path);
+          // });
+          // _fs.pipe(res);
         } else {
           res.status(400).send({ error: "ERROR File does not exist" });
         }

@@ -14,6 +14,7 @@ export async function uploadDocumentCommon(req, res, next) {
     // const fieldObject = req.headers["x-file-details"]
     //   ? JSON.parse(req.headers["x-file-details"])
     //   : {};
+
     const uploadExists = folder.toUpperCase().includes("UPLOAD");
     const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
     if (!fs.pathExistsSync(uploadPath)) {
@@ -93,7 +94,56 @@ export async function uploadDocumentCommon(req, res, next) {
     next(error);
   }
 }
+export async function uploadFromFilePath(req, res, next) {
+  try {
+    const {
+      selectedFilePath,
+      nameOfTheFolder,
+      doc_number,
+      fileName,
+      fileExtension,
+    } = req.query;
 
+    if (!fs.existsSync(selectedFilePath)) {
+      next(new Error("There is no report exists"));
+      return;
+    }
+
+    const uploadExists = folder.toUpperCase().includes("UPLOAD");
+    const uploadPath = path.resolve(folder, uploadExists ? "" : "UPLOAD");
+    if (!fs.pathExistsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+    }
+
+    const fullFolderPath = path.resolve(uploadPath, nameOfTheFolder);
+    if (!fs.pathExistsSync(fullFolderPath)) {
+      fs.mkdirSync(fullFolderPath);
+    }
+    uploadDocumentSchema.insertMany(
+      [{ fromPath: true, fileName, fileExtension }],
+      (err, docs) => {
+        if (err) {
+          next(err);
+          return;
+        }
+
+        if (docs.length === 0) {
+          next(new Error("Error in inserting to document server."));
+          return;
+        }
+        fs.moveSync(selectedFilePath, `${fullFolderPath}/${fileName}`);
+        fs.unlinkSync(selectedFilePath);
+        res.status(200).json({
+          success: true,
+          message: "Success",
+        });
+      }
+    );
+  } catch (e) {
+    console.log("Error====>", e);
+    next(e);
+  }
+}
 export function getUploadedCommonFile(req, res, next) {
   try {
     const input = req.query;
