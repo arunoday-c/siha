@@ -11,6 +11,8 @@ import hbs from "handlebars";
 
 export function getKPIDetails(req, res, next) {
   const { kpi_parameter, hims_d_certificate_master_id } = req.query;
+
+  return;
   try {
     const _mysql = new algaehMysql();
     _mysql
@@ -176,6 +178,83 @@ export function generateReport(req, res, next) {
       });
     })();
     // });
+  } catch (e) {
+    next(e);
+  }
+}
+export function saveEmployeeDetails(req, res, next) {
+  const { kpi_parameter, hims_d_certificate_master_id, rowData } = req.query;
+  const row = JSON.parse(rowData);
+  debugger;
+  return;
+  try {
+    const _mysql = new algaehMysql();
+    _mysql
+      .generateRunningNumber({
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["GEN_CERTIFICATE"],
+        table_name: "hims_f_hrpayroll_numgen",
+      })
+      .then((generatedNumbers) => {
+        req.query.certification_number = generatedNumbers.GEN_CERTIFICATE;
+        req.query.kpi_parameter = kpi_parameter;
+        req.query.hims_d_certificate_master_id = hims_d_certificate_master_id;
+
+        if (row.hims_f_certificate_list_id) {
+          _mysql
+            .executeQuery({
+              query: `update hims_f_certificate_list set status='G',issued_by=?,issued_date=?, certification_number=? where hims_f_certificate_list_id=? `,
+              values: [
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                generatedNumbers.GEN_CERTIFICATE,
+                row.hims_f_certificate_list_id,
+              ],
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        } else {
+          _mysql
+            .executeQuery({
+              query: `insert into hims_f_certificate_list (employee_id, certificate_id, cer_req_date, status,issued_by,issued_date, certification_number)
+              VALUE(?,?,?)`,
+              values: [
+                row.employee_id,
+                row.certificate_id,
+                new Date(),
+                "G",
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                generatedNumbers.GEN_CERTIFICATE,
+              ],
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        }
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
   } catch (e) {
     next(e);
   }
