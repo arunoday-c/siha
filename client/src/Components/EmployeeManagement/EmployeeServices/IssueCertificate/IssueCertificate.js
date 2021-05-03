@@ -32,6 +32,7 @@ export default function IssueCertificate() {
     employee_name: "",
     hims_d_employee_id: null,
   });
+  const [row, setRow] = useState({});
   const [certificate_data, setCertificateData] = useState({});
 
   const baseValue = {
@@ -119,6 +120,8 @@ export default function IssueCertificate() {
   }
   const generateCertificate = () => {
     debugger;
+    return;
+    console.log("row", row);
     newAlgaehApi({
       uri: "/getDocsReports",
       method: "GET",
@@ -129,12 +132,19 @@ export default function IssueCertificate() {
       others: { responseType: "blob" },
       data: {
         kpi_parameter:
-          " where hims_d_employee_id = " + employee_data.hims_d_employee_id,
+          " where hims_d_employee_id = " + row
+            ? row.employee_id
+            : employee_data.hims_d_employee_id,
         hims_d_certificate_master_id:
           certificate_data.hims_d_certificate_master_id,
+        rowData: row,
       },
     })
       .then((res) => {
+        debugger;
+        setRow({});
+        reset({ certificate_type: "" });
+        refetch();
         // const files = res.data;
         // const formData = new FormData();
         // formData.append("nameOfTheFolder", "EmployeeCertificate");
@@ -174,7 +184,7 @@ export default function IssueCertificate() {
         console.log(e, "add result");
       });
     // return;
-    refetch();
+
     // this.setState({ loading: true }, () => {
     // newAlgaehApi({
     //   uri: "/reports",
@@ -218,11 +228,22 @@ export default function IssueCertificate() {
   };
 
   const onSubmit = (data) => {
-    debugger;
+    if (!row.hims_f_certificate_list_id) {
+      setRow({
+        employee_id: employee_data.hims_d_employee_id,
+        certificate_id: data.certificate_type,
+      });
+    }
+
     generateCertificate();
   };
   const clearState = () => {
-    reset();
+    reset(baseValue);
+    setEmployee_data({
+      employee_name: "",
+      hims_d_employee_id: null,
+    });
+    setRow({});
   };
 
   const employeeSearch = () => {
@@ -342,7 +363,6 @@ export default function IssueCertificate() {
                           name: "certificate_type",
                           value,
                           onChange: (_, selected) => {
-                            debugger;
                             onChange(selected);
                             setCertificateData(_);
                           },
@@ -440,8 +460,7 @@ export default function IssueCertificate() {
                               {" "}
                               <span
                                 onClick={() => {
-                                  debugger;
-
+                                  setRow(row);
                                   reset({ ...row });
                                 }}
                               >
