@@ -35,6 +35,7 @@ import {
   uploadDocumentCommon,
   deleteCommonFile,
   getUploadedCommonFile,
+  uploadFromFilePath,
 } from "../files/docUploadingCommon";
 import {
   getAllNotifications,
@@ -53,6 +54,7 @@ initializedDb((db) => {
   router.post("/uploadInvItemImg", uploadInvItemImg);
 
   router.delete("/deleteInvItemImg", deleteInvItemImg);
+  router.get("/uploadFromFilePath", uploadFromFilePath);
   router.post("/uploadDocumentCommon", uploadDocumentCommon);
   router.get("/getUploadedCommonFile", getUploadedCommonFile);
   router.delete("/deleteCommonFile", deleteCommonFile);

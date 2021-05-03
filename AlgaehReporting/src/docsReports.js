@@ -8,7 +8,6 @@ import fs from "fs-extra";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import hbs from "handlebars";
-
 export function getKPIDetails(req, res, next) {
   const { kpi_parameter, hims_d_certificate_master_id } = req.query;
 
@@ -33,10 +32,11 @@ export function getKPIDetails(req, res, next) {
             values: [hims_d_certificate_master_id],
             printQuery: true,
           })
-          .then((sqlQuery) => {
-            const kpi_query = sqlQuery[0].sql_query + kpi_parameter;
-            req.query.kpi_html = sqlQuery[0].certificate_template;
-            req.query.kpi_type = sqlQuery[0].certificate_name;
+          .then((certificate_data) => {
+            const kpi_query = certificate_data[0].sql_query + kpi_parameter;
+            req.query.kpi_html = certificate_data[0].certificate_template;
+            req.query.kpi_type = certificate_data[0].certificate_name;
+            req.query.certificate_data = certificate_data[0];
             _mysql
               .executeQuery({
                 query: kpi_query,
@@ -69,7 +69,7 @@ export function getKPIDetails(req, res, next) {
   }
 }
 export function generateReport(req, res, next) {
-  const { kpi_html, kpi_type } = req.query;
+  const { kpi_html, kpi_type, certificate_data } = req.query;
   try {
     const html = kpi_html;
     let $ = cheerio.load(html);
@@ -87,8 +87,26 @@ export function generateReport(req, res, next) {
       }
     });
     (async () => {
+      const baseObj = {
+        header: {
+          top: "150px",
+          bottom: " ",
+          right: " ",
+          left: " ",
+        },
+        footer: {
+          top: " ",
+          bottom: "100px",
+          right: " ",
+          left: " ",
+        },
+        pageOrientation: "",
+      };
+      const styleObj = certificate_data.report_props
+        ? JSON.parse(certificate_data.report_props)
+        : baseObj;
+
       const htmlString = $.html();
-      console.log("htmlString", typeof htmlString);
       const kpitype = kpi_type.replace(" ", "_");
       const _path = path.join(
         process.cwd(),
@@ -102,23 +120,29 @@ export function generateReport(req, res, next) {
 
       const _pdfTemplating = {};
 
-      const header_format = await compile("reportHeader_3", {
-        reqHeader: req.headers,
-        identity: req.userIdentity,
-        user_name: req.userIdentity["username"],
-      });
+      const header_format = await compile(
+        certificate_data.report_header_file_name,
+        {
+          reqHeader: req.headers,
+          identity: req.userIdentity,
+          user_name: req.userIdentity["username"],
+        }
+      );
       _pdfTemplating["headerTemplate"] = header_format;
 
       _pdfTemplating["margin"] = {
-        top: "60px",
+        top: styleObj.header.top,
       };
 
-      _pdfTemplating["footerTemplate"] = await compile("reportFooter_2", {
-        reqHeader: req.headers,
-      });
+      _pdfTemplating["footerTemplate"] = await compile(
+        certificate_data.report_footer_file_name,
+        {
+          reqHeader: req.headers,
+        }
+      );
       _pdfTemplating["margin"] = {
         ..._pdfTemplating["margin"],
-        bottom: "70px",
+        bottom: styleObj.footer.bottom,
       };
 
       const page = await browser.newPage();
@@ -134,50 +158,36 @@ export function generateReport(req, res, next) {
 
       fs.exists(_path, async (exists) => {
         if (exists) {
-          // const http = require("http");
-          // const formidable = require("formidable");
+          const extension = path.extname(_path);
 
-          // const formData = new FormData();
-          // formData.append("nameOfTheFolder", kpi_type);
-          // formData.append("nameOfTheFolder", "EmployeeCertificate");
-          // formData.append(
-          //   `file_0`,
-          //   _path,
-          //   `${kpitype}_${moment().format("YYYYMMDDHHmmss")}.pdf`
-          // );
-          // formData.append(
-          //   "fileName",
-          //   `${kpitype}_${moment().format("YYYYMMDDHHmmss")}.pdf`
-          // );
-          // console.log("formData", formData);
-
-          // const headers = req.headers;
-          // await axios
-          //   .post("http://localhost:3006/api/v1/uploadDocumentCommon", {
-          //     data: formData,
-          //     headers: { ...headers, "Content-Type": "multipart/form-data" },
-          //   })
-          //   .catch((e) => {
-          //     console.log("e", e);
-          //   });
-          // console.log("1111");
-          res.writeHead(200, {
-            "content-type": "application/pdf",
-            "content-disposition": "attachment;filename=" + kpitype,
-          });
-
-          const _fs = fs.createReadStream(_path);
-
-          _fs.on("end", () => {
-            fs.unlink(_path);
-          });
-          _fs.pipe(res);
+          const headers = req.headers;
+          await axios
+            .get("http://localhost:3006/api/v1/uploadFromFilePath", {
+              params: {
+                selectedFilePath: _path,
+                doc_number: req.query.certification_number,
+                nameOfTheFolder: kpi_type,
+                fileExtension: extension,
+                fileName: `${req.query.certification_number}${extension}`,
+              },
+              headers: {
+                "x-api-key": headers["x-api-key"],
+                "x-client-ip": headers["x-client-ip"],
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((r) => {
+              console.log("r=====>", r);
+              res.status(200).json({ success: true, message: "Success" });
+            })
+            .catch((e) => {
+              console.log("e======>", e);
+            });
         } else {
           res.status(400).send({ error: "ERROR File does not exist" });
         }
       });
     })();
-    // });
   } catch (e) {
     next(e);
   }

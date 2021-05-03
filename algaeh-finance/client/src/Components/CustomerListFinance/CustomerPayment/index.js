@@ -379,6 +379,7 @@ export default memo(function (props) {
               balance_amount,
               modified_amount,
               finance_voucher_header_id,
+              voucher_type: "receipt",
             };
           });
           let merdgeData = merdge;

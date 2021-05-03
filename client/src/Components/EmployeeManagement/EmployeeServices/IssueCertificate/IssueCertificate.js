@@ -322,7 +322,16 @@ export default function IssueCertificate() {
                         }}
                       />
                     )}
-                  />
+                  />{" "}
+                  <div className="col-12 globalSearchCntr form-group mandatory">
+                    <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
+                    <h6 onClick={employeeSearch}>
+                      {employee_data.employee_name
+                        ? employee_data.employee_name
+                        : "Search Employee"}
+                      <i className="fas fa-search fa-lg" />
+                    </h6>
+                  </div>
                   {/* <AlagehAutoComplete
                         div={{ className: "col-12 form-group  mandatory" }}
                         label={{
@@ -400,15 +409,6 @@ export default function IssueCertificate() {
                           },
                         }}
                       /> */}
-                  <div className="col-12 globalSearchCntr form-group mandatory">
-                    <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
-                    <h6 onClick={employeeSearch}>
-                      {employee_data.employee_name
-                        ? employee_data.employee_name
-                        : "Search Employee"}
-                      <i className="fas fa-search fa-lg" />
-                    </h6>
-                  </div>
                   <div className="col-12" style={{ textAlign: "right" }}>
                     <button
                       onClick={clearState}
@@ -450,10 +450,9 @@ export default function IssueCertificate() {
                       {
                         fieldName: "Action",
                         label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-
-                        // others: {
-                        //   maxWidth: 150,
-                        // },
+                        others: {
+                          width: 50,
+                        },
                         displayTemplate: (row) => {
                           return (
                             <>
@@ -468,6 +467,18 @@ export default function IssueCertificate() {
                               </span>
                             </>
                           );
+                        },
+                        filterable: true,
+                      },
+                      {
+                        fieldName: "",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Certificate No." }}
+                          />
+                        ),
+                        others: {
+                          maxWidth: 150,
                         },
                         filterable: true,
                       },
@@ -511,7 +522,7 @@ export default function IssueCertificate() {
                           </spna>
                         ),
                         others: {
-                          maxWidth: 150,
+                          width: 100,
                         },
                       },
                       {
