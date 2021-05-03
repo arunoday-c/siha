@@ -1,0 +1,121 @@
+<style type="text/css">
+    .reportHeaderCntr {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 18px 18px;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        font-size: 11px;
+        overflow: hidden;
+    }
+
+    .col-left {
+        float: left;
+        width: 35%;
+        text-align: left;
+    }
+
+    .col-center {
+        width: 30%;
+        text-align: center;
+        float: none;
+        margin: 0 auto;
+    }
+
+    .col-right {
+        float: right;
+        width: 35%;
+        text-align: right;
+    }
+
+    .hospitalLogo img {
+        margin: 0;
+        padding: 0;
+        border: none;
+        height: 35px;
+        width: auto;
+    }.hospitalLogoLeft img {
+        margin: 0;
+        padding: 0;
+        border: none;
+        height: 35px;
+        width: auto;
+    }.hospitalLogoRight img {
+        margin: 0;
+        padding: 0;
+        border: none;
+        height: 35px;
+        width: auto;
+    }
+
+    .reportHeaderCntr h5 {
+        margin: 3px 0;
+        padding: 0;
+        font-size: 11px;
+    }
+
+    .reportHeaderCntr p {
+        margin: 2px 0;
+        padding: 0;
+        font-size: 7px;
+        line-height: 10px;
+    }
+
+    .reportHeaderCntr p b {
+        font-size: 8px;
+    }
+
+    .showFilterValue {
+        width: 100%;
+    }
+
+    .showFilterValue span {
+
+        font-weight: bold;
+        display: inline-block;
+        padding: 3px 5px;
+        border-left: 1px solid #ccc;
+        text-align: left;
+    }
+
+    .showFilterValue span:first-child {
+        border-left: none;
+    }
+
+    .showFilterValue small {
+        display: block;
+        color: #ccc;
+    }
+
+    .headerFooterStyle {
+        width: 100%;
+        height: 10px;
+        float: left;
+        text-align: center;
+        border-top: 0.5rem dotted #ccc;
+        font-size: 8px;
+        margin-top: 5px;
+    }
+</style>
+
+<body>
+
+    <div class="reportHeaderCntr">
+        <div class="col-left">
+            <p class="hospitalLogoLeft"><img src="{{imageSource 'images/tmc_certificate_logo_en.png'}}" /></p>
+        </div>
+        <div class="col-right">
+           <p class="hospitalLogoRight"><img src="{{imageSource 'images/tmc_certificate_logo_ar.png'}}" /></p>
+        </div>
+
+        <div class="col-center">
+            <h5>شركة طوارئيات للعناية الطبية</h5>
+            <h5 style="color:red;">Twareat Medical Care Company</h5>
+        </div>
+         <div class="headerFooterStyle">
+
+        </div>
+    </div>
+
+
+</body>
