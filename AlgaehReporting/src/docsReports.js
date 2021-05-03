@@ -85,7 +85,6 @@ export function generateReport(req, res, next) {
     });
     (async () => {
       const htmlString = $.html();
-      // console.log("htmlString", typeof htmlString);
       const kpitype = kpi_type.replace(" ", "_");
       const _path = path.join(
         process.cwd(),
@@ -99,7 +98,7 @@ export function generateReport(req, res, next) {
 
       const _pdfTemplating = {};
 
-      const header_format = await compile("reportHeader_3", {
+      const header_format = await compile("certificate_header_1", {
         reqHeader: req.headers,
         identity: req.userIdentity,
         user_name: req.userIdentity["username"],
@@ -107,15 +106,15 @@ export function generateReport(req, res, next) {
       _pdfTemplating["headerTemplate"] = header_format;
 
       _pdfTemplating["margin"] = {
-        top: "60px",
+        top: "120px",
       };
 
-      _pdfTemplating["footerTemplate"] = await compile("reportFooter_2", {
+      _pdfTemplating["footerTemplate"] = await compile("certificate_footer_1", {
         reqHeader: req.headers,
       });
       _pdfTemplating["margin"] = {
         ..._pdfTemplating["margin"],
-        bottom: "70px",
+        bottom: "90px",
       };
 
       const page = await browser.newPage();
@@ -132,37 +131,8 @@ export function generateReport(req, res, next) {
       fs.exists(_path, async (exists) => {
         if (exists) {
           const extension = path.extname(_path);
-          // const form = new FormData();
-          // form.append("doc_number", req.query.certification_number);
-          // form.append("nameOfTheFolder", kpi_type);
-          // form.append(
-          //   "file_0",
-          //   fs.createReadStream(_path),
-          //   `${req.query.certification_number}${extension}`
-          // );
-          // form.append(
-          //   "fileName",
-          //   `${req.query.certification_number}${extension}`
-          // );
-          // const http = require("http");
-          // const formidable = require("formidable");
-
-          // const formData = new FormData();
-          // formData.append("nameOfTheFolder", kpi_type);
-          // formData.append("nameOfTheFolder", "EmployeeCertificate");
-          // formData.append(
-          //   `file_0`,
-          //   _path,
-          //   `${kpitype}_${moment().format("YYYYMMDDHHmmss")}.pdf`
-          // );
-          // formData.append(
-          //   "fileName",
-          //   `${kpitype}_${moment().format("YYYYMMDDHHmmss")}.pdf`
-          // );
-          // console.log("formData", formData);
 
           const headers = req.headers;
-          // console.log("headers===>", headers);
           await axios
             .get("http://localhost:3006/api/v1/uploadFromFilePath", {
               params: {
@@ -185,25 +155,11 @@ export function generateReport(req, res, next) {
             .catch((e) => {
               console.log("e======>", e);
             });
-          // console.log("1111");
-
-          // res.writeHead(200, {
-          //   "content-type": "application/pdf",
-          //   "content-disposition": "attachment;filename=" + kpitype,
-          // });
-
-          // const _fs = fs.createReadStream(_path);
-
-          // _fs.on("end", () => {
-          //   fs.unlink(_path);
-          // });
-          // _fs.pipe(res);
         } else {
           res.status(400).send({ error: "ERROR File does not exist" });
         }
       });
     })();
-    // });
   } catch (e) {
     next(e);
   }
