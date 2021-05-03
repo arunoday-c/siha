@@ -487,10 +487,12 @@ export default {
                               input["voucher_type"] == "payment" ||
                               input["voucher_type"] == "receipt"
                             ) {
-                              let head_amount = partial_amount
-                                ? partial_amount
-                                : balance_amount;
-
+                              let head_amount = modified_amount;
+                              //Commented coz every transaction its giving full amount as bug reported by abu
+                              //  partial_amount
+                              //   ? partial_amount
+                              //   : balance_amount;
+                              //End Commented coz every transaction its giving full amount as bug reported by abu
                               if (debitNoteTotal) {
                                 updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount,updated_date='${moment().format(
                                   "YYYY-MM-DD"
