@@ -101,7 +101,8 @@ export default memo(function ({ details }) {
       onSuccess: (res) => {
         setLoadingPcr(false);
         const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Visit wise lab report`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report`;
+        // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report for ${this.state.patient_code}-${this.state.patient_name}`;
         window.open(origin);
       },
       onCatch: () => {
@@ -146,7 +147,8 @@ export default memo(function ({ details }) {
         //   "<iframe src= '" + url + "' width='100%' height='100%' />"
         // );
         const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report`;
+        // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report for ${this.state.patient_code}-${this.state.patient_name}`;
         window.open(origin);
         // window.document.title = "Lab Test Report";
       },
@@ -209,7 +211,8 @@ export default memo(function ({ details }) {
       onSuccess: (res) => {
         setLoading(false);
         const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Visit wise lab report`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report`;
+        // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Lab Report for ${this.state.patient_code}-${this.state.patient_name}`;
         window.open(origin);
       },
       onCatch: (err) => {
@@ -305,11 +308,13 @@ export default memo(function ({ details }) {
             </table>
             <div className="accFooter">
               <AlgaehButton
+                sty
                 className="btn btn-default btn-sm"
                 report="merge"
                 onClick={showReport}
                 disabled={enablePrintButton}
                 loading={loading}
+                style={{ marginBottom: 10 }}
               >
                 Print as merge report
               </AlgaehButton>
@@ -319,7 +324,7 @@ export default memo(function ({ details }) {
                 onClick={showReport}
                 disabled={enablePrintButton}
                 loading={loading}
-                style={{ marginLeft: 10 }}
+                style={{ marginLeft: 10, marginBottom: 10 }}
               >
                 Print as separate report
               </AlgaehButton>
@@ -346,7 +351,7 @@ export default memo(function ({ details }) {
                   <th>Status</th>
                   <th>Billed</th>
                   <th>Send Out</th>
-                  <th>Print PCR Report</th>
+                  <th>Print Report</th>
                 </tr>
               </thead>
               <tbody>
@@ -392,7 +397,8 @@ export default memo(function ({ details }) {
                         </td>
                         <td width="70">
                           <i
-                            className="fas fa-print"
+                            style={{ fontSize: 30 }}
+                            className="fas fa-print fa-3x"
                             onClick={(e) => {
                               showReportPcr(e, item);
                             }}
@@ -412,20 +418,13 @@ export default memo(function ({ details }) {
             <table className="accrTable">
               <thead>
                 <tr>
-                  {/* <th>
-                <Checkbox
-                  indeterminate={indeterminatePcr}
-                  checked={selectAllPcr}
-                  onChange={changeSelectStatusPcr}
-                ></Checkbox>
-              </th> */}
+                  <th>Print</th>
                   <th>Test Name</th>
                   <th>Test Category</th>
                   <th>Critical</th>
                   <th>Status</th>
                   <th>Billed</th>
                   <th>Send Out</th>
-                  <th>Print PCR Report</th>
                 </tr>
               </thead>
               <tbody>
@@ -445,6 +444,21 @@ export default memo(function ({ details }) {
 
                     return (
                       <tr key={index}>
+                        <td width="70">
+                          <i
+                            style={{
+                              cursor: "pointer",
+                              border: "1px solid #ccc",
+                              borderRadius: "50%",
+                              padding: "6px",
+                            }}
+                            className="fas fa-print fa-lg"
+                            onClick={(e) => {
+                              printMicroBiologyReport(e, item);
+                            }}
+                          ></i>
+                        </td>
+
                         <td style={{ textAlign: "left", fontWeight: "bold" }}>
                           {service_name}
                         </td>
@@ -468,14 +482,6 @@ export default memo(function ({ details }) {
                         <td width="20">{billed === "Y" ? "Yes" : "No"}</td>
                         <td width="70">
                           {send_out_test === "Y" ? "Yes" : "No"}
-                        </td>
-                        <td width="70">
-                          <i
-                            className="fas fa-print"
-                            onClick={(e) => {
-                              printMicroBiologyReport(e, item);
-                            }}
-                          ></i>
                         </td>
                       </tr>
                     );
