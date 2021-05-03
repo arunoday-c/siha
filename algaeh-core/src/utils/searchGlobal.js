@@ -9,7 +9,17 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "patients",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, arabic_name, tel_code, contact_number, employee_id, age, date_of_birth, gender, email, title_id  from hims_f_patient \
-         where record_status='A' ",
+         where record_status='A'",
+      },
+      {
+        searchName: "patientsvisit",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, arabic_name, tel_code, contact_number, employee_id, age, date_of_birth, gender, email, title_id \
+          from hims_f_patient P \
+          inner join hims_f_patient_visit V on V.patient_id = P.hims_d_patient_id \
+          where P.record_status='A'",
+        orderBy: "V.hims_f_patient_visit_id desc",
+        // groupBy: " GROUP By V.patient_id",
       },
       {
         searchName: "onlycreditpatients",
