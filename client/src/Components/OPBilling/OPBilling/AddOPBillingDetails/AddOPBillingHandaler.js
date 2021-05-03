@@ -67,12 +67,18 @@ const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (parseFloat(e.target.value) > 0) {
-    if (e.target.name === "advance_adjust" && parseFloat(e.target.value) > parseFloat($this.state.advance_amount)) {
+    if (
+      e.target.name === "advance_adjust" &&
+      parseFloat(e.target.value) > parseFloat($this.state.advance_amount)
+    ) {
       swalMessage({
         title: "Adjusted amount cannot be greater than Advance amount",
         type: "warning",
       });
-    } else if (e.target.name === "pack_advance_adjust" && parseFloat(e.target.value) > parseFloat($this.state.pack_advance_amount)) {
+    } else if (
+      e.target.name === "pack_advance_adjust" &&
+      parseFloat(e.target.value) > parseFloat($this.state.pack_advance_amount)
+    ) {
       swalMessage({
         title: "Adjusted amount cannot be greater than Advance amount",
         type: "warning",
@@ -203,12 +209,14 @@ const billheaderCalculation = ($this, context, e) => {
         : parseFloat($this.state.credit_amount),
   };
 
+  debugger;
   algaehApiCall({
     uri: "/billing/billingCalculations",
     module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: (response) => {
+      debugger;
       if (response.data.success) {
         if (context !== null) {
           response.data.records.patient_payable_h =
@@ -242,7 +250,7 @@ const onchangegridcol = ($this, row, e) => {
 const ondiscountgridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  // let oldvalue = e.oldvalue || e.target.oldvalue;  
+  // let oldvalue = e.oldvalue || e.target.oldvalue;
   let billdetails = $this.state.billdetails;
   let _index = billdetails.indexOf(row);
   // if (value === undefined) {
@@ -447,7 +455,7 @@ const calculateAmount = ($this, context, row, e) => {
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
       secondary_network_office_id: $this.state.secondary_network_office_id,
-      test_id: row.test_id
+      test_id: row.test_id,
     },
   ];
 
@@ -457,12 +465,15 @@ const calculateAmount = ($this, context, row, e) => {
     method: "POST",
     data: inputParam,
     onSuccess: (response) => {
+      debugger;
       if (response.data.success) {
         let data = response.data.records;
 
         extend(row, data.billdetails[0]);
 
-        billdetails[row.rowIdx] = row;
+        const _index = billdetails.indexOf(row);
+        billdetails[_index] = row;
+        debugger;
         $this.setState({ billdetails: billdetails }, () => {
           algaehApiCall({
             uri: "/billing/billingCalculations",
@@ -472,9 +483,11 @@ const calculateAmount = ($this, context, row, e) => {
             onSuccess: (response) => {
               if (response.data.success) {
                 response.data.records.patient_payable_h =
-                  response.data.records.patient_payable === 0
-                    ? response.data.records.patient_payable
-                    : $this.state.patient_payable;
+                  response.data.records.patient_payable ||
+                  $this.state.patient_payable;
+                // response.data.records.patient_payable === 0
+                //   ? response.data.records.patient_payable
+                //   : $this.state.patient_payable;
                 response.data.records.saveEnable = false;
                 response.data.records.addNewService = false;
 
@@ -624,7 +637,6 @@ const ApplyPromo = ($this, context) => {
           type: "warning",
         });
       }
-
     },
     onFailure: (error) => {
       AlgaehLoader({ show: false });
