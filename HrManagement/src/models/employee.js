@@ -1294,20 +1294,56 @@ export default {
     });
   },
 
+  getRequestCertificateSelf: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // return new Promise((resolve, reject) => {
+    try {
+      // let input = req.query;
+
+      // let strQuery = "";
+      // if (input.employee_id > 0) {
+      //   strQuery += `where employee_id = ${input.employee_id};`;
+      // }else
+
+      _mysql
+        .executeQuery({
+          query: `select C.*,E.full_name,E.hospital_id from hims_f_certificate_list C inner join hims_d_employee E on E.hims_d_employee_id= C.employee_id where employee_id=?`,
+          values: [req.userIdentity.employee_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+          // resolve(result);
+        })
+        .catch((e) => {
+          next(e);
+          // reject(e);
+        });
+    } catch (e) {
+      // reject(e);
+      next(e);
+    }
+    // }).catch((e) => {
+    //   _mysql.releaseConnection();
+    //   next(e);
+    // });
+  },
   getRequestCertificate: (req, res, next) => {
     const _mysql = new algaehMysql();
     // return new Promise((resolve, reject) => {
     try {
-      let input = req.query;
+      // let input = req.query;
 
-      let strQuery = "";
-      if (input.employee_id > 0) {
-        strQuery += `where employee_id = ${input.employee_id};`;
-      }
+      // let strQuery = "";
+      // if (input.employee_id > 0) {
+      //   strQuery += `where employee_id = ${input.employee_id};`;
+      // }else
 
       _mysql
         .executeQuery({
-          query: `select C.*,E.full_name,E.hospital_id from hims_f_certificate_list C inner join hims_d_employee E on E.hims_d_employee_id= C.employee_id ${strQuery}`,
+          query: `select C.*,E.employee_code as code,E.full_name,E.identity_no,E.hospital_id from hims_f_certificate_list C inner join hims_d_employee E on E.hims_d_employee_id= C.employee_id`,
 
           printQuery: true,
         })
@@ -1338,7 +1374,7 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `insert into hims_f_certificate_list (employee_id, certificate_id, cer_req_date)
+          query: `insert into hims_f_certificate_list (employee_id,certificate_id, cer_req_date)
               VALUE(?,?,?)`,
           values: [input.employee_id, input.certificate_id, new Date()],
           printQuery: true,

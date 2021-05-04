@@ -66,6 +66,7 @@ const {
   getEmployeeSubDeptName,
   HRDashBoardWithAttachment,
   getRequestCertificate,
+  getRequestCertificateSelf,
   requestCertificate,
   updateCertificate,
 } = empModels;
@@ -115,6 +116,17 @@ export default () => {
       records: req.records,
     });
   });
+  api.get(
+    "/getRequestCertificateSelf",
+    getRequestCertificateSelf,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  getRequestCertificateSelf;
   api.get(
     "/getEmployeePayrollDetails",
     getEmployeePayrollDetails,
