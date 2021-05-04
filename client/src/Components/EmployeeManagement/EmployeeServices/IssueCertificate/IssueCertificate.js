@@ -146,7 +146,7 @@ export default function IssueCertificate() {
         // setRow();
         AlgaehMessagePop({
           display:
-            "Certificate Generate Successfully Please Click the Request Code",
+            "Certificate Generate Successfully. Please Click on Certificate No. to Preview.",
           type: "success",
         });
         setEmployee_data({
@@ -242,12 +242,20 @@ export default function IssueCertificate() {
   };
 
   const onSubmit = (data) => {
-    generateCertificate({
-      ...data,
-      employee_id: employee_data.hims_d_employee_id,
-      certificate_id: certificate_data.hims_d_certificate_master_id,
-      employee_code: employee_data.employee_code,
-    });
+    if (employee_data.employee_name) {
+      generateCertificate({
+        ...data,
+        employee_id: employee_data.hims_d_employee_id,
+        certificate_id: certificate_data.hims_d_certificate_master_id,
+        employee_code: employee_data.employee_code,
+      });
+    } else {
+      AlgaehMessagePop({
+        display: "Please Select Employee",
+        type: "error",
+      });
+      return;
+    }
   };
   const clearState = () => {
     reset(baseValue);
@@ -274,7 +282,6 @@ export default function IssueCertificate() {
         callBack(text);
       },
       onRowSelect: (row) => {
-        debugger;
         setEmployee_data({
           employee_name: row.full_name,
           hims_d_employee_id: row.hims_d_employee_id,
@@ -326,7 +333,9 @@ export default function IssueCertificate() {
 
                               // setValue("service_amount", _.standard_fee);
                             },
-
+                            onClear: () => {
+                              onChange("");
+                            },
                             dataSource: {
                               textField: "hospital_name",
                               valueField: "hims_d_hospital_id",
@@ -394,7 +403,9 @@ export default function IssueCertificate() {
                               onChange(selected);
                               setCertificateData(_);
                             },
-
+                            onClear: () => {
+                              onChange("");
+                            },
                             dataSource: {
                               valueField: "hims_d_certificate_master_id",
                               textField: "certificate_name",
