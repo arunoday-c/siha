@@ -1890,7 +1890,7 @@ class SelfPersonalDetails extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlgaehAutoComplete
-                    div={{ className: "col-12 form-group mandatory" }}
+                    div={{ className: "col-9 form-group mandatory" }}
                     label={{
                       forceLabel: "Select Certificate",
                       isImp: true,

@@ -4,6 +4,12 @@
     max-height: 42vh !important;
     overflow: auto !important;
   }
+  .jodit_fullsize-box_true {
+    .jodit-workplace {
+      min-height: 100% !important;
+      max-height: 100% !important;
+    }
+  }
 }
 #certificateMasterList {
   .ReactTable {

@@ -1343,7 +1343,7 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select C.*,E.full_name,E.hospital_id from hims_f_certificate_list C inner join hims_d_employee E on E.hims_d_employee_id= C.employee_id`,
+          query: `select C.*,E.employee_code as code,E.full_name,E.identity_no,E.hospital_id from hims_f_certificate_list C inner join hims_d_employee E on E.hims_d_employee_id= C.employee_id`,
 
           printQuery: true,
         })
@@ -1374,14 +1374,9 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `insert into hims_f_certificate_list (employee_id,employee_code, certificate_id, cer_req_date)
-              VALUE(?,?,?,?)`,
-          values: [
-            input.employee_id,
-            input.employee_code,
-            input.certificate_id,
-            new Date(),
-          ],
+          query: `insert into hims_f_certificate_list (employee_id,certificate_id, cer_req_date)
+              VALUE(?,?,?)`,
+          values: [input.employee_id, input.certificate_id, new Date()],
           printQuery: true,
         })
         .then((result) => {
