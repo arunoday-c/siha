@@ -146,9 +146,11 @@ export default memo(function () {
     } else {
       setLoading(true);
       masterInput.certificate_template =
-        `<style>
-      table,tr,td{border-style:solid;border-width:1px;border-collapse: collapse;padding:5px;}
-      </style>` + joditEditor.current.value;
+        `<head><style>
+      body{margin:0 30px;padding:0;}table,tr,td{border-style:solid;border-width: 1px 1px 1px 1px;border-collapse: collapse;padding:5px;border-color: rgb(255, 255, 255);}
+      </style></head><body>` +
+        joditEditor.current.value +
+        `</body>`;
       const settings = { header: undefined, footer: undefined };
       if (masterInput.hims_d_certificate_master_id === "") {
         newAlgaehApi({

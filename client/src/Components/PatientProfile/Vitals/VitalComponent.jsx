@@ -35,12 +35,7 @@ class VitalComponent extends Component {
         const _elements = document.querySelectorAll("[vitalid]");
         let resetElements = {};
         const userToken = this.context.userToken;
-        let portal_data = {
-          patient_identity: this.props.primary_id_no,
-          visit_code: this.props.visit_code,
-          visit_date: this.props.state.recorded_date,
-          hospital_id: userToken.hospital_id,
-        };
+        let portal_data = [];
         for (let i = 0; i < _elements.length; i++) {
           const inputElement = _elements[i].querySelector("input");
           const elementName = inputElement.getAttribute("name");
@@ -65,49 +60,61 @@ class VitalComponent extends Component {
               formula_value: _elements[i].getAttribute("formula_value"),
             });
 
-            if (elementName === "heart rate") {
-              portal_data = {
-                ...portal_data,
-                heart_rate: _elements[i].children[0].value
-                  ? _elements[i].children[0].value
-                  : 0.0,
-              };
-            } else if (elementName === "respiratory rate") {
-              portal_data = {
-                ...portal_data,
-                respiratory_rate: _elements[i].children[0].value
-                  ? _elements[i].children[0].value
-                  : 0.0,
-              };
-            } else if (elementName === "o2 sat") {
-              portal_data = {
-                ...portal_data,
-                o2_sat: _elements[i].children[0].value
-                  ? _elements[i].children[0].value
-                  : 0.0,
-              };
-            } else if (elementName === "bp systolic") {
-              portal_data = {
-                ...portal_data,
-                bp_systolic: _elements[i].children[0].value
-                  ? _elements[i].children[0].value
-                  : 0.0,
-              };
-            } else if (elementName === "bp diastolic") {
-              portal_data = {
-                ...portal_data,
-                bp_diastolic: _elements[i].children[0].value
-                  ? _elements[i].children[0].value
-                  : 0.0,
-              };
-            } else {
-              portal_data = {
-                ...portal_data,
-                [elementName]: _elements[i].children[0].value
-                  ? _elements[i].children[0].value
-                  : 0.0,
-              };
-            }
+            debugger;
+            portal_data.push({
+              patient_identity: this.props.primary_id_no,
+              visit_code: this.props.visit_code,
+              visit_date: this.props.state.recorded_date,
+              hospital_id: userToken.hospital_id,
+              vital_name: elementName,
+              vital_value: _elements[i].children[0].value
+                ? _elements[i].children[0].value
+                : 0.0,
+              formula_value: _elements[i].getAttribute("formula_value"),
+            });
+            // if (elementName === "heart rate") {
+            //   portal_data = {
+            //     ...portal_data,
+            //     heart_rate: _elements[i].children[0].value
+            //       ? _elements[i].children[0].value
+            //       : 0.0,
+            //   };
+            // } else if (elementName === "respiratory rate") {
+            //   portal_data = {
+            //     ...portal_data,
+            //     respiratory_rate: _elements[i].children[0].value
+            //       ? _elements[i].children[0].value
+            //       : 0.0,
+            //   };
+            // } else if (elementName === "o2 sat") {
+            //   portal_data = {
+            //     ...portal_data,
+            //     o2_sat: _elements[i].children[0].value
+            //       ? _elements[i].children[0].value
+            //       : 0.0,
+            //   };
+            // } else if (elementName === "bp systolic") {
+            //   portal_data = {
+            //     ...portal_data,
+            //     bp_systolic: _elements[i].children[0].value
+            //       ? _elements[i].children[0].value
+            //       : 0.0,
+            //   };
+            // } else if (elementName === "bp diastolic") {
+            //   portal_data = {
+            //     ...portal_data,
+            //     bp_diastolic: _elements[i].children[0].value
+            //       ? _elements[i].children[0].value
+            //       : 0.0,
+            //   };
+            // } else {
+            //   portal_data = {
+            //     ...portal_data,
+            //     [elementName]: _elements[i].children[0].value
+            //       ? _elements[i].children[0].value
+            //       : 0.0,
+            //   };
+            // }
           }
         }
 

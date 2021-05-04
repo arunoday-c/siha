@@ -1,0 +1,87 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+<div class="print-body">
+    <section>
+        <table class="tableNoBorder" cell-padding="0">
+        <tr>
+            <td colspan="2"><h1 class="voucherHdg">Receipt Voucher</h1></td>
+        <tr>
+            
+        <tr style="vertical-align: bottom;">
+             <td width="55%">
+                <table class="tableNoBorder">
+                    <tr>
+                        <td  class="txtFld">
+                            <p><b>Receive From:</b></p>
+                            <p>{{resultHeader.customer_code}} - {{resultHeader.customer_name}}</p>
+                            <p>Mob: {{resultHeader.contact_number}}</p>
+                            <p>Address: {{resultHeader.address}}</p>
+                            <p>Vat No.: {{resultHeader.vat_number}}</p>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td  class="txtFld">
+                            <br/><p><b>Payment To:</b></p>
+                            <p>{{resultHeader.child_name}}</p>
+                            <p>{{resultHeader.arabic_child_name}}</p>
+                           
+                        </td>
+                    </tr>
+                </table>
+            </td>
+           
+              <td width="55%">
+                <table class="tableNoBorder">
+                    <tr>
+                        <td  class="numberFld"><p>Date: <b>{{resultHeader.payment_date}}</b></p></td>
+                    </tr>
+                     <tr>
+                        <td  class="numberFld"><p>Reference No: <b>{{resultHeader.voucher_no}}</b></p></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </table>
+    </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                  <tr>
+                        <th>Sl No.</th>
+                        <th>Bill No.</th>
+                        <th>Bill Date</th>
+                        <th>Net Total</th>
+                        <th>Discount</th>
+                        <th>Tax</th>
+                        <th>Net Received</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each resultInvoice}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{invoice_number}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td class="numberFld">{{numberFormating sub_total ../currency}}</td>
+                        <td class="numberFld">{{numberFormating detail_discount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating total_tax ../currency}}</td>
+                        <td class="numberFld">{{numberFormating net_payable ../currency}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+            <br>
+            <table class="tableNoBorder">
+                <tr class="footerTotalUp">
+                    <td class="txtFld" width="60%" rowspan="3"><b>Memo:</b>
+                    <p>{{resultHeader.narration}}</p></td>
+                    <td class="numberFld">Total Net Received: </td>
+                     <td class="numberFld">{{numberFormating totalNetPayable currencyHeader}}</td>
+                </tr>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

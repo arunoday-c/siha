@@ -45,8 +45,13 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id
           inner join hims_d_investigation_test IT on IT.services_id= LO.service_id
           inner join hims_d_test_category TC on TC.hims_d_test_category_id= IT.category_id
-          inner join  hims_d_services S on LO.service_id=S.hims_d_services_id where LO.visit_id = ?;`,
-          values: [input.hims_d_patient_id, input.visit_id, input.visit_id],
+          inner join  hims_d_services S on LO.service_id=S.hims_d_services_id where LO.visit_id = ? and LO.hims_f_lab_order_id = ?;`,
+          values: [
+            input.hims_d_patient_id,
+            input.visit_id,
+            input.visit_id,
+            input.hims_f_lab_order_id,
+          ],
           printQuery: true,
         })
         .then((res) => {

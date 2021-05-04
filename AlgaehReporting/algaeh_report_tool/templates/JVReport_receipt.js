@@ -16,52 +16,75 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      if (input.receipt_type === "S") {
-        str = `SELECT IVH.invoice_number,
-        IVH.invoice_date,IVH.sales_invoice_mode,IVH.sales_order_id,IVH.customer_id,
-        IVH.sub_total,IVH.net_total,IVH.discount_amount,IVH.total_tax,IVH.net_payable,
-        IVH.narration as invNarration,IVH.hospital_id
-        -- if (VD.receipt_type = 'M', VD.invoice_ref_no,VD.invoice_no) as invoiceNum
-        FROM finance_voucher_header VD
-        inner join hims_f_sales_invoice_header IVH on IVH.invoice_number = VD.invoice_ref_no
-        where VD.finance_voucher_header_id=?;`;
-      } else {
-        str = `select IVH.invoice_number,
-        IVH.invoice_date,IVH.sales_invoice_mode,IVH.sales_order_id,IVH.customer_id,
-        IVH.sub_total,IVH.net_total,IVH.discount_amount,IVH.total_tax,IVH.net_payable,
-        IVH.narration as invNarration,IVH.hospital_id,
-        VSH.invoice_ref_no as sub_header_ref_no,VSH.amount as sub_header_amt,VSH.voucher_type
-        from finance_voucher_sub_header as VSH 
-        inner join finance_voucher_header VH on VH.finance_voucher_header_id = VSH.finance_voucher_header_id
-        inner join hims_f_sales_invoice_header IVH on IVH.invoice_number = VSH.invoice_ref_no
-        where VSH.finance_voucher_header_id=?;`;
-      }
-
       options.mysql
         .executeQuery({
-          query:
-            `SELECT VD.voucher_type,VD.voucher_no,VD.amount,VD.payment_mode,VD.payment_date,
-          VD.narration,VD.due_date,VD.settled_amount,VD.created_by,IVH.customer_id,IVH.sales_order_id,
-          CO.customer_name,CO.customer_code,CO.contact_number,CO.address,CO.vat_number,
-          VDD.payment_type,VDD.head_id,VDD.child_id,FCD.head_id,FCD.finance_account_child_id,FCD.child_name,FCD.arabic_child_name
-          -- if (VD.receipt_type = 'M', VD.invoice_ref_no,VD.invoice_no) as invoiceNum
+          query: `
+          SELECT VD.voucher_type,VD.voucher_no,VD.amount,VD.payment_mode,VD.payment_date,
+          VD.narration,VD.due_date,VD.settled_amount,VD.created_by,
+          CU.customer_name,CU.customer_code,CU.contact_number,CU.address,CU.vat_number
           FROM finance_voucher_header VD
           inner join hims_f_sales_invoice_header IVH on IVH.invoice_number = VD.invoice_ref_no
-          inner join hims_d_customer CO on CO.hims_d_customer_id = IVH.customer_id
-          inner join finance_voucher_details VDD on VDD.voucher_header_id = VD.finance_voucher_header_id and VDD.payment_type='DR'
-          inner join finance_account_child FCD on FCD.finance_account_child_id = VDD.child_id and FCD.head_id = VDD.head_id
-          where VD.finance_voucher_header_id=?;` + str,
-          values: [input.voucher_header_id, input.voucher_header_id],
+          inner join hims_d_customer CU on CU.hims_d_customer_id = IVH.customer_id
+          where VD.finance_voucher_header_id=?;
+          select FH.amount as opening_amount, FSH.amount as paid_amount, coalesce(FSHH.amount,0) as previous_amount,
+          FSH.invoice_ref_no
+          from finance_voucher_sub_header FSH
+          inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)
+          left join finance_voucher_sub_header FSHH on FSHH.finance_voucher_header_id<? and FSHH.invoice_ref_no in ( FSH.invoice_ref_no)
+          where FSH.finance_voucher_header_id=? and FH.voucher_type='sales' ;
+          select FH.voucher_type,FH.amount as opening_amount,FSH.amount, FSH.amount, 
+          (FH.amount - FSH.amount) as closing_amount, FSH.invoice_ref_no from finance_voucher_sub_header FSH
+          inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)           
+          where FSH.finance_voucher_header_id=? and FH.voucher_type='credit_note';
+          `,
+          values: [
+            input.voucher_header_id,
+            input.voucher_header_id,
+            input.voucher_header_id,
+            input.voucher_header_id,
+            input.voucher_header_id,
+          ],
           printQuery: true,
         })
         .then((result) => {
           // console.log(subTotal);
+          const totalNetPayable = _.sumBy(result[1], (s) =>
+            parseFloat(s.paid_amount)
+          );
+          const totalCredit_Amt = _.sumBy(result[2], (s) =>
+            parseFloat(s.amount)
+          );
+          const invoiceReArrange = _.chain(result[1])
+            .groupBy((g) => g.invoice_ref_no)
+            .map((details, key) => {
+              const { invoice_ref_no, opening_amount, paid_amount } = _.head(
+                details
+              );
+
+              return {
+                invoice_ref_no,
+                opening_amount,
+                paid_amount,
+                previous_amount: _.sumBy(details, (s) =>
+                  parseFloat(s.previous_amount)
+                ),
+                closing_amount:
+                  opening_amount -
+                  paid_amount -
+                  _.sumBy(details, (s) => parseFloat(s.previous_amount)),
+
+                // resultFor: result,
+              };
+            })
+            .value();
+
           resolve({
             resultHeader: result[0].length > 0 ? result[0][0] : {},
-            resultInvoice: result[1],
-            totalNetPayable: _.sumBy(result[1], (s) =>
-              parseFloat(s.net_payable)
-            ),
+            resultInvoice: invoiceReArrange,
+            resultCredit_note: result[2],
+            totalNetPayable: totalNetPayable,
+            totalCredit_Amt: totalCredit_Amt,
+            totalpaid_amt: totalNetPayable - totalCredit_Amt,
             currency: {
               decimal_places,
               addSymbol: false,
