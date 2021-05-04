@@ -245,11 +245,10 @@ export function saveEmployeeDetails(req, res, next) {
         } else {
           _mysql
             .executeQuery({
-              query: `insert into hims_f_certificate_list (employee_id,employee_code, certificate_id, cer_req_date, status,issued_by,issued_date, certification_number)
-              VALUE(?,?,?,?,?,?,?,?)`,
+              query: `insert into hims_f_certificate_list (employee_id, certificate_id, cer_req_date, status,issued_by,issued_date, certification_number)
+              VALUE(?,?,?,?,?,?,?)`,
               values: [
                 row.employee_id,
-                row.employee_code,
                 row.certificate_id,
                 new Date(),
                 "G",
