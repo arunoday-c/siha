@@ -5,6 +5,12 @@ const executePDF = function executePDFMethod(options) {
       const _ = options.loadash;
       const moment = options.moment;
 
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
+
       let input = {};
       let params = options.args.reportParams;
       // const utilities = new algaehUtilities();
@@ -18,9 +24,17 @@ const executePDF = function executePDFMethod(options) {
         strData += ` and P.nationality_id= ${input.nationality_id}`;
       }
 
+      if (input.is_Insurance == "Y") {
+        strData += ` and V.insured='Y'`;
+      } else if (input.is_Insurance == "N") {
+        strData += ` and V.insured='N'`;
+      }
+
       options.mysql
         .executeQuery({
-          query: `SELECT BH.bill_number as doc_number,V.visit_date, P.hims_d_patient_id as patient_id,P.full_name, P.patient_code,  N.nationality,CASE WHEN BD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno,"Billing" as data_from, BD.net_amout as total_before_vat,BD.patient_tax,BD.company_tax,(coalesce(BD.patient_payable,0)+coalesce(BD.company_payble,0)) as total_after_vat, S.service_name,BH.hims_f_billing_header_id as bill_id, SI.insurance_sub_name as company_name
+          query: `SELECT BH.bill_number as doc_number,V.visit_date, P.hims_d_patient_id as patient_id,P.full_name, P.patient_code,  N.nationality,
+          CASE WHEN BD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno,"Billing" as data_from, 
+          BD.net_amout as total_before_vat,BD.total_tax,BD.patient_tax,BD.company_tax,(coalesce(BD.patient_payable,0)+coalesce(BD.company_payble,0)) as total_after_vat, S.service_name,BH.hims_f_billing_header_id as bill_id, SI.insurance_sub_name as company_name
             FROM hims_f_billing_details as BD
             left join hims_f_billing_header BH on BD.hims_f_billing_header_id = BH.hims_f_billing_header_id
             inner join hims_f_patient P on P.hims_d_patient_id = BH.patient_id
@@ -95,6 +109,34 @@ const executePDF = function executePDFMethod(options) {
 
           resolve({
             result: BillWise,
+
+            sum_total_before_vat: _.sumBy(final_result, (s) =>
+              parseFloat(s.total_before_vat)
+            ),
+            sum_total_tax: _.sumBy(final_result, (s) =>
+              parseFloat(s.total_tax)
+            ),
+            sum_total_after_vat: _.sumBy(final_result, (s) =>
+              parseFloat(s.total_after_vat)
+            ),
+            sum_patient_tax: _.sumBy(final_result, (s) =>
+              parseFloat(s.patient_tax)
+            ),
+            sum_company_tax: _.sumBy(final_result, (s) =>
+              parseFloat(s.company_tax)
+            ),
+            decimalOnly: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol,
+            },
+            currencyOnly: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol,
+            },
           });
         })
         .catch((error) => {
