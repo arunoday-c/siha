@@ -9,7 +9,11 @@ import path from "path";
 import algaehKeys from "algaeh-keys";
 import reportGen from "./report_generation";
 import utliites from "algaeh-utilities/utilities";
-import { getKPIDetails, generateReport } from "./docsReports";
+import {
+  saveEmployeeDetails,
+  getKPIDetails,
+  generateReport,
+} from "./docsReports";
 // import algaehUtilities from "algaeh-utilities/utilities";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
@@ -161,7 +165,12 @@ app.use("/api/v1/pentahoreport", (req, res) => {
   );
 });
 app.use("/api/v1/printReportRaw", printReportRaw);
-app.use("/api/v1/getDocsReports", getKPIDetails, generateReport);
+app.get(
+  "/api/v1/getDocsReports",
+  saveEmployeeDetails,
+  getKPIDetails,
+  generateReport
+);
 app.server.listen(_port);
 console.log(`Report Server is running  on PORT  - ${_port} *`);
 export default app;

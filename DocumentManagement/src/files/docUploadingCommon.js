@@ -131,12 +131,17 @@ export async function uploadFromFilePath(req, res, next) {
           next(new Error("Error in inserting to document server."));
           return;
         }
+
+        if (fs.existsSync(`${fullFolderPath}/${fileName}`)) {
+          fs.unlinkSync(`${fullFolderPath}/${fileName}`);
+        }
         fs.moveSync(selectedFilePath, `${fullFolderPath}/${fileName}`);
-        fs.unlinkSync(selectedFilePath);
+        // fs.unlinkSync(selectedFilePath);
         res.status(200).json({
           success: true,
           message: "Success",
         });
+        // next();
       }
     );
   } catch (e) {
@@ -150,7 +155,7 @@ export function getUploadedCommonFile(req, res, next) {
 
     let commonItemDoc;
     // // let filter = {};
-    debugger;
+
     commonItemDoc = uploadDocumentSchema;
     const { doc_number } = input;
     // const uploadExists = folder.toUpperCase().includes("UPLOAD");
@@ -171,7 +176,6 @@ export function getUploadedCommonFile(req, res, next) {
     //   }
     // });
     commonItemDoc.find({ doc_number }, (err, docs) => {
-      debugger;
       if (err) {
         res.status(400).json({ error: err.message });
       } else {
