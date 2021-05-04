@@ -34,6 +34,7 @@ export default function IssueCertificate() {
   const [employee_data, setEmployee_data] = useState({
     employee_name: "",
     hims_d_employee_id: null,
+    employee_code: "",
   });
   const [hospitals, setHospitals] = useState([]);
   const [certificate_data, setCertificateData] = useState({});
@@ -151,6 +152,7 @@ export default function IssueCertificate() {
         setEmployee_data({
           employee_name: "",
           hims_d_employee_id: null,
+          employee_code: "",
         });
         reset({ hospital_id: -1, certificate_type: "" });
         refetch();
@@ -244,6 +246,7 @@ export default function IssueCertificate() {
       ...data,
       employee_id: employee_data.hims_d_employee_id,
       certificate_id: certificate_data.hims_d_certificate_master_id,
+      employee_code: employee_data.employee_code,
     });
   };
   const clearState = () => {
@@ -251,6 +254,7 @@ export default function IssueCertificate() {
     setEmployee_data({
       employee_name: "",
       hims_d_employee_id: null,
+      employee_code: "",
     });
     // setRow({});
   };
@@ -270,9 +274,11 @@ export default function IssueCertificate() {
         callBack(text);
       },
       onRowSelect: (row) => {
+        debugger;
         setEmployee_data({
           employee_name: row.full_name,
           hims_d_employee_id: row.hims_d_employee_id,
+          employee_code: row.employee_code,
         });
         // setDisabled(false);
         // this.setState({
@@ -501,6 +507,11 @@ export default function IssueCertificate() {
                             />
                           ),
                           displayTemplate: (row) => {
+                            const certificateType = certificate_types.filter(
+                              (f) =>
+                                f.hims_d_certificate_master_id ===
+                                row.certificate_id
+                            )[0]?.certificate_name;
                             return (
                               <Tooltip
                                 placement="right"
@@ -514,7 +525,7 @@ export default function IssueCertificate() {
                                       window.location.port === ""
                                         ? "/docserver"
                                         : `:3006`
-                                    }/UPLOAD/Employee Certificate/${
+                                    }/UPLOAD/${certificateType}/${
                                       row.certification_number
                                     }.pdf`}
                                     download
