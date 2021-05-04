@@ -21,10 +21,13 @@ import {
   AlgaehLabel,
   AlgaehAutoComplete,
   AlgaehMessagePop,
+  Spin,
+  Tooltip,
 } from "algaeh-react-components";
 import { useForm, Controller } from "react-hook-form";
 import { useQuery } from "react-query";
 import { newAlgaehApi } from "../../../../hooks";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 export default function IssueCertificate() {
   const { userToken } = useContext(MainContext);
@@ -32,10 +35,12 @@ export default function IssueCertificate() {
     employee_name: "",
     hims_d_employee_id: null,
   });
+  const [hospitals, setHospitals] = useState([]);
   const [certificate_data, setCertificateData] = useState({});
+  const [loadingData, setLoadingData] = useState(false);
 
   const baseValue = {
-    hospital_id: null,
+    hospital_id: -1,
     certificate_type: "",
   };
   const { errors, control, handleSubmit, setValue, reset, getValues } = useForm(
@@ -45,7 +50,6 @@ export default function IssueCertificate() {
   );
   useEffect(() => {
     setValue("hospital_id", userToken.hims_d_hospital_id);
-
     return clearState();
   }, []);
 
@@ -80,7 +84,13 @@ export default function IssueCertificate() {
       // enabled: true,
       initialStale: true,
       cacheTime: Infinity,
-      onSuccess: (data) => {},
+      onSuccess: (data) => {
+        data["organizations"].unshift({
+          hims_d_hospital_id: -1,
+          hospital_name: "All",
+        });
+        setHospitals(data["organizations"]);
+      },
       onError: (err) => {
         AlgaehMessagePop({
           display: err?.message,
@@ -90,7 +100,6 @@ export default function IssueCertificate() {
     }
   );
   async function getDropDownData() {
-    debugger;
     const result = await Promise.all([
       newAlgaehApi({
         uri: "/hrsettings/getCertificateMaster",
@@ -103,7 +112,6 @@ export default function IssueCertificate() {
       }),
     ]);
 
-    debugger;
     return {
       certificate_types: result[0]?.data?.records,
       organizations: result[1]?.data.records,
@@ -117,9 +125,9 @@ export default function IssueCertificate() {
     });
     return result?.data?.records;
   }
-  const generateCertificate = () => {
-    debugger;
-    newAlgaehApi({
+  const generateCertificate = (data) => {
+    setLoadingData(true);
+    algaehApiCall({
       uri: "/getDocsReports",
       method: "GET",
       module: "reports",
@@ -128,53 +136,67 @@ export default function IssueCertificate() {
       },
       others: { responseType: "blob" },
       data: {
-        kpi_parameter:
-          " where hims_d_employee_id = " + employee_data.hims_d_employee_id,
-        hims_d_certificate_master_id:
-          certificate_data.hims_d_certificate_master_id,
+        kpi_parameter: " where hims_d_employee_id = " + data.employee_id,
+        hims_d_certificate_master_id: data.certificate_id,
+        rowData: data,
       },
-    })
-      .then((res) => {
-        // const files = res.data;
-        // const formData = new FormData();
-        // formData.append("nameOfTheFolder", "EmployeeCertificate");
-        // files.forEach((file, index) => {
-        //   formData.append(`file_${index}`, file, file.name);
-        // });
-        // formData.append("fileName", "EmployeeCertificate");
+      onSuccess: (response) => {
+        setLoadingData(false);
+        // setRow();
+        AlgaehMessagePop({
+          display:
+            "Certificate Generate Successfully Please Click the Request Code",
+          type: "success",
+        });
+        setEmployee_data({
+          employee_name: "",
+          hims_d_employee_id: null,
+        });
+        reset({ hospital_id: -1, certificate_type: "" });
+        refetch();
+      },
+      onCatch: (error) => {
+        setLoadingData(false);
 
-        // newAlgaehApi({
-        //   uri: "/uploadDocumentCommon",
-        //   data: formData,
-        //   extraHeaders: { "Content-Type": "multipart/form-data" },
-        //   method: "POST",
-        //   module: "documentManagement",
-        // })
-        //   .then((res) => {
-        //     // addDiagramFromMaster(contract_id, res.data.records);
-        //     AlgaehMessagePop({
-        //       type: "success",
-        //       display: "Request Added successfully",
-        //     });
-        //     // return;
-        //     // getDocuments(contract_no);
-        //   })
-        //   .catch((e) =>
-        //     AlgaehMessagePop({
-        //       type: "error",
-        //       display: e.message,
-        //     })
-        //   );
-        console.log(res.data.result, "add result");
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
-        window.open(origin);
-      })
-      .catch((e) => {
-        console.log(e, "add result");
-      });
+        AlgaehMessagePop({
+          display: error.message,
+          type: "error",
+        });
+      },
+
+      // const files = res.data;
+      // const formData = new FormData();
+      // formData.append("nameOfTheFolder", "EmployeeCertificate");
+      // files.forEach((file, index) => {
+      //   formData.append(`file_${index}`, file, file.name);
+      // });
+      // formData.append("fileName", "EmployeeCertificate");
+
+      // newAlgaehApi({
+      //   uri: "/uploadDocumentCommon",
+      //   data: formData,
+      //   extraHeaders: { "Content-Type": "multipart/form-data" },
+      //   method: "POST",
+      //   module: "documentManagement",
+      // })
+      //   .then((res) => {
+      //     // addDiagramFromMaster(contract_id, res.data.records);
+      //     AlgaehMessagePop({
+      //       type: "success",
+      //       display: "Request Added successfully",
+      //     });
+      //     // return;
+      //     // getDocuments(contract_no);
+      //   })
+      //   .catch((e) =>
+      //     AlgaehMessagePop({
+      //       type: "error",
+      //       display: e.message,
+      //     })
+      //   );
+    });
     // return;
-    refetch();
+
     // this.setState({ loading: true }, () => {
     // newAlgaehApi({
     //   uri: "/reports",
@@ -218,11 +240,19 @@ export default function IssueCertificate() {
   };
 
   const onSubmit = (data) => {
-    debugger;
-    generateCertificate();
+    generateCertificate({
+      ...data,
+      employee_id: employee_data.hims_d_employee_id,
+      certificate_id: certificate_data.hims_d_certificate_master_id,
+    });
   };
   const clearState = () => {
-    reset();
+    reset(baseValue);
+    setEmployee_data({
+      employee_name: "",
+      hims_d_employee_id: null,
+    });
+    // setRow({});
   };
 
   const employeeSearch = () => {
@@ -232,7 +262,10 @@ export default function IssueCertificate() {
       },
       searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
-      inputs: "hospital_id = " + getValues().hospital_id,
+      inputs:
+        parseInt(getValues().hospital_id) === -1 || undefined
+          ? null
+          : "hospital_id = " + getValues().hospital_id,
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
@@ -251,67 +284,68 @@ export default function IssueCertificate() {
     });
   };
 
-  const { certificate_types, organizations } = dropdownData;
+  const { certificate_types } = dropdownData;
   return (
     <React.Fragment>
-      <div className="row apply_leave">
-        <div className="col-3">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Issue Certificate Direct</h3>
+      <Spin spinning={loadingData}>
+        <div className="row apply_leave">
+          <div className="col-3">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Issue Certificate Direct</h3>
+                </div>
               </div>
-            </div>
-            <div className="portlet-body">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="row">
-                  <Controller
-                    name="hospital_id"
-                    control={control}
-                    rules={{ required: "Select Branch" }}
-                    render={({ value, onChange }) => (
-                      <AlgaehAutoComplete
-                        div={{ className: "col-12 form-group mandatory" }}
-                        label={{
-                          forceLabel: "Select Branch",
-                          isImp: true,
-                        }}
-                        error={errors}
-                        selector={{
-                          className: "form-control",
-                          name: "hospital_id",
-                          value,
-                          onChange: (_, selected) => {
-                            onChange(selected);
+              <div className="portlet-body">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className="row">
+                    <Controller
+                      name="hospital_id"
+                      control={control}
+                      rules={{ required: "Select Branch" }}
+                      render={({ value, onChange }) => (
+                        <AlgaehAutoComplete
+                          div={{ className: "col-12 form-group mandatory" }}
+                          label={{
+                            forceLabel: "Select Branch",
+                            isImp: true,
+                          }}
+                          error={errors}
+                          selector={{
+                            className: "form-control",
+                            name: "hospital_id",
+                            value,
+                            onChange: (_, selected) => {
+                              onChange(selected);
 
-                            // setValue("service_amount", _.standard_fee);
-                          },
+                              // setValue("service_amount", _.standard_fee);
+                            },
 
-                          dataSource: {
-                            textField: "hospital_name",
-                            valueField: "hims_d_hospital_id",
-                            data: organizations,
-                          },
-                          // others: {
-                          //   disabled:
-                          //     current.request_status === "APR" &&
-                          //     current.work_status === "COM",
-                          //   tabIndex: "4",
-                          // },
-                        }}
-                      />
-                    )}
-                  />{" "}
-                  <div className="col-12 globalSearchCntr form-group mandatory">
-                    <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
-                    <h6 onClick={employeeSearch}>
-                      {employee_data.employee_name
-                        ? employee_data.employee_name
-                        : "Search Employee"}
-                      <i className="fas fa-search fa-lg" />
-                    </h6>
-                  </div>
-                  {/* <AlagehAutoComplete
+                            dataSource: {
+                              textField: "hospital_name",
+                              valueField: "hims_d_hospital_id",
+                              data: hospitals,
+                            },
+                            // others: {
+                            //   disabled:
+                            //     current.request_status === "APR" &&
+                            //     current.work_status === "COM",
+                            //   tabIndex: "4",
+                            // },
+                          }}
+                        />
+                      )}
+                    />{" "}
+                    <div className="col-12 globalSearchCntr form-group mandatory">
+                      <AlgaehLabel label={{ fieldName: "searchEmployee" }} />
+                      <h6 onClick={employeeSearch}>
+                        {employee_data.employee_name
+                          ? employee_data.employee_name
+                          : "Search Employee"}
+                        <i className="fas fa-search fa-lg" />
+                      </h6>
+                    </div>
+                    {/* <AlagehAutoComplete
                         div={{ className: "col-12 form-group  mandatory" }}
                         label={{
                           forceLabel: "Select Branch",
@@ -334,38 +368,37 @@ export default function IssueCertificate() {
                           },
                         }}
                       /> */}
-                  <Controller
-                    name="certificate_type"
-                    control={control}
-                    rules={{ required: "Select Certificate Type" }}
-                    render={({ value, onChange }) => (
-                      <AlgaehAutoComplete
-                        div={{ className: "col-12 form-group mandatory" }}
-                        label={{
-                          forceLabel: "Select Certificate",
-                          isImp: true,
-                        }}
-                        error={errors}
-                        selector={{
-                          className: "form-control",
-                          name: "certificate_type",
-                          value,
-                          onChange: (_, selected) => {
-                            debugger;
-                            onChange(selected);
-                            setCertificateData(_);
-                          },
+                    <Controller
+                      name="certificate_type"
+                      control={control}
+                      rules={{ required: "Select Certificate Type" }}
+                      render={({ value, onChange }) => (
+                        <AlgaehAutoComplete
+                          div={{ className: "col-12 form-group mandatory" }}
+                          label={{
+                            forceLabel: "Select Certificate",
+                            isImp: true,
+                          }}
+                          error={errors}
+                          selector={{
+                            className: "form-control",
+                            name: "certificate_type",
+                            value,
+                            onChange: (_, selected) => {
+                              onChange(selected);
+                              setCertificateData(_);
+                            },
 
-                          dataSource: {
-                            valueField: "hims_d_certificate_master_id",
-                            textField: "certificate_name",
-                            data: certificate_types,
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                  {/* <AlagehAutoComplete
+                            dataSource: {
+                              valueField: "hims_d_certificate_master_id",
+                              textField: "certificate_name",
+                              data: certificate_types,
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                    {/* <AlagehAutoComplete
                         div={{ className: "col-12 form-group mandatory" }}
                         label={{
                           forceLabel: "Select Certificate Type",
@@ -389,146 +422,193 @@ export default function IssueCertificate() {
                           },
                         }}
                       /> */}
-                  <div className="col-12" style={{ textAlign: "right" }}>
-                    <button
-                      onClick={clearState}
-                      type="button"
-                      className="btn btn-default"
-                      style={{ marginRight: 15 }}
-                    >
-                      Clear
-                    </button>
-                    <button
-                      type="submit"
-                      loading={loading}
-                      className="btn btn-primary"
-                      // disabled={disabled}
-                    >
-                      Generate Certificate
-                    </button>
+                    <div className="col-12" style={{ textAlign: "right" }}>
+                      <button
+                        onClick={clearState}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        type="submit"
+                        loading={loading}
+                        className="btn btn-primary"
+                        // disabled={disabled}
+                      >
+                        Generate Certificate
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div className="col-9">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">
-                  Issue Certificate on request
-                </h3>
+                </form>
               </div>
             </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12" style={{ minHeight: "55vh" }}>
-                  <AlgaehDataGrid
-                    id="employeeFormTemplate"
-                    columns={[
-                      {
-                        fieldName: "Action",
-                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                        others: {
-                          width: 50,
+          </div>
+          <div className="col-9">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">
+                    Issue Certificate on request
+                  </h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" style={{ minHeight: "55vh" }}>
+                    <AlgaehDataGrid
+                      id="employeeFormTemplate"
+                      columns={[
+                        {
+                          fieldName: "Action",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
+                          ),
+                          others: {
+                            width: 50,
+                          },
+                          displayTemplate: (row) => {
+                            if (row.certification_number) {
+                              return null;
+                            } else {
+                              return (
+                                <>
+                                  {" "}
+                                  <Tooltip
+                                    placement="right"
+                                    title={"Generate Certificate"}
+                                  >
+                                    <span
+                                      onClick={() => {
+                                        generateCertificate(row);
+                                      }}
+                                    >
+                                      <i className="fas fa-check"></i>
+                                    </span>
+                                  </Tooltip>
+                                </>
+                              );
+                            }
+                          },
+                          filterable: true,
                         },
-                        displayTemplate: (row) => {
-                          return (
-                            <>
-                              {" "}
-                              <span
-                                onClick={() => {
-                                  debugger;
-
-                                  reset({ ...row });
-                                }}
+                        {
+                          fieldName: "certification_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Certificate No." }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <Tooltip
+                                placement="right"
+                                title={"download Certificate"}
                               >
-                                <i className="fas fa-pen"></i>
-                              </span>
-                            </>
-                          );
+                                <span>
+                                  <a
+                                    href={`${window.location.protocol}//${
+                                      window.location.hostname
+                                    }${
+                                      window.location.port === ""
+                                        ? "/docserver"
+                                        : `:3006`
+                                    }/UPLOAD/Employee Certificate/${
+                                      row.certification_number
+                                    }.pdf`}
+                                    download
+                                    target="_blank"
+                                  >
+                                    {row.certification_number}
+                                  </a>
+                                </span>
+                              </Tooltip>
+                            );
+                          },
+                          others: {
+                            maxWidth: 150,
+                          },
+                          filterable: true,
                         },
-                        filterable: true,
-                      },
-                      {
-                        fieldName: "",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Certificate No." }}
-                          />
-                        ),
-                        others: {
-                          maxWidth: 150,
+                        {
+                          fieldName: "employee_code",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Emp. ID" }} />
+                          ),
+                          others: {
+                            maxWidth: 150,
+                          },
+                          filterable: true,
                         },
-                        filterable: true,
-                      },
-                      {
-                        fieldName: "employee_id",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Emp. ID" }} />
-                        ),
-                        others: {
-                          maxWidth: 150,
-                        },
-                        filterable: true,
-                      },
-                      {
-                        fieldName: "full_name",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Employee Name" }}
-                          />
-                        ),
-                        filterable: true,
-                        others: {
-                          style: {
-                            textAlign: "left",
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Name" }}
+                            />
+                          ),
+                          filterable: true,
+                          others: {
+                            style: {
+                              textAlign: "left",
+                            },
                           },
                         },
-                      },
-                      {
-                        fieldName: "cer_req_date",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requested Date" }}
-                          />
-                        ),
-                        filterable: true,
-                        displayTemplate: (row) => (
-                          <spna>
-                            {moment(row.cer_req_date, "YYYYMMDD").format(
-                              "DD-MM-YYYY"
-                            )}
-                          </spna>
-                        ),
-                        others: {
-                          width: 100,
+                        {
+                          fieldName: "cer_req_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Requested Date" }}
+                            />
+                          ),
+                          filterable: true,
+                          displayTemplate: (row) => (
+                            <span>
+                              {moment(row.cer_req_date, "YYYYMMDD").format(
+                                "DD-MM-YYYY"
+                              )}
+                            </span>
+                          ),
+                          others: {
+                            width: 100,
+                          },
                         },
-                      },
-                      {
-                        fieldName: "requested_for",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requested For" }}
-                          />
-                        ),
-                        filterable: true,
-                      },
-                    ]}
-                    // filter={true}
+                        {
+                          fieldName: "certificate_id",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Certificate Type" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return certificate_types.filter(
+                              (f) =>
+                                f.hims_d_certificate_master_id ===
+                                row.certificate_id
+                            )[0]?.certificate_name;
+                          },
+                          // others: {
+                          //   style: {
+                          //     textAlign: "left",
+                          //   },
+                          // },
+                        },
+                      ]}
+                      // filter={true}
 
-                    data={allIssuedCertificates}
-                    pagination={true}
-                    isFilterable={true}
-                    // paging={{ page: 0, rowsPerPage: 10 }}
-                  />
+                      data={allIssuedCertificates ?? []}
+                      pagination={true}
+                      isFilterable={true}
+                      // paging={{ page: 0, rowsPerPage: 10 }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </Spin>
     </React.Fragment>
   );
 }

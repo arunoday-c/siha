@@ -344,11 +344,11 @@ class IssueCertificate extends Component {
                           ),
                           filterable: true,
                           displayTemplate: (row) => (
-                            <spna>
+                            <span>
                               {moment(row.request_date, "YYYYMMDD").format(
                                 "DD-MM-YYYY"
                               )}
-                            </spna>
+                            </span>
                           ),
                           others: {
                             maxWidth: 150,

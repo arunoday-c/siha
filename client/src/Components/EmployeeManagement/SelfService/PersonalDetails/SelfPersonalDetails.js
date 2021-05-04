@@ -59,16 +59,14 @@ class SelfPersonalDetails extends Component {
 
   getKPI() {
     newAlgaehApi({
-      uri: "/Document/getKPI",
+      uri: "/hrsettings/getCertificateMaster",
       method: "GET",
-      module: "documentManagement",
+      module: "hrManagement",
     })
       .then((response) => {
         const { data } = response;
 
-        let dataKpi = data.result.map((item) => item !== null && item);
-
-        this.setState({ kpi_types: dataKpi });
+        this.setState({ kpi_types: data.records });
       })
       .catch((error) => {
         AlgaehMessagePop({
@@ -265,7 +263,8 @@ class SelfPersonalDetails extends Component {
       method: "post",
       data: {
         employee_id: this.state.hims_d_employee_id,
-        certificate_id: 1,
+        certificate_id: this.state.kpi_type,
+        employee_code: this.props.empData.employee_code,
       },
       onSuccess: (res) => {
         if (res.data.success) {
@@ -273,6 +272,7 @@ class SelfPersonalDetails extends Component {
             title: "Record Added successfully",
             type: "success",
           });
+          this.setState({ kpi_type: null });
           this.getRequestCertificate();
         }
       },
@@ -443,11 +443,9 @@ class SelfPersonalDetails extends Component {
   }
   getRequestCertificate() {
     algaehApiCall({
-      uri: "/employee/getRequestCertificate",
+      uri: "/employee/getRequestCertificateSelf",
       module: "hrManagement",
-      data: {
-        employee_id: this.state.hims_d_employee_id,
-      },
+
       method: "GET",
       onSuccess: (res) => {
         if (res.data.success) {
@@ -1892,20 +1890,27 @@ class SelfPersonalDetails extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlgaehAutoComplete
-                    div={{ className: "col-8 form-group mandatory" }}
-                    label={{ forceLabel: "Select a Certificate", isImp: true }}
+                    div={{ className: "col-12 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Select Certificate",
+                      isImp: true,
+                    }}
                     selector={{
+                      className: "form-control",
                       name: "kpi_type",
-                      dataSource: {
-                        data: this.state.kpi_types,
-                        valueField: "_id",
-                        textField: "kpi_name",
-                      },
                       value: this.state.kpi_type,
-                      onChange: (_, selected) => {},
-                      // onClear: onClearAutoComplete,
+                      onChange: (_, selected) => {
+                        this.setState({ kpi_type: selected });
+                      },
+
+                      dataSource: {
+                        valueField: "hims_d_certificate_master_id",
+                        textField: "certificate_name",
+                        data: this.state.kpi_types,
+                      },
                     }}
                   />
+
                   <button
                     style={{ marginTop: 21 }}
                     className="btn btn-default"
@@ -1923,33 +1928,58 @@ class SelfPersonalDetails extends Component {
                       id="employeeFormTemplate"
                       columns={[
                         {
-                          fieldName: "formName",
+                          fieldName: "certificate_id",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Certificate Type" }}
                             />
                           ),
-                          others: {
-                            style: {
-                              textAlign: "left",
-                            },
+                          displayTemplate: (row) => {
+                            return this.state.kpi_types.filter(
+                              (f) =>
+                                f.hims_d_certificate_master_id ===
+                                row.certificate_id
+                            )[0]?.certificate_name;
                           },
+                          // others: {
+                          //   style: {
+                          //     textAlign: "left",
+                          //   },
+                          // },
                         },
                         {
-                          fieldName: "url",
+                          fieldName: "certification_number",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Download" }} />
+                            <AlgaehLabel
+                              label={{ forceLabel: "Certificate No." }}
+                            />
                           ),
                           displayTemplate: (row) => {
                             return (
-                              <a href={row.url} download target="_blank">
-                                Download
-                              </a>
+                              <span>
+                                {" "}
+                                <a
+                                  href={`${window.location.protocol}//${
+                                    window.location.hostname
+                                  }${
+                                    window.location.port === ""
+                                      ? "/docserver"
+                                      : `:3006`
+                                  }/UPLOAD/Employee Certificate/${
+                                    row.certification_number
+                                  }.pdf`}
+                                  download
+                                  target="_blank"
+                                >
+                                  {row.certification_number}{" "}
+                                </a>
+                              </span>
                             );
                           },
                           others: {
-                            maxWidth: 100,
+                            maxWidth: 150,
                           },
+                          filterable: true,
                         },
                       ]}
                       keyId=""
@@ -1957,7 +1987,7 @@ class SelfPersonalDetails extends Component {
                       data={this.state.employee_cert_req ?? []}
                       // }}
                       pagination={true}
-                      isEditable={false}
+                      // isEditable={false}
                       // paging={{ page: 0, rowsPerPage: 10 }}
                       events={{}}
                     />
