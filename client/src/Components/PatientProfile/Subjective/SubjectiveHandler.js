@@ -368,6 +368,7 @@ export default function SubjectiveHandler() {
                           delete_data: true,
                         };
                         portalDeleteUpdateVisitDiagnosis($this, portal_data);
+                        uploadPrescriptiontoPortal($this);
                       }
                     }
                     context.updateState({
@@ -652,4 +653,62 @@ function portalDeleteUpdateVisitDiagnosis($this, portal_data) {
       //handle error
       console.log(response);
     });
+}
+
+export function uploadPrescriptiontoPortal($this) {
+  debugger;
+  return new Promise((resolve, reject) => {
+    let portalParams = {};
+    if ($this.state.portal_exists === "Y") {
+      portalParams["reportToPortal"] = "true";
+      portalParams["rpt_type"] = "PATIENT_RPT_MEDICATION";
+    }
+
+    const _patient = Window.global["current_patient"];
+    const _visit = Window.global["visit_id"];
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          ...portalParams,
+          reportName: "prescription",
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value: _patient,
+            },
+            {
+              name: "visit_id",
+              value: _visit,
+            },
+            {
+              name: "patient_identity",
+              value: $this.props.pat_profile.primary_id_no,
+            },
+            {
+              name: "visit_code",
+              value: $this.props.pat_profile.visit_code,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        // debugger;
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
+        // window.open(origin);
+        resolve();
+      },
+      onCatch: (err) => {
+        reject(err);
+      },
+    });
+  });
 }

@@ -185,7 +185,7 @@ const UpdateLabOrder = ($this, value, status) => {
             AlgaehLoader({ show: false });
           }
         );
-        if ($this.state.portal_exists === "Y") {
+        if ($this.state.portal_exists === "Y" && status === "V") {
           generateLabResultReport({ ...$this.state, hidePrinting: true });
         }
       }

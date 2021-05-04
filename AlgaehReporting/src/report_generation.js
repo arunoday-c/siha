@@ -348,7 +348,7 @@ export default {
     const input = req.query;
     const _mysql = new algaehMysql();
     // const multiMerdgeReport = input.multiMerdgeReport;
-
+    console.log("getReport");
     try {
       const _inputParam = JSON.parse(input.report);
       const {
@@ -356,7 +356,9 @@ export default {
         multiMerdgeReport,
         qrCodeReport,
         reportToPortal,
+        rpt_type,
       } = _inputParam;
+      console.log("_inputParam", _inputParam);
       let usehbs = "";
       let singleHeaderFooter = false;
       if (others) {
@@ -816,18 +818,25 @@ export default {
                                       console.error(error.message);
                                     });
                                 }
+                                console.log("reportToPortal", reportToPortal);
                                 if (reportToPortal === "true") {
                                   const rptParameters =
                                     _inputParam.reportParams;
+                                  console.log(
+                                    "reportParams",
+                                    _inputParam.reportParams
+                                  );
                                   const portal_patient_identity = rptParameters.find(
                                     (f) => f.name === "patient_identity"
                                   ).value;
                                   const portal_service_id = rptParameters.find(
                                     (f) => f.name === "service_id"
-                                  ).value;
+                                  )?.value;
                                   const portal_visit_code = rptParameters.find(
                                     (f) => f.name === "visit_code"
                                   ).value;
+                                  console.log("rptPath", rptPath);
+                                  console.log("rpt_type", rpt_type);
                                   await axios
                                     .post(
                                       "http://localhost:4402/api/v1/report/upload",
@@ -840,9 +849,11 @@ export default {
                                           hospital_id:
                                             req.userIdentity["hospital_id"],
                                         },
+                                        rpt_type: rpt_type ?? "PATIENT_REPORT",
                                       }
                                     )
                                     .catch((error) => {
+                                      console.log("error ====> ", error);
                                       console.error(error.message);
                                     });
                                 }
