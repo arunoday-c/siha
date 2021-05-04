@@ -8,6 +8,7 @@ const {
   getLabOrderedServicesPatient,
   updateLabOrderServices,
   getTestAnalytes,
+  getMicroDetails,
   updateLabSampleStatus,
   updateLabOrderServiceStatus,
   updateLabOrderServiceMultiple,
@@ -127,6 +128,26 @@ export default () => {
   });
 
   api.get("/getTestAnalytes", getTestAnalytes, (req, res, next) => {
+    const data = req.records;
+    for (let i = 0; i < data.length; i++) {
+      data[i].hims_f_lab_order_id = parseInt(req.query.order_id, 10);
+      if (data[i].status === "E" || data[i].status === "N") {
+        data[i].validate = "N";
+        data[i].confirm = "N";
+      } else if (data[i].status === "C") {
+        data[i].validate = "N";
+        data[i].confirm = "Y";
+      } else if (data[i].status === "V") {
+        data[i].validate = "Y";
+        data[i].confirm = "Y";
+      }
+    }
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.get("/getMicroDetails", getMicroDetails, (req, res, next) => {
     const data = req.records;
     for (let i = 0; i < data.length; i++) {
       data[i].hims_f_lab_order_id = parseInt(req.query.order_id, 10);

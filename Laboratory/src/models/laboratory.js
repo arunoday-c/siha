@@ -1415,6 +1415,42 @@ export default {
       next(e);
     }
   },
+  getMicroDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: ` SELECT  EMO.full_name as ordered_by_name,
+          max(if(CL.algaeh_d_app_user_id=LB.entered_by, EM.full_name,'' )) as entered_by_name,
+          max(if(CL.algaeh_d_app_user_id=LB.confirmed_by, EM.full_name,'')) as confirm_by_name,
+          max(if(CL.algaeh_d_app_user_id=LB.validated_by, EM.full_name,'')) as validate_by_name,
+          LB.entered_by,LB.confirmed_by,LB.validated_by
+          from hims_f_lab_order LB
+          left join algaeh_d_app_user CL on (CL.algaeh_d_app_user_id=LB.entered_by or 
+            CL.algaeh_d_app_user_id=LB.validated_by or CL.algaeh_d_app_user_id=LB.confirmed_by)
+          left join hims_d_employee EM on EM.hims_d_employee_id=CL.employee_id
+          left join hims_d_employee EMO on EMO.hims_d_employee_id=LB.provider_id
+          where LB.record_status='A'  AND LB.hims_f_lab_order_id=?;`,
+          values: [req.query.order_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   getAnalytesByTestID: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
