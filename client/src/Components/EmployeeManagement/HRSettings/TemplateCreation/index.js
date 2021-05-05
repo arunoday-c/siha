@@ -150,7 +150,7 @@ export default memo(function () {
       masterInput.certificate_template = joditEditor.current.value;
       const settings = { header: undefined, footer: undefined };
       if (masterInput.hims_d_certificate_master_id === "") {
-        masterInput.certificate_style = `<head><style>body{margin:0;padding:0;} certificateContent{margin:0 15px;padding:0;} p{line-height:1.3rem;padding:0;margin:5px 0;} table,tr,td{border-style:solid;border-width: 1px 1px 1px 1px;border-collapse: collapse;padding:5px;border-color: rgb(255, 255, 255);}</style></head><body><div class="certificateContent">`;
+        masterInput.certificate_style = `<head><style>body{margin:0;padding:0; font-family: Arial, Helvetica, sans-serif;} .certificateContent{margin:0 15px;padding:0;} p{line-height:1.3rem;padding:0;margin:5px 0;} table,tr,td{border-style:solid;border-width: 1px 1px 1px 1px;border-collapse: collapse;padding:5px;border-color: rgb(255, 255, 255);}</style></head><body><div class="certificateContent">`;
         newAlgaehApi({
           uri: "/hrsettings/addCertificateMaster",
           skipParse: true,
