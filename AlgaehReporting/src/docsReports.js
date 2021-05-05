@@ -25,7 +25,10 @@ export function getKPIDetails(req, res, next) {
       })
       .then((certificate_data) => {
         const kpi_query = certificate_data[0].sql_query + ` ${kpi_parameter}`;
-        req.query.kpi_html = certificate_data[0].certificate_template;
+        req.query.kpi_html =
+          certificate_data[0].certificate_style +
+          certificate_data[0].certificate_template +
+          `</div></body>`;
         req.query.kpi_type = certificate_data[0].certificate_name;
         req.query.certificate_data = certificate_data[0];
         _mysql
