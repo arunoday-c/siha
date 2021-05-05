@@ -209,14 +209,12 @@ const billheaderCalculation = ($this, context, e) => {
         : parseFloat($this.state.credit_amount),
   };
 
-  debugger;
   algaehApiCall({
     uri: "/billing/billingCalculations",
     module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: (response) => {
-      debugger;
       if (response.data.success) {
         if (context !== null) {
           response.data.records.patient_payable_h =
@@ -250,16 +248,9 @@ const onchangegridcol = ($this, row, e) => {
 const ondiscountgridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  // let oldvalue = e.oldvalue || e.target.oldvalue;
+
   let billdetails = $this.state.billdetails;
   let _index = billdetails.indexOf(row);
-  // if (value === undefined) {
-  //   row["discount_percentage"] = "";
-  //   row["discount_amout"] = "";
-  //   billdetails[_index] = row;
-  //   $this.setState({ billdetails: billdetails });
-  //   return;
-  // }
 
   if (name === "discount_percentage") {
     if (parseFloat(value) > 100) {
@@ -325,7 +316,9 @@ const ondiscountgridcol = ($this, context, row, e) => {
   }
   // row[name] = value;
   // row.update();
-  calculateAmount($this, context, row, e);
+  if (value !== undefined) {
+    calculateAmount($this, context, row, e);
+  }
 };
 
 const onquantitycol = ($this, row, e) => {
@@ -465,7 +458,6 @@ const calculateAmount = ($this, context, row, e) => {
     method: "POST",
     data: inputParam,
     onSuccess: (response) => {
-      debugger;
       if (response.data.success) {
         let data = response.data.records;
 
@@ -473,7 +465,6 @@ const calculateAmount = ($this, context, row, e) => {
 
         const _index = billdetails.indexOf(row);
         billdetails[_index] = row;
-        debugger;
         $this.setState({ billdetails: billdetails }, () => {
           algaehApiCall({
             uri: "/billing/billingCalculations",
