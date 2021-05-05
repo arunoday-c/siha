@@ -108,6 +108,85 @@ export default function Patient({
           },
         ],
       },
+      {
+        subitem: "Patient - Service Wise",
+        reportName: "serviceWisePatientReport",
+        componentCode: "RPT_PAT_SER",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "service_type_id",
+            initialLoad: true,
+            isImp: false,
+            link: {
+              uri: "/serviceType",
+              module: "masterSettings",
+            },
+            dataSource: {
+              textField: "service_type",
+              valueField: "hims_d_service_type_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "nationality_id",
+            initialLoad: true,
+            isImp: false,
+            label: "nationality",
+            link: {
+              uri: "/masters/get/nationality",
+            },
+            dataSource: {
+              textField: "nationality",
+              valueField: "hims_d_nationality_id",
+              data: undefined,
+            },
+          },
+        ],
+      },
     ],
   };
 }
