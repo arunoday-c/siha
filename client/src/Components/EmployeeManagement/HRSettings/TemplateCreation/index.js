@@ -90,15 +90,15 @@ export default memo(function () {
     setButtonType("Update List");
   }
 
-  function checkHandaler(e) {
-    const { checked } = e.target;
-    setMasterInput((result) => {
-      return {
-        ...result,
-        custom_header_req: checked === true ? "Y" : "N",
-      };
-    });
-  }
+  // function checkHandaler(e) {
+  //   const { checked } = e.target;
+  //   setMasterInput((result) => {
+  //     return {
+  //       ...result,
+  //       custom_header_req: checked === true ? "Y" : "N",
+  //     };
+  //   });
+  // }
 
   function onMasterInputHnadler(e) {
     const { name, value } = e.target;
@@ -284,7 +284,7 @@ export default memo(function () {
                   },
                 }}
               />
-              <div className="col-3">
+              {/* <div className="col-3">
                 <label>Custom Header Required</label>
                 <div className="customCheckbox">
                   <label className="checkbox inline">
@@ -300,7 +300,7 @@ export default memo(function () {
                     <span>Yes</span>
                   </label>
                 </div>
-              </div>
+              </div> */}
               {/* <AlagehFormGroup
               div={{ className: "col-6 form-group mandatory" }}
               label={{
