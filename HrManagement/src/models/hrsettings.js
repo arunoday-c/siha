@@ -765,13 +765,14 @@ export default {
           .executeQuery({
             query:
               "INSERT INTO hims_d_certificate_master(certificate_name, certificate_type_id, certificate_template,\
-              custom_header_req, created_date, created_by, updated_date, updated_by) \
-            values(?, ?, ?, ?, ?, ?, ?, ?);",
+              custom_header_req, certificate_style, created_date, created_by, updated_date, updated_by) \
+            values(?, ?, ?, ?, ?, ?, ?, ?, ?);",
             values: [
               input.certificate_name,
               input.certificate_type_id,
               input.certificate_template,
               input.custom_header_req,
+              input.certificate_style,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),

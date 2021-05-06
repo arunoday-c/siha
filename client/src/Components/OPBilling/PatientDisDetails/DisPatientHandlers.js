@@ -9,7 +9,7 @@ const PatientSearch = ($this, context, e) => {
     searchGrid: {
       columns: spotlightSearch.frontDesk.patients,
     },
-    searchName: "patientsvisit",
+    searchName: "patients",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);

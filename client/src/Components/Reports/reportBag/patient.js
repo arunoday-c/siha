@@ -1,15 +1,4 @@
-export default function Patient({
-  hospital_id,
-  algaehApiCall,
-  MONTHS,
-  EMPLOYEE_STATUS,
-  EMPLOYEE_TYPE,
-  COMPARISON,
-  EMP_FORMAT_GENDER,
-  DATE_OF_JOIN,
-  moment,
-  allYears,
-}) {
+export default function Patient({ hospital_id, COMPARISON, spotlightSearch }) {
   return {
     name: "Patient Reports",
     excel: "true",
@@ -103,6 +92,198 @@ export default function Patient({
             dataSource: {
               textField: "name",
               valueField: "value",
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Patient - Service Type Wise",
+        reportName: "serviceTypeWisePatientReport",
+        componentCode: "RPT_PAT_SER_TYP",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "service_type_id",
+            initialLoad: true,
+            isImp: false,
+            link: {
+              uri: "/serviceType",
+              module: "masterSettings",
+            },
+            dataSource: {
+              textField: "service_type",
+              valueField: "hims_d_service_type_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "nationality_id",
+            initialLoad: true,
+            isImp: false,
+            label: "nationality",
+            link: {
+              uri: "/masters/get/nationality",
+            },
+            dataSource: {
+              textField: "nationality",
+              valueField: "hims_d_nationality_id",
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Patient - Service Wise",
+        reportName: "serviceWisePatientReport",
+        componentCode: "RPT_PAT_SER",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "service_type_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   link: {
+          //     uri: "/serviceType",
+          //     module: "masterSettings",
+          //   },
+          //   dataSource: {
+          //     textField: "service_type",
+          //     valueField: "hims_d_service_type_id",
+          //     data: undefined,
+          //   },
+          //   events: {
+          //     onChange: (reportState, currentEvent) => {
+          //       //provider_id_list CONTROL NAME AND APPEND BY _LIST
+          //       algaehApiCall({
+          //         uri: "/serviceTypes/getOnlyServiceList",
+          //         module: "masterSettings",
+          //         method: "GET",
+          //         data: { service_type_id: currentEvent.value },
+
+          //         onSuccess: (result) => {
+          //           reportState.setState({
+          //             service_id_list: result.data.records,
+          //           });
+          //         },
+          //       });
+          //     },
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //         service_id_list: [],
+          //       });
+          //     },
+          //   },
+          // },
+          {
+            className: "col-3 form-group AutosearchClass",
+            type: "Autosearch",
+            name: "item_id",
+            isImp: false,
+            columns: spotlightSearch.Services.onlyService,
+            displayField: "item_description",
+            value: null,
+            searchName: "hospitalserviceonly",
+            label: "Services List",
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "nationality_id",
+            initialLoad: true,
+            isImp: false,
+            label: "nationality",
+            link: {
+              uri: "/masters/get/nationality",
+            },
+            dataSource: {
+              textField: "nationality",
+              valueField: "hims_d_nationality_id",
               data: undefined,
             },
           },

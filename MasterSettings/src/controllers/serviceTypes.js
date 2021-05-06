@@ -16,6 +16,7 @@ const {
   getProceduresDetail,
   getProceduresNew,
   releaseDB,
+  getOnlyServiceList,
 } = serviceModels;
 
 export default () => {
@@ -100,6 +101,14 @@ export default () => {
     });
     next();
   });
+  api.get("/getOnlyServiceList", getOnlyServiceList, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
 
   api.get("/getProceduresDetail", getProceduresDetail, (req, res, next) => {
     let result = req.records;
@@ -123,18 +132,14 @@ export default () => {
       next();
     }
   );
-  api.post(
-    "/applyItemProcedure",
-    applyItemProcedure,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(utlities.httpStatus().ok).json({
-        success: true,
-        records: result,
-      });
-      next();
-    }
-  );
+  api.post("/applyItemProcedure", applyItemProcedure, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
 
   return api;
 };
