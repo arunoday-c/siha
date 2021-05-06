@@ -1283,17 +1283,6 @@ export default function Inventory({
               },
             },
           },
-
-          {
-            className: "col-3 mandatory  form-group",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
           {
             className: "col-3 form-group",
             type: "Autosearch",
@@ -1318,31 +1307,6 @@ export default function Inventory({
             //   },
             // },
           },
-          // {
-          //   className: "col-3 form-group",
-          //   type: "dropdown",
-          //   name: "item_id",
-          //   initialLoad: true,
-          //   isImp: false,
-          //   label: "Item",
-
-          //   link: {
-          //     uri: "/inventory/getItemMaster",
-          //     module: "inventory",
-          //   },
-          //   dataSource: {
-          //     textField: "item_description",
-          //     valueField: "hims_d_inventory_item_master_id",
-          //     data: undefined,
-          //   },
-          //   events: {
-          //     onClear: (reportState, currentName) => {
-          //       reportState.setState({
-          //         [currentName]: undefined,
-          //       });
-          //     },
-          //   },
-          // },
         ],
       },
       {
