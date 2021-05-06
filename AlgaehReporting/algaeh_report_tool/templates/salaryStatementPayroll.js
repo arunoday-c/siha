@@ -396,10 +396,22 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                   contributions_component: contributions_component,
                   employees: _.sortBy(outputArray, (s) => s.employee_code),
                   sum_basic: sum_basic,
-                  sum_earnings: sum_earnings.toFixed(decimal_places),
-                  sum_deductions: sum_deductions.toFixed(decimal_places),
-                  sum_contributions: sum_contributions.toFixed(decimal_places),
-                  sum_net_salary: sum_net_salary.toFixed(decimal_places),
+                  sum_earnings: options.currencyFormat(
+                    sum_earnings.toFixed(decimal_places),
+                    options.args.crypto
+                  ),
+                  sum_deductions: options.currencyFormat(
+                    sum_deductions.toFixed(decimal_places),
+                    options.args.crypto
+                  ),
+                  sum_contributions: options.currencyFormat(
+                    sum_contributions.toFixed(decimal_places),
+                    options.args.crypto
+                  ),
+                  sum_net_salary: options.currencyFormat(
+                    sum_net_salary.toFixed(decimal_places),
+                    options.args.crypto
+                  ),
                   sum_employe_plus_emplyr: sum_employe_plus_emplyr,
                   sum_gratuity: sum_gratuity,
                   sum_leave_salary: sum_leave_salary,

@@ -55,7 +55,10 @@ const executePDF = function executePDFMethod(options) {
             decimal_places
           );
 
-          resolve({ details: result, total_ED: total_ED });
+          resolve({
+            details: result,
+            total_ED: options.currencyFormat(total_ED, options.args.crypto),
+          });
         })
         .catch((error) => {
           options.mysql.releaseConnection();

@@ -395,9 +395,18 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                     ...salary[i],
                     gratuity_amount: emp_gratuity,
                     ...emp_accural,
-                    employee_earning: employee_earning,
-                    employee_deduction: employee_deduction,
-                    employee_contributions: employee_contributions,
+                    employee_earning: options.currencyFormat(
+                      employee_earning,
+                      options.args.crypto
+                    ),
+                    employee_deduction: options.currencyFormat(
+                      employee_deduction,
+                      options.args.crypto
+                    ),
+                    employee_contributions: options.currencyFormat(
+                      employee_contributions,
+                      options.args.crypto
+                    ),
                     adv_amt: adv_obj.length > 0 ? adv_obj[0].advance_amount : 0,
                     employe_plus_employr: employe_plus_employr.toFixed(
                       decimal_places

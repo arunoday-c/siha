@@ -53,7 +53,10 @@ const executePDF = function executePDFMethod(options) {
             );
             resolve({
               detail: results,
-              sum_encash_amt: sum_encash_amt.toFixed(decimal_places),
+              sum_encash_amt: options.currencyFormat(
+                sum_encash_amt.toFixed(decimal_places),
+                options.args.crypto
+              ),
             });
           } else {
             resolve({
