@@ -44,10 +44,10 @@
                         <td>{{nationality}}</td>
                         <td>{{insurance_yesno}}</td>
                         <td class="numberFld">{{numberFormating total_before_vat ../decimalOnly}}</td>
-                        <td class="numberFld">{{total_tax}}</td>
-                        <td class="numberFld">{{total_after_vat}}</td>
-                        <td class="numberFld">{{patient_tax}}</td>
-                        <td class="numberFld">{{company_tax}}</td>
+                        <td class="numberFld">{{numberFormating total_tax ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating total_after_vat ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating patient_tax ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating company_tax ../decimalOnly}}</td>
                     </tr>
                    {{/each }}
                   
