@@ -468,6 +468,16 @@
         "fieldName": "service_type",
         "label": "Service Type"
       }
+    ],
+    "onlyService": [
+      {
+        "fieldName": "service_code",
+        "label": "Service Code"
+      },
+      {
+        "fieldName": "service_name",
+        "label": "Service Name"
+      }
     ]
   },
   "Insurance": {
