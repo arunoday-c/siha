@@ -348,7 +348,6 @@ export default {
     const input = req.query;
     const _mysql = new algaehMysql();
     // const multiMerdgeReport = input.multiMerdgeReport;
-    console.log("getReport");
     try {
       const _inputParam = JSON.parse(input.report);
       const {
@@ -358,7 +357,6 @@ export default {
         reportToPortal,
         rpt_type,
       } = _inputParam;
-      console.log("_inputParam", _inputParam);
       let usehbs = "";
       let singleHeaderFooter = false;
       if (others) {
@@ -818,14 +816,9 @@ export default {
                                       console.error(error.message);
                                     });
                                 }
-                                console.log("reportToPortal", reportToPortal);
                                 if (reportToPortal === "true") {
                                   const rptParameters =
                                     _inputParam.reportParams;
-                                  console.log(
-                                    "reportParams",
-                                    _inputParam.reportParams
-                                  );
                                   const portal_patient_identity = rptParameters.find(
                                     (f) => f.name === "patient_identity"
                                   ).value;
@@ -835,8 +828,6 @@ export default {
                                   const portal_visit_code = rptParameters.find(
                                     (f) => f.name === "visit_code"
                                   ).value;
-                                  console.log("rptPath", rptPath);
-                                  console.log("rpt_type", rpt_type);
                                   await axios
                                     .post(
                                       "http://localhost:4402/api/v1/report/upload",
@@ -853,8 +844,8 @@ export default {
                                       }
                                     )
                                     .catch((error) => {
-                                      console.log("error ====> ", error);
-                                      console.error(error.message);
+                                      // console.log("error ====> ", error);
+                                      // console.error(error.message);
                                     });
                                 }
                                 fs.unlink(_reportOutput[0]);
