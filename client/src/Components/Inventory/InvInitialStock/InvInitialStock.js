@@ -207,6 +207,22 @@ class InvInitialStock extends Component {
                       : Options.dateFormat}
                   </h6>
                 </div>
+                {this.state.dataExitst === true ? (
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Status",
+                      }}
+                    />
+                    <h6>
+                      {this.state.posted === "Y" ? (
+                        <span className="badge badge-success">Posted</span>
+                      ) : (
+                        <span className="badge badge-danger">Not Posted</span>
+                      )}
+                    </h6>
+                  </div>
+                ) : null}
               </div>
             }
             selectedLang={this.state.selectedLang}
@@ -239,17 +255,6 @@ class InvInitialStock extends Component {
                       },
                     }}
                   />
-                  {this.state.dataExitst === true ? (
-                    <div className="col">
-                      <h6>
-                        {this.state.posted === "Y" ? (
-                          <span className="badge badge-success">Posted</span>
-                        ) : (
-                          <span className="badge badge-danger">Not Posted</span>
-                        )}
-                      </h6>
-                    </div>
-                  ) : null}
                 </div>
                 <div className="row" data-validate="InvIntialStock">
                   <AlagehAutoComplete
