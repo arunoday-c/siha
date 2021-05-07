@@ -38,22 +38,22 @@ const executePDF = function executePDFMethod(options) {
             
             SELECT MAX(item_id) as item_id, ROUND(SUM(qtyhand),0) as qtyhand, MAX(item_code) as item_code, MAX(item_description) as item_description FROM hims_m_inventory_item_location IL 
             inner join hims_d_inventory_item_master ITM ON ITM.hims_d_inventory_item_master_id = IL.item_id 
-            WHERE DATE(IL.created_date) BETWEEN DATE_SUB(CURDATE(),INTERVAL 30 DAY) AND CURDATE() ${strQuery} GROUP BY item_id;
+            WHERE DATE(IL.created_date) BETWEEN DATE_SUB(CURDATE(),INTERVAL 30 DAY) AND DATE_SUB(CURDATE(),INTERVAL 1 DAY) ${strQuery} GROUP BY item_id;
             
             
             SELECT MAX(item_id) as item_id, ROUND(SUM(qtyhand),0) as qtyhand, MAX(item_code) as item_code, MAX(item_description) as item_description FROM hims_m_inventory_item_location IL 
             inner join hims_d_inventory_item_master ITM ON ITM.hims_d_inventory_item_master_id = IL.item_id 
-            WHERE DATE(IL.created_date) BETWEEN DATE_SUB(CURDATE(),INTERVAL 60 DAY) AND DATE_SUB(CURDATE(),INTERVAL 30 DAY) ${strQuery}  GROUP BY item_id;
+            WHERE DATE(IL.created_date) BETWEEN DATE_SUB(CURDATE(),INTERVAL 60 DAY) AND DATE_SUB(CURDATE(),INTERVAL 31 DAY) ${strQuery}  GROUP BY item_id;
             
             
             SELECT MAX(item_id) as item_id, ROUND(SUM(qtyhand),0) as qtyhand, MAX(item_code) as item_code, MAX(item_description) as item_description FROM hims_m_inventory_item_location IL 
             inner join hims_d_inventory_item_master ITM ON ITM.hims_d_inventory_item_master_id = IL.item_id 
-            WHERE DATE(IL.created_date) BETWEEN DATE_SUB(CURDATE(),INTERVAL 90 DAY) AND DATE_SUB(CURDATE(),INTERVAL 60 DAY) ${strQuery} GROUP BY item_id;
+            WHERE DATE(IL.created_date) BETWEEN DATE_SUB(CURDATE(),INTERVAL 90 DAY) AND DATE_SUB(CURDATE(),INTERVAL 61 DAY) ${strQuery} GROUP BY item_id;
             
             
             SELECT MAX(item_id) as item_id, ROUND(SUM(qtyhand),0) as qtyhand, MAX(item_code) as item_code, MAX(item_description) as item_description FROM hims_m_inventory_item_location IL 
             inner join hims_d_inventory_item_master ITM ON ITM.hims_d_inventory_item_master_id = IL.item_id 
-            WHERE DATE(IL.created_date) < DATE_SUB(CURDATE(),INTERVAL 90 DAY) ${strQuery}  GROUP BY item_id;`,
+            WHERE DATE(IL.created_date) < DATE_SUB(CURDATE(),INTERVAL 91 DAY) ${strQuery}  GROUP BY item_id;`,
           printQuery: true,
         })
         .then((Result) => {

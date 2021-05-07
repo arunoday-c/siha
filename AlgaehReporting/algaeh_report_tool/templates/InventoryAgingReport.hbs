@@ -11,7 +11,7 @@
                         <th>Sl No.</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
-                        <th>0 Days</th>
+                        <th>Today</th>
                         <th>1-30 Days</th>
                         <th>31-60 Days</th>
                         <th>61-90 Days</th>
@@ -34,7 +34,7 @@
                         <td class="numberFld">{{sixty_days_stock}}</td>
                         <td class="numberFld">{{ninety_days_stock}}</td>
                         <td class="numberFld">{{above_ninety_days_stock}}</td>
-                        <td class="numberFld">{{balance}}</td>
+                        <td class="numberFld"><b>{{balance}}</b></td>
                     </tr>
                     {{/each }}
                     {{else}}
