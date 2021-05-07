@@ -5,17 +5,20 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
+  AlgaehModalPopUp,
 } from "../../../Wrapper/algaehWrapper";
 import { Spin, AlgaehMessagePop, AlgaehButton } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
 // import Editor from "./editor";
 import JoditEditor from "jodit-react";
+// import { Modal } from "antd";
 
 export default memo(function () {
   const [certificates, setCertificates] = useState([]);
   const [certificate_type, setCertificateType] = useState([]);
   const [xcolumns, setColumns] = useState([]);
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [preview, setPreview] = useState("");
   const [masterInput, setMasterInput] = useState({
     hims_d_certificate_master_id: "",
     certificate_type_id: "",
@@ -336,6 +339,20 @@ export default memo(function () {
               </div>
             </div> */}
               {/* <Editor data={certificates} /> */}
+              <AlgaehModalPopUp
+                title="Preview"
+                openPopup={isModalVisible}
+                events={{
+                  onClose: () => {
+                    setIsModalVisible(false);
+                    setPreview("");
+                  },
+                }}
+              >
+                <div className="container">
+                  <div dangerouslySetInnerHTML={{ __html: preview }}></div>
+                </div>
+              </AlgaehModalPopUp>
               <div className="col-12 certificateEditor">
                 <h6>Design Template</h6>
                 <Spin
@@ -491,7 +508,20 @@ export default memo(function () {
                         "hr",
                         "source",
                         "fullsize",
-                        "preview",
+                        // "preview",
+                        {
+                          name: "preview",
+
+                          exec: (e) => {
+                            console.log("isModalVisible===>", isModalVisible);
+                            setIsModalVisible(true);
+                            const _html = `<head><style>
+body{margin:0 30px;padding:0;}table,tr,td{border-style:solid;border-width: 1px 1px 1px 1px;border-collapse: collapse;padding:5px;border-color: rgb(255, 255, 255);}
+</style></head><body>${e.value}</body>`;
+
+                            setPreview(_html);
+                          },
+                        },
                       ],
                     }}
                   />
