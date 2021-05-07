@@ -879,3 +879,21 @@
     cursor: pointer;
   }
 }
+.InsuranceCorrectionListGrid {
+  // min-height: 62vh;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 60vh;
+      max-height: 60vh;
+      overflow: auto;
+    }
+    .pageLeft {
+      display: none;
+    }
+  }
+  .pat-code2 {
+    color: navy !important;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
