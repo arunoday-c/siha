@@ -4,7 +4,6 @@ import { withRouter } from "react-router-dom";
 import "./day_end_prc.scss";
 
 import {
-  AlgaehDataGrid,
   AlgaehLabel,
   AlgaehModalPopUp,
   AlagehFormGroup,
@@ -12,7 +11,8 @@ import {
 
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { MainContext } from "algaeh-react-components";
+
+import { MainContext, AlgaehDataGrid } from "algaeh-react-components";
 
 class TransationDetails extends Component {
   constructor(props) {
@@ -133,77 +133,44 @@ class TransationDetails extends Component {
           }}
         >
           <div className="col-lg-12 popupInner">
-            <div className="col-lg-12">
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Narration",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "narration",
-                    value: this.state.narration,
-                    events: {
-                      onChange: (e) => {
-                        this.setState({ narration: e.target.value });
-                      },
+            <div className="row">
+              <AlagehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Narration",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "narration",
+                  value: this.state.narration,
+                  events: {
+                    onChange: (e) => {
+                      this.setState({ narration: e.target.value });
                     },
-                  }}
-                />
-                <div className="col">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={this.SaveNarration.bind(this)}
-                  >
-                    Save Narration
-                  </button>
-                </div>
+                  },
+                }}
+              />
+              <div className="col">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.SaveNarration.bind(this)}
+                  style={{ marginTop: 21 }}
+                >
+                  Save Narration
+                </button>
               </div>
             </div>
 
             <div className="row" style={{ paddingTop: 15 }}>
-              {/* <div className="col-2">
-                <AlgaehLabel
-                  label={{
-                forceLabel: "Cash"
-                  }}
-                />
-                <h6>{this.state.popUpRecords.cash}</h6>
-                </div>
-                <div className="col-2">
-                <AlgaehLabel
-                  label={{
-                forceLabel: "Card"
-                  }}
-                />
-                <h6>{this.state.popUpRecords.card}</h6>
-                </div>
-                <div className="col-2">
-                <AlgaehLabel
-                  label={{
-                forceLabel: "Cheque"
-                  }}
-                />
-                <h6>{this.state.popUpRecords.cheque}</h6>
-              </div> */}
               <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
                 <AlgaehDataGrid
-                  id="dayEndProcessDetailsGrid"
                   columns={[
                     {
                       fieldName: "to_account",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "To Account" }} />
-                      ),
-                    },
-
-                    {
-                      fieldName: "payment_type",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
                       ),
                     },
                     {
@@ -212,6 +179,13 @@ class TransationDetails extends Component {
                         <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
                       ),
                     },
+                    {
+                      fieldName: "payment_type",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
+                      ),
+                    },
+
                     {
                       fieldName: "debit_amount",
                       label: (
@@ -248,38 +222,40 @@ class TransationDetails extends Component {
                     //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
                     // }
                   ]}
-                  dataSource={{
-                    data: this.state.data_entries,
-                  }}
-                  isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  keyId="service_code"
+                  data={
+                    this.state.data_entries === undefined
+                      ? []
+                      : this.state.data_entries
+                  }
+                  pagination={true}
+                  pageOptions={{ rows: 20, page: 1 }}
+                  isFilterable={true}
                 />
               </div>
             </div>
           </div>
           <div className="popupFooter">
             <div className="col-lg-12">
-              <div className="row" style={{ textAlign: "right" }}>
+              {this.state.posted === "N" ? (
                 <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={(e) => {
-                    this.onClose(e);
-                  }}
+                  className="btn btn-primary"
+                  onClick={this.postDayEndProcess.bind(this)}
+                  disabled={this.state.posted === "Y" ? true : false}
+                  style={{ marginRight: 0 }}
                 >
-                  Cancel
+                  Post to Finance
                 </button>
-
-                {this.state.posted === "N" ? (
-                  <button
-                    className="btn btn-primary"
-                    onClick={this.postDayEndProcess.bind(this)}
-                    disabled={this.state.posted === "Y" ? true : false}
-                  >
-                    Post to Finance
-                  </button>
-                ) : null}
-              </div>
+              ) : null}{" "}
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={(e) => {
+                  this.onClose(e);
+                }}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </AlgaehModalPopUp>
