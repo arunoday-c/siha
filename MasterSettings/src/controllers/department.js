@@ -165,6 +165,7 @@ export default () => {
     "/add/subdepartment",
     (req, res, next) => {
       deleteCacheMaster("subdepartment");
+      deleteCacheMaster("get_All_Doctors_DepartmentWise");
       deleteCacheMaster("selectDoctorsAndClinic");
       next();
     },

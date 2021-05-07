@@ -95,6 +95,17 @@ const Validations = ($this) => {
 
     return isError;
   }
+  if ($this.state.personalDetails.isdoctor === "Y") {
+    if ($this.state.personalDetails.services_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Service. Cannot be blank.",
+      });
+
+      return isError;
+    }
+  }
 
   if ($this.state.HRMS_Active === true) {
     if (
