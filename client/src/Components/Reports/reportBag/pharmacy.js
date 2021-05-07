@@ -81,8 +81,8 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 form-group",
-            type: "Autosearch",
+            className: "col-6 form-group AutosearchClass",
+            type: "col-6 form-group AutosearchClass",
             name: "item_id",
             // initialLoad: true,
             isImp: false,
@@ -173,7 +173,7 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 form-group",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
@@ -352,7 +352,7 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 form-group",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
@@ -930,7 +930,7 @@ export default function Pharmacy({
           //   },
           // },
           {
-            className: "col-3 form-group",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
@@ -1222,7 +1222,7 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 form-group",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
@@ -1768,7 +1768,7 @@ export default function Pharmacy({
             },
           },
           {
-            className: "col-3 form-group",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,

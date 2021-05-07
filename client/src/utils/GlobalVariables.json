@@ -192,6 +192,20 @@
       "value": "N"
     }
   ],
+  "INS_CORR_LIST": [
+    {
+      "name": "All",
+      "value": "A"
+    },
+    {
+      "name": "Corrected",
+      "value": "Y"
+    },
+    {
+      "name": "Pending",
+      "value": "N"
+    }
+  ],
   "FORMAT_MARTIALSTS": [
     {
       "name": "Married",
@@ -2827,8 +2841,7 @@
     {
       "name": "OP Bill Cancellation",
       "value": "OPBC"
-    }
-    ,
+    },
     {
       "name": "POS Bill Cancellation",
       "value": "POSBC"

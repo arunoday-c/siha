@@ -11,7 +11,7 @@ import {
   MainContext,
   Spin,
   AlgaehModal,
-  AlgaehButton,
+  // AlgaehButton,
 } from "algaeh-react-components";
 import { useForm, Controller } from "react-hook-form";
 // import { useHistory } from "react-router-dom";
@@ -25,14 +25,14 @@ import ModalMedicalRecord from "./ModalForMedicalRecordPat";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 // import { changeChecks } from "../EmployeeManagement/EmployeeMasterIndex/EmployeeMaster/RulesDetails/RulesDetailsEvent";
 
-const ResultViewForDoc = () => {
+const InsuranceCorrectionList = () => {
   // const today = moment().format("YYYY/MM/DD");
 
   const { control, errors, getValues, handleSubmit } = useForm({
     defaultValues: {
       from_date: moment().clone().startOf("month").format("YYYY-MM-DD"),
       to_date: new Date(),
-      doctor_viewed: "A",
+      correction_requested: "N",
     },
   });
 
@@ -164,42 +164,42 @@ const ResultViewForDoc = () => {
       }
     }
   };
-  const updateLabOrderServiceForDoc = () => {
-    const updateLabOrderDetails = labOrderServicesForDoc.filter((item) => {
-      return item.isDirty === true;
-    });
-    if (updateLabOrderDetails.length > 0) {
-      newAlgaehApi({
-        uri: "/laboratory/updateLabOrderServiceForDoc",
-        module: "laboratory",
-        method: "PUT",
-        data: {
-          updateArray: updateLabOrderDetails,
-        },
-      })
-        .then((res) => {
-          if (res.data.success) {
-            AlgaehMessagePop({
-              type: "success",
-              display: "Updated Successfully....",
-            });
-            getLabOrderServiceForDoc(getValues());
-          }
-        })
-        .catch((e) => {
-          swalMessage({
-            title: e.message,
-            type: "error",
-          });
-        });
-    } else {
-      AlgaehMessagePop({
-        type: "warning",
-        display: "Nothing To Update",
-      });
-      return;
-    }
-  };
+  // const updateLabOrderServiceForDoc = () => {
+  //   const updateLabOrderDetails = labOrderServicesForDoc.filter((item) => {
+  //     return item.isDirty === true;
+  //   });
+  //   if (updateLabOrderDetails.length > 0) {
+  //     newAlgaehApi({
+  //       uri: "/laboratory/updateLabOrderServiceForDoc",
+  //       module: "laboratory",
+  //       method: "PUT",
+  //       data: {
+  //         updateArray: updateLabOrderDetails,
+  //       },
+  //     })
+  //       .then((res) => {
+  //         if (res.data.success) {
+  //           AlgaehMessagePop({
+  //             type: "success",
+  //             display: "Updated Successfully....",
+  //           });
+  //           getLabOrderServiceForDoc(getValues());
+  //         }
+  //       })
+  //       .catch((e) => {
+  //         swalMessage({
+  //           title: e.message,
+  //           type: "error",
+  //         });
+  //       });
+  //   } else {
+  //     AlgaehMessagePop({
+  //       type: "warning",
+  //       display: "Nothing To Update",
+  //     });
+  //     return;
+  //   }
+  // };
 
   const getDocuments = (contract_no) => {
     setLoading(true);
@@ -240,7 +240,8 @@ const ResultViewForDoc = () => {
           provider_id: userToken.employee_id,
           from_date: data.from_date,
           to_date: data.to_date,
-          doctor_viewed: data.doctor_viewed === "A" ? "" : data.doctor_viewed,
+          correction_requested:
+            data.correction_requested === "A" ? "" : data.correction_requested,
         },
       });
       if (res.data.success) {
@@ -266,26 +267,6 @@ const ResultViewForDoc = () => {
   const onCloseAttachment = () => {
     setOpenViewAttachmentModal((pre) => !pre);
     setAttached_docs([]);
-  };
-  const changeChecks = (row, e) => {
-    // hims_f_lab_order_id
-
-    // let include = "Y";
-    // let saveEnable = true;
-    row["isDirty"] = true;
-    if (e.target.checked === true) {
-      // let changedRow = labOrderServicesForDoc.filter((item) => {
-      //   return item.hims_f_lab_order_id === row.hims_f_lab_order_id;
-      // });
-
-      row["doctor_viewed"] = "Y";
-      // row["doctor_viewed_change"] = "Checked";
-      // row.update();
-    } else if (e.target.checked === false) {
-      row["doctor_viewed"] = "N";
-      // row["doctor_viewed_change"] = "Not Checked";
-      // row.update();
-    }
   };
   return (
     <div>
@@ -367,7 +348,7 @@ const ResultViewForDoc = () => {
           />
           <Controller
             control={control}
-            name="doctor_viewed"
+            name="correction_requested"
             rules={{ required: "Required" }}
             render={({ value, onChange, onBlur }) => (
               <AlgaehAutoComplete
@@ -376,7 +357,7 @@ const ResultViewForDoc = () => {
                 }}
                 error={errors}
                 label={{
-                  forceLabel: "Result Seen",
+                  forceLabel: "Filter Result",
                   isImp: true,
                 }}
                 selector={{
@@ -387,11 +368,11 @@ const ResultViewForDoc = () => {
                   onClear: () => {
                     onChange("");
                   },
-                  name: "doctor_corrected",
+                  name: "correction_requested",
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: variableJson.DOC_LAB_RESULT,
+                    data: variableJson.INS_CORR_LIST,
                   },
                 }}
               />
@@ -476,13 +457,13 @@ const ResultViewForDoc = () => {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Doctor Lab</h3>
+                <h3 className="caption-subject">Insurance Correction List</h3>
               </div>
-              <div className="actions">
+              {/* <div className="actions">
                 <small>Only validated result will show below.</small>
-              </div>
+              </div> */}
             </div>
-            <div className="portlet-body ResultViewForDocGrid">
+            <div className="portlet-body InsuranceCorrectionListGrid">
               <AlgaehDataGrid
                 columns={[
                   {
@@ -530,34 +511,12 @@ const ResultViewForDoc = () => {
                       style: { textAlign: "center" },
                     },
                   },
-                  {
-                    fieldName: "doctor_viewed",
-                    label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
-                    displayTemplate: (row) => {
-                      return (
-                        <input
-                          type="checkbox"
-                          // value=""
-                          defaultChecked={
-                            row.doctor_viewed === "Y" ? true : false
-                          }
-                          onChange={(e) => changeChecks(row, e)}
-                          // checked={row.doctor_viewed === "Y" ? true : false}
-                        />
-                      );
-                    },
 
-                    others: {
-                      maxWidth: 150,
-                      resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                  },
                   {
-                    fieldName: "doctor_viewed_change",
+                    fieldName: "correction_requested",
                     label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                     displayTemplate: (row) => {
-                      return row.doctor_viewed === "Y" ? (
+                      return row.correction_requested === "Y" ? (
                         <span className="badge badge-success">Seen</span>
                       ) : (
                         <span className="badge badge-secondary">Unseen</span>
@@ -608,13 +567,16 @@ const ResultViewForDoc = () => {
                     ),
                     disabled: true,
                     others: {
+                      minWidth: 180,
                       resizable: false,
                       style: { textAlign: "left" },
                     },
                   },
                   {
-                    fieldName: "service_name",
-                    label: <AlgaehLabel label={{ forceLabel: "Test Name" }} />,
+                    fieldName: "invoice_number",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
+                    ),
 
                     disabled: true,
                     others: {
@@ -623,9 +585,9 @@ const ResultViewForDoc = () => {
                     },
                   },
                   {
-                    fieldName: "ordered_date",
+                    fieldName: "invoice_date",
                     label: (
-                      <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                      <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
                     ),
                     displayTemplate: (row) => {
                       return <span>{changeDateFormat(row.ordered_date)}</span>;
@@ -639,97 +601,19 @@ const ResultViewForDoc = () => {
                     },
                   },
                   {
-                    fieldName: "lab_id_number",
+                    fieldName: "request_comment",
                     label: (
-                      <AlgaehLabel label={{ forceLabel: "Lab ID Number" }} />
+                      <AlgaehLabel
+                        label={{ forceLabel: "Requestee Comment" }}
+                      />
                     ),
                     disabled: true,
                     others: {
-                      maxWidth: 130,
+                      minWidth: 250,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
                   },
-                  {
-                    fieldName: "test_type",
-                    label: <AlgaehLabel label={{ fieldName: "proiorty" }} />,
-                    displayTemplate: (row) => {
-                      return row.test_type === "S" ? (
-                        <span className="badge badge-danger">Stat</span>
-                      ) : (
-                        <span className="badge badge-secondary">Routine</span>
-                      );
-                    },
-                    disabled: true,
-                    others: {
-                      maxWidth: 90,
-                      resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                  },
-                  // {
-                  //   fieldName: "sample_status",
-                  //   label: (
-                  //     <AlgaehLabel label={{ forceLabel: "Specimen Status" }} />
-                  //   ),
-                  //   displayTemplate: (row) => {
-                  //     return row.sample_status === "N" ? (
-                  //       <span className="badge badge-light">Not Done</span>
-                  //     ) : row.sample_status === "A" ? (
-                  //       <span className="badge badge-success">Accepted</span>
-                  //     ) : row.sample_status === "R" ? (
-                  //       <span className="badge badge-danger">Rejected</span>
-                  //     ) : null;
-                  //   },
-                  //   disabled: true,
-                  //   others: {
-                  //     maxWidth: 150,
-                  //     resizable: false,
-                  //     style: { textAlign: "center" },
-                  //   },
-                  // },
-                  // {
-                  //   fieldName: "status",
-                  //   label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                  //   displayTemplate: (row) => {
-                  //     return row.status === "CL" ? (
-                  //       <span className="badge badge-secondary">Collected</span>
-                  //     ) : row.status === "CN" ? (
-                  //       <span className="badge badge-danger">Cancelled</span>
-                  //     ) : row.status === "CF" ? (
-                  //       <span className="badge badge-primary">Confirmed</span>
-                  //     ) : (
-                  //       <span className="badge badge-success">Validated</span>
-                  //     );
-                  //   },
-                  //   disabled: true,
-                  //   others: {
-                  //     maxWidth: 130,
-                  //     resizable: false,
-                  //     style: { textAlign: "center" },
-                  //   },
-                  // },
-                  // {
-                  //   fieldName: "critical_status",
-                  //   label: (
-                  //     <AlgaehLabel
-                  //       label={{ forceLabel: "Critical Result" }}
-                  //     />
-                  //   ),
-                  //   displayTemplate: (row) => {
-                  //     return row.critical_status === "N" ? (
-                  //       <span className="badge badge-primary">No</span>
-                  //     ) : (
-                  //       <span className="badge badge-danger">Yes</span>
-                  //     );
-                  //   },
-                  //   disabled: true,
-                  //   others: {
-                  //     maxWidth: 130,
-                  //     resizable: false,
-                  //     style: { textAlign: "center" },
-                  //   },
-                  // },
                 ]}
                 keyId="patient_code"
                 data={labOrderServicesForDoc}
@@ -739,7 +623,7 @@ const ResultViewForDoc = () => {
             </div>
           </div>
 
-          <div className="hptl-phase1-footer">
+          {/* <div className="hptl-phase1-footer">
             <div className="row">
               <div className="col-12">
                 <AlgaehButton
@@ -752,11 +636,11 @@ const ResultViewForDoc = () => {
                 </AlgaehButton>
               </div>
             </div>
-          </div>
+          </div> */}
         </Spin>
       </div>
     </div>
   );
 };
 
-export default ResultViewForDoc;
+export default InsuranceCorrectionList;
