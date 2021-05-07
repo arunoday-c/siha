@@ -699,7 +699,7 @@ export default {
                         pageSize = {};
                         _pdfTemplating = {};
                         await page.addStyleTag({
-                          // content: "@page:first {margin-top: -8px;}",
+                          content: "@page:first {margin-top: -8px;}",
                         });
                         const sizes = convertMilimetersToPixel(others);
 
