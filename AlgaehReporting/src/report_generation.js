@@ -348,7 +348,6 @@ export default {
     const input = req.query;
     const _mysql = new algaehMysql();
     // const multiMerdgeReport = input.multiMerdgeReport;
-
     try {
       const _inputParam = JSON.parse(input.report);
       const {
@@ -356,6 +355,7 @@ export default {
         multiMerdgeReport,
         qrCodeReport,
         reportToPortal,
+        rpt_type,
       } = _inputParam;
       let usehbs = "";
       let singleHeaderFooter = false;
@@ -824,7 +824,7 @@ export default {
                                   ).value;
                                   const portal_service_id = rptParameters.find(
                                     (f) => f.name === "service_id"
-                                  ).value;
+                                  )?.value;
                                   const portal_visit_code = rptParameters.find(
                                     (f) => f.name === "visit_code"
                                   ).value;
@@ -840,10 +840,12 @@ export default {
                                           hospital_id:
                                             req.userIdentity["hospital_id"],
                                         },
+                                        rpt_type: rpt_type ?? "PATIENT_REPORT",
                                       }
                                     )
                                     .catch((error) => {
-                                      console.error(error.message);
+                                      // console.log("error ====> ", error);
+                                      // console.error(error.message);
                                     });
                                 }
                                 fs.unlink(_reportOutput[0]);

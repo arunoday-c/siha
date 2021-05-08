@@ -829,6 +829,14 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "hims_d_services_id desc",
         inputSequence: ["insurance_id", "insurance_id"],
       },
+
+      {
+        searchName: "hospitalserviceonly",
+        searchQuery:
+          "SELECT hims_d_services_id as hims_d_item_master_id,service_code  as uom_description,service_name as item_description,arabic_service_name,service_type_id FROM hims_d_services where service_type_id in (1,2,5,11,15,6)",
+        orderBy: "hims_d_services_id desc",
+        // inputSequence: ["service_type_id", "service_type_id"],
+      },
       {
         searchName: "inspackagemaster",
         searchQuery:
@@ -995,7 +1003,7 @@ let algaehSearchConfig = (searchName, req) => {
           left join   hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id\
           left join hims_d_department D on SD.department_id = D.hims_d_department_id\
           left join hims_d_designation DS  on  E.employee_designation_id = DS.hims_d_designation_id \
-          WHERE E.employee_status <> 'I' ",
+          WHERE E.employee_status <> 'I' and E.record_status <> 'I'",
         orderBy: "hims_d_employee_id desc",
       },
       {

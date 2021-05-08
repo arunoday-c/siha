@@ -129,7 +129,7 @@ const SaveMedication = ($this, context, e) => {
       chronicMedicationsItems: chronicMedications,
       isFavMedicationsItems: isFavMedications,
     };
-    debugger;
+
     let portal_data = {};
     if ($this.state.portal_exists === "Y") {
       portal_data = $this.state.medicationitems.map((m) => {
@@ -299,6 +299,7 @@ const SaveMedication = ($this, context, e) => {
                 //handle error
                 console.log(response);
               });
+            uploadPrescriptiontoPortal($this);
           }
           if (Window.global["orderMedicationState"] !== null)
             removeGlobal("orderMedicationState");
@@ -331,42 +332,60 @@ const SaveMedication = ($this, context, e) => {
     });
   }
 };
-const printPrescription = (that, e) => {
-  const _patient = Window.global["current_patient"];
-  const _visit = Window.global["visit_id"];
-  algaehApiCall({
-    uri: "/report",
-    method: "GET",
-    module: "reports",
-    headers: {
-      Accept: "blob",
-    },
-    others: { responseType: "blob" },
-    data: {
-      report: {
-        reportName: "prescription",
-        reportParams: [
-          {
-            name: "hims_d_patient_id",
-            value: _patient,
-          },
-          {
-            name: "visit_id",
-            value: _visit,
-          },
-          {
-            name: "visit_code",
-            value: null,
-          },
-        ],
-        outputFileType: "PDF",
+const uploadPrescriptiontoPortal = ($this) => {
+  return new Promise((resolve, reject) => {
+    let portalParams = {};
+    if ($this.state.portal_exists === "Y") {
+      portalParams["reportToPortal"] = "true";
+      portalParams["rpt_type"] = "PATIENT_RPT_MEDICATION";
+    }
+
+    const _patient = Window.global["current_patient"];
+    const _visit = Window.global["visit_id"];
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
       },
-    },
-    onSuccess: (res) => {
-      const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
-      window.open(origin);
-    },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          ...portalParams,
+          reportName: "prescription",
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value: _patient,
+            },
+            {
+              name: "visit_id",
+              value: _visit,
+            },
+            {
+              name: "patient_identity",
+              value: $this.props.primary_id_no,
+            },
+            {
+              name: "visit_code",
+              value: $this.props.visit_code,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        // debugger;
+        // const urlBlob = URL.createObjectURL(res.data);
+        // const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
+        // window.open(origin);
+        resolve();
+      },
+      onCatch: (err) => {
+        reject(err);
+      },
+    });
   });
 };
 const genericnamehandle = ($this, ctrl, e) => {
@@ -965,7 +984,7 @@ export {
   calcuateDispense,
   getItemStock,
   AddItemsOrUpdate,
-  printPrescription,
+  uploadPrescriptiontoPortal,
   clearInputState,
   // updateItems,
   // onchangegridcol,

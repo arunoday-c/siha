@@ -29,8 +29,11 @@
     "express": "^4.16.3",
     "extend": "^3.0.1",
     "lodash": "^4.17.20",
+    "moment": "^2.29.1",
+    "mysql": "^2.18.1",
     "node-linq": "0.0.5",
     "regenerator": "^0.14.7",
+    "regenerator-runtime": "^0.13.7",
     "swagger-ui-express": "^4.1.4",
     "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.1.4"

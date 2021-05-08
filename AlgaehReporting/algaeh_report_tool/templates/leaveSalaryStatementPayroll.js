@@ -93,10 +93,22 @@ const executePDF = function executePDFMethod(options) {
 
             const result = {
               details: outputArray,
-              total_salary_amount: total_salary_amount,
-              total_leave_amount: total_leave_amount,
-              total_airfare_amount: total_airfare_amount,
-              net_total_amount: net_total_amount,
+              total_salary_amount: options.currencyFormat(
+                total_salary_amount,
+                options.args.crypto
+              ),
+              total_leave_amount: options.currencyFormat(
+                total_leave_amount,
+                options.args.crypto
+              ),
+              total_airfare_amount: options.currencyFormat(
+                total_airfare_amount,
+                options.args.crypto
+              ),
+              net_total_amount: options.currencyFormat(
+                net_total_amount,
+                options.args.crypto
+              ),
             };
 
             // utilities.logger().log("outputArray:", result);

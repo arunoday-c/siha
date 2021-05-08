@@ -84,10 +84,22 @@ const executePDF = function executePDFMethod(options) {
 
             const result = {
               details: ress,
-              total_loan_amount: total_loan_amount,
-              total_approved_amount: total_approved_amount,
-              total_installment_amount: total_installment_amount,
-              total_pending_loan: total_pending_loan,
+              total_loan_amount: options.currencyFormat(
+                total_loan_amount,
+                options.args.crypto
+              ),
+              total_approved_amount: options.currencyFormat(
+                total_approved_amount,
+                options.args.crypto
+              ),
+              total_installment_amount: options.currencyFormat(
+                total_installment_amount,
+                options.args.crypto
+              ),
+              total_pending_loan: options.currencyFormat(
+                total_pending_loan,
+                options.args.crypto
+              ),
             };
 
             // utilities.logger().log("outputArray:", result);

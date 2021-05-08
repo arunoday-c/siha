@@ -45,6 +45,14 @@ const executePDF = function executePDFMethod(options) {
         .then((result) => {
           resolve({
             result: result,
+            total_approved_amt: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.approved_amount)),
+              options.args.crypto
+            ),
+            total_loan_due_amt: options.currencyFormat(
+              _.sumBy(result, (s) => parseFloat(s.loan_due_amount)),
+              options.args.crypto
+            ),
             no_employees: result.length,
           });
         })

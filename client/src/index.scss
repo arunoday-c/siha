@@ -2156,8 +2156,10 @@ td {
   position: relative;
   .autoSearchClear {
     position: absolute;
-    top: 27px;
-    right: 48px;
+    top: 23px;
+    right: 16px;
+    background: #ffffff;
+    padding: 4px 10px;
     i {
       color: rgb(192, 192, 192);
       &:hover {

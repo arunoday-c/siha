@@ -65,8 +65,14 @@ const executePDF = function executePDFMethod(options) {
 
             const result = {
               detailsList: ress,
-              sum_leave_salary: sum_leave_salary.toFixed(decimal_places),
-              sum_airfare_amount: sum_airfare_amount.toFixed(decimal_places),
+              sum_leave_salary: options.currencyFormat(
+                sum_leave_salary.toFixed(decimal_places),
+                options.args.crypto
+              ),
+              sum_airfare_amount: options.currencyFormat(
+                sum_airfare_amount.toFixed(decimal_places),
+                options.args.crypto
+              ),
             };
 
             // utilities.logger().log("outputArray:", result);

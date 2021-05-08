@@ -8,3 +8,14 @@
     }
   }
 }
+#dayEndProcessDetailsGrid_Cntr {
+  .newStickyGrid {
+    margin-bottom: 15px;
+    .table-scroll {
+      min-height: 50vh !important;
+      max-height: 50vh !important;
+      overflow: auto;
+      // background-color: red;
+    }
+  }
+}

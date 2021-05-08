@@ -679,13 +679,6 @@ export default class ReportUI extends Component {
             );
             break;
           case "Autosearch":
-            // const _data =
-            //   this.state[_param.name + "_list"] === undefined
-            //     ? _param.dataSource.data === undefined
-            //       ? []
-            //       : _param.dataSource.data
-            //     : this.state[_param.name + "_list"];
-
             _controls.push(
               <AlgaehAutoSearch
                 div={{ className: _className }}
@@ -705,28 +698,19 @@ export default class ReportUI extends Component {
                       <div className="row">
                         <div className="col-8">
                           <h4 className="title">{result.item_description}</h4>
-                          {/* <small>{result.generic_name}</small> */}
                           <small>{result.uom_description}</small>
+                          {/* <h4 className="title">{result.item_description}</h4>
+                          <small>{result.uom_description}</small> */}
                         </div>
-                        {/*<div className="col-4">
-                          <h6 className="price">
-                            {getAmountFormart(
-                              result.standard_fee
-                            )}
-                          </h6>
-                        </div>*/}
                       </div>
                     </section>
                   );
                 }}
                 name={_param.name}
                 columns={_param.columns}
-                displayField="item_description"
+                displayField={_param.displayField}
                 value={this.state.parameterCollection[_param.value]}
                 searchName={_param.searchName}
-                // extraParameters={{
-                //   pharmacy_location_id: pharmacy_location_id,
-                // }}
                 onClick={this.itemchangeText.bind(this)}
                 onClear={(e) => {
                   this.setState({

@@ -26,6 +26,7 @@ import {
   AlgaehDataGrid,
   AlgaehMessagePop,
   AlgaehAutoComplete,
+  AlgaehSecurityComponent,
 } from "algaeh-react-components";
 import BasicDetails from "./BasicEmpDetails";
 
@@ -59,16 +60,14 @@ class SelfPersonalDetails extends Component {
 
   getKPI() {
     newAlgaehApi({
-      uri: "/Document/getKPI",
+      uri: "/hrsettings/getCertificateMaster",
       method: "GET",
-      module: "documentManagement",
+      module: "hrManagement",
     })
       .then((response) => {
         const { data } = response;
 
-        let dataKpi = data.result.map((item) => item !== null && item);
-
-        this.setState({ kpi_types: dataKpi });
+        this.setState({ kpi_types: data.records });
       })
       .catch((error) => {
         AlgaehMessagePop({
@@ -265,7 +264,8 @@ class SelfPersonalDetails extends Component {
       method: "post",
       data: {
         employee_id: this.state.hims_d_employee_id,
-        certificate_id: 1,
+        certificate_id: this.state.kpi_type,
+        employee_code: this.props.empData.employee_code,
       },
       onSuccess: (res) => {
         if (res.data.success) {
@@ -273,6 +273,7 @@ class SelfPersonalDetails extends Component {
             title: "Record Added successfully",
             type: "success",
           });
+          this.setState({ kpi_type: null });
           this.getRequestCertificate();
         }
       },
@@ -443,11 +444,9 @@ class SelfPersonalDetails extends Component {
   }
   getRequestCertificate() {
     algaehApiCall({
-      uri: "/employee/getRequestCertificate",
+      uri: "/employee/getRequestCertificateSelf",
       module: "hrManagement",
-      data: {
-        employee_id: this.state.hims_d_employee_id,
-      },
+
       method: "GET",
       onSuccess: (res) => {
         if (res.data.success) {
@@ -1795,11 +1794,6 @@ class SelfPersonalDetails extends Component {
 
           <div className="col-5">
             <div className="portlet portlet-bordered margin-bottom-15">
-              {/* <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Payroll Information</h3>
-                </div>
-              </div> */}
               <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
@@ -1850,121 +1844,127 @@ class SelfPersonalDetails extends Component {
                     </button>
                   </div>
                 </div>
-                {/* <hr></hr>
-                <div className="row">
-                  <div className="col-8">
-                    <Doughnut
-                      data={PieData}
-                      height={160}
-                      //options={AdmissionsReadmissionDataOptions}
-                    />
-                  </div>{" "}
-                  <div className="col-4 salaryBreakup">
-                    <div className="row">
-                      <div className="col-12">
-                        <p>Earnings</p>
-                        <h4>0.00</h4>
-                      </div>
-                      <div className="col-12">
-                        {" "}
-                        <p>Deductions</p>
-                        <h4>0.00</h4>
-                      </div>
-                      <div className="col-12">
-                        {" "}
-                        <p>Total Net Salary</p>
-                        <h3>0.00</h3>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
 
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Request Certificate / Download Forms
-                  </h3>
+            <AlgaehSecurityComponent componentCode="SEL_PER_REQ_CERT">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Request Certificate / Download Forms
+                    </h3>
+                  </div>
                 </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <AlgaehAutoComplete
-                    div={{ className: "col-8 form-group mandatory" }}
-                    label={{ forceLabel: "Select a Certificate", isImp: true }}
-                    selector={{
-                      name: "kpi_type",
-                      dataSource: {
-                        data: this.state.kpi_types,
-                        valueField: "_id",
-                        textField: "kpi_name",
-                      },
-                      value: this.state.kpi_type,
-                      onChange: (_, selected) => {},
-                      // onClear: onClearAutoComplete,
-                    }}
-                  />
-                  <button
-                    style={{ marginTop: 21 }}
-                    className="btn btn-default"
-                    onClick={this.requestCertificate.bind(this)}
-                  >
-                    Request
-                  </button>
-                </div>
-                <div className="row">
-                  <div
-                    className="col-12"
-                    id="selfService_CertificateTable_Cntr"
-                  >
-                    <AlgaehDataGrid
-                      id="employeeFormTemplate"
-                      columns={[
-                        {
-                          fieldName: "formName",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Certificate Type" }}
-                            />
-                          ),
-                          others: {
-                            style: {
-                              textAlign: "left",
-                            },
-                          },
+                <div className="portlet-body">
+                  <div className="row">
+                    <AlgaehAutoComplete
+                      div={{ className: "col-9 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Select Certificate",
+                        isImp: true,
+                      }}
+                      selector={{
+                        className: "form-control",
+                        name: "kpi_type",
+                        value: this.state.kpi_type,
+                        onChange: (_, selected) => {
+                          this.setState({ kpi_type: selected });
                         },
-                        {
-                          fieldName: "url",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Download" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return (
-                              <a href={row.url} download target="_blank">
-                                Download
-                              </a>
-                            );
-                          },
-                          others: {
-                            maxWidth: 100,
-                          },
+
+                        dataSource: {
+                          valueField: "hims_d_certificate_master_id",
+                          textField: "certificate_name",
+                          data: this.state.kpi_types,
                         },
-                      ]}
-                      keyId=""
-                      // dataSource={{
-                      data={this.state.employee_cert_req ?? []}
-                      // }}
-                      pagination={true}
-                      isEditable={false}
-                      // paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{}}
+                      }}
                     />
+
+                    <button
+                      style={{ marginTop: 21 }}
+                      className="btn btn-default"
+                      onClick={this.requestCertificate.bind(this)}
+                    >
+                      Request
+                    </button>
+                  </div>
+                  <div className="row">
+                    <div
+                      className="col-12"
+                      id="selfService_CertificateTable_Cntr"
+                    >
+                      <AlgaehDataGrid
+                        id="employeeFormTemplate"
+                        columns={[
+                          {
+                            fieldName: "certificate_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Certificate Type" }}
+                              />
+                            ),
+                            displayTemplate: (row) => {
+                              return this.state.kpi_types.filter(
+                                (f) =>
+                                  f.hims_d_certificate_master_id ===
+                                  row.certificate_id
+                              )[0]?.certificate_name;
+                            },
+                            // others: {
+                            //   style: {
+                            //     textAlign: "left",
+                            //   },
+                            // },
+                          },
+                          {
+                            fieldName: "certification_number",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Certificate No." }}
+                              />
+                            ),
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  {" "}
+                                  <a
+                                    href={`${window.location.protocol}//${
+                                      window.location.hostname
+                                    }${
+                                      window.location.port === ""
+                                        ? "/docserver"
+                                        : `:3006`
+                                    }/UPLOAD/Employee Certificate/${
+                                      row.certification_number
+                                    }.pdf`}
+                                    download
+                                    target="_blank"
+                                  >
+                                    {row.certification_number}{" "}
+                                  </a>
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 150,
+                            },
+                            filterable: true,
+                          },
+                        ]}
+                        keyId=""
+                        // dataSource={{
+                        data={this.state.employee_cert_req ?? []}
+                        // }}
+                        pagination={true}
+                        // isEditable={false}
+                        // paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{}}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </AlgaehSecurityComponent>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div

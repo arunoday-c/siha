@@ -2,53 +2,65 @@
 
 <body>
     <div class="print-body">
-
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                    <tr>
+                     <tr>
                         <th>Sl No.<small>م</small></th>
                         <th>Data From<small>معلومات من</small></th>
-                        <th>Date<small>التاريخ</small></th>
-                        <th>MRN No.<small>كود المريض</small></th>
+                        <th>Bill No.<small>اسم المريض</small></th>
+                        <th>Bill Date<small>اسم المريض</small></th>
+                        <th>Patient Code<small>اسم المريض</small></th>
                         <th>Patient Name<small>اسم المريض</small></th>
-                        <th>Nationality<small>الجنسية</small></th>
+                        <th>Nationality<small>اسم المريض</small></th>
                         <th>Cash/Insurance<small>النقد / التأمين</small></th>
-                        <th>Total Before VAT<small>الإجمالي قبل ضريبة القيمة المضافة</small></th>
-                        <th>Total After VAT<small>الإجمالي بعد ضريبة القيمة المضافة</small></th>
-                        <th>Patient VAT Amount<small>مبلغ ضريبة القيمة المضافة للمريض</small></th>
-                        <th>Company VAT Amount<small>مبلغ ضريبة القيمة المضافة للشركة</small></th>
+                        <th>Total Before VAT<small>المجموع دون الضريبة</small></th>
+                        <th>Total VAT<small>قيمة الضريبة</small></th>
+                        <th>Total After VAT<small>المجموع بعد الضريبة</small></th>
+                        <th>Patient VAT Amount<small>مبلغ ضريبة المريض</small></th>
+                        <th>Company VAT Amount<small>مبلغ ضريبة الشركة</small></th>
                     </tr>
+
                 </thead>
                 <tbody>
-
-                    {{#each details}}
+                  
+                    {{#hasElement result}}
+                        <tr class="numberFldTotalBottom">
+                            <td colspan="8"></td>
+                            <td class="numberFld">{{numberFormating sum_total_before_vat ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_total_tax ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_total_after_vat ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_patient_tax ./currencyOnly}}</td>
+                            <td class="numberFld">{{numberFormating sum_company_tax ./currencyOnly}}</td>
+                        </tr>
+                    {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{data_from}} / {{doc_number}}</td>
-                        <td>{{visit_date}}</td>
+                        <td>{{data_from}}</td>
+                        <td>{{doc_number}}</td>
+                        <td>{{bill_date}}</td>
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
                         <td>{{nationality}}</td>
-                        <td>{{insurance_sub_name}}</td>
-                        <td class="numberFld">{{total_before_vat}}</td>
-                        <td class="numberFld">{{total_after_vat}}</td>
-                        <td class="numberFld">{{patient_tax}}</td>
-                        <td class="numberFld">{{company_tax}}</td>
-
+                        <td>{{insurance_yesno}}</td>
+                        <td class="numberFld">{{numberFormating total_before_vat ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating total_tax ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating total_after_vat ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating patient_tax ../decimalOnly}}</td>
+                        <td class="numberFld">{{numberFormating company_tax ../decimalOnly}}</td>
                     </tr>
-                    {{/each }}
-                    <tr class="numberFldTotalBottom">
-                        <td colspan="7"></td>
-                        <td class="numberFld">{{total_before_vat}}</td>
-                        <td class="numberFld">{{total_after_vat}}</td>
-                        <td class="numberFld">{{patient_tax}}</td>
-                        <td class="numberFld">{{company_tax}}</td>
-
+                   {{/each }}
+                  
+                    {{else}}
+                    <tr>
+                        <td colspan="8" class="noResultTextReport">No Records Found</td>
                     </tr>
+                    {{/hasElement }}
                 </tbody>
+
             </table>
+            
         </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
     </div>
 </body>

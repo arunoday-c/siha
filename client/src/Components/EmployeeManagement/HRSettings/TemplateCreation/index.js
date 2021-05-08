@@ -29,6 +29,7 @@ export default memo(function () {
   });
   const [buttonType, setButtonType] = useState("Add To List");
   const [loading, setLoading] = useState(false);
+
   const joditEditor = useRef(undefined);
   useEffect(() => {
     getCertificateMaster();
@@ -93,15 +94,15 @@ export default memo(function () {
     setButtonType("Update List");
   }
 
-  function checkHandaler(e) {
-    const { checked } = e.target;
-    setMasterInput((result) => {
-      return {
-        ...result,
-        custom_header_req: checked === true ? "Y" : "N",
-      };
-    });
-  }
+  // function checkHandaler(e) {
+  //   const { checked } = e.target;
+  //   setMasterInput((result) => {
+  //     return {
+  //       ...result,
+  //       custom_header_req: checked === true ? "Y" : "N",
+  //     };
+  //   });
+  // }
 
   function onMasterInputHnadler(e) {
     const { name, value } = e.target;
@@ -131,6 +132,7 @@ export default memo(function () {
   }
 
   function onAddOrUpdate() {
+    debugger;
     if (masterInput.certificate_name === "") {
       AlgaehMessagePop({
         display: "Certificate Name cannot be blank.",
@@ -148,14 +150,11 @@ export default memo(function () {
       });
     } else {
       setLoading(true);
-      masterInput.certificate_template =
-        `<head><style>
-      body{margin:0 30px;padding:0;}table,tr,td{border-style:solid;border-width: 1px 1px 1px 1px;border-collapse: collapse;padding:5px;border-color: rgb(255, 255, 255);}
-      </style></head><body>` +
-        joditEditor.current.value +
-        `</body>`;
+
+      masterInput.certificate_template = joditEditor.current.value;
       const settings = { header: undefined, footer: undefined };
       if (masterInput.hims_d_certificate_master_id === "") {
+        masterInput.certificate_style = `<head><style>body{margin:0;padding:0; font-family: Arial, Helvetica, sans-serif;} .certificateContent{margin:0 15px;padding:0;} p{line-height:1.3rem;padding:0;margin:5px 0;} table,tr,td{border-style:solid;border-width: 1px 1px 1px 1px;border-collapse: collapse;padding:5px;border-color: rgb(255, 255, 255);}</style></head><body><div class="certificateContent">`;
         newAlgaehApi({
           uri: "/hrsettings/addCertificateMaster",
           skipParse: true,
@@ -289,7 +288,7 @@ export default memo(function () {
                   },
                 }}
               />
-              <div className="col-3">
+              {/* <div className="col-3">
                 <label>Custom Header Required</label>
                 <div className="customCheckbox">
                   <label className="checkbox inline">
@@ -305,7 +304,7 @@ export default memo(function () {
                     <span>Yes</span>
                   </label>
                 </div>
-              </div>
+              </div> */}
               {/* <AlagehFormGroup
               div={{ className: "col-6 form-group mandatory" }}
               label={{
@@ -511,14 +510,14 @@ export default memo(function () {
                         // "preview",
                         {
                           name: "preview",
-
                           exec: (e) => {
-                            console.log("isModalVisible===>", isModalVisible);
+                            // console.log("isModalVisible===>", isModalVisible);
                             setIsModalVisible(true);
-                            const _html = `<head><style>
-body{margin:0 30px;padding:0;}table,tr,td{border-style:solid;border-width: 1px 1px 1px 1px;border-collapse: collapse;padding:5px;border-color: rgb(255, 255, 255);}
-</style></head><body>${e.value}</body>`;
-
+                            const _html = `<head><style>body{margin:0;padding:0; font-family: Arial, Helvetica, sans-serif;} 
+                            .certificateContent{margin:0 15px;padding:0;} p{line-height:1.3rem;padding:0;margin:5px 0;} 
+                            table,tr,td{border-style:solid;border-width: 1px 1px 1px 1px;border-collapse: 
+                              collapse;padding:5px;border-color: rgb(255, 255, 255);}</style></head><body>
+                              <div class="certificateContent">${e.value}</div></body>`;
                             setPreview(_html);
                           },
                         },

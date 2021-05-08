@@ -1,6 +1,6 @@
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-
+import _ from "lodash";
 const ChangeHandel = ($this, e) => {
   $this.setState({
     [e.target.name]: e.target.value,
@@ -118,7 +118,7 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, status) => {
-  if (!$this.state.bacteria_name && $this.state.radioGrowth === true) {
+  if (!$this.state.bacteria_name && $this.state.radioGrowth) {
     swalMessage({
       title: "Please Enter Bacteria Name",
       type: "warning",
@@ -126,7 +126,7 @@ const UpdateLabOrder = ($this, status) => {
     document.querySelector("[name='bacteria_name']").focus();
     return;
   }
-  if (!$this.state.group_id) {
+  if (!$this.state.group_id && $this.state.radioGrowth) {
     swalMessage({
       title: "Please Enter Bacteria Group",
       type: "warning",
@@ -148,6 +148,7 @@ const UpdateLabOrder = ($this, status) => {
           type: "success",
           title: "Done successfully . .",
         });
+
         getMicroResult($this);
         $this.setState({
           status: status,
@@ -262,6 +263,56 @@ const radioChange = ($this, e) => {
 
 const getMicroResult = ($this, e) => {
   algaehApiCall({
+    uri: "/laboratory/getMicroDetails",
+    module: "laboratory",
+    method: "GET",
+    data: { order_id: $this.state.hims_f_lab_order_id },
+    onSuccess: (response) => {
+      // console.timeEnd("lab");
+      if (response.data.success) {
+        for (let i = 0; i < response.data.records.length; i++) {
+          if (response.data.records[i].analyte_type === "T") {
+            response.data.records[i].dis_text_value =
+              response.data.records[i].text_value !== null &&
+              response.data.records[i].text_value !== ""
+                ? response.data.records[i].text_value.split("<br/>")
+                : [];
+
+            // response.data.records[i].text_value = response.data.records[i].text_value.replace("<br/>", "\n/g")
+            response.data.records[i].text_value =
+              response.data.records[i].text_value !== null &&
+              response.data.records[i].text_value !== ""
+                ? response.data.records[i].text_value.replace(
+                    new RegExp("<br/>|<br />", "g"),
+                    "\n"
+                  )
+                : null;
+          } else {
+            response.data.records[i].dis_text_value = [];
+          }
+        }
+        const records_test_formula = _.filter(
+          response.data.records,
+          (f) => f.formula !== null
+        );
+
+        console.log("response", response.data.records);
+        $this.setState({
+          records_test_formula,
+          test_analytes: response.data.records,
+          entered_by: response.data.records[0].entered_by,
+          ordered_by_name: response.data.records[0].ordered_by_name,
+          entered_by_name: response.data.records[0].entered_by_name,
+          confirm_by_name: response.data.records[0].confirm_by_name,
+          validate_by_name: response.data.records[0].validate_by_name,
+          entered_date: response.data.records[0].entered_date,
+          confirmed_date: response.data.records[0].confirmed_date,
+          validated_date: response.data.records[0].validated_date,
+        });
+      }
+    },
+  });
+  algaehApiCall({
     uri: "/laboratory/getMicroResult",
     module: "laboratory",
     method: "GET",
@@ -272,6 +323,7 @@ const getMicroResult = ($this, e) => {
         if (response.data.records.length > 0) {
           data_exists = true;
         }
+
         $this.setState({
           microAntbiotic: response.data.records,
           data_exists: data_exists,

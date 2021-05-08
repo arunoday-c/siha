@@ -97,13 +97,14 @@ export default function Inventory({
             },
           },
           {
-            className: "col-3 form-group AutosearchClass",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
             isImp: false,
             // label: "Item",
             columns: spotlightSearch.Items.Invitemmaster,
+            displayField: "item_description",
             searchName: "PurchaseOrderForInventry",
             value: null, //"item_description",
             label: "Item Name",
@@ -218,13 +219,14 @@ export default function Inventory({
             },
           },
           {
-            className: "col-3 form-group",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
             isImp: false,
             // label: "Item",
             columns: spotlightSearch.Items.Invitemmaster,
+            displayField: "item_description",
             searchName: "PurchaseOrderForInventry",
             value: "item_description",
             label: "Item Name",
@@ -1011,13 +1013,14 @@ export default function Inventory({
           },
 
           {
-            className: "col-3 form-group",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
             isImp: false,
             // label: "Item",
             columns: spotlightSearch.Items.Invitemmaster,
+            displayField: "item_description",
             searchName: "PurchaseOrderForInventry",
             value: "item_description",
             label: "Item Name",
@@ -1283,25 +1286,15 @@ export default function Inventory({
               },
             },
           },
-
           {
-            className: "col-3 mandatory  form-group",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
-          },
-          {
-            className: "col-3 form-group",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
             isImp: false,
             // label: "Item",
             columns: spotlightSearch.Items.Invitemmaster,
+            displayField: "item_description",
             searchName: "PurchaseOrderForInventry",
             value: "item_description",
             label: "Item Name",
@@ -1318,31 +1311,6 @@ export default function Inventory({
             //   },
             // },
           },
-          // {
-          //   className: "col-3 form-group",
-          //   type: "dropdown",
-          //   name: "item_id",
-          //   initialLoad: true,
-          //   isImp: false,
-          //   label: "Item",
-
-          //   link: {
-          //     uri: "/inventory/getItemMaster",
-          //     module: "inventory",
-          //   },
-          //   dataSource: {
-          //     textField: "item_description",
-          //     valueField: "hims_d_inventory_item_master_id",
-          //     data: undefined,
-          //   },
-          //   events: {
-          //     onClear: (reportState, currentName) => {
-          //       reportState.setState({
-          //         [currentName]: undefined,
-          //       });
-          //     },
-          //   },
-          // },
         ],
       },
       {
@@ -1495,13 +1463,14 @@ export default function Inventory({
             },
           },
           {
-            className: "col-3 form-group AutosearchClass",
+            className: "col-6 form-group AutosearchClass",
             type: "Autosearch",
             name: "item_id",
             // initialLoad: true,
             isImp: false,
             // label: "Item",
             columns: spotlightSearch.Items.Invitemmaster,
+            displayField: "item_description",
             searchName: "PurchaseOrderForInventry",
             value: null, //"item_description",
             label: "Item Name",

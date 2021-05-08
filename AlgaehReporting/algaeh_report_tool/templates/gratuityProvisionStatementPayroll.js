@@ -58,7 +58,10 @@ const executePDF = function executePDFMethod(options) {
             );
             const result = {
               details: ress,
-              sum_gratuity_amount: sum_gratuity_amount.toFixed(decimal_places),
+              sum_gratuity_amount: options.currencyFormat(
+                sum_gratuity_amount.toFixed(decimal_places),
+                options.args.crypto
+              ),
             };
 
             // utilities.logger().log("outputArray:", result);

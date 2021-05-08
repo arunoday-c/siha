@@ -674,6 +674,7 @@ class OfficalDetails extends Component {
                     div={{ className: "col-3 mandatory form-group" }}
                     label={{
                       fieldName: "services_id",
+                      isImp: true,
                     }}
                     selector={{
                       name: "services_id",

@@ -171,3 +171,6 @@ $RECYCLE.BIN/
 Masters/generalMasterCache.json
 docker-compose.deploy.yml
 **/pnpm-lock.yaml
+ 
+
+ **/Output

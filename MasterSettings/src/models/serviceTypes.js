@@ -33,7 +33,7 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.head_id,
-            inputParam.child_id
+            inputParam.child_id,
           ],
           printQuery: true,
         })
@@ -194,7 +194,7 @@ export default {
                 inputParam.hims_d_services_id,
                 inputParam.service_name,
                 inputParam.service_name,
-                inputParam.hims_d_services_id
+                inputParam.hims_d_services_id,
               ],
               printQuery: true,
             })
@@ -413,7 +413,7 @@ export default {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          new Date()
+          new Date(),
         ],
 
         printQuery: true,
@@ -627,7 +627,12 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
-      let IncludeValues = ["procedure_header_id", "item_id", "service_id", "qty"];
+      let IncludeValues = [
+        "procedure_header_id",
+        "item_id",
+        "service_id",
+        "qty",
+      ];
 
       _mysql
         .executeQuery({
@@ -746,11 +751,45 @@ export default {
     }
   },
 
+  getOnlyServiceList: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    try {
+      let strQry = "";
+
+      if (input.service_type_id > 0) {
+        strQry += ` and  service_type_id=${input.service_type_id}`;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_d_services_id,service_code,service_name,arabic_service_name,service_type_id FROM hims_d_services where 1+1 " +
+            strQry +
+            " order by hims_d_services_id desc;",
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   getProceduresDetail: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
 
-    console.log("input", input)
+    console.log("input", input);
     try {
       _mysql
         .executeQuery({
@@ -783,15 +822,20 @@ export default {
     try {
       let input = req.body;
 
-      const ProcedureDetail = input.ProcedureDetail.filter(f => f.hims_d_procedure_detail_id != undefined)
+      const ProcedureDetail = input.ProcedureDetail.filter(
+        (f) => f.hims_d_procedure_detail_id != undefined
+      );
 
-      console.log("ProcedureDetail", ProcedureDetail)
-      let strDetailUpdate = ""
+      console.log("ProcedureDetail", ProcedureDetail);
+      let strDetailUpdate = "";
       if (ProcedureDetail.length > 0) {
         for (let j = 0; j < ProcedureDetail.length; j++) {
           strDetailUpdate += mysql.format(
             "UPDATE `hims_d_procedure_detail` SET qty=? where hims_d_procedure_detail_id=?;",
-            [ProcedureDetail[j].qty, ProcedureDetail[j].hims_d_procedure_detail_id]
+            [
+              ProcedureDetail[j].qty,
+              ProcedureDetail[j].hims_d_procedure_detail_id,
+            ]
           );
         }
       }
@@ -800,7 +844,8 @@ export default {
           query:
             "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `procedure_desc_arabic`=?,\
           `procedure_type`=?,`updated_date`=?, `updated_by`=? \
-          WHERE record_status='A' and `hims_d_procedure_id`=?; " + strDetailUpdate,
+          WHERE record_status='A' and `hims_d_procedure_id`=?; " +
+            strDetailUpdate,
           values: [
             input.procedure_code,
             input.procedure_desc,
@@ -813,7 +858,6 @@ export default {
           printQuery: true,
         })
         .then((headerResult) => {
-
           if (headerResult != null) {
             new Promise((resolve, reject) => {
               try {
@@ -942,7 +986,7 @@ export default {
             inputParam.service_id,
             inputParam.service_name,
             inputParam.service_name,
-            inputParam.service_id
+            inputParam.service_id,
           ],
           printQuery: true,
         })

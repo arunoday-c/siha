@@ -944,14 +944,18 @@ export default {
                 voucher_type = "credit_note";
 
                 amount = inputParam.receiveable_amount;
-                narration = "Patient:" + inputParam.patient_code;
+                narration =
+                  "From Bill Number: " +
+                  inputParam.bill_number +
+                  " For Patient:" +
+                  inputParam.patient_code;
 
                 //BOOKING INCOME AND TAX
                 serviceData.forEach((curService) => {
-                  narration =
-                    narration +
-                    ", Reverting Income for " +
-                    curService.service_name;
+                  // narration =
+                  //   narration +
+                  //   ", Reverting Income for " +
+                  //   curService.service_name;
 
                   const bill = inputParam.billdetails.filter((f) => {
                     if (f.services_id == curService.hims_d_services_id)
@@ -989,10 +993,10 @@ export default {
 
                 //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
                 if (inputParam.advance_adjust > 0) {
-                  narration =
-                    narration +
-                    ",Reverting Adjusted Advance  Amount of " +
-                    inputParam.advance_adjust;
+                  // narration =
+                  //   narration +
+                  //   ",Reverting Adjusted Advance  Amount of " +
+                  //   inputParam.advance_adjust;
                   EntriesArray.push({
                     payment_date: inputParam.bill_cancel_date,
                     head_id: OP_DEP.head_id,
@@ -1005,10 +1009,10 @@ export default {
                 }
                 //PROVING OP SERVICE ON CREDIT
                 if (inputParam.credit_amount > 0) {
-                  narration =
-                    narration +
-                    ", Reverting Credit OP Service of Amount " +
-                    inputParam.credit_amount;
+                  // narration =
+                  //   narration +
+                  //   ", Reverting Credit OP Service of Amount " +
+                  //   inputParam.credit_amount;
 
                   EntriesArray.push({
                     payment_date: inputParam.bill_cancel_date,

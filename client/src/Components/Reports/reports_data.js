@@ -107,13 +107,8 @@ export default function loadActiveReports(
         case "patient":
           result = Patient({
             hospital_id: hims_d_hospital_id,
-            algaehApiCall,
-            MONTHS,
             COMPARISON,
-            EMP_FORMAT_GENDER,
-            DATE_OF_JOIN,
-            moment,
-            allYears,
+            spotlightSearch,
           });
           break;
         case "payroll":
