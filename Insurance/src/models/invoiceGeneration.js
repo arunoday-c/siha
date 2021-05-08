@@ -11,7 +11,7 @@ export default {
         .executeQuery({
           query:
             "select hims_f_billing_header_id, patient_id, visit_id from hims_f_billing_header\
-           where record_status='A' and invoice_generated='N' and visit_id=?",
+           where record_status='A' and invoice_generated='N' and adjusted='N' and cancelled='N' and visit_id=?",
           values: [req.query.visit_id],
 
           printQuery: false,
@@ -168,6 +168,7 @@ export default {
                   "sec_company_resp",
                   "sec_company_tax",
                   "sec_company_payable",
+                  "trans_from",
                 ];
                 _mysql
                   .executeQueryWithTransaction({

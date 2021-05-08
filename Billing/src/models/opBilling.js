@@ -1263,26 +1263,28 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
 
       //INCREASING CASH IN CAND AND BANK
       new_receipt_details.forEach((m) => {
-        if (m.pay_type == "CD") {
-          EntriesArray.push({
-            payment_date: new Date(),
-            head_id: CARD_SETTL.head_id,
-            child_id: CARD_SETTL.child_id,
-            debit_amount: m.amount,
-            payment_type: "DR",
-            credit_amount: 0,
-            hospital_id: req.userIdentity.hospital_id,
-          });
-        } else {
-          EntriesArray.push({
-            payment_date: new Date(),
-            head_id: CIH_OP.head_id,
-            child_id: CIH_OP.child_id,
-            debit_amount: m.amount,
-            payment_type: "DR",
-            credit_amount: 0,
-            hospital_id: req.userIdentity.hospital_id,
-          });
+        if (parseFloat(m.amount) > 0) {
+          if (m.pay_type == "CD") {
+            EntriesArray.push({
+              payment_date: new Date(),
+              head_id: CARD_SETTL.head_id,
+              child_id: CARD_SETTL.child_id,
+              debit_amount: m.amount,
+              payment_type: "DR",
+              credit_amount: 0,
+              hospital_id: req.userIdentity.hospital_id,
+            });
+          } else {
+            EntriesArray.push({
+              payment_date: new Date(),
+              head_id: CIH_OP.head_id,
+              child_id: CIH_OP.child_id,
+              debit_amount: m.amount,
+              payment_type: "DR",
+              credit_amount: 0,
+              hospital_id: req.userIdentity.hospital_id,
+            });
+          }
         }
       });
 
@@ -1367,26 +1369,28 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
 
       //INCREASING CASH IN CAND AND BANK
       receipt_details.forEach((m) => {
-        if (m.pay_type == "CD") {
-          EntriesArray.push({
-            payment_date: new Date(),
-            head_id: CARD_SETTL.head_id,
-            child_id: CARD_SETTL.child_id,
-            debit_amount: 0,
-            payment_type: "CR",
-            credit_amount: m.amount,
-            hospital_id: req.userIdentity.hospital_id,
-          });
-        } else {
-          EntriesArray.push({
-            payment_date: new Date(),
-            head_id: CIH_OP.head_id,
-            child_id: CIH_OP.child_id,
-            debit_amount: 0,
-            payment_type: "CR",
-            credit_amount: m.amount,
-            hospital_id: req.userIdentity.hospital_id,
-          });
+        if (parseFloat(m.amount) > 0) {
+          if (m.pay_type == "CD") {
+            EntriesArray.push({
+              payment_date: new Date(),
+              head_id: CARD_SETTL.head_id,
+              child_id: CARD_SETTL.child_id,
+              debit_amount: 0,
+              payment_type: "CR",
+              credit_amount: m.amount,
+              hospital_id: req.userIdentity.hospital_id,
+            });
+          } else {
+            EntriesArray.push({
+              payment_date: new Date(),
+              head_id: CIH_OP.head_id,
+              child_id: CIH_OP.child_id,
+              debit_amount: 0,
+              payment_type: "CR",
+              credit_amount: m.amount,
+              hospital_id: req.userIdentity.hospital_id,
+            });
+          }
         }
       });
 
