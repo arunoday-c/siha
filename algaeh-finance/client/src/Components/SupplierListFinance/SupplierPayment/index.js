@@ -305,9 +305,8 @@ export default memo(function (props) {
           filterDebitNotes,
           type: "supplier",
           debitNoteTotal: debitNoteTotal > 0 ? debitNoteTotal : null,
-          specialLabel: `${invoice_no}/${
-            isFromProcessed === true ? grandTotal : totalAmount
-          }/${narration}`,
+          customerOrSupplerHeaderName: supplierName,
+          customerOrSupplerDetailName: invoice_no,
         });
       },
     });

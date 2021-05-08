@@ -402,9 +402,8 @@ export default memo(function (props) {
             filterDebitNotes: filterCreditNotes,
             type: "customer",
             debitNoteTotal: creditNoteTotal > 0 ? creditNoteTotal : null,
-            specialLabel: `${invoice_no}/${
-              isFromProcessed === true ? grandTotal : totalAmount
-            }/${narration}`,
+            customerOrSupplerHeaderName: childName,
+            customerOrSupplerDetailName: invoice_no,
           });
         },
       });

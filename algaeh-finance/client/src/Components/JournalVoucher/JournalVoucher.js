@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { Modal, Spin, Tree, Select } from "antd";
+import { Modal, Spin } from "antd";
 import { useQuery } from "react-query";
 // import CostCenter from "../costCenterComponent";
 import moment from "moment";
@@ -24,6 +24,12 @@ import {
   addJurnorLedger,
   getInvoiceDetail,
   getCostCentersForVoucher,
+  getCustomerListReceivable,
+  getCustomerReceivableDetails,
+  getSupplierPayable,
+  getSupplierInvoiceDetails,
+  getSupplierDebitNotes,
+  getCustomerDebitNotes,
 } from "./JournalVoucher.events";
 // import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
@@ -46,6 +52,28 @@ let dataPayment = [
   { value: "debit_note", label: "Debit Note" },
   { value: "expense_voucher", label: "Expense Voucher" },
 ];
+
+const baseJournalList = [
+  {
+    child_id: undefined,
+    head_id: undefined,
+    slno: 1,
+    payment_type: "CR",
+    payment_mode: "CA",
+  },
+  {
+    child_id: undefined,
+    head_id: undefined,
+    slno: 2,
+    payment_type: "DR",
+    payment_mode: "CA",
+  },
+];
+const basePayment = {
+  payment_mode: "",
+  ref_no: "",
+  cheque_date: undefined,
+};
 export default function JournalVoucher() {
   const location = useLocation();
   const history = useHistory();
@@ -58,7 +86,6 @@ export default function JournalVoucher() {
   const [narration, setNarration] = useState("");
   const [invoiceNo, setInvoiceNo] = useState("");
   const [selInvoice, setSelInvoice] = useState("");
-
   const [cost_center_id, setCostCenter] = useState(undefined);
   const [hospital_id, setHospitalID] = useState(null);
   const [branchData, setbranchData] = useState([]);
@@ -67,13 +94,7 @@ export default function JournalVoucher() {
   const [disableFiled, setDisableFiled] = useState(false);
   const [total_credit, setTotalCredit] = useState(0);
   const [total_debit, setTotalDebit] = useState(0);
-
   // const [prefix, setPrefix] = useState("");
-  const basePayment = {
-    payment_mode: "",
-    ref_no: "",
-    cheque_date: undefined,
-  };
   const [drawer, setDrawer] = useState(false);
   const [finOptions, setFinOptions] = useState(false);
   const [payment, setPayment] = useState(basePayment);
@@ -83,22 +104,6 @@ export default function JournalVoucher() {
   const [clearLoading, setClearLoading] = useState(false);
   const [printEnable, setPrintEnable] = useState(true);
   const [costCenterField, setCostCenterField] = useState(undefined);
-  const baseJournalList = [
-    {
-      child_id: undefined,
-      head_id: undefined,
-      slno: 1,
-      payment_type: "CR",
-      payment_mode: "CA",
-    },
-    {
-      child_id: undefined,
-      head_id: undefined,
-      slno: 2,
-      payment_type: "DR",
-      payment_mode: "CA",
-    },
-  ];
   const [journerList, setJournerList] = useState(baseJournalList);
   const [finance_voucher_header_id, setFinanceVoucherHeaderID] = useState(null);
   // const [loadAsset, setLoadAsset] = useState([]);
@@ -108,10 +113,13 @@ export default function JournalVoucher() {
   const [debitNoteTotal, setDebitNoteTotal] = useState(null);
   const [debitNoteList, setDebitNoteList] = useState([]);
   const [customerSupplierList, setCustomerSupplierList] = useState([]);
+  const [customerSupplierDetails, setCustomerSupplierDetails] = useState([]);
   /** This code is for changing language */
   const [language, setLanguage] = useState("ltr");
-  const [pos, setPOS] = useState("");
-  const [specialType, setSpecialType] = useState("");
+  const [SorCHeaderValue, setSorCHeaderValue] = useState(undefined); //Supplier or Customer
+  const [SorCDetailLoading, setSorCDetailLoading] = useState(false);
+  const [SorCDetailValue, setSorCDetailValue] = useState(undefined);
+  const [SorCHeaderName, setSorCHeaderName] = useState(undefined);
   useEffect(() => {
     if (location.state?.language) {
       i18next.changeLanguage(location.state?.language);
@@ -234,18 +242,33 @@ export default function JournalVoucher() {
           break;
       }
 
-      if (
-        voucherType === "payment" ||
-        voucherType === "receipt" ||
-        voucherType === "credit_note" ||
-        voucherType === "debit_note"
-      ) {
-        getInvoiceDetail({ voucher_type: voucherType })
-          .then((result) => {
-            setInvoiceData(result);
+      // if (
+      //   voucherType === "payment" ||
+      //   voucherType === "receipt" ||
+      //   voucherType === "credit_note" ||
+      //   voucherType === "debit_note"
+      // ) {
+      if (voucherType === "receipt" || voucherType === "credit_note") {
+        getCustomerListReceivable()
+          .then(({ result }) => {
+            setCustomerSupplierList(result);
           })
           .catch((e) => console.log(e));
+      } else if (voucherType === "payment" || voucherType === "debit_note") {
+        getSupplierPayable()
+          .then(({ result }) => {
+            setCustomerSupplierList(result);
+          })
+          .catch((e) => console.error(e));
       }
+      // else {
+      //   getInvoiceDetail({ voucher_type: voucherType })
+      //     .then((result) => {
+      //       setInvoiceData(result);
+      //     })
+      //     .catch((e) => console.log(e));
+      // }
+      // }
     }
   }, [voucherType, drawer]);
 
@@ -274,16 +297,11 @@ export default function JournalVoucher() {
         merdge,
         debitNoteTotal,
         filterDebitNotes,
-        selectedPos,
-        specialLabel,
+        customerOrSupplerHeaderName,
+        customerOrSupplerDetailName,
       } = location.state;
-      if (selectedPos) {
-        setPOS(selectedPos);
-      }
-      if (specialLabel) {
-        setSpecialType(specialLabel);
-      }
-
+      setSorCHeaderValue(customerOrSupplerHeaderName);
+      setSorCDetailValue(customerOrSupplerDetailName);
       // console.log("location.state====>", location.state);
       setDebitNoteTotal(debitNoteTotal);
       setDebitNoteList(filterDebitNotes);
@@ -363,6 +381,7 @@ export default function JournalVoucher() {
           }
           setVoucherType(currentVoucher);
           setSelInvoice(invoice_no);
+
           getCashAccount()
             .then((res) => {
               if (res.data.success) {
@@ -683,6 +702,12 @@ export default function JournalVoucher() {
     setTotalCredit(0);
     setTotalDebit(0);
     setDisableFiled(false);
+    setCustomerSupplierList([]);
+    setCustomerSupplierDetails([]);
+    setSorCHeaderValue(undefined);
+    setSorCDetailLoading(false);
+    setSorCDetailValue(undefined);
+    setSorCHeaderName(undefined);
     history.push("/JournalVoucher", null);
   };
 
@@ -742,37 +767,6 @@ export default function JournalVoucher() {
       },
     });
   };
-  function onSelectVoucherRecordTree(value, { node }, extra) {
-    // console.log("node====>", node, value);
-    setPOS(node.pos);
-    history.push("/JournalVoucher", {
-      data: {
-        narration: node.narration,
-        child_id: node.child_id,
-        head_id: node.head_id,
-        balance_amount: node.amount,
-        voucher_type: voucherType === "payment" ? "purchase" : "sales",
-        invoice_no: node.invoice_no,
-        disabled: true,
-      },
-      merdge: [
-        {
-          balance_amount: parseFloat(node.amount),
-          modified_amount: parseFloat(node.amount),
-          finance_voucher_header_id: node.finance_voucher_header_id,
-          invoice_no: node.invoice_no,
-          voucher_type: voucherType,
-        },
-      ],
-      type: voucherType === "payment" ? "supplier" : "customer",
-      debitNoteTotal: node.amount,
-      selectedPos: node.pos,
-      specialLabel: node.label,
-      filterDebitNotes: [],
-    });
-    // history.go(0);
-    // window.location.reload();
-  }
   const closeDrawer = () => setDrawer(false);
 
   const gridTree = (row, record) => {
@@ -820,6 +814,89 @@ export default function JournalVoucher() {
     );
   };
 
+  function onChangeCustomerOrSupplerHeaderList(selected) {
+    setSorCDetailLoading(true);
+    setSorCHeaderName(selected.child_name);
+    if (voucherType === "receipt") {
+      getCustomerReceivableDetails({
+        child_id: selected.finance_account_child_id,
+        is_opening_bal: selected.is_opening_bal,
+      })
+        .then(({ result }) => {
+          setSorCDetailLoading(false);
+          setCustomerSupplierDetails(result);
+        })
+        .catch((e) => {
+          console.error(e);
+          setSorCDetailLoading(false);
+        });
+    } else if (voucherType === "payment") {
+      getSupplierInvoiceDetails({
+        child_id: selected.finance_account_child_id,
+      })
+        .then(({ result }) => {
+          setSorCDetailLoading(false);
+          setCustomerSupplierDetails(result);
+        })
+        .catch((e) => {
+          console.error(e);
+          setSorCDetailLoading(false);
+        });
+    } else if (voucherType === "debit_note") {
+      getSupplierDebitNotes({
+        child_id: selected.finance_account_child_id,
+      })
+        .then(({ result }) => {
+          setSorCDetailLoading(false);
+          setCustomerSupplierDetails(result);
+        })
+        .catch((e) => {
+          console.error(e);
+          setSorCDetailLoading(false);
+        });
+    } else if (voucherType === "credit_note") {
+      getCustomerDebitNotes({
+        child_id: selected.finance_account_child_id,
+      })
+        .then(({ result }) => {
+          setSorCDetailLoading(false);
+          setCustomerSupplierDetails(result);
+        })
+        .catch((e) => {
+          console.error(e);
+          setSorCDetailLoading(false);
+        });
+    }
+  }
+  function onChangeCustomerOrSupplerDetails(selected) {
+    setSorCDetailValue(selected.invoice_no);
+    setSelInvoice(selected.invoice_no);
+    history.push("/JournalVoucher", {
+      data: {
+        narration: selected.narration,
+        child_id: selected.child_id,
+        head_id: selected.head_id,
+        balance_amount: selected.balance_amount,
+        voucher_type: voucherType === "payment" ? "purchase" : "sales",
+        invoice_no: selected.invoice_no,
+        disabled: true,
+      },
+      merdge: [
+        {
+          balance_amount: parseFloat(selected.balance_amount),
+          modified_amount: parseFloat(selected.balance_amount),
+          finance_voucher_header_id: selected.finance_voucher_header_id,
+          invoice_no: selected.invoice_no,
+          voucher_type: voucherType,
+        },
+      ],
+      type: voucherType === "payment" ? "supplier" : "customer",
+      debitNoteTotal: parseFloat(selected.balance_amount),
+      filterDebitNotes: [],
+      customerOrSupplerHeaderName: SorCHeaderName,
+      customerOrSupplerDetailName: selected.invoice_no,
+    });
+  }
   const PaymentInput = (record) => {
     let isDisabled = record
       ? record.paytypedisable
@@ -1071,8 +1148,137 @@ export default function JournalVoucher() {
             voucherType === "credit_note" ||
             voucherType === "debit_note" ? (
             <div className="col">
-              <label className="style_Label">Invoice No.</label>
-              <Select
+              <AlgaehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: `${
+                    voucherType === "payment" || voucherType === "debit_note"
+                      ? "Supplier"
+                      : "Customer"
+                  }`,
+                  imp: true,
+                }}
+                selector={{
+                  value: SorCHeaderValue,
+                  dataSource: {
+                    //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+                    data: customerSupplierList,
+                    valueField: "finance_account_child_id",
+                    textField: "child_name",
+                  },
+                  updateInternally: true,
+                  onChange: onChangeCustomerOrSupplerHeaderList,
+                  onClear: () => {
+                    setSorCHeaderValue(undefined);
+                    setSelInvoice(undefined);
+                  },
+                  others: { disabled: disableFiled },
+                }}
+              />
+              <AlgaehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: `${
+                    voucherType === "payment"
+                      ? "Supplier Details"
+                      : "Customer Details"
+                  }`,
+                  imp: true,
+                }}
+                selector={{
+                  value: SorCDetailValue,
+                  dataSource: {
+                    //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+                    data: customerSupplierDetails,
+                    valueField: "invoice_no",
+                    textField: "invoice_no",
+                  },
+                  template: (item) => {
+                    return (
+                      <table>
+                        <thead>
+                          <th> Invoice </th>
+                          <th>Amount</th>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td> {item.invoice_no} </td>
+                            <td>{item.invoice_amount}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    );
+                  },
+                  updateInternally: true,
+                  onChange: onChangeCustomerOrSupplerDetails,
+                  onClear: () => {
+                    setSorCDetailValue(undefined);
+                  },
+                  others: {
+                    disabled: disableFiled,
+                    loading: SorCDetailLoading,
+                  },
+                }}
+              />
+              {/* <label className="style_Label">Invoice No.</label> */}
+              {/* <AlgaehTreeSearch
+                div={{ className: "col" }}
+                label={{ fieldName: "InvoiceNo", isImp: true }}
+                tree={{
+                  treeDefaultExpandAll: true,
+                  updateInternally: true,
+                  onChange: (value, node, extra) => {
+                    debugger;
+                    if (node.length > 0) {
+                      const details = _.head(node);
+                      const splitter = details.split(/\]|\[/);
+                      if (splitter.length > 0) {
+                        const _values = value.split("-");
+                        history.push("/JournalVoucher", {
+                          data: {
+                            narration: splitter[2], //for narration
+                            child_id: _values[1], // for child account
+                            head_id: _values[0], // for head account
+                            balance_amount: splitter[1], // for amount
+                            voucher_type:
+                              voucherType === "payment" ? "purchase" : "sales",
+                            invoice_no: splitter[0], //for invoice
+                            disabled: true,
+                          },
+                          merdge: [
+                            {
+                              balance_amount: parseFloat(splitter[1]),
+                              modified_amount: parseFloat(splitter[1]),
+                              finance_voucher_header_id: splitter[3],
+                              invoice_no: splitter[0],
+                              voucher_type: voucherType,
+                            },
+                          ],
+                          type:
+                            voucherType === "payment" ? "supplier" : "customer",
+                          debitNoteTotal: splitter[1],
+                          specialLabel: _values,
+                          filterDebitNotes: [],
+                        });
+                      }
+                    }
+
+                 
+                  },
+                  data: invoiceData,
+
+                  textField: "label",
+
+                  valueField: (node) => {
+                    if (!node["isLeaf"] === true) {
+                      return `${node["head_id"]}-${node["child_id"]}`;
+                    } else {
+                      return node["key"];
+                    }
+                  },
+                }}
+              /> */}
+              {/* <Select
                 style={{ width: "100%" }}
                 showSearch
                 value={specialType}
@@ -1127,7 +1333,7 @@ export default function JournalVoucher() {
                     />
                   );
                 }}
-              ></Select>
+              ></Select> */}
             </div>
           ) : // <AlgaehTreeSearch
           //   div={{ className: "col" }}

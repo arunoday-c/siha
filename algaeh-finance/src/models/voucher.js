@@ -2333,23 +2333,35 @@ export default {
           const records = _.chain(result)
             .groupBy((g) => g.child_id)
             .map((cDetails, cKey) => {
-              const { label, child_id } = _.head(cDetails);
+              const { label, child_id, head_id } = _.head(cDetails);
               return {
-                key: cKey,
                 label,
-                nodeType: "SH",
+                isLeaf: false,
                 child_id,
+                value: `${cKey}_${child_id}_${head_id}`,
                 amount: _.sumBy(cDetails, (s) => parseFloat(s.amount)).toFixed(
                   decimal_places
                 ),
                 settled_amount: _.sumBy(cDetails, (s) =>
                   parseFloat(s.settled_amount)
                 ).toFixed(decimal_places),
-                children: cDetails.map((child) => {
-                  const { invoice_no, amount, narration } = child;
+                children: cDetails.map((child, index) => {
+                  const {
+                    invoice_no,
+                    amount,
+                    head_id,
+                    narration,
+                    child_id,
+                    finance_voucher_header_id,
+                  } = child;
                   return {
                     ...child,
-                    label: `${invoice_no}/${amount}/${narration}`,
+                    label: `${invoice_no}  [${parseFloat(amount).toFixed(
+                      decimal_places
+                    )}]  ${narration}  [${finance_voucher_header_id}]`,
+
+                    value: `${head_id}-${child_id}`,
+
                     isLeaf: true,
                   };
                 }),
