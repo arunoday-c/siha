@@ -347,9 +347,17 @@ export default memo(function () {
                     setPreview("");
                   },
                 }}
+                class={"certificatePreviewModal"}
               >
                 <div className="container">
-                  <div dangerouslySetInnerHTML={{ __html: preview }}></div>
+                  <p className="infoText">
+                    Preview of the body content which will print in
+                    certificate/document.
+                  </p>
+                  <div
+                    className="preSection"
+                    dangerouslySetInnerHTML={{ __html: preview }}
+                  ></div>
                 </div>
               </AlgaehModalPopUp>
               <div className="col-12 certificateEditor">
@@ -459,18 +467,6 @@ export default memo(function () {
                           },
                         },
                       ],
-                      // controls: [
-                      //   {
-                      //     label: {
-                      //       exec: function (editor) {
-                      //         const lable = document.createElement("lable");
-                      //         lable.setAttribute("data-label-field", "");
-                      //         lable.innerText = "{{fieldName}}";
-                      //         editor.selection.insertNode(lable);
-                      //       },
-                      //     },
-                      //   },
-                      // ],
                       buttons: [
                         "selectall",
                         "undo",

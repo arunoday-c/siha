@@ -233,32 +233,37 @@ class DayEndProcess extends Component {
   }
 
   postDayEndProcess(finance_day_end_header_id) {
-    try {
-      // if (this.selectedDayEndIds.length === 0) {
-      //   swalMessage({
-      //     title: "Select Atleast one transaction to post",
-      //     type: "warning"
-      //   });
-      //   return;
-      // }
-      if (finance_day_end_header_id !== undefined) {
-        algaehApiCall({
-          uri: "/finance/postDayEndData",
-          data: { finance_day_end_header_id: finance_day_end_header_id },
-          method: "POST",
-          module: "finance",
-          onSuccess: (response) => {
-            swalMessage({ type: "success", title: "Successfully Posted" });
-            this.getDayEndProcess();
-          },
-          onCatch: (error) => {
-            swalMessage({ title: error, type: "error" });
-          },
-        });
+    swal({
+      title: "Are you sure you want to Post ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willPost) => {
+      if (willPost.value) {
+        try {
+          if (finance_day_end_header_id !== undefined) {
+            algaehApiCall({
+              uri: "/finance/postDayEndData",
+              data: { finance_day_end_header_id: finance_day_end_header_id },
+              method: "POST",
+              module: "finance",
+              onSuccess: (response) => {
+                swalMessage({ type: "success", title: "Successfully Posted" });
+                this.getDayEndProcess();
+              },
+              onCatch: (error) => {
+                swalMessage({ title: error, type: "error" });
+              },
+            });
+          }
+        } catch (e) {
+          console.error(e);
+        }
       }
-    } catch (e) {
-      console.error(e);
-    }
+    });
   }
 
   RejectProcess() {
