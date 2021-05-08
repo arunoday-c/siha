@@ -45,6 +45,28 @@ export function getHeaders(input) {
   });
 }
 
+export async function customerReceivables() {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_customer/getCustomerReceivables",
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 export function getInvoiceDetail(input) {
   input = input || {};
   return new Promise((resolve, reject) => {
@@ -56,6 +78,7 @@ export function getInvoiceDetail(input) {
         module: "finance",
         onSuccess: (response) => {
           if (response.data.success === true) {
+            console.log("response.data.result=====>", response.data.result);
             resolve(response.data.result);
           }
         },

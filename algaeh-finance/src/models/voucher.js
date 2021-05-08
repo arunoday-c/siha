@@ -2291,7 +2291,7 @@ export default {
     if (input.text != undefined && input.text != "") {
       str = ` and invoice_no like '%${input.text}%'`;
     }
-
+    const { decimal_places } = req.userIdentity;
     switch (input.voucher_type) {
       case "payment":
       case "debit_note":
@@ -2312,14 +2312,51 @@ export default {
     } else {
       _mysql
         .executeQuery({
-          query: `select distinct finance_voucher_header_id,invoice_no from
-        finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
-        and D.auth_status='A' where voucher_type='${voucher_type}' and
-        settlement_status='P' and invoice_no is not null ${str}; `,
+          //   query: `select distinct finance_voucher_header_id,invoice_no from
+          // finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
+          // and D.auth_status='A' where voucher_type='${voucher_type}' and
+          // settlement_status='P' and invoice_no is not null ${str}; `,
+          query: `select  finance_voucher_header_id,invoice_no,H.voucher_no,H.amount,
+        H.narration,H.settled_amount,C.child_name as label,D.child_id, D.head_id,AH.account_name from
+                finance_voucher_header H 
+                inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
+                and D.auth_status='A'
+                inner join finance_account_child as C on C.finance_account_child_id = D.child_id
+                and C.head_id = D.head_id
+                inner join finance_account_head as AH on AH.finance_account_head_id = C.head_id
+                where voucher_type='${voucher_type}' and
+                settlement_status='P' and D.child_id <> 1 and D.head_id <>3 and invoice_no is not null ${str};`,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
-          req.records = result;
+          const records = _.chain(result)
+            .groupBy((g) => g.child_id)
+            .map((cDetails, cKey) => {
+              const { label, child_id } = _.head(cDetails);
+              return {
+                key: cKey,
+                label,
+                nodeType: "SH",
+                child_id,
+                amount: _.sumBy(cDetails, (s) => parseFloat(s.amount)).toFixed(
+                  decimal_places
+                ),
+                settled_amount: _.sumBy(cDetails, (s) =>
+                  parseFloat(s.settled_amount)
+                ).toFixed(decimal_places),
+                children: cDetails.map((child) => {
+                  const { invoice_no, amount, narration } = child;
+                  return {
+                    ...child,
+                    label: `${invoice_no}/${amount}/${narration}`,
+                    isLeaf: true,
+                  };
+                }),
+              };
+            })
+            .value();
+          req.records = records;
           next();
         })
         .catch((e) => {
