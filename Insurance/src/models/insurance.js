@@ -1891,9 +1891,13 @@ export function getInsuranceStatement(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `select hims_f_insurance_statement_id, insurance_statement_number, total_gross_amount, total_company_responsibility, total_company_vat, total_company_payable,
+        query: `select INH.insurance_provider_name,INH.arabic_provider_name,INSH.insurance_sub_name,INSH.arabic_sub_name,
+        hims_f_insurance_statement_id, INS.insurance_statement_number, total_gross_amount, total_company_responsibility, total_company_vat, total_company_payable,
         total_remittance_amount, total_denial_amount, total_balance_amount, insurance_status,
-        insurance_provider_id, sub_insurance_id,insurance_status  from hims_f_insurance_statement where hims_f_insurance_statement_id = ?;
+        INS.insurance_provider_id, INS.sub_insurance_id,INS.insurance_status,INS.from_date,INS.to_date  from hims_f_insurance_statement INS
+        inner join hims_d_insurance_provider INH on INH.hims_d_insurance_provider_id = INS.insurance_provider_id
+        inner join hims_d_insurance_sub INSH on INSH.hims_d_insurance_sub_id = INS.sub_insurance_id
+        where INS.hims_f_insurance_statement_id = ?;
         select hims_f_invoice_header_id, invoice_number, invoice_date, invoice_type, IH.patient_id, visit_id, episode_id, IH.claim_status,
  policy_number, insurance_provider_id, sub_insurance_id, network_id, network_office_id, card_number, 
  gross_amount, discount_amount, net_amount, patient_resp, patient_tax, 

@@ -27,6 +27,7 @@ function AppointmentComponent(props) {
   const { countries = [], userLanguage } = useContext(MainContext);
   const location = useLocation();
   useEffect(() => {
+    debugger;
     if (location.state) {
       const {
         sub_department_id,

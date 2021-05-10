@@ -470,7 +470,7 @@ class RCMWorkbench extends Component {
         //   "<iframe src= '" + url + "' width='100%' height='100%' />"
         // );
         const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Algaeh Merdge`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=All Patient Reports`;
         window.open(origin);
         // window.document.title = "Algaeh Merdge";
         AlgaehLoader({ show: false });
@@ -1321,20 +1321,6 @@ class RCMWorkbench extends Component {
                     }}
                   />
                 </button> */}
-
-                {/*<button
-                onClick={this.generateReports.bind(this)}
-                type="button"
-                className="btn btn-other"
-                disabled={this.state.generateReport}
-              >
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Print",
-                    returnText: true
-                  }}
-                />
-              </button>*/}
                 <button
                   onClick={this.claimsReport.bind(this)}
                   type="button"
@@ -1355,6 +1341,19 @@ class RCMWorkbench extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Pre Validate Report",
+                      returnText: true,
+                    }}
+                  />
+                </button>{" "}
+                <button
+                  onClick={this.generateReports.bind(this)}
+                  type="button"
+                  className="btn btn-other"
+                  disabled={this.state.generateReport}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Bulk Report Generate",
                       returnText: true,
                     }}
                   />
