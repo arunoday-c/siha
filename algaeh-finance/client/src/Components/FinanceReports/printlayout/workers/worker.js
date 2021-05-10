@@ -5,6 +5,7 @@ export function GenerateExcel({
   excelBodyRender,
   skipColumns,
   sheetName,
+  tableprops,
 }) {
   return new Promise((resolve, reject) => {
     if (data === undefined) {
@@ -69,6 +70,16 @@ export function GenerateExcel({
       }
       for (let i = 0; i < details.length; i++) {
         insertRows(details[i]);
+      }
+      if (tableprops?.footer === true) {
+        const tableFooter = document.getElementsByTagName("tfoot")[0];
+        const elementTr = tableFooter.querySelector("tr");
+        const elementsTd = elementTr.querySelectorAll("td");
+        let footerFields = [];
+        for (let f = 0; f < elementsTd.length; f++) {
+          footerFields.push(elementsTd[f].innerText);
+        }
+        worksheet.addRow(footerFields);
       }
       workbook.xlsx.writeBuffer().then((buff) => {
         resolve(
