@@ -162,6 +162,14 @@ export function InsuranceForm({
     setIsInsurance(e.target.value === "true" ? true : false);
     setNewInsurance({
       insured: e.target.value === "true" ? "Y" : "N",
+      primary_insurance_provider_id: undefined,
+      primary_sub_id: undefined,
+      primary_network_id: undefined,
+      primary_network_office_id: undefined,
+      primary_policy_num: undefined,
+      primary_effective_start_date: undefined,
+      primary_effective_end_date: undefined,
+      primary_card_number: undefined,
     });
     reset({
       primary_insurance_provider_id: "",
