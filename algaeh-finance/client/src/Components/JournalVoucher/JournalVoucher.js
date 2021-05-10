@@ -104,7 +104,11 @@ export default function JournalVoucher() {
   const [clearLoading, setClearLoading] = useState(false);
   const [printEnable, setPrintEnable] = useState(true);
   const [costCenterField, setCostCenterField] = useState(undefined);
-  const [journerList, setJournerList] = useState(baseJournalList);
+  const [journerList, setJournerList] = useState(
+    baseJournalList.map((m) => {
+      return { ...m, narration: "" };
+    })
+  );
   const [finance_voucher_header_id, setFinanceVoucherHeaderID] = useState(null);
   // const [loadAsset, setLoadAsset] = useState([]);
   const [merdgeRecords, setMerdgeRecords] = useState([]);
@@ -283,7 +287,7 @@ export default function JournalVoucher() {
       });
       return result;
     }
-    // debugger;
+    //
     // console.log("location.state====>", location.state);
 
     if (location.state) {
@@ -591,6 +595,7 @@ export default function JournalVoucher() {
         (f) =>
           f.amount === undefined ||
           f.amount === "" ||
+          f.amount === "0" ||
           f.sourceName === undefined ||
           f.sourceName === "" ||
           f.narration === "" ||
@@ -672,6 +677,14 @@ export default function JournalVoucher() {
           content: <h4>{result.voucher_no}</h4>,
           onOk: () => modal.destroy(),
         });
+        if (
+          voucherType === "payment" ||
+          voucherType === "receipt" ||
+          voucherType === "credit_note" ||
+          voucherType === "debit_note"
+        ) {
+          history.push("/JournalVoucher", null);
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -817,6 +830,8 @@ export default function JournalVoucher() {
   function onChangeCustomerOrSupplerHeaderList(selected) {
     setSorCDetailLoading(true);
     setSorCHeaderName(selected.child_name);
+    setSorCHeaderValue(selected.finance_account_child_id);
+    setSorCDetailValue(undefined);
     if (voucherType === "receipt") {
       getCustomerReceivableDetails({
         child_id: selected.finance_account_child_id,
@@ -824,7 +839,11 @@ export default function JournalVoucher() {
       })
         .then(({ result }) => {
           setSorCDetailLoading(false);
-          setCustomerSupplierDetails(result);
+
+          const filterList = result.filter(
+            (f) => parseFloat(f.balance_amount) !== parseFloat("0")
+          );
+          setCustomerSupplierDetails(filterList);
         })
         .catch((e) => {
           console.error(e);
@@ -836,7 +855,10 @@ export default function JournalVoucher() {
       })
         .then(({ result }) => {
           setSorCDetailLoading(false);
-          setCustomerSupplierDetails(result);
+          const filterList = result.filter(
+            (f) => parseFloat(f.balance_amount) !== parseFloat("0")
+          );
+          setCustomerSupplierDetails(filterList);
         })
         .catch((e) => {
           console.error(e);
@@ -848,7 +870,10 @@ export default function JournalVoucher() {
       })
         .then(({ result }) => {
           setSorCDetailLoading(false);
-          setCustomerSupplierDetails(result);
+          const filterList = result.filter(
+            (f) => parseFloat(f.balance_amount) !== parseFloat("0")
+          );
+          setCustomerSupplierDetails(filterList);
         })
         .catch((e) => {
           console.error(e);
@@ -860,7 +885,10 @@ export default function JournalVoucher() {
       })
         .then(({ result }) => {
           setSorCDetailLoading(false);
-          setCustomerSupplierDetails(result);
+          const filterList = result.filter(
+            (f) => parseFloat(f.balance_amount) !== parseFloat("0")
+          );
+          setCustomerSupplierDetails(filterList);
         })
         .catch((e) => {
           console.error(e);
@@ -871,6 +899,7 @@ export default function JournalVoucher() {
   function onChangeCustomerOrSupplerDetails(selected) {
     setSorCDetailValue(selected.invoice_no);
     setSelInvoice(selected.invoice_no);
+
     history.push("/JournalVoucher", {
       data: {
         narration: selected.narration,
@@ -1057,12 +1086,19 @@ export default function JournalVoucher() {
               onChange: (selected) => {
                 setPayment(basePayment);
                 setVoucherType(selected.value);
+                setSorCHeaderName(undefined);
+                setSorCDetailValue(undefined);
+                setSorCHeaderValue(undefined);
                 // setPrefix(selected.shortHand + "-");
                 onSelectExpenceVoucher(selected.value);
               },
               onClear: () => {
+                setSorCHeaderName(undefined);
+                setSorCDetailValue(undefined);
+                setSorCHeaderValue(undefined);
                 setVoucherType("");
                 setAccounts([]);
+
                 setPayment(basePayment);
               },
               others: {
@@ -1162,7 +1198,6 @@ export default function JournalVoucher() {
                   selector={{
                     value: SorCHeaderValue,
                     dataSource: {
-                      //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
                       data: customerSupplierList,
                       valueField: "finance_account_child_id",
                       textField: "child_name",
@@ -1171,6 +1206,7 @@ export default function JournalVoucher() {
                     onChange: onChangeCustomerOrSupplerHeaderList,
                     onClear: () => {
                       setSorCHeaderValue(undefined);
+                      setSorCDetailValue(undefined);
                       setSelInvoice(undefined);
                     },
                     others: { disabled: disableFiled },
@@ -1180,7 +1216,7 @@ export default function JournalVoucher() {
                   div={{ className: "col" }}
                   label={{
                     forceLabel: `${
-                      voucherType === "payment"
+                      voucherType === "payment" || voucherType === "debit_note"
                         ? "Supplier Invoices"
                         : "Customer Invoices"
                     }`,
@@ -1204,7 +1240,7 @@ export default function JournalVoucher() {
                           <tbody>
                             <tr>
                               <td>{item.invoice_no} </td>
-                              <td>{item.invoice_amount}</td>
+                              <td>{item.balance_amount}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -1229,7 +1265,7 @@ export default function JournalVoucher() {
                   treeDefaultExpandAll: true,
                   updateInternally: true,
                   onChange: (value, node, extra) => {
-                    debugger;
+                   
                     if (node.length > 0) {
                       const details = _.head(node);
                       const splitter = details.split(/\]|\[/);
@@ -1344,7 +1380,7 @@ export default function JournalVoucher() {
           //     treeDefaultExpandAll: true,
           //     updateInternally: true,
           //     onChange: (value, label) => {
-          //       debugger;
+          //
           //       // setFromBank(value);
           //       // if (value !== undefined) {
           //       //   record["sourceName"] = value;
