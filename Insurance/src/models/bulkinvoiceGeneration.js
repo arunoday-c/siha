@@ -67,7 +67,7 @@ export function bulkInvoiceGeneration(req, res, next) {
         inner join hims_f_billing_details as BD on BH.hims_f_billing_header_id = BD.hims_f_billing_header_id
         inner join hims_d_insurance_provider as I on I.hims_d_insurance_provider_id = PIM.primary_insurance_provider_id
         inner join hims_d_insurance_network_office as NET_OFF on PIM.primary_network_id = NET_OFF.network_id
-        where V.hims_f_patient_visit_id  in (?);`,
+        where V.hims_f_patient_visit_id  in (?) and BH.invoice_generated='N' and BH.adjusted='N' and BH.cancelled='N';`,
         values: [vist_ids],
         printQuery: true,
       })
