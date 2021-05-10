@@ -243,78 +243,82 @@ class TransationDetails extends Component {
               </div>
             </div>
 
-            <p>Reverted Bill Data</p>
-            <div className="row" style={{ paddingTop: 15 }}>
-              <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
-                <AlgaehDataGrid
-                  columns={[
-                    {
-                      fieldName: "to_account",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "To Account" }} />
-                      ),
-                    },
-                    {
-                      fieldName: "payment_date",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
-                      ),
-                    },
-                    {
-                      fieldName: "payment_type",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
-                      ),
-                    },
-
-                    {
-                      fieldName: "debit_amount",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
-                      ),
-                      displayTemplate: (row) => {
-                        return (
-                          <span>
-                            {GetAmountFormart(row.debit_amount, {
-                              appendSymbol: false,
-                            })}
-                          </span>
-                        );
+            {this.state.revert_entries.length ? (
+              <div className="row" style={{ paddingTop: 15 }}>
+                <p> Reverted Transaction </p>
+                <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
+                  <AlgaehDataGrid
+                    columns={[
+                      {
+                        fieldName: "to_account",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "To Account" }} />
+                        ),
                       },
-                    },
-                    {
-                      fieldName: "credit_amount",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
-                      ),
-                      displayTemplate: (row) => {
-                        return (
-                          <span>
-                            {GetAmountFormart(row.credit_amount, {
-                              appendSymbol: false,
-                            })}
-                          </span>
-                        );
+                      {
+                        fieldName: "payment_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
+                        ),
                       },
-                    },
+                      {
+                        fieldName: "payment_type",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
+                        ),
+                      },
 
-                    // {
-                    //   fieldName: "narration",
-                    //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                    // }
-                  ]}
-                  keyId="service_code"
-                  data={
-                    this.state.revert_entries === undefined
-                      ? []
-                      : this.state.revert_entries
-                  }
-                  pagination={true}
-                  pageOptions={{ rows: 20, page: 1 }}
-                  isFilterable={true}
-                />
+                      {
+                        fieldName: "debit_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {GetAmountFormart(row.debit_amount, {
+                                appendSymbol: false,
+                              })}
+                            </span>
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "credit_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Credit Amount" }}
+                          />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {GetAmountFormart(row.credit_amount, {
+                                appendSymbol: false,
+                              })}
+                            </span>
+                          );
+                        },
+                      },
+
+                      // {
+                      //   fieldName: "narration",
+                      //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                      // }
+                    ]}
+                    keyId="service_code"
+                    data={
+                      this.state.revert_entries === undefined
+                        ? []
+                        : this.state.revert_entries
+                    }
+                    pagination={true}
+                    pageOptions={{ rows: 20, page: 1 }}
+                    isFilterable={true}
+                  />
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
           <div className="popupFooter">
             <div className="col-lg-12">
