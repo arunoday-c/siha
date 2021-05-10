@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createElement, useState } from "react";
 import ReactToPrint from "react-to-print";
 import "./splittedtable.scss";
 export default function SmartTable({
@@ -19,7 +19,7 @@ export default function SmartTable({
     const getHeader = cloneElement.querySelector("#finance_report_header");
     const rootDiv = document.createElement("div");
     rootDiv.appendChild(getHeader);
-    debugger;
+
     try {
       let tableCollections = [];
 
@@ -86,16 +86,12 @@ export default function SmartTable({
           tbody.appendChild(tr);
         }
         tabtable.appendChild(tbody);
-
-        // contentElecment.appendChild(tabtable);
-
-        // rootDiv.appendChild(contentElecment);
-
         rootDiv.appendChild(tabtable);
-        // const horizontal = document.createElement("br");
-        //rootDiv.appendChild(horizontal);
       }
-
+      const fTable = document.createElement("table");
+      const tFooter = table.querySelector("tfoot");
+      fTable.appendChild(tFooter);
+      rootDiv.appendChild(fTable);
       // setLoading(false);
     } catch (e) {
       setLoading(false);
