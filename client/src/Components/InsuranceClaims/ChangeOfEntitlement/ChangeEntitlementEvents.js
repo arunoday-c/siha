@@ -22,6 +22,7 @@ export const VisitSearch = (setState, setGenerateEnable) => {
         patient_id: row.patient_id,
         visit_id: row.hims_f_patient_visit_id,
         nationality_id: row.nationality_id,
+        sub_department_id: row.sub_department_id,
       });
       setGenerateEnable(false);
     },

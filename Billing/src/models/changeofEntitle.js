@@ -598,6 +598,7 @@ export async function addChangeOfEntitlement(req, res, next) {
             pool: _mysql.pool,
           };
           req.body = header_bills[i];
+          req.body.sub_department_id = inputParam.sub_department_id;
           req.body.ScreenCode = "BL0001";
 
           //Accounting Entry

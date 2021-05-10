@@ -778,6 +778,7 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: credit_amount,
+                        reverted: "N",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     });
@@ -791,6 +792,7 @@ export default {
                         debit_amount: new_bill_header.advance_adjust,
                         payment_type: "DR",
                         credit_amount: 0,
+                        reverted: "N",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -803,6 +805,7 @@ export default {
                         debit_amount: new_bill_header.credit_amount,
                         payment_type: "DR",
                         credit_amount: 0,
+                        reverted: "N",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -817,6 +820,7 @@ export default {
                           debit_amount: m.amount,
                           payment_type: "DR",
                           credit_amount: 0,
+                          reverted: "N",
                           hospital_id: req.userIdentity.hospital_id,
                         });
                       } else {
@@ -827,6 +831,7 @@ export default {
                           debit_amount: m.amount,
                           payment_type: "DR",
                           credit_amount: 0,
+                          reverted: "N",
                           hospital_id: req.userIdentity.hospital_id,
                         });
                       }
@@ -844,6 +849,7 @@ export default {
                         debit_amount: new_bill_header.company_payble,
                         payment_type: "DR",
                         credit_amount: 0,
+                        reverted: "N",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -858,6 +864,7 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: new_bill_header.total_tax,
+                        reverted: "N",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -883,6 +890,7 @@ export default {
                         debit_amount: debeit_amount,
                         payment_type: "DR",
                         credit_amount: 0,
+                        reverted: "Y",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     });
@@ -896,6 +904,7 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: bill_header.advance_adjust,
+                        reverted: "Y",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -908,6 +917,7 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: bill_header.credit_amount,
+                        reverted: "Y",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -922,6 +932,7 @@ export default {
                           debit_amount: 0,
                           payment_type: "CR",
                           credit_amount: m.amount,
+                          reverted: "Y",
                           hospital_id: req.userIdentity.hospital_id,
                         });
                       } else {
@@ -932,6 +943,7 @@ export default {
                           debit_amount: 0,
                           payment_type: "CR",
                           credit_amount: m.amount,
+                          reverted: "Y",
                           hospital_id: req.userIdentity.hospital_id,
                         });
                       }
@@ -951,6 +963,7 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: bill_header.company_payble,
+                        reverted: "Y",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -965,6 +978,7 @@ export default {
                         debit_amount: bill_header.total_tax,
                         payment_type: "DR",
                         credit_amount: 0,
+                        reverted: "Y",
                         hospital_id: req.userIdentity.hospital_id,
                       });
                     }
@@ -1021,6 +1035,7 @@ export default {
                           "debit_amount",
                           "payment_type",
                           "credit_amount",
+                          "reverted",
                           "hospital_id",
                         ];
 
@@ -1098,9 +1113,9 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
   try {
     // const utilities = new algaehUtilities();
     // console.log("req.connection", req.connection);
-    // console.log("generateAccountingEntryAdjustBill");
 
     const inputParam = req.body;
+    // console.log("generateAccountingEntryAdjustBill", inputParam);
 
     // console.log("inputParam", inputParam);
     const product_type = await _mysql
@@ -1232,6 +1247,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: 0,
           payment_type: "CR",
           credit_amount: credit_amount,
+          reverted: "N",
           hospital_id: req.userIdentity.hospital_id,
         });
       });
@@ -1245,6 +1261,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: new_bill_header.advance_adjust,
           payment_type: "DR",
           credit_amount: 0,
+          reverted: "N",
           hospital_id: req.userIdentity.hospital_id,
         });
       }
@@ -1257,6 +1274,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: new_bill_header.credit_amount,
           payment_type: "DR",
           credit_amount: 0,
+          reverted: "N",
           hospital_id: req.userIdentity.hospital_id,
         });
       }
@@ -1272,6 +1290,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
               debit_amount: m.amount,
               payment_type: "DR",
               credit_amount: 0,
+              reverted: "N",
               hospital_id: req.userIdentity.hospital_id,
             });
           } else {
@@ -1282,6 +1301,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
               debit_amount: m.amount,
               payment_type: "DR",
               credit_amount: 0,
+              reverted: "N",
               hospital_id: req.userIdentity.hospital_id,
             });
           }
@@ -1302,6 +1322,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: new_bill_header.company_payble,
           payment_type: "DR",
           credit_amount: 0,
+          reverted: "N",
           hospital_id: req.userIdentity.hospital_id,
         });
       }
@@ -1316,6 +1337,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: 0,
           payment_type: "CR",
           credit_amount: new_bill_header.total_tax,
+          reverted: "N",
           hospital_id: req.userIdentity.hospital_id,
         });
       }
@@ -1338,6 +1360,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: debeit_amount,
           payment_type: "DR",
           credit_amount: 0,
+          reverted: "Y",
           hospital_id: req.userIdentity.hospital_id,
         });
       });
@@ -1351,6 +1374,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: 0,
           payment_type: "CR",
           credit_amount: bill_header.advance_adjust,
+          reverted: "Y",
           hospital_id: req.userIdentity.hospital_id,
         });
       }
@@ -1363,6 +1387,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: 0,
           payment_type: "CR",
           credit_amount: bill_header.credit_amount,
+          reverted: "Y",
           hospital_id: req.userIdentity.hospital_id,
         });
       }
@@ -1378,6 +1403,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
               debit_amount: 0,
               payment_type: "CR",
               credit_amount: m.amount,
+              reverted: "Y",
               hospital_id: req.userIdentity.hospital_id,
             });
           } else {
@@ -1388,6 +1414,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
               debit_amount: 0,
               payment_type: "CR",
               credit_amount: m.amount,
+              reverted: "Y",
               hospital_id: req.userIdentity.hospital_id,
             });
           }
@@ -1406,6 +1433,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: 0,
           payment_type: "CR",
           credit_amount: bill_header.company_payble,
+          reverted: "Y",
           hospital_id: req.userIdentity.hospital_id,
         });
       }
@@ -1420,6 +1448,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
           debit_amount: bill_header.total_tax,
           payment_type: "DR",
           credit_amount: 0,
+          reverted: "Y",
           hospital_id: req.userIdentity.hospital_id,
         });
       }
@@ -1480,6 +1509,7 @@ export async function generateAccountingEntryChangeEntitle(req, res, next) {
         "debit_amount",
         "payment_type",
         "credit_amount",
+        "reverted",
         "hospital_id",
       ];
 
