@@ -1148,80 +1148,81 @@ export default function JournalVoucher() {
             voucherType === "credit_note" ||
             voucherType === "debit_note" ? (
             <div className="col">
-              <AlgaehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: `${
-                    voucherType === "payment" || voucherType === "debit_note"
-                      ? "Supplier"
-                      : "Customer"
-                  }`,
-                  imp: true,
-                }}
-                selector={{
-                  value: SorCHeaderValue,
-                  dataSource: {
-                    //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
-                    data: customerSupplierList,
-                    valueField: "finance_account_child_id",
-                    textField: "child_name",
-                  },
-                  updateInternally: true,
-                  onChange: onChangeCustomerOrSupplerHeaderList,
-                  onClear: () => {
-                    setSorCHeaderValue(undefined);
-                    setSelInvoice(undefined);
-                  },
-                  others: { disabled: disableFiled },
-                }}
-              />
-              <AlgaehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: `${
-                    voucherType === "payment"
-                      ? "Supplier Details"
-                      : "Customer Details"
-                  }`,
-                  imp: true,
-                }}
-                selector={{
-                  value: SorCDetailValue,
-                  dataSource: {
-                    //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
-                    data: customerSupplierDetails,
-                    valueField: "invoice_no",
-                    textField: "invoice_no",
-                  },
-                  template: (item) => {
-                    return (
-                      <table>
-                        <thead>
-                          <th> Invoice </th>
-                          <th>Amount</th>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td> {item.invoice_no} </td>
-                            <td>{item.invoice_amount}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    );
-                  },
-                  updateInternally: true,
-                  onChange: onChangeCustomerOrSupplerDetails,
-                  onClear: () => {
-                    setSorCDetailValue(undefined);
-                  },
-                  others: {
-                    disabled: disableFiled,
-                    loading: SorCDetailLoading,
-                  },
-                }}
-              />
-              {/* <label className="style_Label">Invoice No.</label> */}
-              {/* <AlgaehTreeSearch
+              <div className="row">
+                <AlgaehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: `${
+                      voucherType === "payment" || voucherType === "debit_note"
+                        ? "Supplier"
+                        : "Customer"
+                    }`,
+                    imp: true,
+                  }}
+                  selector={{
+                    value: SorCHeaderValue,
+                    dataSource: {
+                      //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+                      data: customerSupplierList,
+                      valueField: "finance_account_child_id",
+                      textField: "child_name",
+                    },
+                    updateInternally: true,
+                    onChange: onChangeCustomerOrSupplerHeaderList,
+                    onClear: () => {
+                      setSorCHeaderValue(undefined);
+                      setSelInvoice(undefined);
+                    },
+                    others: { disabled: disableFiled },
+                  }}
+                />
+                <AlgaehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: `${
+                      voucherType === "payment"
+                        ? "Supplier Invoices"
+                        : "Customer Invoices"
+                    }`,
+                    imp: true,
+                  }}
+                  selector={{
+                    value: SorCDetailValue,
+                    dataSource: {
+                      //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+                      data: customerSupplierDetails,
+                      valueField: "invoice_no",
+                      textField: "invoice_no",
+                    },
+                    template: (item) => {
+                      return (
+                        <table>
+                          <thead>
+                            <th width="60%"> Invoice </th>
+                            <th width="40%">Amount</th>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{item.invoice_no} </td>
+                              <td>{item.invoice_amount}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      );
+                    },
+                    updateInternally: true,
+                    onChange: onChangeCustomerOrSupplerDetails,
+                    onClear: () => {
+                      setSorCDetailValue(undefined);
+                    },
+                    others: {
+                      disabled: disableFiled,
+                      loading: SorCDetailLoading,
+                    },
+                  }}
+                />
+                {/* <label className="style_Label">Invoice No.</label> */}
+                {/* <AlgaehTreeSearch
                 div={{ className: "col" }}
                 label={{ fieldName: "InvoiceNo", isImp: true }}
                 tree={{
@@ -1278,7 +1279,7 @@ export default function JournalVoucher() {
                   },
                 }}
               /> */}
-              {/* <Select
+                {/* <Select
                 style={{ width: "100%" }}
                 showSearch
                 value={specialType}
@@ -1334,6 +1335,7 @@ export default function JournalVoucher() {
                   );
                 }}
               ></Select> */}
+              </div>{" "}
             </div>
           ) : // <AlgaehTreeSearch
           //   div={{ className: "col" }}
