@@ -86,7 +86,7 @@ export async function addChangeOfEntitlement(req, res, next) {
         "UPDATE hims_m_patient_insurance_mapping SET primary_insurance_provider_id=?, primary_sub_id=?, \
         primary_network_id=?, primary_policy_num=?, primary_effective_start_date=?, primary_effective_end_date=?, \
         primary_card_number=? where hims_f_patient_insurance_mapping_id=?;\
-        UPDATE hims_f_patient_visit set insured='N' where hims_f_patient_visit_id=?;",
+        UPDATE hims_f_patient_visit set insured='Y' where hims_f_patient_visit_id=?;",
         [
           inputParam.primary_insurance_provider_id,
           inputParam.primary_sub_id,
