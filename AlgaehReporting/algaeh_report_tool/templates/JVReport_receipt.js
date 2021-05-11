@@ -2,11 +2,8 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       let str = "";
       let input = {};
@@ -35,7 +32,7 @@ const executePDF = function executePDFMethod(options) {
         inner join finance_voucher_header FH on FH.invoice_no in ( FSH.invoice_ref_no)
         inner join hims_f_sales_invoice_header IVH on IVH.invoice_number = FSH.invoice_ref_no
         left join finance_voucher_sub_header FSHH on FSHH.finance_voucher_header_id<? and FSHH.invoice_ref_no in ( FSH.invoice_ref_no)
-        where FSH.finance_voucher_header_id=? and FH.voucher_type='sales';`;
+        where FSH.finance_voucher_header_id=? and FH.voucher_type='sales' group by FSH.finance_voucher_sub_header_id;`;
       }
 
       options.mysql
