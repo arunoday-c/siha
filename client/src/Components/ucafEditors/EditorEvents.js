@@ -258,46 +258,70 @@ export default function EditorEvents() {
         method: "PUT",
         onSuccess: (response) => {
           if (response.data.success) {
-            algaehApiCall({
-              uri: "/report",
-              method: "GET",
-              module: "reports",
-              headers: {
-                Accept: "blob",
-              },
-              others: { responseType: "blob" },
-              data: {
-                report: {
-                  reportName: "ocaf",
-                  reportParams: [
-                    {
-                      name: "hims_d_patient_id",
-                      value: $this.state.patient_id,
-                    },
-                    { name: "visit_id", value: $this.state.visit_id },
-                    { name: "visit_date", value: null },
-                  ],
-                  outputFileType: "PDF", //"EXCEL", //"PDF",
+            if ($this.props.fromCorrection) {
+              newAlgaehApi({
+                uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
+                module: "insurance",
+                method: "PUT",
+                data: {
+                  hims_f_invoice_header_id: $this.props.invoiceId,
+                  correction_requested: "C",
                 },
-              },
-              onSuccess: (res) => {
-                let reader = new FileReader();
-                reader.onloadend = () => {
-                  let myWindow = window.open(
-                    "{{ product.metafields.google.custom_label_0 }}",
-                    "_blank"
-                  );
-                  myWindow.document.write(
-                    "<embed src= '" +
-                      reader.result +
-                      "' width='100%' height='100%' />"
-                  );
-                  myWindow.document.title = "Algaeh OCAF 2.0";
-                };
+              })
+                .then((result) => {
+                  swalMessage({
+                    title: "Request Updated successfully",
+                    type: "success",
+                  });
+                })
+                .catch((err) => {
+                  swalMessage({
+                    title: err.message,
+                    type: "error",
+                  });
+                });
+            } else {
+              algaehApiCall({
+                uri: "/report",
+                method: "GET",
+                module: "reports",
+                headers: {
+                  Accept: "blob",
+                },
+                others: { responseType: "blob" },
+                data: {
+                  report: {
+                    reportName: "ocaf",
+                    reportParams: [
+                      {
+                        name: "hims_d_patient_id",
+                        value: $this.state.patient_id,
+                      },
+                      { name: "visit_id", value: $this.state.visit_id },
+                      { name: "visit_date", value: null },
+                    ],
+                    outputFileType: "PDF", //"EXCEL", //"PDF",
+                  },
+                },
+                onSuccess: (res) => {
+                  let reader = new FileReader();
+                  reader.onloadend = () => {
+                    let myWindow = window.open(
+                      "{{ product.metafields.google.custom_label_0 }}",
+                      "_blank"
+                    );
+                    myWindow.document.write(
+                      "<embed src= '" +
+                        reader.result +
+                        "' width='100%' height='100%' />"
+                    );
+                    myWindow.document.title = "Algaeh OCAF 2.0";
+                  };
 
-                reader.readAsDataURL(res.data);
-              },
-            });
+                  reader.readAsDataURL(res.data);
+                },
+              });
+            }
           }
         },
         onFailure: (error) => {
@@ -316,40 +340,64 @@ export default function EditorEvents() {
         method: "PUT",
         onSuccess: (response) => {
           if (response.data.success) {
-            algaehApiCall({
-              uri: "/report",
-              method: "GET",
-              module: "reports",
-              headers: {
-                Accept: "blob",
-              },
-              others: { responseType: "blob" },
-              data: {
-                report: {
-                  reportName: "dcaf",
-                  reportParams: [
-                    {
-                      name: "hims_d_patient_id",
-                      value: $this.state.patient_id,
-                    },
-                    { name: "visit_id", value: $this.state.visit_id },
-                    { name: "visit_date", value: null },
-                  ],
-                  outputFileType: "PDF",
+            if ($this.props.fromCorrection) {
+              newAlgaehApi({
+                uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
+                module: "insurance",
+                method: "PUT",
+                data: {
+                  hims_f_invoice_header_id: $this.props.invoiceId,
+                  correction_requested: "C",
                 },
-              },
-              onSuccess: (res) => {
-                const urlBlob = URL.createObjectURL(res.data);
-                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=DCAF 2.0`;
-                window.open(origin);
-                $this.setState({
-                  loading: false,
+              })
+                .then((result) => {
+                  swalMessage({
+                    title: "Request Updated successfully",
+                    type: "success",
+                  });
+                })
+                .catch((err) => {
+                  swalMessage({
+                    title: err.message,
+                    type: "error",
+                  });
                 });
-                // };
+            } else {
+              algaehApiCall({
+                uri: "/report",
+                method: "GET",
+                module: "reports",
+                headers: {
+                  Accept: "blob",
+                },
+                others: { responseType: "blob" },
+                data: {
+                  report: {
+                    reportName: "dcaf",
+                    reportParams: [
+                      {
+                        name: "hims_d_patient_id",
+                        value: $this.state.patient_id,
+                      },
+                      { name: "visit_id", value: $this.state.visit_id },
+                      { name: "visit_date", value: null },
+                    ],
+                    outputFileType: "PDF",
+                  },
+                },
+                onSuccess: (res) => {
+                  const urlBlob = URL.createObjectURL(res.data);
+                  const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=DCAF 2.0`;
+                  window.open(origin);
+                  $this.setState({
+                    loading: false,
+                  });
+                  // };
 
-                //   reader.readAsDataURL(res.data);
-              },
-            });
+                  //   reader.readAsDataURL(res.data);
+                },
+              });
+            }
           }
         },
         onFailure: (error) => {

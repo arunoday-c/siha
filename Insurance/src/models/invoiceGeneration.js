@@ -573,19 +573,25 @@ export default {
     try {
       let input = req.query;
       let strQuery = "";
-      if (input.correction_requested) {
-        strQuery += ` and hims_f_invoice_header.correction_requested = '${input.correction_requested}'`;
+      if (
+        input.correction_requested === "R" ||
+        input.correction_requested === "C"
+      ) {
+        strQuery += ` and INH.correction_requested = '${input.correction_requested}'`;
       } else {
-        strQuery = `and hims_f_invoice_header.correction_requested in ('R','C')`;
+        strQuery = `and INH.correction_requested in ('R','C')`;
       }
       _mysql
         .executeQuery({
-          query: `select hims_f_invoice_header.*,E.full_name as doctorName, pat.patient_code, pat.full_name,
-                    pv.visit_code from hims_f_invoice_header , hims_f_patient pat,hims_d_employee E,  hims_f_patient_visit pv where 
-                    hims_f_invoice_header.patient_id = pat.hims_d_patient_id and pv.hims_f_patient_visit_id = hims_f_invoice_header.visit_id and E.hims_d_employee_id =pv.doctor_id
-                    and pv.patient_id= pat.hims_d_patient_id ${strQuery} and pv.doctor_id=? and date(hims_f_invoice_header.cancel_req_date) between date(?) and date(?)   `,
+          query: `select S.department_type,V.visit_date,INH.patient_id,INH.visit_id,INH.invoice_number,INH.correction_req_date,INH.correction_req_date,INH.caf_type,INH.doctor_comment,INH.request_comment,INH.correction_requested,E.full_name as doctorName, P.patient_code, P.full_name,V.visit_code
+          from hims_f_invoice_header INH 
+          inner join hims_f_patient P on P.hims_d_patient_id=INH.patient_id
+          inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=INH.visit_id
+          inner join hims_d_employee E on E.hims_d_employee_id=V.doctor_id
+          inner join hims_d_sub_department S on S.hims_d_sub_department_id=V.sub_department_id
+          where V.doctor_id = ? and date(INH.correction_req_date) between date(?) and date(?)  ${strQuery};   `,
           values: [
-            req.userIdentity.algaeh_d_app_user_id,
+            req.query.provider_id,
             req.query.from_date,
             req.query.to_date,
           ],

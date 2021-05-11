@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./doctor_workbench.scss";
 import {
   // AlgaehButton,
@@ -11,6 +11,7 @@ import {
   // MainContext,
   Spin,
   AlgaehModal,
+  MainContext,
   // AlgaehButton,
 } from "algaeh-react-components";
 import { useForm, Controller } from "react-hook-form";
@@ -30,12 +31,11 @@ import OcafEditor from "../../Components/ucafEditors/ocaf";
 // import { changeChecks } from "../EmployeeManagement/EmployeeMasterIndex/EmployeeMaster/RulesDetails/RulesDetailsEvent";
 
 const getPatientDetails = async (input) => {
-  debugger;
   let url = "";
 
-  if (input.title || input.caf_type === "ucaf") {
+  if (input.department_type === "N") {
     url = "/ucaf/getPatientUCAF";
-  } else if (input.title || input.caf_type === "dcaf") {
+  } else if (input.department_type === "D") {
     url = "/dcaf/getPatientDCAF";
   } else {
     url = "/ocaf/getPatientOCAF";
@@ -46,11 +46,13 @@ const getPatientDetails = async (input) => {
     data: {
       patient_id: input.patient_id,
       visit_id: input.visit_id,
+      visit_date: input.visit_date,
     },
   });
 
   return res.data.records;
 };
+
 const InsuranceCorrectionList = () => {
   const location = useLocation();
   const history = useHistory();
@@ -67,16 +69,17 @@ const InsuranceCorrectionList = () => {
     defaultValues: {
       from_date: moment().clone().startOf("month").format("YYYY-MM-DD"),
       to_date: new Date(),
-      correction_requested: "",
+      correction_requested: "A",
     },
   });
-
+  const { userToken } = useContext(MainContext);
   // const { userToken } = useContext(MainContext);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [invoiceId, setInvoiceId] = useState(null);
   // const [provider_id, setProvider_id] = useState(null) ;
-  const [labOrderServicesForDoc, setLabOrderServicesForDoc] = useState([]);
+  const [correctionList, setCorrectionList] = useState([]);
+  // const [labOrderServicesForDoc, setLabOrderServicesForDoc] = useState([]);
   const [dataProps, setDataProps] = useState([]);
   // const [lab_id_number, setLab_id_number] = useState(null);
   const [onCAFModal, setonCAFModal] = useState(false);
@@ -116,31 +119,35 @@ const InsuranceCorrectionList = () => {
   // const history = useHistory();
 
   useEffect(() => {
-    getLabOrderServiceForDoc(getValues()).then(() => setLoading(false));
+    getLabOrderServiceForDoc(getValues());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const getLabOrderServiceForDoc = async (data) => {
-    try {
-      const res = await newAlgaehApi({
-        uri: "/invoiceGeneration/getRequestForCorrectionInsurance",
-        module: "insurance",
-        method: "GET",
-        data: {
-          from_date: data.from_date,
-          to_date: data.to_date,
-          correction_requested: data.correction_requested,
-        },
+  const getLabOrderServiceForDoc = (data) => {
+    newAlgaehApi({
+      uri: "/invoiceGeneration/getRequestForCorrectionInsurance",
+      module: "insurance",
+      method: "GET",
+      data: {
+        provider_id: userToken.employee_id,
+        from_date: data.from_date,
+        to_date: moment(data.to_date).format("YYYY-MM-DD"),
+        correction_requested: data.correction_requested,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          debugger;
+          setLoading(false);
+          setCorrectionList(res.data.records);
+        }
+      })
+
+      .catch((e) => {
+        AlgaehMessagePop({
+          type: "error",
+          display: e.message,
+        });
       });
-      if (res.data.success) {
-        debugger;
-        setLabOrderServicesForDoc(res.data.records);
-      }
-    } catch (e) {
-      AlgaehMessagePop({
-        type: "error",
-        display: e.message,
-      });
-    }
   };
 
   const onCloseCAFModal = () => {
@@ -328,6 +335,13 @@ const InsuranceCorrectionList = () => {
                               onClick={() => {
                                 setonCAFModal(true);
                                 getPatientCAF(row);
+                                setTitle(
+                                  row.department_type === "N"
+                                    ? "ucaf"
+                                    : row.department_type === "D"
+                                    ? "dcaf"
+                                    : "ocaf"
+                                );
                               }}
                             />
                           </span>
@@ -342,23 +356,23 @@ const InsuranceCorrectionList = () => {
                     },
                   },
 
-                  // {
-                  //   fieldName: "correction_requested",
-                  //   label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                  //   displayTemplate: (row) => {
-                  //     return row.correction_requested === "Y" ? (
-                  //       <span className="badge badge-success">Seen</span>
-                  //     ) : (
-                  //       <span className="badge badge-secondary">Unseen</span>
-                  //     );
-                  //   },
+                  {
+                    fieldName: "correction_requested",
+                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                    displayTemplate: (row) => {
+                      return row.correction_requested === "C" ? (
+                        <span className="badge badge-success">Seen</span>
+                      ) : (
+                        <span className="badge badge-secondary">Unseen</span>
+                      );
+                    },
 
-                  //   others: {
-                  //     maxWidth: 150,
-                  //     resizable: false,
-                  //     style: { textAlign: "center" },
-                  //   },
-                  // },
+                    others: {
+                      maxWidth: 150,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
                   {
                     fieldName: "patient_code",
                     label: (
@@ -426,39 +440,24 @@ const InsuranceCorrectionList = () => {
                       style: { textAlign: "center" },
                     },
                   },
-                  {
-                    fieldName: "caf_type",
-                    label: <AlgaehLabel label={{ forceLabel: "CAF Type" }} />,
-                    disabled: true,
-                    others: {
-                      minWidth: 250,
-                      resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                  },
+                  // {
+                  //   fieldName: "caf_type",
+                  //   label: <AlgaehLabel label={{ forceLabel: "CAF Type" }} />,
+                  //   disabled: true,
+                  //   others: {
+                  //     minWidth: 250,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  // },
                 ]}
                 keyId="patient_code"
-                data={labOrderServicesForDoc}
+                data={correctionList}
                 filter={true}
                 pagination={true}
               />{" "}
             </div>
           </div>
-
-          {/* <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-12">
-                <AlgaehButton
-                  className="btn btn-primary"
-                  // disabled={!processList.length}
-                  // loading={loading}
-                  onClick={() => updateLabOrderServiceForDoc()}
-                >
-                  Update as seen
-                </AlgaehButton>
-              </div>
-            </div>
-          </div> */}
         </Spin>
       </div>
     </div>
