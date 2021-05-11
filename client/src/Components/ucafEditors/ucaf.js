@@ -6,11 +6,16 @@ import {
   // AlgaehDataGrid,
   AlgaehLabel,
 } from "../Wrapper/algaehWrapper";
-import { AlgaehFormGroup, AlgaehDataGrid } from "algaeh-react-components";
+import {
+  AlgaehFormGroup,
+  AlgaehDataGrid,
+  AlgaehSecurityComponent,
+} from "algaeh-react-components";
 // import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
 import Swal from "sweetalert2";
+import RequestForCorrection from "./RequestForCorrection";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 export default class UcafEditor extends Component {
   constructor(props) {
@@ -24,6 +29,7 @@ export default class UcafEditor extends Component {
       insurance_approved: "",
       ucaf_data: undefined,
       showImgArea: true,
+      correctionModal: false,
     };
   }
 
@@ -57,13 +63,23 @@ export default class UcafEditor extends Component {
     ) {
       let data = this.props.dataProps.hims_f_ucaf_header[0];
       let insurance = this.props.dataProps.hims_f_ucaf_insurance_details[0];
-
       data.ucaf_services = this.props.dataProps.hims_f_ucaf_services;
       data.ucaf_medication = this.props.dataProps.hims_f_ucaf_medication;
       this.setState({ ...this.state, ...data, ...insurance });
     }
   }
-
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.dataProps.hims_f_ucaf_header !== undefined &&
+      nextProps.dataProps.hims_f_ucaf_header.length > 0
+    ) {
+      let data = nextProps.dataProps.hims_f_ucaf_header[0];
+      let insurance = nextProps.dataProps.hims_f_ucaf_insurance_details[0];
+      data.ucaf_services = nextProps.dataProps.hims_f_ucaf_services;
+      data.ucaf_medication = nextProps.dataProps.hims_f_ucaf_medication;
+      this.setState({ ...this.state, ...data, ...insurance });
+    }
+  }
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -101,8 +117,8 @@ export default class UcafEditor extends Component {
             patient_emergency_type: this.state.patient_emergency_type,
             patient_emergency_case: this.state.patient_emergency_case,
             patient_duration_of_illness: this.state.patient_duration_of_illness,
-            patient_chief_comp_main_symptoms: this.state
-              .patient_chief_comp_main_symptoms,
+            patient_chief_comp_main_symptoms:
+              this.state.patient_chief_comp_main_symptoms,
             patient_significant_signs: this.state.patient_significant_signs,
             patient_other_conditions: this.state.patient_other_conditions,
             patient_diagnosys: this.state.patient_diagnosys,
@@ -136,6 +152,10 @@ export default class UcafEditor extends Component {
       }
     });
   }
+  openRequestCorrectionModal() {
+    this.setState({ correctionModal: !this.state.correctionModal });
+  }
+
   updateUcafMedicationQuantity(data) {
     algaehApiCall({
       uri: "/ucaf/updateUcafMedicationQuantity",
@@ -1168,9 +1188,8 @@ export default class UcafEditor extends Component {
                             isEditable={"editOnly"}
                             events={{
                               // onDone: () => {},
-                              onSave: this.updateUcafMedicationQuantity.bind(
-                                this
-                              ),
+                              onSave:
+                                this.updateUcafMedicationQuantity.bind(this),
                             }}
                             // height="34vh"
                             pagination={true}
@@ -1188,29 +1207,50 @@ export default class UcafEditor extends Component {
               </div>
             </div>
           </div>
-
+          {this.state.correctionModal ? (
+            <RequestForCorrection
+              visible={this.state.correctionModal}
+              onClose={() => this.openRequestCorrectionModal()}
+              rowData={this.props.rowData}
+              dataProps={this.props.dataProps}
+              type={"ucaf"}
+              title={`Ucaf Correction ${this.props.rowData?.invoice_number}`}
+            />
+          ) : null}
           <div className=" popupFooter">
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-lg-12">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.saveAndPrintUcaf.bind(this)}
-                  >
-                    Save & Print
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={this.onClickReloadData.bind(this, this)}
-                  >
-                    {/* {this.state.loading ? (
+                  <AlgaehSecurityComponent componentCode="ENB_BTN_UCAF">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.saveAndPrintUcaf.bind(this)}
+                    >
+                      Save & Print
+                    </button>
+                  </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="RLD_DAT_UCAF">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.onClickReloadData.bind(this, this)}
+                    >
+                      {/* {this.state.loading ? (
                       <span className="showBtnLoader">
                         <i className="fas fa-spinner fa-spin" />
                       </span>
                     ) : null} */}
-                    Reload Data
+                      Reload Data
+                    </button>
+                    {/* <AlgaehSecurityComponent componentCode="ENB_BTN_REQ_INSR_CRTN"> */}
+                  </AlgaehSecurityComponent>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.openRequestCorrectionModal.bind(this, this)}
+                  >
+                    Request For Insurace Correction
                   </button>
                 </div>
               </div>

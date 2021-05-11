@@ -1,4 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import newAlgaehApi from "../../hooks/newAlgaehApi";
 
 export default function EditorEvents() {
   return {
@@ -367,34 +368,58 @@ export default function EditorEvents() {
         method: "PUT",
         onSuccess: (response) => {
           if (response.data.success) {
-            algaehApiCall({
-              uri: "/report",
-              method: "GET",
-              module: "reports",
-              headers: {
-                Accept: "blob",
-              },
-              others: { responseType: "blob" },
-              data: {
-                report: {
-                  reportName: "ucaf",
-                  reportParams: [
-                    {
-                      name: "hims_d_patient_id",
-                      value: $this.state.patient_id,
-                    },
-                    { name: "visit_id", value: $this.state.visit_id },
-                    { name: "visit_date", value: null },
-                  ],
-                  outputFileType: "PDF", //"EXCEL", //"PDF",
+            if ($this.props.fromCorrection) {
+              newAlgaehApi({
+                uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
+                module: "insurance",
+                method: "PUT",
+                data: {
+                  hims_f_invoice_header_id: $this.props.invoiceId,
+                  correction_requested: "C",
                 },
-              },
-              onSuccess: (res) => {
-                const urlBlob = URL.createObjectURL(res.data);
-                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=UCAF 2.0`;
-                window.open(origin);
-              },
-            });
+              })
+                .then((result) => {
+                  swalMessage({
+                    title: "Request Updated successfully",
+                    type: "success",
+                  });
+                })
+                .catch((err) => {
+                  swalMessage({
+                    title: err.message,
+                    type: "error",
+                  });
+                });
+            } else {
+              algaehApiCall({
+                uri: "/report",
+                method: "GET",
+                module: "reports",
+                headers: {
+                  Accept: "blob",
+                },
+                others: { responseType: "blob" },
+                data: {
+                  report: {
+                    reportName: "ucaf",
+                    reportParams: [
+                      {
+                        name: "hims_d_patient_id",
+                        value: $this.state.patient_id,
+                      },
+                      { name: "visit_id", value: $this.state.visit_id },
+                      { name: "visit_date", value: null },
+                    ],
+                    outputFileType: "PDF", //"EXCEL", //"PDF",
+                  },
+                },
+                onSuccess: (res) => {
+                  const urlBlob = URL.createObjectURL(res.data);
+                  const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=UCAF 2.0`;
+                  window.open(origin);
+                },
+              });
+            }
           }
         },
         onFailure: (error) => {

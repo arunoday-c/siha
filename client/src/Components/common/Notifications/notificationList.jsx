@@ -9,6 +9,8 @@ import {
   AlgaehMessagePop,
 } from "algaeh-react-components";
 import newAlgaehApi from "../../../hooks/newAlgaehApi";
+import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 // import { MainContext } from "algaeh-react-components";
 import moment from "moment";
 export default function NotificationList({
@@ -17,6 +19,7 @@ export default function NotificationList({
   socket,
   count,
 }) {
+  const history = useHistory();
   //   const { userToken } = useContext(MainContext);
   const [perPage, setPageSize] = useState(10); //, setPerPage, setPage, setDate
   const [page, setPage] = useState(0);
@@ -28,7 +31,6 @@ export default function NotificationList({
     setFirstLoad(true);
   }, []);
   useEffect(() => {
-    debugger;
     if (page === 0) {
       callNotifications({ require_total_count: true });
     } else {
@@ -37,6 +39,7 @@ export default function NotificationList({
   }, [page, perPage, count]);
 
   async function callNotifications({ require_total_count }) {
+    debugger;
     try {
       setLoading(true);
       const result = await newAlgaehApi({
@@ -55,6 +58,7 @@ export default function NotificationList({
         setFirstLoad(false);
         throw error;
       });
+      debugger;
       setLoading(false);
       setFirstLoad(false);
       setData(result.data.records);
@@ -115,53 +119,75 @@ export default function NotificationList({
               setPageSize(pageSize);
             },
           }}
-          renderItem={(item) => (
-            <List.Item
-              key={item._id}
-              actions={[
-                <>
-                  {isToday ? null : (
-                    <Button
-                      type="ghost"
-                      shape="circle"
-                      danger
-                      icon={
-                        <i className="fas fa-trash" loading={item.loading} />
-                      }
-                      onClick={async () => {
-                        await callNotificationsDelete({ ...item });
-                        await callNotifications({ require_total_count: true });
-                      }}
-                    />
-                  )}
-                </>,
-              ]}
-            >
-              <Skeleton avatar title={false} loading={loading} active>
-                <List.Item.Meta
-                  title={
-                    <>
-                      {item.title || "Title"}
-                      <small>
-                        &nbsp; ({" "}
-                        {moment(item.createdAt).format("DD-MM-YYYY HH:mm:ss")})
-                      </small>
-                    </>
-                  }
-                  avatar={
-                    <Avatar icon={<i className="fas fa-envelope-square"></i>} />
-                  }
-                  description={
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: item.message,
-                      }}
-                    ></span>
-                  }
-                />
-              </Skeleton>
-            </List.Item>
-          )}
+          renderItem={(item) => {
+            debugger;
+            return (
+              <List.Item
+                key={item._id}
+                actions={[
+                  <>
+                    {isToday ? null : (
+                      <Button
+                        type="ghost"
+                        shape="circle"
+                        danger
+                        icon={
+                          <i className="fas fa-trash" loading={item.loading} />
+                        }
+                        onClick={async () => {
+                          await callNotificationsDelete({ ...item });
+                          await callNotifications({
+                            require_total_count: true,
+                          });
+                        }}
+                      />
+                    )}
+                    {item.pageToRedirect ? (
+                      <Link>
+                        <i
+                          class="fas fa-external-link-alt"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            history.push(`${item.pageToRedirect}`, {
+                              data: item.savedData[0],
+                              title: item.title,
+                            });
+                          }}
+                        ></i>
+                      </Link>
+                    ) : null}
+                  </>,
+                ]}
+              >
+                <Skeleton avatar title={false} loading={loading} active>
+                  <List.Item.Meta
+                    title={
+                      <>
+                        {item.title || "Title"}
+                        <small>
+                          &nbsp; ({" "}
+                          {moment(item.createdAt).format("DD-MM-YYYY HH:mm:ss")}
+                          )
+                        </small>
+                      </>
+                    }
+                    avatar={
+                      <Avatar
+                        icon={<i className="fas fa-envelope-square"></i>}
+                      />
+                    }
+                    description={
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: item.message,
+                        }}
+                      ></span>
+                    }
+                  />
+                </Skeleton>
+              </List.Item>
+            );
+          }}
         />
       )}
     </>

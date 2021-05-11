@@ -571,14 +571,19 @@ export default {
   getRequestForCorrectionInsurance: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      //   let input = req.query;
-
+      let input = req.query;
+      let strQuery = "";
+      if (input.correction_requested) {
+        strQuery += ` and hims_f_invoice_header.correction_requested = '${input.correction_requested}'`;
+      } else {
+        strQuery = `and hims_f_invoice_header.correction_requested in ('R','C')`;
+      }
       _mysql
         .executeQuery({
-          query: `select hims_f_invoice_header_id,hims_f_invoice_header.patient_id,hims_f_invoice_header.caf_type,hims_f_invoice_header.visit_id, invoice_number,request_comment, invoice_date,E.full_name as doctorName, pat.patient_code, pat.full_name,
-                    pv.visit_code from hims_f_invoice_header , hims_f_patient pat,hims_d_employee_id E,  hims_f_patient_visit pv where 
+          query: `select hims_f_invoice_header.*,E.full_name as doctorName, pat.patient_code, pat.full_name,
+                    pv.visit_code from hims_f_invoice_header , hims_f_patient pat,hims_d_employee E,  hims_f_patient_visit pv where 
                     hims_f_invoice_header.patient_id = pat.hims_d_patient_id and pv.hims_f_patient_visit_id = hims_f_invoice_header.visit_id and E.hims_d_employee_id =pv.doctor_id
-                    and pv.patient_id= pat.hims_d_patient_id and hims_f_invoice_header.correction_requested= 'R' and pv.doctor_id=? and date(hims_f_invoice_header.cancel_req_date) between date(?) and date(?)   `,
+                    and pv.patient_id= pat.hims_d_patient_id ${strQuery} and pv.doctor_id=? and date(hims_f_invoice_header.cancel_req_date) between date(?) and date(?)   `,
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             req.query.from_date,
@@ -781,10 +786,12 @@ export default {
       debugger;
       _mysql
         .executeQuery({
-          query:
-            "UPDATE hims_f_invoice_header SET correction_requested = 'R',request_comment=?, updated_date=?, updated_by=?  WHERE hims_f_invoice_header_id = ?;",
+          query: `UPDATE hims_f_invoice_header SET correction_requested = ?,correction_req_date=?,request_comment=?, 
+            updated_date=?, updated_by=?  WHERE hims_f_invoice_header_id = ?;`,
 
           values: [
+            input.correction_requested,
+            new Date(),
             input.request_comment,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,

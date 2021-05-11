@@ -9,6 +9,7 @@ const notificationModel = mongoose.model(
       message: String,
       title: String,
       pageToRedirect: String,
+      savedData: Array,
       fromUserId: Number,
       fromModule: String,
       isSeen: { type: Boolean, default: false },
@@ -112,7 +113,14 @@ export function getAllNotifications(req, res, next) {
 
         notificationModel
           .find({ user_id, ...todayNotifications })
-          .select(["_id", "title", "createdAt", "message"])
+          .select([
+            "_id",
+            "title",
+            "createdAt",
+            "message",
+            "savedData",
+            "pageToRedirect",
+          ])
           .limit(_pageSize)
           .skip(_pageSize * Math.max(0, _page - 1))
           .sort({ createdAt: "desc" })

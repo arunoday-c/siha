@@ -195,15 +195,15 @@
   "INS_CORR_LIST": [
     {
       "name": "All",
-      "value": "A"
+      "value": ""
     },
     {
       "name": "Corrected",
-      "value": "Y"
+      "value": "C"
     },
     {
       "name": "Pending",
-      "value": "N"
+      "value": "R"
     }
   ],
   "FORMAT_MARTIALSTS": [

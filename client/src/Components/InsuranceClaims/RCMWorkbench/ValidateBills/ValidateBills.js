@@ -12,7 +12,6 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import { UpdateStatement } from "../../InsuranceStatement/UpdateStatment";
-
 const UcafEditor = React.lazy(() => import("../../../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../../../ucafEditors/dcaf"));
 const OcafEditor = React.lazy(() => import("../../../ucafEditors/ocaf"));
@@ -441,7 +440,10 @@ class ValidateBills extends PureComponent {
           },
         }}
       >
-        <DcafEditor dataProps={this.state.DCAFData} />
+        <DcafEditor
+          rowData={this.state.invoices}
+          dataProps={this.state.DCAFData}
+        />
       </AlgaehModalPopUp>
     );
   }
@@ -456,7 +458,10 @@ class ValidateBills extends PureComponent {
           },
         }}
       >
-        <OcafEditor dataProps={this.state.OCAFData} />
+        <OcafEditor
+          rowData={this.state.invoices}
+          dataProps={this.state.OCAFData}
+        />
       </AlgaehModalPopUp>
     );
   }
@@ -471,7 +476,10 @@ class ValidateBills extends PureComponent {
           },
         }}
       >
-        <UcafEditor dataProps={this.state.UCAFData} />
+        <UcafEditor
+          rowData={this.state.invoices}
+          dataProps={this.state.UCAFData}
+        />
       </AlgaehModalPopUp>
     );
   }
@@ -1082,6 +1090,7 @@ class ValidateBills extends PureComponent {
                   />
                 </div> */}
               </div>
+
               <div className="col-4">
                 <div className="row">
                   <div className="col-12  margin-top-15">
