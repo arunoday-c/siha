@@ -527,7 +527,7 @@ class InvItemMaster extends Component {
                 <div className="col-6">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-3" }}
+                      div={{ className: "col-2" }}
                       label={{
                         fieldName: "uom_id",
                       }}
@@ -548,7 +548,7 @@ class InvItemMaster extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-4" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "stocking_uom",
                       }}
@@ -569,7 +569,7 @@ class InvItemMaster extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-4" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "conversion_factor",
                       }}
@@ -595,7 +595,7 @@ class InvItemMaster extends Component {
                     {this.state.stocking_uom === "Y" &&
                     this.state.stocking_uom !== null ? (
                       <AlagehFormGroup
-                        div={{ className: "col-4" }}
+                        div={{ className: "col" }}
                         label={{
                           forceLabel: "Consumption Factor",
                         }}

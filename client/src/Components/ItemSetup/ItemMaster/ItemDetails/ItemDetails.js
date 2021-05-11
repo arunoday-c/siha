@@ -363,7 +363,7 @@ class ItemDetails extends Component {
               >
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col" }}
+                    div={{ className: "col-2" }}
                     label={{
                       fieldName: "uom_id",
                     }}
@@ -401,7 +401,7 @@ class ItemDetails extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "stocking_uom",
                     }}
@@ -420,7 +420,7 @@ class ItemDetails extends Component {
                       },
                     }}
                   />
-                  <div className="col actions" style={{ paddingLeft: 0 }}>
+                  <div className="col-1 actions" style={{ paddingLeft: 0 }}>
                     <a
                       onClick={AddUom.bind(this, this, context)}
                       style={{ marginTop: 20 }}

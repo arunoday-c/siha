@@ -265,7 +265,7 @@ class ItemDetails extends Component {
               <div className="col-6">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-2" }}
                     label={{
                       fieldName: "uom_id",
                     }}
@@ -286,7 +286,7 @@ class ItemDetails extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-4" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "stocking_uom",
                     }}
@@ -307,7 +307,7 @@ class ItemDetails extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-4" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "conversion_factor",
                     }}
