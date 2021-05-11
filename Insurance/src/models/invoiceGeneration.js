@@ -399,7 +399,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT 0 chkselect, hims_f_invoice_header_id, invoice_number, invoice_date, IH.patient_id, IH.claim_status, visit_id,\
+            "SELECT 0 chkselect, hims_f_invoice_header_id,AU.algaeh_d_app_user_id, invoice_number, invoice_date, IH.patient_id, IH.claim_status, visit_id,\
           IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, IH.card_number, gross_amount,\
           discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
           company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
@@ -414,6 +414,7 @@ export default {
           inner join hims_f_patient_visit V on IH.visit_id=V.hims_f_patient_visit_id \
          inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id \
          inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id \
+         inner join algaeh_d_app_user AU on V.doctor_id =AU.employee_id \
          left join hims_d_insurance_provider IP on IH.insurance_provider_id=IP.hims_d_insurance_provider_id\
           left join hims_d_insurance_sub SI on IH.sub_insurance_id=SI.hims_d_insurance_sub_id\
           left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
@@ -566,7 +567,38 @@ export default {
       next(e);
     }
   },
+  getRequestForCorrectionInsurance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      //   let input = req.query;
 
+      _mysql
+        .executeQuery({
+          query: `select hims_f_invoice_header_id,hims_f_invoice_header.patient_id,hims_f_invoice_header.caf_type,hims_f_invoice_header.visit_id, invoice_number,request_comment, invoice_date,E.full_name as doctorName, pat.patient_code, pat.full_name,
+                    pv.visit_code from hims_f_invoice_header , hims_f_patient pat,hims_d_employee_id E,  hims_f_patient_visit pv where 
+                    hims_f_invoice_header.patient_id = pat.hims_d_patient_id and pv.hims_f_patient_visit_id = hims_f_invoice_header.visit_id and E.hims_d_employee_id =pv.doctor_id
+                    and pv.patient_id= pat.hims_d_patient_id and hims_f_invoice_header.correction_requested= 'R' and pv.doctor_id=? and date(hims_f_invoice_header.cancel_req_date) between date(?) and date(?)   `,
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            req.query.from_date,
+            req.query.to_date,
+          ],
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
   //created by:irfan
   getPatientIcdForInvoice: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -741,6 +773,44 @@ export default {
       next(e);
     }
   },
+  updateClaimReqCorrectionStatusRCM: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+      debugger;
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_invoice_header SET correction_requested = 'R',request_comment=?, updated_date=?, updated_by=?  WHERE hims_f_invoice_header_id = ?;",
+
+          values: [
+            input.request_comment,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_f_invoice_header_id,
+          ],
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = { invalid_input: true };
+            next();
+          }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
   //created by:irfan
   updateInvoiceDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -755,7 +825,7 @@ export default {
           .executeQuery({
             query:
               "UPDATE hims_f_invoice_details SET cpt_code = ?, updated_date=?, updated_by=?\
-              WHERE hims_f_invoice_details_id = ?",
+              WHERE hims_f_invoice_details_id = ?;",
 
             values: [
               input.cpt_code,
