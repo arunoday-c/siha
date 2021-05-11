@@ -2012,14 +2012,14 @@ export default {
       strQuery = `select finance_revert_day_end_sub_detail_id ,payment_date,SD.head_id,
       child_id,concat(account_name,'-->',child_name ) as to_account,  ROUND( debit_amount , ${decimal_places}) as debit_amount,
       case payment_type when 'CR' then 'Credit' else 'Debit' end
-       as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
+       as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount, reverted
       from finance_revert_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
       left join finance_account_child C on SD.child_id=C.finance_account_child_id where revert_day_end_header_id=? order by payment_type desc;`;
     } else {
       strQuery = `select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
       child_id,concat(account_name,'-->',child_name ) as to_account,  ROUND( debit_amount , ${decimal_places}) as debit_amount,
       case payment_type when 'CR' then 'Credit' else 'Debit' end
-       as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
+       as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount, reverted
       from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
       left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=? order by payment_type desc;`;
     }

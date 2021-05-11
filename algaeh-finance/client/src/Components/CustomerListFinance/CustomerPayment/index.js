@@ -248,7 +248,7 @@ export default memo(function (props) {
                 row.modified_amount ? row.modified_amount : row.balance_amount
               )
       );
-      selectedBalanceAmount(
+      setSelectedBalanceAmount(
         checked === true
           ? parseFloat(selectedBalanceAmount) + parseFloat(row.balance_amount)
           : parseFloat(selectedBalanceAmount) - parseFloat(row.balance_amount)
@@ -402,6 +402,8 @@ export default memo(function (props) {
             filterDebitNotes: filterCreditNotes,
             type: "customer",
             debitNoteTotal: creditNoteTotal > 0 ? creditNoteTotal : null,
+            customerOrSupplerHeaderName: childName,
+            customerOrSupplerDetailName: invoice_no,
           });
         },
       });

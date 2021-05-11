@@ -71,8 +71,24 @@ export default function ChangeEntitlement(props) {
 
   const onSubmit = async (e) => {
     try {
+      debugger;
       const insurance_data = state.dropdownData;
 
+      if (insurance_data.insured === "Y") {
+        if (
+          insurance_data.primary_card_number === "" ||
+          insurance_data.primary_card_number === undefined ||
+          insurance_data.primary_insurance_provider_id === undefined ||
+          insurance_data.primary_network_office_id === undefined ||
+          insurance_data.primary_network_id === undefined
+        ) {
+          AlgaehMessagePop({
+            type: "warning",
+            display: "Enter Insurance Details.",
+          });
+          return;
+        }
+      }
       const inpit_data = {
         ...visit,
         ...insurance_data,
@@ -92,7 +108,6 @@ export default function ChangeEntitlement(props) {
         display: "Done Succesfully",
       });
     } catch (error) {
-      debugger;
       AlgaehMessagePop({
         type: "error",
         display: error.message,

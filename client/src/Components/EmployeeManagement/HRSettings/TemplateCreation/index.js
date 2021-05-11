@@ -11,6 +11,7 @@ import { Spin, AlgaehMessagePop, AlgaehButton } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
 // import Editor from "./editor";
 import JoditEditor from "jodit-react";
+// import { Modal } from "antd";
 
 export default memo(function () {
   const [certificates, setCertificates] = useState([]);
@@ -18,7 +19,6 @@ export default memo(function () {
   const [xcolumns, setColumns] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [preview, setPreview] = useState("");
-
   const [masterInput, setMasterInput] = useState({
     hims_d_certificate_master_id: "",
     certificate_type_id: "",
@@ -347,9 +347,17 @@ export default memo(function () {
                     setPreview("");
                   },
                 }}
+                class={"certificatePreviewModal"}
               >
                 <div className="container">
-                  <div dangerouslySetInnerHTML={{ __html: preview }}></div>
+                  <p className="infoText">
+                    Preview of the body content which will print in
+                    certificate/document.
+                  </p>
+                  <div
+                    className="preSection"
+                    dangerouslySetInnerHTML={{ __html: preview }}
+                  ></div>
                 </div>
               </AlgaehModalPopUp>
               <div className="col-12 certificateEditor">
@@ -459,18 +467,6 @@ export default memo(function () {
                           },
                         },
                       ],
-                      // controls: [
-                      //   {
-                      //     label: {
-                      //       exec: function (editor) {
-                      //         const lable = document.createElement("lable");
-                      //         lable.setAttribute("data-label-field", "");
-                      //         lable.innerText = "{{fieldName}}";
-                      //         editor.selection.insertNode(lable);
-                      //       },
-                      //     },
-                      //   },
-                      // ],
                       buttons: [
                         "selectall",
                         "undo",

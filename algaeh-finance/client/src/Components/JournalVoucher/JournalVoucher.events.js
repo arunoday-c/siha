@@ -45,6 +45,28 @@ export function getHeaders(input) {
   });
 }
 
+export async function customerReceivables() {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_customer/getCustomerReceivables",
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 export function getInvoiceDetail(input) {
   input = input || {};
   return new Promise((resolve, reject) => {
@@ -56,6 +78,7 @@ export function getInvoiceDetail(input) {
         module: "finance",
         onSuccess: (response) => {
           if (response.data.success === true) {
+            console.log("response.data.result=====>", response.data.result);
             resolve(response.data.result);
           }
         },
@@ -126,6 +149,150 @@ export function getCostCentersForVoucher(input) {
         onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+export function getCustomerListReceivable() {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_customer/getCustomerReceivables",
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+export function getCustomerReceivableDetails(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_customer/getCustomerInvoiceDetails",
+        data: {
+          child_id: options.child_id,
+          is_opening_bal: options.is_opening_bal,
+        },
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+export function getSupplierPayable() {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_supplier/getSupplierPayables",
+
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+export function getSupplierInvoiceDetails(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_supplier/getSupplierInvoiceDetails",
+        data: {
+          child_id: options.child_id,
+        },
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+export function getSupplierDebitNotes(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_supplier/getAllDebitNotes",
+        data: {
+          child_id: options.child_id,
+        },
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data);
+          }
+        },
+        onCatch: (error) => {
+          reject(error);
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+export function getCustomerDebitNotes(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance_customer/getAllCreditNotes",
+        data: {
+          child_id: options.child_id,
+        },
+        method: "GET",
+        module: "finance",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            resolve(response.data);
           }
         },
         onCatch: (error) => {

@@ -78,12 +78,32 @@ export function StatementTable(status) {
           <div className="row">
             <div className="col-12">
               <div className="row">
-                <div className="col">
+                <div className="col-2 form-group">
+                  <label className="style_Label ">Statement No.</label>
+                  <h6>{data?.insurance_statement_number || "---"}</h6>
+                </div>
+                <div className="col-3">
+                  <label className="style_Label ">Company Name</label>
+                  <h6>{data?.insurance_provider_name || "---"}</h6>
+                </div>
+                <div className="col-3">
+                  <label className="style_Label ">Sub Company Name</label>
+                  <h6>{data?.insurance_sub_name || "---"}</h6>
+                </div>
+                <div className="col-2">
+                  <label className="style_Label ">From Date</label>
+                  <h6>{data?.from_date || "---"}</h6>
+                </div>
+                <div className="col-2">
+                  <label className="style_Label ">To Date</label>
+                  <h6>{data?.to_date || "---"}</h6>
+                </div>
+                <div className="col-2">
                   <label className="style_Label ">Total Claim Amount</label>
                   <h6>{data?.total_company_payable || "0.00"}</h6>
                 </div>
                 <i className="fas fa-minus calcSybmbol"></i>
-                <div className="col">
+                <div className="col-2">
                   <label className="style_Label ">Total Denial Amount</label>
                   <h6>
                     {(data?.calc_denial_amount ?? data?.total_denial_amount) ||
@@ -91,7 +111,7 @@ export function StatementTable(status) {
                   </h6>
                 </div>{" "}
                 <i className="fas fa-equals calcSybmbol"></i>
-                <div className="col">
+                <div className="col-2">
                   <label className="style_Label ">
                     Total Remittance Amount
                   </label>

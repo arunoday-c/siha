@@ -70,6 +70,31 @@ export function InsuranceForm({
         primary_card_number: ins?.card_number,
         insured: "Y",
       });
+    } else {
+      setIsInsurance(false);
+      reset({
+        primary_insurance_provider_id: undefined,
+        primary_sub_id: undefined,
+        primary_network_id: undefined,
+        primary_network_office_id: undefined,
+        primary_policy_num: undefined,
+        primary_effective_start_date: undefined,
+        primary_effective_end_date: undefined,
+        primary_card_number: undefined,
+        insured: "N",
+      });
+
+      setNewInsurance({
+        primary_insurance_provider_id: undefined,
+        primary_sub_id: undefined,
+        primary_network_id: undefined,
+        primary_network_office_id: undefined,
+        primary_policy_num: undefined,
+        primary_effective_start_date: undefined,
+        primary_effective_end_date: undefined,
+        primary_card_number: undefined,
+        insured: "N",
+      });
     }
     // eslint-disable-next-line
   }, [patientInsurance]);
@@ -118,7 +143,6 @@ export function InsuranceForm({
         setValue("primary_effective_start_date", row?.effective_start_date);
         setValue("primary_effective_end_date", row?.effective_end_date);
         setValue("primary_card_number", "");
-        debugger;
         setNewInsurance({
           insured: isInsurance === true ? "Y" : "N",
           primary_insurance_provider_id: row?.insurance_provider_id,
@@ -138,6 +162,14 @@ export function InsuranceForm({
     setIsInsurance(e.target.value === "true" ? true : false);
     setNewInsurance({
       insured: e.target.value === "true" ? "Y" : "N",
+      primary_insurance_provider_id: undefined,
+      primary_sub_id: undefined,
+      primary_network_id: undefined,
+      primary_network_office_id: undefined,
+      primary_policy_num: undefined,
+      primary_effective_start_date: undefined,
+      primary_effective_end_date: undefined,
+      primary_card_number: undefined,
     });
     reset({
       primary_insurance_provider_id: "",
@@ -235,16 +267,50 @@ export function InsuranceForm({
                         setValue("primary_policy_num", current?.policy_number);
                         setValue(
                           "primary_effective_start_date",
-                          current?.primary_effective_start_date
+                          current?.effective_start_date
                         );
                         setValue(
                           "primary_effective_end_date",
                           current?.effective_end_date
                         );
+                        setNewInsurance({
+                          primary_insurance_provider_id:
+                            current?.insurance_provider_id,
+                          primary_sub_id: current?.sub_insurance_provider_id,
+                          primary_network_id: current?.network_id,
+                          primary_network_office_id:
+                            current?.hims_d_insurance_network_office_id,
+                          primary_policy_num: current?.policy_number,
+                          primary_effective_start_date:
+                            current?.effective_start_date,
+                          primary_effective_end_date:
+                            current?.effective_end_date,
+                        });
                         trigger();
                       },
                       value,
-                      onClear: () => onChange(""),
+                      onClear: () => {
+                        setValue("primary_insurance_provider_id", undefined);
+                        setValue("primary_sub_id", undefined);
+                        setValue("primary_network_id", undefined);
+                        setValue("primary_policy_num", undefined);
+                        setValue("primary_effective_start_date", undefined);
+                        setValue("primary_effective_end_date", undefined);
+                        setValue("primary_card_number", undefined);
+
+                        setNewInsurance({
+                          primary_insurance_provider_id: undefined,
+                          primary_sub_id: undefined,
+                          primary_network_id: undefined,
+                          primary_network_office_id: undefined,
+                          primary_policy_num: undefined,
+                          primary_effective_start_date: undefined,
+                          primary_effective_end_date: undefined,
+                          primary_card_number: undefined,
+                        });
+
+                        onChange("");
+                      },
                       dataSource: {
                         textField: fieldNameFn(
                           "insurance_provider_name",
@@ -408,13 +474,10 @@ export function InsuranceForm({
                     }}
                     events={{
                       onChange: (e) => {
-                        debugger;
                         onChange(e.target.value);
                         setNewInsurance({
                           primary_card_number: e.target.value,
                         });
-
-                        // setNewInsurance(...primary_card_number);
                       },
                     }}
                   />

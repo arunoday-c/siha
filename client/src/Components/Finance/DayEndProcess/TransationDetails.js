@@ -23,6 +23,7 @@ class TransationDetails extends Component {
       finance_day_end_header_id: null,
       posted: "N",
       narration: null,
+      revert_entries: [],
     };
     this.selectedDayEndIds = "";
   }
@@ -42,12 +43,19 @@ class TransationDetails extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let InputOutput = nextProps;
     if (InputOutput.openPopup === true) {
+      const revert_entries = InputOutput.popUpRecords.entries.filter(
+        (f) => f.reverted === "Y"
+      );
+      const data_entries = InputOutput.popUpRecords.entries.filter(
+        (f) => f.reverted === "N"
+      );
       this.setState({
-        data_entries: InputOutput.popUpRecords.entries,
+        data_entries: data_entries,
         openPopup: InputOutput.openPopup,
         finance_day_end_header_id: InputOutput.finance_day_end_header_id,
         posted: InputOutput.posted,
         narration: InputOutput.narration,
+        revert_entries: revert_entries,
       });
     }
   }
@@ -234,6 +242,83 @@ class TransationDetails extends Component {
                 />
               </div>
             </div>
+
+            {this.state.revert_entries.length ? (
+              <div className="row" style={{ paddingTop: 15 }}>
+                <p> Reverted Transaction </p>
+                <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
+                  <AlgaehDataGrid
+                    columns={[
+                      {
+                        fieldName: "to_account",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "To Account" }} />
+                        ),
+                      },
+                      {
+                        fieldName: "payment_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
+                        ),
+                      },
+                      {
+                        fieldName: "payment_type",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
+                        ),
+                      },
+
+                      {
+                        fieldName: "debit_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {GetAmountFormart(row.debit_amount, {
+                                appendSymbol: false,
+                              })}
+                            </span>
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "credit_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Credit Amount" }}
+                          />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {GetAmountFormart(row.credit_amount, {
+                                appendSymbol: false,
+                              })}
+                            </span>
+                          );
+                        },
+                      },
+
+                      // {
+                      //   fieldName: "narration",
+                      //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                      // }
+                    ]}
+                    keyId="service_code"
+                    data={
+                      this.state.revert_entries === undefined
+                        ? []
+                        : this.state.revert_entries
+                    }
+                    pagination={true}
+                    pageOptions={{ rows: 20, page: 1 }}
+                    isFilterable={true}
+                  />
+                </div>
+              </div>
+            ) : null}
           </div>
           <div className="popupFooter">
             <div className="col-lg-12">

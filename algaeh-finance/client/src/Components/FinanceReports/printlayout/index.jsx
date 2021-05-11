@@ -22,7 +22,7 @@ export default function ({
   const [loadingExcel, setExcelLoading] = useState(false);
   function downloadExcel() {
     setExcelLoading(true);
-    GenerateExcel({ columns, data, excelBodyRender })
+    GenerateExcel({ columns, data, excelBodyRender, tableprops })
       .then((result) => {
         setExcelLoading(false);
         if (typeof result !== "boolean") {
