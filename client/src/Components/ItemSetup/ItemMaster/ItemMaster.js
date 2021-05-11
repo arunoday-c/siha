@@ -33,7 +33,7 @@ import {
   stockonchangegridcol,
   additionaleInfo,
   numberEventHandaler,
-  getFinanceAccountsMaping
+  getFinanceAccountsMaping,
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components";
@@ -51,7 +51,7 @@ class ItemMaster extends Component {
       convertEnable: false,
       loading_itemInsert: false,
       head_id: null,
-      child_id: null
+      child_id: null,
     };
     this.initCall();
   }
@@ -102,15 +102,14 @@ class ItemMaster extends Component {
 
     const FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
     if (FIN_Active === true) {
       getFinanceAccountsMaping(this);
     }
-
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
@@ -446,7 +445,7 @@ class ItemMaster extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-3" }}
+                      div={{ className: "col-2" }}
                       label={{
                         fieldName: "stocking_uom",
                       }}
@@ -489,7 +488,7 @@ class ItemMaster extends Component {
                       }}
                     />
 
-                    <div className="col actions" style={{ paddingLeft: 0 }}>
+                    <div className="col-1 actions" style={{ paddingLeft: 0 }}>
                       <button
                         onClick={AddUom.bind(this, this)}
                         style={{ marginTop: 20 }}
@@ -538,9 +537,9 @@ class ItemMaster extends Component {
                                 this.props.itemuom === undefined
                                   ? []
                                   : this.props.itemuom.filter(
-                                    (f) =>
-                                      f.hims_d_pharmacy_uom_id === row.uom_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_pharmacy_uom_id === row.uom_id
+                                    );
 
                               return (
                                 <span>
@@ -669,7 +668,7 @@ class ItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: (row) => { },
+                          onEdit: (row) => {},
                           onDone: updateUOM.bind(this, this),
                         }}
                       />
@@ -699,7 +698,7 @@ class ItemMaster extends Component {
                         },
                         onChange: texthandle.bind(this, this),
                       }}
-                    //forceUpdate={true}
+                      //forceUpdate={true}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
