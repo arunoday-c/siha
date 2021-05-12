@@ -1227,7 +1227,7 @@ export default class UcafEditor extends Component {
                       className="btn btn-primary"
                       onClick={this.saveAndPrintUcaf.bind(this)}
                     >
-                      Save & Print
+                      {this.props.fromCorrection ? "save" : `Save & Print`}
                     </button>
                   </AlgaehSecurityComponent>
                   <AlgaehSecurityComponent componentCode="RLD_DAT_UCAF">

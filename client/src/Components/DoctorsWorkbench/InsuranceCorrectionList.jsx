@@ -61,6 +61,7 @@ const InsuranceCorrectionList = () => {
     if (location.state) {
       const { data, title } = location.state;
       setTitle(title);
+      setRequestedBy(data);
       setInvoiceId(data.hims_f_invoice_header_id);
       getPatientCAF({ ...data, title: title });
     }
@@ -74,6 +75,7 @@ const InsuranceCorrectionList = () => {
   });
   const { userToken } = useContext(MainContext);
   // const { userToken } = useContext(MainContext);
+  const [requestedBy, setRequestedBy] = useState(null);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [invoiceId, setInvoiceId] = useState(null);
@@ -136,7 +138,6 @@ const InsuranceCorrectionList = () => {
     })
       .then((res) => {
         if (res.data.success) {
-          debugger;
           setLoading(false);
           setCorrectionList(res.data.records);
         }
@@ -292,18 +293,21 @@ const InsuranceCorrectionList = () => {
                 dataProps={dataProps}
                 fromCorrection={true}
                 invoiceId={invoiceId}
+                requested_by={requestedBy}
               />
             ) : title === "dcaf" ? (
               <DcafEditor
                 dataProps={dataProps}
                 fromCorrection={true}
                 invoiceId={invoiceId}
+                requested_by={requestedBy}
               />
             ) : (
               <OcafEditor
                 dataProps={dataProps}
                 fromCorrection={true}
                 invoiceId={invoiceId}
+                requested_by={requestedBy}
               />
             )}
           </AlgaehModal>
@@ -335,6 +339,7 @@ const InsuranceCorrectionList = () => {
                               onClick={() => {
                                 setonCAFModal(true);
                                 getPatientCAF(row);
+                                setRequestedBy(row);
                                 setTitle(
                                   row.department_type === "N"
                                     ? "ucaf"

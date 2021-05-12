@@ -1410,7 +1410,7 @@ export default class OcafEditor extends Component {
                       className="btn btn-primary"
                       onClick={this.saveAndPrintOcaf.bind(this)}
                     >
-                      Save & Print
+                      {this.props.fromCorrection ? "save" : `Save & Print`}
                     </button>
                   </AlgaehSecurityComponent>
                   <AlgaehSecurityComponent componentCode="RLD_DAT_OCAF">

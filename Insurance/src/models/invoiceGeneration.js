@@ -400,7 +400,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT 0 chkselect, hims_f_invoice_header_id,AU.algaeh_d_app_user_id, invoice_number, invoice_date, IH.patient_id, IH.claim_status, visit_id,\
+            "SELECT 0 chkselect, hims_f_invoice_header_id,AU.algaeh_d_app_user_id,IH.requested_by, invoice_number, invoice_date, IH.patient_id, IH.claim_status, visit_id,\
           IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, IH.card_number, gross_amount,\
           discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
           company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
@@ -583,7 +583,7 @@ export default {
       }
       _mysql
         .executeQuery({
-          query: `select S.department_type,V.visit_date,INH.patient_id,INH.visit_id,INH.invoice_number,INH.correction_req_date,INH.correction_req_date,INH.caf_type,INH.doctor_comment,INH.request_comment,INH.correction_requested,E.full_name as doctorName, P.patient_code, P.full_name,V.visit_code
+          query: `select S.department_type,V.visit_date,INH.patient_id,INH.visit_id,INH.requested_by,INH.invoice_number,INH.correction_req_date,INH.correction_req_date,INH.caf_type,INH.doctor_comment,INH.request_comment,INH.correction_requested,E.full_name as doctorName, P.patient_code, P.full_name as patient_name,V.visit_code
           from hims_f_invoice_header INH 
           inner join hims_f_patient P on P.hims_d_patient_id=INH.patient_id
           inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=INH.visit_id
@@ -792,11 +792,12 @@ export default {
       debugger;
       _mysql
         .executeQuery({
-          query: `UPDATE hims_f_invoice_header SET correction_requested = ?,correction_req_date=?,request_comment=?, 
+          query: `UPDATE hims_f_invoice_header SET correction_requested = ?, requested_by=?,correction_req_date=?,request_comment=?, 
             updated_date=?, updated_by=?  WHERE hims_f_invoice_header_id = ?;`,
 
           values: [
             input.correction_requested,
+            req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             input.request_comment,
             new Date(),

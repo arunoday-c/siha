@@ -1086,7 +1086,7 @@ export default class DcafEditor extends Component {
                           <i className="fas fa-spinner fa-spin" />
                         </span>
                       ) : null}
-                      Save & Print
+                      {this.props.fromCorrection ? "save" : `Save & Print`}
                     </button>
                   </AlgaehSecurityComponent>
                   <AlgaehSecurityComponent componentCode="RLD_DAT_DCAF">

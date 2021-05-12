@@ -87,6 +87,31 @@ const apsock = (socket) => {
         console.log("Error ====>", error);
       });
   });
+  socket.on("corrected_insurance_notify", ({ rowData }) => {
+    const docMsg = `${rowData.patient_name} : ${rowData.invoice_number}`;
+
+    const docNoti = new notifiModel({
+      user_id: rowData.requested_by,
+      message: docMsg,
+      title: "RCM workBench",
+      isSeen: false,
+      // savedData: [rowData],
+      // pageToRedirect: "/InsuranceCorrectionList",
+    });
+    docNoti
+      .save()
+      .then((doc) => {
+        socket.broadcast.to(`${rowData.requested_by}`);
+        // .emit("req_correction_insurance", {
+        //   dataprops: dataprops,
+        //   dataprops: dataprops,
+        // });
+      })
+      .catch((error) => {
+        console.log("Error ====>", error);
+      });
+  });
+
   socket.on("opBill_cancel", ({ bill_date, billdetails }) => {
     const labRecord = billdetails.filter((f) => f.service_type === "Lab");
     if (labRecord.length > 0) {
