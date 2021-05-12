@@ -252,6 +252,19 @@ const ondiscountgridcol = ($this, context, row, e) => {
   let billdetails = $this.state.billdetails;
   let _index = billdetails.indexOf(row);
 
+  if (parseFloat(value) > parseFloat($this.state.service_dis_percentage)) {
+    row[name] = 0;
+    row["discount_amout"] = 0;
+    billdetails[_index] = row;
+    $this.setState({ billdetails: billdetails });
+    swalMessage({
+      title:
+        "You dont have privilage to give discount More than." +
+        $this.state.service_dis_percentage,
+      type: "warning",
+    });
+    return;
+  }
   if (name === "discount_percentage") {
     if (parseFloat(value) > 100) {
       row[name] = 0;
@@ -263,19 +276,6 @@ const ondiscountgridcol = ($this, context, row, e) => {
         type: "warning",
       });
       // return;
-    } else if (
-      parseFloat(value) > parseFloat($this.state.service_dis_percentage)
-    ) {
-      row[name] = 0;
-      row["discount_amout"] = 0;
-      billdetails[_index] = row;
-      $this.setState({ billdetails: billdetails });
-      swalMessage({
-        title:
-          "You dont have privilage to give discount More than." +
-          $this.state.service_dis_percentage,
-        type: "warning",
-      });
     } else if (parseFloat(value) < 0) {
       row[name] = 0;
       row["discount_amout"] = 0;
@@ -438,8 +438,8 @@ const calculateAmount = ($this, context, row, e) => {
       discount_percentage:
         e.target.name === "discount_amout" ? 0 : row.discount_percentage,
 
-      // insured: $this.state.insured,
-      insured: row.insurance_yesno,
+      insured: $this.state.insured,
+      // insured: row.insurance_yesno,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
       primary_network_id: $this.state.network_id,
