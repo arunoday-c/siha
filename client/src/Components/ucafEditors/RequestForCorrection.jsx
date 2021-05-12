@@ -3,6 +3,7 @@ import {
   AlgaehLabel,
   AlgaehMessagePop,
   AlgaehModal,
+  Spin,
 } from "algaeh-react-components";
 // import { useForm, Controller } from "react-hook-form";
 import sockets from "../../sockets";
@@ -16,7 +17,10 @@ export default function RequestForCorrection({
   // dataProps,
 }) {
   const [req_correction_reason, setReq_correction_reason] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = (e) => {
+    setLoading(true);
     e.preventDefault();
     newAlgaehApi({
       uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
@@ -37,8 +41,14 @@ export default function RequestForCorrection({
           });
         }
         onClose();
+        setLoading(false);
+        AlgaehMessagePop({
+          type: "success",
+          display: "Request For Correction Successful",
+        });
       })
       .catch((err) => {
+        setLoading(false);
         AlgaehMessagePop({
           type: "error",
           display: err.message,
@@ -52,33 +62,34 @@ export default function RequestForCorrection({
   //   } = useForm();
   return (
     <div>
-      <AlgaehModal
-        title={title}
-        visible={visible}
-        mask={true}
-        maskClosable={true}
-        onCancel={onClose}
-        footer={null}
-        // className={`${userLanguage}_comp row algaehNewModal advanceRefundModal`}
-      >
-        <form onSubmit={onSubmit}>
-          <div className="col-12 popupInner margin-top-15">
-            <div className="col-6">
-              <AlgaehLabel>Claim Id</AlgaehLabel>
-              <h6>{rowData.invoice_number}</h6>
-            </div>
-            <div className="col-12">
-              <textarea
-                value={req_correction_reason}
-                onChange={(e) => setReq_correction_reason(e.target.value)}
-                name="req_correction_reason"
-                maxLength={160}
-              />
-              <small className="float-right">
-                Max Char. {req_correction_reason?.length ?? 0} /{160}
-              </small>
-            </div>
-            {/* <Controller
+      <Spin spinning={loading}>
+        <AlgaehModal
+          title={title}
+          visible={visible}
+          mask={true}
+          maskClosable={true}
+          onCancel={onClose}
+          footer={null}
+          // className={`${userLanguage}_comp row algaehNewModal advanceRefundModal`}
+        >
+          <form onSubmit={onSubmit}>
+            <div className="col-12 popupInner margin-top-15">
+              <div className="col-6">
+                <AlgaehLabel>Claim Id</AlgaehLabel>
+                <h6>{rowData.invoice_number}</h6>
+              </div>
+              <div className="col-12">
+                <textarea
+                  value={req_correction_reason}
+                  onChange={(e) => setReq_correction_reason(e.target.value)}
+                  name="req_correction_reason"
+                  maxLength={160}
+                />
+                <small className="float-right">
+                  Max Char. {req_correction_reason?.length ?? 0} /{160}
+                </small>
+              </div>
+              {/* <Controller
               name="req_correction_reason"
               control={control}
               // defaultValue={false}
@@ -86,7 +97,7 @@ export default function RequestForCorrection({
               render={({ field }) => <textarea {...field} />}
             /> */}
 
-            {/* <Controller
+              {/* <Controller
         control={control}
         render={({ field: { onChange, value } }) => (
           <textarea
@@ -100,33 +111,34 @@ export default function RequestForCorrection({
         rules={{ required: true }}
         defaultValue=""
       /> */}
-          </div>
-          <div className="popupFooter">
-            <div className="col-lg-12">
-              <div className="row">
-                <div className="col-lg-12">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    // onClick={onSubmit}
-                    // disabled={!shifts?.length || !inputs?.cash_amount}
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={onClose}
-                  >
-                    Cancel
-                  </button>
+            </div>
+            <div className="popupFooter">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      // onClick={onSubmit}
+                      // disabled={!shifts?.length || !inputs?.cash_amount}
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={onClose}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </form>
-        {/* </div> */}
-      </AlgaehModal>
+          </form>
+          {/* </div> */}
+        </AlgaehModal>
+      </Spin>
     </div>
   );
 }
