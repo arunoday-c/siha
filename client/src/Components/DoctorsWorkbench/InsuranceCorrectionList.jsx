@@ -153,6 +153,7 @@ const InsuranceCorrectionList = () => {
 
   const onCloseCAFModal = () => {
     setonCAFModal((pre) => !pre);
+    getLabOrderServiceForDoc(getValues());
     history.push("/InsuranceCorrectionList", null);
   };
   return (

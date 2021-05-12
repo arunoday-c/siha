@@ -368,36 +368,7 @@ export default function EditorEvents() {
         },
       });
     },
-    notifyInsuranceCorrection: ($this) => {
-      newAlgaehApi({
-        uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
-        module: "insurance",
-        method: "PUT",
-        data: {
-          hims_f_invoice_header_id: $this.props.invoiceId,
-          correction_requested: "C",
-        },
-      })
-        .then((result) => {
-          debugger;
-          if (sockets.connected) {
-            sockets.emit("corrected_insurance_notify", {
-              rowData: $this.props.requested_by,
-              // dataProps,
-            });
-          }
-          swalMessage({
-            title: "Request Updated successfully",
-            type: "success",
-          });
-        })
-        .catch((err) => {
-          swalMessage({
-            title: err.message,
-            type: "error",
-          });
-        });
-    },
+
     saveAndPrintUcaf: ($this, e) => {
       algaehApiCall({
         uri: "/ucaf/updateUcafDetails",
@@ -449,3 +420,32 @@ export default function EditorEvents() {
     },
   };
 }
+const notifyInsuranceCorrection = ($this) => {
+  newAlgaehApi({
+    uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
+    module: "insurance",
+    method: "PUT",
+    data: {
+      hims_f_invoice_header_id: $this.props.invoiceId,
+      correction_requested: "C",
+    },
+  })
+    .then((result) => {
+      if (sockets.connected) {
+        sockets.emit("corrected_insurance_notify", {
+          rowData: $this.props.requested_by,
+          // dataProps,
+        });
+      }
+      swalMessage({
+        title: "Request Updated successfully",
+        type: "success",
+      });
+    })
+    .catch((err) => {
+      swalMessage({
+        title: err.message,
+        type: "error",
+      });
+    });
+};

@@ -39,7 +39,6 @@ export default function NotificationList({
   }, [page, perPage, count]);
 
   async function callNotifications({ require_total_count }) {
-    debugger;
     try {
       setLoading(true);
       const result = await newAlgaehApi({
@@ -58,7 +57,7 @@ export default function NotificationList({
         setFirstLoad(false);
         throw error;
       });
-      debugger;
+
       setLoading(false);
       setFirstLoad(false);
       setData(result.data.records);
@@ -120,7 +119,6 @@ export default function NotificationList({
             },
           }}
           renderItem={(item) => {
-            debugger;
             return (
               <List.Item
                 key={item._id}
@@ -142,7 +140,7 @@ export default function NotificationList({
                         }}
                       />
                     )}
-                    {item.pageToRedirect ? (
+                    {item.pageToRedirect && isToday ? (
                       <Link>
                         <i
                           class="fas fa-external-link-alt"
