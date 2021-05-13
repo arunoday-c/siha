@@ -20,7 +20,7 @@ import variableJson from "../../utils/GlobalVariables.json";
 import { useMutation } from "react-query";
 // import sockets from "../../sockets";
 import moment from "moment";
-import Options from "../../Options.json";
+// import Options from "../../Options.json";
 import { newAlgaehApi } from "../../hooks";
 // import { setGlobal } from "../../utils/GlobalFunctions";
 import { useHistory, useLocation } from "react-router-dom";
@@ -88,11 +88,11 @@ const InsuranceCorrectionList = () => {
   // const [investigation_test_id, setInvestigation_test_id] = useState(null);
   // const [updateRow, setUpdateRow] = useState([]);
 
-  const changeDateFormat = (date) => {
-    if (date != null) {
-      return moment(date).format(Options.datetimeFormat);
-    }
-  };
+  // const changeDateFormat = (date) => {
+  //   if (date != null) {
+  //     return moment(date).format(Options.datetimeFormat);
+  //   }
+  // };
   const [getPatientCAF, { isLoading }] = useMutation(getPatientDetails, {
     onSuccess: (data) => {
       setDataProps(data);
@@ -287,7 +287,7 @@ const InsuranceCorrectionList = () => {
             onCancel={() => {
               onCloseCAFModal();
             }}
-            className={`algaehNewModal investigationAttachmentModal`}
+            className={`algaehNewModal cafCorrectionModal`}
           >
             {title === "ucaf" ? (
               <UcafEditor
@@ -343,10 +343,10 @@ const InsuranceCorrectionList = () => {
                                 setRequestedBy(row);
                                 setTitle(
                                   row.department_type === "N"
-                                    ? "ucaf"
+                                    ? "UCAF"
                                     : row.department_type === "D"
-                                    ? "dcaf"
-                                    : "ocaf"
+                                    ? "DCAF"
+                                    : "OCAF"
                                 );
                               }}
                             />
@@ -356,25 +356,62 @@ const InsuranceCorrectionList = () => {
                     },
                     others: {
                       filterable: false,
-                      maxWidth: 100,
+                      Width: 50,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
                   },
-
                   {
                     fieldName: "correction_requested",
                     label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                     displayTemplate: (row) => {
                       return row.correction_requested === "C" ? (
-                        <span className="badge badge-success">Seen</span>
+                        <span className="badge badge-success">Corrected</span>
                       ) : (
-                        <span className="badge badge-secondary">Unseen</span>
+                        <span className="badge badge-secondary">Pending</span>
                       );
                     },
 
                     others: {
-                      maxWidth: 150,
+                      width: 50,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "invoice_number",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
+                    ),
+                    disabled: true,
+                    others: {
+                      width: 120,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "invoice_date",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
+                    ),
+                    // displayTemplate: (row) => {
+                    //   return <span>{changeDateFormat(row.invoice_date)}</span>;
+                    // },
+                    disabled: true,
+                    others: {
+                      width: 120,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "primary_id_no",
+                    label: <AlgaehLabel label={{ forceLabel: "Primary ID" }} />,
+                    disabled: false,
+
+                    others: {
+                      width: 120,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
@@ -387,49 +424,21 @@ const InsuranceCorrectionList = () => {
                     disabled: false,
 
                     others: {
-                      maxWidth: 150,
+                      width: 120,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
                   },
                   {
-                    fieldName: "full_name",
+                    fieldName: "patient_name",
                     label: (
                       <AlgaehLabel label={{ fieldName: "patient_name" }} />
                     ),
                     disabled: true,
                     others: {
-                      minWidth: 180,
+                      width: 250,
                       resizable: false,
                       style: { textAlign: "left" },
-                    },
-                  },
-                  {
-                    fieldName: "invoice_number",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
-                    ),
-
-                    disabled: true,
-                    others: {
-                      resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                  },
-                  {
-                    fieldName: "invoice_date",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
-                    ),
-                    displayTemplate: (row) => {
-                      return <span>{changeDateFormat(row.ordered_date)}</span>;
-                    },
-                    disabled: true,
-
-                    others: {
-                      maxWidth: 150,
-                      resizable: false,
-                      style: { textAlign: "center" },
                     },
                   },
                   {

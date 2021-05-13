@@ -897,3 +897,10 @@
     cursor: pointer;
   }
 }
+
+.cafCorrectionModal {
+  width: 99vw !important;
+  .ant-modal-body {
+    max-height: 85vh !important;
+  }
+}

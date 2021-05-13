@@ -44,7 +44,7 @@ export default function RequestForCorrection({
         setLoading(false);
         AlgaehMessagePop({
           type: "success",
-          display: "Request For Correction Successful",
+          display: "Notified doctor Successfully",
         });
       })
       .catch((err) => {
@@ -70,47 +70,29 @@ export default function RequestForCorrection({
           maskClosable={true}
           onCancel={onClose}
           footer={null}
-          // className={`${userLanguage}_comp row algaehNewModal advanceRefundModal`}
+          className={`row algaehNewModal correctionModal`}
         >
           <form onSubmit={onSubmit}>
             <div className="col-12 popupInner margin-top-15">
-              <div className="col-6">
-                <AlgaehLabel>Claim Id</AlgaehLabel>
-                <h6>{rowData.invoice_number}</h6>
-              </div>
               <div className="col-12">
-                <textarea
-                  value={req_correction_reason}
-                  onChange={(e) => setReq_correction_reason(e.target.value)}
-                  name="req_correction_reason"
-                  maxLength={160}
-                />
-                <small className="float-right">
-                  Max Char. {req_correction_reason?.length ?? 0} /{160}
-                </small>
+                <div className="row">
+                  {" "}
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Enter Correction Reasons.",
+                    }}
+                  />
+                  <textarea
+                    value={req_correction_reason}
+                    onChange={(e) => setReq_correction_reason(e.target.value)}
+                    name="req_correction_reason"
+                    maxLength={160}
+                  />
+                  <small className="float-right">
+                    Max Char. {req_correction_reason?.length ?? 0} /{160}
+                  </small>
+                </div>
               </div>
-              {/* <Controller
-              name="req_correction_reason"
-              control={control}
-              // defaultValue={false}
-              rules={{ required: false }}
-              render={({ field }) => <textarea {...field} />}
-            /> */}
-
-              {/* <Controller
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <textarea
-           
-            // onBlur={onBlur}
-            onChange={value => onChange(value)}
-            value={value}
-          />
-        )}
-        name=""
-        rules={{ required: true }}
-        defaultValue=""
-      /> */}
             </div>
             <div className="popupFooter">
               <div className="col-lg-12">
@@ -122,7 +104,7 @@ export default function RequestForCorrection({
                       // onClick={onSubmit}
                       // disabled={!shifts?.length || !inputs?.cash_amount}
                     >
-                      Save
+                      Notify Doctor
                     </button>
                     <button
                       type="button"

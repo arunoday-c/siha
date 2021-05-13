@@ -583,7 +583,11 @@ export default {
       }
       _mysql
         .executeQuery({
-          query: `select S.department_type,V.visit_date,INH.patient_id,INH.visit_id,INH.requested_by,INH.invoice_number,INH.correction_req_date,INH.correction_req_date,INH.caf_type,INH.doctor_comment,INH.request_comment,INH.correction_requested,E.full_name as doctorName, P.patient_code, P.full_name as patient_name,V.visit_code
+          query: `select S.department_type,V.visit_date,INH.patient_id,INH.visit_id,INH.requested_by,
+          INH.invoice_number,date(INH.invoice_date) as invoice_date,INH.correction_req_date,
+          INH.correction_req_date,INH.caf_type,INH.doctor_comment,
+          INH.request_comment,INH.correction_requested,E.full_name as doctorName, 
+          P.patient_code, P.full_name as patient_name,P.primary_id_no,V.visit_code
           from hims_f_invoice_header INH 
           inner join hims_f_patient P on P.hims_d_patient_id=INH.patient_id
           inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=INH.visit_id

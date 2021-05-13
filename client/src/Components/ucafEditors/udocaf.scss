@@ -40,15 +40,21 @@
       margin-bottom: 10px;
     }
   }
-  #serviceGrid_Cntr{
-    .ReactTable{
-      max-height: 25vh!important;
+  #serviceGrid_Cntr {
+    .ReactTable {
+      max-height: 25vh !important;
     }
   }
 
-  #medicationGrd_Cntr{
-    .ReactTable{
-      max-height: 30vh!important;
+  #medicationGrd_Cntr {
+    .ReactTable {
+      max-height: 30vh !important;
     }
+  }
+}
+
+.correctionModal {
+  .algaeh-modal {
+    width: 65vw;
   }
 }

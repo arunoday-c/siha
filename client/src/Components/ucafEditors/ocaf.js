@@ -1397,7 +1397,8 @@ export default class OcafEditor extends Component {
               rowData={this.props.rowData}
               dataProps={this.props.dataProps}
               type={"ocaf"}
-              title={`Ocaf Correction ${this.props.rowData?.invoice_number}`}
+              // title={`Ocaf Correction ${this.props.rowData?.invoice_number}`}
+              title={`Enter correction reason for Invoice No. - ${this.props.rowData?.invoice_number}`}
             />
           ) : null}
           <div className=" popupFooter">

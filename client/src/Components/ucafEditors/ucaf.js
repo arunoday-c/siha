@@ -1214,7 +1214,7 @@ export default class UcafEditor extends Component {
               rowData={this.props.rowData}
               dataProps={this.props.dataProps}
               type={"ucaf"}
-              title={`Ucaf Correction ${this.props.rowData?.invoice_number}`}
+              title={`Enter correction reason for Invoice No. - ${this.props.rowData?.invoice_number}`}
             />
           ) : null}
           <div className=" popupFooter">
