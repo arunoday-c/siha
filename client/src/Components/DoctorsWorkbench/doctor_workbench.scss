@@ -902,5 +902,8 @@
   width: 99vw !important;
   .ant-modal-body {
     max-height: 85vh !important;
+    .popRightDiv {
+      max-height: 56vh !important;
+    }
   }
 }

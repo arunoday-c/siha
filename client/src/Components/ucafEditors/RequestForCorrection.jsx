@@ -8,6 +8,7 @@ import {
 // import { useForm, Controller } from "react-hook-form";
 import sockets from "../../sockets";
 import { newAlgaehApi } from "../../hooks";
+import { swalMessage } from "../../utils/algaehApiCall";
 export default function RequestForCorrection({
   title,
   type,
@@ -20,46 +21,57 @@ export default function RequestForCorrection({
   const [loading, setLoading] = useState(false);
 
   const onSubmit = (e) => {
-    setLoading(true);
     e.preventDefault();
-    newAlgaehApi({
-      uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
-      module: "insurance",
-      method: "PUT",
-      data: {
-        hims_f_invoice_header_id: rowData.hims_f_invoice_header_id,
-        request_comment: req_correction_reason,
-        correction_requested: "R",
-      },
-    })
-      .then((result) => {
-        if (sockets.connected) {
-          sockets.emit("request_insurance_correction", {
-            type,
-            rowData,
-            // dataProps,
-          });
-        }
-        onClose();
-        setLoading(false);
-        AlgaehMessagePop({
-          type: "success",
-          display: "Notified doctor Successfully",
-        });
-      })
-      .catch((err) => {
-        setLoading(false);
-        AlgaehMessagePop({
-          type: "error",
-          display: err.message,
-        });
+    if (req_correction_reason.length <= 0) {
+      swalMessage({
+        type: "error",
+        title: "Please Enter Correction Reason",
       });
+      return;
+    } else {
+      debugger;
+      setLoading(true);
+      newAlgaehApi({
+        uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
+        module: "insurance",
+        method: "PUT",
+        data: {
+          hims_f_invoice_header_id: rowData.hims_f_invoice_header_id,
+          request_comment: req_correction_reason,
+          correction_requested: "R",
+        },
+      })
+        .then((result) => {
+          // AlgaehMessagePop({
+          //   type: "success",
+          //   display: "Notified doctor Successfully",
+          // });
+          swalMessage({
+            type: "success",
+            title: "Notified doctor Successfully",
+          });
+          if (sockets.connected) {
+            sockets.emit("request_insurance_correction", {
+              type,
+              rowData,
+              // dataProps,
+            });
+          }
+
+          setLoading(false);
+
+          onClose();
+        })
+        .catch((err) => {
+          setLoading(false);
+          AlgaehMessagePop({
+            type: "error",
+            display: err.message,
+          });
+        });
+    }
   };
-  //   const {
-  //     handleSubmit,
-  //     control,
-  //     formState: { errors },
-  //   } = useForm();
+
   return (
     <div>
       <Spin spinning={loading}>

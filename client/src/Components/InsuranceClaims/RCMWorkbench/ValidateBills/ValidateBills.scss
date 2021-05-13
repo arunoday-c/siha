@@ -1,15 +1,22 @@
-#ClaimGrid_Cntr {
-  .ReactTable {
-    max-height: 20vh !important;
+.claimValidationModal {
+  .popRightDiv {
+    max-height: 80vh !important;
   }
-}
-#invoiceDetailGrid_Cntr {
-  .ReactTable {
-    max-height: 41vh !important;
+
+  #ClaimGrid_Cntr {
+    .ReactTable {
+      max-height: 20vh !important;
+    }
   }
-}
-#icd_bill_Grid {
-  .ReactTable {
-    max-height: 27vh !important;
+  #invoiceDetailGrid_Cntr {
+    .ReactTable {
+      max-height: 52vh !important;
+      margin-bottom: 15px;
+    }
+  }
+  #icd_bill_Grid {
+    .ReactTable {
+      max-height: 27vh !important;
+    }
   }
 }

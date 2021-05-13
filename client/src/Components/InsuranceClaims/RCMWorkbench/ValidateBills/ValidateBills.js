@@ -543,473 +543,280 @@ class ValidateBills extends PureComponent {
         ? this.state.invoices.card_number
         : null;
     return (
-      <AlgaehModalPopUp
-        title="Claim Validation"
-        events={{
-          onClose: this.props.closeModal,
-        }}
-        openPopup={this.props.openPopup}
-      >
-        <div className="popupInner">
-          {/* {JSON.stringify(this.props.data)} */}
-          <div className="popRightDiv">
-            <div className="row">
-              <div className="col-8">
-                <div id="ClaimGrid_Cntr">
-                  <div className="col-2 form-group">
-                    <label className="style_Label ">Validation Status</label>
-                    <h6>
-                      <span>
-                        {invoices[0].claim_validated === "V" ? (
-                          <span className="badge badge-success">Validated</span>
-                        ) : invoices[0].claim_validated === "E" ? (
-                          <span className="badge badge-danger">Error</span>
-                        ) : invoices[0].claim_validated === "X" ? (
-                          <span className="badge badge-info">
-                            XML Generated
-                          </span>
-                        ) : invoices[0].claim_validated === "P" ? (
-                          <span className="badge badge-warning">Pending</span>
-                        ) : (
-                          "----"
-                        )}
-                      </span>
-                    </h6>
-                  </div>
-                  <div className="col-3">
-                    <label className="style_Label ">Claim Status</label>
-                    <h6>
-                      <span>
-                        {invoices[0].claim_status === "S1" ? (
-                          <span className="badge badge-success">Submitted</span>
-                        ) : invoices[0].claim_status === "S2" ? (
-                          <span className="badge badge-success">
-                            Re Submitted 1
-                          </span>
-                        ) : invoices[0].claim_status === "S3" ? (
-                          <span className="badge badge-success">
-                            Re Submitted 2
-                          </span>
-                        ) : invoices[0].claim_status === "R1" ? (
-                          <span className="badge badge-info">Remitted 1</span>
-                        ) : invoices[0].claim_status === "R2" ? (
-                          <span className="badge badge-info">Remitted 2</span>
-                        ) : invoices[0].claim_status === "R3" ? (
-                          <span className="badge badge-info">Remitted 3</span>
-                        ) : invoices[0].claim_status === "P" ? (
-                          <span className="badge badge-warning">Pending</span>
-                        ) : (
-                          "----"
-                        )}
-                      </span>
-                    </h6>
-                  </div>
-                  <div className="row-3">
-                    <label className="style_Label ">Visit Code</label>
-                    <h6>{invoices[0].visit_code}</h6>
-                    <label className="style_Label ">Patient Name</label>
-                    <h6>{invoices[0].patient_name}</h6>
-                    <label className="style_Label ">Invoice Number</label>
-                    <h6>{invoices[0].invoice_number}</h6>
-                    <label className="style_Label ">Gross Amount</label>
-                    <h6>{invoices[0].gross_amount}</h6>
-                    <label className="style_Label ">Discount Amount Code</label>
-                    <h6>{invoices[0].discount_amount}</h6>
-                    <label className="style_Label ">
-                      Patient Responsibility
-                    </label>
-                    <h6>{invoices[0].patient_resp}</h6>
-                    <label className="style_Label ">Patient Tax</label>
-                    <h6>{invoices[0].patient_tax}</h6>
-                  </div>
-                  {/* <AlgaehDataGrid
-                    id="ClaimGrid"
-                    columns={[
-                      // {
-                      //   fieldName: "actions",
-                      //   label: "Select",
-                      //   displayTemplate: row => {
-                      //     return (
-                      //       <div className="customCheckbox">
-                      //         <input
-                      //           type="checkbox"
-                      //           onChange={() => {
-                      //             this.setState({
-                      //               invoice_details: row.invoiceDetails
-                      //             });
-                      //           }}
-                      //         />
-                      //       </div>
-                      //     );
-                      //   }
-                      // },
-                      {
-                        fieldName: "claim_validated",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Validation Status" }}
-                          />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.claim_validated === "V" ? (
-                                <span className="badge badge-success">
-                                  Validated
-                                </span>
-                              ) : row.claim_validated === "E" ? (
-                                <span className="badge badge-danger">
-                                  Error
-                                </span>
-                              ) : row.claim_validated === "X" ? (
-                                <span className="badge badge-info">
-                                  XML Generated
-                                </span>
-                              ) : row.claim_validated === "P" ? (
-                                <span className="badge badge-warning">
-                                  Pending
-                                </span>
-                              ) : (
-                                "----"
-                              )}
+      <>
+        <AlgaehModalPopUp
+          title="Claim Validation"
+          events={{
+            onClose: this.props.closeModal,
+          }}
+          openPopup={this.props.openPopup}
+          class={`claimValidationModal`}
+        >
+          {this.renderUCAFReport()}
+          {this.renderDCAFReport()}
+          {this.renderOCAFReport()}
+
+          <div className="popupInner">
+            {/* {JSON.stringify(this.props.data)} */}
+            <div className="popRightDiv">
+              <div className="row">
+                <div className="col-12">
+                  <div className="row">
+                    <div className="col">
+                      <label className="style_Label ">Validation Status</label>
+                      <h6>
+                        {" "}
+                        <span>
+                          {invoices[0].claim_validated === "V" ? (
+                            <span className="badge badge-success">
+                              Validated
                             </span>
-                          );
-                        },
-                      },
-                      {
-                        fieldName: "claim_status",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Claim Status" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.claim_status === "S1" ? (
-                                <span className="badge badge-success">
-                                  Submitted
-                                </span>
-                              ) : row.claim_status === "S2" ? (
-                                <span className="badge badge-success">
-                                  Re Submitted 1
-                                </span>
-                              ) : row.claim_status === "S3" ? (
-                                <span className="badge badge-success">
-                                  Re Submitted 2
-                                </span>
-                              ) : row.claim_status === "R1" ? (
-                                <span className="badge badge-info">
-                                  Remitted 1
-                                </span>
-                              ) : row.claim_status === "R2" ? (
-                                <span className="badge badge-info">
-                                  Remitted 2
-                                </span>
-                              ) : row.claim_status === "R3" ? (
-                                <span className="badge badge-info">
-                                  Remitted 3
-                                </span>
-                              ) : row.claim_status === "P" ? (
-                                <span className="badge badge-warning">
-                                  Pending
-                                </span>
-                              ) : (
-                                "----"
-                              )}
+                          ) : invoices[0].claim_validated === "E" ? (
+                            <span className="badge badge-danger">Error</span>
+                          ) : invoices[0].claim_validated === "X" ? (
+                            <span className="badge badge-info">
+                              XML Generated
                             </span>
-                          );
-                        },
-                      },
-                      // {
-                      //   fieldName: "status",
-                      //   label: (
-                      //     <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
-                      //   ),
-                      //   displayTemplate: row => {
-                      //     return <span>Paid</span>;
-                      //   }
-                      // },
-                      // {
-                      //   fieldName: "claim_status",
-                      //   label: (
-                      //     <AlgaehLabel label={{ forceLabel: "Claim Status" }} />
-                      //   ),
-                      //   displayTemplate: row => {
-                      //     return <span>Paid</span>;
-                      //   }
-                      // },
-                      {
-                        fieldName: "visit_code",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Visit Code" }} />
-                        ),
-                      },
-                      {
-                        fieldName: "patient_name",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
-                        ),
-                        others: {
-                          minWidth: 250,
-                        },
-                      },
-                      {
-                        fieldName: "invoice_number",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Invoice Number" }}
-                          />
-                        ),
-                        others: {
-                          minWidth: 150,
-                        },
-                      },
-                      {
-                        fieldName: "gross_amount",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
-                        ),
-                      },
-                      {
-                        fieldName: "discount_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Discount Amount" }}
-                          />
-                        ),
-                      },
-                      {
-                        fieldName: "patient_resp",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Patient Responsibility" }}
-                          />
-                        ),
-                      },
-                      {
-                        fieldName: "patient_tax",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
-                        ),
-                      },
-                      {
-                        fieldName: "patient_payable",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Patient Payable" }}
-                          />
-                        ),
-                      },
-                      {
-                        fieldName: "company_resp",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Company Responsibility" }}
-                          />
-                        ),
-                      },
-                      {
-                        fieldName: "company_tax",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
-                        ),
-                      },
-                      {
-                        fieldName: "company_payable",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Company Payable" }}
-                          />
-                        ),
-                      },
-                    ]}
-                    keyId="id"
-                    dataSource={{
-                      data: invoices,
-                    }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 2 }}
-                    events={{
-                      onDelete: (row) => {},
-                      onEdit: (row) => {},
-                      onDone: (row) => {},
-                    }}
-                  />
-                  */}
+                          ) : invoices[0].claim_validated === "P" ? (
+                            <span className="badge badge-warning">Pending</span>
+                          ) : (
+                            "----"
+                          )}
+                        </span>
+                      </h6>
+                    </div>
+
+                    <div className="col">
+                      <label className="style_Label ">Claim Status</label>
+                      <h6>
+                        {" "}
+                        <span>
+                          {invoices[0].claim_status === "S1" ? (
+                            <span className="badge badge-success">
+                              Submitted
+                            </span>
+                          ) : invoices[0].claim_status === "S2" ? (
+                            <span className="badge badge-success">
+                              Re Submitted 1
+                            </span>
+                          ) : invoices[0].claim_status === "S3" ? (
+                            <span className="badge badge-success">
+                              Re Submitted 2
+                            </span>
+                          ) : invoices[0].claim_status === "R1" ? (
+                            <span className="badge badge-info">Remitted 1</span>
+                          ) : invoices[0].claim_status === "R2" ? (
+                            <span className="badge badge-info">Remitted 2</span>
+                          ) : invoices[0].claim_status === "R3" ? (
+                            <span className="badge badge-info">Remitted 3</span>
+                          ) : invoices[0].claim_status === "P" ? (
+                            <span className="badge badge-warning">Pending</span>
+                          ) : (
+                            "----"
+                          )}
+                        </span>
+                      </h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">Visit Code</label>
+                      <h6>{invoices[0].visit_code}</h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">Visit Date</label>
+                      <h6>{invoices[0].visit_date}</h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">Primary ID</label>
+                      <h6>{invoices[0].primary_id_no}</h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">Patient Code</label>
+                      <h6>{invoices[0].patient_code}</h6>
+                    </div>
+                    <div className="col-4">
+                      <label className="style_Label ">Patient Name</label>
+                      <h6>{invoices[0].patient_name}</h6>
+                    </div>
+                  </div>
+                  <hr />
                 </div>
-                {this.props.mode === "R" ? (
-                  <UpdateStatement
-                    data={{
-                      ...this.state.invoices,
-                      insurance_statement_id: this.props.insuranceId,
-                    }}
-                    component={true}
-                  />
-                ) : (
-                  <div id="invoiceDetailGrid_Cntr">
-                    <AlgaehDataGrid
-                      id="invoiceDetailGrid"
-                      columns={[
-                        {
-                          fieldName: "service_type_code",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Service Code" }}
-                            />
-                          ),
-                          editorTemplate: (row) => {
-                            return <span>{row.service_type_code}</span>;
-                          },
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "service_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Service Type" }}
-                            />
-                          ),
-                          editorTemplate: (row) => {
-                            return <span>{row.service_type}</span>;
-                          },
-                          disabled: true,
-                          others: { minWidth: 150 },
-                        },
-                        {
-                          fieldName: "service_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Service Name" }}
-                            />
-                          ),
-                          // displayTemplate: (row) => {
-                          //   return <span>{row.service_name}</span>;
-                          // },
-                          editorTemplate: (row) => {
-                            return <span>{row.service_name}</span>;
-                          },
-                          disabled: true,
-                          others: { minWidth: 200 },
-                        },
-                        {
-                          fieldName: "cpt_code",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "CPT Code" }} />
-                          ),
-                          editorTemplate: (row) => {
-                            return (
-                              <div className="row">
-                                <div className="col globalSearchCntr noLabel">
-                                  <h6 onClick={this.cptSearch.bind(this, row)}>
-                                    {row.cpt_code ? row.cpt_code : "CPT Code"}
-                                    <i className="fas fa-search fa-lg"></i>
-                                  </h6>
-                                </div>
-                              </div>
-                            );
-                          },
-                          others: { minWidth: 150 },
-                        },
-                        {
-                          fieldName: "quantity",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "gross_amount",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Gross Amount" }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "discount_amount",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Discount Amount" }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "patient_resp",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Patient Responsibility" }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "patient_tax",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Patient Tax" }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "patient_payable",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Patient Payable" }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "company_resp",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Company Responsibility" }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "company_tax",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Company Tax" }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                        {
-                          fieldName: "company_payable",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Company Payable" }}
-                            />
-                          ),
-                          disabled: true,
-                        },
-                      ]}
-                      keyId="id"
-                      dataSource={{
-                        data: invoice_details,
-                        // data: this.state.invoice_details
+                <div className="col-8">
+                  {this.props.mode === "R" ? (
+                    <UpdateStatement
+                      data={{
+                        ...this.state.invoices,
+                        insurance_statement_id: this.props.insuranceId,
                       }}
-                      isEditable={
-                        claim_validated === "P" || claim_status !== "P"
-                          ? true
-                          : false
-                      }
-                      actions={{ allowDelete: false }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onDelete: (row) => {},
-                        onEdit: (row) => {},
-                        onDone: this.updateInvoiceDetail.bind(this),
-                      }}
+                      component={true}
                     />
-                  </div>
-                )}
-                {/* <div id="invoiceDetailGrid_Cntr">
+                  ) : (
+                    <div id="invoiceDetailGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="invoiceDetailGrid"
+                        columns={[
+                          {
+                            fieldName: "service_type_code",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Service Code" }}
+                              />
+                            ),
+                            editorTemplate: (row) => {
+                              return <span>{row.service_type_code}</span>;
+                            },
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "service_type",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Service Type" }}
+                              />
+                            ),
+                            editorTemplate: (row) => {
+                              return <span>{row.service_type}</span>;
+                            },
+                            disabled: true,
+                            others: { minWidth: 150 },
+                          },
+                          {
+                            fieldName: "service_name",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Service Name" }}
+                              />
+                            ),
+                            // displayTemplate: (row) => {
+                            //   return <span>{row.service_name}</span>;
+                            // },
+                            editorTemplate: (row) => {
+                              return <span>{row.service_name}</span>;
+                            },
+                            disabled: true,
+                            others: { minWidth: 200 },
+                          },
+                          {
+                            fieldName: "cpt_code",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "CPT Code" }} />
+                            ),
+                            editorTemplate: (row) => {
+                              return (
+                                <div className="row">
+                                  <div className="col globalSearchCntr noLabel">
+                                    <h6
+                                      onClick={this.cptSearch.bind(this, row)}
+                                    >
+                                      {row.cpt_code ? row.cpt_code : "CPT Code"}
+                                      <i className="fas fa-search fa-lg"></i>
+                                    </h6>
+                                  </div>
+                                </div>
+                              );
+                            },
+                            others: { minWidth: 150 },
+                          },
+                          {
+                            fieldName: "quantity",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                            ),
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "gross_amount",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Gross Amount" }}
+                              />
+                            ),
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "discount_amount",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Discount Amount" }}
+                              />
+                            ),
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "patient_resp",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Patient Responsibility" }}
+                              />
+                            ),
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "patient_tax",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Patient Tax" }}
+                              />
+                            ),
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "patient_payable",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Patient Payable" }}
+                              />
+                            ),
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "company_resp",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Company Responsibility" }}
+                              />
+                            ),
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "company_tax",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Company Tax" }}
+                              />
+                            ),
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "company_payable",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Company Payable" }}
+                              />
+                            ),
+                            disabled: true,
+                          },
+                        ]}
+                        keyId="id"
+                        dataSource={{
+                          data: invoice_details,
+                          // data: this.state.invoice_details
+                        }}
+                        isEditable={
+                          claim_validated === "P" || claim_status !== "P"
+                            ? true
+                            : false
+                        }
+                        actions={{ allowDelete: false }}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onDelete: (row) => {},
+                          onEdit: (row) => {},
+                          onDone: this.updateInvoiceDetail.bind(this),
+                        }}
+                      />
+                    </div>
+                  )}
+                  {/* <div id="invoiceDetailGrid_Cntr">
                   <AlgaehDataGrid
                     id="invoiceDetailGrid"
                     columns={[
@@ -1160,153 +967,86 @@ class ValidateBills extends PureComponent {
                     }}
                   />
                 </div> */}
-              </div>
-
-              <div className="col-4">
-                <div className="row">
-                  <div className="col-12  margin-top-15">
-                    <div className="row">
-                      <div className="col-lg-6 insurCrdImg">
-                        <AlgaehFileUploader
-                          ref={(patInsuranceFrontImg) => {
-                            this.patInsuranceFrontImg = patInsuranceFrontImg;
-                          }}
-                          noImage="insurance-card-front"
-                          name="patInsuranceFrontImg"
-                          accept="image/*"
-                          textAltMessage="Front Side"
-                          serviceParameters={{
-                            uniqueID: card_number + "_front",
-                            fileType: "Patients",
-                            processDelay: this.imageDetails.bind(
-                              this,
-                              "patInsuranceFrontImg"
-                            ),
-                          }}
-                          renderPrevState={this.state.patInsuranceFrontImg}
-                          // forceRefresh={this.state.forceRefresh}
-                        />
-                      </div>
-
-                      <div className="col-lg-6 insurCrdImg">
-                        <AlgaehFileUploader
-                          ref={(patInsuranceBackImg) => {
-                            this.patInsuranceBackImg = patInsuranceBackImg;
-                          }}
-                          noImage="insurance-card-back"
-                          name="patInsuranceBackImg"
-                          accept="image/*"
-                          textAltMessage="Back Side"
-                          serviceParameters={{
-                            uniqueID: card_number + "_back",
-                            fileType: "Patients",
-                            processDelay: this.imageDetails.bind(
-                              this,
-                              "patInsuranceBackImg"
-                            ),
-                          }}
-                          renderPrevState={this.state.patInsuranceBackImg}
-                          forceRefresh={this.state.forceRefresh}
-                        />
-                        <div />
-                      </div>
+                  <div className="row">
+                    <div className="col">
+                      <label className="style_Label ">Gross Amount</label>
+                      <h6>{invoices[0].gross_amount}</h6>
                     </div>
-                    <hr></hr>
+                    <div className="col">
+                      <label className="style_Label ">Discount</label>
+                      <h6>{invoices[0].discount_amount}</h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">
+                        Company Responsibility
+                      </label>
+                      <h6>{invoices[0].company_resp}</h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">Company Tax</label>
+                      <h6>{invoices[0].company_tax}</h6>
+                    </div>
+                    <div className="col">
+                      <label className="style_Label ">Company Payable</label>
+                      <h6>{invoices[0].company_payable}</h6>
+                    </div>
                   </div>
-                  {/* <div className="col-12 margin-top-15">
-                    <div className="image-drop-area">
-                      <Dropzone
-                        onDrop={() => {}}
-                        id="insurance"
-                        className="dropzone"
-                        accept="image/*"
-                        multiple={false}
-                        name="image"
-                      >
-                        <img
-                          src={this.state.img}
-                          alt="Report Image"
-                          onError={e => {
-                            e.target.src = noImage;
-                          }}
-                        />
+                </div>
 
-                        <div className="attach-design text-center">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Photo"
+                <div className="col-4">
+                  <div className="row">
+                    <div className="col-12  ">
+                      <div className="row">
+                        <div className="col-lg-6 insurCrdImg">
+                          <AlgaehFileUploader
+                            ref={(patInsuranceFrontImg) => {
+                              this.patInsuranceFrontImg = patInsuranceFrontImg;
                             }}
+                            noImage="insurance-card-front"
+                            name="patInsuranceFrontImg"
+                            accept="image/*"
+                            textAltMessage="Front Side"
+                            serviceParameters={{
+                              uniqueID: card_number + "_front",
+                              fileType: "Patients",
+                              processDelay: this.imageDetails.bind(
+                                this,
+                                "patInsuranceFrontImg"
+                              ),
+                            }}
+                            renderPrevState={this.state.patInsuranceFrontImg}
+                            // forceRefresh={this.state.forceRefresh}
                           />
                         </div>
-                        <div
-                          style={{
-                            width: this.state.percent + "%",
-                            height: 3,
-                            backgroundColor: "#E1AE54"
-                          }}
-                        />
-                      </Dropzone>
-                    </div>
-                  </div> */}
-                  {claim_validated === "P" ? (
-                    <>
-                      <div className="col globalSearchCntr">
-                        <AlgaehLabel
-                          label={{ forceLabel: "Search ICD Code" }}
-                        />
-                        <h6 onClick={this.icdSearch.bind(this)}>
-                          {this.state.icd_code
-                            ? this.state.icd_code
-                            : "Search ICD Code"}
-                          <i className="fas fa-search fa-lg"></i>
-                        </h6>
-                      </div>
 
-                      {/* <AlagehFormGroup
-                        div={{ className: "col  margin-top-15 " }}
-                        label={{
-                          forceLabel: "ICD Code",
-                          isImp: false,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "icd_code",
-                          others: {
-                            disabled: true,
-                          },
-                          value: this.state.icd_code,
-                          events: {
-                            // onChange: this.texthandle.bind(this)
-                          },
-                        }}
-                      />
-                      <div
-                        className="col-2"
-                        style={{ padding: 0, paddingTop: "39px" }}
-                      >
-                        <i
-                          onClick={this.icdSearch.bind(this)}
-                          className="fas fa-search"
-                          style={{
-                            cursor: "pointer",
-                          }}
-                        />
-                      </div> */}
-                      <div className="col-3">
-                        <button
-                          onClick={this.addICDtoInvoice.bind(this)}
-                          className="btn btn-primary margin-top-15"
-                          style={{ marginTop: 21 }}
-                        >
-                          Add
-                        </button>
+                        <div className="col-lg-6 insurCrdImg">
+                          <AlgaehFileUploader
+                            ref={(patInsuranceBackImg) => {
+                              this.patInsuranceBackImg = patInsuranceBackImg;
+                            }}
+                            noImage="insurance-card-back"
+                            name="patInsuranceBackImg"
+                            accept="image/*"
+                            textAltMessage="Back Side"
+                            serviceParameters={{
+                              uniqueID: card_number + "_back",
+                              fileType: "Patients",
+                              processDelay: this.imageDetails.bind(
+                                this,
+                                "patInsuranceBackImg"
+                              ),
+                            }}
+                            renderPrevState={this.state.patInsuranceBackImg}
+                            forceRefresh={this.state.forceRefresh}
+                          />
+                          <div />
+                        </div>
                       </div>
-                    </>
-                  ) : (
-                    claim_validated === "V" &&
-                    claim_status !== "P" && (
+                    </div>
+
+                    {claim_validated === "P" ? (
                       <>
-                        <div className="col globalSearchCntr">
+                        <div className="col globalSearchCntr form-group">
                           <AlgaehLabel
                             label={{ forceLabel: "Search ICD Code" }}
                           />
@@ -1317,6 +1057,7 @@ class ValidateBills extends PureComponent {
                             <i className="fas fa-search fa-lg"></i>
                           </h6>
                         </div>
+
                         <div className="col-3">
                           <button
                             onClick={this.addICDtoInvoice.bind(this)}
@@ -1327,118 +1068,145 @@ class ValidateBills extends PureComponent {
                           </button>
                         </div>
                       </>
-                    )
-                  )}
+                    ) : (
+                      claim_validated === "V" &&
+                      claim_status !== "P" && (
+                        <>
+                          <div className="col globalSearchCntr">
+                            <AlgaehLabel
+                              label={{ forceLabel: "Search ICD Code" }}
+                            />
+                            <h6 onClick={this.icdSearch.bind(this)}>
+                              {this.state.icd_code
+                                ? this.state.icd_code
+                                : "Search ICD Code"}
+                              <i className="fas fa-search fa-lg"></i>
+                            </h6>
+                          </div>
+                          <div className="col-3">
+                            <button
+                              onClick={this.addICDtoInvoice.bind(this)}
+                              className="btn btn-primary margin-top-15"
+                              style={{ marginTop: 21 }}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        </>
+                      )
+                    )}
 
-                  <div className="col-12" id="icd_bill_cntr">
-                    <AlgaehDataGrid
-                      id="icd_bill_Grid"
-                      columns={[
-                        {
-                          fieldName: "actions",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Action" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return (
-                              <span>
-                                <i
-                                  style={{
-                                    pointerEvents:
-                                      claim_validated === "P" ? "" : "none",
-                                    opacity:
-                                      claim_validated === "P" ? "" : "0.1",
-                                  }}
-                                  className="fas fa-trash-alt"
+                    <div className="col-12" id="icd_bill_cntr">
+                      <AlgaehDataGrid
+                        id="icd_bill_Grid"
+                        columns={[
+                          {
+                            fieldName: "actions",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                            ),
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  <i
+                                    style={{
+                                      pointerEvents:
+                                        claim_validated === "P" ? "" : "none",
+                                      opacity:
+                                        claim_validated === "P" ? "" : "0.1",
+                                    }}
+                                    className="fas fa-trash-alt"
+                                    onClick={this.deleteICDfromInvoice.bind(
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                </span>
+                              );
+                            },
+                            editorTemplate: (row) => {
+                              return (
+                                <span
                                   onClick={this.deleteICDfromInvoice.bind(
                                     this,
                                     row
                                   )}
-                                />
-                              </span>
-                            );
+                                >
+                                  <i className="fas fa-trash-alt" />
+                                </span>
+                              );
+                            },
                           },
-                          editorTemplate: (row) => {
-                            return (
-                              <span
-                                onClick={this.deleteICDfromInvoice.bind(
-                                  this,
-                                  row
-                                )}
-                              >
-                                <i className="fas fa-trash-alt" />
-                              </span>
-                            );
+                          // {
+                          //   fieldName: "icd_type",
+                          //   label: <AlgaehLabel label={{ forceLabel: "Type" }} />,
+                          // },
+                          {
+                            fieldName: "icd_code",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Code" }} />
+                            ),
                           },
-                        },
-                        // {
-                        //   fieldName: "icd_type",
-                        //   label: <AlgaehLabel label={{ forceLabel: "Type" }} />,
-                        // },
-                        {
-                          fieldName: "icd_code",
-                          label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
-                        },
-                        {
-                          fieldName: "icd_description",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Description" }}
-                            />
-                          ),
-                        },
-                      ]}
-                      keyId="id"
-                      dataSource={{
-                        data: this.state.icds,
-                      }}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onDelete: (row) => {},
-                        onEdit: (row) => {},
-                        onDone: (row) => {},
-                      }}
-                    />
+                          {
+                            fieldName: "icd_description",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Description" }}
+                              />
+                            ),
+                          },
+                        ]}
+                        keyId="id"
+                        dataSource={{
+                          data: this.state.icds,
+                        }}
+                        isEditable={false}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onDelete: (row) => {},
+                          onEdit: (row) => {},
+                          onDone: (row) => {},
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-lg-12 popupFooter">
-          {claim_status === "P" ? (
+          <div className="col-lg-12 popupFooter">
+            {claim_status === "P" ? (
+              <button
+                onClick={this.validateInvoice.bind(this)}
+                className="btn btn-primary"
+                disabled={claim_validated === "V" || claim_validated === "X"}
+              >
+                VALIDATE
+              </button>
+            ) : null}
+
             <button
-              onClick={this.validateInvoice.bind(this)}
-              className="btn btn-primary"
-              disabled={claim_validated === "V" || claim_validated === "X"}
+              onClick={this.generateReport.bind(
+                this,
+                "cashInvoice",
+                "Cash Invoice"
+              )}
+              className="btn btn-default"
             >
-              VALIDATE
+              Cash Invoice
             </button>
-          ) : null}
 
-          <button
-            onClick={this.generateReport.bind(
-              this,
-              "cashInvoice",
-              "Cash Invoice"
-            )}
-            className="btn btn-default"
-          >
-            Cash Invoice
-          </button>
-
-          <button
-            className="btn btn-default"
-            onClick={this.generateReport.bind(
-              this,
-              "creditInvoice",
-              "Credit Invoice"
-            )}
-          >
-            Credit Invoice
-          </button>
-          {/* <button
+            <button
+              className="btn btn-default"
+              onClick={this.generateReport.bind(
+                this,
+                "creditInvoice",
+                "Credit Invoice"
+              )}
+            >
+              Credit Invoice
+            </button>
+            {/* <button
             className="btn btn-default"
             onClick={this.generatePharacyCreditInvoiceReport.bind(
               this,
@@ -1449,65 +1217,63 @@ class ValidateBills extends PureComponent {
             Pharmacy Credit Invoice
           </button> */}
 
-          <button
-            onClick={this.generateReport.bind(
-              this,
-              "pharmacyCashInvoice",
-              "Pharmacy Cash Invoice"
-            )}
-            className="btn btn-default"
-          >
-            POS Cash Invoice
-          </button>
+            <button
+              onClick={this.generateReport.bind(
+                this,
+                "pharmacyCashInvoice",
+                "Pharmacy Cash Invoice"
+              )}
+              className="btn btn-default"
+            >
+              POS Cash Invoice
+            </button>
 
-          <button
-            className="btn btn-default"
-            onClick={this.generateReport.bind(
-              this,
-              "pharmacyCreditInvoice",
-              "Pharmacy Credit Invoice"
-            )}
-          >
-            POS Credit Invoice
-          </button>
+            <button
+              className="btn btn-default"
+              onClick={this.generateReport.bind(
+                this,
+                "pharmacyCreditInvoice",
+                "Pharmacy Credit Invoice"
+              )}
+            >
+              POS Credit Invoice
+            </button>
 
-          {this.state.invoices.department_type === "N" ? (
-            <button
-              onClick={this.openUCAFReport.bind(this)}
-              className="btn btn-default"
-            >
-              UCAF
-            </button>
-          ) : this.state.invoices.department_type === "O" ? (
-            <button
-              className="btn btn-default"
-              onClick={this.openOCAFReport.bind(this)}
-            >
-              OCAF
-            </button>
-          ) : this.state.invoices.department_type === "D" ? (
-            <button
-              className="btn btn-default"
-              onClick={this.openDCAFReport.bind(this)}
-            >
-              DCAF
-            </button>
-          ) : null}
-          {this.state.invoices.department_type === "N" ||
-          this.state.invoices.department_type === "O" ||
-          this.state.invoices.department_type === "D" ? (
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={this.openRequestCorrectionModal.bind(this, this)}
-            >
-              Request For Insurace Correction
-            </button>
-          ) : null}
-        </div>
-        {this.renderUCAFReport()}
-        {this.renderDCAFReport()}
-        {this.renderOCAFReport()}
+            {this.state.invoices.department_type === "N" ? (
+              <button
+                onClick={this.openUCAFReport.bind(this)}
+                className="btn btn-default"
+              >
+                UCAF
+              </button>
+            ) : this.state.invoices.department_type === "O" ? (
+              <button
+                className="btn btn-default"
+                onClick={this.openOCAFReport.bind(this)}
+              >
+                OCAF
+              </button>
+            ) : this.state.invoices.department_type === "D" ? (
+              <button
+                className="btn btn-default"
+                onClick={this.openDCAFReport.bind(this)}
+              >
+                DCAF
+              </button>
+            ) : null}
+            {this.state.invoices.department_type === "N" ||
+            this.state.invoices.department_type === "O" ||
+            this.state.invoices.department_type === "D" ? (
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.openRequestCorrectionModal.bind(this, this)}
+              >
+                Notify for Correction
+              </button>
+            ) : null}
+          </div>
+        </AlgaehModalPopUp>
         {this.state.correctionModal ? (
           <RequestForCorrection
             visible={this.state.correctionModal}
@@ -1536,7 +1302,7 @@ class ValidateBills extends PureComponent {
             } Correction ${this.state.invoices?.invoice_number}`}
           />
         ) : null}
-      </AlgaehModalPopUp>
+      </>
     );
   }
 }

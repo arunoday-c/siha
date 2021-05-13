@@ -59,6 +59,7 @@ const InsuranceCorrectionList = () => {
   // const today = moment().format("YYYY/MM/DD");
   useEffect(() => {
     if (location.state) {
+      debugger;
       const { data, title } = location.state;
       setTitle(title);
       setRequestedBy(data);
@@ -290,7 +291,25 @@ const InsuranceCorrectionList = () => {
             className={`algaehNewModal cafCorrectionModal`}
           >
             <>
-              <div>Reason for Correction: {requestedBy.request_comment}</div>
+              <div className="alert alert-warning">
+                <div className="row">
+                  <div className="col">
+                    <p>
+                      <b>Reason for Correction:</b>
+                      <br />
+                      {requestedBy.request_comment}
+                    </p>
+                  </div>
+                  <div className="col-3">
+                    <p>
+                      <b>Requested by:</b>
+                      <br />
+                      {requestedBy.user_display_name}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {title === "ucaf" ? (
                 <UcafEditor
                   dataProps={dataProps}
@@ -455,7 +474,7 @@ const InsuranceCorrectionList = () => {
                     others: {
                       minWidth: 250,
                       resizable: false,
-                      style: { textAlign: "center" },
+                      style: { textAlign: "left" },
                     },
                   },
                   // {
