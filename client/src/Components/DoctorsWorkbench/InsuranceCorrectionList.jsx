@@ -289,28 +289,31 @@ const InsuranceCorrectionList = () => {
             }}
             className={`algaehNewModal cafCorrectionModal`}
           >
-            {title === "ucaf" ? (
-              <UcafEditor
-                dataProps={dataProps}
-                fromCorrection={true}
-                invoiceId={invoiceId}
-                requested_by={requestedBy}
-              />
-            ) : title === "dcaf" ? (
-              <DcafEditor
-                dataProps={dataProps}
-                fromCorrection={true}
-                invoiceId={invoiceId}
-                requested_by={requestedBy}
-              />
-            ) : (
-              <OcafEditor
-                dataProps={dataProps}
-                fromCorrection={true}
-                invoiceId={invoiceId}
-                requested_by={requestedBy}
-              />
-            )}
+            <>
+              <div>Reason for Correction: {requestedBy.request_comment}</div>
+              {title === "ucaf" ? (
+                <UcafEditor
+                  dataProps={dataProps}
+                  fromCorrection={true}
+                  invoiceId={invoiceId}
+                  requested_by={requestedBy}
+                />
+              ) : title === "dcaf" ? (
+                <DcafEditor
+                  dataProps={dataProps}
+                  fromCorrection={true}
+                  invoiceId={invoiceId}
+                  requested_by={requestedBy}
+                />
+              ) : (
+                <OcafEditor
+                  dataProps={dataProps}
+                  fromCorrection={true}
+                  invoiceId={invoiceId}
+                  requested_by={requestedBy}
+                />
+              )}
+            </>
           </AlgaehModal>
         ) : null}
 

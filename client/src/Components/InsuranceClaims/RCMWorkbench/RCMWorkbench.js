@@ -44,6 +44,7 @@ class RCMWorkbench extends Component {
       insurance_status: null,
       indeterminate: false,
       checkAll: false,
+      claimData: {},
     };
     this.select = true;
     this.dropDownHandler = this.dropDownHandler.bind(this);
@@ -1034,7 +1035,11 @@ class RCMWorkbench extends Component {
                     checked={this.state.rcmMode === "C" ? true : false}
                     onChange={() => {
                       this.replacePath();
-                      this.setState({ rcmMode: "C", claims: [] });
+                      this.setState({
+                        rcmMode: "C",
+                        claims: [],
+                        claimData: {},
+                      });
                     }}
                   />
                   <span>Claim Generation</span>
@@ -1048,7 +1053,11 @@ class RCMWorkbench extends Component {
                     checked={this.state.rcmMode === "S" ? true : false}
                     onChange={() => {
                       this.replacePath();
-                      this.setState({ rcmMode: "S", claims: [] });
+                      this.setState({
+                        rcmMode: "S",
+                        claims: [],
+                        claimData: {},
+                      });
                     }}
                   />
                   <span>Remittance Advice</span>
@@ -1061,7 +1070,11 @@ class RCMWorkbench extends Component {
                     checked={this.state.rcmMode === "R" ? true : false}
                     onChange={() => {
                       this.replacePath();
-                      this.setState({ rcmMode: "R", claims: [] });
+                      this.setState({
+                        rcmMode: "R",
+                        claims: [],
+                        claimData: {},
+                      });
                     }}
                   />
                   <span>Re submission</span>
@@ -1247,14 +1260,18 @@ class RCMWorkbench extends Component {
                         <div className="col-2 form-group">
                           <label className="style_Label ">Statement No.</label>
                           <h6>
-                            ---
+                            {this.state.claimData.insurance_statement_number
+                              ? this.state.claimData.insurance_statement_number
+                              : `----`}
                             {/* {data?.insurance_statement_number || "---"} */}
                           </h6>
                         </div>
                         <div className="col-3">
                           <label className="style_Label ">Company Name</label>
                           <h6>
-                            ---
+                            {this.state.claimData.insurance_provider_name
+                              ? this.state.claimData.insurance_provider_name
+                              : `----`}
                             {/* {data?.insurance_provider_name || "---"} */}
                           </h6>
                         </div>
@@ -1263,25 +1280,26 @@ class RCMWorkbench extends Component {
                             Sub Company Name
                           </label>
                           <h6>
-                            {" "}
-                            ---
+                            {this.state.claimData.insurance_sub_name
+                              ? this.state.claimData.insurance_sub_name
+                              : `----`}
                             {/* {data?.insurance_sub_name || "---"} */}
                           </h6>
                         </div>
                         <div className="col-2">
                           <label className="style_Label ">From Date</label>
                           <h6>
-                            {" "}
-                            ---
-                            {/* {data?.from_date || "---"} */}
+                            {this.state.claimData.from_date
+                              ? this.state.claimData.from_date
+                              : `----`}
                           </h6>
                         </div>
                         <div className="col-2">
                           <label className="style_Label ">To Date</label>
                           <h6>
-                            {" "}
-                            ---
-                            {/* {data?.to_date || "---"} */}
+                            {this.state.claimData.to_date
+                              ? this.state.claimData.to_date
+                              : `----`}
                           </h6>
                         </div>
                         <div className="col-2">
@@ -1289,8 +1307,9 @@ class RCMWorkbench extends Component {
                             Total Claim Amount
                           </label>
                           <h6>
-                            ---
-                            {/* {data?.total_company_payable || "0.00"} */}
+                            {this.state.claimData.total_gross_amount
+                              ? this.state.claimData.total_gross_amount
+                              : 0.0}
                           </h6>
                         </div>
                         <i className="fas fa-minus calcSybmbol"></i>
@@ -1299,10 +1318,9 @@ class RCMWorkbench extends Component {
                             Total Denial Amount
                           </label>
                           <h6>
-                            ---
-                            {/* {(data?.calc_denial_amount ??
-                            data?.total_denial_amount) ||
-                            "0.00"} */}
+                            {this.state.claimData.total_denial_amount
+                              ? this.state.claimData.total_denial_amount
+                              : 0.0}
                           </h6>
                         </div>{" "}
                         <i className="fas fa-equals calcSybmbol"></i>
@@ -1311,10 +1329,9 @@ class RCMWorkbench extends Component {
                             Total Remittance Amount
                           </label>
                           <h6>
-                            ---
-                            {/* {(data?.calc_remittance_amount ??
-                            data?.total_remittance_amount) ||
-                            "0.00"} */}
+                            {this.state.claimData.total_remittance_amount
+                              ? this.state.claimData.total_remittance_amount
+                              : 0.0}
                           </h6>
                         </div>
                       </div>

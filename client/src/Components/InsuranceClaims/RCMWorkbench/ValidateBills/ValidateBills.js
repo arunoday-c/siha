@@ -12,6 +12,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import { UpdateStatement } from "../../InsuranceStatement/UpdateStatment";
+import RequestForCorrection from "../../../ucafEditors/RequestForCorrection";
 const UcafEditor = React.lazy(() => import("../../../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../../../ucafEditors/dcaf"));
 const OcafEditor = React.lazy(() => import("../../../ucafEditors/ocaf"));
@@ -29,6 +30,7 @@ class ValidateBills extends PureComponent {
       DCAFData: undefined,
       openOCAF: false,
       OCAFData: [],
+      correctionModal: false,
     };
   }
 
@@ -142,7 +144,9 @@ class ValidateBills extends PureComponent {
       );
     }
   }
-
+  openRequestCorrectionModal() {
+    this.setState({ correctionModal: !this.state.correctionModal });
+  }
   getSubDepts() {
     algaehApiCall({
       uri: "/department/get/subdepartment",
@@ -552,7 +556,73 @@ class ValidateBills extends PureComponent {
             <div className="row">
               <div className="col-8">
                 <div id="ClaimGrid_Cntr">
-                  <AlgaehDataGrid
+                  <div className="col-2 form-group">
+                    <label className="style_Label ">Validation Status</label>
+                    <h6>
+                      <span>
+                        {invoices[0].claim_validated === "V" ? (
+                          <span className="badge badge-success">Validated</span>
+                        ) : invoices[0].claim_validated === "E" ? (
+                          <span className="badge badge-danger">Error</span>
+                        ) : invoices[0].claim_validated === "X" ? (
+                          <span className="badge badge-info">
+                            XML Generated
+                          </span>
+                        ) : invoices[0].claim_validated === "P" ? (
+                          <span className="badge badge-warning">Pending</span>
+                        ) : (
+                          "----"
+                        )}
+                      </span>
+                    </h6>
+                  </div>
+                  <div className="col-3">
+                    <label className="style_Label ">Claim Status</label>
+                    <h6>
+                      <span>
+                        {invoices[0].claim_status === "S1" ? (
+                          <span className="badge badge-success">Submitted</span>
+                        ) : invoices[0].claim_status === "S2" ? (
+                          <span className="badge badge-success">
+                            Re Submitted 1
+                          </span>
+                        ) : invoices[0].claim_status === "S3" ? (
+                          <span className="badge badge-success">
+                            Re Submitted 2
+                          </span>
+                        ) : invoices[0].claim_status === "R1" ? (
+                          <span className="badge badge-info">Remitted 1</span>
+                        ) : invoices[0].claim_status === "R2" ? (
+                          <span className="badge badge-info">Remitted 2</span>
+                        ) : invoices[0].claim_status === "R3" ? (
+                          <span className="badge badge-info">Remitted 3</span>
+                        ) : invoices[0].claim_status === "P" ? (
+                          <span className="badge badge-warning">Pending</span>
+                        ) : (
+                          "----"
+                        )}
+                      </span>
+                    </h6>
+                  </div>
+                  <div className="row-3">
+                    <label className="style_Label ">Visit Code</label>
+                    <h6>{invoices[0].visit_code}</h6>
+                    <label className="style_Label ">Patient Name</label>
+                    <h6>{invoices[0].patient_name}</h6>
+                    <label className="style_Label ">Invoice Number</label>
+                    <h6>{invoices[0].invoice_number}</h6>
+                    <label className="style_Label ">Gross Amount</label>
+                    <h6>{invoices[0].gross_amount}</h6>
+                    <label className="style_Label ">Discount Amount Code</label>
+                    <h6>{invoices[0].discount_amount}</h6>
+                    <label className="style_Label ">
+                      Patient Responsibility
+                    </label>
+                    <h6>{invoices[0].patient_resp}</h6>
+                    <label className="style_Label ">Patient Tax</label>
+                    <h6>{invoices[0].patient_tax}</h6>
+                  </div>
+                  {/* <AlgaehDataGrid
                     id="ClaimGrid"
                     columns={[
                       // {
@@ -764,6 +834,7 @@ class ValidateBills extends PureComponent {
                       onDone: (row) => {},
                     }}
                   />
+                  */}
                 </div>
                 {this.props.mode === "R" ? (
                   <UpdateStatement
@@ -1422,10 +1493,49 @@ class ValidateBills extends PureComponent {
               DCAF
             </button>
           ) : null}
+          {this.state.invoices.department_type === "N" ||
+          this.state.invoices.department_type === "O" ||
+          this.state.invoices.department_type === "D" ? (
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={this.openRequestCorrectionModal.bind(this, this)}
+            >
+              Request For Insurace Correction
+            </button>
+          ) : null}
         </div>
         {this.renderUCAFReport()}
         {this.renderDCAFReport()}
         {this.renderOCAFReport()}
+        {this.state.correctionModal ? (
+          <RequestForCorrection
+            visible={this.state.correctionModal}
+            onClose={() => this.openRequestCorrectionModal()}
+            rowData={this.state.invoices}
+            dataProps={
+              this.state.invoices.department_type === "N"
+                ? this.state.UCAFData
+                : this.state.invoices.department_type === "O"
+                ? this.state.OCAFData
+                : this.state.DCAFData
+            }
+            type={
+              this.state.invoices.department_type === "N"
+                ? "ucaf"
+                : this.state.invoices.department_type === "O"
+                ? "ocaf"
+                : "dcaf"
+            }
+            title={`${
+              this.state.invoices.department_type === "N"
+                ? "Ucaf"
+                : this.state.invoices.department_type === "O"
+                ? "Ocaf"
+                : "Dcaf"
+            } Correction ${this.state.invoices?.invoice_number}`}
+          />
+        ) : null}
       </AlgaehModalPopUp>
     );
   }

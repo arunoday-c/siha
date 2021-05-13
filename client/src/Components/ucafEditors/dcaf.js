@@ -17,7 +17,7 @@ import {
   AlgaehSecurityComponent,
   AlgaehDataGrid,
 } from "algaeh-react-components";
-import RequestForCorrection from "./RequestForCorrection";
+// import RequestForCorrection from "./RequestForCorrection";
 
 export default class DcafEditor extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ export default class DcafEditor extends Component {
       dcaf_data: undefined,
       showImgArea: true,
       loading: false,
-      correctionModal: false,
+      // correctionModal: false,
     };
   }
 
@@ -1058,7 +1058,7 @@ export default class DcafEditor extends Component {
               </div>
             </div>
           </div>
-          {this.state.correctionModal ? (
+          {/* {this.state.correctionModal ? (
             <RequestForCorrection
               visible={this.state.correctionModal}
               onClose={() => this.openRequestCorrectionModal()}
@@ -1068,7 +1068,7 @@ export default class DcafEditor extends Component {
               // title={`Dcaf Correction ${this.props.rowData?.invoice_number}`}
               title={`Enter correction reason for Invoice No. - ${this.props.rowData?.invoice_number}`}
             />
-          ) : null}
+          ) : null} */}
           <div className=" popupFooter">
             <div className="col-lg-12">
               <div className="row">
@@ -1104,13 +1104,13 @@ export default class DcafEditor extends Component {
                       Reload Data
                     </button>
                   </AlgaehSecurityComponent>
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-default"
                     onClick={this.openRequestCorrectionModal.bind(this, this)}
                   >
                     Request For Insurace Correction
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

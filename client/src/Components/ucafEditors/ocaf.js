@@ -7,7 +7,7 @@ import EditorEvents from "./EditorEvents";
 import Swal from "sweetalert2";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
-import RequestForCorrection from "./RequestForCorrection";
+// import RequestForCorrection from "./RequestForCorrection";
 export default class OcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -61,7 +61,7 @@ export default class OcafEditor extends Component {
       anti_scratch: false,
       contact_lense_type: null,
       resgular_lense_type: "N",
-      correctionModal: false,
+      // correctionModal: false,
     };
   }
 
@@ -1390,7 +1390,7 @@ export default class OcafEditor extends Component {
               </div>
             </div>
           </div>
-          {this.state.correctionModal ? (
+          {/* {this.state.correctionModal ? (
             <RequestForCorrection
               visible={this.state.correctionModal}
               onClose={() => this.openRequestCorrectionModal()}
@@ -1400,7 +1400,7 @@ export default class OcafEditor extends Component {
               // title={`Ocaf Correction ${this.props.rowData?.invoice_number}`}
               title={`Enter correction reason for Invoice No. - ${this.props.rowData?.invoice_number}`}
             />
-          ) : null}
+          ) : null} */}
           <div className=" popupFooter">
             <div className="col-lg-12">
               <div className="row">
@@ -1423,13 +1423,13 @@ export default class OcafEditor extends Component {
                       Reload Data
                     </button>
                   </AlgaehSecurityComponent>
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-default"
                     onClick={this.openRequestCorrectionModal.bind(this, this)}
                   >
                     Request For Insurace Correction
-                  </button>
+                  </button> */}
                   {/* <button
                     type="button"
                     className="btn btn-default"

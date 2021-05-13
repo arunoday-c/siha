@@ -15,7 +15,7 @@ import {
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
 import Swal from "sweetalert2";
-import RequestForCorrection from "./RequestForCorrection";
+// import RequestForCorrection from "./RequestForCorrection";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 export default class UcafEditor extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ export default class UcafEditor extends Component {
       insurance_approved: "",
       ucaf_data: undefined,
       showImgArea: true,
-      correctionModal: false,
+      // correctionModal: false,
     };
   }
 
@@ -1185,7 +1185,7 @@ export default class UcafEditor extends Component {
                               },
                             ]}
                             loading={false}
-                            isEditable={"editOnly"}
+                            isEditable={this.props.rowData ? false : "editOnly"}
                             events={{
                               // onDone: () => {},
                               onSave:
@@ -1207,16 +1207,16 @@ export default class UcafEditor extends Component {
               </div>
             </div>
           </div>
-          {this.state.correctionModal ? (
+          {/* {this.state.correctionModal ? (
             <RequestForCorrection
               visible={this.state.correctionModal}
               onClose={() => this.openRequestCorrectionModal()}
               rowData={this.props.rowData}
               dataProps={this.props.dataProps}
               type={"ucaf"}
-              title={`Enter correction reason for Invoice No. - ${this.props.rowData?.invoice_number}`}
+              title={`Ucaf Correction ${this.props.rowData?.invoice_number}`}
             />
-          ) : null}
+          ) : null} */}
           <div className=" popupFooter">
             <div className="col-lg-12">
               <div className="row">
@@ -1245,13 +1245,13 @@ export default class UcafEditor extends Component {
                     </button>
                     {/* <AlgaehSecurityComponent componentCode="ENB_BTN_REQ_INSR_CRTN"> */}
                   </AlgaehSecurityComponent>
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-default"
                     onClick={this.openRequestCorrectionModal.bind(this, this)}
                   >
                     Request For Insurace Correction
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

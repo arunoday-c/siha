@@ -34,7 +34,8 @@ export function ClaimSearch(history, location) {
             {
               insurance_statement_id: row?.hims_f_insurance_statement_id,
               insurance_statement_number: row?.insurance_statement_number,
-              insurance_status: row.insurance_status
+              insurance_status: row.insurance_status,
+              claimData: row,
             },
             () => {
               this.getInvoicesForStatementID();
