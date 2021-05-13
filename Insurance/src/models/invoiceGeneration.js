@@ -789,7 +789,7 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let input = req.body;
-      debugger;
+
       _mysql
         .executeQuery({
           query: `UPDATE hims_f_invoice_header SET correction_requested = ?, requested_by=?,correction_req_date=?,request_comment=?, 
@@ -797,11 +797,49 @@ export default {
 
           values: [
             input.correction_requested,
-            req.userIdentity.algaeh_d_app_user_id,
+            req.userIdentity.employee_id,
             new Date(),
             input.request_comment,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
+            input.hims_f_invoice_header_id,
+          ],
+
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = { invalid_input: true };
+            next();
+          }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+  updateInsuranceReqDoc: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+
+      _mysql
+        .executeQuery({
+          query: `UPDATE hims_f_invoice_header SET correction_requested = ?,  
+          doctor_comment=? WHERE hims_f_invoice_header_id = ?;`,
+
+          values: [
+            input.correction_requested,
+            input.doctor_comment,
+
             input.hims_f_invoice_header_id,
           ],
 

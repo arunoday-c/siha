@@ -16,6 +16,7 @@ const {
   updateClaimValidatedStatus,
   updateInvoiceDetails,
   updateClaimReqCorrectionStatusRCM,
+  updateInsuranceReqDoc,
   getRequestForCorrectionInsurance,
   getVisitsForGeneration,
 } = invoiceModels;
@@ -135,6 +136,7 @@ export default () => {
       }
     }
   );
+
   api.post("/addInvoiceIcd", addInvoiceIcd, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -165,6 +167,23 @@ export default () => {
       next();
     }
   );
+  api.put("/updateInsuranceReqDoc", updateInsuranceReqDoc, (req, res, next) => {
+    let result = req.records;
+
+    if (result.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: result,
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+    }
+
+    next();
+  });
   api.get(
     "/getRequestForCorrectionInsurance",
     getRequestForCorrectionInsurance,

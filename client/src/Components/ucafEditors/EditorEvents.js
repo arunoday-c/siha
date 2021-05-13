@@ -422,7 +422,7 @@ export default function EditorEvents() {
 }
 const notifyInsuranceCorrection = ($this) => {
   newAlgaehApi({
-    uri: "/invoiceGeneration/updateClaimReqCorrectionStatusRCM",
+    uri: "/invoiceGeneration/updateInsuranceReqDoc",
     module: "insurance",
     method: "PUT",
     data: {
