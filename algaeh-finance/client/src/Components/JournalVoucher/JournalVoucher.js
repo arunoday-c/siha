@@ -104,6 +104,7 @@ export default function JournalVoucher() {
   const [clearLoading, setClearLoading] = useState(false);
   const [printEnable, setPrintEnable] = useState(true);
   const [costCenterField, setCostCenterField] = useState(undefined);
+  const [samePage, setSamePage] = useState(true);
   const [journerList, setJournerList] = useState(
     baseJournalList.map((m) => {
       return { ...m, narration: "" };
@@ -304,6 +305,7 @@ export default function JournalVoucher() {
         customerOrSupplerHeaderName,
         customerOrSupplerDetailName,
       } = location.state;
+      setSamePage(location.state?.samePage ?? false);
       setSorCHeaderValue(customerOrSupplerHeaderName);
       setSorCDetailValue(customerOrSupplerDetailName);
       // console.log("location.state====>", location.state);
@@ -683,7 +685,7 @@ export default function JournalVoucher() {
           voucherType === "credit_note" ||
           voucherType === "debit_note"
         ) {
-          history.push("/JournalVoucher", null);
+          if (samePage === true) history.push("/JournalVoucher", null);
         }
       })
       .catch((error) => {
@@ -697,7 +699,6 @@ export default function JournalVoucher() {
   };
 
   const clearState = () => {
-    // setJournerList([]);
     setNarration("");
     setVoucherType("");
     setAccounts([]);
@@ -721,7 +722,10 @@ export default function JournalVoucher() {
     setSorCDetailLoading(false);
     setSorCDetailValue(undefined);
     setSorCHeaderName(undefined);
-    history.push("/JournalVoucher", null);
+    if (samePage === true) {
+      history.push("/JournalVoucher", null);
+      history.go(0);
+    }
   };
 
   const printVoucher = () => {
@@ -924,6 +928,7 @@ export default function JournalVoucher() {
       filterDebitNotes: [],
       customerOrSupplerHeaderName: SorCHeaderName,
       customerOrSupplerDetailName: selected.invoice_no,
+      samePage: true,
     });
   }
   const PaymentInput = (record) => {
@@ -1257,191 +1262,10 @@ export default function JournalVoucher() {
                     },
                   }}
                 />
-                {/* <label className="style_Label">Invoice No.</label> */}
-                {/* <AlgaehTreeSearch
-                div={{ className: "col" }}
-                label={{ fieldName: "InvoiceNo", isImp: true }}
-                tree={{
-                  treeDefaultExpandAll: true,
-                  updateInternally: true,
-                  onChange: (value, node, extra) => {
-                   
-                    if (node.length > 0) {
-                      const details = _.head(node);
-                      const splitter = details.split(/\]|\[/);
-                      if (splitter.length > 0) {
-                        const _values = value.split("-");
-                        history.push("/JournalVoucher", {
-                          data: {
-                            narration: splitter[2], //for narration
-                            child_id: _values[1], // for child account
-                            head_id: _values[0], // for head account
-                            balance_amount: splitter[1], // for amount
-                            voucher_type:
-                              voucherType === "payment" ? "purchase" : "sales",
-                            invoice_no: splitter[0], //for invoice
-                            disabled: true,
-                          },
-                          merdge: [
-                            {
-                              balance_amount: parseFloat(splitter[1]),
-                              modified_amount: parseFloat(splitter[1]),
-                              finance_voucher_header_id: splitter[3],
-                              invoice_no: splitter[0],
-                              voucher_type: voucherType,
-                            },
-                          ],
-                          type:
-                            voucherType === "payment" ? "supplier" : "customer",
-                          debitNoteTotal: splitter[1],
-                          specialLabel: _values,
-                          filterDebitNotes: [],
-                        });
-                      }
-                    }
-
-                 
-                  },
-                  data: invoiceData,
-
-                  textField: "label",
-
-                  valueField: (node) => {
-                    if (!node["isLeaf"] === true) {
-                      return `${node["head_id"]}-${node["child_id"]}`;
-                    } else {
-                      return node["key"];
-                    }
-                  },
-                }}
-              /> */}
-                {/* <Select
-                style={{ width: "100%" }}
-                showSearch
-                value={specialType}
-                disabled={disableFiled}
-                // getPopupContainer={(target) => target}
-                dropdownRender={(menu) => {
-                  return (
-                    <Tree
-                      selectedKeys={[pos]}
-                      treeData={invoiceData}
-                      dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-                      onSelect={onSelectVoucherRecordTree}
-                      titleRender={(node) => {
-                        if (node.isLeaf === true) {
-                          return (
-                            <>
-                              <ul
-                                style={{
-                                  listStyle: "none",
-                                  display: "flex",
-                                }}
-                              >
-                                <li
-                                  style={{
-                                    border: "1px solid #000",
-                                  }}
-                                >
-                                  <p>
-                                    <small>Invoice No.</small>
-                                  </p>
-                                  <strong> {node.invoice_no} </strong>
-                                </li>
-                                <li
-                                  style={{
-                                    border: "1px solid #000",
-                                  }}
-                                >
-                                  <p>
-                                    <small>Amount</small>
-                                  </p>
-                                  <strong> {node.amount} </strong>
-                                </li>
-                              </ul>
-                              <strong>Narration</strong>
-                              <p>{node.narration}</p>
-                            </>
-                          );
-                        } else {
-                          return <p disabled>{node.label}</p>;
-                        }
-                      }}
-                    />
-                  );
-                }}
-              ></Select> */}
-              </div>{" "}
+              </div>
             </div>
-          ) : // <AlgaehTreeSearch
-          //   div={{ className: "col" }}
-          //   label={{ fieldName: "InvoiceNo", isImp: true }}
-          //   tree={{
-          //     treeDefaultExpandAll: true,
-          //     updateInternally: true,
-          //     onChange: (value, label) => {
-          //
-          //       // setFromBank(value);
-          //       // if (value !== undefined) {
-          //       //   record["sourceName"] = value;
-          //       //   const source = value.split("-");
-          //       //   record["child_id"] = source[1];
-          //       //   record["head_id"] = source[0];
-          //       //   row = label;
-          //       // } else {
-          //       //   record["sourceName"] = "";
-          //       //   record["child_id"] = "";
-          //       //   record["head_id"] = "";
-          //       //   row = "";
-          //       // }
-          //     },
-          //     data: invoiceData,
+          ) : null}
 
-          //     textField: "label",
-
-          //     valueField: (node) => {
-          //       if (!node["nodeType"]) {
-          //         return `${node["head_id"]}-${node["child_id"]}`;
-          //       } else {
-          //         if (node["nodeType"] === "H") return node["head_id"];
-          //         else return node["head_id"];
-          //       }
-          //     },
-          //   }}
-          // /> ---- Hello
-          // <AlgaehAutoComplete
-          //   div={{ className: "col-2" }}
-          //   label={{
-          //     fieldName: "InvoiceNo",
-          //     isImp: true,
-          //   }}
-          //   selector={{
-          //     value: selInvoice,
-          //     dataSource: {
-          //       data: invoiceData,
-          //       valueField: "invoice_no",
-          //       textField: "invoice_no",
-          //     },
-          //     onChange: (selected) => {
-          //       setSelInvoice(selected.invoice_no);
-          //     },
-          //     onClear: () => {
-          //       setSelInvoice("");
-          //     },
-          //     others: {
-          //       disabled: disableFiled,
-          //     },
-          //   }}
-          // />
-          null}
-          {}
-
-          {/* <PaymentComponent
-            show={show}
-            {...payment}
-            handleDrop={handlePaymentDrop}
-            handleChange={setPayment}
-          /> */}
           {finOptions.cost_center_required !== "Y" ? (
             <AlgaehAutoComplete
               div={{ className: "col-2" }}
@@ -1463,28 +1287,6 @@ export default function JournalVoucher() {
               }}
             />
           ) : null}
-
-          {/* {finOptions.cost_center_required === "Y" ? (
-            <AlgaehAutoComplete
-            div={{ className: "col-2" }}
-            label={{ forceLabel: "Select a Cost Center" }}
-            selector={{
-            dataSource: {
-            data: costCenterdata,
-            valueField: "cost_center_id",
-            textField: "cost_center",
-            },
-            value: cost_center_id,
-            onChange: HandleCostCenter,
-
-            onClear: () => {
-            setCostCenter(null);
-            },
-            }}
-            />
-          ) : null} */}
-
-          {/* <CostCenter result={records_av} noborder={false} /> */}
         </div>
         <div className="row">
           <div className="col-12">
