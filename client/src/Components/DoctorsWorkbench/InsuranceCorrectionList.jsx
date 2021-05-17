@@ -8,265 +8,154 @@ import {
   AlgaehDataGrid,
   AlgaehMessagePop,
   AlgaehLabel,
-  MainContext,
+  // MainContext,
   Spin,
   AlgaehModal,
+  MainContext,
   // AlgaehButton,
 } from "algaeh-react-components";
 import { useForm, Controller } from "react-hook-form";
 // import { useHistory } from "react-router-dom";
 import variableJson from "../../utils/GlobalVariables.json";
-// import { useQuery } from "react-query";
+import { useMutation } from "react-query";
+// import sockets from "../../sockets";
 import moment from "moment";
-import Options from "../../Options.json";
+// import Options from "../../Options.json";
 import { newAlgaehApi } from "../../hooks";
-import { setGlobal } from "../../utils/GlobalFunctions";
-import ModalMedicalRecord from "./ModalForMedicalRecordPat";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+// import { setGlobal } from "../../utils/GlobalFunctions";
+import { useHistory, useLocation } from "react-router-dom";
+// import { algaehApiCa ll } from "../../utils/algaehApiCall";
+import UcafEditor from "../../Components/ucafEditors/ucaf";
+import DcafEditor from "../../Components/ucafEditors/dcaf";
+import OcafEditor from "../../Components/ucafEditors/ocaf";
 // import { changeChecks } from "../EmployeeManagement/EmployeeMasterIndex/EmployeeMaster/RulesDetails/RulesDetailsEvent";
 
-const InsuranceCorrectionList = () => {
-  // const today = moment().format("YYYY/MM/DD");
+const getPatientDetails = async (input) => {
+  let url = "";
 
+  if (input.department_type === "N") {
+    url = "/ucaf/getPatientUCAF";
+  } else if (input.department_type === "D") {
+    url = "/dcaf/getPatientDCAF";
+  } else {
+    url = "/ocaf/getPatientOCAF";
+  }
+  const res = await newAlgaehApi({
+    uri: url,
+    method: "GET",
+    data: {
+      patient_id: input.patient_id,
+      visit_id: input.visit_id,
+      visit_date: input.visit_date,
+    },
+  });
+
+  return res.data.records;
+};
+
+const InsuranceCorrectionList = () => {
+  const location = useLocation();
+  const history = useHistory();
+  // const today = moment().format("YYYY/MM/DD");
+  useEffect(() => {
+    if (location.state) {
+      debugger;
+      const { data, title } = location.state;
+      setTitle(title);
+      setRequestedBy(data);
+      setInvoiceId(data.hims_f_invoice_header_id);
+      getPatientCAF({ ...data, title: title });
+    }
+  }, [location.state]);
   const { control, errors, getValues, handleSubmit } = useForm({
     defaultValues: {
       from_date: moment().clone().startOf("month").format("YYYY-MM-DD"),
       to_date: new Date(),
-      correction_requested: "N",
+      correction_requested: "A",
+    },
+  });
+  const { userToken } = useContext(MainContext);
+  // const { userToken } = useContext(MainContext);
+  const [requestedBy, setRequestedBy] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [title, setTitle] = useState("");
+  const [invoiceId, setInvoiceId] = useState(null);
+  // const [provider_id, setProvider_id] = useState(null) ;
+  const [correctionList, setCorrectionList] = useState([]);
+  // const [labOrderServicesForDoc, setLabOrderServicesForDoc] = useState([]);
+  const [dataProps, setDataProps] = useState([]);
+  // const [lab_id_number, setLab_id_number] = useState(null);
+  const [onCAFModal, setonCAFModal] = useState(false);
+  // const [investigation_test_id, setInvestigation_test_id] = useState(null);
+  // const [updateRow, setUpdateRow] = useState([]);
+
+  // const changeDateFormat = (date) => {
+  //   if (date != null) {
+  //     return moment(date).format(Options.datetimeFormat);
+  //   }
+  // };
+  const [getPatientCAF, { isLoading }] = useMutation(getPatientDetails, {
+    onSuccess: (data) => {
+      setDataProps(data);
+      setonCAFModal(true);
+    },
+    onError: (err) => {
+      AlgaehMessagePop({
+        display: err.message,
+        type: "error",
+      });
     },
   });
 
-  const { userToken } = useContext(MainContext);
-  const [loading, setLoading] = useState(true);
-  // const [provider_id, setProvider_id] = useState(null) ;
-  const [labOrderServicesForDoc, setLabOrderServicesForDoc] = useState([]);
-  const [visit_id, setVisit_id] = useState(null);
-  const [patient_id, setPatient_id] = useState(null);
-  const [openMrdModal, setOpenMrdModal] = useState(false);
-  const [attached_docs, setAttached_docs] = useState([]);
-  const [lab_id_number, setLab_id_number] = useState(null);
-  const [openViewAttachmentModal, setOpenViewAttachmentModal] = useState(false);
-  const [investigation_test_id, setInvestigation_test_id] = useState(null);
-  // const [updateRow, setUpdateRow] = useState([]);
+  // newAlgaehApi({
 
-  const changeDateFormat = (date) => {
-    if (date != null) {
-      return moment(date).format(Options.datetimeFormat);
-    }
-  };
+  // })
+  //   .then((resp) => {
 
-  // useEffect(() => {
-  //
-
-  //   newAlgaehApi({
-  //     uri: "/laboratory/getLabOrderServiceForDoc",
-  //     module: "laboratory",
-  //     method: "GET",
-  //     data: { provider_id: employee_id },
+  //     if (resp.data.success) {
+  //       set(resp.data.records);
+  //     }
   //   })
-  //     .then((resp) => {
-  //
-  //       if (resp.data.success) {
-  //         setLabOrderServicesForDoc(resp.data.records);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
-  // const history = useHistory();
-  const generateLabResultReport = (data) => {
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: "hematologyTestReport",
-          reportParams: [
-            { name: "hims_d_patient_id", value: data.patient_id },
-            {
-              name: "visit_id",
-              value: data.visit_id,
-            },
-            {
-              name: "hims_f_lab_order_id",
-              value: data.hims_f_lab_order_id,
-            },
-          ],
-          outputFileType: "PDF",
-        },
-      },
-      onSuccess: (res) => {
-        const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Hematology Test Report`;
-        window.open(origin);
-      },
-    });
-  };
-  const downloadDoc = (doc, isPreview) => {
-    if (doc.fromPath === true) {
-      setLoading(true);
-      newAlgaehApi({
-        uri: "/getContractDoc",
-        module: "documentManagement",
-        method: "GET",
-        extraHeaders: {
-          Accept: "blon",
-        },
-        others: {
-          responseType: "blob",
-        },
-        data: {
-          contract_no: doc.contract_no,
-          filename: doc.filename,
-          download: true,
-        },
-      })
-        .then((resp) => {
-          const urlBlob = URL.createObjectURL(resp.data);
-          if (isPreview) {
-            window.open(urlBlob);
-          } else {
-            const link = document.createElement("a");
-            link.download = doc.filename;
-            link.href = urlBlob;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setLoading(false);
-        });
-    } else {
-      const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
-      const link = document.createElement("a");
-      if (!isPreview) {
-        link.download = doc.filename;
-        link.href = fileUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        fetch(fileUrl)
-          .then((res) => res.blob())
-          .then((fblob) => {
-            const newUrl = URL.createObjectURL(fblob);
-            window.open(newUrl);
-          });
-      }
-    }
-  };
-  // const updateLabOrderServiceForDoc = () => {
-  //   const updateLabOrderDetails = labOrderServicesForDoc.filter((item) => {
-  //     return item.isDirty === true;
+  //   .catch((error) => {
+  //     console.log(error);
   //   });
-  //   if (updateLabOrderDetails.length > 0) {
-  //     newAlgaehApi({
-  //       uri: "/laboratory/updateLabOrderServiceForDoc",
-  //       module: "laboratory",
-  //       method: "PUT",
-  //       data: {
-  //         updateArray: updateLabOrderDetails,
-  //       },
-  //     })
-  //       .then((res) => {
-  //         if (res.data.success) {
-  //           AlgaehMessagePop({
-  //             type: "success",
-  //             display: "Updated Successfully....",
-  //           });
-  //           getLabOrderServiceForDoc(getValues());
-  //         }
-  //       })
-  //       .catch((e) => {
-  //         swalMessage({
-  //           title: e.message,
-  //           type: "error",
-  //         });
-  //       });
-  //   } else {
-  //     AlgaehMessagePop({
-  //       type: "warning",
-  //       display: "Nothing To Update",
-  //     });
-  //     return;
-  //   }
-  // };
+  // const history = useHistory();
 
-  const getDocuments = (contract_no) => {
-    setLoading(true);
+  useEffect(() => {
+    getLabOrderServiceForDoc(getValues());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const getLabOrderServiceForDoc = (data) => {
     newAlgaehApi({
-      uri: "/getContractDoc",
-      module: "documentManagement",
+      uri: "/invoiceGeneration/getRequestForCorrectionInsurance",
+      module: "insurance",
       method: "GET",
       data: {
-        contract_no,
+        provider_id: userToken.employee_id,
+        from_date: data.from_date,
+        to_date: moment(data.to_date).format("YYYY-MM-DD"),
+        correction_requested: data.correction_requested,
       },
     })
       .then((res) => {
         if (res.data.success) {
-          let { data } = res.data;
-          setAttached_docs(data);
           setLoading(false);
+          setCorrectionList(res.data.records);
         }
       })
+
       .catch((e) => {
-        swalMessage({
-          title: e.message,
+        AlgaehMessagePop({
           type: "error",
+          display: e.message,
         });
-        setLoading(false);
       });
   };
-  useEffect(() => {
-    getLabOrderServiceForDoc(getValues()).then(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const getLabOrderServiceForDoc = async (data) => {
-    try {
-      const res = await newAlgaehApi({
-        uri: "/laboratory/getLabOrderServiceForDoc",
-        module: "laboratory",
-        method: "GET",
-        data: {
-          provider_id: userToken.employee_id,
-          from_date: data.from_date,
-          to_date: data.to_date,
-          correction_requested:
-            data.correction_requested === "A" ? "" : data.correction_requested,
-        },
-      });
-      if (res.data.success) {
-        setLabOrderServicesForDoc(res.data.records);
-      }
-    } catch (e) {
-      AlgaehMessagePop({
-        type: "error",
-        display: e.message,
-      });
-    }
-  };
-  useEffect(() => {
-    if (lab_id_number && openViewAttachmentModal && investigation_test_id) {
-      getDocuments(lab_id_number);
-    } else {
-      setAttached_docs([]);
-    }
-  }, []);
-  const onClose = () => {
-    setOpenMrdModal((pre) => !pre);
-  };
-  const onCloseAttachment = () => {
-    setOpenViewAttachmentModal((pre) => !pre);
-    setAttached_docs([]);
+
+  const onCloseCAFModal = () => {
+    setonCAFModal((pre) => !pre);
+    getLabOrderServiceForDoc(getValues());
+    history.push("/InsuranceCorrectionList", null);
   };
   return (
     <div>
@@ -312,7 +201,7 @@ const InsuranceCorrectionList = () => {
           <Controller
             control={control}
             name="to_date"
-            rules={{ required: "Please Select DOB" }}
+            rules={{ required: "Please Select" }}
             render={({ onChange, value }) => (
               <AlgaehDateHandler
                 div={{
@@ -368,6 +257,7 @@ const InsuranceCorrectionList = () => {
                   onClear: () => {
                     onChange("");
                   },
+
                   name: "correction_requested",
                   dataSource: {
                     textField: "name",
@@ -388,72 +278,65 @@ const InsuranceCorrectionList = () => {
       </form>
 
       <div className="portlet-body" id="resultListEntryCntr">
-        {patient_id !== null ? (
-          <ModalMedicalRecord
-            visit_id={visit_id}
-            patient_id={patient_id}
-            openMrdModal={openMrdModal}
-            onClose={onClose}
-          />
-        ) : null}
-        {openViewAttachmentModal ? (
+        {onCAFModal ? (
           <AlgaehModal
-            title="View External Report"
-            visible={openViewAttachmentModal}
+            title={title}
+            visible={onCAFModal}
             mask={true}
             maskClosable={false}
+            footer={null}
             onCancel={() => {
-              onCloseAttachment();
+              onCloseCAFModal();
             }}
-            footer={[
-              <div className="col-12">
-                <button
-                  onClick={() => {
-                    onCloseAttachment();
-                  }}
-                  className="btn btn-default btn-sm"
-                >
-                  Cancel
-                </button>
-              </div>,
-            ]}
-            className={`algaehNewModal investigationAttachmentModal`}
+            className={`algaehNewModal cafCorrectionModal`}
           >
-            <div className="portlet-body">
-              <div className="col-6">
+            <>
+              <div className="alert alert-warning">
                 <div className="row">
-                  <div className="col-12">
-                    <ul className="investigationAttachmentList">
-                      {attached_docs.length ? (
-                        attached_docs.map((doc) => (
-                          <li>
-                            <b> {doc.filename} </b>
-                            <span>
-                              <i
-                                className="fas fa-download"
-                                onClick={() => downloadDoc(doc)}
-                              ></i>
-                              <i
-                                className="fas fa-eye"
-                                onClick={() => downloadDoc(doc, true)}
-                              ></i>
-                            </span>
-                          </li>
-                        ))
-                      ) : (
-                        <div className="col-12 noAttachment" key={1}>
-                          <p>No Attachments Available</p>
-                        </div>
-                      )}
-                    </ul>
+                  <div className="col">
+                    <p>
+                      <b>Reason for Correction:</b>
+                      <br />
+                      {requestedBy.request_comment}
+                    </p>
+                  </div>
+                  <div className="col-3">
+                    <p>
+                      <b>Requested by:</b>
+                      <br />
+                      {requestedBy.user_display_name}
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
+
+              {title === "ucaf" ? (
+                <UcafEditor
+                  dataProps={dataProps}
+                  fromCorrection={true}
+                  invoiceId={invoiceId}
+                  requested_by={requestedBy}
+                />
+              ) : title === "dcaf" ? (
+                <DcafEditor
+                  dataProps={dataProps}
+                  fromCorrection={true}
+                  invoiceId={invoiceId}
+                  requested_by={requestedBy}
+                />
+              ) : (
+                <OcafEditor
+                  dataProps={dataProps}
+                  fromCorrection={true}
+                  invoiceId={invoiceId}
+                  requested_by={requestedBy}
+                />
+              )}
+            </>
           </AlgaehModal>
         ) : null}
 
-        <Spin spinning={loading}>
+        <Spin spinning={loading || isLoading}>
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -474,29 +357,18 @@ const InsuranceCorrectionList = () => {
                         <>
                           <span>
                             <i
-                              style={{
-                                pointerEvents:
-                                  row.status === "O"
-                                    ? ""
-                                    : row.sample_status === "N"
-                                    ? "none"
-                                    : "",
-                              }}
-                              className="fas fa-file-signature"
-                              aria-hidden="true"
-                              onClick={() => generateLabResultReport(row)}
-                            />
-                          </span>
-                          <span>
-                            <i
-                              className="fas fa-paperclip"
+                              className="fas fa-eye"
                               aria-hidden="true"
                               onClick={() => {
-                                // currentRow: row,
-                                setLab_id_number(row.lab_id_number);
-                                setOpenViewAttachmentModal(true);
-                                setInvestigation_test_id(
-                                  row.hims_d_investigation_test_id
+                                setonCAFModal(true);
+                                getPatientCAF(row);
+                                setRequestedBy(row);
+                                setTitle(
+                                  row.department_type === "N"
+                                    ? "UCAF"
+                                    : row.department_type === "D"
+                                    ? "DCAF"
+                                    : "OCAF"
                                 );
                               }}
                             />
@@ -506,25 +378,62 @@ const InsuranceCorrectionList = () => {
                     },
                     others: {
                       filterable: false,
-                      maxWidth: 100,
+                      Width: 50,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
                   },
-
                   {
                     fieldName: "correction_requested",
                     label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                     displayTemplate: (row) => {
-                      return row.correction_requested === "Y" ? (
-                        <span className="badge badge-success">Seen</span>
+                      return row.correction_requested === "C" ? (
+                        <span className="badge badge-success">Corrected</span>
                       ) : (
-                        <span className="badge badge-secondary">Unseen</span>
+                        <span className="badge badge-secondary">Pending</span>
                       );
                     },
 
                     others: {
-                      maxWidth: 150,
+                      width: 50,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "invoice_number",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
+                    ),
+                    disabled: true,
+                    others: {
+                      width: 120,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "invoice_date",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
+                    ),
+                    // displayTemplate: (row) => {
+                    //   return <span>{changeDateFormat(row.invoice_date)}</span>;
+                    // },
+                    disabled: true,
+                    others: {
+                      width: 120,
+                      resizable: false,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
+                    fieldName: "primary_id_no",
+                    label: <AlgaehLabel label={{ forceLabel: "Primary ID" }} />,
+                    disabled: false,
+
+                    others: {
+                      width: 120,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
@@ -535,69 +444,23 @@ const InsuranceCorrectionList = () => {
                       <AlgaehLabel label={{ fieldName: "patient_code" }} />
                     ),
                     disabled: false,
-                    displayTemplate: (row) => {
-                      return (
-                        <span
-                          onClick={() => {
-                            setGlobal({
-                              mrd_patient: row.patient_id,
-                              patient_code: row.patient_code,
-                            });
-                            setVisit_id(row.visit_id);
-                            setPatient_id(row.patient_id);
-                            setOpenMrdModal(true);
-                            // document.getElementById("mrd-router").click();
-                          }}
-                          className="pat-code2"
-                        >
-                          {row.patient_code}
-                        </span>
-                      );
-                    },
+
                     others: {
-                      maxWidth: 150,
+                      width: 120,
                       resizable: false,
                       style: { textAlign: "center" },
                     },
                   },
                   {
-                    fieldName: "full_name",
+                    fieldName: "patient_name",
                     label: (
                       <AlgaehLabel label={{ fieldName: "patient_name" }} />
                     ),
                     disabled: true,
                     others: {
-                      minWidth: 180,
+                      width: 250,
                       resizable: false,
                       style: { textAlign: "left" },
-                    },
-                  },
-                  {
-                    fieldName: "invoice_number",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
-                    ),
-
-                    disabled: true,
-                    others: {
-                      resizable: false,
-                      style: { textAlign: "center" },
-                    },
-                  },
-                  {
-                    fieldName: "invoice_date",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
-                    ),
-                    displayTemplate: (row) => {
-                      return <span>{changeDateFormat(row.ordered_date)}</span>;
-                    },
-                    disabled: true,
-
-                    others: {
-                      maxWidth: 150,
-                      resizable: false,
-                      style: { textAlign: "center" },
                     },
                   },
                   {
@@ -611,32 +474,27 @@ const InsuranceCorrectionList = () => {
                     others: {
                       minWidth: 250,
                       resizable: false,
-                      style: { textAlign: "center" },
+                      style: { textAlign: "left" },
                     },
                   },
+                  // {
+                  //   fieldName: "caf_type",
+                  //   label: <AlgaehLabel label={{ forceLabel: "CAF Type" }} />,
+                  //   disabled: true,
+                  //   others: {
+                  //     minWidth: 250,
+                  //     resizable: false,
+                  //     style: { textAlign: "center" },
+                  //   },
+                  // },
                 ]}
                 keyId="patient_code"
-                data={labOrderServicesForDoc}
+                data={correctionList}
                 filter={true}
                 pagination={true}
               />{" "}
             </div>
           </div>
-
-          {/* <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-12">
-                <AlgaehButton
-                  className="btn btn-primary"
-                  // disabled={!processList.length}
-                  // loading={loading}
-                  onClick={() => updateLabOrderServiceForDoc()}
-                >
-                  Update as seen
-                </AlgaehButton>
-              </div>
-            </div>
-          </div> */}
         </Spin>
       </div>
     </div>

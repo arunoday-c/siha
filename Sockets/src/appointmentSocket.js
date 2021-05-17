@@ -1,5 +1,5 @@
 import { notifiModel } from "./model";
-import moment from "moment";
+import moment, { relativeTimeThreshold } from "moment";
 import { formatDate, formatTime } from "./utils";
 
 const apsock = (socket) => {
@@ -57,6 +57,55 @@ const apsock = (socket) => {
         socket.broadcast
           .to(`${patient.provider_id}`)
           .emit("patient_added", doc);
+      })
+      .catch((error) => {
+        console.log("Error ====>", error);
+      });
+  });
+  socket.on("request_insurance_correction", ({ type, rowData }) => {
+    console.log("rowwwww data", rowData);
+    const docMsg = `${rowData.patient_name} : Request For Insurance Correction`;
+
+    const docNoti = new notifiModel({
+      user_id: rowData.doctor_id,
+      message: docMsg,
+      title: type,
+      isSeen: false,
+      savedData: [rowData],
+      pageToRedirect: "/InsuranceCorrectionList",
+    });
+    docNoti
+      .save()
+      .then((doc) => {
+        socket.broadcast.to(`${rowData.algaeh_d_app_user_id}`);
+        // .emit("req_correction_insurance", {
+        //   dataprops: dataprops,
+        //   dataprops: dataprops,
+        // });
+      })
+      .catch((error) => {
+        console.log("Error ====>", error);
+      });
+  });
+  socket.on("corrected_insurance_notify", ({ rowData }) => {
+    const docMsg = `${rowData.patient_name} : ${rowData.invoice_number}`;
+
+    const docNoti = new notifiModel({
+      user_id: rowData.requested_by,
+      message: docMsg,
+      title: "RCM workBench",
+      isSeen: false,
+      // savedData: [rowData],
+      // pageToRedirect: "/InsuranceCorrectionList",
+    });
+    docNoti
+      .save()
+      .then((doc) => {
+        socket.broadcast.to(`${rowData.requested_by}`);
+        // .emit("req_correction_insurance", {
+        //   dataprops: dataprops,
+        //   dataprops: dataprops,
+        // });
       })
       .catch((error) => {
         console.log("Error ====>", error);

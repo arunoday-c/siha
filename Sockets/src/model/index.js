@@ -7,6 +7,7 @@ const notSchema = new Schema(
     message: String,
     title: String,
     pageToRedirect: String,
+    savedData: Array,
     fromUserId: Number,
     fromModule: String,
     isSeen: { type: Boolean, default: false },

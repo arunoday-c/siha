@@ -314,7 +314,7 @@ class PatientProfile extends Component {
             .lastOrDefault()
         : [];
 
-    if (chief_complaint === null || chief_complaint.length < 4) {
+    if (!chief_complaint || chief_complaint.length < 4) {
       swalMessage({
         title: "Please enter chief complaint.",
         type: "warning",

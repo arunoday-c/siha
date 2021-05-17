@@ -1,7 +1,10 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import invoiceModels from "../models/invoiceGeneration";
-import { bulkInvoiceNumber, bulkInvoiceGeneration } from "../models/bulkinvoiceGeneration";
+import {
+  bulkInvoiceNumber,
+  bulkInvoiceGeneration,
+} from "../models/bulkinvoiceGeneration";
 const {
   getVisitWiseBillDetailS,
   addInvoiceGeneration,
@@ -12,6 +15,9 @@ const {
   addInvoiceIcd,
   updateClaimValidatedStatus,
   updateInvoiceDetails,
+  updateClaimReqCorrectionStatusRCM,
+  updateInsuranceReqDoc,
+  getRequestForCorrectionInsurance,
   getVisitsForGeneration,
 } = invoiceModels;
 
@@ -62,12 +68,17 @@ export default () => {
     next();
   });
 
-  api.post("/bulkInvoiceGeneration", bulkInvoiceNumber, bulkInvoiceGeneration, (req, res) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      message: `Generated invoice's succesfull`,
-    });
-  });
+  api.post(
+    "/bulkInvoiceGeneration",
+    bulkInvoiceNumber,
+    bulkInvoiceGeneration,
+    (req, res) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        message: `Generated invoice's succesfull`,
+      });
+    }
+  );
 
   api.get("/getInvoiceGeneration", getInvoiceGeneration, (req, res, next) => {
     let result = req.records;
@@ -125,6 +136,7 @@ export default () => {
       }
     }
   );
+
   api.post("/addInvoiceIcd", addInvoiceIcd, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -133,6 +145,57 @@ export default () => {
     });
     next();
   });
+
+  api.put(
+    "/updateClaimReqCorrectionStatusRCM",
+    updateClaimReqCorrectionStatusRCM,
+    (req, res, next) => {
+      let result = req.records;
+
+      if (result.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: result,
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: result,
+        });
+      }
+
+      next();
+    }
+  );
+  api.put("/updateInsuranceReqDoc", updateInsuranceReqDoc, (req, res, next) => {
+    let result = req.records;
+
+    if (result.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: result,
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+    }
+
+    next();
+  });
+  api.get(
+    "/getRequestForCorrectionInsurance",
+    getRequestForCorrectionInsurance,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
 
   api.put("/updateInvoiceDetails", updateInvoiceDetails, (req, res, next) => {
     let result = req.records;

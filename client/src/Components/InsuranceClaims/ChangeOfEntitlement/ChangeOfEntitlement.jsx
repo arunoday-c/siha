@@ -52,15 +52,15 @@ export default function ChangeEntitlement(props) {
     enabled: !!visit,
   });
 
-  const { data: bills, isLoading: billLoadin, clear: clearBills } = useQuery(
-    ["patient-bills", { ...visit }],
-    getBillsForVisit,
-    {
-      initialData: [],
-      initialStale: true,
-      enabled: !!visit,
-    }
-  );
+  const {
+    data: bills,
+    isLoading: billLoadin,
+    clear: clearBills,
+  } = useQuery(["patient-bills", { ...visit }], getBillsForVisit, {
+    initialData: [],
+    initialStale: true,
+    enabled: !!visit,
+  });
 
   const clearPage = () => {
     clearBills();
@@ -146,6 +146,41 @@ export default function ChangeEntitlement(props) {
         </div>
 
         <div className="row">
+          <div className="col-3" id="InvoiceGen">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">
+                    List of Bills in this visits
+                  </h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <AlgaehDataGrid
+                  className="BillDetailGrid"
+                  columns={[
+                    // billed
+                    {
+                      fieldName: "bill_number",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "bill_number" }} />
+                      ),
+                    },
+                    {
+                      fieldName: "sub_total_amount",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "total_amount" }} />
+                      ),
+                      disabled: true,
+                    },
+                  ]}
+                  keyId="hims_f_billing_header_id"
+                  data={bills}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                />
+              </div>
+            </div>
+          </div>
           <div className="col-9">
             <div className="row">
               <div className="col-12 ">
@@ -223,34 +258,6 @@ export default function ChangeEntitlement(props) {
                     selected_visit={visit}
                   />
                 </InsuranceData.Provider>
-              </div>
-            </div>
-          </div>
-          <div className="col-3" id="InvoiceGen">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <AlgaehDataGrid
-                  className="BillDetailGrid"
-                  columns={[
-                    // billed
-                    {
-                      fieldName: "bill_number",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "bill_number" }} />
-                      ),
-                    },
-                    {
-                      fieldName: "sub_total_amount",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "total_amount" }} />
-                      ),
-                      disabled: true,
-                    },
-                  ]}
-                  keyId="hims_f_billing_header_id"
-                  data={bills}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                />
               </div>
             </div>
           </div>

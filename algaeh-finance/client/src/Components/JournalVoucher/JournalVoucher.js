@@ -1297,8 +1297,14 @@ export default function JournalVoucher() {
                     <AlgaehLabel label={{ fieldName: "JVList" }} />
                   </h3>
                 </div>
-                <div className="actions arAction">
-                  <span>
+                <div
+                  className={`actions arAction ${
+                    parseFloat(total_credit) != parseFloat(total_debit)
+                      ? "notEqualPar"
+                      : ""
+                  } `}
+                >
+                  <span className="notEqual">
                     <AlgaehLabel label={{ fieldName: "TCredit" }} />
                     <b>
                       {getAmountFormart(total_credit, {
@@ -1306,7 +1312,7 @@ export default function JournalVoucher() {
                       })}
                     </b>{" "}
                   </span>
-                  <span>
+                  <span className="notEqual">
                     <AlgaehLabel label={{ fieldName: "TDebit" }} />
                     <b>
                       {getAmountFormart(total_debit, {
@@ -1386,6 +1392,7 @@ export default function JournalVoucher() {
                     // xaxis={1500}
                     events={{
                       onDelete: (result) => {
+                        debugger;
                         const { disabled } = result;
                         if (disabled) {
                           AlgaehMessagePop({
@@ -1393,6 +1400,17 @@ export default function JournalVoucher() {
                             display: "Can't delete the record",
                           });
                           return;
+                        }
+                        if (result.payment_type === "CR") {
+                          setTotalCredit(
+                            (amount) =>
+                              parseFloat(amount) - parseFloat(result.amount)
+                          );
+                        } else {
+                          setTotalDebit(
+                            (amount) =>
+                              parseFloat(amount) - parseFloat(result.amount)
+                          );
                         }
                         setJournerList((data) => {
                           const otherDetals = data

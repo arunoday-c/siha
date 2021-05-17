@@ -221,6 +221,7 @@ const UpdateRadOrder = ($this, value) => {
           debugger;
           if (value === "validate") {
             if ($this.state.portal_exists === "Y") {
+              const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
               const portal_data = {
                 service_id: $this.state.service_id,
                 visit_code: $this.state.visit_code,
@@ -228,10 +229,7 @@ const UpdateRadOrder = ($this, value) => {
                 service_status: "RESULT VALIDATED",
               };
               axios
-                .post(
-                  "http://localhost:4402/api/v1/info/deletePatientService",
-                  portal_data
-                )
+                .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
                 .then(function (response) {
                   //handle success
                   console.log(response);

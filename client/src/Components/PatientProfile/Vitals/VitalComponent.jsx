@@ -60,11 +60,13 @@ class VitalComponent extends Component {
               formula_value: _elements[i].getAttribute("formula_value"),
             });
 
-            debugger;
             portal_data.push({
               patient_identity: this.props.primary_id_no,
               visit_code: this.props.visit_code,
-              visit_date: this.props.state.recorded_date,
+              // visit_date: this.props.state.recorded_date,
+              visit_date: moment(this.props.state.recorded_date).format(
+                "YYYY-MM-DD hh:mm:ss"
+              ),
               hospital_id: userToken.hospital_id,
               vital_name: elementName,
               vital_value: _elements[i].children[0].value
@@ -125,6 +127,7 @@ class VitalComponent extends Component {
           onSuccess: (response) => {
             if (response.data.success) {
               const userToken = this.context.userToken;
+
               if (userToken.portal_exists === "Y") {
                 axios
                   .post(`${PORTAL_HOST}/info/patientVitals`, portal_data)

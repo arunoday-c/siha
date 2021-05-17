@@ -1,7 +1,7 @@
 import Enumerable from "linq";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 
-const getPatientProfile = $this => {
+const getPatientProfile = ($this) => {
   const { current_patient, episode_id, visit_id } = Window.global;
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
@@ -9,32 +9,34 @@ const getPatientProfile = $this => {
     data: {
       patient_id: current_patient, //Window.global["current_patient"],
       episode_id: episode_id, //Window.global["episode_id"]
-      visit_id: visit_id //Window.global["episode_id"]
+      visit_id: visit_id, //Window.global["episode_id"]
     },
     cancelRequestId: "getPatientProfile",
     redux: {
       type: "PATIENT_PROFILE",
-      mappingName: "patient_profile"
+      mappingName: "patient_profile",
     },
-    afterSuccess: data => { }
+    afterSuccess: (data) => {},
   });
 };
 
-const getPatientVitals = $this => {
+const getPatientVitals = ($this) => {
   const { current_patient, visit_id } = Window.global;
-  $this.props.getPatientVitals({
-    uri: "/doctorsWorkBench/getPatientVitals",
-    method: "GET",
-    cancelRequestId: "getPatientVitals",
-    data: {
-      patient_id: current_patient, //Window.global["current_patient"],
-      visit_id: visit_id //Window.global["visit_id"]
-    },
-    redux: {
-      type: "PATIENT_VITALS",
-      mappingName: "patient_vitals"
-    }
-  });
+  if (!$this.props.patient_vitals) {
+    $this.props.getPatientVitals({
+      uri: "/doctorsWorkBench/getPatientVitals",
+      method: "GET",
+      cancelRequestId: "getPatientVitals",
+      data: {
+        patient_id: current_patient, //Window.global["current_patient"],
+        visit_id: visit_id, //Window.global["visit_id"]
+      },
+      redux: {
+        type: "PATIENT_VITALS",
+        mappingName: "patient_vitals",
+      },
+    });
+  }
 };
 
 const getPatientAllergies = ($this, noFunctionCall) => {
@@ -43,14 +45,14 @@ const getPatientAllergies = ($this, noFunctionCall) => {
     uri: "/doctorsWorkBench/getPatientAllergies",
     method: "GET",
     data: {
-      patient_id: current_patient //Window.global["current_patient"]
+      patient_id: current_patient, //Window.global["current_patient"]
     },
     cancelRequestId: "getPatientAllergies",
     redux: {
       type: "PATIENT_ALLERGIES",
-      mappingName: "patient_allergies"
+      mappingName: "patient_allergies",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       if (noFunctionCall === undefined) {
         let _allergies = Enumerable.from(data)
           .groupBy("$.allergy_type", null, (k, g) => {
@@ -60,41 +62,41 @@ const getPatientAllergies = ($this, noFunctionCall) => {
                 k === "F"
                   ? "Food"
                   : k === "A"
-                    ? "Airborne"
-                    : k === "AI"
-                      ? "Animal  &  Insect"
-                      : k === "C"
-                        ? "Chemical & Others"
-                        : "",
-              allergyList: g.getSource()
+                  ? "Airborne"
+                  : k === "AI"
+                  ? "Animal  &  Insect"
+                  : k === "C"
+                  ? "Chemical & Others"
+                  : "",
+              allergyList: g.getSource(),
             };
           })
           .toArray();
 
         $this.setState({
           patientAllergies: _allergies,
-          alergyExist: _allergies.length > 0 ? " AllergyActive" : ""
+          alergyExist: _allergies.length > 0 ? " AllergyActive" : "",
         });
         if (typeof noFunctionCall === "function") noFunctionCall();
       }
-    }
+    },
   });
 };
 
-const getPatientDiet = $this => {
+const getPatientDiet = ($this) => {
   const { current_patient, episode_id } = Window.global;
   $this.props.getPatientDiet({
     uri: "/doctorsWorkBench/getPatientDiet",
     method: "GET",
     data: {
       patient_id: current_patient, //Window.global["current_patient"],
-      episode_id: episode_id // Window.global["episode_id"]
+      episode_id: episode_id, // Window.global["episode_id"]
     },
     cancelRequestId: "getPatientDiet",
     redux: {
       type: "PATIENT_DIET",
-      mappingName: "patient_diet"
-    }
+      mappingName: "patient_diet",
+    },
   });
 };
 const getPatientDiagnosis = ($this, isProcess) => {
@@ -105,13 +107,13 @@ const getPatientDiagnosis = ($this, isProcess) => {
     cancelRequestId: "getPatientDiagnosis",
     data: {
       patient_id: current_patient, //Window.global["current_patient"],
-      episode_id: episode_id // Window.global["episode_id"]
+      episode_id: episode_id, // Window.global["episode_id"]
     },
     redux: {
       type: "PATIENT_DIAGNOSIS",
-      mappingName: "patient_diagnosis"
+      mappingName: "patient_diagnosis",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       if (isProcess) {
         // let finalICDS = Enumerable.from(data)
         // .where(w => w.final_daignosis === "Y")
@@ -121,26 +123,26 @@ const getPatientDiagnosis = ($this, isProcess) => {
           // InitialICDS: data,
           // finalICDS: finalICDS,
           showInitialDiagnosisLoader: false,
-          showFinalDiagnosisLoader: false
+          showFinalDiagnosisLoader: false,
         });
       }
-    }
+    },
   });
 };
 
-const getPatientHistory = $this => {
+const getPatientHistory = ($this) => {
   const { current_patient } = Window.global;
   $this.props.getPatientHistory({
     uri: "/doctorsWorkBench/getPatientHistory",
     method: "GET",
     cancelRequestId: "getPatientHistory",
     data: {
-      patient_id: current_patient //Window.global["current_patient"]
+      patient_id: current_patient, //Window.global["current_patient"]
     },
     redux: {
       type: "PATIENT_HISTORY",
-      mappingName: "patient_history"
-    }
+      mappingName: "patient_history",
+    },
   });
 };
 
@@ -153,7 +155,7 @@ const printPrescription = (that, e) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -162,27 +164,27 @@ const printPrescription = (that, e) => {
         reportParams: [
           {
             name: "hims_d_patient_id",
-            value: _patient
+            value: _patient,
           },
           {
             name: "visit_id",
-            value: _visit
+            value: _visit,
           },
           {
             name: "visit_code",
-            value: null
-          }
+            value: null,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
 
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
       window.open(origin);
       // window.document.title = "";
-    }
+    },
   });
 };
 
@@ -193,5 +195,5 @@ export {
   getPatientDiet,
   getPatientDiagnosis,
   getPatientHistory,
-  printPrescription
+  printPrescription,
 };

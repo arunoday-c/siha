@@ -42,7 +42,7 @@ let getPatientUCAF = (req, res, next) => {
           _mysql
             .executeQuery({
               query:
-                "select  V.patient_id,V.hims_f_patient_visit_id as visit_id, V.eligible_reference_number,\
+                "select  V.patient_id,V.hims_f_patient_visit_id as visit_id,AU.algaeh_d_app_user_id, V.eligible_reference_number,\
                 E.full_name as provider_name,V.new_visit_patient,null as patient_emergency_case,\
                 V.appointment_patient,SD.sub_department_name,\
                 P.patient_code,P.marital_status as patient_marital_status,date(V.visit_date) as visit_date,\
@@ -51,6 +51,7 @@ let getPatientUCAF = (req, res, next) => {
                 IM.primary_effective_end_date,IM.primary_card_number \
                 from hims_f_patient_visit V inner join hims_d_employee E \
                 on V.doctor_id = E.hims_d_employee_id \
+                left join algaeh_d_app_user AU on E.hims_d_employee_id=AU.employee_id \
                 inner join  hims_d_sub_department SD \
                 on V.sub_department_id = SD.hims_d_sub_department_id \
                 inner join hims_f_patient P on V.patient_id = P.hims_d_patient_id \
@@ -324,7 +325,7 @@ let getPatientUCAF = (req, res, next) => {
               _mysql
                 .executeQueryWithTransaction({
                   query: strHeaderQry,
-                  printQuery: true,
+                  // printQuery: true,
                 })
                 .then((headerResult) => {
                   if (hims_f_ucaf_header_id > 0) {

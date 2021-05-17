@@ -12,7 +12,13 @@ import Swal from "sweetalert2";
 import moment from "moment";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
-import { AlgaehFormGroup, AlgaehDataGrid } from "algaeh-react-components";
+import {
+  AlgaehFormGroup,
+  AlgaehSecurityComponent,
+  AlgaehDataGrid,
+} from "algaeh-react-components";
+// import RequestForCorrection from "./RequestForCorrection";
+
 export default class DcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +32,7 @@ export default class DcafEditor extends Component {
       dcaf_data: undefined,
       showImgArea: true,
       loading: false,
+      // correctionModal: false,
     };
   }
 
@@ -68,8 +75,8 @@ export default class DcafEditor extends Component {
             visit_id: Window.global["visit_id"],
             forceReplace: "true",
             patient_duration_of_illness: this.state.patient_duration_of_illness,
-            patient_chief_comp_main_symptoms: this.state
-              .patient_chief_comp_main_symptoms,
+            patient_chief_comp_main_symptoms:
+              this.state.patient_chief_comp_main_symptoms,
             patient_significant_signs: this.state.patient_significant_signs,
             patient_other_conditions: this.state.patient_other_conditions,
             patient_diagnosys: this.state.patient_diagnosys,
@@ -150,6 +157,24 @@ export default class DcafEditor extends Component {
       });
     }
   }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.dataProps.hims_f_dcaf_header !== undefined &&
+      nextProps.dataProps.hims_f_dcaf_header.length > 0
+    ) {
+      let data = nextProps.dataProps.hims_f_dcaf_header[0];
+      let insurance = nextProps.dataProps.hims_f_dcaf_insurance_details[0];
+
+      data.dcaf_services = nextProps.dataProps.hims_f_dcaf_services;
+      data.dcaf_medication = nextProps.dataProps.hims_f_dcaf_medication;
+
+      this.setState({
+        ...this.state,
+        ...data,
+        ...insurance,
+      });
+    }
+  }
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -190,6 +215,9 @@ export default class DcafEditor extends Component {
         });
       },
     });
+  }
+  openRequestCorrectionModal() {
+    this.setState({ correctionModal: !this.state.correctionModal });
   }
   render() {
     return (
@@ -249,8 +277,8 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: this.state
-                              .primary_tpa_insurance_company_name,
+                            value:
+                              this.state.primary_tpa_insurance_company_name,
                             events: {},
                             option: {
                               type: "text",
@@ -1011,9 +1039,8 @@ export default class DcafEditor extends Component {
                             isEditable={"editOnly"}
                             events={{
                               // onDone: () => {},
-                              onSave: this.updateDcafMedicationQuantity.bind(
-                                this
-                              ),
+                              onSave:
+                                this.updateDcafMedicationQuantity.bind(this),
                             }}
                             // height="34vh"
                             pagination={true}
@@ -1031,46 +1058,59 @@ export default class DcafEditor extends Component {
               </div>
             </div>
           </div>
-
+          {/* {this.state.correctionModal ? (
+            <RequestForCorrection
+              visible={this.state.correctionModal}
+              onClose={() => this.openRequestCorrectionModal()}
+              rowData={this.props.rowData}
+              dataProps={this.props.dataProps}
+              type={"dcaf"}
+              // title={`Dcaf Correction ${this.props.rowData?.invoice_number}`}
+              title={`Enter correction reason for Invoice No. - ${this.props.rowData?.invoice_number}`}
+            />
+          ) : null} */}
           <div className=" popupFooter">
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-lg-12">
-                  {/* <ButtonType
-                    classname="btn-primary"
-                    label={{
-                      forceLabel: "Reload data",
-                      returnText: true,
-                    }}
-                  /> */}
-                  <button
-                    type="button"
-                    className={
-                      "btn btn-primary " +
-                      (this.state.loading ? " btn-loader" : "")
-                    }
-                    onClick={this.saveAndPrintDcaf.bind(this)}
-                  >
-                    {this.state.loading ? (
-                      <span className="showBtnLoader">
-                        <i className="fas fa-spinner fa-spin" />
-                      </span>
-                    ) : null}
-                    Save & Print
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={this.onClickReloadData.bind(this, this)}
-                  >
-                    {/* {this.state.loading ? (
+                  <AlgaehSecurityComponent componentCode="ENB_BTN_DCAF">
+                    <button
+                      type="button"
+                      className={
+                        "btn btn-primary " +
+                        (this.state.loading ? " btn-loader" : "")
+                      }
+                      onClick={this.saveAndPrintDcaf.bind(this)}
+                    >
+                      {this.state.loading ? (
+                        <span className="showBtnLoader">
+                          <i className="fas fa-spinner fa-spin" />
+                        </span>
+                      ) : null}
+                      {this.props.fromCorrection ? "save" : `Save & Print`}
+                    </button>
+                  </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="RLD_DAT_DCAF">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.onClickReloadData.bind(this, this)}
+                    >
+                      {/* {this.state.loading ? (
                       <span className="showBtnLoader">
                         <i className="fas fa-spinner fa-spin" />
                       </span>
                     ) : null} */}
-                    Reload Data
-                  </button>
+                      Reload Data
+                    </button>
+                  </AlgaehSecurityComponent>
+                  {/* <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.openRequestCorrectionModal.bind(this, this)}
+                  >
+                    Request For Insurace Correction
+                  </button> */}
                 </div>
               </div>
             </div>

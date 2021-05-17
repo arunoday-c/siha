@@ -6,7 +6,8 @@ import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
 import Swal from "sweetalert2";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-
+import { AlgaehSecurityComponent } from "algaeh-react-components";
+// import RequestForCorrection from "./RequestForCorrection";
 export default class OcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -60,6 +61,7 @@ export default class OcafEditor extends Component {
       anti_scratch: false,
       contact_lense_type: null,
       resgular_lense_type: "N",
+      // correctionModal: false,
     };
   }
 
@@ -92,6 +94,39 @@ export default class OcafEditor extends Component {
       data.anti_scratch = data.anti_scratch === "Y" ? true : false;
       this.setState({ ...this.state, ...data, ...insurance });
     }
+  }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    // this.props.dataProps.hims_f_ocaf_header
+    // this.props.dataProps.hims_f_ocaf_insurance_details
+    if (
+      nextProps.hims_f_ocaf_header !== undefined &&
+      nextProps.hims_f_ocaf_header.length > 0
+    ) {
+      let data = nextProps.dataProps.hims_f_ocaf_header[0];
+      let insurance = nextProps.dataProps.hims_f_ocaf_insurance_details[0];
+
+      // data
+      data.multi_coated = data.multi_coated === "Y" ? true : false;
+      data.varilux = data.varilux === "Y" ? true : false;
+      data.light = data.light === "Y" ? true : false;
+      data.aspheric = data.aspheric === "Y" ? true : false;
+      data.bifocal = data.bifocal === "Y" ? true : false;
+      data.medium = data.medium === "Y" ? true : false;
+      data.lenticular = data.lenticular === "Y" ? true : false;
+      data.single_vision = data.single_vision === "Y" ? true : false;
+      data.dark = data.dark === "Y" ? true : false;
+      data.safety_thickness = data.safety_thickness === "Y" ? true : false;
+      data.anti_reflecting_coating =
+        data.anti_reflecting_coating === "Y" ? true : false;
+      data.photosensitive = data.photosensitive === "Y" ? true : false;
+      data.high_index = data.high_index === "Y" ? true : false;
+      data.colored = data.colored === "Y" ? true : false;
+      data.anti_scratch = data.anti_scratch === "Y" ? true : false;
+      this.setState({ ...this.state, ...data, ...insurance });
+    }
+  }
+  openRequestCorrectionModal() {
+    this.setState({ correctionModal: !this.state.correctionModal });
   }
 
   ChangeEventHandler(e) {
@@ -1355,25 +1390,46 @@ export default class OcafEditor extends Component {
               </div>
             </div>
           </div>
-
+          {/* {this.state.correctionModal ? (
+            <RequestForCorrection
+              visible={this.state.correctionModal}
+              onClose={() => this.openRequestCorrectionModal()}
+              rowData={this.props.rowData}
+              dataProps={this.props.dataProps}
+              type={"ocaf"}
+              // title={`Ocaf Correction ${this.props.rowData?.invoice_number}`}
+              title={`Enter correction reason for Invoice No. - ${this.props.rowData?.invoice_number}`}
+            />
+          ) : null} */}
           <div className=" popupFooter">
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-lg-12">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.saveAndPrintOcaf.bind(this)}
-                  >
-                    Save & Print
-                  </button>
-                  <button
+                  <AlgaehSecurityComponent componentCode="ENB_BTN_OCAF">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.saveAndPrintOcaf.bind(this)}
+                    >
+                      {this.props.fromCorrection ? "save" : `Save & Print`}
+                    </button>
+                  </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="RLD_DAT_OCAF">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.onClickReloadData.bind(this, this)}
+                    >
+                      Reload Data
+                    </button>
+                  </AlgaehSecurityComponent>
+                  {/* <button
                     type="button"
                     className="btn btn-default"
-                    onClick={this.onClickReloadData.bind(this, this)}
+                    onClick={this.openRequestCorrectionModal.bind(this, this)}
                   >
-                    Reload Data
-                  </button>
+                    Request For Insurace Correction
+                  </button> */}
                   {/* <button
                     type="button"
                     className="btn btn-default"

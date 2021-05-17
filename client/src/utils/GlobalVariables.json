@@ -199,11 +199,11 @@
     },
     {
       "name": "Corrected",
-      "value": "Y"
+      "value": "C"
     },
     {
       "name": "Pending",
-      "value": "N"
+      "value": "R"
     }
   ],
   "FORMAT_MARTIALSTS": [

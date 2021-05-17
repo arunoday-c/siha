@@ -140,113 +140,43 @@ class TransationDetails extends Component {
             onClose: this.onClose.bind(this),
           }}
         >
-          <div className="col-lg-12 popupInner">
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Narration",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "narration",
-                  value: this.state.narration,
-                  events: {
-                    onChange: (e) => {
-                      this.setState({ narration: e.target.value });
-                    },
-                  },
-                }}
-              />
-              <div className="col">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.SaveNarration.bind(this)}
-                  style={{ marginTop: 21 }}
-                >
-                  Save Narration
-                </button>
-              </div>
-            </div>
-
-            <div className="row" style={{ paddingTop: 15 }}>
-              <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
-                <AlgaehDataGrid
-                  columns={[
-                    {
-                      fieldName: "to_account",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "To Account" }} />
-                      ),
-                    },
-                    {
-                      fieldName: "payment_date",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
-                      ),
-                    },
-                    {
-                      fieldName: "payment_type",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
-                      ),
-                    },
-
-                    {
-                      fieldName: "debit_amount",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
-                      ),
-                      displayTemplate: (row) => {
-                        return (
-                          <span>
-                            {GetAmountFormart(row.debit_amount, {
-                              appendSymbol: false,
-                            })}
-                          </span>
-                        );
+          <div className="popupInner">
+            <div className="popRightDiv">
+              <div className="row">
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Narration",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "narration",
+                    value: this.state.narration,
+                    events: {
+                      onChange: (e) => {
+                        this.setState({ narration: e.target.value });
                       },
                     },
-                    {
-                      fieldName: "credit_amount",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
-                      ),
-                      displayTemplate: (row) => {
-                        return (
-                          <span>
-                            {GetAmountFormart(row.credit_amount, {
-                              appendSymbol: false,
-                            })}
-                          </span>
-                        );
-                      },
-                    },
-
-                    // {
-                    //   fieldName: "narration",
-                    //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                    // }
-                  ]}
-                  keyId="service_code"
-                  data={
-                    this.state.data_entries === undefined
-                      ? []
-                      : this.state.data_entries
-                  }
-                  pagination={true}
-                  pageOptions={{ rows: 20, page: 1 }}
-                  isFilterable={true}
+                  }}
                 />
+                <div className="col-2">
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.SaveNarration.bind(this)}
+                    style={{ marginTop: 21 }}
+                  >
+                    Update Narration
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {this.state.revert_entries.length ? (
               <div className="row" style={{ paddingTop: 15 }}>
-                <p> Reverted Transaction </p>
-                <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
+                <div
+                  className="col-12"
+                  id="dayEndProcessDetailsRevertedGrid_Cntr"
+                >
                   <AlgaehDataGrid
                     columns={[
                       {
@@ -308,9 +238,9 @@ class TransationDetails extends Component {
                     ]}
                     keyId="service_code"
                     data={
-                      this.state.revert_entries === undefined
+                      this.state.data_entries === undefined
                         ? []
-                        : this.state.revert_entries
+                        : this.state.data_entries
                     }
                     pagination={true}
                     pageOptions={{ rows: 20, page: 1 }}
@@ -318,7 +248,93 @@ class TransationDetails extends Component {
                   />
                 </div>
               </div>
-            ) : null}
+
+              {this.state.revert_entries.length ? (
+                <div className="row" style={{ paddingTop: 15 }}>
+                  <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
+                    {" "}
+                    <p>
+                      <b>Reversal Transaction</b>
+                    </p>
+                    <AlgaehDataGrid
+                      columns={[
+                        {
+                          fieldName: "to_account",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "To Account" }} />
+                          ),
+                        },
+                        {
+                          fieldName: "payment_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Payment Date" }}
+                            />
+                          ),
+                        },
+                        {
+                          fieldName: "payment_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Payment Type" }}
+                            />
+                          ),
+                        },
+
+                        {
+                          fieldName: "debit_amount",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Debit Amount" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {GetAmountFormart(row.debit_amount, {
+                                  appendSymbol: false,
+                                })}
+                              </span>
+                            );
+                          },
+                        },
+                        {
+                          fieldName: "credit_amount",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Credit Amount" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {GetAmountFormart(row.credit_amount, {
+                                  appendSymbol: false,
+                                })}
+                              </span>
+                            );
+                          },
+                        },
+
+                        // {
+                        //   fieldName: "narration",
+                        //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                        // }
+                      ]}
+                      keyId="service_code"
+                      data={
+                        this.state.revert_entries === undefined
+                          ? []
+                          : this.state.revert_entries
+                      }
+                      pagination={true}
+                      pageOptions={{ rows: 20, page: 1 }}
+                      isFilterable={true}
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </div>
           </div>
           <div className="popupFooter">
             <div className="col-lg-12">
