@@ -208,8 +208,7 @@ export default function SubjectiveHandler() {
             if (forceSave === "forceSave") {
               swalMessage({
                 // title: "Saved Successfully",
-                html:
-                  "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
+                html: "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
                 type: "success",
               });
             }
@@ -276,8 +275,7 @@ export default function SubjectiveHandler() {
             if (forceSave === "forceSave") {
               swalMessage({
                 // title: "Updated Successfully",
-                html:
-                  "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Updated Successfully</b>",
+                html: "Chief Complaint, Significant Signs and Other Comments</br></br> <b>Saved Successfully</b>",
                 type: "success",
               });
             }

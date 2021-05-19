@@ -50,6 +50,7 @@ class HospitalServices extends PureComponent {
       hospital_id: null,
       service_type_id: null,
       standard_fee: 0,
+      service_cost: 0,
       vat_applicable: "N",
       vat_percent: 0,
       cpt_code_data: null,
@@ -237,22 +238,6 @@ class HospitalServices extends PureComponent {
                     },
                   }}
                 />
-                <AlagehFormGroup
-                  div={{ className: "col-6 form-group mandatory" }}
-                  label={{
-                    fieldName: "service_name",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "service_name",
-                    value: this.state.service_name,
-                    events: {
-                      onChange: texthandle.bind(this, this),
-                    },
-                  }}
-                />
-
                 <AlagehAutoComplete
                   div={{ className: "col-3 form-group mandatory" }}
                   label={{
@@ -273,9 +258,37 @@ class HospitalServices extends PureComponent {
                     },
                     onChange: texthandle.bind(this, this),
                   }}
-                />
+                />{" "}
+                <div className="col-3">
+                  <label>Is Physiotherapy Service</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="physiotherapy_service"
+                        value="Y"
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
                 <AlagehFormGroup
-                  div={{ className: "col form-group mandatory" }}
+                  div={{ className: "col-6 form-group mandatory" }}
+                  label={{
+                    fieldName: "service_name",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "service_name",
+                    value: this.state.service_name,
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
+                  }}
+                />{" "}
+                <AlagehFormGroup
+                  div={{ className: "col-3 form-group mandatory" }}
                   label={{
                     fieldName: "standard_fee",
                     isImp: true,
@@ -290,55 +303,34 @@ class HospitalServices extends PureComponent {
                     },
                   }}
                 />
-                <div className="col-3">
-                  <label>Is Physiotherapy Service</label>
-                  <div className="customCheckbox">
-                    <label className="checkbox inline">
-                      <input
-                        type="checkbox"
-                        name="physiotherapy_service"
-                        value="Y"
-                      />
-                      <span>Yes</span>
-                    </label>
-                  </div>
-                </div>
-                <div className="col-3 globalSearchCntr">
-                  <AlgaehLabel label={{ forceLabel: "Search CPT COde" }} />
-                  <h6 onClick={CptCodesSearch.bind(this, this)}>
-                    {this.state.cpt_code_data
-                      ? this.state.cpt_code_data
-                      : "Select CPT Code"}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
-                <div className="col-3 globalSearchCntr">
-                  <AlgaehLabel label={{ fieldName: "nphies_id" }} />
-                  <h6 onClick={NPHIESCodesSearch.bind(this, this)}>
-                    {this.state.nphies_id
-                      ? this.state.nphies_id
-                      : "Select NPHIES"}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
-                <AlagehAutoComplete
-                  div={{ className: "col-6 form-group" }}
+                <AlagehFormGroup
+                  div={{ className: "col-3 form-group" }}
                   label={{
-                    fieldName: "sub_department_id",
+                    fieldName: "service_cost",
+                    isImp: false,
                   }}
-                  selector={{
-                    name: "sub_department_id",
-                    className: "select-fld",
-                    value: this.state.sub_department_id,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "sub_department_name"
-                          : "arabic_sub_department_name",
-                      valueField: "hims_d_sub_department_id",
-                      data: this.props.subdepartments,
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    className: "txt-fld",
+                    name: "service_cost",
+                    value: this.state.service_cost,
+                    events: {
+                      onChange: texthandle.bind(this, this),
                     },
-                    onChange: texthandle.bind(this, this),
+                  }}
+                />{" "}
+                <AlagehFormGroup
+                  div={{ className: "col-6 form-group arabic-txt-fld" }}
+                  label={{
+                    fieldName: "Arabic Service Name",
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "arabic_service_name",
+                    value: this.state.arabic_service_name,
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
                   }}
                 />
                 <div className="col-3">
@@ -379,22 +371,46 @@ class HospitalServices extends PureComponent {
                     },
                   }}
                 />
-                <AlagehFormGroup
-                  div={{ className: "col-12 form-group arabic-txt-fld" }}
+                <AlagehAutoComplete
+                  div={{ className: "col-6 form-group" }}
                   label={{
-                    fieldName: "Arabic Service Name",
+                    fieldName: "sub_department_id",
                   }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "arabic_service_name",
-                    value: this.state.arabic_service_name,
-                    events: {
-                      onChange: texthandle.bind(this, this),
+                  selector={{
+                    name: "sub_department_id",
+                    className: "select-fld",
+                    value: this.state.sub_department_id,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "sub_department_name"
+                          : "arabic_sub_department_name",
+                      valueField: "hims_d_sub_department_id",
+                      data: this.props.subdepartments,
                     },
+                    onChange: texthandle.bind(this, this),
                   }}
                 />
+                <div className="col-3 globalSearchCntr">
+                  <AlgaehLabel label={{ forceLabel: "Search CPT COde" }} />
+                  <h6 onClick={CptCodesSearch.bind(this, this)}>
+                    {this.state.cpt_code_data
+                      ? this.state.cpt_code_data
+                      : "Select CPT Code"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+                <div className="col-3 globalSearchCntr">
+                  <AlgaehLabel label={{ fieldName: "nphies_id" }} />
+                  <h6 onClick={NPHIESCodesSearch.bind(this, this)}>
+                    {this.state.nphies_id
+                      ? this.state.nphies_id
+                      : "Select NPHIES"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
                 {this.FIN_Active ? (
-                  <div className="col-12 form-group">
+                  <div className="col-12 form-group mandatory">
                     <div className="row">
                       <AlgaehTreeSearch
                         div={{ className: "col-6 form-group" }}

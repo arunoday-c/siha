@@ -176,6 +176,7 @@ const clearData = ($this) => {
     service_type_id: null,
 
     standard_fee: 0,
+    service_cost: 0,
     vat_applicable: "N",
     vat_percent: 0,
     cpt_code_data: null,

@@ -416,6 +416,7 @@
   "service_name": "Service Name",
   "hospital_id": "Division/ Branch",
   "standard_fee": "Standard Fee",
+  "service_cost": "Service Cost",
   "vat_percent": "Vat Percent",
   "incentive_setup": "Incentive Setup",
   "investigation_settings": "Settings",

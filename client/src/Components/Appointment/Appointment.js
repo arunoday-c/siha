@@ -126,6 +126,7 @@ class Appointment extends PureComponent {
   }
 
   PatientRecallDataFill() {
+    debugger;
     if (this.props.visitCreated) {
       this.clearSaveState();
     }
@@ -139,6 +140,9 @@ class Appointment extends PureComponent {
       );
       this.setState(
         {
+          // ...data,
+          // full_name: data.pat_name,
+          // full_name:data.pat_name,
           sub_department_id: data.sub_department_id,
           provider_id: data.doctor_id,
           activeDateHeader: data.followup_date,
@@ -755,7 +759,11 @@ class Appointment extends PureComponent {
       showApt: false,
       openPatEdit: false,
     });
-    this.clearSaveState();
+    if (this.props.location.state?.data.from_recall) {
+      return;
+    } else {
+      this.clearSaveState();
+    }
   }
 
   ageHandler(e) {

@@ -1279,9 +1279,8 @@ class BasicSubjective extends Component {
                                     value: this.state.lmp_days,
                                     disabled: !this.state.isPregnancy,
                                     events: {
-                                      onChange: this.ChangeEventHandler.bind(
-                                        this
-                                      ),
+                                      onChange:
+                                        this.ChangeEventHandler.bind(this),
                                     },
                                   }}
                                 />
@@ -1296,7 +1295,7 @@ class BasicSubjective extends Component {
                     <div className="row">
                       <div className="col-12">
                         <button
-                          className="btn btn-default float-right"
+                          className="btn btn-primary float-right"
                           onClick={() => {
                             const err = Validations(this);
                             if (!err) {
@@ -1319,7 +1318,7 @@ class BasicSubjective extends Component {
                         >
                           {this.state.hims_f_episode_chief_complaint_id === null
                             ? "Save All"
-                            : "Update All"}{" "}
+                            : "Save All"}{" "}
                         </button>
                       </div>
                     </div>

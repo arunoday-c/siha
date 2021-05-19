@@ -907,7 +907,8 @@ export default {
                                       values: leave_salary_accrual_detail,
                                       includeValues: IncludeValues,
                                       extraValues: {
-                                        leave_salary_header_id: leave_salary_header_id,
+                                        leave_salary_header_id:
+                                          leave_salary_header_id,
                                       },
                                       bulkInsertOrUpdate: true,
                                       printQuery: true,
@@ -922,7 +923,8 @@ export default {
                                         leave_detail[1][0].hospital_id;
 
                                       InsertEmployeeLeaveSalary({
-                                        leave_salary_accrual_detail: leave_salary_accrual_detail,
+                                        leave_salary_accrual_detail:
+                                          leave_salary_accrual_detail,
                                         annual_leave_data: annual_leave_data,
                                         _mysql: _mysql,
                                         next: next,
@@ -938,6 +940,7 @@ export default {
                                             next: next,
                                             decimal_places:
                                               req.userIdentity.decimal_places,
+                                            req: req,
                                           })
                                             .then((gratuity_provision) => {
                                               // _mysql.commitTransaction(() => {
@@ -951,9 +954,11 @@ export default {
                                                 // console.log("bulk_year", bulk_year)
 
                                                 req.body.bulk_year = bulk_year;
-                                                req.body.bulk_month = bulk_month;
+                                                req.body.bulk_month =
+                                                  bulk_month;
                                                 req.records = {
-                                                  leave_salary_number: leave_salary_number,
+                                                  leave_salary_number:
+                                                    leave_salary_number,
                                                 };
                                                 // console.log("bulk_month", bulk_month)
                                                 next();
@@ -1825,6 +1830,7 @@ function InsertGratuityProvision(options) {
       const inputParam = options.inputParam;
       const salary_end_date = options.leave_salary_detail.end_date;
       const decimal_places = options.decimal_places;
+      const req = options.req;
 
       // console.log("InsertGratuityProvision", salary_end_date)
       const gra_month = options.leave_salary_detail.month;
@@ -2098,12 +2104,12 @@ function InsertGratuityProvision(options) {
                           gra_month,
                           gratuity_amount,
                           _computatedAmoutSum,
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
                           gratuity_amount,
                           _computatedAmoutSum,
-                          req.userIdentity.algaeh_d_app_user_id,
-                          new Date(),
-                          req.userIdentity.algaeh_d_app_user_id,
-                          new Date(),
                         ]
                       );
 

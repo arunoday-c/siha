@@ -131,7 +131,7 @@ export function BillDetails({
     service_type_id,
     sub_department_id,
     doctor_id,
-    primary_network_office_id,
+    insuranceInfo,
     setBillInfo,
     setBillData: setGlobalBillData,
     disabled: globalDisable,
@@ -181,7 +181,8 @@ export function BillDetails({
         nationality_id,
         primary_insurance_provider_id,
         primary_network_id,
-        primary_network_office_id,
+        primary_network_office_id: insuranceInfo?.primary_network_office_id,
+        payer_id: insuranceInfo?.payer_id,
         default_nationality,
         local_vat_applicable,
         prevVisits,
@@ -696,9 +697,8 @@ export function BillDetails({
                               state.net_amount - amount;
                             state.cash_amount = 0;
                             state.card_amount = 0;
-                            state.unbalanced_amount = state.receiveable_amount.toFixed(
-                              3
-                            );
+                            state.unbalanced_amount =
+                              state.receiveable_amount.toFixed(3);
                             return { ...state };
                           });
                         },
@@ -885,9 +885,8 @@ export function BillDetails({
                               credit;
                             sendingObject.cash_amount = 0;
                             sendingObject.card_amount = 0;
-                            sendingObject.unbalanced_amount = sendingObject.receiveable_amount.toFixed(
-                              3
-                            );
+                            sendingObject.unbalanced_amount =
+                              sendingObject.receiveable_amount.toFixed(3);
                             return { ...sendingObject };
                           });
                         },

@@ -6,11 +6,8 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-      const {
-        decimal_places,
-        symbol_position,
-        currency_symbol,
-      } = options.args.crypto;
+      const { decimal_places, symbol_position, currency_symbol } =
+        options.args.crypto;
 
       params.forEach((para) => {
         input[para["name"]] = para["value"];
@@ -67,23 +64,22 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          SELECT LH.employee_id,EM.employee_code, EM.full_name,DS.designation,
-          EM.date_of_joining,EE.amount as basic_salary, max(LD.year) as year,
-          MONTHNAME(CONCAT('2011-',LD.month,'-01')) as deducting_month,
-          LD.leave_salary_amount,
-          LD.leave_days,
-          LD.airticket_amount,
-          LD.month,
-          
+SELECT LH.employee_id,EM.employee_code, EM.full_name,DS.designation,
+EM.date_of_joining,EE.amount as basic_salary, max(LD.year) as year,
+MONTHNAME(CONCAT('2011-',LD.month,'-01')) as deducting_month,
+LD.leave_salary_amount,
+LD.leave_days,
+LD.airticket_amount,
+LD.month,
 COALESCE(sum(LDD.leave_salary_amount),0) as last_leave_salary_amount,
 COALESCE(sum(LDD.leave_days),0) as last_leave_days,
 COALESCE(sum(LDD.airticket_amount),0) as last_airticket_amount,
-          LH.opening_leave_days,
-          LH.opening_leave_salary,
-          LH.opening_airticket,
-          LH.utilized_leave_days,
-          LH.utilized_leave_salary_amount,
-          LH.utilized_airticket_amount,  
+LH.opening_leave_days,
+LH.opening_leave_salary,
+LH.opening_airticket,
+LH.utilized_leave_days,
+LH.utilized_leave_salary_amount,
+LH.utilized_airticket_amount,  
 case when 
 LD.month ='1' then ML.january when
 LD.month ='2' then ML.february when
@@ -97,29 +93,28 @@ LD.month ='9' then ML.september when
 LD.month ='10' then ML.october when
 LD.month ='11' then ML.november
 else ML.december end as ml_month,
- LEC.leave_days as enc_leave_days,LEC.leave_amount as enc_leave_amount,LEC.airfare_amount as enc_airfare_amount
-          FROM hims_f_employee_leave_salary_header LH
-          left join hims_f_employee_leave_salary_detail LD on LD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id 
-          and LD.year = ?  and LD.month <= ?
-          left join hims_f_employee_leave_salary_detail LDD on LDD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id 
-          and LDD.year < ?
-          left join hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
-          left join hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
-          left join hims_f_salary as SL on SL.employee_id = LH.employee_id and SL.year=? and SL.month=? and salary_paid='Y'
-          left join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
-         left join hims_f_leave_encash_header LEC on LEC.employee_id=EM.hims_d_employee_id and LEC.year=? and MONTH(CONCAT(LEC.encashment_date))=? and LEC.leave_id = (select hims_d_leave_id from hims_d_leave where leave_category='A')
-          left join hims_f_employee_monthly_leave as ML on ML.employee_id = EM.hims_d_employee_id and ML.year=? and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
-          where EM.employee_status <> 'I'  ${str}
-          group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id
-          -- ,LH.utilized_leave_days,LH.utilized_leave_salary_amount,LH.utilized_airticket_amount
-          -- ,LH.opening_leave_days,LH.opening_leave_salary,LH.opening_airticket
-          order by LH.employee_id,LD.month;
+COALESCE (LEC.leave_days,0) as enc_leave_days,LEC.leave_amount as enc_leave_amount,LEC.airfare_amount as enc_airfare_amount
+FROM hims_f_employee_leave_salary_header LH
+left join hims_f_employee_leave_salary_detail LD on LD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id 
+and LD.year = ?  and LD.month <= ?
+left join hims_f_employee_leave_salary_detail LDD on LDD.employee_leave_salary_header_id = LH.hims_f_employee_leave_salary_header_id 
+and LDD.year < ?
+left join hims_d_employee as EM on LH.employee_id = EM.hims_d_employee_id
+left join hims_d_designation as DS on DS.hims_d_designation_id = EM.employee_designation_id
+left join hims_f_salary as SL on SL.employee_id = LH.employee_id and SL.year=? and SL.month=? and salary_paid='Y'
+left join hims_d_employee_earnings as EE on EE.employee_id = EM.hims_d_employee_id and earnings_id=(select basic_earning_component from hims_d_hrms_options limit 1)
+left join hims_f_leave_encash_header LEC on LEC.employee_id=EM.hims_d_employee_id and LEC.year=? and MONTH(CONCAT(LEC.encashment_date))=? and LEC.leave_id = (select hims_d_leave_id from hims_d_leave where leave_category='A')
+left join hims_f_employee_monthly_leave as ML on ML.employee_id = EM.hims_d_employee_id and ML.year=? and ML.leave_id=(select hims_d_leave_id from hims_d_leave where leave_category='A')
+where EM.employee_status <> 'I' and SL.salary_paid='Y' ${str}
+group by LD.month, LD.leave_salary_amount,LD.leave_days,LD.airticket_amount, LH.employee_id, LH.hims_f_employee_leave_salary_header_id
+-- ,LH.utilized_leave_days,LH.utilized_leave_salary_amount,LH.utilized_airticket_amount
+-- ,LH.opening_leave_days,LH.opening_leave_salary,LH.opening_airticket
+order by LH.employee_id,LD.month;
           `,
 
           values: [
             input.year,
             parseInt(input.month),
-
             input.year,
             input.year,
             parseInt(input.month),

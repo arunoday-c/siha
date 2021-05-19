@@ -37,7 +37,7 @@ class Allergies extends Component {
     super(props);
     this.state = {
       openAllergyModal: false,
-      allergy_value: "F",
+      allergy_value: "",
       allergy_type: "Food",
       allAllergies: [],
       patientAllergies: [],

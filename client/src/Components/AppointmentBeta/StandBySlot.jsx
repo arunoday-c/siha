@@ -151,7 +151,7 @@ export default memo(function StandBySlot({
       }
       if (_firstPatient !== undefined) {
         return (
-          <React.Fragment>
+          <React.Fragment key={data.counter}>
             {_firstPatient.appointment_status_id === state.noShowId ? (
               <div
                 className="dynPatient"

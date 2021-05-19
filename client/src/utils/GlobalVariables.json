@@ -1029,6 +1029,10 @@
       "value": "10"
     },
     {
+      "name": "Four times daily (qid)",
+      "value": "18"
+    },
+    {
       "name": "Five times daily",
       "value": "11"
     },
@@ -1055,10 +1059,6 @@
     {
       "name": "Every twelve hours (q12h)",
       "value": "17"
-    },
-    {
-      "name": "Four times daily (qid)",
-      "value": "18"
     },
     {
       "name": "Other (As per need)",

@@ -22,7 +22,8 @@ import {
 import { ViewAttachmentsModal } from "./viewAttachmentsModal";
 import ReferralDataGrid from "../../../PatientProfile/Plan/Referal/ReferralDataGrid";
 // import { newAlgaehApi } from "../../../../hooks";
-
+import SickLeave from "../../../PatientProfile/SickLeave/SickLeave";
+import { setGlobal } from "../../../../utils/GlobalFunctions";
 export default function OPEncounterDetails({
   episode_id,
   encounter_id,
@@ -66,13 +67,12 @@ export default function OPEncounterDetails({
   const [loaderChiefComp, setLoaderChiefComp] = useState(false);
   // const [referralData, setReferralData] = useState([]);
   const [referringTo, setReferringTo] = useState(false);
-  const [
-    loaderSignificantSigns_Others,
-    setLoaderSignificantSigns_Others,
-  ] = useState(false);
+  const [loaderSignificantSigns_Others, setLoaderSignificantSigns_Others] =
+    useState(false);
   const [loaderVitals, setLoaderVitals] = useState(false);
   const [openAttachmentsModal, setOpenAttachmentsModal] = useState(false);
   // const [attached_docs, setAttached_docs] = useState([]);
+  const [openSickLeave, setOpenSickLeave] = useState(false);
   const [significant_signs, setSignificant_signs] = useState("");
   const [attachmentOpen, setattachmentOpen] = useState(false);
   //       patientComplaints: [],
@@ -758,7 +758,9 @@ export default function OPEncounterDetails({
     setOpenAttachmentsModal((pre) => !pre);
     setCurrentRow({ ...row, attach_type: attachment_type });
   };
-
+  const showSickLeave = () => {
+    setOpenSickLeave((pre) => !pre);
+  };
   const menu = (
     <Menu>
       <Menu.Item key="1">
@@ -794,6 +796,20 @@ export default function OPEncounterDetails({
           <div className="caption">
             <h3 className="caption-subject">OP Encounter Details </h3>
           </div>
+          {generalInfo !== undefined ? (
+            <button
+              onClick={() => {
+                setGlobal({
+                  episode_id: episode_id,
+                  current_patient: patient_id,
+                  visit_id: visit_id,
+                });
+                showSickLeave();
+              }}
+            >
+              Generate Sick Leave
+            </button>
+          ) : null}
           <div className="actions">
             {generalInfo !== undefined ? (
               <Dropdown overlay={menu}>
@@ -810,6 +826,14 @@ export default function OPEncounterDetails({
                               ).format("DD-MM-YYYY HH:mm A")
                             : "----------"} */}
         </div>
+        {openSickLeave ? (
+          <SickLeave
+            openSickLeave={openSickLeave}
+            onClose={showSickLeave}
+            patient_diagnosis={patientDiagnosis}
+          />
+        ) : null}
+
         {referringTo ? (
           <AlgaehModal
             title={"Referring To"}

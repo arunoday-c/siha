@@ -246,6 +246,7 @@ export function PatientRegistration() {
     billData,
     disabled,
     consultationInfo,
+    insuranceInfo,
     setConsultationInfo,
     setDisable,
     setSavedPatient,
@@ -552,8 +553,8 @@ export function PatientRegistration() {
     //   data: { application_id: appointment_id },
     // });
     // return result?.data?.records;
-
     data.patient_identity = data.primary_id_no;
+    data.corporate_id = insuranceInfo.payer_id;
     data.identity_type = identity_type ?? "NATIONALITY ID";
     data.patient_name = data.full_name;
     data.patient_dob = data.date_of_birth;
@@ -612,6 +613,7 @@ export function PatientRegistration() {
         updated_date: null,
       });
     }
+
     if (!patient_code) {
       save({
         ...input,
@@ -768,6 +770,7 @@ export function PatientRegistration() {
       promo_code: "",
       discount_percentage: 0,
       discount_amount: 0,
+      payer_id: "",
     });
     clearState();
     setConsultationInfo(default_visit_type);
