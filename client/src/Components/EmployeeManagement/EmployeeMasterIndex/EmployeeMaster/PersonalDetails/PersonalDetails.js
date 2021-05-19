@@ -637,7 +637,6 @@ class PersonalDetails extends Component {
                       <label className="styleLabel"> ENTER ID NUMBER</label>
 
                       {this.state.masked_identity ? (
-                        // <AlgaehSecurityElement elementCode="PER_DTL_CON_NUM">
                         <div className="ui input txt-fld">
                           <MaskedInput
                             mask={this.state.masked_identity}
@@ -652,11 +651,9 @@ class PersonalDetails extends Component {
                           />
                         </div>
                       ) : (
-                        // <AlgaehSecurityElement elementCode="PER_DTL_CON_NUM">
-
                         <AlagehFormGroup
                           div={{
-                            className: `col-lg-2 col-md-2 col-sm-12 ${
+                            className: ` noLabel ${
                               this.state.mandatoryFields.PER_DTL_PRI_ID_NUM
                                 ? "mandatory"
                                 : ""
@@ -682,25 +679,6 @@ class PersonalDetails extends Component {
                       )}
                     </div>
 
-                    {/* <AlagehFormGroup
-                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
-                      label={{
-                        forceLabel: "Number",
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "identity_no",
-                        value: this.state.identity_no,
-                        events: {
-                          onChange: texthandle.bind(this, this),
-                        },
-                        others: {
-                          placeholder: "Enter ID Number",
-                        },
-                      }}
-                    /> */}
-
-                    {/* <AlgaehSecurityElement elementCode="PER_DTL_PER_MAIL_ID"> */}
                     <AlagehFormGroup
                       div={{
                         className: `col-lg-3 col-sm-12 ${
