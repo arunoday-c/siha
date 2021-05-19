@@ -304,10 +304,10 @@ class HospitalServices extends PureComponent {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-3 form-group mandatory" }}
+                  div={{ className: "col-3 form-group" }}
                   label={{
                     fieldName: "service_cost",
-                    isImp: true,
+                    isImp: false,
                   }}
                   textBox={{
                     decimal: { allowNegative: false },

@@ -36,6 +36,7 @@ class DoctorsWorkbench extends Component {
       activeDateHeader: moment()._d,
       persistence: null,
     };
+    debugger;
 
     // this.moveToEncounterList = this.moveToEncounterList.bind(this);
     this.socket = sockets;
@@ -133,9 +134,8 @@ class DoctorsWorkbench extends Component {
   }
 
   moveToEncounterList(data, e) {
-    const patient_encounter_id = e.currentTarget.getAttribute(
-      "data-encounterid"
-    );
+    const patient_encounter_id =
+      e.currentTarget.getAttribute("data-encounterid");
     // const patient_id = e.currentTarget.getAttribute("data-patientid");
     const history = this.props.history;
     algaehApiCall({
@@ -267,15 +267,19 @@ class DoctorsWorkbench extends Component {
   }
 
   componentDidMount() {
+    debugger;
     (async () => {
+      debugger;
       const records = await persistStageOnGet();
 
       if (records) {
+        debugger;
         this.setState({ ...records }, () => {
           // this.loadListofData();
         });
         persistStorageOnRemove();
       } else {
+        debugger;
         this.loadListofData();
         this.socket.on("patient_added", (patient) => {
           const { appointment_date } = patient;

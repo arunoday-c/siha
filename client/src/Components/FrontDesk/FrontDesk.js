@@ -36,7 +36,7 @@ class FrontDesk extends Component {
   }
 
   componentDidMount() {
-    if (this.props.location.state?.data.visit_id !== null) {
+    if (this.props.location.state?.data.visit_id) {
       this.setState({
         visitCreated: true,
       });
@@ -95,12 +95,8 @@ class FrontDesk extends Component {
   }
 
   updateAppointmentStatus() {
-    const {
-      FD_Screen,
-      fromRegistration,
-      visitCreated,
-      ...patient
-    } = this.state;
+    const { FD_Screen, fromRegistration, visitCreated, ...patient } =
+      this.state;
     patient.appointment_status_id = this.state.checkinID;
     patient.record_status = "A";
     console.log("from update", patient);
