@@ -7,7 +7,6 @@ const baseState = {
   doctor_id: null,
   department_type: null,
   service_type_id: null,
-  primary_network_office_id: null,
   billData: null,
   cardData: {
     card_name: "",
@@ -58,6 +57,10 @@ const baseState = {
     updated_date: null,
     package_details: [],
   },
+  insuranceInfo: {
+    payer_id: null,
+    primary_network_office_id: null,
+  },
   disabled: false,
   savedPatient: null,
   from_package: false,
@@ -81,6 +84,7 @@ const TYPES = {
 };
 
 function reducer(state, { type, payload }) {
+  debugger;
   switch (type) {
     case TYPES.setServiceInfo:
       if (payload === null) {
@@ -113,7 +117,7 @@ function reducer(state, { type, payload }) {
         };
       }
     case TYPES.setInsuranceInfo:
-      return { ...state, primary_network_office_id: payload };
+      return { ...state, insuranceInfo: { ...payload } };
     case TYPES.setBillInfo:
       return { ...state, billInfo: { ...payload } };
     case TYPES.setCardDataGlobal:
@@ -146,14 +150,19 @@ export const FProvider = ({ children }) => {
     doctor_id: null,
     department_type: null,
     primary_network_office_id: null,
+    payer_id: null,
   });
 
+  debugger;
   const dispatches = {
     setServiceInfo(e) {
       dispatch({ type: TYPES.setServiceInfo, payload: e });
     },
     setInsuranceInfo(e) {
       dispatch({ type: TYPES.setInsuranceInfo, payload: e });
+    },
+    setInsurancePayerID(e) {
+      dispatch({ type: TYPES.setInsurancePayerID, payload: e });
     },
     setBillInfo(e) {
       dispatch({ type: TYPES.setBillInfo, payload: e });
