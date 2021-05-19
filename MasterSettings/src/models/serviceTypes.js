@@ -13,9 +13,9 @@ export default {
           query:
             "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `arabic_service_name`, \
               `hospital_id`,`service_type_id`, `physiotherapy_service`,`sub_department_id`, \
-              `standard_fee`, `discount`, `vat_applicable`, `vat_percent`, `effective_start_date` , \
+              `standard_fee`,`service_cost`, `discount`, `vat_applicable`, `vat_percent`, `effective_start_date` , \
               `created_by` ,`created_date`, head_id, child_id ) \
-              VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?)",
+              VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?,?)",
           values: [
             inputParam.service_code,
             inputParam.cpt_code,
@@ -26,6 +26,7 @@ export default {
             inputParam.physiotherapy_service,
             inputParam.sub_department_id,
             inputParam.standard_fee,
+            inputParam.service_cost,
             inputParam.discount,
             inputParam.vat_applicable,
             inputParam.vat_percent,
@@ -163,7 +164,7 @@ export default {
               query:
                 "UPDATE `hims_d_services` \
           SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `arabic_service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
-          `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `physiotherapy_service`=?, \
+          `standard_fee`=?,`service_cost`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `physiotherapy_service`=?, \
           `updated_by`=?, `updated_date`=?,  `record_status`=? " +
                 str +
                 "\
@@ -179,6 +180,7 @@ export default {
                 inputParam.service_type_id,
                 inputParam.sub_department_id,
                 inputParam.standard_fee,
+                inputParam.service_cost,
 
                 inputParam.discount,
                 inputParam.vat_applicable,
@@ -290,7 +292,7 @@ export default {
         .executeQuery({
           query:
             "select hims_d_services_id, service_code, arabic_service_name, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
-                sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
+                sub_department_id, hospital_id, service_type_id, standard_fee ,service_cost, discount, vat_applicable, vat_percent, \
                 effective_start_date, effectice_end_date, procedure_type, physiotherapy_service, head_id, child_id from \
                 hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
                 WHERE S.record_status ='A' " +
@@ -385,10 +387,10 @@ export default {
       .executeQueryWithTransaction({
         query:
           "INSERT INTO `hims_d_services` (service_code,cpt_code,service_name,arabic_service_name,service_desc,\
-            sub_department_id, hospital_id,service_type_id,procedure_type,standard_fee,followup_free_fee,\
+            sub_department_id, hospital_id,service_type_id,procedure_type,standard_fee,service_cost,followup_free_fee,\
             followup_paid_fee, discount,vat_applicable,vat_percent,service_status,effective_start_date, \
             effectice_end_date,head_id, child_id,created_by,created_date,updated_by,updated_date ) \
-            values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.service_code,
           input.cpt_code,
@@ -400,6 +402,7 @@ export default {
           input.service_type_id,
           input.procedure_type,
           input.standard_fee,
+          input.service_cost,
           input.followup_free_fee,
           input.followup_paid_fee,
           input.discount,
@@ -503,7 +506,8 @@ export default {
                               InsertintoServiceInsuranceNetwork({
                                 inputParam: input,
                                 services_id: service_id,
-                                service_insurance_network: service_insurance_network,
+                                service_insurance_network:
+                                  service_insurance_network,
                                 _mysql: _mysql,
                                 req: req,
                                 next: next,
@@ -576,7 +580,8 @@ export default {
                           InsertintoServiceInsuranceNetwork({
                             inputParam: input,
                             services_id: service_id,
-                            service_insurance_network: service_insurance_network,
+                            service_insurance_network:
+                              service_insurance_network,
                             _mysql: _mysql,
                             req: req,
                             next: next,
@@ -684,7 +689,7 @@ export default {
             S.service_name as header_service_name, S.vat_percent, S.vat_applicable, \
             hims_d_procedure_detail_id, procedure_header_id, item_id,\
             ROUND(qty,0) as qty,PD.service_id,SR.service_code as detail_service_code,\
-            SR.service_name as detail_service_name, S.standard_fee as procedure_amount from hims_d_procedure PH \
+            SR.service_name as detail_service_name, S.standard_fee as procedure_amount,S.service_cost from hims_d_procedure PH \
             inner join hims_d_services S on PH.service_id=S.hims_d_services_id \
             left join hims_d_procedure_detail PD on PH.hims_d_procedure_id=PD.procedure_header_id\
             left join hims_d_services SR on PD.service_id=SR.hims_d_services_id\
@@ -729,7 +734,7 @@ export default {
             "select hims_d_procedure_id,procedure_code,procedure_desc,procedure_desc_arabic,procedure_status,PH.procedure_type,\
             PH.service_id as header_service_id,S.service_code as header_service_code,\
             S.service_name as header_service_name, S.vat_percent, S.vat_applicable, \
-            S.standard_fee as procedure_amount from hims_d_procedure PH \
+            S.standard_fee as procedure_amount,S.service_cost from hims_d_procedure PH \
             inner join hims_d_services S on PH.service_id=S.hims_d_services_id \
             where PH.record_status='A' " +
             strQry +
@@ -968,7 +973,7 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_d_services` SET `service_code`=?, `service_name`=?, `standard_fee`=?, \
+            "UPDATE `hims_d_services` SET `service_code`=?, `service_name`=?, `standard_fee`=?, `service_cost`=?, \
             `vat_applicable`=?,`vat_percent`=?, `updated_by`=?, `updated_date`=? WHERE `hims_d_services_id`=?;\
             update hims_d_services_insurance set service_name=?, insurance_service_name=? where services_id=? and hims_d_services_insurance_id>0;\
             update hims_d_services_insurance_network set service_name=?, insurance_service_name=? where services_id=? and hims_d_services_insurance_network_id>0;",
@@ -976,6 +981,7 @@ export default {
             inputParam.service_code,
             inputParam.service_name,
             inputParam.standard_fee,
+            inputParam.service_cost,
             inputParam.vat_applicable,
             inputParam.vat_percent,
             req.userIdentity.algaeh_d_app_user_id,
@@ -1049,7 +1055,7 @@ export default {
           query:
             "select hims_d_services_id,S.service_code,S.cpt_code,S.service_name,S.arabic_service_name,\
             S.service_desc,S.sub_department_id,S.service_type_id,S.procedure_type,hims_d_service_detail_id,\
-            SD.standard_fee,SD.followup_free_fee,SD.followup_paid_fee,SD.discount,SD.vat_applicable,SD.vat_percent\
+            SD.standard_fee,SD.service_cost,SD.followup_free_fee,SD.followup_paid_fee,SD.discount,SD.vat_applicable,SD.vat_percent\
             from   hims_d_services S inner join  hims_d_service_detail SD on S.hims_d_services_id=SD.service_id\
             where  SD.service_status='A'  " +
             _strAppend +
