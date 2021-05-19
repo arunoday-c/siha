@@ -400,13 +400,13 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT 0 chkselect, hims_f_invoice_header_id,AU.algaeh_d_app_user_id,IH.requested_by, invoice_number, invoice_date, IH.patient_id, IH.claim_status, visit_id,\
-          IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, IH.card_number, gross_amount,\
+            "SELECT 0 chkselect, hims_f_invoice_header_id,AU.algaeh_d_app_user_id,AUU.user_display_name,IH.requested_by,IH.request_comment, invoice_number, invoice_date, IH.patient_id, IH.claim_status, visit_id,\
+          IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, IH.card_number,gross_amount,\
           discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
           company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
           submission_amount, remittance_date, remittance_amount, denial_amount,claim_validated,\
-          P.patient_code,P.full_name as patient_name,P.arabic_name as arabic_patient_name,P.contact_number ,\
-          V.visit_code,V.episode_id,V.doctor_id,E.full_name as doctor_name,E.employee_code,insurance_provider_name,\
+          P.patient_code,P.full_name as patient_name,P.primary_id_no,P.arabic_name as arabic_patient_name,P.contact_number ,\
+          V.visit_code,date(V.visit_date) as visit_date,V.episode_id,V.doctor_id,E.full_name as doctor_name,E.employee_code,insurance_provider_name,\
           arabic_provider_name as arabic_insurance_provider_name ,\
           insurance_sub_code as sub_insurance_provider_code,insurance_sub_name as sub_insurance_provider,\
           arabic_sub_name as arabic_sub_insurance_provider, network_type,arabic_network_type,\
@@ -416,6 +416,7 @@ export default {
          inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id \
          inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id \
          inner join algaeh_d_app_user AU on V.doctor_id =AU.employee_id \
+         inner join algaeh_d_app_user AUU on AUU.algaeh_d_app_user_id =IH.requested_by \
          left join hims_d_insurance_provider IP on IH.insurance_provider_id=IP.hims_d_insurance_provider_id\
           left join hims_d_insurance_sub SI on IH.sub_insurance_id=SI.hims_d_insurance_sub_id\
           left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
@@ -586,13 +587,14 @@ export default {
           query: `select S.department_type,V.visit_date,INH.patient_id,INH.visit_id,INH.requested_by,
           INH.invoice_number,date(INH.invoice_date) as invoice_date,INH.correction_req_date,
           INH.correction_req_date,INH.caf_type,INH.doctor_comment,
-          INH.request_comment,INH.correction_requested,E.full_name as doctorName, 
+          INH.request_comment,USR.user_display_name,INH.correction_requested,E.full_name as doctorName, 
           P.patient_code, P.full_name as patient_name,P.primary_id_no,V.visit_code
           from hims_f_invoice_header INH 
           inner join hims_f_patient P on P.hims_d_patient_id=INH.patient_id
           inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=INH.visit_id
           inner join hims_d_employee E on E.hims_d_employee_id=V.doctor_id
           inner join hims_d_sub_department S on S.hims_d_sub_department_id=V.sub_department_id
+          left join algaeh_d_app_user USR on USR.algaeh_d_app_user_id=INH.requested_by
           where V.doctor_id = ? and date(INH.correction_req_date) between date(?) and date(?)  ${strQuery};   `,
           values: [
             req.query.provider_id,
