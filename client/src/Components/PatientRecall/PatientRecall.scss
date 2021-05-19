@@ -1,7 +1,7 @@
 .patient_recall {
   /* The heart of the matter */
   .scrolling-wrapper {
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
 
@@ -84,4 +84,21 @@
       background: #00a796;
     }
   }
+}
+.noRecallData {
+  i {
+    margin-top: 20vh;
+    font-size: 100px;
+    color: gray;
+  }
+  p {
+    line-height: 20vh;
+    color: gray;
+    font-size: 20px;
+  }
+
+  text-align: center;
+  height: 78vh;
+  background-color: white;
+  border-radius: 10px;
 }
