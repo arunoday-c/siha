@@ -84,7 +84,6 @@ const TYPES = {
 };
 
 function reducer(state, { type, payload }) {
-  debugger;
   switch (type) {
     case TYPES.setServiceInfo:
       if (payload === null) {
@@ -153,7 +152,6 @@ export const FProvider = ({ children }) => {
     // payer_id: null,
   });
 
-  debugger;
   const dispatches = {
     setServiceInfo(e) {
       dispatch({ type: TYPES.setServiceInfo, payload: e });

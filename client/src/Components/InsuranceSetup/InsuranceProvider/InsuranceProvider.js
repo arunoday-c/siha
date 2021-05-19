@@ -272,6 +272,11 @@ class InsuranceProvider extends PureComponent {
                     div={{ className: "col-3 form-group " }}
                     label={{
                       fieldName: "payer_id",
+                      isImp:
+                        this.state.portal_exists === "Y" &&
+                        this.state.insurance_type === "C"
+                          ? true
+                          : false,
                     }}
                     textBox={{
                       value: this.state.payer_id,
