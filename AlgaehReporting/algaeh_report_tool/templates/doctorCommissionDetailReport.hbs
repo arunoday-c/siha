@@ -1,0 +1,103 @@
+{{{importStyle "css/algaehReportStyles.css"}}}
+
+<body>
+  <div class="print-body">
+
+    <section>
+
+      <table class="tableForLabel" cell-padding="0">
+        <tr>
+          <td><label>Commission No.</label></td>
+          <td> <span>{{header.comission_code}}</span></td>
+          <td><label>Commission Date.</label></td>
+          <td><span>{{header.created_date}}</span></td>
+        </tr>
+        <tr>
+          <td><label>Doctor Name.</label></td>
+          <td> <span>{{header.employee_code}} - {{header.full_name}}</span></td>
+          <td><label>Commission Period.</label></td>
+          <td><span>{{header.from_date}}
+              /
+              {{header.to_date}}</span></td>
+        </tr>
+
+      </table>
+    </section>
+
+    <section>
+      <table class="tableForData" cell-padding="0">
+        <thead>
+          <tr>
+            <th>Sl No.</th>
+            <th>Bill No.</th>
+            <th>BIll Date</th>
+            <th>Service Type</th>
+            <th>Service Name</th>
+            <th>Net Amount</th>
+            <th>OP Cash Commision Amt.</th>
+            <th>OP Credit Commision Amt.</th>
+            {{! <th>Total Commsion Amt.</th> }}
+
+          </tr>
+
+        </thead>
+        <tbody>
+          {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
+          {{#hasElement result}}
+            <tr class="numberFldTotalBottom">
+
+              <td colspan="5"></td>
+              <td class="numberFld">{{net_op_cash_comission_amount}}</td>
+              <td class="numberFld">{{net_op_crd_comission_amount}}</td>
+              <td class="numberFld">{{net_total_comm}}</td>
+            </tr>
+            {{#each result}}
+              {{!-- <tr>
+                <td colspan="8" class="tableSubHdg">{{sub_department_name}}</td>
+                <td class="tableSubHdg numberFld"><b>{{dep_total}}</b></td>
+
+              </tr> --}}
+              {{#each doctors}}
+                {{!-- <tr>
+                  <td colspan="7" class="tableSubHdg2">Dr.
+                    {{doctor_name}}
+                    ({{employee_code}}){{hims_d_patient_id}}
+                  </td>
+                  <td colspan="1" class="tableSubHdg2 numberFld">Total Patient:
+                    {{totalPatient}}</td>
+                  <td class="tableSubHdg2 numberFld"><b>{{totalAmt}}</b></td>
+                </tr> --}}
+                {{#each docs}}
+                  <tr>
+                    <td>{{inc @index}}</td>
+                    <td>{{bill_number}}</td>
+                    <td>{{bill_date}}</td>
+                    <td class="txtFld">{{service_type}}</td>
+                    <td class="txtFld">{{service_name}}</td>
+                    <td class="numberFld">{{net_amount}}</td>
+                    <td class="numberFld">{{op_cash_comission_amount}}</td>
+                    <td class="numberFld">{{op_crd_comission_amount}}</td>
+                    {{!-- <td class="numberFld">{{total_comm}}</td> --}}
+                  </tr>
+                {{/each}}{{/each}}{{/each}}
+            {{!-- <tr class="numberFldTotalBottom">
+              <td colspan="8"></td>
+              <td class="numberFld">{{net_total}}</td>
+            </tr> --}}
+          {{else}}
+            <tr>
+              <td colspan="8" class="noResultTextReport">No Records Found</td>
+            </tr>{{/hasElement}}
+        </tbody>
+
+      </table>
+    </section>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+  </div>
+</body>

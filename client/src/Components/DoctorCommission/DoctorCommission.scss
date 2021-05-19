@@ -8,20 +8,15 @@
     color: red;
   }
 
-
   .go-button {
     cursor: pointer;
     margin-top: 2.5vh;
   }
 }
-
-
-#doc_comission_grid_cntr {
-  .newStickyGrid {
-    .table-scroll {
-      min-height: 35vh;
-      max-height: 35vh;
-      overflow: auto;
-    }
+.newStickyGrid {
+  .doc_comission_grid_cntr {
+    min-height: 45vh;
+    max-height: 45vh;
+    overflow: auto !important;
   }
 }
