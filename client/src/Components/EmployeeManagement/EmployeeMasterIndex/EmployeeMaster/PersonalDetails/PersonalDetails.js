@@ -40,6 +40,18 @@ class PersonalDetails extends Component {
       identity_no: "",
       identity_card: "",
       masked_identity: "",
+      mandatoryFields: {
+        PER_DTL_CON_NUM: false,
+        PER_DTL_WRK_CON_NUM: false,
+        PER_DTL_PRI_ID: false,
+        PER_DTL_PRI_ID_NUM: false,
+        PER_DTL_PER_MAIL_ID: false,
+        PER_DTL_WORK_MAIL_ID: false,
+        PER_DTL_BLOOD_GRP: false,
+        PER_DTL_MARITAL_STUS: false,
+        PER_DTL_PRENT_ADDRESS: false,
+        PER_DTL_PERMT_ADDRESS: false,
+      },
     };
   }
 
@@ -176,6 +188,127 @@ class PersonalDetails extends Component {
         this.setState({ FldEditable: false });
       }
     });
+
+    RawSecurityElement({ elementCode: "PER_DTL_CON_NUM" }).then((result) => {
+      if (result === "show") {
+        this.setState({
+          mandatoryFields: {
+            ...this.state.mandatoryFields,
+            PER_DTL_CON_NUM: true,
+          },
+        });
+      }
+    });
+    RawSecurityElement({ elementCode: "PER_DTL_WRK_CON_NUM" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState({
+            mandatoryFields: {
+              ...this.state.mandatoryFields,
+              PER_DTL_WRK_CON_NUM: true,
+            },
+          });
+        }
+      }
+    );
+    RawSecurityElement({ elementCode: "PER_DTL_PRI_ID" }).then((result) => {
+      if (result === "show") {
+        this.setState({
+          mandatoryFields: {
+            ...this.state.mandatoryFields,
+            PER_DTL_PRI_ID: true,
+          },
+        });
+      }
+    });
+    RawSecurityElement({ elementCode: "PER_DTL_PRI_ID_NUM" }).then((result) => {
+      if (result === "show") {
+        this.setState({
+          mandatoryFields: {
+            ...this.state.mandatoryFields,
+            PER_DTL_PRI_ID_NUM: true,
+          },
+        });
+      }
+    });
+    RawSecurityElement({ elementCode: "PER_DTL_PER_MAIL_ID" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState({
+            mandatoryFields: {
+              ...this.state.mandatoryFields,
+              PER_DTL_PER_MAIL_ID: true,
+            },
+          });
+        }
+      }
+    );
+    RawSecurityElement({ elementCode: "PER_DTL_WORK_MAIL_ID" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState({
+            mandatoryFields: {
+              ...this.state.mandatoryFields,
+              PER_DTL_WORK_MAIL_ID: true,
+            },
+          });
+        }
+      }
+    );
+    RawSecurityElement({ elementCode: "PER_DTL_BLOOD_GRP" }).then((result) => {
+      if (result === "show") {
+        this.setState({
+          mandatoryFields: {
+            ...this.state.mandatoryFields,
+            PER_DTL_BLOOD_GRP: true,
+          },
+        });
+      }
+    });
+    RawSecurityElement({ elementCode: "PER_DTL_MARITAL_STUS" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState({
+            mandatoryFields: {
+              ...this.state.mandatoryFields,
+              PER_DTL_MARITAL_STUS: true,
+            },
+          });
+        }
+      }
+    );
+    RawSecurityElement({ elementCode: "PER_DTL_PRENT_ADDRESS" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState({
+            mandatoryFields: {
+              ...this.state.mandatoryFields,
+              PER_DTL_PRENT_ADDRESS: true,
+            },
+          });
+        }
+      }
+    );
+    RawSecurityElement({ elementCode: "PER_DTL_PERMT_ADDRESS" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState(
+            {
+              mandatoryFields: {
+                ...this.state.mandatoryFields,
+                PER_DTL_PERMT_ADDRESS: true,
+              },
+            },
+            () => {
+              console.log(
+                " this.state.mandatoryFields.PER_DTL_WRK_CON_NUM",
+                this.state.mandatoryFields.PER_DTL_WRK_CON_NUM
+              );
+            }
+          );
+        }
+      }
+    );
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -403,11 +536,18 @@ class PersonalDetails extends Component {
                         },
                       }}
                     />
+                    {/* <AlgaehSecurityElement elementCode="PER_DTL_CON_NUM"> */}
                     <AlagehFormGroup
-                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                      div={{
+                        className: `col-lg-2 col-md-2 col-sm-12 ${
+                          this.state.mandatoryFields.PER_DTL_CON_NUM
+                            ? "mandatory"
+                            : ""
+                        }`,
+                      }}
                       label={{
                         forceLabel: "Personal Contact No.",
-                        isImp: false,
+                        isImp: this.state.mandatoryFields.PER_DTL_CON_NUM,
                       }}
                       textBox={{
                         value: this.state.primary_contact_no,
@@ -424,11 +564,19 @@ class PersonalDetails extends Component {
                         },
                       }}
                     />
+                    {/* </AlgaehSecurityElement> */}
+                    {/* <AlgaehSecurityElement elementCode="PER_DTL_CON_NUM"> */}
                     <AlagehFormGroup
-                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                      div={{
+                        className: `col-lg-2 col-md-2 col-sm-12 ${
+                          this.state.mandatoryFields.PER_DTL_WRK_CON_NUM
+                            ? "mandatory"
+                            : ""
+                        }`,
+                      }}
                       label={{
                         forceLabel: "Work Contact No.",
-                        isImp: false,
+                        isImp: this.state.mandatoryFields.PER_DTL_WRK_CON_NUM,
                       }}
                       textBox={{
                         value: this.state.secondary_contact_no,
@@ -445,11 +593,20 @@ class PersonalDetails extends Component {
                         },
                       }}
                     />
+                    {/* </AlgaehSecurityElement> */}
 
+                    {/* <AlgaehSecurityElement elementCode="PER_DTL_CON_NUM"> */}
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                      div={{
+                        className: `col-lg-2 col-md-2 col-sm-12 ${
+                          this.state.mandatoryFields.PER_DTL_PRI_ID
+                            ? "mandatory"
+                            : ""
+                        }`,
+                      }}
                       label={{
                         forceLabel: "Primary ID",
+                        isImp: this.state.mandatoryFields.PER_DTL_PRI_ID,
                       }}
                       selector={{
                         name: "identity_type_id",
@@ -469,10 +626,18 @@ class PersonalDetails extends Component {
                         },
                       }}
                     />
-                    <div className="col-lg-2 col-md-2 col-sm-12 ">
+
+                    <div
+                      className={`col-lg-2 col-md-2 col-sm-12 ${
+                        this.state.mandatoryFields.PER_DTL_PRI_ID_NUM
+                          ? "mandatory"
+                          : ""
+                      }`}
+                    >
                       <label className="styleLabel"> ENTER ID NUMBER</label>
 
                       {this.state.masked_identity ? (
+                        // <AlgaehSecurityElement elementCode="PER_DTL_CON_NUM">
                         <div className="ui input txt-fld">
                           <MaskedInput
                             mask={this.state.masked_identity}
@@ -487,9 +652,21 @@ class PersonalDetails extends Component {
                           />
                         </div>
                       ) : (
-                        <AlagehFormGroup
-                          // div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                        // <AlgaehSecurityElement elementCode="PER_DTL_CON_NUM">
 
+                        <AlagehFormGroup
+                          div={{
+                            className: `col-lg-2 col-md-2 col-sm-12 ${
+                              this.state.mandatoryFields.PER_DTL_PRI_ID_NUM
+                                ? "mandatory"
+                                : ""
+                            }`,
+                          }}
+                          label={{
+                            isImp: this.state.mandatoryFields.PER_DTL_PRI_ID_NUM
+                              ? true
+                              : false,
+                          }}
                           textBox={{
                             className: "txt-fld",
                             name: "identity_no",
@@ -523,11 +700,18 @@ class PersonalDetails extends Component {
                       }}
                     /> */}
 
+                    {/* <AlgaehSecurityElement elementCode="PER_DTL_PER_MAIL_ID"> */}
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3 col-sm-12  " }}
+                      div={{
+                        className: `col-lg-3 col-sm-12 ${
+                          this.state.mandatoryFields.PER_DTL_PER_MAIL_ID
+                            ? "mandatory"
+                            : ""
+                        }`,
+                      }}
                       label={{
                         forceLabel: "Personal Email Id",
-                        isImp: false,
+                        isImp: this.state.mandatoryFields.PER_DTL_PER_MAIL_ID,
                       }}
                       textBox={{
                         value: this.state.email,
@@ -544,11 +728,18 @@ class PersonalDetails extends Component {
                         },
                       }}
                     />
+
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3 col-sm-12  " }}
+                      div={{
+                        className: `col-lg-3 col-sm-12 ${
+                          this.state.mandatoryFields.PER_DTL_WORK_MAIL_ID
+                            ? "mandatory"
+                            : ""
+                        }`,
+                      }}
                       label={{
                         forceLabel: "Work Email Id",
-                        isImp: false,
+                        isImp: this.state.mandatoryFields.PER_DTL_WORK_MAIL_ID,
                       }}
                       textBox={{
                         value: this.state.work_email,
@@ -566,9 +757,16 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+                      div={{
+                        className: `col-lg-2 col-md-2 col-sm-12 ${
+                          this.state.mandatoryFields.PER_DTL_BLOOD_GRP
+                            ? "mandatory"
+                            : ""
+                        }`,
+                      }}
                       label={{
                         fieldName: "blood_group",
+                        isImp: this.state.mandatoryFields.PER_DTL_BLOOD_GRP,
                       }}
                       selector={{
                         name: "blood_group",
@@ -596,11 +794,15 @@ class PersonalDetails extends Component {
                     />
                     <AlagehAutoComplete
                       div={{
-                        className: "col-lg-2 col-md-2 col-sm-12",
+                        className: `col-lg-2 col-md-2 col-sm-12 ${
+                          this.state.mandatoryFields.PER_DTL_MARITAL_STUS
+                            ? "mandatory"
+                            : ""
+                        }`,
                       }}
                       label={{
                         forceLabel: "Marital Status",
-                        isImp: false,
+                        isImp: this.state.mandatoryFields.PER_DTL_MARITAL_STUS,
                       }}
                       selector={{
                         name: "marital_status",
@@ -630,9 +832,17 @@ class PersonalDetails extends Component {
                       </h5>
                       <div className="row paddin-bottom-5">
                         <AlagehFormGroup
-                          div={{ className: "col-lg-12 col-sm-12 form-group" }}
+                          div={{
+                            className: `col-lg-12 col-sm-12 form-group ${
+                              this.state.mandatoryFields.PER_DTL_PRENT_ADDRESS
+                                ? "mandatory"
+                                : ""
+                            }`,
+                          }}
                           label={{
                             fieldName: "address",
+                            isImp:
+                              this.state.mandatoryFields.PER_DTL_PRENT_ADDRESS,
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -648,12 +858,16 @@ class PersonalDetails extends Component {
                         />
                         <AlagehAutoComplete
                           div={{
-                            className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                            className: `col-lg-4 col-sm-12 form-group form-group ${
+                              this.state.mandatoryFields.PER_DTL_PRENT_ADDRESS
+                                ? "mandatory"
+                                : ""
+                            }`,
                           }}
                           label={{
                             fieldName: "country_id",
-                            isImp: false,
+                            isImp:
+                              this.state.mandatoryFields.PER_DTL_PRENT_ADDRESS,
                           }}
                           selector={{
                             name: "present_country_id",
@@ -681,12 +895,16 @@ class PersonalDetails extends Component {
 
                         <AlagehAutoComplete
                           div={{
-                            className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                            className: `col-lg-4 col-sm-12 form-group form-group ${
+                              this.state.mandatoryFields.PER_DTL_PRENT_ADDRESS
+                                ? "mandatory"
+                                : ""
+                            }`,
                           }}
                           label={{
                             fieldName: "state_id",
-                            isImp: false,
+                            isImp:
+                              this.state.mandatoryFields.PER_DTL_PRENT_ADDRESS,
                           }}
                           selector={{
                             name: "present_state_id",
@@ -714,12 +932,16 @@ class PersonalDetails extends Component {
                         />
                         <AlagehAutoComplete
                           div={{
-                            className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                            className: `col-lg-4 col-sm-12 form-group form-group ${
+                              this.state.mandatoryFields.PER_DTL_PRENT_ADDRESS
+                                ? "mandatory"
+                                : ""
+                            }`,
                           }}
                           label={{
                             fieldName: "city_id",
-                            isImp: false,
+                            isImp:
+                              this.state.mandatoryFields.PER_DTL_PRENT_ADDRESS,
                           }}
                           selector={{
                             name: "present_city_id",
@@ -774,9 +996,17 @@ class PersonalDetails extends Component {
                           </label>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-8 col-sm-12 form-group" }}
+                          div={{
+                            className: `col-lg-8 col-sm-12 form-group ${
+                              this.state.mandatoryFields.PER_DTL_PERMT_ADDRESS
+                                ? "mandatory"
+                                : ""
+                            }`,
+                          }}
                           label={{
                             fieldName: "address",
+                            isImp:
+                              this.state.mandatoryFields.PER_DTL_PERMT_ADDRESS,
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -795,12 +1025,16 @@ class PersonalDetails extends Component {
                         />
                         <AlagehAutoComplete
                           div={{
-                            className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                            className: `col-lg-4 col-sm-12 form-group form-group ${
+                              this.state.mandatoryFields.PER_DTL_PERMT_ADDRESS
+                                ? "mandatory"
+                                : ""
+                            }`,
                           }}
                           label={{
                             fieldName: "country_id",
-                            isImp: false,
+                            isImp:
+                              this.state.mandatoryFields.PER_DTL_PERMT_ADDRESS,
                           }}
                           selector={{
                             name: "permanent_country_id",
@@ -831,12 +1065,16 @@ class PersonalDetails extends Component {
 
                         <AlagehAutoComplete
                           div={{
-                            className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                            className: `col-lg-4 col-sm-12 form-group form-group ${
+                              this.state.mandatoryFields.PER_DTL_PERMT_ADDRESS
+                                ? "mandatory"
+                                : ""
+                            }`,
                           }}
                           label={{
                             fieldName: "state_id",
-                            isImp: false,
+                            isImp:
+                              this.state.mandatoryFields.PER_DTL_PERMT_ADDRESS,
                           }}
                           selector={{
                             name: "permanent_state_id",
@@ -869,12 +1107,16 @@ class PersonalDetails extends Component {
                         />
                         <AlagehAutoComplete
                           div={{
-                            className:
-                              "col-lg-4 col-sm-12 form-group form-group",
+                            className: `col-lg-4 col-sm-12 form-group form-group ${
+                              this.state.mandatoryFields.PER_DTL_PERMT_ADDRESS
+                                ? "mandatory"
+                                : ""
+                            }`,
                           }}
                           label={{
                             fieldName: "city_id",
-                            isImp: false,
+                            isImp:
+                              this.state.mandatoryFields.PER_DTL_PERMT_ADDRESS,
                           }}
                           selector={{
                             name: "permanent_city_id",
