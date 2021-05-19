@@ -81,10 +81,16 @@ const AdjustAmountCalculateGet = async (data) => {
   return res.data?.records;
 };
 const addDoctorsCommission = async (data) => {
+  const settings = { header: undefined, footer: undefined };
   const res = await newAlgaehApi({
     uri: "/doctorsCommissionNew/addDoctorsCommission",
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(data), "utf8"),
     method: "POST",
-    data: data,
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings,
+    },
   });
   return res.data?.records;
 };
@@ -119,14 +125,21 @@ function DoctorCommission() {
   const [commission_number, setCommission_number] = useState(null);
   const [disabled, setDisabled] = useState(false);
   const [disableAdjust, setDisableAdjust] = useState(true);
-  const { control, errors, reset, getValues, watch, setValue, handleSubmit } =
-    useForm({
-      shouldFocusError: true,
-      defaultValues: {
-        select_type: "AS",
-        case_type: "OP",
-      },
-    });
+  const {
+    control,
+    errors,
+    reset,
+    getValues,
+    watch,
+    setValue,
+    handleSubmit,
+  } = useForm({
+    shouldFocusError: true,
+    defaultValues: {
+      select_type: "AS",
+      case_type: "OP",
+    },
+  });
   const select_type = watch("select_type");
 
   const { data: providers1 } = useQuery(

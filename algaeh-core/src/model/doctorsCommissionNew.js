@@ -236,135 +236,144 @@ let addDoctorsCommission = (req, res, next) => {
   const _options = req.connection == null ? {} : req.connection;
   const _mysql = new algaehMysql(_options);
   try {
-    let inputParam = { ...req.body };
-    let comission_code = "";
+    let buffer = "";
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
 
-    _mysql
-      .generateRunningNumber({
-        user_id: req.userIdentity.algaeh_d_app_user_id,
-        numgen_codes: ["DOC_COMM"],
-        table_name: "hims_f_app_numgen",
-      })
-      .then((generatedNumbers) => {
-        comission_code = generatedNumbers.DOC_COMM;
+    req.on("end", () => {
+      let inputParam = JSON.parse(buffer);
+      req.body = inputParam;
+      // let inputParam = { ...req.body };
+      let comission_code = "";
 
-        _mysql
-          .executeQuery({
-            query: `INSERT INTO hims_f_doctor_comission_header ( comission_code, provider_id, from_date, to_date, case_type,
+      _mysql
+        .generateRunningNumber({
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["DOC_COMM"],
+          table_name: "hims_f_app_numgen",
+        })
+        .then((generatedNumbers) => {
+          comission_code = generatedNumbers.DOC_COMM;
+
+          _mysql
+            .executeQuery({
+              query: `INSERT INTO hims_f_doctor_comission_header ( comission_code, provider_id, from_date, to_date, case_type,
                 selected_service_type,op_commision, ip_comission, op_credit_comission,ip_credit_comission, net_turn_over,gross_comission,
                 adjust_amount,net_comission,tax_percentage,tax_amount,comission_payable,created_by, created_date,updated_by,updated_date,hospital_id) 
               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-            values: [
-              comission_code,
-              inputParam.provider_id,
-              moment(inputParam.from_date).format("YYYY-MM-DD"),
-              moment(inputParam.to_date).format("YYYY-MM-DD"),
-              inputParam.case_type,
-              inputParam.service_type,
-              inputParam.op_commision,
-              inputParam.ip_comission,
-              inputParam.op_credit_comission,
-              inputParam.ip_credit_comission,
-              inputParam.net_turn_over,
-              inputParam.gross_comission,
-              inputParam.adjust_amount,
-              inputParam.net_comission,
-              inputParam.tax_percentage,
-              inputParam.tax_amount,
-              inputParam.comission_payable,
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              req.userIdentity.hospital_id,
-            ],
-            printQuery: true,
-          })
-          .then((headerResult) => {
-            let qry = "";
-            let updateBillingDetails = inputParam.commissionDetails;
-            updateBillingDetails.map((item) => {
-              qry += mysql.format(
-                `update hims_f_billing_details set commission_given='Y' where hims_f_billing_details_id=?;`,
-                [item.hims_f_billing_details_id]
-              );
-            });
+              values: [
+                comission_code,
+                inputParam.provider_id,
+                moment(inputParam.from_date).format("YYYY-MM-DD"),
+                moment(inputParam.to_date).format("YYYY-MM-DD"),
+                inputParam.case_type,
+                inputParam.service_type,
+                inputParam.op_commision,
+                inputParam.ip_comission,
+                inputParam.op_credit_comission,
+                inputParam.ip_credit_comission,
+                inputParam.net_turn_over,
+                inputParam.gross_comission,
+                inputParam.adjust_amount,
+                inputParam.net_comission,
+                inputParam.tax_percentage,
+                inputParam.tax_amount,
+                inputParam.comission_payable,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.hospital_id,
+              ],
+              printQuery: true,
+            })
+            .then((headerResult) => {
+              let qry = "";
+              let updateBillingDetails = inputParam.commissionDetails;
+              updateBillingDetails.map((item) => {
+                qry += mysql.format(
+                  `update hims_f_billing_details set commission_given='Y' where hims_f_billing_details_id=?;`,
+                  [item.hims_f_billing_details_id]
+                );
+              });
 
-            _mysql
-              .executeQuery({
-                query: qry,
-                bulkInsertOrUpdate: true,
-                printQuery: true,
-              })
-              .then((result) => {
-                next();
-              })
-              .catch((e) => {
-                _mysql.releaseConnection();
+              _mysql
+                .executeQuery({
+                  query: qry,
+                  bulkInsertOrUpdate: true,
+                  printQuery: true,
+                })
+                .then((result) => {
+                  next();
+                })
+                .catch((e) => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+              let IncludeValues = [
+                "bill_number",
+                "bill_date",
+                "servtype_id",
+                "service_id",
+                "quantity",
+                "unitcost",
+                "extended_cost",
+                "discount_amount",
+                "patient_share",
+                "company_share",
+                "net_amount",
+                "service_cost",
+                "op_cash_comission_type",
+                "op_cash_comission_percentage",
+                "op_cash_comission_amount",
+                "op_cash_comission",
+                "op_crd_comission_percentage",
+                "op_crd_comission_amount",
+                "op_crd_comission",
+              ];
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO hims_f_doctor_comission_detail(??) VALUES ?",
+                  values: inputParam.commissionDetails,
+                  includeValues: IncludeValues,
+                  extraValues: {
+                    doctor_comission_header_id: headerResult.insertId,
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: true,
+                })
+                .then(() => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      comission_code: comission_code,
+                      hims_f_doctor_comission_header: headerResult.insertId,
+                      // receipt_number: req.records.receipt_number,
+                    };
+                  });
+                  next();
+                  //   });
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch((e) => {
+              _mysql.rollBackTransaction(() => {
                 next(e);
               });
-            let IncludeValues = [
-              "bill_number",
-              "bill_date",
-              "servtype_id",
-              "service_id",
-              "quantity",
-              "unitcost",
-              "extended_cost",
-              "discount_amount",
-              "patient_share",
-              "company_share",
-              "net_amount",
-              "service_cost",
-              "op_cash_comission_type",
-              "op_cash_comission_percentage",
-              "op_cash_comission_amount",
-              "op_cash_comission",
-              "op_crd_comission_percentage",
-              "op_crd_comission_amount",
-              "op_crd_comission",
-            ];
-            _mysql
-              .executeQuery({
-                query:
-                  "INSERT INTO hims_f_doctor_comission_detail(??) VALUES ?",
-                values: inputParam.commissionDetails,
-                includeValues: IncludeValues,
-                extraValues: {
-                  doctor_comission_header_id: headerResult.insertId,
-                },
-                bulkInsertOrUpdate: true,
-                printQuery: true,
-              })
-              .then(() => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = {
-                    comission_code: comission_code,
-                    hims_f_doctor_comission_header: headerResult.insertId,
-                    // receipt_number: req.records.receipt_number,
-                  };
-                });
-                next();
-                //   });
-              })
-              .catch((error) => {
-                _mysql.rollBackTransaction(() => {
-                  next(error);
-                });
-              });
-          })
-          .catch((e) => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
             });
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
           });
-      })
-      .catch((e) => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
         });
-      });
+    });
   } catch (e) {
     _mysql.rollBackTransaction(() => {
       next(e);
