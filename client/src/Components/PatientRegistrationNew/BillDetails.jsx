@@ -131,7 +131,7 @@ export function BillDetails({
     service_type_id,
     sub_department_id,
     doctor_id,
-    primary_network_office_id,
+    insuranceInfo,
     setBillInfo,
     setBillData: setGlobalBillData,
     disabled: globalDisable,

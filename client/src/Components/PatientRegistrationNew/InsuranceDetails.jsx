@@ -45,9 +45,11 @@ export function InsuranceDetails({
   setIsInsurance,
 }) {
   const { userToken } = useContext(MainContext);
-  const { setInsuranceInfo, disabled: saveDisable } = useContext(
-    FrontdeskContext
-  );
+  const {
+    setInsuranceInfo,
+    setInsurancePayerID,
+    disabled: saveDisable,
+  } = useContext(FrontdeskContext);
   const { fieldNameFn } = useLangFieldName();
   const [showPolicy, setShowPolicy] = useState(false);
   // const [isInsurance, setIsInsurance] = useState(false);
@@ -79,11 +81,11 @@ export function InsuranceDetails({
       "primary_card_number",
       "primary_effective_start_date",
       "primary_effective_end_date",
+      "payer_id",
     ];
     if (!isInsurance) {
       fieldNames.map((item) => setValue(item, ""));
       clearErrors(fieldNames);
-      setInsuranceInfo(null);
       setInsuranceList([]);
     }
   }, [isInsurance]); //eslint-disable-line
@@ -100,15 +102,20 @@ export function InsuranceDetails({
         callback(text);
       },
       onRowSelect: (row) => {
+        debugger;
         setInsuranceList([row]);
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
         setValue("primary_sub_id", row?.sub_insurance_provider_id);
         setValue("primary_network_id", row?.network_id);
-        setInsuranceInfo(row?.hims_d_insurance_network_office_id);
+        setInsuranceInfo({
+          primary_network_office_id: row?.hims_d_insurance_network_office_id,
+          payer_id: row?.payer_id,
+        });
         // setValue("primary_network_office_id", row?.network_office_id);
         setValue("primary_policy_num", row?.policy_number);
         setValue("primary_effective_start_date", row?.effective_start_date);
         setValue("primary_effective_end_date", row?.effective_end_date);
+        // setInsurancePayerID(row?.payer_id);
       },
     });
   };
@@ -216,9 +223,11 @@ export function InsuranceDetails({
                                     "primary_network_id",
                                     current?.network_id
                                   );
-                                  setInsuranceInfo(
-                                    current?.hims_d_insurance_network_office_id
-                                  );
+                                  setInsuranceInfo({
+                                    primary_network_office_id:
+                                      current?.hims_d_insurance_network_office_id,
+                                    payer_id: current?.payer_id,
+                                  });
                                   setValue(
                                     "primary_policy_num",
                                     current?.policy_number
@@ -231,6 +240,7 @@ export function InsuranceDetails({
                                     "primary_effective_end_date",
                                     current?.effective_end_date
                                   );
+                                  // setInsurancePayerID(current?.payer_id);
                                   trigger();
                                 },
                                 value,
