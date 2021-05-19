@@ -74,13 +74,13 @@ export default function NphiesMaster() {
     saveNphies({ ...data });
     console.log(data);
   };
-  const { data: nphiesData, isLoading, refetch } = useQuery(
-    "nphies-data",
-    getNphies,
-    {
-      onSuccess: (data) => {},
-    }
-  );
+  const {
+    data: nphiesData,
+    isLoading,
+    refetch,
+  } = useQuery("nphies-data", getNphies, {
+    onSuccess: (data) => {},
+  });
   //   const { data: nphiesData, isLoading, refetch } = useQuery(
   //     "nphies-data",
   //     getNphies,
@@ -181,8 +181,8 @@ export default function NphiesMaster() {
   });
   return (
     <div className="lab_section">
-      <div className="row inner-top-search margin-bottom-15">
-        <form onSubmit={handleSubmit(addOrUpdate)}>
+      <form onSubmit={handleSubmit(addOrUpdate)}>
+        <div className="row inner-top-search margin-bottom-15">
           <Controller
             name="nphies_code"
             control={control}
@@ -204,7 +204,6 @@ export default function NphiesMaster() {
               />
             )}
           />
-
           <Controller
             name="nphies_desc"
             control={control}
@@ -268,7 +267,6 @@ export default function NphiesMaster() {
               />
             )}
           />
-
           <Controller
             name="nphies_status"
             control={control}
@@ -306,14 +304,13 @@ export default function NphiesMaster() {
               />
             )}
           />
-
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
             <button type="submit" className="btn btn-primary">
               Add to List
             </button>
-          </div>
-        </form>
-      </div>
+          </div>{" "}
+        </div>
+      </form>
 
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-body">

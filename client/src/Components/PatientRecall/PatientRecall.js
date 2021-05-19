@@ -338,9 +338,19 @@ function PatientRecall() {
       </form>
       <div className="scrolling-wrapper">
         <Spin spinning={loading}>
-          {followUpData?.map((item, index) => (
-            <Column key={index} data={item} />
-          ))}
+          {followUpData.length > 0 ? (
+            followUpData?.map((item, index) => (
+              <Column key={index} data={item} />
+            ))
+          ) : (
+            <div className="noRecallData">
+              <i className="fas fa-info-circle"></i>
+              <p>
+                <b>No Follow Up</b> or <b>Appointment</b> request available for
+                selected period.
+              </p>
+            </div>
+          )}
         </Spin>
       </div>
     </div>
