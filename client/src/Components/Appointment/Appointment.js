@@ -759,7 +759,11 @@ class Appointment extends PureComponent {
       showApt: false,
       openPatEdit: false,
     });
-    this.clearSaveState();
+    if (this.props.location.state?.data.from_recall) {
+      return;
+    } else {
+      this.clearSaveState();
+    }
   }
 
   ageHandler(e) {

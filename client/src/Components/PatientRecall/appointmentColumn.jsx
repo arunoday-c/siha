@@ -26,7 +26,7 @@ const Column = ({ data }) => {
               className="btn btn-default btn-block btn-sm btn-book"
               onClick={() => {
                 history.push("/Appointment", {
-                  data: { ...item },
+                  data: { ...item, from_recall: true },
                 });
               }}
             >
