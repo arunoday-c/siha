@@ -47,7 +47,7 @@ export function InsuranceDetails({
   const { userToken } = useContext(MainContext);
   const {
     setInsuranceInfo,
-    setInsurancePayerID,
+    // setInsurancePayerID,
     disabled: saveDisable,
   } = useContext(FrontdeskContext);
   const { fieldNameFn } = useLangFieldName();
@@ -102,7 +102,6 @@ export function InsuranceDetails({
         callback(text);
       },
       onRowSelect: (row) => {
-        debugger;
         setInsuranceList([row]);
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
         setValue("primary_sub_id", row?.sub_insurance_provider_id);

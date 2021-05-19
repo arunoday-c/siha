@@ -149,8 +149,8 @@ export const FProvider = ({ children }) => {
     services_id: null,
     doctor_id: null,
     department_type: null,
-    primary_network_office_id: null,
-    payer_id: null,
+    // primary_network_office_id: null,
+    // payer_id: null,
   });
 
   debugger;
