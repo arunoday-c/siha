@@ -6,9 +6,9 @@ export default {
     const input = {
       ...{
         provider_id: req.userIdentity.employee_id,
-        sub_department_id: req.userIdentity.sub_department_id
+        sub_department_id: req.userIdentity.sub_department_id,
       },
-      ...req.query
+      ...req.query,
     };
     if (input.fromDate == null && input.toDate == null) {
       next(
@@ -42,7 +42,7 @@ export default {
            inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id\
           where E.record_status='A' AND  V.record_status='A' \
            and date(V.visit_date) BETWEEN date(?) and date(?) and \
-           provider_id=? and  sub_department_id=? and V.hospital_id=? " +
+           provider_id=? and sub_department_id=? and V.hospital_id=? " +
             _queryData +
             " order by E.updated_date desc",
           values: [
@@ -50,16 +50,16 @@ export default {
             input.toDate,
             input.provider_id,
             input.sub_department_id,
-            req.userIdentity.hospital_id
-          ]
+            req.userIdentity.hospital_id,
+          ],
           // printQuery=
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -83,14 +83,14 @@ export default {
              hims_f_patient P ,hims_d_nationality N,hims_f_patient_visit PV \
              where P.hims_d_patient_id=PE.patient_id and N.hims_d_nationality_id=P.nationality_id \
              and PV.hims_f_patient_visit_id=PE.visit_id and P.hims_d_patient_id=? order by PE.updated_date desc",
-          values: [input.hims_d_patient_id]
+          values: [input.hims_d_patient_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -107,9 +107,9 @@ export default {
           query:
             "SELECT encounter_id,(encounter_id+1) as newEncounterNo FROM algaeh_d_app_config where param_name='VISITEXPERIDAY';\
         update algaeh_d_app_config set encounter_id=encounter_id+1,updated_by=?,updated_date=? where param_name='VISITEXPERIDAY';",
-          values: [req.userIdentity.algaeh_d_app_user_id, new Date()]
+          values: [req.userIdentity.algaeh_d_app_user_id, new Date()],
         })
-        .then(result => {
+        .then((result) => {
           const _encounterNumber = result[0]["newEncounterNo"];
           _mysql
             .executeQuery({
@@ -120,11 +120,11 @@ export default {
                 _encounterNumber,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                req.body.patient_encounter_id
-              ]
+                req.body.patient_encounter_id,
+              ],
             })
-            .then(data => {
-              _mysql.commitTransaction(error => {
+            .then((data) => {
+              _mysql.commitTransaction((error) => {
                 if (error) {
                   _mysql.rollBackTransaction(() => {
                     _mysql.releaseConnection();
@@ -137,14 +137,14 @@ export default {
                 }
               });
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 _mysql.releaseConnection();
                 next(error);
               });
             });
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             _mysql.releaseConnection();
             next(error);
@@ -162,7 +162,7 @@ export default {
     let input = {
       ...req.query,
       sub_department_id: req.userIdentity.sub_department_id,
-      doctor_id: req.userIdentity.employee_id
+      doctor_id: req.userIdentity.employee_id,
     };
     try {
       _mysql
@@ -174,19 +174,19 @@ where patient_id=? and sub_department_id=? and doctor_id=? and hospital_id=? ord
             input.patient_id,
             input.sub_department_id,
             input.doctor_id,
-            req.userIdentity.hospital_id
-          ]
+            req.userIdentity.hospital_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result.unshift({
             hims_f_patient_visit_id: undefined,
             visit_date: "New Visit",
-            episode_id: 0
+            episode_id: 0,
           });
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -194,5 +194,5 @@ where patient_id=? and sub_department_id=? and doctor_id=? and hospital_id=? ord
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

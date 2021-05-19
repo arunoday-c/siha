@@ -2,12 +2,14 @@ import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import exxpress from "express";
-import keys from "algaeh-keys";
+import algaehKeys from "algaeh-keys";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { userSecurity } from "algaeh-utilities/checksecurity";
+import { authentication } from "algaeh-utilities/authentication";
 import routes from "./routes";
 import compression from "compression";
 const app = exxpress();
+const keys = algaehKeys.default;
 app.server = http.createServer(app);
 app.use(cors());
 const _port = process.env.PORT;
@@ -18,63 +20,24 @@ app.use(
 );
 app.use(compression());
 
-process.env.MYSQL_KEYS = JSON.stringify(keys.default.mysqlDb);
+process.env.MYSQL_KEYS = JSON.stringify(keys.mysqlDb);
 
-if (process.env.NODE_ENV == "production") {
-  app.set("view cache", true);
-}
 app.use((req, res, next) => {
-  const reqH = req.headers;
-  const _token = reqH["x-api-key"];
-  const utilities = new algaehUtilities();
-  utilities.logger().log("Xapi", _token, "debug");
-  const _verify = utilities.tokenVerify(_token);
-  if (_verify) {
-    let header = reqH["x-app-user-identity"];
-    if (header != null && header != "" && header != "null") {
-      header = utilities.decryption(header);
-      req.userIdentity = header;
-      let reqUser = utilities.getTokenData(_token).id;
-      const { username } = req.userIdentity;
-      userSecurity(reqH["x-client-ip"], username)
-        .then(() => {
-          res.setHeader("connection", "keep-alive");
-          next();
-        })
-        .catch((error) => {
-          res.status(423).json({
-            success: false,
-            message: error,
-            username: error === "false" ? undefined : username,
-          });
-          return;
-        });
-      utilities.logger("res-tracking").log(
-        "",
-        {
-          dateTime: new Date().toLocaleString(),
-          requestIdentity: {
-            requestClient: reqH["x-client-ip"],
-            requestAPIUser: reqUser,
-            reqUserIdentity: req.userIdentity,
-          },
-          requestUrl: req.originalUrl,
-          requestHeader: {
-            host: reqH.host,
-            "user-agent": reqH["user-agent"],
-            "cache-control": reqH["cache-control"],
-            origin: reqH.origin,
-          },
-          requestMethod: req.method,
-        },
-        "info"
-      );
+  if (req.url.includes("/apiAuth") === true) {
+    if (req.url.includes("/logout")) {
+      let reqH = req.headers;
+
+      let header = reqH["x-api-key"];
+      if (header != null && header !== "" && header !== "null") {
+        header = jwtDecode(reqH["x-api-key"]);
+        req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
+        next();
+      }
+    } else {
+      next();
     }
   } else {
-    res.status(utilities.httpStatus().unAuthorized).json({
-      success: false,
-      message: "unauthorized access",
-    });
+    authentication(req, res, next);
   }
 });
 
