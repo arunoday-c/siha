@@ -3490,7 +3490,7 @@ let getAllPatientFollowUp = (req, res, next) => {
         inner join hims_f_patient PAT on PAT.hims_d_patient_id = PF.patient_id
         inner join hims_d_employee EM on EM.hims_d_employee_id = PF.doctor_id
         inner join hims_d_sub_department SD on SD.hims_d_sub_department_id = EM.sub_department_id
-        where date(PF.followup_date) between date(?) and date(?) `;
+        where date(PF.followup_date) between date(?) and date(?)  ORDER BY PF.followup_date desc`;
 
     if (inputData.doctor_id != null) {
       strQuery += " and PF.doctor_id='" + inputData.doctor_id + "'";
@@ -4034,13 +4034,8 @@ export const getNurseNotes = (req, res, next) => {
 
 export const addNurseNote = (req, res, next) => {
   const _mysql = new algaehMysql();
-  const {
-    patient_id,
-    visit_id,
-    episode_id,
-    nursing_notes,
-    visit_date,
-  } = req.body;
+  const { patient_id, visit_id, episode_id, nursing_notes, visit_date } =
+    req.body;
   try {
     _mysql
       .executeQuery({
