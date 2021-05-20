@@ -229,7 +229,8 @@ export default {
                   query:
                     "INSERT INTO `hims_f_patient_visit_message` (`patient_visit_id`\
                       , `patient_message`, `is_critical_message`, `message_active_till`, `created_by`, `created_date`\
-                      ) VALUES ( ?, ?, ?, ?, ?, ?); SELECT full_name from hims_d_employee where hims_d_employee_id=?;",
+                      ) VALUES ( ?, ?, ?, ?, ?, ?); SELECT full_name, sub_department_name from hims_d_employee E \
+                      INNER JOIN hims_d_sub_department SD ON E.sub_department_id = SD.hims_d_sub_department_id where hims_d_employee_id=?;",
                   values: [
                     patient_visit_id,
                     inputParam.patient_message,
@@ -243,6 +244,8 @@ export default {
                 })
                 .then((resultData) => {
                   req.body.doctor_name = resultData[1][0].full_name;
+                  req.body.sub_department_name =
+                    resultData[1][0].sub_department_name;
                   if (req.connection == null) {
                     _mysql.commitTransaction(() => {
                       _mysql.visitresult();
@@ -487,6 +490,7 @@ export default {
                 hospital_id: req.userIdentity.hospital_id,
                 visit_date: new Date(),
                 doctor_name: input.doctor_name,
+                department: input.sub_department_name,
               };
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
