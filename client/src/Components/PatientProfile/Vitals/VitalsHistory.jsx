@@ -15,11 +15,11 @@ function VitalsHistory({ _vitalsGroup }) {
               <p className="dateStamp">
                 Recorded by:<span>{data.recorded_by}</span>
                 Recorded on:{" "}
-                <span>{moment(data.recorded_date).format("DD-MM-YYYY")}</span>
-                Created on:
                 <span>
-                  {moment(data.dateTime).format("DD-MM-YYYY hh:mm:ss A")}
+                  {moment(data.recorded_date).format("DD-MM-YYYY  hh:mm:ss A")}
                 </span>
+                Created on:
+                <span>{moment(data.dateTime).format("DD-MM-YYYY")}</span>
               </p>
               <div className="vitalsCntr">
                 <ul className="vitals-box">
