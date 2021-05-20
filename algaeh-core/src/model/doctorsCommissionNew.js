@@ -151,48 +151,69 @@ let getDoctorsCommission = (req, res, next) => {
 };
 let doctorsCommissionCal = (req, res, next) => {
   try {
-    let input = extend([], req.body);
-    let outputArray = [];
-    for (let i = 0; i < input.length; i++) {
-      let op_cash_comission_amount = 0;
-      let op_cash_comission = 0;
-      let op_crd_comission_amount = 0;
-      let op_crd_comission = 0;
+    let buffer = "";
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
 
-      let inputData = input[i];
-      if (
-        inputData.service_cost != 0 &&
-        inputData.op_cash_comission_percentage != 0
-      ) {
-        op_cash_comission_amount =
-          (inputData.service_cost * inputData.op_cash_comission_percentage) /
-          100;
-        op_cash_comission = op_cash_comission_amount;
+    req.on("end", () => {
+      const decimal_places = req.userIdentity.decimal_places;
+      const input = JSON.parse(buffer);
+      req.body = inputParam;
+      let outputArray = [];
+      for (let i = 0; i < input.length; i++) {
+        let op_cash_comission_amount = 0;
+        let op_cash_comission = 0;
+        let op_crd_comission_amount = 0;
+        let op_crd_comission = 0;
+
+        let inputData = input[i];
+        if (
+          inputData.service_cost != 0 &&
+          inputData.op_cash_comission_percentage != 0
+        ) {
+          op_cash_comission_amount =
+            (inputData.service_cost * inputData.op_cash_comission_percentage) /
+            100;
+          op_cash_comission = op_cash_comission_amount;
+        }
+
+        if (
+          inputData.company_share != 0 &&
+          inputData.op_crd_comission_percentage != 0
+        ) {
+          op_cash_comission_amount =
+            (inputData.company_share * inputData.op_crd_comission_percentage) /
+            100;
+
+          op_crd_comission = op_crd_comission_amount;
+        }
+
+        inputData.op_cash_comission_amount = utilities.decimalPoints(
+          op_cash_comission_amount,
+          decimal_places
+        );
+        inputData.op_cash_comission = utilities.decimalPoints(
+          op_cash_comission,
+          decimal_places
+        );
+        inputData.op_crd_comission_amount = utilities.decimalPoints(
+          op_crd_comission_amount,
+          decimal_places
+        );
+        inputData.op_crd_comission = utilities.decimalPoints(
+          op_crd_comission,
+          decimal_places
+        );
+        outputArray.push(inputData);
+
+        // debugLog("op_cash_comission_amount:", op_cash_comission_amount);
+        // debugLog("op_cash_comission:", op_cash_comission);
       }
 
-      if (
-        inputData.company_share != 0 &&
-        inputData.op_crd_comission_percentage != 0
-      ) {
-        op_cash_comission_amount =
-          (inputData.company_share * inputData.op_crd_comission_percentage) /
-          100;
-
-        op_crd_comission = op_crd_comission_amount;
-      }
-
-      inputData.op_cash_comission_amount = op_cash_comission_amount;
-      inputData.op_cash_comission = op_cash_comission;
-      inputData.op_crd_comission_amount = op_crd_comission_amount;
-      inputData.op_crd_comission = op_crd_comission;
-      outputArray.push(inputData);
-
-      // debugLog("op_cash_comission_amount:", op_cash_comission_amount);
-      // debugLog("op_cash_comission:", op_cash_comission);
-    }
-
-    req.records = outputArray;
-    next();
+      req.records = outputArray;
+      next();
+    });
   } catch (e) {
     next(e);
   }

@@ -61,10 +61,16 @@ const getLoadBills = async (key, { data }) => {
   return res.data?.records;
 };
 const CalculateCommission = async (data) => {
+  const settings = { header: undefined, footer: undefined };
   const res = await newAlgaehApi({
     uri: "/doctorsCommissionNew/doctorsCommissionCal",
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(data), "utf8"),
     method: "POST",
-    data: data,
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings,
+    },
   });
   return res.data?.records;
 };
