@@ -1663,10 +1663,12 @@ let getPatientVitals = (req, res, next) => {
         const vitals = _.chain(result)
           .groupBy((g) => g.created_date)
           .map((details, key) => {
-            const { created_date, user_display_name } = _.head(details);
+            const { created_date, user_display_name, visit_date } =
+              _.head(details);
             return {
               recorded_by: user_display_name,
               dateTime: created_date,
+              recorded_date: visit_date,
               list: details,
             };
           })
@@ -4034,13 +4036,8 @@ export const getNurseNotes = (req, res, next) => {
 
 export const addNurseNote = (req, res, next) => {
   const _mysql = new algaehMysql();
-  const {
-    patient_id,
-    visit_id,
-    episode_id,
-    nursing_notes,
-    visit_date,
-  } = req.body;
+  const { patient_id, visit_id, episode_id, nursing_notes, visit_date } =
+    req.body;
   try {
     _mysql
       .executeQuery({
