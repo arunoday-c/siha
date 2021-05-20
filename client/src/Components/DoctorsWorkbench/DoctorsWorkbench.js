@@ -36,7 +36,6 @@ class DoctorsWorkbench extends Component {
       activeDateHeader: moment()._d,
       persistence: null,
     };
-    debugger;
 
     // this.moveToEncounterList = this.moveToEncounterList.bind(this);
     this.socket = sockets;
@@ -196,7 +195,6 @@ class DoctorsWorkbench extends Component {
   loadListofData() {
     algaehLoader({ show: true });
     try {
-      debugger;
       const dateRange =
         localStorage.getItem("workbenchDateRange") !== null
           ? JSON.parse(localStorage.getItem("workbenchDateRange"))
@@ -256,7 +254,6 @@ class DoctorsWorkbench extends Component {
         },
       });
     } catch (e) {
-      debugger;
       console.error(e);
       algaehLoader({ show: false });
     }
@@ -267,19 +264,15 @@ class DoctorsWorkbench extends Component {
   }
 
   componentDidMount() {
-    debugger;
     (async () => {
-      debugger;
       const records = await persistStageOnGet();
 
       if (records) {
-        debugger;
         this.setState({ ...records }, () => {
           // this.loadListofData();
         });
         persistStorageOnRemove();
       } else {
-        debugger;
         this.loadListofData();
         this.socket.on("patient_added", (patient) => {
           const { appointment_date } = patient;
