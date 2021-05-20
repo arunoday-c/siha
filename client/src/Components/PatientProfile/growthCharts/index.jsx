@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { PChart, Dataset } from "pchart";
 import { List, Empty } from "antd";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { AlgaehAutoComplete } from "algaeh-react-components";
+import "./growthCharts.scss";
 const graphTheme = {
   backdropFill: "#B2EBF2",
   gridColor: "#00ACC1",
@@ -68,9 +70,12 @@ export default function GrowthCharts(props) {
   return (
     <div className="row">
       <div className="col-2">
-        <div className="row diagramManageCntr">
+        <div className="row GrowthManageCntr">
+          <p className="GrowthListHdg">
+            <b>Select a Chart</b>
+          </p>
           <List
-            size="large"
+            size="md"
             header={false}
             footer={false}
             dataSource={listData}
@@ -80,7 +85,8 @@ export default function GrowthCharts(props) {
                 key={item.value}
                 style={{
                   cursor: "pointer",
-                  backgroundColor: `${type === item.value ? "#88B2FD" : ""}`,
+                  backgroundColor: `${type === item.value ? "#00a796" : ""}`,
+                  color: `${type === item.value ? "#ffffff" : ""}`,
                 }}
                 onClick={onHandleListClick}
                 data-value={item.value}
@@ -93,24 +99,49 @@ export default function GrowthCharts(props) {
       </div>
 
       <div className="col-10">
-        {patientData?.length > 0 ? (
-          <PChart
-            width={1200}
-            height={700}
-            dataset={dataSet}
-            patients={{
-              firstname: props.patient?.full_name,
-              sex: props.patient?.gender,
-              birthdate: props.patient?.date_of_birth,
-              measures: patientData,
+        <div className="row" style={{ paddingTop: 15 }}>
+          <AlgaehAutoComplete
+            div={{ className: "col-4 form-group" }}
+            label={{ forceLabel: "Select Age Range", isImp: true }}
+            selector={{
+              disabled: true,
+              sort: "off",
+              name: "salary_process_date",
+              value: "",
+              className: "select-fld",
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: [],
+              },
+              // onChange: this.dropDownHandler.bind(this)
             }}
-            theme={theme}
-            showtitle
-            showlabels
           />
-        ) : (
-          <Empty description="There is no data" />
-        )}
+
+          <div className="col-12">
+            {" "}
+            {patientData?.length > 0 ? (
+              <div className="growthChart">
+                <PChart
+                  width={900}
+                  height={500}
+                  dataset={dataSet}
+                  patients={{
+                    firstname: props.patient?.full_name,
+                    sex: props.patient?.gender,
+                    birthdate: props.patient?.date_of_birth,
+                    measures: patientData,
+                  }}
+                  theme={theme}
+                  showtitle
+                  showlabels
+                />
+              </div>
+            ) : (
+              <Empty description="There is no vitals data to show" />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
