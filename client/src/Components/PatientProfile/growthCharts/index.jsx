@@ -104,6 +104,7 @@ export default function GrowthCharts(props) {
             div={{ className: "col-4 form-group" }}
             label={{ forceLabel: "Select Age Range", isImp: true }}
             selector={{
+              disabled: true,
               sort: "off",
               name: "salary_process_date",
               value: "",
