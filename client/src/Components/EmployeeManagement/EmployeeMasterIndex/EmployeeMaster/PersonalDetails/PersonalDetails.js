@@ -184,13 +184,13 @@ class PersonalDetails extends Component {
     }, 2000);
 
     RawSecurityElement({ elementCode: "FLD_EDT_PER" }).then((result) => {
-      if (result === "show") {
+      if (result === "hide") {
         this.setState({ FldEditable: false });
       }
     });
 
     RawSecurityElement({ elementCode: "PER_DTL_CON_NUM" }).then((result) => {
-      if (result === "show") {
+      if (result === "hide") {
         this.setState({
           mandatoryFields: {
             ...this.state.mandatoryFields,
@@ -201,7 +201,7 @@ class PersonalDetails extends Component {
     });
     RawSecurityElement({ elementCode: "PER_DTL_WRK_CON_NUM" }).then(
       (result) => {
-        if (result === "show") {
+        if (result === "hide") {
           this.setState({
             mandatoryFields: {
               ...this.state.mandatoryFields,
@@ -212,7 +212,7 @@ class PersonalDetails extends Component {
       }
     );
     RawSecurityElement({ elementCode: "PER_DTL_PRI_ID" }).then((result) => {
-      if (result === "show") {
+      if (result === "hide") {
         this.setState({
           mandatoryFields: {
             ...this.state.mandatoryFields,
@@ -222,7 +222,7 @@ class PersonalDetails extends Component {
       }
     });
     RawSecurityElement({ elementCode: "PER_DTL_PRI_ID_NUM" }).then((result) => {
-      if (result === "show") {
+      if (result === "hide") {
         this.setState({
           mandatoryFields: {
             ...this.state.mandatoryFields,
@@ -233,7 +233,7 @@ class PersonalDetails extends Component {
     });
     RawSecurityElement({ elementCode: "PER_DTL_PER_MAIL_ID" }).then(
       (result) => {
-        if (result === "show") {
+        if (result === "hide") {
           this.setState({
             mandatoryFields: {
               ...this.state.mandatoryFields,
@@ -245,7 +245,7 @@ class PersonalDetails extends Component {
     );
     RawSecurityElement({ elementCode: "PER_DTL_WORK_MAIL_ID" }).then(
       (result) => {
-        if (result === "show") {
+        if (result === "hide") {
           this.setState({
             mandatoryFields: {
               ...this.state.mandatoryFields,
@@ -256,7 +256,7 @@ class PersonalDetails extends Component {
       }
     );
     RawSecurityElement({ elementCode: "PER_DTL_BLOOD_GRP" }).then((result) => {
-      if (result === "show") {
+      if (result === "hide") {
         this.setState({
           mandatoryFields: {
             ...this.state.mandatoryFields,
@@ -267,7 +267,7 @@ class PersonalDetails extends Component {
     });
     RawSecurityElement({ elementCode: "PER_DTL_MARITAL_STUS" }).then(
       (result) => {
-        if (result === "show") {
+        if (result === "hide") {
           this.setState({
             mandatoryFields: {
               ...this.state.mandatoryFields,
@@ -279,7 +279,7 @@ class PersonalDetails extends Component {
     );
     RawSecurityElement({ elementCode: "PER_DTL_PRENT_ADDRESS" }).then(
       (result) => {
-        if (result === "show") {
+        if (result === "hide") {
           this.setState({
             mandatoryFields: {
               ...this.state.mandatoryFields,
@@ -291,7 +291,7 @@ class PersonalDetails extends Component {
     );
     RawSecurityElement({ elementCode: "PER_DTL_PERMT_ADDRESS" }).then(
       (result) => {
-        if (result === "show") {
+        if (result === "hide") {
           this.setState(
             {
               mandatoryFields: {

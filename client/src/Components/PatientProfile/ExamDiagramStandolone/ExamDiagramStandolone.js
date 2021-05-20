@@ -703,9 +703,9 @@ export default class ExaminationDiagram extends Component {
       rightCompireImage: _right,
       leftCompireImage: _left,
       leftComireText: _element[0].querySelector("p").innerHTML,
-      rightComireText: _element[
-        this.state.exittingDetails.length - 1
-      ].querySelector("p").innerHTML,
+      rightComireText:
+        _element[this.state.exittingDetails.length - 1].querySelector("p")
+          .innerHTML,
       rightCompireImageIndex: this.state.exittingDetails.length - 1,
       leftCompireImageIndex: 0,
     });
@@ -726,9 +726,8 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[_totalRecords - 1]
             .querySelector("img")
             .getAttribute("src");
-          const _leftCompireText = _element[_totalRecords - 1].querySelector(
-            "p"
-          ).innerHTML;
+          const _leftCompireText =
+            _element[_totalRecords - 1].querySelector("p").innerHTML;
           this.setState({
             leftComireText: _leftCompireText,
             leftCompireImageIndex: _totalRecords - 1,
@@ -738,9 +737,10 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[this.state.leftCompireImageIndex - 1]
             .querySelector("img")
             .getAttribute("src");
-          const _leftCompireText = _element[
-            this.state.leftCompireImageIndex - 1
-          ].querySelector("p").innerHTML;
+          const _leftCompireText =
+            _element[this.state.leftCompireImageIndex - 1].querySelector(
+              "p"
+            ).innerHTML;
           this.setState({
             leftComireText: _leftCompireText,
             leftCompireImageIndex: this.state.leftCompireImageIndex - 1,
@@ -760,9 +760,10 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[this.state.leftCompireImageIndex + 1]
             .querySelector("img")
             .getAttribute("src");
-          const _leftCompireText = _element[
-            this.state.leftCompireImageIndex + 1
-          ].querySelector("p").innerHTML;
+          const _leftCompireText =
+            _element[this.state.leftCompireImageIndex + 1].querySelector(
+              "p"
+            ).innerHTML;
           this.setState({
             leftComireText: _leftCompireText,
             leftCompireImageIndex: this.state.leftCompireImageIndex + 1,
@@ -776,9 +777,8 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[_totalRecords - 1]
             .querySelector("img")
             .getAttribute("src");
-          const _rightCompireText = _element[_totalRecords - 1].querySelector(
-            "p"
-          ).innerHTML;
+          const _rightCompireText =
+            _element[_totalRecords - 1].querySelector("p").innerHTML;
           this.setState({
             rightComireText: _rightCompireText,
             rightCompireImageIndex: _totalRecords - 1,
@@ -788,9 +788,10 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[this.state.rightCompireImageIndex - 1]
             .querySelector("img")
             .getAttribute("src");
-          const _rightCompireText = _element[
-            this.state.rightCompireImageIndex - 1
-          ].querySelector("p").innerHTML;
+          const _rightCompireText =
+            _element[this.state.rightCompireImageIndex - 1].querySelector(
+              "p"
+            ).innerHTML;
           this.setState({
             rightComireText: _rightCompireText,
             rightCompireImage: _src,
@@ -810,9 +811,10 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[this.state.rightCompireImageIndex + 1]
             .querySelector("img")
             .getAttribute("src");
-          const _rightCompireText = _element[
-            this.state.rightCompireImageIndex + 1
-          ].querySelector("p").innerHTML;
+          const _rightCompireText =
+            _element[this.state.rightCompireImageIndex + 1].querySelector(
+              "p"
+            ).innerHTML;
           this.setState({
             ightComireText: _rightCompireText,
             rightCompireImage: _src,
@@ -1020,7 +1022,11 @@ export default class ExaminationDiagram extends Component {
             />
           </div>
           <div className="row">
-            <button onClick={() => this.openSubDeptImageModal()}>
+            <button
+              className="btn btn-primary btn-sm"
+              style={{ marginBottom: "5px" }}
+              onClick={() => this.openSubDeptImageModal()}
+            >
               Add Image To subDept
             </button>
           </div>

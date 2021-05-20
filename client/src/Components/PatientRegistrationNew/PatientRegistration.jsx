@@ -246,6 +246,7 @@ export function PatientRegistration() {
     billData,
     disabled,
     consultationInfo,
+    insuranceInfo,
     setConsultationInfo,
     setDisable,
     setSavedPatient,
@@ -552,9 +553,8 @@ export function PatientRegistration() {
     //   data: { application_id: appointment_id },
     // });
     // return result?.data?.records;
-    debugger;
     data.patient_identity = data.primary_id_no;
-    data.corporate_id = data.payer_id;
+    data.corporate_id = insuranceInfo.payer_id;
     data.identity_type = identity_type ?? "NATIONALITY ID";
     data.patient_name = data.full_name;
     data.patient_dob = data.date_of_birth;

@@ -34,6 +34,7 @@ import SickLeave from "./SickLeave/SickLeave";
 import PatientAttendance from "./PatientAttendance/PatientAttendance";
 import PatientMRD from "../MRD/PatientMRD/PatientMRD";
 import Chronic from "./chronic";
+import GrowthCharts from "./growthCharts";
 import MyContext from "../../utils/MyContext";
 const ExamDiagramStandolone = React.lazy(() =>
   import("./ExamDiagramStandolone/ExamDiagramStandolone")
@@ -1032,6 +1033,17 @@ class PatientProfile extends Component {
                     </span>
                   </li>
                 ) : null}
+                {this.state.department_type === "P" ? (
+                  <li className="nav-item">
+                    <span
+                      onClick={this.changeTabs}
+                      algaehsoap="growthCharts"
+                      className="nav-link"
+                    >
+                      Growth Charts
+                    </span>
+                  </li>
+                ) : null}
 
                 <li className="nav-item">
                   <span
@@ -1250,6 +1262,8 @@ class PatientProfile extends Component {
               <Summary />
             ) : this.state.pageDisplay === "mrd" ? (
               <PatientMRD fromClinicalDesk={true} />
+            ) : this.state.pageDisplay === "growthCharts" ? (
+              <GrowthCharts patient={this.props?.patient_profile[0]} />
             ) : null}
           </div>
           {this.renderUCAFReport()}

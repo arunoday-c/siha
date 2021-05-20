@@ -33,6 +33,7 @@
     "moment": "^2.24.0",
     "moment-hijri": "^2.1.2",
     "node-sass": "^4.14.0",
+    "pchart": "^0.4.1",
     "quill-better-table": "^1.2.8",
     "react": "^16.9.0",
     "react-chartjs-2": "^2.7.6",

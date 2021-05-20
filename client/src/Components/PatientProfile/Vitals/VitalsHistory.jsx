@@ -1,5 +1,6 @@
 import React from "react";
 import _ from "lodash";
+import moment from "moment";
 import "./vitals.scss";
 
 function VitalsHistory({ _vitalsGroup }) {
@@ -13,7 +14,12 @@ function VitalsHistory({ _vitalsGroup }) {
             <div className="content">
               <p className="dateStamp">
                 Recorded by:<span>{data.recorded_by}</span>
-                Recorded on: <span>{data.dateTime}</span>
+                Recorded on:{" "}
+                <span>
+                  {moment(data.recorded_date).format("DD-MM-YYYY  hh:mm:ss A")}
+                </span>
+                Created on:
+                <span>{moment(data.dateTime).format("DD-MM-YYYY")}</span>
               </p>
               <div className="vitalsCntr">
                 <ul className="vitals-box">

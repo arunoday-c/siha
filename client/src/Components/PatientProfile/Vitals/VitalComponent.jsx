@@ -370,11 +370,17 @@ class VitalComponent extends Component {
           maxDate={new Date()}
           events={{
             onChange: (selectedDate) => {
-              this.props.setState({ recorded_date: selectedDate });
+              this.props.texthandle({
+                target: {
+                  name: "recorded_date",
+                  value: selectedDate,
+                },
+              });
+              // this.props.setState({ recorded_date: selectedDate });
             },
           }}
           value={this.props.state.recorded_date}
-          disabled={true}
+          // disabled={true}
         />
 
         <AlagehFormGroup

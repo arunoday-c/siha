@@ -81,7 +81,6 @@ export function InsuranceDetails({
       "primary_card_number",
       "primary_effective_start_date",
       "primary_effective_end_date",
-      "payer_id",
     ];
     if (!isInsurance) {
       fieldNames.map((item) => setValue(item, ""));

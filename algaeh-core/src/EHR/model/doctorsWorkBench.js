@@ -1663,10 +1663,15 @@ let getPatientVitals = (req, res, next) => {
         const vitals = _.chain(result)
           .groupBy((g) => g.created_date)
           .map((details, key) => {
-            const { created_date, user_display_name } = _.head(details);
+            const { created_date, user_display_name, visit_date, visit_time } =
+              _.head(details);
+            const recorded_dt = `${moment(visit_date).format(
+              "YYYY-MM-DD"
+            )} ${visit_time}`;
             return {
               recorded_by: user_display_name,
               dateTime: created_date,
+              recorded_date: moment(recorded_dt).format("YYYY-MM-DD HH:mm:ss"),
               list: details,
             };
           })

@@ -2991,6 +2991,10 @@
     {
       "name": "Inventory",
       "value": "I"
+    },
+    {
+      "name": "Pediatric",
+      "value": "P"
     }
   ],
   "POWER_GLASS_TYPE": [

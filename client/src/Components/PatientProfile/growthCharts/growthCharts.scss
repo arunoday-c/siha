@@ -1,0 +1,48 @@
+.GrowthManageCntr {
+  margin: 15px 0 0;
+  background: #fff;
+  border-bottom: 1px solid #d0d0d0;
+  border-right: 1px solid #d0d0d0;
+  .ant-list {
+    height: 70vh;
+    overflow: auto;
+    width: 100%;
+  }
+  .ant-list-bordered {
+    border: none;
+  }
+}
+.GrowthRemarksCntr {
+  width: 100%;
+  float: left;
+}
+.growthChart {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5715;
+  text-align: center;
+  background: #fff;
+  height: 69vh;
+  border: 1px solid #d0d0d0;
+}
+
+.ant-empty {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5715;
+  text-align: center;
+  background: #fff;
+  height: 69vh;
+  border: 1px solid #d0d0d0;
+  padding: 20%;
+}
+.GrowthListHdg {
+  font-size: 13px;
+  width: 100%;
+  border: 1px solid #b7b7b7;
+  display: block;
+  padding: 10px 15px;
+  margin: 0;
+  background: #d0d0d0;
+  text-transform: uppercase;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../styles/site.scss";
 import "./DoctorCommission.scss";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -23,6 +23,8 @@ import moment from "moment";
 import Options from "../../Options.json";
 import { useQuery, useMutation } from "react-query";
 import { GetAmountFormart } from "../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components";
+
 const getProviderDetails = async () => {
   const res = await newAlgaehApi({
     uri: "/frontDesk/getDoctorAndDepartment",
@@ -63,10 +65,16 @@ const getLoadBills = async (key, { data }) => {
   return res.data?.records;
 };
 const CalculateCommission = async (data) => {
+  const settings = { header: undefined, footer: undefined };
   const res = await newAlgaehApi({
     uri: "/doctorsCommissionNew/doctorsCommissionCal",
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(data), "utf8"),
     method: "POST",
-    data: data,
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings,
+    },
   });
   return res.data?.records;
 };
@@ -83,11 +91,18 @@ const AdjustAmountCalculateGet = async (data) => {
   return res.data?.records;
 };
 const addDoctorsCommission = async (data) => {
+  const settings = { header: undefined, footer: undefined };
   const res = await newAlgaehApi({
     uri: "/doctorsCommissionNew/addDoctorsCommission",
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(data), "utf8"),
     method: "POST",
-    data: data,
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings,
+    },
   });
+  debugger;
   return res.data?.records;
 };
 
@@ -112,6 +127,9 @@ const getGeneratedCommission = async (data) => {
 function DoctorCommission() {
   // const [providers, setProviders] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
+  const { userToken } = useContext(MainContext);
+
+  // const [providers, setProviders] = useState([]);
   const [billscommission, setBillscommission] = useState([]);
   const [op_commision, setOp_commision] = useState(0.0);
   const [op_credit_comission, setOp_credit_comission] = useState(0.0);
@@ -186,19 +204,22 @@ function DoctorCommission() {
     }
   );
 
-  const [getCalculatedCommission] = useMutation(CalculateCommission, {
-    onSuccess: (data) => {
-      setBillscommission(data);
-      setDisableAdjust(false);
-      getCommissionCalculation(data);
-    },
-    onError,
-  });
+  const [getCalculatedCommission, { isLoading: loadingCal }] = useMutation(
+    CalculateCommission,
+    {
+      onSuccess: (data) => {
+        setBillscommission(data);
+        setDisableAdjust(false);
+        getCommissionCalculation(data);
+      },
+      onError,
+    }
+  );
   const [addCommission, { isLoading: loadingAdd }] = useMutation(
     addDoctorsCommission,
     {
       onSuccess: (data) => {
-        debugger;
+        // setCommission_number(data.comission_code);
         setDisabled(true);
         setOpenPopup(true);
       },
@@ -287,7 +308,7 @@ function DoctorCommission() {
   return (
     <>
       <div>
-        <Spin spinning={loadingBills || loadingAdd}>
+        <Spin spinning={loadingBills || loadingAdd || loadingCal}>
           <BreadCrumb
             title={
               <AlgaehLabel
@@ -849,6 +870,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Unit Cost" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.unit_cost).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "extended_cost",
@@ -857,6 +883,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Extended Cost" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.extended_cost).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "discount_amount",
@@ -865,6 +896,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Discount Amount" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.discount_amount).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
 
                             {
@@ -874,6 +910,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Patient Share" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.patient_share).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "company_share",
@@ -882,6 +923,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Co. Share" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.company_share).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "net_amount",
@@ -890,6 +936,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Net Amount" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.net_amount).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "service_cost",
@@ -898,6 +949,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Service Cost" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.service_cost).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             // {
                             //   fieldName: "op_cash_comission_type",
@@ -923,6 +979,13 @@ function DoctorCommission() {
                                   label={{ forceLabel: "OP Cash Comm. Amount" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return row.op_cash_comission_amount
+                                  ? parseFloat(
+                                      row.op_cash_comission_amount
+                                    ).toFixed(userToken.decimal_places)
+                                  : 0;
+                              },
                             },
                             {
                               fieldName: "op_cash_comission",
@@ -931,6 +994,13 @@ function DoctorCommission() {
                                   label={{ forceLabel: "OP Cash Comm." }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return row.op_cash_comission
+                                  ? parseFloat(row.op_cash_comission).toFixed(
+                                      userToken.decimal_places
+                                    )
+                                  : 0;
+                              },
                             },
                             // {
                             //   fieldName: "op_crd_comission_type",
@@ -957,6 +1027,13 @@ function DoctorCommission() {
                                   }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return row.op_crd_comission_amount
+                                  ? parseFloat(
+                                      row.op_crd_comission_amount
+                                    ).toFixed(userToken.decimal_places)
+                                  : 0;
+                              },
                             },
                             {
                               fieldName: "op_crd_comission",
@@ -965,6 +1042,13 @@ function DoctorCommission() {
                                   label={{ forceLabel: "OP Criedt Comm." }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return row.op_crd_comission
+                                  ? parseFloat(row.op_crd_comission).toFixed(
+                                      userToken.decimal_places
+                                    )
+                                  : 0;
+                              },
                             },
                           ]}
                           keyId="item_id"
