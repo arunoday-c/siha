@@ -5,6 +5,7 @@ import { LINQ } from "node-linq";
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import mysql from "mysql";
+import algaehUtilities from "algaeh-utilities/utilities";
 
 const keyPath = require("algaeh-keys/keys");
 
@@ -158,8 +159,11 @@ let doctorsCommissionCal = (req, res, next) => {
 
     req.on("end", () => {
       const decimal_places = req.userIdentity.decimal_places;
+      const utilities = new algaehUtilities();
+
       const input = JSON.parse(buffer);
-      req.body = inputParam;
+      req.body = input;
+
       let outputArray = [];
       for (let i = 0; i < input.length; i++) {
         let op_cash_comission_amount = 0;

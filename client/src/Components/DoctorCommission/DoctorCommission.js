@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../styles/site.scss";
 import "./DoctorCommission.scss";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -10,7 +10,9 @@ import {
   AlgaehDateHandler,
   AlgaehFormGroup,
   AlgaehMessagePop,
+  AlgaehTreeSearch,
 } from "algaeh-react-components";
+import { CSSTransition } from "react-transition-group";
 import { Controller, useForm } from "react-hook-form";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
@@ -21,10 +23,12 @@ import moment from "moment";
 import Options from "../../Options.json";
 import { useQuery, useMutation } from "react-query";
 import { GetAmountFormart } from "../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components";
+
 const getProviderDetails = async () => {
   const res = await newAlgaehApi({
-    uri: "/employee/get",
-    module: "hrManagement",
+    uri: "/frontDesk/getDoctorAndDepartment",
+    module: "frontDesk",
     method: "GET",
   });
   return res.data?.records;
@@ -98,6 +102,7 @@ const addDoctorsCommission = async (data) => {
       ...settings,
     },
   });
+  debugger;
   return res.data?.records;
 };
 
@@ -120,7 +125,11 @@ const getGeneratedCommission = async (data) => {
 };
 
 function DoctorCommission() {
-  const [providers, setProviders] = useState([]);
+  // const [providers, setProviders] = useState([]);
+  const [openPopup, setOpenPopup] = useState(false);
+  const { userToken } = useContext(MainContext);
+
+  // const [providers, setProviders] = useState([]);
   const [billscommission, setBillscommission] = useState([]);
   const [op_commision, setOp_commision] = useState(0.0);
   const [op_credit_comission, setOp_credit_comission] = useState(0.0);
@@ -131,31 +140,24 @@ function DoctorCommission() {
   const [commission_number, setCommission_number] = useState(null);
   const [disabled, setDisabled] = useState(false);
   const [disableAdjust, setDisableAdjust] = useState(true);
-  const {
-    control,
-    errors,
-    reset,
-    getValues,
-    watch,
-    setValue,
-    handleSubmit,
-  } = useForm({
-    shouldFocusError: true,
-    defaultValues: {
-      select_type: "AS",
-      case_type: "OP",
-    },
-  });
+  const { control, errors, reset, getValues, watch, setValue, handleSubmit } =
+    useForm({
+      shouldFocusError: true,
+      defaultValues: {
+        select_type: "AS",
+        case_type: "OP",
+      },
+    });
   const select_type = watch("select_type");
 
-  const { data: providers1 } = useQuery(
+  const { data: providers } = useQuery(
     ["get-providerDetails"],
     getProviderDetails,
     {
       onSuccess: (data) => {
-        let providers12 = data.filter((f) => f.isdoctor === "Y");
-        console.log("providers", providers1, providers);
-        setProviders(providers12);
+        // let providers12 = data.children.map((f) => f.isdoctor === "Y");
+        // console.log("providers", providers1, providers);
+        // setProviders(providers12);
       },
     }
   );
@@ -202,19 +204,24 @@ function DoctorCommission() {
     }
   );
 
-  const [getCalculatedCommission] = useMutation(CalculateCommission, {
-    onSuccess: (data) => {
-      setBillscommission(data);
-      setDisableAdjust(false);
-      getCommissionCalculation(data);
-    },
-    onError,
-  });
+  const [getCalculatedCommission, { isLoading: loadingCal }] = useMutation(
+    CalculateCommission,
+    {
+      onSuccess: (data) => {
+        setBillscommission(data);
+        setDisableAdjust(false);
+        getCommissionCalculation(data);
+      },
+      onError,
+    }
+  );
   const [addCommission, { isLoading: loadingAdd }] = useMutation(
     addDoctorsCommission,
     {
       onSuccess: (data) => {
+        // setCommission_number(data.comission_code);
         setDisabled(true);
+        setOpenPopup(true);
       },
       onError,
     }
@@ -301,7 +308,7 @@ function DoctorCommission() {
   return (
     <>
       <div>
-        <Spin spinning={loadingBills || loadingAdd}>
+        <Spin spinning={loadingBills || loadingAdd || loadingCal}>
           <BreadCrumb
             title={
               <AlgaehLabel
@@ -392,6 +399,49 @@ function DoctorCommission() {
                 data-validate="DoctorData"
               >
                 <Controller
+                  control={control}
+                  name="doctor"
+                  rules={{ required: "Please Select a doctor" }}
+                  render={({ onChange, value }) => (
+                    <AlgaehTreeSearch
+                      div={{ className: "col mandatory" }}
+                      label={{
+                        fieldName: "doctor_id",
+                        isImp: true,
+                        align: "ltr",
+                      }}
+                      error={errors}
+                      tree={{
+                        disableHeader: true,
+                        treeDefaultExpandAll: true,
+                        onChange: (selected) => {
+                          debugger;
+                          // if (selected) {
+                          //   setServiceInfo(selected);
+                          // } else {
+                          //   setServiceInfo(null);
+                          // }
+                          onChange(selected);
+                        },
+                        // others: {
+                        disabled: disabled,
+                        // },
+                        value,
+                        name: "doctor",
+                        data: providers ?? [],
+                        textField: "label",
+                        valueField: (node) => {
+                          // if (node?.sub_department_id) {
+                          //   return `${node?.sub_department_id}-${node?.services_id}-${node?.value}-${node?.department_type}-${node?.department_id}-${node?.service_type_id}`;
+                          // } else {
+                          return node?.value;
+                          // }
+                        },
+                      }}
+                    />
+                  )}
+                />{" "}
+                {/* <Controller
                   name="doctor_id"
                   control={control}
                   rules={{ required: "Select a Doctor" }}
@@ -424,7 +474,7 @@ function DoctorCommission() {
                       }}
                     />
                   )}
-                />
+                /> */}
                 {/* <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
@@ -480,7 +530,7 @@ function DoctorCommission() {
                         // onBlur: () => dateValidate(),
                       }}
                       others={{ disabled: disabled }}
-                      maxDate={new Date()}
+                      // maxDate={new Date() + 1}
                     />
                   )}
                 />
@@ -534,7 +584,7 @@ function DoctorCommission() {
                         // onBlur: () => dateValidate(),
                       }}
                       others={{ disabled: disabled }}
-                      maxDate={new Date()}
+                      // maxDate={new Date()}
                     />
                   )}
                 />
@@ -549,7 +599,6 @@ function DoctorCommission() {
                 }}
                 value={this.state.to_date}
               /> */}
-
                 <Controller
                   name="select_type"
                   control={control}
@@ -693,7 +742,6 @@ function DoctorCommission() {
                     />
                   )}
                 /> */}
-
                 <div className="col-1">
                   <button
                     disabled={disabled}
@@ -822,6 +870,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Unit Cost" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.unit_cost).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "extended_cost",
@@ -830,6 +883,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Extended Cost" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.extended_cost).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "discount_amount",
@@ -838,6 +896,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Discount Amount" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.discount_amount).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
 
                             {
@@ -847,6 +910,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Patient Share" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.patient_share).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "company_share",
@@ -855,6 +923,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Co. Share" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.company_share).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "net_amount",
@@ -863,6 +936,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Net Amount" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.net_amount).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             {
                               fieldName: "service_cost",
@@ -871,6 +949,11 @@ function DoctorCommission() {
                                   label={{ forceLabel: "Service Cost" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return parseFloat(row.service_cost).toFixed(
+                                  userToken.decimal_places
+                                );
+                              },
                             },
                             // {
                             //   fieldName: "op_cash_comission_type",
@@ -896,6 +979,13 @@ function DoctorCommission() {
                                   label={{ forceLabel: "OP Cash Comm. Amount" }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return row.op_cash_comission_amount
+                                  ? parseFloat(
+                                      row.op_cash_comission_amount
+                                    ).toFixed(userToken.decimal_places)
+                                  : 0;
+                              },
                             },
                             {
                               fieldName: "op_cash_comission",
@@ -904,6 +994,13 @@ function DoctorCommission() {
                                   label={{ forceLabel: "OP Cash Comm." }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return row.op_cash_comission
+                                  ? parseFloat(row.op_cash_comission).toFixed(
+                                      userToken.decimal_places
+                                    )
+                                  : 0;
+                              },
                             },
                             // {
                             //   fieldName: "op_crd_comission_type",
@@ -930,6 +1027,13 @@ function DoctorCommission() {
                                   }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return row.op_crd_comission_amount
+                                  ? parseFloat(
+                                      row.op_crd_comission_amount
+                                    ).toFixed(userToken.decimal_places)
+                                  : 0;
+                              },
                             },
                             {
                               fieldName: "op_crd_comission",
@@ -938,6 +1042,13 @@ function DoctorCommission() {
                                   label={{ forceLabel: "OP Criedt Comm." }}
                                 />
                               ),
+                              displayTemplate: (row) => {
+                                return row.op_crd_comission
+                                  ? parseFloat(row.op_crd_comission).toFixed(
+                                      userToken.decimal_places
+                                    )
+                                  : 0;
+                              },
                             },
                           ]}
                           keyId="item_id"
@@ -1076,6 +1187,64 @@ function DoctorCommission() {
             </div>
           </div>
         </Spin>
+        {openPopup ? (
+          <CSSTransition
+            in={openPopup}
+            classNames={{
+              enterActive: "editFloatCntr animated slideInUp faster",
+              enterDone: "editFloatCntr",
+              exitActive: "editFloatCntr animated slideOutDown faster",
+              exitDone: "editFloatCntr",
+            }}
+            unmountOnExit
+            appear={false}
+            timeout={500}
+            mountOnEnter
+          >
+            <div className={"col-12"}>
+              {/* <h5>Edit Basic Details</h5> */}
+              <div className="row">
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Patient Code",
+                    }}
+                  />
+                  {/* <h6>{savedPatient?.patient_code}</h6> */}
+                </div>
+
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Bill Number",
+                    }}
+                  />
+                  {/* <h6>{savedPatient?.bill_number}</h6> */}
+                </div>
+
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Receipt Number",
+                    }}
+                  />
+                  {/* <h6>{savedPatient?.receipt_number}</h6> */}
+                </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={() => setOpenPopup(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </CSSTransition>
+        ) : null}
       </div>
     </>
   );
