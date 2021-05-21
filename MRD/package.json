@@ -15,6 +15,7 @@
     "run-docker": "cross-env PORT=3016 NODE_ENV=production node build/app.js",
     "start": "run-s build run-prod",
     "run-dev": "cross-env PORT=3016 NODE_ENV=development nodemon --exec 'node build/app.js'",
+    "run-dev-debug": "cross-env PORT=3016 NODE_ENV=development nodemon --exec 'node --inspect=localhost:2016 build/app.js'",
     "bundle": "webpack --config webpack.prod.js --env=Client_Builds"
   },
   "eslintConfig": {

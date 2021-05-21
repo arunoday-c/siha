@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import "./PersonalDetails.scss";
 import moment from "moment";
+import _ from "lodash";
 import { EmployeeMasterContext } from "../../EmployeeMasterContext";
 import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
 // import { AlgaehActions } from "../../../../../actions/algaehActions";
@@ -125,7 +126,9 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
           userToken.product_type === "NO_FINANCE"
             ? true
             : false;
+        debugger;
         setHIMS_Active(HIMS_Active);
+
         const presentCountry = countries.filter((country) => {
           return country.hims_d_country_id === data[0].present_country_id;
         });
@@ -1330,7 +1333,7 @@ export default function PersonalDetails({ EmpMasterIOputs }) {
                               dataSource: {
                                 textField: "state_name",
                                 valueField: "hims_d_state_id",
-                                data: presentCountry.states,
+                                data: presentCountry?.states,
                               },
                               value,
                               onChange: (_, selected) => {
