@@ -186,8 +186,7 @@ export function AddPatientDentalForm({
         },
       });
       if (res.data.success) {
-        // clearState();
-        getRequest();
+        onClose();
         AlgaehMessagePop({
           type: "success",
           display: "Dental Form Added Successfully",
@@ -245,9 +244,7 @@ export function AddPatientDentalForm({
         },
       });
       if (res.data.success) {
-        // clearState
-
-        getRequest();
+        onClose();
 
         AlgaehMessagePop({
           type: "success",
@@ -292,9 +289,6 @@ export function AddPatientDentalForm({
   //   };
 
   const onSubmit = (e) => {
-    console.error(errors);
-    onClose();
-
     if (current.length !== 0) {
       updateDentalForm(e);
     } else {

@@ -255,6 +255,7 @@ export default function DentalLab() {
     setCancelData(data);
   };
   const loadRequestListAll = async () => {
+    debugger;
     setLoadingRequestList(true);
     try {
       const res = await newAlgaehApi({

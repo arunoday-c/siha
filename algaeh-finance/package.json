@@ -14,7 +14,8 @@
     "start": "cross-env NODE_ENV=production PORT=3007 pm2 start -i 2 build/app.js --name 'finance'",
     "run-docker": "cross-env PORT=3007 NODE_ENV=production node build/app.js",
     "run-webpack": "webpack --watch --config webpack.dev.js",
-    "run-dev": "cross-env PORT=3007 NODE_ENV=development nodemon --exec 'node --inspect=localhost:2007 build/app.js'",
+    "run-dev": "cross-env PORT=3007 NODE_ENV=development nodemon --exec 'node build/app.js'",
+    "run-dev-debug": "cross-env PORT=3007 NODE_ENV=development nodemon --exec 'node --inspect=localhost:2007 build/app.js'",
     "client-build-webpack": "webpack --config webpack.prod.js --env=Client_Builds",
     "bundle": "npm run build:client && npm run client-build-webpack"
   },
