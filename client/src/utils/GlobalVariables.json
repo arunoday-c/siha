@@ -1107,6 +1107,27 @@
       "value": "6M"
     }
   ],
+
+  "APPOINTMENT_STATUS": [
+    {
+      "authorized": "N",
+      "color_code": "#ffc5f7",
+      "default_status": "Y",
+      "description_ar": null,
+      "hims_d_appointment_status_id": 1,
+      "statusDesc": "Confirmation Pending",
+      "steps": 1
+    },
+    {
+      "authorized": "N",
+      "color_code": "#a0f1ff",
+      "default_status": "CF",
+      "description_ar": null,
+      "hims_d_appointment_status_id": 2,
+      "statusDesc": "Confirmed",
+      "steps": 2
+    }
+  ],
   "PRESCRIPTION_FREQ_DURATION": [
     {
       "name": "After Meal",
