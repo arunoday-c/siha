@@ -724,7 +724,7 @@ export function getDoctorAndDepartment(req, res, next) {
     _mysql
       .executeQuery({
         query: `
-        select distinct UE.employee_id, E.sub_department_id, E.full_name, E.arabic_name, E.services_id,E.work_email,
+        select distinct UE.employee_id, E.sub_department_id, E.full_name,E.employee_code, E.arabic_name, E.services_id,E.work_email,
         SD.department_id, SD.sub_department_name, SD.arabic_sub_department_name, SD.department_type , S.service_type_id
         from hims_d_employee E inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id 
         and  E.isdoctor='Y' inner join hims_d_department D on SD.department_id=D.hims_d_department_id 
@@ -746,6 +746,7 @@ export function getDoctorAndDepartment(req, res, next) {
               sub_department_id,
               department_type,
               full_name,
+              employee_code,
             } = detail[0];
             return {
               label: sub_department_name,
@@ -755,8 +756,8 @@ export function getDoctorAndDepartment(req, res, next) {
               children: detail.map((item) => {
                 return {
                   department_id: department_id,
-                  label: item.full_name,
-                  arlabel: item.arabic_name,
+                  label: `${employee_code} - ${item.full_name}`,
+                  arlabel: `${employee_code}- ${item.arabic_name}`,
                   value: item.employee_id,
                   services_id: item.services_id,
                   service_type_id: item.service_type_id,

@@ -280,7 +280,6 @@ let addDoctorsCommission = (req, res, next) => {
         })
         .then((generatedNumbers) => {
           comission_code = generatedNumbers.DOC_COMM;
-
           _mysql
             .executeQuery({
               query: `INSERT INTO hims_f_doctor_comission_header ( comission_code, provider_id, from_date, to_date, case_type,
@@ -330,6 +329,13 @@ let addDoctorsCommission = (req, res, next) => {
                   printQuery: true,
                 })
                 .then((result) => {
+                  req.records = [
+                    {
+                      comission_code: comission_code,
+                      hims_f_doctor_comission_header: headerResult.insertId,
+                      // receipt_number: req.records.receipt_number,
+                    },
+                  ];
                   next();
                 })
                 .catch((e) => {
@@ -372,11 +378,6 @@ let addDoctorsCommission = (req, res, next) => {
                 .then(() => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
-                    req.records = {
-                      comission_code: comission_code,
-                      hims_f_doctor_comission_header: headerResult.insertId,
-                      // receipt_number: req.records.receipt_number,
-                    };
                   });
                   next();
                   //   });

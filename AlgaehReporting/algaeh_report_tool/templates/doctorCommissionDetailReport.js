@@ -38,46 +38,65 @@ const executePDF = function executePDFMethod(options) {
         })
         .then((res) => {
           options.mysql.releaseConnection();
+          const header = res.length ? res[0] : {};
           const result = res;
           const subDepartmentWise = _.chain(result)
             .groupBy((g) => g.sub_department_id)
             .map((subDept) => {
-              const { sub_department_name } = subDept[0];
-              const doctors = _.chain(subDept)
-                .groupBy((g) => g.hims_d_employee_id)
-                .map((docs) => {
-                  const { employee_code, doctor_name } = docs[0];
-                  const patient = _.chain(docs)
-                    .groupBy((g) => g.hims_d_patient_id)
-                    .map((pat) => {
-                      return pat;
-                    })
-                    .value();
+              const { sub_department_name, full_name } = subDept[0];
+              // const doctors = _.chain(subDept)
+              //   .groupBy((g) => g.hims_d_employee_id)
+              //   .map((docs) => {
+              //
+              //     const { employee_code, doctor_name } = docs[0];
+              //     const patient = _.chain(docs)
+              //       .groupBy((g) => g.hims_d_patient_id)
+              //       .map((pat) => {
+              //
+              //         return pat;
+              //       })
+              //       .value();
 
-                  return {
-                    employee_code,
-                    doctor_name,
-                    totalPatient: patient.length,
-                    // totalAmt: options.currencyFormat(
-                    //   _.sumBy(docs, (s) => parseFloat(s.net_amount)),
-                    //   options.args.crypto
-                    // ),
-                    // total_Amt: _.sumBy(docs, (s) => parseFloat(s.net_amount)),
-                    docs: docs.map((n) => {
-                      return {
-                        ...n,
-                        net_amount: n.net_amount,
-                      };
-                    }),
-                  };
-                })
-                .sortBy((s) => s.visit_date)
-                .value();
+              //   return {
+              //     employee_code,
+              //     doctor_name,
+              //     totalPatient: patient.length,
+              //     // totalAmt: options.currencyFormat(
+              //     //   _.sumBy(docs, (s) => parseFloat(s.net_amount)),
+              //     //   options.args.crypto
+              //     // ),
+              //     // total_Amt: _.sumBy(docs, (s) => parseFloat(s.net_amount)),
+              //     docs: docs.map((n) => {
+              //       return {
+              //         ...n,
+              //         net_amount: n.net_amount,
+              //       };
+              //     }),
+              //   };
+              // })
+              // .sortBy((s) => s.visit_date)
+              // .value();
               return {
                 sub_department_name,
-                doctors: doctors,
+                details: subDept,
+                net_total: options.currencyFormat(
+                  _.sumBy(subDept, (s) => parseFloat(s.net_amount)),
+                  options.args.crypto
+                ),
+                op_cash_comission_amount: options.currencyFormat(
+                  _.sumBy(subDept, (s) =>
+                    parseFloat(s.op_cash_comission_amount)
+                  ),
+                  options.args.crypto
+                ),
+                op_crd_comission_amount: options.currencyFormat(
+                  _.sumBy(subDept, (s) =>
+                    parseFloat(s.op_crd_comission_amount)
+                  ),
+                  options.args.crypto
+                ),
                 dep_total: options.currencyFormat(
-                  _.sumBy(doctors, (s) => parseFloat(s.total_Amt)),
+                  _.sumBy(subDept, (s) => parseFloat(s.total_Amt)),
                   options.args.crypto
                 ),
                 // depTotal: _.sumBy(doctors, (s) => parseFloat(s.total_Amt)),
@@ -85,12 +104,12 @@ const executePDF = function executePDFMethod(options) {
             })
             .value();
           // console.log(JSON.stringify(subDepartmentWise));
-          const net_total = options.currencyFormat(
-            _.sumBy(subDepartmentWise, (s) => parseFloat(s.depTotal)),
-            options.args.crypto
-          );
+          // const net_total = options.currencyFormat(
+          //   _.sumBy(subDepartmentWise, (s) => parseFloat(s.depTotal)),
+          //   options.args.crypto
+          // );
 
-          resolve({ result: subDepartmentWise, net_total: net_total });
+          resolve({ header, result: subDepartmentWise });
         })
         .catch((e) => {
           // console.log("e:", e);

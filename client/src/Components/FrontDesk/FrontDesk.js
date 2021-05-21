@@ -39,9 +39,20 @@ class FrontDesk extends Component {
     if (this.props.location.state?.data.visit_id) {
       this.setState({
         visitCreated: true,
+        // FD_Screen: "Appointment",
       });
     } else {
-      return;
+      setGlobal({
+        "FD-STD": "Appointment",
+      });
+      this.setState({
+        FD_Screen:
+          this.state.Language === "ar"
+            ? Window.global["FD-STD"] +
+              this.state.Language.charAt(0).toUpperCase() +
+              this.state.Language.slice(1)
+            : Window.global["FD-STD"],
+      });
     }
   }
   componentDidUpdate(prevProps, prevState) {

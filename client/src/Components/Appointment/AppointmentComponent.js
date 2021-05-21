@@ -514,7 +514,8 @@ function AppointmentComponent(props) {
                               ? "description_ar"
                               : "statusDesc",
                           valueField: "hims_d_appointment_status_id",
-                          data: props.state.appointmentStatus,
+                          // data: props.state.appointmentStatus,
+                          data: GlobalVariables.APPOINTMENT_STATUS,
                         },
                       }}
                     />

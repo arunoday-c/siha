@@ -102,7 +102,7 @@ const addDoctorsCommission = async (data) => {
       ...settings,
     },
   });
-  debugger;
+
   return res.data?.records;
 };
 
@@ -115,7 +115,6 @@ const commissionCalculations = async (data) => {
   return res.data?.records;
 };
 const getGeneratedCommission = async (data) => {
-  debugger;
   const res = await newAlgaehApi({
     uri: "/doctorsCommissionNew/getGeneratedCommission",
     method: "GET",
@@ -215,17 +214,18 @@ function DoctorCommission() {
       onError,
     }
   );
-  const [addCommission, { isLoading: loadingAdd }] = useMutation(
-    addDoctorsCommission,
-    {
-      onSuccess: (data) => {
-        // setCommission_number(data.comission_code);
-        setDisabled(true);
-        setOpenPopup(true);
-      },
-      onError,
-    }
-  );
+  const [
+    addCommission,
+    { data: commissionNumberArray, isLoading: loadingAdd },
+  ] = useMutation(addDoctorsCommission, {
+    onSuccess: (data) => {
+      setCommission_number(data[0].comission_code);
+      setDisabled(true);
+      setOpenPopup(true);
+      getCommission(data[0].comission_code);
+    },
+    onError,
+  });
   const [getCommission, { data: commissionData }] = useMutation(
     getGeneratedCommission,
     {
@@ -400,7 +400,7 @@ function DoctorCommission() {
               >
                 <Controller
                   control={control}
-                  name="doctor"
+                  name="doctor_id"
                   rules={{ required: "Please Select a doctor" }}
                   render={({ onChange, value }) => (
                     <AlgaehTreeSearch
@@ -415,7 +415,6 @@ function DoctorCommission() {
                         disableHeader: true,
                         treeDefaultExpandAll: true,
                         onChange: (selected) => {
-                          debugger;
                           // if (selected) {
                           //   setServiceInfo(selected);
                           // } else {
@@ -427,7 +426,7 @@ function DoctorCommission() {
                         disabled: disabled,
                         // },
                         value,
-                        name: "doctor",
+                        name: "doctor_id",
                         data: providers ?? [],
                         textField: "label",
                         valueField: (node) => {
@@ -1187,7 +1186,7 @@ function DoctorCommission() {
             </div>
           </div>
         </Spin>
-        {openPopup ? (
+        {
           <CSSTransition
             in={openPopup}
             classNames={{
@@ -1207,10 +1206,13 @@ function DoctorCommission() {
                 <div className="col-3">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Patient Code",
+                      forceLabel: "Commission Number",
                     }}
                   />
-                  {/* <h6>{savedPatient?.patient_code}</h6> */}
+                  <h6>
+                    {commissionNumberArray?.length > 0 &&
+                      commissionNumberArray[0].comission_code}
+                  </h6>
                 </div>
 
                 <div className="col-3">
@@ -1244,7 +1246,7 @@ function DoctorCommission() {
               </div>
             </div>
           </CSSTransition>
-        ) : null}
+        }
       </div>
     </>
   );

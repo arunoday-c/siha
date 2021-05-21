@@ -49,20 +49,22 @@
 
                     </tr> --}}
           {{#hasElement result}}
-            <tr class="numberFldTotalBottom">
 
-              <td colspan="5"></td>
-              <td class="numberFld">{{net_op_cash_comission_amount}}</td>
-              <td class="numberFld">{{net_op_crd_comission_amount}}</td>
-              <td class="numberFld">{{net_total_comm}}</td>
-            </tr>
             {{#each result}}
+              <tr class="numberFldTotalBottom">
+
+                <td colspan="5"></td>
+                <td class="numberFld">{{net_total}}</td>
+                <td class="numberFld">{{net_op_cash_comission_amount}}</td>
+                <td class="numberFld">{{net_op_crd_comission_amount}}</td>
+
+              </tr>
               {{!-- <tr>
                 <td colspan="8" class="tableSubHdg">{{sub_department_name}}</td>
                 <td class="tableSubHdg numberFld"><b>{{dep_total}}</b></td>
 
               </tr> --}}
-              {{#each doctors}}
+              {{#each details}}
                 {{!-- <tr>
                   <td colspan="7" class="tableSubHdg2">Dr.
                     {{doctor_name}}
@@ -72,19 +74,21 @@
                     {{totalPatient}}</td>
                   <td class="tableSubHdg2 numberFld"><b>{{totalAmt}}</b></td>
                 </tr> --}}
-                {{#each docs}}
-                  <tr>
-                    <td>{{inc @index}}</td>
-                    <td>{{bill_number}}</td>
-                    <td>{{bill_date}}</td>
-                    <td class="txtFld">{{service_type}}</td>
-                    <td class="txtFld">{{service_name}}</td>
-                    <td class="numberFld">{{net_amount}}</td>
-                    <td class="numberFld">{{op_cash_comission_amount}}</td>
-                    <td class="numberFld">{{op_crd_comission_amount}}</td>
-                    {{!-- <td class="numberFld">{{total_comm}}</td> --}}
-                  </tr>
-                {{/each}}{{/each}}{{/each}}
+                {{!-- {{#each docs}}  --}}
+                <tr>
+                  <td>{{inc @index}}</td>
+                  <td>{{bill_number}}</td>
+                  <td>{{bill_date}}</td>
+                  <td class="txtFld">{{service_type}}</td>
+                  <td class="txtFld">{{service_name}}</td>
+                  <td class="numberFld">{{net_amount}}</td>
+                  <td class="numberFld">{{op_cash_comission_amount}}</td>
+                  <td class="numberFld">{{op_crd_comission_amount}}</td>
+                  {{!-- <td class="numberFld">{{total_comm}}</td> --}}
+                </tr>
+              {{/each}}
+            {{/each}}
+            {{!-- {{/each}} --}}
             {{!-- <tr class="numberFldTotalBottom">
               <td colspan="8"></td>
               <td class="numberFld">{{net_total}}</td>

@@ -126,7 +126,6 @@ class Appointment extends PureComponent {
   }
 
   PatientRecallDataFill() {
-    debugger;
     if (this.props.visitCreated) {
       this.clearSaveState();
     }
@@ -937,8 +936,8 @@ class Appointment extends PureComponent {
   }
 
   handlePatient(patient, data, e) {
-    persistStateOnBack(this.state, true);
     if (data.hims_d_appointment_status_id === this.state.checkInId) {
+      persistStateOnBack(this.state, true);
       this.handleCheckIn(patient, data);
     } else {
       this.openEditModal(patient, data, e);
@@ -957,34 +956,35 @@ class Appointment extends PureComponent {
         type: "warning",
       });
       return null;
-    }
-    setGlobal({
-      "FD-STD": "RegistrationPatient",
-    });
-    // for new patient who are not yet registered
-    if (!patient.patient_code) {
-      patient.patient_age = patient.age;
-      patient.arabic_patient_name = patient.arabic_name;
-      patient.patient_gender = patient.gender;
-      patient.patient_phone = patient.contact_number;
-      patient.patient_email = patient.email;
-      delete patient.age;
-      delete patient.gender;
-      delete patient.contact_number;
-      delete patient.tel_code;
-      delete patient.email;
-      delete patient.arabic_name;
-      // return this.props.routeComponents(patient, this.state.checkInId);
+    } else {
+      setGlobal({
+        "FD-STD": "RegistrationPatient",
+      });
+      // for new patient who are not yet registered
+      if (!patient.patient_code) {
+        patient.patient_age = patient.age;
+        patient.arabic_patient_name = patient.arabic_name;
+        patient.patient_gender = patient.gender;
+        patient.patient_phone = patient.contact_number;
+        patient.patient_email = patient.email;
+        delete patient.age;
+        delete patient.gender;
+        delete patient.contact_number;
+        delete patient.tel_code;
+        delete patient.email;
+        delete patient.arabic_name;
+        // return this.props.routeComponents(patient, this.state.checkInId);
 
+        return this.props.history?.push(
+          `/PatientRegistration?appointment_id=${patient?.hims_f_patient_appointment_id}&status_id=${this.state.checkInId}`
+        );
+      }
+
+      // return this.props.routeComponents(patient, this.state.checkInId);
       return this.props.history?.push(
-        `/PatientRegistration?appointment_id=${patient?.hims_f_patient_appointment_id}&status_id=${this.state.checkInId}`
+        `/PatientRegistration?appointment_id=${patient?.hims_f_patient_appointment_id}&patient_code=${patient?.patient_code}&status_id=${this.state.checkInId}`
       );
     }
-
-    // return this.props.routeComponents(patient, this.state.checkInId);
-    return this.props.history?.push(
-      `/PatientRegistration?appointment_id=${patient?.hims_f_patient_appointment_id}&patient_code=${patient?.patient_code}&status_id=${this.state.checkInId}`
-    );
   }
 
   openEditModal(patient, data, e) {
