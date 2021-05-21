@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import "./PersonalDetails.scss";
 import moment from "moment";
-import _ from "lodash";
+// import _ from "lodash";
 import { EmployeeMasterContext } from "../../EmployeeMasterContext";
 import { EmployeeMasterContextForEmployee } from "../../EmployeeMasterContextForEmployee";
 // import { AlgaehActions } from "../../../../../actions/algaehActions";
