@@ -18,10 +18,14 @@ const ImageModel = mongoose.model("algaeh_organization_logos", ImageSchema);
 export default (db) => {
   return {
     saveLogo: (req, res, next) => {
+      const reportingFolderName =
+        process.env.NODE_ENV !== "development"
+          ? "algaeh-reports"
+          : "AlgaehReporting";
       const logoPath = path.join(
         process.cwd(),
         "../",
-        "AlgaehReporting",
+        reportingFolderName,
         "algaeh_report_tool/templates",
         "images"
       );
