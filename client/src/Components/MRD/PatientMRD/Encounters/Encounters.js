@@ -748,6 +748,7 @@ class Encounters extends Component {
                 visit_id={this.state.visit_id}
                 patient_id={Window.global["mrd_patient"]}
                 generalInfo={this.state.generalInfo}
+                key={Window.global["mrd_patient"]}
               />
             </div>
           </div>

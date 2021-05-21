@@ -60,6 +60,7 @@ const ModalMedicalRecord = ({
             visit_id={visit_id}
             patient_id={patient_id}
             generalInfo={patientEncounters[0]}
+            key={patient_id}
           />
         ) : null}
       </div>

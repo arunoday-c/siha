@@ -781,7 +781,11 @@ export default function OPEncounterDetails({
     </Menu>
   );
   return (
-    <div className="col componentRenderArea" style={{ margin: 0 }}>
+    <div
+      className="col componentRenderArea"
+      style={{ margin: 0 }}
+      key={visit_id}
+    >
       <PatientAttachments
         visible={attachmentOpen}
         onClose={showAttachments}
@@ -796,21 +800,24 @@ export default function OPEncounterDetails({
           <div className="caption">
             <h3 className="caption-subject">OP Encounter Details </h3>
           </div>
-          {generalInfo !== undefined ? (
-            <button
-              onClick={() => {
-                setGlobal({
-                  episode_id: episode_id,
-                  current_patient: patient_id,
-                  visit_id: visit_id,
-                });
-                showSickLeave();
-              }}
-            >
-              Generate Sick Leave
-            </button>
-          ) : null}
+
           <div className="actions">
+            {generalInfo !== undefined ? (
+              <button
+                style={{ marginRight: "5px" }}
+                className="btn btn-default"
+                onClick={() => {
+                  setGlobal({
+                    episode_id: episode_id,
+                    current_patient: patient_id,
+                    visit_id: visit_id,
+                  });
+                  showSickLeave();
+                }}
+              >
+                Generate Sick Leave
+              </button>
+            ) : null}
             {generalInfo !== undefined ? (
               <Dropdown overlay={menu}>
                 <button className="btn btn-default btn-circle active">
