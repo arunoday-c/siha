@@ -60,20 +60,20 @@ class VitalComponent extends Component {
               formula_value: _elements[i].getAttribute("formula_value"),
             });
 
-            portal_data.push({
-              patient_identity: this.props.primary_id_no,
-              visit_code: this.props.visit_code,
-              // visit_date: this.props.state.recorded_date,
-              visit_date: moment(this.props.state.recorded_date).format(
-                "YYYY-MM-DD hh:mm:ss"
-              ),
-              hospital_id: userToken.hospital_id,
-              vital_name: elementName,
-              vital_value: _elements[i].children[0].value
-                ? _elements[i].children[0].value
-                : 0.0,
-              formula_value: _elements[i].getAttribute("formula_value"),
-            });
+            if (_elements[i].children[0].value) {
+              portal_data.push({
+                patient_identity: this.props.primary_id_no,
+                visit_code: this.props.visit_code,
+                // visit_date: this.props.state.recorded_date,
+                visit_date: moment(this.props.state.recorded_date).format(
+                  "YYYY-MM-DD hh:mm:ss"
+                ),
+                hospital_id: userToken.hospital_id,
+                vital_name: elementName,
+                vital_value: _elements[i].children[0].value,
+                formula_value: _elements[i].getAttribute("formula_value"),
+              });
+            }
             // if (elementName === "heart rate") {
             //   portal_data = {
             //     ...portal_data,
