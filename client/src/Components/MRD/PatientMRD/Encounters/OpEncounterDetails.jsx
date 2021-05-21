@@ -23,7 +23,7 @@ import { ViewAttachmentsModal } from "./viewAttachmentsModal";
 import ReferralDataGrid from "../../../PatientProfile/Plan/Referal/ReferralDataGrid";
 // import { newAlgaehApi } from "../../../../hooks";
 import SickLeave from "../../../PatientProfile/SickLeave/SickLeave";
-import { setGlobal } from "../../../../utils/GlobalFunctions";
+// import { setGlobal } from "../../../../utils/GlobalFunctions";
 export default function OPEncounterDetails({
   episode_id,
   encounter_id,
@@ -807,11 +807,6 @@ export default function OPEncounterDetails({
                 style={{ marginRight: "5px" }}
                 className="btn btn-default"
                 onClick={() => {
-                  setGlobal({
-                    episode_id: episode_id,
-                    current_patient: patient_id,
-                    visit_id: visit_id,
-                  });
                   showSickLeave();
                 }}
               >
@@ -833,14 +828,19 @@ export default function OPEncounterDetails({
                               ).format("DD-MM-YYYY HH:mm A")
                             : "----------"} */}
         </div>
-        {openSickLeave ? (
+
+        {encounter_id && openSickLeave ? (
           <SickLeave
             openSickLeave={openSickLeave}
+            patientData={{
+              patient_id: Window.global["mrd_patient"],
+              episode_id,
+              visit_id,
+            }}
             onClose={showSickLeave}
             patient_diagnosis={patientDiagnosis}
           />
         ) : null}
-
         {referringTo ? (
           <AlgaehModal
             title={"Referring To"}

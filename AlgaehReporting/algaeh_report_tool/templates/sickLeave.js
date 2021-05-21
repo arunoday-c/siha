@@ -1,4 +1,3 @@
-
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   return new Promise(function (resolve, reject) {
@@ -7,7 +6,7 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       let params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
       options.mysql
@@ -27,19 +26,15 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_icd ID on ID.hims_d_icd_id = PD.daignosis_id
           inner join hims_d_employee EMP on PV.doctor_id = EMP.hims_d_employee_id
           inner join hims_d_sub_department SDEP on PV.sub_department_id = SDEP.hims_d_sub_department_id
-          where SL.patient_id=? and SL.visit_id=? and SL.episode_id = ?;`,
-          values: [
-            input.patient_id,
-            input.visit_id,
-            input.episode_id
-          ],
-          printQuery: true
+          where SL.patient_id=? and SL.visit_id=? and SL.episode_id = ? ;`,
+          values: [input.patient_id, input.visit_id, input.episode_id],
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           const header = result.length ? result[0] : {};
           resolve({ header });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

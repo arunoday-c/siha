@@ -41,23 +41,50 @@ class SickLeave extends Component {
     this.getSickLeave();
     this.canUpdate = true;
   }
-
-  componentDidUpdate() {
-    if (this.state.diagnosis_data === "" && this.canUpdate === true) {
-      const primaryExists = this.props.patient_diagnosis
-        .filter((f) => f.diagnosis_type === "P")
-        .map((item) => {
-          return item.icd_description;
-        })
-        .join(",");
-      if (primaryExists !== this.state.diagnosis_data) {
-        this.setState({
-          diagnosis_data: primaryExists,
-        });
-        this.canUpdate = false;
-      }
+  componentDidMount() {
+    if (this.props.patientData) {
+      this.setState(
+        {
+          episode_id: this.props.patientData.episode_id,
+          patient_id: this.props.patientData.patient_id,
+          visit_id: this.props.patientData.visit_id,
+        },
+        () => {
+          this.getSickLeave();
+        }
+      );
     }
+    // if (this.state.diagnosis_data === "" && this.canUpdate === true) {
+    const primaryExists = this.props.patient_diagnosis
+      .filter((f) => f.diagnosis_type === "P")
+      .map((item) => {
+        return item.icd_description;
+      })
+      .join(",");
+    if (primaryExists !== this.state.diagnosis_data) {
+      this.setState({
+        diagnosis_data: primaryExists,
+      });
+      // this.canUpdate = false;
+    }
+    // }
   }
+  // componentDidUpdate() {
+  //   if (this.state.diagnosis_data === "" && this.canUpdate === true) {
+  //     const primaryExists = this.props.patient_diagnosis
+  //       .filter((f) => f.diagnosis_type === "P")
+  //       .map((item) => {
+  //         return item.icd_description;
+  //       })
+  //       .join(",");
+  //     if (primaryExists !== this.state.diagnosis_data) {
+  //       this.setState({
+  //         diagnosis_data: primaryExists,
+  //       });
+  //       this.canUpdate = false;
+  //     }
+  //   }
+  // }
   getSickLeave() {
     algaehApiCall({
       uri: "/doctorsWorkBench/getSickLeave",
@@ -146,7 +173,19 @@ class SickLeave extends Component {
   };
 
   printSickleaveAfterUpadteAndAdd() {
-    const { episode_id, current_patient, visit_id } = Window.global;
+    let episode_id;
+    let current_patient;
+    let visit_id;
+    if (this.props.patientData) {
+      episode_id = this.props.patientData.episode_id;
+      current_patient = this.props.patientData.patient_id;
+      visit_id = this.props.patientData.visit_id;
+    } else {
+      episode_id = Window.global.episode_id;
+      current_patient = Window.global.current_patient;
+      visit_id = Window.global.visit_id;
+    }
+
     algaehApiCall({
       uri: "/report",
       method: "GET",
