@@ -416,7 +416,7 @@ export default {
          inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id \
          inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id \
          inner join algaeh_d_app_user AU on V.doctor_id =AU.employee_id \
-         inner join algaeh_d_app_user AUU on AUU.algaeh_d_app_user_id =IH.requested_by \
+         left join algaeh_d_app_user AUU on AUU.algaeh_d_app_user_id =IH.requested_by \
          left join hims_d_insurance_provider IP on IH.insurance_provider_id=IP.hims_d_insurance_provider_id\
           left join hims_d_insurance_sub SI on IH.sub_insurance_id=SI.hims_d_insurance_sub_id\
           left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
