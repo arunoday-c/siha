@@ -150,7 +150,7 @@ class Referal extends PureComponent {
               }}
               onClick={this.doctorDepartmentChangeHandler.bind(this)}
               onClear={() => {
-                this.state({
+                this.setState({
                   sub_department_id: null,
                   doctor_id: null,
                   hospital_name: null,

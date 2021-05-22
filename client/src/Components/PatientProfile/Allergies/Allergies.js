@@ -38,7 +38,7 @@ class Allergies extends Component {
     this.state = {
       openAllergyModal: false,
       allergy_value: "",
-      allergy_type: "Food",
+      allergy_type: "",
       allAllergies: [],
       patientAllergies: [],
       allSpecificAllergies: [],
@@ -104,6 +104,7 @@ class Allergies extends Component {
       allergy_onset: "",
       allergy_severity: "",
       allergy_onset_date: null,
+      allergy_value: "",
       //...this.baseState
     });
   }

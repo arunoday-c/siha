@@ -46,7 +46,6 @@ class FollowUp extends Component {
       data: { visit_id: visit_id },
       onSuccess: (response) => {
         if (response.data.success) {
-          debugger;
           const data = response.data.records;
           if (data.length > 0) {
             this.setState(
