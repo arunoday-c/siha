@@ -18,6 +18,7 @@ import {
 } from "./ChangeEntitlementEvents";
 import { InsuranceForm } from "./InsuranceForm";
 import "./InvoiceGeneration.scss";
+import axios from "axios";
 
 const reducer = (state, { type, payload }) => {
   switch (type) {
@@ -52,15 +53,17 @@ export default function ChangeEntitlement(props) {
     enabled: !!visit,
   });
 
-  const {
-    data: bills,
-    isLoading: billLoadin,
-    clear: clearBills,
-  } = useQuery(["patient-bills", { ...visit }], getBillsForVisit, {
-    initialData: [],
-    initialStale: true,
-    enabled: !!visit,
-  });
+  const { data: bills, isLoading: billLoadin, clear: clearBills } = useQuery(
+    ["patient-bills", { ...visit }],
+    getBillsForVisit,
+    {
+      initialData: [],
+      initialStale: true,
+      enabled: !!visit,
+    }
+  );
+
+  const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
   const clearPage = () => {
     clearBills();
@@ -103,6 +106,28 @@ export default function ChangeEntitlement(props) {
       });
       setGenerateEnable(true);
       console.log("after_generate", after_generate);
+      debugger;
+      try {
+        const data = {
+          visit_code: visit?.visit_code,
+          corporate_id: insurance_data.payer_id,
+        };
+        axios
+          .post(`${PORTAL_HOST}/info/updatepatientVisit`, data)
+          .then(function (response) {
+            //handle success
+            console.log(response);
+          })
+          .catch(function (response) {
+            //handle error
+            console.log(response);
+          });
+      } catch (error) {
+        AlgaehMessagePop({
+          display: error,
+          type: "error",
+        });
+      }
       AlgaehMessagePop({
         type: "success",
         display: "Done Succesfully",

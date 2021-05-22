@@ -289,39 +289,39 @@ export function PatientRegistration() {
     },
   });
 
-  const {
-    isLoading,
-    data: patientData,
-    refetch,
-  } = useQuery(["patient", { patient_code }], getPatient, {
-    enabled: !!patient_code,
-    initialData: {
-      bill_criedt: [],
-      patientRegistration: null,
-      identities: [],
-    },
-    retry: 0,
-    initialStale: true,
-    onSuccess: (data) => {
-      if (data?.patientRegistration) {
-        let patientRegistration = data?.patientRegistration;
+  const { isLoading, data: patientData, refetch } = useQuery(
+    ["patient", { patient_code }],
+    getPatient,
+    {
+      enabled: !!patient_code,
+      initialData: {
+        bill_criedt: [],
+        patientRegistration: null,
+        identities: [],
+      },
+      retry: 0,
+      initialStale: true,
+      onSuccess: (data) => {
+        if (data?.patientRegistration) {
+          let patientRegistration = data?.patientRegistration;
 
-        setIdentityType(patientRegistration.identity_type);
-        reset({
-          ...patientRegistration,
-          // consultation: "Y",
-          visit_type: default_visit_type?.hims_d_visit_type_id,
+          setIdentityType(patientRegistration.identity_type);
+          reset({
+            ...patientRegistration,
+            // consultation: "Y",
+            visit_type: default_visit_type?.hims_d_visit_type_id,
+          });
+        }
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
         });
-      }
-    },
-    onError: (err) => {
-      AlgaehMessagePop({
-        display: err?.message,
-        type: "error",
-      });
-      history.push(location.pathname);
-    },
-  });
+        history.push(location.pathname);
+      },
+    }
+  );
 
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
     onSuccess: (data) => {
@@ -553,8 +553,10 @@ export function PatientRegistration() {
     //   data: { application_id: appointment_id },
     // });
     // return result?.data?.records;
+
     data.patient_identity = data.primary_id_no;
-    data.corporate_id = insuranceInfo.payer_id;
+    data.corporate_id =
+      insuranceInfo === undefined ? null : insuranceInfo.payer_id;
     data.identity_type = identity_type ?? "NATIONALITY ID";
     data.patient_name = data.full_name;
     data.patient_dob = data.date_of_birth;
@@ -614,6 +616,7 @@ export function PatientRegistration() {
       });
     }
 
+    // console.lo("");
     if (!patient_code) {
       save({
         ...input,
