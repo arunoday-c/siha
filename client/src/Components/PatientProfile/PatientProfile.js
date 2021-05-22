@@ -35,6 +35,7 @@ import PatientAttendance from "./PatientAttendance/PatientAttendance";
 import PatientMRD from "../MRD/PatientMRD/PatientMRD";
 import Chronic from "./chronic";
 import GrowthCharts from "./growthCharts";
+import GrowthChartsNew from "./growthCharts/new";
 import MyContext from "../../utils/MyContext";
 const ExamDiagramStandolone = React.lazy(() =>
   import("./ExamDiagramStandolone/ExamDiagramStandolone")
@@ -1034,17 +1035,27 @@ class PatientProfile extends Component {
                   </li>
                 ) : null}
                 {this.state.department_type === "P" ? (
-                  <li className="nav-item">
-                    <span
-                      onClick={this.changeTabs}
-                      algaehsoap="growthCharts"
-                      className="nav-link"
-                    >
-                      Growth Charts
-                    </span>
-                  </li>
+                  <>
+                    <li className="nav-item">
+                      <span
+                        onClick={this.changeTabs}
+                        algaehsoap="growthCharts"
+                        className="nav-link"
+                      >
+                        Growth Charts
+                      </span>
+                    </li>
+                  </>
                 ) : null}
-
+                <li className="nav-item">
+                  <span
+                    onClick={this.changeTabs}
+                    algaehsoap="growthChartsNew"
+                    className="nav-link"
+                  >
+                    Growth Charts New
+                  </span>
+                </li>
                 <li className="nav-item">
                   <span
                     onClick={this.changeTabs}
@@ -1264,6 +1275,8 @@ class PatientProfile extends Component {
               <PatientMRD fromClinicalDesk={true} />
             ) : this.state.pageDisplay === "growthCharts" ? (
               <GrowthCharts patient={this.props?.patient_profile[0]} />
+            ) : this.state.pageDisplay === "growthChartsNew" ? (
+              <GrowthChartsNew patient={this.props?.patient_profile[0]} />
             ) : null}
           </div>
           {this.renderUCAFReport()}

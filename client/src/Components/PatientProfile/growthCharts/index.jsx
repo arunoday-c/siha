@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PChart, Dataset } from "pchart";
 import { List, Empty } from "antd";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-import { AlgaehAutoComplete } from "algaeh-react-components";
+// import { AlgaehAutoComplete } from "algaeh-react-components";
 import "./growthCharts.scss";
 const graphTheme = {
   backdropFill: "#B2EBF2",
@@ -100,7 +100,7 @@ export default function GrowthCharts(props) {
 
       <div className="col-10">
         <div className="row" style={{ paddingTop: 15 }}>
-          <AlgaehAutoComplete
+          {/* <AlgaehAutoComplete
             div={{ className: "col-4 form-group" }}
             label={{ forceLabel: "Select Age Range", isImp: true }}
             selector={{
@@ -116,7 +116,7 @@ export default function GrowthCharts(props) {
               },
               // onChange: this.dropDownHandler.bind(this)
             }}
-          />
+          /> */}
 
           <div className="col-12">
             {" "}
