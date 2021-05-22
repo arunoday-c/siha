@@ -57,13 +57,8 @@ class OrderMedication extends Component {
       storedState = Window.global["orderMedicationState"];
       removeGlobal("orderMedicationState");
     }
-    const {
-      current_patient,
-      encounter_id,
-      visit_id,
-      provider_id,
-      episode_id,
-    } = Window.global;
+    const { current_patient, encounter_id, visit_id, provider_id, episode_id } =
+      Window.global;
     this.state = {
       patient_id: current_patient, // Window.global["current_patient"],
       encounter_id: encounter_id, // Window.global["encounter_id"],
@@ -337,7 +332,7 @@ class OrderMedication extends Component {
             saveMedicationEnable: true,
             medicationitems: [],
           },
-          clearInputState.bind(this)
+          clearInputState.bind(this, this)
         );
       }
     });

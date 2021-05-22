@@ -51,7 +51,7 @@ const addFollowUp = ($this) => {
   } = Window.global;
   if ($this.state.followup_days === 0) {
     swalMessage({
-      title: "Please Enter Next visit After",
+      title: "Please Enter Next visit of followUp date",
       type: "warning",
     });
   } else {
