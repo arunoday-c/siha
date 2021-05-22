@@ -76,10 +76,7 @@ export function AddPatientDentalForm({
       //   to_due_date: new Date(),
     },
   });
-  const { request_status, work_status } = watch([
-    "request_status",
-    "work_status",
-  ]);
+  const { work_status } = watch(["work_status"]);
 
   useEffect(() => {
     if (visible && current.length !== 0) {
@@ -876,12 +873,12 @@ export function AddPatientDentalForm({
                           onClear: () => {
                             onChange("");
                           },
-                          others: {
-                            disabled:
-                              request_status !== "APR" ||
-                              current.work_status === "COM",
-                            // tabIndex: "4",
-                          },
+                          // others: {
+                          //   disabled:
+                          //     request_status !== "APR" ||
+                          //     current.work_status === "COM",
+                          //   // tabIndex: "4",
+                          // },
                         }}
                       />
                     )}
