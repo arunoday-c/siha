@@ -43,6 +43,7 @@
     "cross-env": "^5.1.4",
     "cryptr": "^4.0.0",
     "express": "^4.16.3",
+    "lodash": "^4.17.21",
     "moment": "^2.22.1",
     "node-linq": "0.0.5",
     "regenerator": "^0.14.7",
