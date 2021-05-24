@@ -168,7 +168,7 @@ const UpdateLabOrder = ($this, status) => {
                 //handle error
                 console.log(response);
               });
-            generateLabResultReport({ ...$this.state, hidePrinting: true });
+            // generateLabResultReport({ ...$this.state, hidePrinting: true });
           }
         }
 
