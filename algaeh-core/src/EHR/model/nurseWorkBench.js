@@ -910,7 +910,7 @@ let getNurseMyDay = (req, res, next) => {
           "select  EMP.full_name as doctor_name,E.hims_f_patient_encounter_id,P.patient_code,P.date_of_birth,P.full_name,P.gender,P.age,E.patient_id, \
           P.primary_id_no, V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
           E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id,V.age_in_years, V.age_in_months, \
-          V.age_in_days, V.sub_department_id, visit_type_desc, inventory_location_id, L.location_type \
+          V.age_in_days, V.sub_department_id, visit_type_desc, V.visit_code, V.visit_date, inventory_location_id, L.location_type \
           from hims_f_patient_encounter E\
           INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
           INNER JOIN hims_d_employee EMP ON EMP.hims_d_employee_id=E.provider_id \

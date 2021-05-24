@@ -2,6 +2,9 @@ import Enumerable from "linq";
 import moment from "moment";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import axios from "axios";
+
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
 
 export default function SubjectiveHandler() {
   return {
@@ -85,6 +88,10 @@ export default function SubjectiveHandler() {
         data: patChiefComp,
         onSuccess: (response) => {
           if (response.data.success) {
+            if ($this.state.portal_exists === "Y") {
+              portalinserUpdateVisitData($this);
+            }
+
             swalMessage({
               title: "Chief Complaint added successfully . .",
               type: "success",
@@ -119,4 +126,24 @@ function dateDurationAndInterval(selectedDate) {
   }
 
   return { duration, interval };
+}
+
+function portalinserUpdateVisitData($this) {
+  const portal_data = {
+    patient_identity: $this.state.primary_id_no,
+    visit_code: $this.state.visit_code,
+    visit_date: $this.state.visit_date,
+    chief_compliant: $this.state.chief_complaint,
+    hospital_id: $this.state.hospital_id,
+  };
+  axios
+    .post(`${PORTAL_HOST}/info/patientVisitDetails`, portal_data)
+    .then(function (response) {
+      //handle success
+      console.log(response);
+    })
+    .catch(function (response) {
+      //handle error
+      console.log(response);
+    });
 }

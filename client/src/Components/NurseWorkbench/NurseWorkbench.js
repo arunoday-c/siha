@@ -53,10 +53,15 @@ import {
   AlgaehSecurityComponent,
   Menu,
   Dropdown,
+  MainContext,
 } from "algaeh-react-components";
 import VitalsHistory from "../PatientProfile/Vitals/VitalsHistory";
 import ModalMedicalRecord from "../DoctorsWorkbench/ModalForMedicalRecordPat";
 import AllServicesModal from "./AllServicesModal";
+import axios from "axios";
+
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+
 class NurseWorkbench extends Component {
   constructor(props) {
     super(props);
@@ -135,7 +140,14 @@ class NurseWorkbench extends Component {
     this.complaintType = [];
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      portal_exists: userToken.portal_exists,
+      hospital_id: userToken.hospital_id,
+    });
+
     this.loadListofData();
     getAllChiefComplaints(this);
     getDepartmentVitals(this);
@@ -255,6 +267,42 @@ class NurseWorkbench extends Component {
       },
       onSuccess: (response) => {
         if (response.data.success) {
+          debugger;
+          if (this.state.portal_exists === "Y") {
+            const data = {
+              patient_identity: this.state.primary_id_no,
+              allergy_type:
+                this.state.allergy_value === "F"
+                  ? "Food"
+                  : this.state.allergy_value === "A"
+                  ? "Airborne"
+                  : this.state.allergy_value === "AI"
+                  ? "Animal and Insect"
+                  : this.state.allergy_value === "C"
+                  ? "Chemical and Others"
+                  : this.state.allergy_value === "N"
+                  ? "NKA"
+                  : this.state.allergy_value === "D"
+                  ? "Drug"
+                  : null,
+              allergy_name: this.state.allergy_name,
+              allergy_status: "ACTIVE",
+              update_type: "HOSPITAL",
+            };
+
+            debugger;
+            axios
+              .post(`${PORTAL_HOST}/info/patientAllergy`, data)
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              });
+          }
+
           getPatientAllergies(this);
           this.resetAllergies();
           swalMessage({
@@ -549,6 +597,13 @@ class NurseWorkbench extends Component {
         );
 
         break;
+      case "hims_d_allergy_id":
+        debugger;
+        this.setState({
+          [value.name]: value.value,
+          allergy_name: value.selected.allergy_name,
+        });
+        break;
       case "chief_complaint_id":
         if (
           this.state.patient_name === undefined ||
@@ -837,6 +892,9 @@ class NurseWorkbench extends Component {
         visit_id: data.visit_id,
         inventory_location_id: data.inventory_location_id,
         location_type: data.location_type,
+        primary_id_no: data.primary_id_no,
+        visit_code: data.visit_code,
+        visit_date: data.visit_date,
       },
       () => {
         getPatientAllergies(this);
@@ -1499,6 +1557,8 @@ class NurseWorkbench extends Component {
                           case_type={this.state.case_type}
                           dropDownHandle={(e) => this.dropDownHandle(e)}
                           fromNurseWorkBench={true}
+                          primary_id_no={this.state.primary_id_no}
+                          visit_code={this.state.visit_code}
                           resetVitalComponent={() => {
                             this.resetVitalComponent();
                           }}
