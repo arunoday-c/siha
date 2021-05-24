@@ -1,6 +1,10 @@
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
+import axios from "axios";
+
+const PORTAL_HOST = process.env.REACT_APP_PORTAL_HOST;
+
 const ChangeHandel = ($this, e) => {
   $this.setState({
     [e.target.name]: e.target.value,
@@ -144,6 +148,30 @@ const UpdateLabOrder = ($this, status) => {
     method: "PUT",
     onSuccess: (response) => {
       if (response.data.success === true) {
+        debugger;
+        if (status === "CF" || status === "V") {
+          if ($this.state.portal_exists === "Y") {
+            const portal_data = {
+              service_id: $this.state.service_id,
+              visit_code: $this.state.visit_code,
+              patient_identity: $this.state.primary_id_no,
+              service_status:
+                status === "CF" ? "RESULT CONFIRMED" : "RESULT VALIDATED",
+            };
+            axios
+              .post(`${PORTAL_HOST}/info/deletePatientService`, portal_data)
+              .then(function (response) {
+                //handle success
+                console.log(response);
+              })
+              .catch(function (response) {
+                //handle error
+                console.log(response);
+              });
+            generateLabResultReport({ ...$this.state, hidePrinting: true });
+          }
+        }
+
         swalMessage({
           type: "success",
           title: "Done successfully . .",
@@ -159,7 +187,7 @@ const UpdateLabOrder = ($this, status) => {
           validated_by:
             response.data.records.validated_by || $this.state.validated_by,
         });
-        if ($this.state.portal_exists === "Y") {
+        if ($this.state.portal_exists === "Y" && status === "V") {
           generateLabResultReport({ ...$this.state, hidePrinting: true });
         }
       }
