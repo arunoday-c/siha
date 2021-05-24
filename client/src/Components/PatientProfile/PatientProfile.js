@@ -1045,17 +1045,18 @@ class PatientProfile extends Component {
                         Growth Charts
                       </span>
                     </li>
+                    <li className="nav-item">
+                      <span
+                        onClick={this.changeTabs}
+                        algaehsoap="growthChartsNew"
+                        className="nav-link"
+                      >
+                        Growth Charts Alpha
+                      </span>
+                    </li>
                   </>
                 ) : null}
-                <li className="nav-item">
-                  <span
-                    onClick={this.changeTabs}
-                    algaehsoap="growthChartsNew"
-                    className="nav-link"
-                  >
-                    Growth Charts New
-                  </span>
-                </li>
+
                 <li className="nav-item">
                   <span
                     onClick={this.changeTabs}

@@ -1168,11 +1168,11 @@ function DoctorCommission() {
                     />
                   </button>
 
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-other"
-                    //   onClick={PostDoctorCommission.bind(this, this)}
-                    // disabled={this.state.postEnable}
+                      onClick={PostDoctorCommission.bind(this, this)}
+                     disabled={this.state.postEnable}
                   >
                     <AlgaehLabel
                       label={{
@@ -1180,7 +1180,7 @@ function DoctorCommission() {
                         returnText: true,
                       }}
                     />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
