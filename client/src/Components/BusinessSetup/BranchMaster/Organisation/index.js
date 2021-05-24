@@ -243,25 +243,40 @@ export function Organization(props) {
                       name: "product_type",
                       dataSource: {
                         data: [
+                          // HIMS_ERP= Complete Product(with FINANCE,HRMS,PHARMACY,INVENTRORY),
+                          // HRMS = ONLY HR and PAYROLL,
+                          // HRMS_ERP = HR PAYROLL and FINANCE
+                          // FINANCE_ERP = (Finance,HR&PROL,Inventory,Pharmacy)
+                          // HIMS_CLINICAL=(NO Finance & HR&PROL)
+                          // ONLY_LAB=ONLY_LAB
+                          // ONLY_PHARMACY=ONLY_PHARMACY
+                          // nNO_FINANCE=(Complete Product without Finance)
                           {
                             value: "HIMS_ERP",
-                            name: "Finance,HRMS,Pharmacy and Inventory",
+                            name: "Complete Product",
                           },
-                          { value: "HRMS", name: "HR & Payroll" },
+                          { value: "HRMS", name: "HR & Payroll Only" },
                           {
                             value: "HRMS_ERP",
-                            name: "HR & Payroll and Finance",
+                            name: "HR, Payroll & Finance",
                           },
                           {
                             value: "FINANCE_ERP",
-                            name: "Finance,HR & Payroll,Inventory and Pharmacy",
+                            name: "HR, Payroll, Inventory, Pharmacy & Finance",
                           },
                           {
                             value: "HIMS_CLINICAL",
-                            name: "No Finanace & HR & Payroll",
+                            name: "Complete Product w/o Payroll & Finance",
                           },
-                          { value: "ONLY_LAB", name: "Only Lab and Radiology" },
-                          { value: "ONLY_PHARMACY", name: "Only Pharmacy" },
+                          { value: "ONLY_LAB", name: "Lab, Radiology HR Only" },
+                          {
+                            value: "ONLY_PHARMACY",
+                            name: "Pharmacy & HR Only",
+                          },
+                          {
+                            value: "NO_FINANCE",
+                            name: "Complete Product w/o Finance",
+                          },
                         ],
                         valueField: "value",
                         textField: "name",
