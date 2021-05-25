@@ -476,6 +476,10 @@
     {
       "name": "Refrigerate",
       "value": "R"
+    },
+    {
+      "name": "Room Temp.",
+      "value": "RT"
     }
   ],
   "FORMAT_ANALYTE_TYPE": [

@@ -59,7 +59,7 @@ class VitalComponent extends Component {
                   : null,
               formula_value: _elements[i].getAttribute("formula_value"),
             });
-
+            // debugger;
             if (_elements[i].children[0].value) {
               portal_data.push({
                 patient_identity: this.props.primary_id_no,
@@ -119,6 +119,9 @@ class VitalComponent extends Component {
             // }
           }
         }
+
+        // console.lo("11");
+        debugger;
 
         algaehApiCall({
           uri: "/doctorsWorkBench/addPatientVitals",
