@@ -173,7 +173,9 @@ class LabSpecimen extends Component {
                           ? "Normal"
                           : row.storage_type === "F"
                           ? "Frozen"
-                          : "Refrigerate";
+                          : row.storage_type === "R"
+                          ? "Refrigerate"
+                          : "Room Temp.";
                       },
                       editorTemplate: (row) => {
                         return (
