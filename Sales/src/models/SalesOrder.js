@@ -456,8 +456,6 @@ export function postSalesOrder(req, res, next) {
 
           let IncludeValues = [];
           if (ins_sales_order_items.length > 0) {
-
-
             IncludeValues = [
               "item_id",
               "uom_id",
@@ -501,8 +499,6 @@ export function postSalesOrder(req, res, next) {
                 });
               });
           } else if (ins_sales_order_services.length > 0) {
-
-
             IncludeValues = [
               "services_id",
               "service_frequency",
@@ -815,20 +811,33 @@ export function updateSalesOrderEntry(req, res, next) {
               if (inputParam.is_revert === "Y") {
                 // hims_f_sales_order_items_id.push(details[i].hims_f_sales_order_items_id)
                 qry += mysql.format(
-                  `update hims_f_sales_dispatch_note_batches set tax_percentage=?,
-                                    tax_amount=ROUND((net_extended_cost * (? /100)), ?), 
-                                    total_amount=(ROUND((net_extended_cost * (? /100)), ?) + net_extended_cost)
-                                    where sales_order_items_id=?; `,
+                  `update hims_f_sales_dispatch_note_batches set 
+                    discount_percentage=?, discount_amount=ROUND((extended_cost * (? /100)), ?), 
+                    net_extended_cost = ROUND((extended_cost - (extended_cost * (? /100))), ?),
+                    tax_percentage=?, tax_amount=ROUND(((extended_cost - extended_cost * (? /100)) * (? /100)), ?), 
+                    total_amount=(ROUND(((extended_cost - extended_cost * (? /100)) * (? /100)), ?) + ROUND((extended_cost - extended_cost * (? /100)), ?))
+                    where sales_order_items_id=?; `,
                   [
+                    details[i].discount_percentage,
+                    parseFloat(details[i].discount_percentage),
+                    req.userIdentity.decimal_places,
+                    parseFloat(details[i].discount_percentage),
+                    req.userIdentity.decimal_places,
                     details[i].tax_percentage,
+                    parseFloat(details[i].discount_percentage),
                     parseFloat(details[i].tax_percentage),
                     req.userIdentity.decimal_places,
+                    parseFloat(details[i].discount_percentage),
                     parseFloat(details[i].tax_percentage),
+                    req.userIdentity.decimal_places,
+                    parseFloat(details[i].discount_percentage),
                     req.userIdentity.decimal_places,
                     details[i].hims_f_sales_order_items_id,
                   ]
                 );
               }
+              console.log("qry", qry);
+              // consol.log("qry", qry);
 
               if (i == details.length - 1) {
                 qryExecute = true;
@@ -938,10 +947,13 @@ export function updateSalesOrderEntry(req, res, next) {
                   } else if (inputParam.sales_order_mode === "I") {
                     _mysql
                       .executeQueryWithTransaction({
-                        query: `select hims_f_dispatch_note_header_id,sum(B.tax_amount) as tax_amount, sum(B.total_amount) as total_amount from hims_f_sales_dispatch_note_header H inner join 
-                                                    hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id=D.dispatch_note_header_id 
-                                                    inner join hims_f_sales_dispatch_note_batches B on  D.hims_f_sales_dispatch_note_detail_id = B.sales_dispatch_note_detail_id where H.sales_order_id=?
-                                                    group by H.hims_f_dispatch_note_header_id;`,
+                        query: `select hims_f_dispatch_note_header_id,sum(B.tax_amount) as tax_amount, 
+                                  sum(B.total_amount) as total_amount, sum(B.discount_amount) as discount_amount, 
+                                  sum(net_extended_cost) as net_total
+                                  from hims_f_sales_dispatch_note_header H 
+                                  inner join hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id=D.dispatch_note_header_id 
+                                  inner join hims_f_sales_dispatch_note_batches B on  D.hims_f_sales_dispatch_note_detail_id = B.sales_dispatch_note_detail_id 
+                                  where H.sales_order_id=? group by H.hims_f_dispatch_note_header_id;`,
                         values: [inputParam.hims_f_sales_order_id],
                         printQuery: true,
                       })
@@ -956,13 +968,18 @@ export function updateSalesOrderEntry(req, res, next) {
                         }
                         for (let p = 0; p < dispatchData.length; p++) {
                           strDispatchQry += mysql.format(
-                            "UPDATE hims_f_sales_dispatch_note_header SET `total_tax`=?, net_payable = ? \
-                                                        where `hims_f_dispatch_note_header_id`=?; \
-                                                        update hims_f_sales_invoice_detail set total_tax=? , net_payable=? where dispatch_note_header_id=?;",
+                            "UPDATE hims_f_sales_dispatch_note_header SET discount_amount=?, net_total = ?, \
+                            `total_tax`=?, net_payable = ?  where `hims_f_dispatch_note_header_id`=?; \
+                            update hims_f_sales_invoice_detail set discount_amount=?, net_total = ?, \
+                            total_tax=? , net_payable=? where dispatch_note_header_id=?;",
                             [
+                              dispatchData[p].discount_amount,
+                              dispatchData[p].net_total,
                               dispatchData[p].tax_amount,
                               dispatchData[p].total_amount,
                               dispatchData[p].hims_f_dispatch_note_header_id,
+                              dispatchData[p].discount_amount,
+                              dispatchData[p].net_total,
                               dispatchData[p].tax_amount,
                               dispatchData[p].total_amount,
                               dispatchData[p].hims_f_dispatch_note_header_id,
@@ -981,8 +998,9 @@ export function updateSalesOrderEntry(req, res, next) {
                             _mysql
                               .executeQueryWithTransaction({
                                 query:
-                                  "select sales_invoice_header_id, sum(total_tax) as total_tax, sum(net_payable) as net_payable \
-                                                                from hims_f_sales_invoice_detail where dispatch_note_header_id in (?) group by sales_invoice_header_id; ",
+                                  "select sales_invoice_header_id, sum(discount_amount) as discount_amount, sum(net_total) as net_total, \
+                                  sum(total_tax) as total_tax, sum(net_payable) as net_payable \
+                                  from hims_f_sales_invoice_detail where dispatch_note_header_id in (?) group by sales_invoice_header_id; ",
                                 values: [hims_f_dispatch_note_header_id],
                                 printQuery: true,
                               })
@@ -997,11 +1015,16 @@ export function updateSalesOrderEntry(req, res, next) {
                                 }
                                 for (let q = 0; q < invoiceDetail.length; q++) {
                                   strInvoiceQry += mysql.format(
-                                    "update hims_f_sales_invoice_header set is_revert='N', customer_id=?,project_id=?, hospital_id=?, total_tax=?, net_payable=? where hims_f_sales_invoice_header_id=?;",
+                                    "update hims_f_sales_invoice_header set is_revert='N', customer_id=?, \
+                                    project_id=?, hospital_id=?, discount_amount= ?, net_total=?, \
+                                    total_tax=?, net_payable=? \
+                                    where hims_f_sales_invoice_header_id=?;",
                                     [
                                       inputParam.customer_id,
                                       inputParam.project_id,
                                       inputParam.hospital_id,
+                                      invoiceDetail[q].discount_amount,
+                                      invoiceDetail[q].net_total,
                                       invoiceDetail[q].total_tax,
                                       invoiceDetail[q].net_payable,
                                       invoiceDetail[q].sales_invoice_header_id,
@@ -1080,7 +1103,7 @@ export function cancelSalesServiceOrder(req, res, next) {
     req.mySQl = _mysql;
     let inputParam = { ...req.body };
 
-    let strQuery = ""
+    let strQuery = "";
     if (inputParam.invoice_generated === "Y") {
       strQuery = mysql.format(
         "UPDATE hims_f_sales_invoice_header SET is_cancelled='Y',\
@@ -1089,15 +1112,16 @@ export function cancelSalesServiceOrder(req, res, next) {
           inputParam.canceled_reason_sales,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          inputParam.hims_f_sales_order_id
+          inputParam.hims_f_sales_order_id,
         ]
       );
     }
     _mysql
       .executeQueryWithTransaction({
-        query: `UPDATE hims_f_sales_order SET cancelled='Y', authorize1='N', \
+        query:
+          `UPDATE hims_f_sales_order SET cancelled='Y', authorize1='N', \
                     authorize2='N',canceled_reason_sales=? ,cancelled_date=?, cancelled_by=? 
-                    WHERE hims_f_sales_order_id=?;`+ strQuery,
+                    WHERE hims_f_sales_order_id=?;` + strQuery,
         values: [
           inputParam.canceled_reason_sales,
           new Date(),
@@ -1112,7 +1136,6 @@ export function cancelSalesServiceOrder(req, res, next) {
           req.records = headerResult;
           next();
         });
-
       })
       .catch((e) => {
         _mysql.rollBackTransaction(() => {
