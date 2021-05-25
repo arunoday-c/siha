@@ -12,7 +12,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 
-let dps = [];
+// let dps = [];
 
 class VitalsMaster extends Component {
   constructor(props) {
@@ -30,12 +30,14 @@ class VitalsMaster extends Component {
       general: true,
       display: true,
       record_status: "A",
+      mappedData: [],
+      mappingData: [],
     };
-    dps = [];
+    // dps = [];
     this.getVitalMasterHeader();
     this.getVitalMasterDetail();
     this.getDepartments();
-    this.getDepartmentVitalMap();
+    // this.getDepartmentVitalMap();
   }
 
   changeGridEditors(row, e) {
@@ -61,12 +63,28 @@ class VitalsMaster extends Component {
     }
 
     if (e.target.name === "mapped_vital") {
-      if (dps.includes(e.target.value)) {
-        dps.pop(e.target.value);
+      if (e.target.checked) {
+        this.setState({
+          mappingData: {
+            ...this.state.mappingData,
+            [e.target.value]: e.target.checked,
+          },
+        });
       } else {
-        dps.push(e.target.value);
+        let mapData = this.state.mappingData;
+
+        delete mapData[`${e.target.value}`];
+        this.setState({
+          mappingData: mapData,
+        });
       }
-      // console.log("Mapped Department:", dps);
+
+      // if (dps.includes(e.target.value)) {
+      //   dps.pop(e.target.value);
+      // } else {
+      //   dps.push(e.target.value);
+      // }
+      // // console.log("Mapped Department:", dps);
       return;
     }
     if (e.target.name === "isDecimal") {
@@ -95,8 +113,41 @@ class VitalsMaster extends Component {
   }
 
   dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value,
+    // dps = [];
+    if (value.name === "hims_d_sub_department_id") {
+      this.setState(
+        {
+          [value.name]: value.value,
+        },
+        () => {
+          this.getDepartmentVitalMap(value);
+        }
+      );
+    } else {
+      this.setState({
+        [value.name]: value.value,
+      });
+    }
+  }
+  getVitalMappingByDept(data) {
+    algaehApiCall({
+      uri: "/workBenchSetup/getVitalMappingByDept",
+      method: "get",
+      data: data,
+      onSuccess: (response) => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Vitals Mapped Successfully",
+            type: "success",
+          });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
     });
   }
 
@@ -142,21 +193,59 @@ class VitalsMaster extends Component {
         let send_data = {
           department_id: this.state.hims_d_sub_department_id,
         };
+        let keySMappingData = Object.keys(this.state.mappingData);
 
-        for (var i = 0; i < dps.length; i++) {
-          let myObj = { vital_header_id: dps[i] };
+        for (var i = 0; i < keySMappingData.length; i++) {
+          let myObj = { vital_header_id: keySMappingData[i] };
           vitals.push(myObj);
         }
 
-        send_data.vitals = vitals;
+        // for (var i = 0; i < dps.length; i++) {
+        //   let myObj = { vital_header_id: dps[i] };
+        //   vitals.push(myObj);
+        // }
+
         // console.log("send_Data_for_mapping:", send_data);
 
-        if (dps.length === 0) {
+        if (keySMappingData.length === 0) {
           swalMessage({
             title: "Please Select atleast one vital to add",
             type: "warning",
           });
         } else {
+          let filterMappedData = [];
+          let excludeArray = [];
+          if (this.state.mappedData.length > 0) {
+            for (let i = 0; i < this.state.mappedData.length; i++) {
+              filterMappedData = keySMappingData.filter(
+                (f) => f !== this.state.mappedData[i].hims_d_vitals_header_id
+              );
+              excludeArray = keySMappingData.filter(
+                (f) => f === this.state.mappedData[i].hims_d_vitals_header_id
+              );
+            }
+
+            if (filterMappedData.length === keySMappingData.length) {
+              send_data.vitals = vitals;
+            } else if (filterMappedData.length < keySMappingData.length) {
+              send_data.vitals = excludeArray;
+            }
+            if (excludeArray.length <= 0) {
+              send_data.deleteArray = this.state.mappedData;
+            } else if (excludeArray.length !== this.state.mappedData.length) {
+              let deleteRecord = [];
+              for (let i = 0; i < keySMappingData.length; i++) {
+                deleteRecord = keySMappingData.filter(
+                  (f) => f.hims_d_vitals_header_id !== keySMappingData[i]
+                );
+              }
+              send_data.deleteArray = deleteRecord;
+            }
+          } else {
+            send_data.vitals = vitals;
+            send_data.deleteArray = [];
+          }
+
           algaehApiCall({
             uri: "/workBenchSetup/addDepartmentVitalMap",
             method: "POST",
@@ -181,17 +270,52 @@ class VitalsMaster extends Component {
     });
   }
 
-  getDepartmentVitalMap() {
+  getDepartmentVitalMap(data) {
     algaehApiCall({
       uri: "/workBenchSetup/getDepartmentVitalMap",
       method: "GET",
+      data: {
+        department_id: data.value,
+      },
       onSuccess: (response) => {
         if (response.data.success) {
-          this.setState({
-            mappingData: response.data.records,
-          });
+          let mappingData = response.data.records;
+          // let vitals = this.state.nonGeneralVitals;
+          // vitals = vitals.filter((val) =>
+          //   mappingData.includes(val.hims_d_vitals_header_id)
+          // );
 
-          // console.log("Mapping Data:", response.data.records);
+          // this.setState({ mappingData: mappingData });
+          // if (mappingData.length > 0) {
+          //   let filteredData = [];
+          let mapData = {};
+          for (let i = 0; i < mappingData.length; i++) {
+            mapData[String(mappingData[i].hims_d_vitals_header_id)] = true;
+            // dps.push(mappingData[i].hims_d_vitals_header_id);
+            // // let filter = vitals.filter(
+            // //   (f) =>
+            // //     f.hims_d_vitals_header_id !==
+            // //     mappingData[i].hims_d_vitals_header_id
+            // // );
+            // // filteredData.push(filter);
+            // this.setState({
+            //   nonGeneralVitals: vitals,
+            // });
+            // }
+            //   this.setState({
+            //     nonGeneralVitalsVary: [...filteredData[0], mappingData[0]],
+            //   });
+            // } else {
+            //   this.setState({
+            //     nonGeneralVitalsVary: this.state.nonGeneralVitals,
+            //   });
+          }
+
+          this.setState({
+            mappingData: mapData,
+            mappedData: response.data.records,
+          });
+          // }
         }
       },
       onFailure: (error) => {
@@ -1002,27 +1126,52 @@ class VitalsMaster extends Component {
                 />
                 <div className="col-12">
                   <ul id="deptLit_Vitals">
-                    {this.state.nonGeneralVitals.map((row, index) => (
-                      <li key={index}>
-                        <span>
-                          <input
-                            id={row.hims_d_vitals_header_id}
-                            name="mapped_vital"
-                            value={row.hims_d_vitals_header_id}
-                            type="checkbox"
-                            onChange={this.changeChecks.bind(this)}
-                          />
-                        </span>
-                        <span htmlFor={row.hims_d_sub_department_id}>
-                          {row.vitals_name}
-                        </span>
-                      </li>
-                    ))}
+                    {this.state.nonGeneralVitals.map((row, index) => {
+                      return (
+                        <li key={index}>
+                          <span>
+                            <input
+                              id={row.hims_d_vitals_header_id}
+                              name="mapped_vital"
+                              value={row.hims_d_vitals_header_id}
+                              type="checkbox"
+                              checked={
+                                this.state.mappingData
+                                  ? this.state.mappingData[
+                                      String(row.hims_d_vitals_header_id)
+                                    ] === true
+                                    ? true
+                                    : false
+                                  : false
+                              }
+                              onChange={this.changeChecks.bind(this)}
+                            />
+                          </span>
+                          <span htmlFor={row.hims_d_sub_department_id}>
+                            {row.vitals_name}
+                          </span>
+                        </li>
+                      );
+                    })}
                   </ul>
                   <div style={{ marginTop: 5, float: "right" }}>
                     <button
                       className="btn btn-primary"
+                      onClick={() => {
+                        this.setState({
+                          hims_d_sub_department_id: "",
+                          mappingData: [],
+                        });
+                      }}
+                    >
+                      clear
+                    </button>
+                    <button
+                      className="btn btn-primary"
                       onClick={this.mapDeptandVital.bind(this)}
+                      disabled={
+                        this.state.mappingData?.length <= 0 ? true : false
+                      }
                     >
                       Assign
                     </button>

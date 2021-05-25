@@ -604,9 +604,25 @@ let addDepartmentVitalMap = (req, res, next) => {
   try {
     const _mysql = new algaehMysql();
     let input = extend({}, req.body);
-
+    console.log("input======================>", input);
     const insurtColumns = ["vital_header_id", "created_by", "updated_by"];
-
+    if (input.deleteArray.length > 0) {
+      for (let i = 0; i < input.deleteArray.length; i++) {
+        _mysql
+          .executeQuery({
+            query: `delete from hims_m_department_vital_mapping where hims_m_department_vital_mapping_id=?`,
+            values: [input.deleteArray[i].hims_m_department_vital_mapping_id],
+          })
+          .then((deleted) => {
+            _mysql.releaseConnection();
+            next();
+          })
+          .catch((error) => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      }
+    }
     _mysql
       .executeQuery({
         query:
@@ -638,19 +654,21 @@ let addDepartmentVitalMap = (req, res, next) => {
 
 //created by irfan: to
 let getDepartmentVitalMap = (req, res, next) => {
-  let selectWhere = {
-    hims_m_department_vital_mapping_id: "ALL",
-  };
+  // let selectWhere = {
+  //   hims_m_department_vital_mapping_id: "ALL",
+  // };
+  const input = req.query;
   try {
     const _mysql = new algaehMysql();
-    let where = whereCondition(extend(selectWhere, req.query));
+    // let where = whereCondition(extend(selectWhere, req.query));
     _mysql
       .executeQuery({
-        query:
-          "select hims_m_department_vital_mapping_id,department_id,vital_header_id FROM hims_m_department_vital_mapping where record_status='A' AND" +
-          where.condition +
-          " order by hims_m_department_vital_mapping_id desc",
-        values: where.values,
+        query: `SELECT VH.*,  hims_m_department_vital_mapping_id,department_id,vital_header_id FROM hims_m_department_vital_mapping VM
+         left join  hims_d_vitals_header VH on VM.vital_header_id=VH.hims_d_vitals_header_id
+              where VM.record_status='A' and department_id=?
+            order by hims_m_department_vital_mapping_id desc`,
+        values: [input.department_id],
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
