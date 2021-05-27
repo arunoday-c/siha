@@ -109,6 +109,7 @@ class NewInvestigation extends PureComponent {
             }}
             title={this.props.HeaderCaption}
             openPopup={this.props.open}
+            class={"investigationModalPopup"}
           >
             <div className="popupInner">
               <div className="col-12">

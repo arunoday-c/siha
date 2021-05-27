@@ -6,11 +6,11 @@ import { bindActionCreators } from "redux";
 import "./LabInvestigation.scss";
 import "./../../../styles/site.scss";
 import {
-  AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
   AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
+import { AlgaehDataGrid } from "algaeh-react-components";
 import {
   texthandle,
   containeridhandle,
@@ -322,45 +322,10 @@ class LabInvestigation extends Component {
                           editorTemplate: (row) => {
                             return <span>{row.analyte_description}</span>;
                           },
-                          // displayTemplate: (row) => {
-                          //   let display =
-                          //     this.props.labanalytes === undefined
-                          //       ? []
-                          //       : this.props.labanalytes.filter(
-                          //           (f) =>
-                          //             f.hims_d_lab_analytes_id ===
-                          //             row.analyte_id
-                          //         );
 
-                          //   return (
-                          //     <span>
-                          //       {display !== null && display.length !== 0
-                          //         ? display[0].description
-                          //         : ""}
-                          //     </span>
-                          //   );
-                          // },
-                          // editorTemplate: (row) => {
-                          //   let display =
-                          //     this.props.labanalytes === undefined
-                          //       ? []
-                          //       : this.props.labanalytes.filter(
-                          //           (f) =>
-                          //             f.hims_d_lab_analytes_id ===
-                          //             row.analyte_id
-                          //         );
-
-                          //   return (
-                          //     <span>
-                          //       {display !== null && display.length !== 0
-                          //         ? display[0].description
-                          //         : ""}
-                          //     </span>
-                          //   );
-                          // },
                           others: {
                             minWidth: 200,
-                            // style: { textAlign: "left" },
+                            style: { textAlign: "left" },
                           },
                         },
                         {
@@ -446,14 +411,10 @@ class LabInvestigation extends Component {
                         },
                       ]}
                       keyId="analyte_id"
-                      dataSource={{
-                        data: state.analytes,
-                      }}
+                      data={state.analytes === undefined ? [] : state.analytes}
+                      pagination={false}
+                      isFilterable={false}
                       isEditable={true}
-                      // actions={{
-                      //   allowEdit: false,
-                      // }}
-                      paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onDelete: this.deleteLabAnalyte,
                         onEdit: (row) => {},

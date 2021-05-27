@@ -33,12 +33,22 @@
   }
 }
 
-#analyte_grid {
-  .ReactTable {
-    max-height: 50vh !important;
-  }
-}
+// #analyte_grid {
+//   .ReactTable {
+//     max-height: 50vh !important;
+//   }
+// }
 .formulaGeneratorPopup {
   min-width: 70vw !important;
   max-width: 70vw !important;
+}
+#analyte_grid_cntr {
+  margin-top: 10px;
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 65vh;
+      max-height: 65vh;
+      overflow: auto;
+    }
+  }
 }
