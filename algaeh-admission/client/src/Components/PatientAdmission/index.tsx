@@ -1,12 +1,76 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Controller, useForm } from "react-hook-form";
 import "./PatientAdmission.scss";
 import BreadCrumb from "../BreadCrumb/BreadCrumb.js";
 import {
   AlgaehLabel,
-  AlgaehAutoComplete,
+  algaehAxios,
+  AlgaehMessagePop,
+  AlgaehTreeSearch,
   // MainContext,
 } from "algaeh-react-components";
+import InsuranceDetails from "./insuranceDetails";
+import BedDetails from "./bedDetails";
+import BedManagement from "../BedManagement";
+
 export default function PatientAdmission(props: any) {
+  const [admission_type, setAdmissionType] = useState<any>("D");
+  const [patient_details, setPatientDetails] = useState<any>({});
+  const [doctor_data, setDoctorData] = useState<Array<any>>([]);
+
+  const [sub_department_id, setSubDepartment] = useState<any>(undefined);
+  const [doctor_id, setDoctor] = useState<any>(undefined);
+  const [service_info, setServiceInfo] = useState<any>(undefined);
+  const [isInsurance, setIsInsurance] = useState(false);
+  const insuranceImgFront = useRef(null);
+  const insuranceImgBack = useRef(null);
+
+  const {
+    control,
+    errors,
+    trigger,
+    setValue,
+    clearErrors,
+    reset,
+    handleSubmit,
+  } = useForm({
+    shouldFocusError: true,
+    defaultValues: {
+      ward_desc: "",
+      ward_short_name: "",
+      ward_type: null,
+    },
+  });
+
+  const getClinicalDoctors = async () => {
+    debugger;
+    const { response, error } = await algaehAxios(
+      "/frontDesk/getDoctorAndDepartment",
+      {
+        module: "frontDesk",
+        method: "GET",
+      }
+    );
+    debugger;
+    if (error) {
+      if (error.show === true) {
+        let extendedError: Error | any = error;
+        AlgaehMessagePop({
+          display: extendedError.response.data.message,
+          type: "error",
+        });
+        throw error;
+      }
+    }
+    if (response.data.success) {
+      setDoctorData(response.data.records);
+    }
+  };
+
+  useEffect(() => {
+    getClinicalDoctors();
+  }, []);
+
   return (
     <div className="PatientAdmissionScreen">
       <BreadCrumb
@@ -62,6 +126,36 @@ export default function PatientAdmission(props: any) {
       >
         {/* Patient code */}
 
+        {/* <div className="col-5">
+          <label>Load By</label>
+          <div className="customRadio">
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="C"
+                name="rcmMode"
+                checked={admission_type === "C" ? true : false}
+                onChange={() => {
+                  setAdmissionType("D");
+                }}
+              />
+              <span>Day Care</span>
+            </label>
+
+            <label className="radio inline">
+              <input
+                type="radio"
+                value="S"
+                name="rcmMode"
+                checked={admission_type === "I" ? true : false}
+                onChange={() => {
+                  setAdmissionType("I");
+                }}
+              />
+              <span>IP</span>
+            </label>            
+          </div>
+        </div> */}
         <div
           className="col-2 globalSearchCntr"
           style={{
@@ -88,33 +182,15 @@ export default function PatientAdmission(props: any) {
 
         <div className="col-10">
           <div className="row">
-            <AlgaehAutoComplete
-              div={{ className: "col-2 mandatory" }}
-              label={{
-                fieldName: "select_visit",
-                isImp: true,
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                autoComplete: "off",
-                value: "",
-                dataSource: {
-                  textField: "visit_code",
-                  valueField: "",
-                  data: [],
-                },
-                // others: { disabled: this.state.Billexists },
-                // onChange: selectVisit.bind(this, this, context),
-              }}
-            />
             <div className="col-3">
               <AlgaehLabel
                 label={{
                   fieldName: "full_name",
                 }}
               />
-              <h6>Mathew Varghees</h6>
+              <h6>
+                {patient_details ? patient_details.patient_name : "--------"}
+              </h6>
             </div>
 
             <div className="col-2">
@@ -123,11 +199,64 @@ export default function PatientAdmission(props: any) {
                   fieldName: "patient_type",
                 }}
               />
-              <h6>Insurance</h6>
+              <h6>
+                {patient_details ? patient_details.patient_type : "--------"}
+              </h6>
             </div>
+            <Controller
+              control={control}
+              name="doctor"
+              rules={{ required: "Please Select a doctor" }}
+              render={({ onChange, value }) => (
+                <AlgaehTreeSearch
+                  div={{ className: "col mandatory" }}
+                  label={{
+                    fieldName: "doctor_id",
+                    isImp: true,
+                    align: "ltr",
+                  }}
+                  error={errors}
+                  tree={{
+                    disableHeader: true,
+                    treeDefaultExpandAll: true,
+                    onChange: (selected: any) => {
+                      if (selected) {
+                        setServiceInfo(selected);
+                      } else {
+                        setServiceInfo(null);
+                      }
+                      onChange(selected);
+                    },
+                    value,
+                    name: "doctor",
+                    data: doctor_data,
+                    textField: "label",
+                    valueField: (node: any) => {
+                      if (node?.sub_department_id) {
+                        return `${node?.sub_department_id}-${node?.services_id}-${node?.value}-${node?.department_type}-${node?.department_id}-${node?.service_type_id}`;
+                      } else {
+                        return node?.value;
+                      }
+                    },
+                  }}
+                />
+              )}
+            />
           </div>
         </div>
       </div>
+      <InsuranceDetails
+        isInsurance={isInsurance}
+        setIsInsurance={setIsInsurance}
+        control={control}
+        trigger={trigger}
+        errors={errors}
+        clearErrors={clearErrors}
+        setValue={setValue}
+        insuranceImgFront={insuranceImgFront}
+        insuranceImgBack={insuranceImgBack}
+      />
+      <BedDetails useState={useState} />
     </div>
   );
 }
