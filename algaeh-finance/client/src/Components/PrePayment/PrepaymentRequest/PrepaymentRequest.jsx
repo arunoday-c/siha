@@ -51,9 +51,8 @@ export function PrepaymentRequest() {
   // const [identity_no, setEmployeeIDNum] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(baseState);
 
-  const { branchAndCenters, prePaymentTypes, employees } = useContext(
-    PrePaymentContext
-  );
+  const { branchAndCenters, prePaymentTypes, employees } =
+    useContext(PrePaymentContext);
 
   useEffect(() => {
     getRequest().then(() => {
@@ -1141,7 +1140,6 @@ export function PrepaymentRequest() {
           setVisible(false);
           setReq_code("");
         }}
-        className=""
         className={`algaehNewModal preAttachmentModal`}
       >
         <div className="col-12 popupInner margin-top-15">
