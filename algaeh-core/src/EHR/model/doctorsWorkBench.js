@@ -3068,6 +3068,73 @@ let addReferalDoctor = (req, res, next) => {
     next(e);
   }
 };
+let updatePatientReferral = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_f_patient_referral` SET  `sub_department_id`=?,\
+        `doctor_id`=?, `hospital_name`=?, `reason`=?, `hospital_id`=?, `external_doc_name`=?,\
+        `updated_date`=?, `updated_by`=? WHERE `hims_f_patient_referral_id`=?;",
+        values: [
+          input.sub_department_id,
+          input.doctor_id,
+          input.hospital_name,
+          input.reason,
+          input.hospital_id,
+          input.external_doc_name,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+
+          input.hims_f_patient_referral_id,
+        ],
+        // printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+let deletePatientReferral = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let inputParam = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "DELETE FROM  `hims_f_patient_referral`  WHERE `hims_f_patient_referral_id`=?;",
+        values: [inputParam.hims_f_patient_referral_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 let getPatientReferralDoc = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
@@ -3441,7 +3508,7 @@ let getFollowUp = (req, res, next) => {
   try {
     let inputData = req.query;
     let strQuery =
-      "SELECT p.patient_code,p.full_name,PF.followup_status,PF.visit_id,PF.reason,PF.followup_type,PF.followup_date, p.registration_date,p.gender,p.date_of_birth,p.contact_number, \
+      "SELECT p.patient_code,p.full_name,PF.followup_status,PF.visit_id,PF.reason,PF.him_f_patient_followup_id,PF.followup_type,PF.followup_date, p.registration_date,p.gender,p.date_of_birth,p.contact_number, \
       E.full_name as employee_name, SD.sub_department_name FROM hims_f_patient_followup PF, \
       hims_f_patient p, hims_d_sub_department SD , hims_d_employee E where PF.patient_id = p.hims_d_patient_id \
       and SD.hims_d_sub_department_id=PF.sub_department_id and E.hims_d_employee_id=PF.doctor_id ";
@@ -3593,6 +3660,33 @@ let updateSameFollowUp = (req, res, next) => {
     next(error);
   }
 };
+let deleteFollowUp = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let inputParam = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "DELETE FROM  `hims_f_patient_followup`  WHERE `him_f_patient_followup_id`=?;",
+        values: [inputParam.him_f_patient_followup_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 //created by irfan: to get
 let getPatientEpisodeSummary = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -4213,4 +4307,7 @@ export default {
   getPatientCount,
   getAllPatientFollowUpDash,
   getDoctorDashboardData,
+  updatePatientReferral,
+  deletePatientReferral,
+  deleteFollowUp,
 };

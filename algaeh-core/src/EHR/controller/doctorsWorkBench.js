@@ -93,6 +93,9 @@ const {
   getPatientCount,
   getAllPatientFollowUpDash,
   getDoctorDashboardData,
+  updatePatientReferral,
+  deletePatientReferral,
+  deleteFollowUp,
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -364,6 +367,20 @@ export default () => {
     },
     releaseConnection
   );
+  api.put(
+    "/updatePatientReferral",
+    updatePatientReferral,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
   // created by irfan : add Allergy
   api.post("/addAllergy", addAllergy, (req, res, next) => {
     let result = req.records;
@@ -429,6 +446,27 @@ export default () => {
     });
     next();
   });
+  api.delete("/deleteFollowUp", deleteFollowUp, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.delete(
+    "/deletePatientReferral",
+    deletePatientReferral,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
+
   api.get(
     "/getNphies",
     getNphies,
