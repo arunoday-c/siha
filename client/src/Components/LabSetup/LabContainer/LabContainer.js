@@ -99,6 +99,9 @@ class LabContainer extends Component {
               events: {
                 onChange: changeTexts.bind(this, this),
               },
+              others: {
+                type: "number",
+              },
             }}
           />
           <AlagehFormGroup
@@ -205,6 +208,9 @@ class LabContainer extends Component {
                               name: "container_id",
                               events: {
                                 onChange: onchangegridcol.bind(this, this, row),
+                              },
+                              others: {
+                                type: "number",
                               },
                             }}
                           />
