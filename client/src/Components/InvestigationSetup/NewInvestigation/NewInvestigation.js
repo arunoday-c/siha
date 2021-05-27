@@ -160,7 +160,7 @@ class NewInvestigation extends PureComponent {
                           },
                         }}
                       />
-                      <div className="col-6 globalSearchCntr">
+                      <div className="col-12 globalSearchCntr">
                         <AlgaehLabel
                           label={{ fieldName: "services_id", isImp: true }}
                         />
@@ -195,6 +195,24 @@ class NewInvestigation extends PureComponent {
                           },
                         }}
                       /> */}
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          forceLabel: "Test Code",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "test_code",
+                          value: this.state.test_code,
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            tabIndex: "3",
+                          },
+                        }}
+                      />
                       <AlagehAutoComplete
                         div={{ className: "col-6 mandatory form-group" }}
                         label={{
@@ -251,24 +269,7 @@ class NewInvestigation extends PureComponent {
                           style={{ marginTop: 25, fontSize: "1.4rem" }}
                         />
                       </div> */}
-                      <AlagehFormGroup
-                        div={{ className: "col-6 form-group" }}
-                        label={{
-                          forceLabel: "Test Code",
-                          isImp: false,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "test_code",
-                          value: this.state.test_code,
-                          events: {
-                            onChange: texthandle.bind(this, this),
-                          },
-                          others: {
-                            tabIndex: "2",
-                          },
-                        }}
-                      />
+
                       {/*<AlagehAutoComplete
                     div={{ className: "col-lg-2" }}
                     label={{
