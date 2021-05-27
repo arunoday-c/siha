@@ -415,9 +415,13 @@ class LabInvestigation extends Component {
                       pagination={false}
                       isFilterable={false}
                       isEditable={true}
+                      isDraggableRow={true}
                       events={{
                         onDelete: this.deleteLabAnalyte,
                         onEdit: (row) => {},
+                        onDrop: (dat) => {
+                          console.log("dat====>", dat);
+                        },
                         // onDone: this.updateLabInvestigation,
                         onDone: this.updateAnalyteGroup,
                       }}
