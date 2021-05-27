@@ -102,8 +102,7 @@ const getMainOrganization = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: `SELECT hims_d_organization_id,product_type,organization_name,business_registration_number,
-        fiscal_period,fiscal_quarters,tax_number,country_id,hims_d_organization.email,phone1,phone2,fax,address1,address2,hims_d_head_of_organization_id,hims_d_employee.full_name FROM hims_d_organization LEFT JOIN hims_d_employee ON hims_d_organization.hims_d_head_of_organization_id = hims_d_employee.hims_d_employee_id where hims_d_organization.record_status='A' limit 1;`,
+        query: `SELECT hims_d_organization.*, hims_d_employee.full_name FROM hims_d_organization LEFT JOIN hims_d_employee ON hims_d_organization.hims_d_head_of_organization_id = hims_d_employee.hims_d_employee_id where hims_d_organization.record_status='A' limit 1;`,
         printQuery: true,
       })
       .then((result) => {
@@ -126,12 +125,14 @@ const updateOrganization = (req, res, next) => {
     hims_d_organization_id,
     product_type,
     organization_name,
+    legal_name,
     business_registration_number,
     fiscal_period,
     fiscal_quarters,
     tax_number,
     country_id,
     phone1,
+    phone2,
     email,
     address1,
     address2,
@@ -145,16 +146,18 @@ const updateOrganization = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: `update hims_d_organization set organization_name=?,business_registration_number=?,
-        fiscal_period=?,fiscal_quarters=?,tax_number=?,country_id=?,phone1=?,email=?,address1=?,address2=?,hims_d_head_of_organization_id=? ${updateProduct} where hims_d_organization_id=?`,
+        query: `update hims_d_organization set organization_name=?,legal_name=?,business_registration_number=?,
+        fiscal_period=?,fiscal_quarters=?,tax_number=?,country_id=?,phone1=?,phone2=?,email=?,address1=?,address2=?,hims_d_head_of_organization_id=? ${updateProduct} where hims_d_organization_id=?`,
         values: [
           organization_name,
+          legal_name,
           business_registration_number,
           fiscal_period,
           fiscal_quarters,
           tax_number,
           country_id,
           phone1,
+          phone2,
           email,
           address1,
           address2,

@@ -76,20 +76,24 @@ export function Organization(props) {
   }, []);
 
   const {
-    hims_d_organization_id,
-    organization_name,
-    business_registration_number,
-    tax_number,
     product_type,
-    fiscal_period,
-    fiscal_quarters,
+    hims_d_organization_id,
     country_id,
     email,
+    // website,
+    organization_name,
+    legal_name,
     phone1,
+    phone2,
     address1,
     address2,
-    // hims_d_head_of_organization_id,
     full_name,
+    business_registration_number,
+    tax_number,
+    fiscal_period,
+    fiscal_quarters,
+
+    // hims_d_head_of_organization_id,
   } = organisation;
 
   function onChangeHandler(e, val, nme) {
@@ -289,33 +293,6 @@ export function Organization(props) {
                       onClear: onClearHandler,
                     }}
                   />{" "}
-                  <div className="col-3 globalSearchCntr mandatory">
-                    <AlgaehLabel
-                      label={{ forceLabel: "Head of Organisation" }}
-                    />
-                    <h6 onClick={employeeSearch}>
-                      {fullName ? fullName : full_name}
-                      <i className="fas fa-search fa-lg"></i>
-                    </h6>
-                  </div>
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-3 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Business Reg. Name",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "organization_name",
-                      type: "text",
-                      className: "txt-fld",
-                      placeholder: "Business Reg. Name",
-                      value: organization_name,
-                      onChange: onChangeHandler,
-                      disabled: disabledEdits,
-                    }}
-                  />
                   <AlgaehFormGroup
                     div={{
                       className: "col-3 form-group mandatory",
@@ -333,6 +310,164 @@ export function Organization(props) {
                       onChange: onChangeHandler,
                     }}
                   />
+                  <AlgaehAutoComplete
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{ forceLabel: "Default Country", isImp: true }}
+                    selector={{
+                      name: "country_id",
+                      dataSource: {
+                        data: countryMaster,
+                        valueField: "hims_d_country_id",
+                        textField: "country_name",
+                      },
+                      value: country_id || undefined,
+
+                      onChange: onChangeHandler,
+
+                      onClear: onClearHandler,
+                    }}
+                  />{" "}
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-3 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Offical Email Address",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "email",
+                      type: "email",
+                      className: "txt-fld",
+                      value: email,
+                      onChange: onChangeHandler,
+                    }}
+                  />{" "}
+                  {/* <AlgaehFormGroup
+                    div={{
+                      className: "col-3 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Offical Website Address",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "website",
+                      type: "text",
+                      className: "txt-fld",
+                      value: website,
+                      onChange: onChangeHandler,
+                    }}
+                  /> */}
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-3 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Business Reg. Name",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "organization_name",
+                      type: "text",
+                      className: "txt-fld",
+                      placeholder: "Business Reg. Name",
+                      value: organization_name,
+                      onChange: onChangeHandler,
+                      disabled: disabledEdits,
+                    }}
+                  />{" "}
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-3 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Contact No.",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "phone1",
+                      type: "number",
+                      className: "txt-fld",
+                      value: phone1,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-3 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Business Reg. Name (Arabic)",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "legal_name",
+                      type: "text",
+                      className: "txt-fld-ara",
+                      placeholder: "Business Reg. Name (Arabic)",
+                      value: legal_name,
+                      onChange: onChangeHandler,
+                      disabled: disabledEdits,
+                    }}
+                  />{" "}
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-3 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Contact No. (Arabic)",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "phone2",
+                      type: "text",
+                      className: "txt-fld-ara",
+                      value: phone2,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-6 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Full Address",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "address1",
+                      type: "text",
+                      className: "txt-fld",
+                      value: address1,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-6 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Full Address (Arabic)",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "address2",
+                      type: "text",
+                      className: "txt-fld-ara",
+                      value: address2,
+                      onChange: onChangeHandler,
+                    }}
+                  />{" "}
+                  <div className="col-3 globalSearchCntr mandatory">
+                    <AlgaehLabel
+                      label={{ forceLabel: "Head of Organisation" }}
+                    />
+                    <h6 onClick={employeeSearch}>
+                      {fullName ? fullName : full_name}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
                   <AlgaehFormGroup
                     div={{
                       className: "col-3 form-group mandatory",
@@ -390,87 +525,6 @@ export function Organization(props) {
                       onClear: onClearHandler,
                     }}
                   />
-                  <AlgaehAutoComplete
-                    div={{ className: "col-3 form-group mandatory" }}
-                    label={{ forceLabel: "Default Country", isImp: true }}
-                    selector={{
-                      name: "country_id",
-                      dataSource: {
-                        data: countryMaster,
-                        valueField: "hims_d_country_id",
-                        textField: "country_name",
-                      },
-                      value: country_id || undefined,
-
-                      onChange: onChangeHandler,
-
-                      onClear: onClearHandler,
-                    }}
-                  />{" "}
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-3 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Email",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "email",
-                      type: "text",
-                      className: "txt-fld",
-                      value: email,
-                      onChange: onChangeHandler,
-                    }}
-                  />
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-3 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Phone",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "phone1",
-                      type: "text",
-                      className: "txt-fld",
-                      value: phone1,
-                      onChange: onChangeHandler,
-                    }}
-                  />
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-3 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Address Line 1",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "address1",
-                      type: "text",
-                      className: "txt-fld",
-                      value: address1,
-                      onChange: onChangeHandler,
-                    }}
-                  />
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-3 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Address Line 2",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "address2",
-                      type: "text",
-                      className: "txt-fld",
-                      value: address2,
-                      onChange: onChangeHandler,
-                    }}
-                  />{" "}
                   <div className="col-12">
                     <AlgaehButton
                       className="btn btn-primary"
