@@ -119,7 +119,7 @@ class Referal extends PureComponent {
                 { fieldName: "sub_department_name" },
                 { fieldName: "hospital_name" },
               ]}
-              displayField="doctor_department"
+              displayField="full_name"
               value={this.state.doctor_department}
               template={(row) => {
                 return (
@@ -218,7 +218,7 @@ class Referal extends PureComponent {
               className="btn btn-primary btn-sm"
               onClick={addReferal.bind(this, this)}
             >
-              Add to List
+              {this.state.hims_f_patient_referral_id ? "Update" : "Add to List"}
             </button>
           </div>
         </div>
@@ -298,6 +298,11 @@ class Referal extends PureComponent {
           /> */}
           {
             <ReferralDataGrid
+              setState={(obje, func) => {
+                this.setState({ ...obje }, () => {
+                  if (typeof func === "function") func(this.state);
+                });
+              }}
               // referralData={this.state.referralData}
               patient_id={current_patient}
               changed={this.state.changed}

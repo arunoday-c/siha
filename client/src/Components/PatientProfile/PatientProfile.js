@@ -254,6 +254,13 @@ class PatientProfile extends Component {
         data: [],
       },
     });
+    this.props.getPatientVitals({
+      redux: {
+        type: "PATIENT_VITALS",
+        mappingName: "patient_vitals",
+        data: [],
+      },
+    });
   }
 
   UNSAFE_componentWillReceiveProps(props) {

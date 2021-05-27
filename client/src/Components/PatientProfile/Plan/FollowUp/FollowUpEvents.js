@@ -124,7 +124,20 @@ const updateSameFollowUp = ($this) => {
             title: "Updated Succesfully...",
             type: "success",
           });
-          getPatientFollowUps($this);
+          $this.setState(
+            {
+              followup_comments: null,
+              followup_type: "OP",
+              followup_days: 0,
+              followup_date: null,
+              radioOP: true,
+              radioIP: false,
+              updateFollowUp: false,
+            },
+            () => {
+              getPatientFollowUps($this);
+            }
+          );
         }
       },
       onFailure: (error) => {

@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
+// import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import { AlgaehTable, AlgaehLabel } from "algaeh-react-components";
 import {
   AlagehFormGroup,
@@ -11,7 +11,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import "./FollowUp.scss";
 import "../../../../styles/site.scss";
-
+import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import {
   texthandle,
   addFollowUp,
@@ -21,7 +21,7 @@ import {
   getPatientFollowUps,
   updateSameFollowUp,
 } from "./FollowUpEvents";
-
+import swal from "sweetalert2";
 class FollowUp extends Component {
   constructor(props) {
     super(props);
@@ -39,41 +39,75 @@ class FollowUp extends Component {
     };
   }
   componentDidMount() {
-    const { visit_id } = Window.global;
-    algaehApiCall({
-      uri: "/doctorsWorkBench/checkFollowUPofVisit",
-      method: "GET",
-      data: { visit_id: visit_id },
-      onSuccess: (response) => {
-        if (response.data.success) {
-          const data = response.data.records;
-          if (data.length > 0) {
-            this.setState(
-              {
-                followup_comments: data[0].reason,
-                followup_type: data[0].followup_type,
-                // followup_days: 0,
-                him_f_patient_followup_id: data[0].him_f_patient_followup_id,
-                updateFollowUp: true,
-                followup_date: data[0].followup_date,
-                radioOP: data[0].followup_type === "OP" ? true : false,
-                radioIP: data[0].followup_type === "IP" ? true : false,
-              },
-              () => {
-                getPatientFollowUps(this);
-              }
-            );
-          }
-        } else {
-          getPatientFollowUps(this);
-        }
-      },
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
+    // const { visit_id } = Window.global;
+    // algaehApiCall({
+    //   uri: "/doctorsWorkBench/checkFollowUPofVisit",
+    //   method: "GET",
+    //   data: { visit_id: visit_id },
+    //   onSuccess: (response) => {
+    //     if (response.data.success) {
+    //       const data = response.data.records;
+    //       if (data.length > 0) {
+    //         this.setState(
+    //           {
+    //             followup_comments: data[0].reason,
+    //             followup_type: data[0].followup_type,
+    //             // followup_days: 0,
+    //             him_f_patient_followup_id: data[0].him_f_patient_followup_id,
+    //             updateFollowUp: true,
+    //             followup_date: data[0].followup_date,
+    //             radioOP: data[0].followup_type === "OP" ? true : false,
+    //             radioIP: data[0].followup_type === "IP" ? true : false,
+    //           },
+    //           () => {
+    //         getPatientFollowUps(this);
+    //       }
+    //     );
+    //   }
+    // } else {
+    getPatientFollowUps(this);
+    // }
+    //   },
+    //   onFailure: (error) => {
+    //     swalMessage({
+    //       title: error.message,
+    //       type: "error",
+    //     });
+    //   },
+    // });
+  }
+  deleteFollowUp(row) {
+    swal({
+      title: "Are you Sure you want to Delete FollowUp?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willUpdate) => {
+      if (willUpdate.value) {
+        algaehApiCall({
+          uri: "/doctorsWorkBench/deleteFollowUp",
+          method: "Delete",
+          data: { him_f_patient_followup_id: row.him_f_patient_followup_id },
+          onSuccess: (response) => {
+            if (response.data.success) {
+              getPatientFollowUps(this);
+              swalMessage({
+                title: "Deleted Succesfully...",
+                type: "success",
+              });
+            }
+          },
+          onFailure: (error) => {
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
         });
-      },
+      }
     });
   }
   // componentWillUnmount() {
@@ -183,6 +217,43 @@ class FollowUp extends Component {
           <AlgaehTable
             columns={[
               {
+                fieldName: "Actions",
+                label: <AlgaehLabel label={{ fieldName: "Action" }} />,
+                sortable: true,
+                displayTemplate: (row) => {
+                  return (
+                    <>
+                      <i
+                        className="fas fa-pen"
+                        onClick={() => {
+                          this.setState({
+                            followup_comments: row.reason,
+                            followup_type: row.followup_type,
+                            // followup_days: 0,
+                            him_f_patient_followup_id:
+                              row.him_f_patient_followup_id,
+                            updateFollowUp: true,
+                            followup_date: row.followup_date,
+                            radioOP: row.followup_type === "OP" ? true : false,
+                            radioIP: row.followup_type === "IP" ? true : false,
+                          });
+                        }}
+                      >
+                        {" "}
+                      </i>
+                      <i
+                        className="fas fa-trash"
+                        onClick={() => {
+                          this.deleteFollowUp(row);
+                        }}
+                      >
+                        {" "}
+                      </i>
+                    </>
+                  );
+                },
+              },
+              {
                 fieldName: "followup_type",
                 label: <AlgaehLabel label={{ fieldName: "Type" }} />,
                 sortable: true,
@@ -192,6 +263,7 @@ class FollowUp extends Component {
                     : "IP Patient";
                 },
               },
+
               {
                 fieldName: "reason",
                 label: <AlgaehLabel label={{ fieldName: "Reason" }} />,

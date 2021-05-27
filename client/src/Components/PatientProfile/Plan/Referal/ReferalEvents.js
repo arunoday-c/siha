@@ -40,43 +40,85 @@ const addReferal = ($this) => {
           reason: $this.state.reason,
           external_doc_name: $this.state.external_doc_name,
           visit_id: visit_id,
+          hims_f_patient_referral_id: $this.state.hims_f_patient_referral_id,
         };
-        algaehApiCall({
-          uri: "/doctorsWorkBench/addReferalDoctor",
-          data: inputObj,
-          method: "POST",
-          onSuccess: (response) => {
-            if (response.data.success) {
-              successfulMessage({
-                message: "Added Succesfully...",
-                title: "Success",
-                icon: "success",
-              });
-            }
-
-            $this.setState(
-              {
-                doctor_id: undefined,
-                sub_department_id: undefined,
-                hospital_name: "",
-                reason: "",
-                external_doc_name: "",
-                doctor_department: "",
-                changed: true,
+        if ($this.state.hims_f_patient_referral_id) {
+          algaehApiCall({
+            uri: "/doctorsWorkBench/updatePatientReferral",
+            data: inputObj,
+            method: "PUT",
+            onSuccess: (response) => {
+              if (response.data.success) {
+                successfulMessage({
+                  message: "Updated Succesfully...",
+                  title: "Success",
+                  icon: "success",
+                });
               }
-              // () => {
-              //   $this.getPatientReferralDoc();
-              // }
-            );
-          },
-          onFailure: (error) => {
-            successfulMessage({
-              message: error.message,
-              title: "Error",
-              icon: "error",
-            });
-          },
-        });
+
+              $this.setState(
+                {
+                  doctor_id: undefined,
+                  sub_department_id: undefined,
+                  hospital_name: "",
+                  reason: "",
+                  external_doc_name: "",
+                  doctor_department: "",
+                  changed: true,
+                  hims_f_patient_referral_id: "",
+                  referral_type: "I",
+                }
+                // () => {
+                //   $this.getPatientReferralDoc();
+                // }
+              );
+            },
+            onFailure: (error) => {
+              successfulMessage({
+                message: error.message,
+                title: "Error",
+                icon: "error",
+              });
+            },
+          });
+        } else {
+          algaehApiCall({
+            uri: "/doctorsWorkBench/addReferalDoctor",
+            data: inputObj,
+            method: "POST",
+            onSuccess: (response) => {
+              if (response.data.success) {
+                successfulMessage({
+                  message: "Added Succesfully...",
+                  title: "Success",
+                  icon: "success",
+                });
+              }
+
+              $this.setState(
+                {
+                  doctor_id: undefined,
+                  sub_department_id: undefined,
+                  hospital_name: "",
+                  reason: "",
+                  external_doc_name: "",
+                  doctor_department: "",
+                  changed: true,
+                }
+                // () => {
+                //   $this.getPatientReferralDoc();
+                // }
+              );
+            },
+            onFailure: (error) => {
+              successfulMessage({
+                message: error.message,
+                title: "Error",
+                icon: "error",
+              });
+            },
+          });
+        }
       }
     },
   });

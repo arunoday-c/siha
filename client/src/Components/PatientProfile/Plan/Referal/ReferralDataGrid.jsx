@@ -4,8 +4,7 @@ import { AlgaehLabel, AlgaehDataGrid } from "algaeh-react-components";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
-function ReferralDataGrid({ patient_id, changed }) {
-  debugger;
+function ReferralDataGrid({ patient_id, changed, setState }) {
   const [referralData, setReferralData] = useState([]);
   useEffect(() => {
     getPatientReferralDoc();
@@ -92,10 +91,30 @@ function ReferralDataGrid({ patient_id, changed }) {
             label: <AlgaehLabel label={{ fieldName: "Action" }} />,
             displayTemplate: (row) => {
               return (
-                <i
-                  className="fas fa-print"
-                  onClick={() => printReferral(row)}
-                ></i>
+                <>
+                  <i
+                    className="fas fa-pen"
+                    onClick={() => {
+                      debugger;
+                      setState({
+                        sub_department_id: row.sub_department_id,
+                        doctor_id: row.doctor_id,
+                        hospital_name: row.hospital_name,
+                        doctor_department: row.doctor_name,
+                        reason: row.reason,
+                        hims_f_patient_referral_id:
+                          row.hims_f_patient_referral_id,
+                        referral_type: row.referral_type,
+                        radio: row.referral_type === "I" ? true : false,
+                        external_doc_name: row.external_doc_name,
+                      });
+                    }}
+                  ></i>
+                  <i
+                    className="fas fa-print"
+                    onClick={() => printReferral(row)}
+                  ></i>
+                </>
               );
             },
             others: {
