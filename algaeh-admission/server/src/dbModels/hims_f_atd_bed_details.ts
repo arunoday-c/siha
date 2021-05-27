@@ -1,0 +1,224 @@
+import { DataTypes, Model } from "sequelize";
+import db from "../connection";
+import { dateConversions, userDetails } from "./common";
+// import hims_d_services from "./hims_d_services";
+// import hims_adm_ward_detail from "./hims_adm_ward_detail";
+
+class hims_f_atd_bed_details extends Model {}
+hims_f_atd_bed_details.init(
+  {
+    hims_f_atd_bed_details_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    admission_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    patient_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    doctor_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    service_type_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    services_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    ward_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    bed_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    insurance_yesno: {
+      type: DataTypes.ENUM("N", "Y"),
+      defaultValue: "N",
+    },
+
+    insurance_provider_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    insurance_sub_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    network_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    insurance_network_office_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    policy_number: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    pre_approval: {
+      type: DataTypes.ENUM("N", "Y"),
+      defaultValue: "N",
+    },
+    apprv_status: {
+      type: DataTypes.ENUM("NR", "RE", "AP", "RJ"),
+      defaultValue: "N",
+    },
+    billed: {
+      type: DataTypes.ENUM("N", "Y"),
+      defaultValue: "N",
+    },
+    quantity: {
+      type: DataTypes.ENUM("N", "Y"),
+      defaultValue: "N",
+    },
+
+    unit_cost: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    gross_amount: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    discount_amout: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    discount_percentage: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    net_amout: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    copay_percentage: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    copay_amount: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    deductable_amount: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    deductable_percentage: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    tax_inclusive: {
+      type: DataTypes.ENUM("N", "Y"),
+      defaultValue: "N",
+    },
+    patient_resp: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    comapany_resp: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    patient_tax: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    company_tax: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    patient_payable: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    company_payble: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    total_tax: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    total_amount: {
+      type: DataTypes.FLOAT(10, 3),
+      allowNull: true,
+    },
+    hospital_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+
+    ...userDetails,
+  },
+  {
+    tableName: "hims_f_atd_bed_details",
+    sequelize: db,
+    ...dateConversions,
+  }
+);
+(async () => {
+  await hims_f_atd_bed_details.sync({
+    alter: true,
+  });
+})();
+export default hims_f_atd_bed_details;

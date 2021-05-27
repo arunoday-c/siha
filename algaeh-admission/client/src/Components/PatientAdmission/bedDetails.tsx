@@ -1,0 +1,89 @@
+import React, { useState } from "react";
+import { Tabs, AlgaehLabel } from "algaeh-react-components";
+const { TabPane } = Tabs;
+
+// const getPatientInsurance = async (key, { patient_id }) => {
+//   const res = await newAlgaehApi({
+//     uri: "/patientRegistration/getPatientInsurance",
+//     module: "frontDesk",
+//     data: { patient_id },
+//     method: "GET",
+//   });
+//   return res?.data?.records;
+// };
+
+export default function bedDetails(props: any) {
+  const [bed_details, setBedDetails] = useState({});
+
+  return (
+    <div className="hptl-phase1-insurance-details margin-top-15">
+      <div className="insurance-section">
+        <Tabs type="card">
+          <TabPane
+            tab={
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Bed Details",
+                }}
+              />
+            }
+            key="insuranceForm"
+          >
+            <div className="htpl-phase1-primary-insurance-form">
+              <div className="col-12">
+                <div className="row">
+                  <div className="col-lg-8 primary-details">
+                    <div className="row primary-box-container">
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Bed Name",
+                          }}
+                        />
+                        <h6>
+                          {bed_details ? bed_details.patient_name : "--------"}
+                        </h6>
+                      </div>
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Ward Name",
+                          }}
+                        />
+                        <h6>
+                          {bed_details ? bed_details.patient_name : "--------"}
+                        </h6>
+                      </div>
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Bed No.",
+                          }}
+                        />
+                        <h6>
+                          {bed_details ? bed_details.patient_name : "--------"}
+                        </h6>
+                      </div>
+
+                      <div
+                        className="col-1"
+                        style={{ paddingRight: 0, marginTop: 20 }}
+                      >
+                        <button
+                          type="button"
+                          className="btn btn-primary btn-rounded"
+                        >
+                          <i className="fas fa-plus" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabPane>
+        </Tabs>
+      </div>
+    </div>
+  );
+}
