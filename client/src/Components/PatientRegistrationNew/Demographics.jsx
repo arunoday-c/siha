@@ -111,12 +111,8 @@ export function Demographics({
       cacheTime: Infinity,
     }
   );
-  const {
-    visaTypes,
-    patientTypes,
-    identities,
-    referringInstitutes,
-  } = dropdownData;
+  const { visaTypes, patientTypes, identities, referringInstitutes } =
+    dropdownData;
   // const requied_emp_id = isEmpIdRequired;
 
   const states = country
@@ -1030,7 +1026,6 @@ export function Demographics({
                                 },
                                 value,
                                 onChange: (_, selected) => {
-                                  debugger;
                                   const identity_type =
                                     _.identity_document_name;
                                   onChange(selected);

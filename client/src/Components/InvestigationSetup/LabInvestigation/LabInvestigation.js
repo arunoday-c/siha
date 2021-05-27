@@ -177,7 +177,7 @@ class LabInvestigation extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-12 mandatory form-group" }}
                 label={{
-                  fieldName: "container_id",
+                  fieldName: "container_type",
                   isImp: true,
                 }}
                 selector={{
@@ -238,7 +238,7 @@ class LabInvestigation extends Component {
               <AlagehFormGroup
                 div={{ className: "col-12 form-group" }}
                 label={{
-                  forceLabel: "TAT Standard",
+                  forceLabel: "TAT Time (In Min.)",
                   isImp: false,
                 }}
                 textBox={{
@@ -249,7 +249,8 @@ class LabInvestigation extends Component {
                     onChange: this.texthandle,
                   },
                   others: {
-                    tabIndex: "2",
+                    type: "number",
+                    placeholder: "HHMM (0030)",
                   },
                 }}
               />
@@ -398,8 +399,7 @@ class LabInvestigation extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data:
-                                      GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                    data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
