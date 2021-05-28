@@ -13,3 +13,13 @@
     padding: 10px;
   }
 }
+.investigationModalPopup {
+  .algaeh-modal {
+    width: 95vw;
+    .popupInner {
+      .popRightDiv {
+        max-height: 80vh;
+      }
+    }
+  }
+}
