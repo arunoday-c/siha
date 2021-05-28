@@ -451,18 +451,19 @@ $borderRadius: 5px;
     }
   }
 }
-.resetPinPop{
+.resetPinPop {
   min-width: 300px !important;
   max-width: 300px !important;
   width: 300px !important;
 
   .ant-modal-body {
     padding: 20px 20px 10px !important;
-}
+  }
 
-
-  .pinInput{margin: 0; padding: 0;
-    .ui.input{
+  .pinInput {
+    margin: 0;
+    padding: 0;
+    .ui.input {
       input {
         min-height: 67px !important;
         border-radius: 5px !important;
@@ -470,11 +471,11 @@ $borderRadius: 5px;
         text-align: center;
         font-size: 28px !important;
         font-weight: bold;
+      }
     }
-}
   }
 }
-.pinReqMsg{
+.pinReqMsg {
   font-size: 13px;
   text-align: center;
   text-shadow: 0 0 black;
@@ -484,4 +485,29 @@ $borderRadius: 5px;
   left: 0;
   right: 0;
   box-shadow: 0 1px 3px rgba($color-black, 0.8);
+}
+
+.resetPasswordPop {
+  min-width: 350px !important;
+  width: 350px !important;
+  max-width: 350px !important;
+  .ant-modal-body {
+    padding: 10px 0 !important;
+    .ant-input {
+      padding: 0 0 0 5px;
+      .ant-input {
+        float: left;
+        width: auto !important;
+        margin-top: 0;
+        min-height: 30px !important;
+        max-height: 30px !important;
+      }
+      .ant-input-suffix {
+        margin-left: 4px;
+        float: right;
+        padding: 8px;
+        width: 30px;
+      }
+    }
+  }
 }
