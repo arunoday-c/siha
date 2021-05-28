@@ -19,7 +19,7 @@ import {
   updateLabInvestigation,
   updateAnalyteGroup,
   deleteLabAnalyte,
-  // dataDrag,
+  dataDrag,
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -133,7 +133,7 @@ class LabInvestigation extends Component {
   // Crud a
   AddAnalytes = AddAnalytes.bind(this);
   deleteLabAnalyte = deleteLabAnalyte.bind(this);
-  // dataDrag = dataDrag.bind(this);
+  dataDrag = dataDrag.bind(this);
   updateLabInvestigation = updateLabInvestigation.bind(this);
   updateAnalyteGroup = updateAnalyteGroup.bind(this);
 
@@ -156,7 +156,6 @@ class LabInvestigation extends Component {
     row.decimals = null;
   }
   render() {
-    debugger;
     const { state } = this.context;
     return (
       <React.Fragment>
@@ -427,6 +426,7 @@ class LabInvestigation extends Component {
                           },
                         },
                       ]}
+                      keyId="analyte_id"
                       data={state.analytes === undefined ? [] : state.analytes}
                       pagination={false}
                       isFilterable={false}
@@ -435,7 +435,7 @@ class LabInvestigation extends Component {
                       events={{
                         onDelete: this.deleteLabAnalyte,
                         onEdit: (row) => {},
-                        // onDrop: this.dataDrag,
+                        onDrop: this.dataDrag,
                         // onDone: this.updateLabInvestigation,
                         onDone: this.updateAnalyteGroup,
                       }}

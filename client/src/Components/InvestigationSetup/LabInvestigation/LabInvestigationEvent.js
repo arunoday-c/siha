@@ -229,16 +229,25 @@ export function containeridhandle(ctrl, e) {
   }
 }
 
-// export function dataDrag(row, xyz) {
-//   debugger;
-//   const { state } = this.context;
-//   let analytes = state.analytes;
+export function dataDrag(data) {
+  // debugger;
+  const { state } = this.context;
+  let exits_analytes = state.analytes;
+  let drag_analytes = [];
 
-//   analytes[row.newIndex] = row.data;
-//   // let newIndex = row.newIndex;
-//   if (row.newIndex < row.oldIndex) {
-//   }
-// }
+  const drag_data = data.records;
+  for (let j = 0; j < drag_data.length; j++) {
+    const row_data = exits_analytes.find(
+      (f) => f.analyte_id === parseInt(drag_data[j].analyte_id)
+    );
+    row_data.display_order = drag_data[j].position;
+    drag_analytes.push(row_data);
+  }
+  this.context.updateState({
+    drag_analytes: drag_analytes,
+    draging_done: true,
+  });
+}
 
 // Dead Code
 
