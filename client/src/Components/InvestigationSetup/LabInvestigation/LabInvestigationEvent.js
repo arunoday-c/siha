@@ -1,5 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import swal from "sweetalert2";
+// import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 export function AddAnalytes() {
@@ -20,27 +20,28 @@ export function AddAnalytes() {
         });
         return;
       }
-      let insert_analytes = state.insert_analytes;
+      // let insert_analytes = state.insert_analytes;
 
       let obj = {
         analyte_id: state.analyte_id,
         analyte_description: state.analyte_desc,
         analyte_report_group: state.analyte_report_group,
       };
-      if (state.hims_d_investigation_test_id !== null) {
-        let Insertobj = {
-          ...obj,
-          test_id: state.hims_d_investigation_test_id,
-        };
-        insert_analytes.push(Insertobj);
-      }
+      // if (state.hims_d_investigation_test_id !== null) {
+      //   let Insertobj = {
+      //     ...obj,
+      //     test_id: state.hims_d_investigation_test_id,
+      //   };
+      //   insert_analytes.push(Insertobj);
+      // }
 
       analytes.push(obj);
+
       if (this.context !== undefined) {
         this.context.updateState({
           analytes: [...analytes],
           analyte_report_group: "N",
-          insert_analytes: insert_analytes,
+          // insert_analytes: insert_analytes,
           analyte_id: null,
         });
       }
@@ -51,26 +52,26 @@ export function AddAnalytes() {
 export function updateLabInvestigation(row) {
   const { state } = this.context;
   let analytes = state.analytes;
-  let update_analytes = state.update_analytes;
+  // let update_analytes = state.update_analytes;
 
   let analytes_index = analytes.indexOf(row);
 
-  if (state.hims_d_investigation_test_id !== null) {
-    let Updateobj = {
-      hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
-      record_status: "A",
-    };
-    if (row.hims_m_lab_analyte_id !== undefined) {
-      update_analytes.push(Updateobj);
-    } else {
-      for (let j = 0; j < update_analytes.length; j++) {
-        if (update_analytes[j].analyte_id === row.analyte_id) {
-          update_analytes.splice(j, 1);
-        }
-      }
-      update_analytes.push(Updateobj);
-    }
-  }
+  // if (state.hims_d_investigation_test_id !== null) {
+  //   let Updateobj = {
+  //     hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
+  //     record_status: "A",
+  //   };
+  //   if (row.hims_m_lab_analyte_id !== undefined) {
+  //     update_analytes.push(Updateobj);
+  //   } else {
+  //     for (let j = 0; j < update_analytes.length; j++) {
+  //       if (update_analytes[j].analyte_id === row.analyte_id) {
+  //         update_analytes.splice(j, 1);
+  //       }
+  //     }
+  //     update_analytes.push(Updateobj);
+  //   }
+  // }
 
   analytes[analytes_index] = row;
 
@@ -78,7 +79,7 @@ export function updateLabInvestigation(row) {
     this.context.updateState({
       analytes: analytes,
       analyte_report_group: "N",
-      update_analytes: update_analytes,
+      // update_analytes: update_analytes,
     });
   }
 }
@@ -116,63 +117,63 @@ export function updateAnalyteGroup(row, rowId) {
 export function deleteLabAnalyte(row, rowId) {
   const { state } = this.context;
   let analytes = [...state.analytes];
-  let update_analytes = [...state.update_analytes];
-  let insert_analytes = [...state.insert_analytes];
+  // let update_analytes = [...state.update_analytes];
+  // let insert_analytes = [...state.insert_analytes];
 
   if (state.hims_d_investigation_test_id !== null) {
-    swal({
-      title: "Are you Sure you want to Delete this Analyte?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No",
-    }).then((willUpdate) => {
-      if (willUpdate.value) {
-        if (row.hims_m_lab_analyte_id !== undefined) {
-          algaehApiCall({
-            uri: "/investigation/deleteLabAnalyte",
-            module: "laboratory",
-            data: {
-              hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
-            },
-            method: "DELETE",
-            onSuccess: (response) => {
-              if (response.data.success === true) {
-                findAndRemoveAnalyte(analytes, row);
-                findAndRemoveAnalyte(update_analytes, row);
-                if (this.context !== undefined) {
-                  this.context.updateState({
-                    analytes,
-                    update_analytes,
-                  });
-                }
-                swalMessage({
-                  type: "success",
-                  title: "Deleted successfully ...",
-                });
-              }
-            },
-          });
-        } else {
-          findAndRemoveAnalyte(insert_analytes, row);
-          findAndRemoveAnalyte(update_analytes, row);
-          findAndRemoveAnalyte(analytes, row);
-          if (this.context !== undefined) {
-            this.context.updateState({
-              analytes,
-              update_analytes,
-              insert_analytes,
+    // swal({
+    //   title: "Are you Sure you want to Delete this Analyte?",
+    //   type: "warning",
+    //   showCancelButton: true,
+    //   confirmButtonText: "Yes",
+    //   confirmButtonColor: "#44b8bd",
+    //   cancelButtonColor: "#d33",
+    //   cancelButtonText: "No",
+    // }).then((willUpdate) => {
+    //   if (willUpdate.value) {
+    if (row.hims_m_lab_analyte_id !== undefined) {
+      algaehApiCall({
+        uri: "/investigation/deleteLabAnalyte",
+        module: "laboratory",
+        data: {
+          hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
+        },
+        method: "DELETE",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            findAndRemoveAnalyte(analytes, row);
+            // findAndRemoveAnalyte(update_analytes, row);
+            if (this.context !== undefined) {
+              this.context.updateState({
+                analytes,
+                // update_analytes,
+              });
+            }
+            swalMessage({
+              type: "success",
+              title: "Deleted successfully ...",
             });
           }
-          swalMessage({
-            type: "success",
-            title: "Deleted successfully ...",
-          });
-        }
+        },
+      });
+    } else {
+      // findAndRemoveAnalyte(insert_analytes, row);
+      // findAndRemoveAnalyte(update_analytes, row);
+      findAndRemoveAnalyte(analytes, row);
+      if (this.context !== undefined) {
+        this.context.updateState({
+          analytes,
+          // update_analytes,
+          // insert_analytes,
+        });
       }
-    });
+      swalMessage({
+        type: "success",
+        title: "Deleted successfully ...",
+      });
+    }
+    //   }
+    // });
   }
 }
 
@@ -204,6 +205,7 @@ export function analyteidhandle(ctrl, e) {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
   if (this.context !== undefined) {
     this.context.updateState({
       [name]: value,
@@ -226,6 +228,17 @@ export function containeridhandle(ctrl, e) {
     });
   }
 }
+
+// export function dataDrag(row, xyz) {
+//   debugger;
+//   const { state } = this.context;
+//   let analytes = state.analytes;
+
+//   analytes[row.newIndex] = row.data;
+//   // let newIndex = row.newIndex;
+//   if (row.newIndex < row.oldIndex) {
+//   }
+// }
 
 // Dead Code
 

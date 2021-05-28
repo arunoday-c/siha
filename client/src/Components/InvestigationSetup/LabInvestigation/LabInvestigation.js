@@ -19,6 +19,7 @@ import {
   updateLabInvestigation,
   updateAnalyteGroup,
   deleteLabAnalyte,
+  // dataDrag,
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -111,14 +112,28 @@ class LabInvestigation extends Component {
   analyteidhandle = analyteidhandle.bind(this);
   containeridhandle = containeridhandle.bind(this);
   changeGridEditors(row, e) {
+    const { state } = this.context;
+    let analytes = state.analytes;
+
+    let analytes_index = analytes.indexOf(row);
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
-    row.update();
+
+    analytes[analytes_index] = row;
+
+    if (this.context !== undefined) {
+      this.context.updateState({
+        analytes: analytes,
+        analyte_report_group: "N",
+        // update_analytes: update_analytes,
+      });
+    }
   }
   // Crud a
   AddAnalytes = AddAnalytes.bind(this);
   deleteLabAnalyte = deleteLabAnalyte.bind(this);
+  // dataDrag = dataDrag.bind(this);
   updateLabInvestigation = updateLabInvestigation.bind(this);
   updateAnalyteGroup = updateAnalyteGroup.bind(this);
 
@@ -141,6 +156,7 @@ class LabInvestigation extends Component {
     row.decimals = null;
   }
   render() {
+    debugger;
     const { state } = this.context;
     return (
       <React.Fragment>
@@ -296,7 +312,7 @@ class LabInvestigation extends Component {
                         valueField: "value",
                         data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                       },
-                      onChange: this.analyteidhandle,
+                      onChange: this.texthandle,
                     }}
                   />
 
@@ -364,7 +380,8 @@ class LabInvestigation extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                    data:
+                                      GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
@@ -410,7 +427,6 @@ class LabInvestigation extends Component {
                           },
                         },
                       ]}
-                      keyId="analyte_id"
                       data={state.analytes === undefined ? [] : state.analytes}
                       pagination={false}
                       isFilterable={false}
@@ -419,9 +435,7 @@ class LabInvestigation extends Component {
                       events={{
                         onDelete: this.deleteLabAnalyte,
                         onEdit: (row) => {},
-                        onDrop: (dat) => {
-                          console.log("dat====>", dat);
-                        },
+                        // onDrop: this.dataDrag,
                         // onDone: this.updateLabInvestigation,
                         onDone: this.updateAnalyteGroup,
                       }}
