@@ -86,17 +86,19 @@ class InsuranceAdd extends PureComponent {
     //     this.setState(IOputs);
     //   }
     // }
-    if (
-      nextProps.insuranceprovider !== undefined &&
-      nextProps.insuranceprovider.length !== 0
-    ) {
-      this.setState({ ...this.state, ...nextProps.insuranceprovider[0] });
-    } else {
-      if (this.state.insurance_provider_saved === false) {
-        let IOputs = InsuranceSetup.inputParam();
-        let prevLang = getCookie("Language");
-        IOputs.selectedLang = prevLang;
-        this.setState(IOputs);
+    if (!nextProps.addfunctionality) {
+      if (
+        nextProps.insuranceprovider !== undefined &&
+        nextProps.insuranceprovider.length !== 0
+      ) {
+        this.setState({ ...this.state, ...nextProps.insuranceprovider[0] });
+      } else {
+        if (this.state.insurance_provider_saved === false) {
+          let IOputs = InsuranceSetup.inputParam();
+          let prevLang = getCookie("Language");
+          IOputs.selectedLang = prevLang;
+          this.setState(IOputs);
+        }
       }
     }
 

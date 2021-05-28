@@ -17,11 +17,16 @@ export default function Formulae({
   const [formula_description, setFormula_description] = useState("");
   const [valueForm, setValueForm] = useState([]);
   const [decimals, setDecimals] = useState("");
+  // const [fieldArray, setFieldArray] = useState([]);
   useEffect(() => {
     if (openFormula) {
       onClearFormula();
+      setFormula_description(selectedRow.display_formula);
+      // setFieldArray(selectedRow.display_formula.match(/[A-Za-z]/g));
+      // console.log("fieldArray", fieldArray);
     }
   }, [openFormula]);
+
   function onClearFormula() {
     setAnalyte_id("");
     setFormula_description("");
@@ -92,6 +97,23 @@ export default function Formulae({
           </div>
           <div className="col-8">
             <div className="row">
+              <AlgaehFormGroup
+                div={{ className: "col-12" }}
+                label={{
+                  forceLabel: "Current Formula",
+                  isImp: false,
+                }}
+                textBox={{
+                  type: "number",
+                  className: "txt-fld",
+                  name: "Decimals",
+                  value: decimals,
+                }}
+
+                // events={{
+                //   onChange: onChangeDecimals,
+                // }}
+              />
               <AlgaehAutoComplete
                 div={{ className: "col-4 mandatory form-group" }}
                 label={{
@@ -127,23 +149,6 @@ export default function Formulae({
                 }}
               />
               <AlgaehFormGroup
-                div={{ className: "col mandatory" }}
-                label={{
-                  forceLabel: "Enter Formula",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "Formulae",
-                  value: formula_description,
-                }}
-                events={{
-                  onChange: (e) => {
-                    setFormula_description(e.target.value);
-                  },
-                }}
-              />
-              <AlgaehFormGroup
                 div={{ className: "col-3" }}
                 label={{
                   forceLabel: "Enter Decimals",
@@ -159,6 +164,24 @@ export default function Formulae({
                   onChange: onChangeDecimals,
                 }}
               />
+              <AlgaehFormGroup
+                div={{ className: "col-12 mandatory" }}
+                label={{
+                  forceLabel: "Enter Formula",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "Formulae",
+                  value: formula_description,
+                }}
+                events={{
+                  onChange: (e) => {
+                    setFormula_description(e.target.value);
+                  },
+                }}
+              />
+
               <div
                 className="col-12 form-group "
                 style={{ textAlign: "right" }}
