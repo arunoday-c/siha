@@ -1640,7 +1640,7 @@ export default {
                     left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
                     left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
                     and (R.gender=? or R.gender='BOTH') and (R.age_type=? or R.age_type='Y') and ? between R.from_age and R.to_age\
-                    where M.test_id in(?);",
+                    where M.test_id in(?) order by display_order;",
                 values: [req.body.gender, age_type, age, input.test_id],
                 printQuery: true,
               })
