@@ -38,7 +38,7 @@ export function AddAnalytes() {
       analytes.push(obj);
       if (this.context !== undefined) {
         this.context.updateState({
-          analytes: analytes,
+          analytes: [...analytes],
           analyte_report_group: "N",
           insert_analytes: insert_analytes,
           analyte_id: null,
