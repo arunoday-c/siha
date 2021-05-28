@@ -31,6 +31,7 @@ import {
   ongridEditRanges,
   eidtRanges,
   reloadAnalytesMaster,
+  eidtUnits,
 } from "./ResultEntryEvents";
 import { ResultInput } from "./ResultInput";
 import AlgaehReport from "../../Wrapper/printReports";
@@ -57,6 +58,7 @@ class ResultEntry extends Component {
       confirm_by_name: "",
       validate_by_name: "",
       edit_range: false,
+      edit_units: false,
       records_test_formula: [],
       loading: false,
       portal_exists: "N",
@@ -191,6 +193,7 @@ class ResultEntry extends Component {
         test_comments_id: null,
         comment_list: [],
         edit_range: false,
+        edit_units: false,
         selcted_comments: "",
       },
       () => {
@@ -588,7 +591,24 @@ class ResultEntry extends Component {
                               <AlgaehLabel label={{ forceLabel: "Units" }} />
                             ),
                             displayTemplate: (row) => {
-                              return (
+                              return this.state.edit_units === true &&
+                                row.analyte_type === "QN" ? (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.result_unit,
+                                    className: "txt-fld",
+                                    name: "result_unit",
+                                    events: {
+                                      onChange: ongridEditRanges.bind(
+                                        this,
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                  }}
+                                />
+                              ) : (
                                 <span>
                                   {row.result_unit !== "NULL"
                                     ? row.result_unit
@@ -1090,6 +1110,16 @@ class ResultEntry extends Component {
                       onClick={eidtRanges.bind(this, this)}
                     >
                       Edit Ranges
+                    </button>
+                  </AlgaehSecurityComponent>
+                  <AlgaehSecurityComponent componentCode="EDIT_UNIT_LAB_RES">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      disabled={this.state.status === "V" ? true : false}
+                      onClick={eidtUnits.bind(this, this)}
+                    >
+                      Edit Units
                     </button>
                   </AlgaehSecurityComponent>
                   <AlgaehSecurityComponent componentCode="RELOAD_ANALYTES_MAS">

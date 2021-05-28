@@ -180,6 +180,7 @@ const UpdateLabOrder = ($this, value, status) => {
 
             run_type: status === "N" ? last.runtype : $this.state.run_type,
             edit_range: false,
+            edit_units: false,
           },
           () => {
             AlgaehLoader({ show: false });
@@ -755,7 +756,7 @@ const ongridEditRanges = ($this, row, e) => {
   let test_analytes = $this.state.test_analytes;
   const _index = test_analytes.indexOf(row);
 
-  row[name] = value;
+  row[name] = value === "" ? null : value;
   test_analytes[_index] = row;
 
   $this.setState({
@@ -766,6 +767,11 @@ const ongridEditRanges = ($this, row, e) => {
 const eidtRanges = ($this) => {
   $this.setState({
     edit_range: !$this.state.edit_range,
+  });
+};
+const eidtUnits = ($this) => {
+  $this.setState({
+    edit_units: !$this.state.edit_units,
   });
 };
 
@@ -785,4 +791,5 @@ export {
   ongridEditRanges,
   eidtRanges,
   reloadAnalytesMaster,
+  eidtUnits,
 };
