@@ -1941,13 +1941,14 @@ export default {
 
       for (let i = 0; i < req.body.length; i++) {
         qry += mysql.format(
-          "UPDATE `hims_f_ord_analytes` SET result=?,\
+          "UPDATE `hims_f_ord_analytes` SET result_unit=?, result=?,\
         `status`=?,`remarks`=?,`run1`=?,`run2`=?,`run3`=?,`critical_type`=?, \
           amended=?,amended_date=?,normal_low=?, normal_high=?, text_value=?,\
           updated_date=?,updated_by=? " +
             strAnaQry +
             " where order_id=? AND hims_f_ord_analytes_id=?;",
           [
+            inputParam[i].result_unit,
             inputParam[i].result,
             inputParam[i].status,
             inputParam[i].remarks,

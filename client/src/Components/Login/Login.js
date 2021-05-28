@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { withRouter } from "react-router-dom";
+import connecting from "../../assets/svg/connecting.svg";
+import "./Login.scss";
+import noUserImg from "../../assets/images/nobody_m.original.webp";
 import {
   Spin,
   getPreferences,
@@ -29,11 +32,6 @@ import {
   // AlgaehCloseContainer,
   encrypter,
 } from "../../utils/GlobalFunctions";
-import connecting from "../../assets/svg/connecting.svg";
-import "./Login.scss";
-// import sockets from "../../sockets";
-// import { from } from "linq";
-import noUserImg from "../../assets/images/nobody_m.original.webp";
 function Login(props) {
   const { history, location } = props;
   const remebermeUser = getCookie("userName");
@@ -72,12 +70,8 @@ function Login(props) {
   let userRef = useRef(undefined);
   let passwordRef = useRef(undefined);
   const pinOneRef = useRef(undefined);
-  const {
-    clearAll,
-    setSelectedMenuItem,
-    setUserPreferencesData,
-    socket,
-  } = useContext(MainContext);
+  const { clearAll, setSelectedMenuItem, setUserPreferencesData, socket } =
+    useContext(MainContext);
   useEffect(() => {
     clearItem();
     clearAll();
@@ -719,7 +713,7 @@ function Login(props) {
                             onCancel={() => {
                               setShowChangePassword(false);
                             }}
-                            className={`row algaehNewModal resetPasswordPop`}
+                            className={`row resetPasswordPop`}
                           >
                             <div className="col-12 form-group">
                               <label className="style_Label ">
