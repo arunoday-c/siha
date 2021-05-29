@@ -375,7 +375,7 @@ class LabInvestigation extends Component {
                             );
                           },
                           others: {
-                            minWidth: 150,
+                            maxWidth: 250,
                             style: { textAlign: "left" },
                           },
                         },
@@ -407,6 +407,10 @@ class LabInvestigation extends Component {
                                 ) : null}
                               </div>
                             );
+                          },
+                          others: {
+                            maxWidth: 250,
+                            style: { textAlign: "left" },
                           },
                         },
                       ]}
