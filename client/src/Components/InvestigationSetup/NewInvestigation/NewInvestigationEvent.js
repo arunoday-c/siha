@@ -120,6 +120,10 @@ const InsertLabTest = ($this, e) => {
   // console.log($this.state, "from insert lab");
 
   if (!err) {
+    // debugger;
+    if ($this.state.draging_done === true) {
+      $this.state.analytes = $this.state.drag_analytes;
+    }
     if ($this.state.hims_d_investigation_test_id === null) {
       algaehApiCall({
         uri: "/investigation/addInvestigationTest",
