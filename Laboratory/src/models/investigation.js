@@ -380,7 +380,7 @@ export default {
                         f.hims_d_investigation_test_id === null ||
                         f.hims_d_investigation_test_id === undefined
                     );
-                    console.log("insert_analytes", insert_analytes);
+                    // console.log("insert_analytes", insert_analytes);
                     if (insert_analytes.length != 0) {
                       const IncludeValues = [
                         "test_id",
