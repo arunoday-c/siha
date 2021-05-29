@@ -116,6 +116,7 @@ class LabInvestigation extends Component {
     row[name] = value;
     row.update();
   }
+
   // Crud a
   AddAnalytes = AddAnalytes.bind(this);
   deleteLabAnalyte = deleteLabAnalyte.bind(this);
@@ -423,7 +424,7 @@ class LabInvestigation extends Component {
                           console.log("dat====>", dat);
                         },
                         // onDone: this.updateLabInvestigation,
-                        onDone: this.updateAnalyteGroup,
+                        onSave: this.updateAnalyteGroup,
                       }}
                     />
                   </div>

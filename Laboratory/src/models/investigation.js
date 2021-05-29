@@ -287,7 +287,7 @@ export default {
     const _mysql = new algaehMysql();
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("updateInvestigationTest: ");
+      // utilities.logger().log("updateInvestigationTest: ");
       let inputParam = req.body;
 
       _mysql
@@ -365,11 +365,11 @@ export default {
               };
             }
 
-            utilities.logger().log("execute_query: ", execute_query);
+            // utilities.logger().log("execute_query: ", execute_query);
             _mysql
               .executeQuery(execute_query)
               .then((resultSpc) => {
-                utilities.logger().log("resultSpc: ", resultSpc);
+                // utilities.logger().log("resultSpc: ", resultSpc);
                 new Promise((resolve, reject) => {
                   try {
                     if (inputParam.insert_analytes.length != 0) {
