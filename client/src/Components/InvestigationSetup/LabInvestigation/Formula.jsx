@@ -104,7 +104,9 @@ export default function Formulae({
                     forceLabel: "Previously applied formula",
                   }}
                 />
-                <h6>{decimals ? decimals : "--------"}</h6>
+                <h6>
+                  {formula_description ? formula_description : "--------"}
+                </h6>
               </div>
               {/* <AlgaehFormGroup
                 div={{ className: "col-12" }}

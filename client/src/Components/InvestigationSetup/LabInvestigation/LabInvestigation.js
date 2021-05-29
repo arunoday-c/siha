@@ -280,7 +280,7 @@ class LabInvestigation extends Component {
               <div>
                 <div className="row" data-validate="analyte_details">
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col-7 mandatory" }}
                     label={{
                       fieldName: "analyte_id",
                       isImp: true,
@@ -316,7 +316,7 @@ class LabInvestigation extends Component {
                     }}
                   />
 
-                  <div className="col" style={{ padding: 0 }}>
+                  <div className="col-1" style={{ padding: 0 }}>
                     <button
                       className="btn btn-primary"
                       style={{ marginTop: 20 }}
@@ -380,8 +380,7 @@ class LabInvestigation extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data:
-                                      GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                    data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
