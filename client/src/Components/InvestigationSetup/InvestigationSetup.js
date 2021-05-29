@@ -312,10 +312,17 @@ class InvestigationSetup extends Component {
                           ? "Lab"
                           : "Radiology";
                       },
+                      others: {
+                        maxWidth: 150,
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "description",
                       label: <AlgaehLabel label={{ fieldName: "test_name" }} />,
+                      others: {
+                        style: { textAlign: "left" },
+                      },
                     },
                     {
                       fieldName: "category_id",
@@ -342,6 +349,10 @@ class InvestigationSetup extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        maxWidth: 250,
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "specimen_id",
@@ -364,6 +375,10 @@ class InvestigationSetup extends Component {
                               : ""}
                           </span>
                         );
+                      },
+                      others: {
+                        maxWidth: 250,
+                        style: { textAlign: "center" },
                       },
                     },
                   ]}

@@ -51,7 +51,8 @@ export default {
             inner join hims_d_services as SER on T.services_id = SER.hims_d_services_id \
             left join hims_d_lab_analytes as LA on LA.hims_d_lab_analytes_id=A.analyte_id \
             where 1=1" +
-            _stringData,
+            _stringData +
+            " order by A.display_order",
           values: inputValues,
           printQuery: true,
         })
@@ -188,6 +189,7 @@ export default {
                       "critical_high",
                       "normal_low",
                       "normal_high",
+                      "display_order",
                     ];
 
                     _mysql
@@ -296,7 +298,8 @@ export default {
             "UPDATE `hims_d_investigation_test` SET test_code=?, short_description=?,description=?,investigation_type=?,\
             lab_section_id=?, send_out_test=?,available_in_house=?,restrict_order=?,restrict_by=?,\
             external_facility_required=?,facility_description=?,services_id=?,priority=?,cpt_id=?,\
-            category_id=?,film_category=?,screening_test=?,film_used=?,tat_standard_time=?,updated_date=?,updated_by=?\
+            category_id=?,film_category=?,screening_test=?,film_used=?,tat_standard_time=?, \
+            updated_date=?,updated_by=?\
             WHERE record_status='A' AND `hims_d_investigation_test_id`=?;",
           values: [
             inputParam.test_code,
@@ -327,12 +330,12 @@ export default {
         .then((result) => {
           if (result != null && inputParam.investigation_type == "L") {
             let execute_query = {};
-            utilities
-              .logger()
-              .log(
-                "hims_m_lab_specimen_id: ",
-                inputParam.hims_m_lab_specimen_id
-              );
+            // utilities
+            //   .logger()
+            //   .log(
+            //     "hims_m_lab_specimen_id: ",
+            //     inputParam.hims_m_lab_specimen_id
+            //   );
             if (inputParam.hims_m_lab_specimen_id == null) {
               execute_query = {
                 query:
@@ -372,7 +375,13 @@ export default {
                 // utilities.logger().log("resultSpc: ", resultSpc);
                 new Promise((resolve, reject) => {
                   try {
-                    if (inputParam.insert_analytes.length != 0) {
+                    const insert_analytes = inputParam.analytes.filter(
+                      (f) =>
+                        f.hims_d_investigation_test_id === null ||
+                        f.hims_d_investigation_test_id === undefined
+                    );
+                    console.log("insert_analytes", insert_analytes);
+                    if (insert_analytes.length != 0) {
                       const IncludeValues = [
                         "test_id",
                         "analyte_id",
@@ -387,12 +396,13 @@ export default {
                         "critical_high",
                         "normal_low",
                         "normal_high",
+                        "display_order",
                       ];
 
                       _mysql
                         .executeQuery({
                           query: "INSERT INTO hims_m_lab_analyte(??) VALUES ?",
-                          values: inputParam.insert_analytes,
+                          values: insert_analytes,
                           includeValues: IncludeValues,
                           extraValues: {
                             created_by: req.userIdentity.algaeh_d_app_user_id,
@@ -415,18 +425,18 @@ export default {
                   }
                 })
                   .then((results) => {
-                    if (inputParam.update_analytes.length != 0) {
-                      let update_analytes = req.body.update_analytes;
+                    const update_analytes = inputParam.analytes.filter(
+                      (f) => f.hims_d_investigation_test_id > 0
+                    );
+                    console.log("update_analytes", update_analytes);
+                    if (update_analytes.length != 0) {
+                      // let update_analytes = req.body.update_analytes;
                       let qry = "";
-                      for (
-                        let i = 0;
-                        i < req.body.update_analytes.length;
-                        i++
-                      ) {
+                      for (let i = 0; i < update_analytes.length; i++) {
                         qry += mysql.format(
                           "UPDATE `hims_m_lab_analyte` SET record_status=?,\
                         `critical_low`=?, `critical_high`=?, `normal_low`=?, `normal_high`=?,\
-                          `from_age`=?, `to_age`=?, `age_type`=?, `gender`=?, \
+                          `from_age`=?, `to_age`=?, `age_type`=?, `gender`=?, display_order=?, \
                         updated_date=?, updated_by=? where hims_m_lab_analyte_id=?;",
                           [
                             update_analytes[i].record_status,
@@ -438,6 +448,7 @@ export default {
                             update_analytes[i].to_age,
                             update_analytes[i].age_type,
                             update_analytes[i].gender,
+                            update_analytes[i].display_order,
                             moment().format("YYYY-MM-DD HH:mm"),
                             req.userIdentity.algaeh_d_app_user_id,
                             update_analytes[i].hims_m_lab_analyte_id,
