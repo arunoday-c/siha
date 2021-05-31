@@ -48,7 +48,7 @@ export default {
             left join hims_m_lab_specimen S on S.test_id = T.hims_d_investigation_test_id  \
             left join hims_m_lab_analyte A on A.test_id=T.hims_d_investigation_test_id \
             left join hims_d_test_category TC on TC.hims_d_test_category_id = T.category_id \
-            inner join hims_d_services as SER on T.services_id = SER.hims_d_services_id \
+            left join hims_d_services as SER on T.services_id = SER.hims_d_services_id \
             left join hims_d_lab_analytes as LA on LA.hims_d_lab_analytes_id=A.analyte_id \
             where 1=1" +
             _stringData +
