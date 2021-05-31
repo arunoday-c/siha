@@ -152,9 +152,23 @@ class LabInvestigation extends Component {
     });
   }
   onDeleteFormula(row) {
+    debugger;
+    const { state } = this.context;
+    let analytes = [...state.analytes];
+
+    let analytes_index = analytes.indexOf(row);
+
     row.display_formula = null;
     row.formula = null;
     row.decimals = null;
+
+    analytes[analytes_index] = row;
+
+    if (this.context !== undefined) {
+      this.context.updateState({
+        analytes: analytes,
+      });
+    }
   }
   render() {
     const { state } = this.context;
@@ -380,7 +394,8 @@ class LabInvestigation extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
+                                    data:
+                                      GlobalVariables.FORMAT_ANLYTE_REPORT_GROUP,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
