@@ -23,6 +23,7 @@ export default function Formulae({
     if (openFormula) {
       onClearFormula();
       setFormula_description(selectedRow.display_formula);
+      setDecimals(selectedRow.decimals);
       // setFieldArray(selectedRow.display_formula.match(/[A-Za-z]/g));
       // console.log("fieldArray", fieldArray);
     }
