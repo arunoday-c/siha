@@ -8,8 +8,20 @@ const texthandle = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
 
+  debugger;
   if (name === "category_id") {
-    let analytes_required = e.selected.test_section === "M" ? false : true;
+    let analytes_required =
+      e.selected.test_section === "M" && $this.state.culture_test === "Y"
+        ? false
+        : true;
+    $this.setState({
+      [name]: value,
+      analytes_required: analytes_required,
+      test_section: e.selected.test_section,
+    });
+  } else if (name === "culture_test") {
+    let analytes_required =
+      $this.state.test_section === "M" && value === "Y" ? false : true;
     $this.setState({
       [name]: value,
       analytes_required: analytes_required,
@@ -62,7 +74,7 @@ const Validations = ($this) => {
       type: "error",
       title: "Service Cannot be blank.",
     });
-    document.querySelector("[name='services_id']").focus();
+    // document.querySelector("[name='services_id']").focus();
     return isError;
   } else if ($this.state.investigation_type === "L") {
     if ($this.state.specimen_id === null) {

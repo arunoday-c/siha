@@ -73,8 +73,13 @@ const getInvestigations = ($this) => {
               service_name: firstRecordSet.service_name,
               hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
               tat_standard_time: firstRecordSet.tat_standard_time,
+              culture_test: firstRecordSet.culture_test,
+              test_section: firstRecordSet.test_section,
               analytes_required:
-                firstRecordSet.test_section === "M" ? false : true,
+                firstRecordSet.test_section === "M" &&
+                firstRecordSet.culture_test === "Y"
+                  ? false
+                  : true,
               container_id: firstRecordSet.container_id,
               analytes:
                 firstRecordSet.hims_m_lab_analyte_id === null
